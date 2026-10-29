@@ -7030,6 +7030,270 @@
       "added": "2026-10-29",
       "featured": false,
       "link_status": "ok"
+    },
+    {
+      "id": "united-states-data-center-energy-usage-report-2025-update",
+      "title": "United States Data Center Energy Usage Report: 2025 Update",
+      "url": "https://eta-publications.lbl.gov/publications/united-states-data-center-energy-2025",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Modeled estimate of US data-center electricity use: 192 TWh in 2024 (4.7% of US electricity) and a 2030 reference case of 649 TWh, with a range of 521 to 843 TWh. It reports the AI-server share, an assumed training-versus-inference split, and the limits of the underlying data.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2024-united-states-data-center-energy-usage-report-2",
+      "title": "2024 United States Data Center Energy Usage Report",
+      "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report.pdf",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "date": "2024-12-19",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Baseline LBNL report estimating US data-center electricity use at 176 TWh in 2023, with direct water use of about 66 billion liters and indirect water use near 800 billion liters. It documents the bottom-up method, server power assumptions, and a separate cryptocurrency estimate.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "measuring-the-environmental-impact-of-delivering-ai-at-googl",
+      "title": "Measuring the Environmental Impact of Delivering AI at Google Scale",
+      "url": "https://arxiv.org/abs/2508.15734",
+      "publisher": "Google",
+      "date": "2025-08-21",
+      "type": "academic",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Instrumented measurements of Gemini serving in production: 0.24 Wh, 0.03 gCO2e, and 0.26 mL of water for the median text prompt, counting accelerators, host machines, idle capacity, and data-center overhead. It reports a 33-fold drop in energy per prompt over one year.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "energy-use-of-ai-inference-efficiency-pathways-and-test-time",
+      "title": "Energy Use of AI Inference, Efficiency Pathways, and Test-Time Scaling",
+      "url": "https://arxiv.org/abs/2509.20241",
+      "publisher": "Joule (Microsoft Research and collaborators)",
+      "date": "2026",
+      "type": "academic",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Bottom-up model of frontier-scale inference on H100 servers: a median of 0.31 Wh per query (interquartile range 0.16 to 0.60), 3.91 Wh for queries 15 times longer, and 8 to 20 times potential efficiency gains. The authors find widely cited public estimates overstated by 4 to 20 times.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-carbon-footprint-of-streaming-video-fact-checking-the-he",
+      "title": "The Carbon Footprint of Streaming Video: Fact-Checking the Headlines",
+      "url": "https://www.iea.org/commentaries/the-carbon-footprint-of-streaming-video-fact-checking-the-headlines",
+      "publisher": "International Energy Agency",
+      "date": "2020",
+      "type": "article",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "IEA analysis estimating an hour of Netflix streaming in 2019 at 0.077 kWh and 36 gCO2, split 72% devices, 23% networks, and 5% data centers. It corrects earlier claims that overstated streaming's footprint by up to 90 times.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "carbon-impact-of-video-streaming",
+      "title": "Carbon Impact of Video Streaming",
+      "url": "https://www.carbontrust.com/our-work-and-impact/guides-reports-and-tools/carbon-impact-of-video-streaming",
+      "publisher": "Carbon Trust",
+      "date": "2021-06-11",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "White paper estimating about 55 gCO2e and 188 Wh per hour of video streaming in Europe in 2020. It finds data centers, encoding, and delivery servers account for about 1 Wh, roughly 1% of the total, with viewing devices and home routers the largest shares.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "artificial-intelligence-generative-ai-s-environmental-and-hu",
+      "title": "Artificial Intelligence: Generative AI's Environmental and Human Effects (GAO-25-107172)",
+      "url": "https://www.gao.gov/products/gao-25-107172",
+      "publisher": "US Government Accountability Office",
+      "date": "2025-04-22",
+      "type": "report",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "GAO technology assessment finding that generative AI uses significant energy and water, that companies are generally not reporting details, and that the share of data-center electricity tied to it is unclear. It sets out policy options on data collection, reporting, and efficiency.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "google-2026-environmental-report",
+      "title": "Google 2026 Environmental Report",
+      "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
+      "publisher": "Google",
+      "date": "2026-06-24",
+      "type": "report",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Company report with data-center electricity of 42.4 TWh in 2025, water consumption of 10.9 billion gallons, and site-level water data including The Dalles, Oregon. It reports supply-chain emissions up 25%, mainly from hardware manufacturing and data-center construction.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2026-environmental-data-fact-sheet",
+      "title": "2026 Environmental Data Fact Sheet",
+      "url": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/2026-Microsoft-Environmental-Data-Fact-Sheet-PDF.pdf",
+      "publisher": "Microsoft",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Company data tables for fiscal 2025: 37.0 TWh of electricity, 8,170 ML of water consumed, and site-level electricity and water for data centers including Quincy and East Wenatchee, Washington.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2025-environmental-data-index",
+      "title": "2025 Environmental Data Index",
+      "url": "https://sustainability.atmeta.com/wp-content/uploads/2025/10/Meta_2025-Environmental-Data-Index.pdf",
+      "publisher": "Meta",
+      "date": "2025",
+      "type": "report",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Meta's facility-level data for 2024: 18.4 TWh of electricity, 3,123 ML of water consumed on site, and 72,207 ML of water embedded in purchased electricity, the only such figure among the company reports reviewed.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "e-waste-challenges-of-generative-artificial-intelligence",
+      "title": "E-Waste Challenges of Generative Artificial Intelligence",
+      "url": "https://www.nature.com/articles/s43588-024-00712-6",
+      "publisher": "Nature Computational Science",
+      "date": "2024-10-28",
+      "type": "academic",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Material-flow model estimating 1.2 to 5.0 million tonnes of cumulative generative-AI e-waste from 2020 to 2030, and 16 to 86% reductions from circular-economy strategies.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "uptime-institute-global-data-center-survey-2026-executive-su",
+      "title": "Uptime Institute Global Data Center Survey 2026: Executive summary",
+      "url": "https://uptimeinstitute.com/uptime_assets/77a6191bef6c85cb4ac9bfb169ddc313cae517030b48709697b1f80bc10edc90-uptime-institute-global-data-center-survey-results-2026.pdf",
+      "publisher": "Uptime Institute",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Annual operator survey reporting that the most common rack density averaged just over 11 kW in 2026 (7.8 kW without high-density sites), up from 9 kW in 2025, with more operators reporting peaks of 30 kW or above. Figures are self-reported by respondents.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-architectural-implications-of-facebook-s-dnn-based-perso",
+      "title": "The Architectural Implications of Facebook's DNN-based Personalized Recommendation",
+      "url": "https://arxiv.org/abs/1906.03109",
+      "publisher": "Facebook AI Research and collaborators (HPCA 2020)",
+      "date": "2020",
+      "type": "academic",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Characterization of recommendation models in a Facebook production data center, finding they used up to 79% of AI inference cycles in 2019. It shows that ranking and recommendation, the core of social and streaming feeds, is an AI workload.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-global-e-waste-monitor-2024",
+      "title": "The Global E-waste Monitor 2024",
+      "url": "https://ewastemonitor.info/the-global-e-waste-monitor-2024",
+      "publisher": "International Telecommunication Union and UN Institute for Training and Research",
+      "date": "2024-03-20",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "UN report estimating 62 million tonnes of e-waste generated worldwide in 2022, with 22.3% documented as properly collected and recycled, and 82 million tonnes projected by 2030. It finds e-waste recycling meets about 1% of rare earth demand.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "oregon-data-center-task-force-water-ctuir",
+      "title": "Oregon Data Center Task Force: Water (CTUIR)",
+      "url": "https://www.oregon.gov/energy/get-involved/Documents/2026-03-27-Quaempts-CTUIR.pdf",
+      "publisher": "Confederated Tribes of the Umatilla Indian Reservation",
+      "date": "2026-03-27",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": true,
+      "summary": "Presentation to Oregon's Data Center Task Force that frames water as the first of the First Foods and calls for reciprocity as a requirement of sustainability. It states that surface flows and groundwater are needed to meet community First Foods goals and Tribal treaty rights.",
+      "tier": "T0",
+      "added": "2026-10-29",
+      "featured": false,
+      "link_status": "ok"
     }
   ]
 }
