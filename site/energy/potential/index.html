@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Tribal Plans Say About Energy | ATNI Energy Task Forces</title>
+  <meta name="description" content="A machine-assisted reading of the public planning documents of ATNI-listed Tribes: which energy types each Tribe's own plans show, at what stage, with quoted source text and page links. Each Tribe is the authority on its own plans.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#010B13">
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="../../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <script src="../../assets/js/theme.js"></script>
+  <script type="module" src="../../assets/js/energy-potential.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="../../"><span class="wordmark-org">ATNI</span><span class="wordmark-name">Energy Task Forces</span></a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="../../energy/" aria-current="true">Energy</a></li>
+          <li><a href="../../data-centers/">Data Centers</a></li>
+          <li><a href="../../ai/">AI</a></li>
+          <li><a href="../../summit/">Summit</a></li>
+          <li><a href="../../library/">Library</a></li>
+          <li><a href="../../about/">About</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <nav class="subnav" aria-label="Tribal Energy Feasibility pages">
+      <div class="wrap">
+        <ul>
+          <li><a href="../">Overview</a></li>
+          <li><a href="./" aria-current="page">What Tribal Plans Say</a></li>
+          <li><a href="../funding/">Funding</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="wrap page-hero-grid">
+        <div>
+          <h1>What Tribal Plans Say About Energy</h1>
+          <p class="lead">Tribal Nations have written their energy intentions into their own public plans: climate action plans, hazard mitigation plans, economic development strategies, housing plans, and strategic energy plans. This page gathers what those documents say, Tribe by Tribe, for the Tribes listed in ATNI’s directory, so that regional conversations about energy start from what Tribes have already said, in their own documents, rather than from what others assume about them.</p>
+        </div>
+        <aside class="key-facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">Key Facts</h2>
+          <ul>
+            <li><strong>Coverage:</strong> <span data-figure="ep-tribes">56</span> ATNI-listed Tribes; <span data-figure="ep-with">44</span> with at least one energy type.</li>
+            <li><strong>Documents:</strong> <span data-figure="ep-docs">279</span> public plans read; <span data-figure="ep-pending">22</span> more await text extraction.</li>
+            <li><strong>Built:</strong> <span data-figure="ep-date">10/29/2026</span>.</li>
+            <li><strong>Authority:</strong> Each Tribe, over its own plans. <a href="#corrections">Corrections and removals</a>.</li>
+            <li><strong>Data:</strong> <a href="../../data/energy-potential.csv">CSV</a> and <a href="../../data/energy-potential.json">JSON</a>.</li>
+          </ul>
+        </aside>
+      </div>
+    </header>
+
+    <div class="wrap page-body">
+      <nav class="toc" aria-labelledby="toc-title">
+        <p class="toc-title" id="toc-title">On this page</p>
+        <ul>
+          <li><a href="#read-first">Read This First</a></li>
+          <li><a href="#corrections">Corrections and Removals</a></li>
+          <li><a href="#across">Across the Tribes</a></li>
+          <li><a href="#tribes">Tribe by Tribe</a></li>
+          <li><a href="#data">Download the Data</a></li>
+        </ul>
+      </nav>
+
+      <div class="content">
+        <section class="prose" aria-labelledby="read-first">
+          <h2 id="read-first">Read This First</h2>
+          <p class="notice"><strong>This is a machine-assisted reading of public plans.</strong> It is not a Tribe’s own assessment, it endorses no project, and it ranks no Tribe against another. Each Tribe is the authority on its own plans and can ask ATNI to correct or remove its entry.</p>
+          <h3>How It Was Made</h3>
+          <p>For each listed Tribe, the public planning documents in ATNI’s plan library were searched page by page for 13 energy types, from solar, wind, hydropower, geothermal, and biomass to battery storage, microgrids, efficiency, and electrification. Passages around each match were read by a typed-judgment model (TypeSafe Jev), which answered three questions: does the passage describe the Tribe’s own energy work, how far has that work progressed, and was the option found unsuitable. Code ranked the types by the most advanced stage found, a second pass checked each ranked finding against its cited excerpts, and 15 findings were read by hand against their cited pages. The full method, with every threshold and the checks that changed the design, is published in the <a href="https://github.com/atniclimate/atni-task-force/blob/main/docs/ENERGY-POTENTIAL.md">method note</a>.</p>
+          <h3>How to Read It</h3>
+          <p>Each Tribe’s entry lists up to five energy types, each with a stage (installed or operating, planned or funded, assessed or sited, or goal or interest), the documents that support it, and short verbatim excerpts with page links. Open the cited page before relying on a finding. A stage describes what the document reports, not what exists today.</p>
+          <ul class="lead-ins">
+            <li><strong>Verified:</strong> the second pass found that the cited excerpts show the stage claimed.</li>
+            <li><strong>Needs review:</strong> the second pass was uncertain. Read the cited page; the stage may be overstated.</li>
+          </ul>
+          <h3>What It Is Not</h3>
+          <p>This is a machine-assisted reading of public documents. It is not a Tribe’s own assessment, it endorses no project, and it ranks no Tribe against another. Fossil fuel backup and transmission are not ranked. Offshore wind and marine energy appear in the search but had no ranked finding at the 10/29/2026 build; that reflects the documents in the library, not Tribal positions.</p>
+          <h3>Limits</h3>
+          <p>The library holds what public discovery found and could download, so a Tribe’s newest plan may be missing, and some documents still await text extraction. Attribution of a shared plan to one Tribe can be wrong; one finding was withheld for that reason. Old plans are read as written, so the year matters. Twelve listed Tribes have no finding, in most cases because their documents in the library describe no energy work of their own. ATNI listing comes from a capture of ATNI’s directory page; it records a listing, not membership certification.</p>
+        </section>
+
+        <section class="prose" aria-labelledby="corrections">
+          <h2 id="corrections">Corrections and Removals</h2>
+          <p>Each Tribe is the authority on its own plans. A Tribe can ask ATNI to correct or remove its entry at any time through <a href="https://atnitribes.org/contact-us/">ATNI’s contact page</a>. A request can name a single finding (the energy type and the document) or ask that the whole entry come down.</p>
+        </section>
+
+        <section aria-labelledby="across">
+          <h2 id="across">Across the Tribes</h2>
+          <noscript><p class="notice">The chart and the list need JavaScript. The same data is available as <a href="../../data/energy-potential.csv">CSV</a> and <a href="../../data/energy-potential.json">JSON</a>.</p></noscript>
+          <p class="notice" data-load-error hidden>The data could not load. It is available as <a href="../../data/energy-potential.csv">CSV</a> and <a href="../../data/energy-potential.json">JSON</a>.</p>
+          <figure class="chart" aria-labelledby="chart-title" hidden>
+            <h3 id="chart-title">How Many Tribes’ Plans Show Each Energy Type, by Stage</h3>
+            <p class="chart-sub">Each bar counts Tribes; its parts show the most advanced stage found in that Tribe’s plans. Select a bar to list those Tribes below.</p>
+            <div id="potential-chart"></div>
+            <details class="disclosure">
+              <summary>Show the numbers as a table</summary>
+              <div class="table-scroll" id="potential-table" role="region" aria-label="Table of Tribes by energy type and stage" tabindex="0"></div>
+            </details>
+          </figure>
+        </section>
+
+        <section aria-labelledby="tribes">
+          <h2 id="tribes" tabindex="-1">Tribe by Tribe</h2>
+          <div id="potential-app" hidden>
+            <form class="filters filters-auto" role="search" aria-label="Tribes">
+              <div class="field field-search">
+                <label for="filter-q">Search Tribe names, documents, and excerpts</label>
+                <input id="filter-q" name="q" type="search" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label for="filter-state">State</label>
+                <select id="filter-state" name="state"><option value="">All states</option></select>
+              </div>
+              <div class="field">
+                <label for="filter-type">Energy type</label>
+                <select id="filter-type" name="type"><option value="">All types</option></select>
+              </div>
+              <div class="field">
+                <label for="filter-stage">Stage</label>
+                <select id="filter-stage" name="stage"><option value="">All stages</option></select>
+              </div>
+              <div class="field">
+                <label for="filter-check">Check</label>
+                <select id="filter-check" name="check"><option value="">Verified or needs review</option></select>
+              </div>
+              <div class="field">
+                <label for="filter-has">Findings</label>
+                <select id="filter-has" name="has">
+                  <option value="">All Tribes</option>
+                  <option value="yes">With a finding</option>
+                  <option value="no">With no finding</option>
+                </select>
+              </div>
+              <button class="button button-secondary" type="button" data-clear>Clear filters</button>
+            </form>
+            <p id="potential-status" class="data-status" role="status" aria-live="polite"></p>
+            <ul id="potential-results" class="records" role="list"></ul>
+          </div>
+        </section>
+
+        <section class="prose" aria-labelledby="data">
+          <h2 id="data">Download the Data</h2>
+          <p>The data is open. The <a href="../../data/energy-potential.csv">CSV file</a> has one row per finding, with its stage, check, and first cited document, year, page, link, and excerpt; each Tribe with no finding has one row with the reason. The <a href="../../data/energy-potential.json">JSON file</a> adds every citation, the method, the caveats, and the documents read for each Tribe. Carry the caveats with any use of the data.</p>
+          <p>For funding programs that match each Tribe’s ranked energy types, see <a href="../funding/">Tribal Energy Funding</a>.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p class="footer-title">ATNI Energy Task Forces</p>
+        <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../">Home</a></li>
+          <li><a href="../../energy/">Energy Feasibility</a></li>
+          <li><a href="../../energy/potential/">What Tribal Plans Say</a></li>
+          <li><a href="../../energy/funding/">Energy Funding</a></li>
+          <li><a href="../../data-centers/">Data Centers</a></li>
+          <li><a href="../../ai/">Artificial Intelligence</a></li>
+          <li><a href="../../summit/">Summit</a></li>
+          <li><a href="../../library/">Library</a></li>
+          <li><a href="../../about/">About</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+        <p>This site publishes public (T0) material only and sets no cookies. <a href="../../about/#data-governance">How this site handles data</a>.</p>
+        <p>Updated 10/29/2026.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

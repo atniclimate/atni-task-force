@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About | ATNI Energy Task Forces</title>
+  <meta name="description" content="About the ATNI Energy Task Forces: who is behind the work, how this site handles data under the Tiered Sovereign Data Framework, how the library is curated, and how the site was built.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#010B13">
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <script src="../assets/js/theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="../"><span class="wordmark-org">ATNI</span><span class="wordmark-name">Energy Task Forces</span></a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="../energy/">Energy</a></li>
+          <li><a href="../data-centers/">Data Centers</a></li>
+          <li><a href="../ai/">AI</a></li>
+          <li><a href="../summit/">Summit</a></li>
+          <li><a href="../library/">Library</a></li>
+          <li><a href="../about/" aria-current="page">About</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>About the Task Forces</h1>
+        <p class="lead">The Energy Task Forces bring member Tribes of the Affiliated Tribes of Northwest Indians (ATNI) together on the energy, data center, and artificial intelligence (AI) decisions that reach Tribal homelands. This page explains who is behind the work, how the site handles data, and how it was built.</p>
+      </div>
+    </header>
+
+    <div class="wrap page-body">
+      <nav class="toc" aria-labelledby="toc-title">
+        <p class="toc-title" id="toc-title">On this page</p>
+        <ul>
+          <li><a href="#atni">ATNI and the Task Forces</a></li>
+          <li><a href="#data-governance">Data Governance</a></li>
+          <li><a href="#curation">How the Library Is Curated</a></li>
+          <li><a href="#how-built">How This Site Was Built</a></li>
+          <li><a href="#license">License</a></li>
+          <li><a href="#credits">Credits</a></li>
+        </ul>
+      </nav>
+
+      <div class="content">
+        <section class="prose" aria-labelledby="atni">
+          <h2 id="atni">ATNI and the Task Forces</h2>
+          <p>ATNI is a regional organization of American Indian and Alaska Native Tribal governments in Washington, Idaho, Oregon, Montana, Nevada, Northern California, and Alaska. Tribal leaders in the Northwest formed ATNI in 1953, dedicated to Tribal sovereignty and self-determination. Member Tribes set ATNI policy through resolutions adopted at its conventions.</p>
+          <p>ATNI established its Energy Program in 1995 to represent Tribal rights and interests in power and transmission issues at the Bonneville Power Administration, and that work has since grown into regional and national policy on Tribal energy, Tribal electric utilities, and transmission (<a href="https://atnitribes.org/committees/energy-commi/">ATNI Energy Committee</a>). The Energy Task Forces continue that work alongside ATNI’s Climate program. The Tiered Sovereign Data Framework, which this site follows, was developed within ATNI at the intersection of climate adaptation, data science, and Tribal self-determination.</p>
+          <!-- SLOT:about:people -->
+          <div class="slot" role="note">
+            <p class="slot-label">In development</p>
+            <p>Energy Committee leadership and task force members will be listed here once confirmed, with each person’s agreement.</p>
+          </div>
+          <!-- /SLOT -->
+        </section>
+
+        <section class="prose" aria-labelledby="data-governance">
+          <h2 id="data-governance">Data Governance</h2>
+          <p>This project classifies its material under the Tiered Sovereign Data Framework (TSDF), which ATNI endorsed as a recognized standard for Indigenous Data Sovereignty in <a href="../library/resolutions/atni-res-2026-034-tiered-sovereign-data-framework.pdf">Resolution #2026-034 (PDF)</a>. It holds two tiers only:</p>
+          <ul class="lead-ins">
+            <li><strong>T0 Open/Public:</strong> ATNI resolutions, links to public websites, published reports and datasets, and syntheses released for public use. Only T0 material appears on this site.</li>
+            <li><strong>T1 Community Network:</strong> Planning documents, meeting planning, working drafts, and notes awaiting release decisions. T1 material stays within the network and is never published here.</li>
+          </ul>
+          <p>The project holds no T2 (Negotiated Partner) or T3 (Sovereign Restricted) data and plans none. If material that might be T2 or T3 reaches the project, it is not added; the ATNI staff who maintain the project are consulted, and the material is handled outside it.</p>
+          <ul>
+            <li>T1 material becomes public only by an explicit release decision.</li>
+            <li>When a tier is uncertain, the material stays T1 until that decision is made.</li>
+            <li>Writing derived from T1 material stays T1 until it is released.</li>
+            <li>T1 material is not used to train AI models.</li>
+            <li>Before release, an automated check scans the public site for local file paths, credentials, links to private documents, and library entries that are not T0.</li>
+          </ul>
+        </section>
+
+        <section class="prose" aria-labelledby="curation">
+          <h2 id="curation">How the Library Is Curated</h2>
+          <p>Every library entry is public (T0) material: an ATNI resolution or a public report, policy, law, dataset, tool, or website. Each entry records its publisher, date, type, the task force areas it serves, whether it is specific to Tribal Nations, and a short summary.</p>
+          <p>Summaries describe what a source says. They are not ATNI positions unless the source is an ATNI resolution. Links point to the publisher’s own copy where one exists; ATNI resolutions are hosted on this site as adopted. ATNI staff direct the selection of entries and review each summary against its source.</p>
+          <p>The library data is open as <a href="../data/library.json">library.json</a>. To suggest a public resource, <a href="https://atnitribes.org/contact-us/">contact ATNI</a>.</p>
+        </section>
+
+        <section class="prose" aria-labelledby="how-built">
+          <h2 id="how-built">How This Site Was Built</h2>
+          <p>ATNI staff decide what is published and check library summaries against their sources.</p>
+          <p>The site is static HTML, CSS, and JavaScript with no outside services. It loads no analytics, trackers, outside scripts, or outside fonts, and it sets no cookies. If a reader chooses the light or dark theme, the browser remembers that choice on that device only. Pages read without JavaScript; the library’s search and filters, the energy plan and funding views, and the policy watch lists need it, and each links to its open data file instead.</p>
+        </section>
+
+        <section class="prose" aria-labelledby="license">
+          <h2 id="license">License</h2>
+          <!-- SLOT:about:license -->
+          <div class="slot" role="note">
+            <p class="slot-label">In development</p>
+            <p>The content license for this site is to be decided by ATNI. Linked sources keep their own terms; the Tiered Sovereign Data Framework, for example, is released under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license.</p>
+          </div>
+          <!-- /SLOT -->
+        </section>
+
+        <section class="prose" aria-labelledby="credits">
+          <h2 id="credits">Credits</h2>
+          <ul class="lead-ins">
+            <li><strong>Design:</strong> The ATNI Climate Design System.</li>
+            <li><strong>Typefaces:</strong> League Spartan, by The League Spartan Project Authors, and Noto Sans, by The Noto Project Authors, both under the SIL Open Font License 1.1 (<a href="../assets/fonts/OFL-LeagueSpartan.txt">League Spartan license</a>, <a href="../assets/fonts/OFL-NotoSans.txt">Noto Sans license</a>).</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p class="footer-title">ATNI Energy Task Forces</p>
+        <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../">Home</a></li>
+          <li><a href="../energy/">Energy Feasibility</a></li>
+          <li><a href="../energy/potential/">What Tribal Plans Say</a></li>
+          <li><a href="../energy/funding/">Energy Funding</a></li>
+          <li><a href="../data-centers/">Data Centers</a></li>
+          <li><a href="../ai/">Artificial Intelligence</a></li>
+          <li><a href="../summit/">Summit</a></li>
+          <li><a href="../library/">Library</a></li>
+          <li><a href="../about/">About</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+        <p>This site publishes public (T0) material only and sets no cookies. <a href="../about/#data-governance">How this site handles data</a>.</p>
+        <p>Updated 10/29/2026.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

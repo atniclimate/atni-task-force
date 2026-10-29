@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library | ATNI Energy Task Forces</title>
+  <meta name="description" content="Public resolutions, reports, policies, laws, data, and tools gathered for the ATNI Energy Task Forces, with filters by task force area, type, Tribal focus, and year.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#010B13">
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <script src="../assets/js/theme.js"></script>
+  <script type="module" src="../assets/js/library.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="../"><span class="wordmark-org">ATNI</span><span class="wordmark-name">Energy Task Forces</span></a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="../energy/">Energy</a></li>
+          <li><a href="../data-centers/">Data Centers</a></li>
+          <li><a href="../ai/">AI</a></li>
+          <li><a href="../summit/">Summit</a></li>
+          <li><a href="../library/" aria-current="page">Library</a></li>
+          <li><a href="../about/">About</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>Library</h1>
+        <p class="lead">Public resolutions, reports, policies, laws, data, and tools gathered for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI). Every entry is public material, and each summary describes what its source says.</p>
+      </div>
+    </header>
+
+    <div class="wrap library-page">
+      <noscript>
+        <p class="notice">The library’s search and filters need JavaScript. The full list of entries is available as <a href="../data/library.json">library data (JSON)</a>.</p>
+      </noscript>
+      <p class="notice" data-library-error hidden>The library list could not load. The full list of entries is available as <a href="../data/library.json">library data (JSON)</a>.</p>
+
+      <section class="start-here" aria-labelledby="start-title" hidden>
+        <h2 id="start-title">Start Here</h2>
+        <p class="section-note">The five resolutions that ground the task forces, and the public sources most useful for getting started in each area.</p>
+        <div data-library-featured></div>
+      </section>
+
+      <section id="library-app" aria-labelledby="entries-title" hidden>
+        <h2 id="entries-title" class="sr-only">Entries</h2>
+        <form class="filters" role="search" aria-label="Library">
+          <div class="field field-search">
+            <label for="filter-q">Search titles, publishers, and summaries</label>
+            <input id="filter-q" name="q" type="search" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="filter-area">Area</label>
+            <select id="filter-area" name="area"><option value="">All areas</option></select>
+          </div>
+          <div class="field">
+            <label for="filter-type">Type</label>
+            <select id="filter-type" name="type"><option value="">All types</option></select>
+          </div>
+          <div class="field">
+            <label for="filter-tribal">Tribal focus</label>
+            <select id="filter-tribal" name="tribal">
+              <option value="">All entries</option>
+              <option value="yes">Tribal-specific</option>
+              <option value="no">General</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="filter-year">Year</label>
+            <select id="filter-year" name="year"><option value="">All years</option></select>
+          </div>
+          <button class="button button-secondary" type="button" data-clear>Clear filters</button>
+        </form>
+        <p id="library-status" class="library-status" role="status" aria-live="polite"></p>
+        <ul id="library-results" class="entries" role="list"></ul>
+        <p><button id="library-more" class="button button-secondary" type="button" hidden>Show more</button></p>
+      </section>
+
+      <div class="library-notes">
+        <p>The library data is open: <a href="../data/library.json">download library.json</a>. Entries are listed newest first. Read <a href="../about/#curation">how the library is curated</a>, or suggest a public resource by <a href="https://atnitribes.org/contact-us/">contacting ATNI</a>.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p class="footer-title">ATNI Energy Task Forces</p>
+        <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../">Home</a></li>
+          <li><a href="../energy/">Energy Feasibility</a></li>
+          <li><a href="../energy/potential/">What Tribal Plans Say</a></li>
+          <li><a href="../energy/funding/">Energy Funding</a></li>
+          <li><a href="../data-centers/">Data Centers</a></li>
+          <li><a href="../ai/">Artificial Intelligence</a></li>
+          <li><a href="../summit/">Summit</a></li>
+          <li><a href="../library/">Library</a></li>
+          <li><a href="../about/">About</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+        <p>This site publishes public (T0) material only and sets no cookies. <a href="../about/#data-governance">How this site handles data</a>.</p>
+        <p>Updated 10/29/2026.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

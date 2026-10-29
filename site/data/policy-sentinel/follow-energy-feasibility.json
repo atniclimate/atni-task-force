@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "followed": [
+    {
+      "id": "federal-register#docket:Docket No. RM21-17-000",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "Docket No. RM21-17-000",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 34824 (FR Doc. 2026-11539)",
+        "title": "Building for the Future Through Electric Regional Transmission Planning and Cost Allocation; Notice of Motion for Extension of Time To Comply",
+        "issuingBody": "Energy Department; Federal Energy Regulatory Commission",
+        "kind": "Notice",
+        "date": "2026-06-09",
+        "officialUrl": "https://www.federalregister.gov/d/2026-11539",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-11539",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "Docket No. RM21-17-000"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:Docket No. RM22-7-000",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "Docket No. RM22-7-000",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "89 FR 46682 (FR Doc. 2024-10879)",
+        "title": "Applications for Permits To Site Interstate Electric Transmission Facilities",
+        "issuingBody": "Energy Department; Federal Energy Regulatory Commission",
+        "kind": "Rule",
+        "date": "2024-05-29",
+        "officialUrl": "https://www.federalregister.gov/d/2024-10879",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2024-10879",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "Docket No. RM22-7-000",
+          "Order No. 1977"
+        ],
+        "rins": [],
+        "cfrRefs": [
+          {
+            "title": 18,
+            "part": "50"
+          },
+          {
+            "title": 18,
+            "part": "380"
+          }
+        ],
+        "topics": [
+          "Administrative practice and procedure",
+          "Electric power",
+          "Environmental impact statements",
+          "Reporting and recordkeeping requirements"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:Docket No. RM24-9-000",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "Docket No. RM24-9-000",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "89 FR 78859 (FR Doc. 2024-21997)",
+        "title": "Alliance for Tribal Clean Energy; Notice of Tribal Consultation",
+        "issuingBody": "Energy Department; Federal Energy Regulatory Commission",
+        "kind": "Notice",
+        "date": "2024-09-26",
+        "officialUrl": "https://www.federalregister.gov/d/2024-21997",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2024-21997",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "Docket No. RM24-9-000"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:1545-BQ13",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "1545-BQ13",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "90 FR 58151 (FR Doc. 2025-22874)",
+        "title": "Entities Wholly Owned by Indian Tribal Governments",
+        "issuingBody": "Treasury Department; Internal Revenue Service",
+        "kind": "Rule",
+        "date": "2025-12-16",
+        "officialUrl": "https://www.federalregister.gov/d/2025-22874",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2025-22874",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "TD 10039"
+        ],
+        "rins": [
+          "1545-BQ13"
+        ],
+        "cfrRefs": [
+          {
+            "title": 26,
+            "part": "1"
+          },
+          {
+            "title": 26,
+            "part": "301"
+          }
+        ],
+        "topics": [
+          "Employment taxes",
+          "Estate taxes",
+          "Excise taxes",
+          "Gift taxes",
+          "Income taxes",
+          "Penalties",
+          "Reporting and recordkeeping requirements"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:Docket No. BOEM-2024-0042",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "Docket No. BOEM-2024-0042",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "89 FR 71398 (FR Doc. 2024-19619)",
+        "title": "Pacific Wind Lease Sale 2 for Commercial Leasing for Wind Power Development on the Outer Continental Shelf Offshore Oregon-Final Sale Notice",
+        "issuingBody": "Interior Department; Ocean Energy Management Bureau",
+        "kind": "Notice",
+        "date": "2024-09-03",
+        "officialUrl": "https://www.federalregister.gov/d/2024-19619",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2024-19619",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "Docket No. BOEM-2024-0042"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:BPA File No.: BP-27",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "BPA File No.: BP-27",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 58890 (FR Doc. 2026-19050)",
+        "title": "Revision of Fiscal Year (FY) 2026-2028 Power Rate Schedules and General Rate Schedule Provisions (GRSPs) for the Remainder of BP-26 Rate Period; Public Hearing and Opportunities for Public Review and Comment",
+        "issuingBody": "Energy Department; Bonneville Power Administration",
+        "kind": "Notice",
+        "date": "2026-09-17",
+        "officialUrl": "https://www.federalregister.gov/d/2026-19050",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-19050",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "BPA File No.: BP-27"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:BPA File No.: BP-26E",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "BPA File No.: BP-26E",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 64148 (FR Doc. 2026-20518)",
+        "title": "Revision of ACS-26 Rate Schedules; Public Hearing and Opportunities for Public Review and Comment",
+        "issuingBody": "Energy Department; Bonneville Power Administration",
+        "kind": "Notice",
+        "date": "2026-10-07",
+        "officialUrl": "https://www.federalregister.gov/d/2026-20518",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-20518",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "BPA File No.: BP-26E"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# T1 (Network) material never enters this public repository. See DATA-TIERS.md.
+/planning-T1/
+/files-unsorted/
+/work/
+
+# Local tooling and runtime material
+/node_modules/
+/test-results/
+/playwright-report/
+/.playwright-cli/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example

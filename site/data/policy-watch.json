@@ -1,0 +1,1391 @@
+{
+  "schema": 1,
+  "generated": "2026-10-29",
+  "tier": "T0",
+  "policy_sentinel": {
+    "url": "https://atniclimate.github.io/policy-sentinel/",
+    "prefill_supported": false,
+    "note": "Policy Sentinel opens with its own empty search today and ignores extra address parameters. The policy_sentinel_url links carry the parameters proposed for a future release (scope, source, q, match, type, tribal, run), so they open the tool now and prefill once that feature ships. Checked against release 0.10.1.",
+    "sources": [
+      {
+        "id": "federal-register",
+        "label": "Federal Register",
+        "level": "federal",
+        "searchable": true,
+        "note": "Text, docket, Regulation Identifier Number and document type searches; the official text is read from GovInfo.",
+        "status": "live"
+      },
+      {
+        "id": "grants",
+        "label": "Grants.gov",
+        "level": "federal",
+        "searchable": true,
+        "note": "Forecasted and posted funding; the Tribal filter asks for Tribal government or Tribal organization eligibility.",
+        "status": "live"
+      },
+      {
+        "id": "govinfo",
+        "label": "GovInfo",
+        "level": "federal",
+        "searchable": true,
+        "keyed": true,
+        "note": "Uses Policy Sentinel's api.data.gov key, so the searches here are marked unchecked.",
+        "status": "live"
+      },
+      {
+        "id": "congress",
+        "label": "Congress.gov",
+        "level": "federal",
+        "searchable": true,
+        "keyed": true,
+        "note": "Looks up one bill by type, number and Congress, such as hr 9939 119.",
+        "status": "live"
+      },
+      {
+        "id": "regulations",
+        "label": "Regulations.gov",
+        "level": "federal",
+        "searchable": true,
+        "keyed": true,
+        "note": "Live in Policy Sentinel; not used in these lists.",
+        "status": "live"
+      },
+      {
+        "id": "washington",
+        "label": "Washington State Legislature",
+        "level": "state",
+        "searchable": true,
+        "note": "Looks up one bill by number and biennium, such as HB 2515 2025-26.",
+        "status": "live"
+      },
+      {
+        "id": "oregon",
+        "label": "Oregon Legislature",
+        "level": "state",
+        "searchable": false,
+        "note": "Not available: Oregon's data service requires an agreement that Policy Sentinel has not accepted.",
+        "status": "not_available"
+      },
+      {
+        "id": "idaho",
+        "label": "Idaho Legislature",
+        "level": "state",
+        "searchable": false,
+        "note": "Not available: no Idaho source is enabled.",
+        "status": "not_available"
+      },
+      {
+        "id": "unified-agenda",
+        "label": "Unified Agenda (reginfo.gov)",
+        "level": "federal",
+        "searchable": false,
+        "note": "No search of its own; Policy Sentinel links to it from any result that carries a Regulation Identifier Number."
+      },
+      {
+        "id": "atni-resolutions",
+        "label": "ATNI resolutions",
+        "level": "intertribal",
+        "searchable": false,
+        "note": "Listed in Policy Sentinel's source catalog for discovery only; not searchable today."
+      },
+      {
+        "id": "ncai-resolutions",
+        "label": "NCAI resolutions",
+        "level": "intertribal",
+        "searchable": false,
+        "note": "Listed in the source catalog with access terms unresolved; the demo's draft-resolution menu needs a shared password."
+      }
+    ]
+  },
+  "task_forces": {
+    "energy-feasibility": {
+      "title": "Tribal Energy Feasibility",
+      "searches": [
+        {
+          "id": "ef-fr-tera",
+          "title": "Tribal Energy Resource Agreement notices",
+          "why": "The Department of the Interior posts a notice when it receives a Tribe's final proposed Tribal Energy Resource Agreement, which lets that Tribe enter energy leases and rights-of-way without further Secretarial approval.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"Tribal Energy Resource Agreement\"",
+          "filters": {
+            "document_type": "NOTICE"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22Tribal%20Energy%20Resource%20Agreement%22&conditions%5Btype%5D%5B%5D=NOTICE&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22Tribal%20Energy%20Resource%20Agreement%22&type=NOTICE&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 8,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-corridors",
+          "title": "National interest transmission corridors, including the Tribal Energy Access Corridor",
+          "why": "The Department of Energy listed a Tribal Energy Access Corridor among three potential national interest transmission corridors in December 2024; this search follows the notices on that program.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"National Interest Electric Transmission Corridor\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22National%20Interest%20Electric%20Transmission%20Corridor%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22National%20Interest%20Electric%20Transmission%20Corridor%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 34,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-ferc-1920",
+          "title": "Regional transmission planning rule (Federal Energy Regulatory Commission Order No. 1920)",
+          "why": "The Federal Energy Regulatory Commission rule that requires regions to plan long-term transmission and allocate its costs; the docket now carries notices on compliance extensions.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "Docket No. RM21-17-000",
+          "filters": {
+            "match": "docket"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20RM21-17-000&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20RM21-17-000&match=docket&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 9,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-atce",
+          "title": "Alliance for Tribal Clean Energy petition at the Federal Energy Regulatory Commission",
+          "why": "The Alliance for Tribal Clean Energy asked the Federal Energy Regulatory Commission in August 2024 to defer commercial readiness deposits and exempt Tribal energy developers from withdrawal penalties in the generator interconnection queue.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "Docket No. RM24-9-000",
+          "filters": {
+            "match": "docket"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20RM24-9-000&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20RM24-9-000&match=docket&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 2,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-elective-pay",
+          "title": "Clean energy tax credit payments for Tribal governments",
+          "why": "The Treasury Department and the Internal Revenue Service decide how Tribal governments and their wholly owned entities claim clean energy credits as direct payments; a final rule on those entities published in December 2025.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"elective payment\" \"Indian Tribal government\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22elective%20payment%22%20%22Indian%20Tribal%20government%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22elective%20payment%22%20%22Indian%20Tribal%20government%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 16,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-pacific-wind",
+          "title": "Pacific offshore wind lease sale notices",
+          "why": "The Bureau of Ocean Energy Management published the notices for the Pacific wind lease sales off California and Oregon; the Affiliated Tribes of Northwest Indians formed an Offshore Wind Task Force on this subject in 2024 (Resolution 2024-23).",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"Pacific Wind Lease Sale\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22Pacific%20Wind%20Lease%20Sale%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22Pacific%20Wind%20Lease%20Sale%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 6,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-fr-bpa-rates",
+          "title": "Bonneville Power Administration rate and tariff notices",
+          "why": "The Bonneville Power Administration sets wholesale power and transmission rates for much of the Northwest, and its Federal Register notices announce each rate proceeding and public hearing.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"Bonneville Power Administration\" \"rate schedules\"",
+          "filters": {
+            "document_type": "NOTICE"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22Bonneville%20Power%20Administration%22%20%22rate%20schedules%22&conditions%5Btype%5D%5B%5D=NOTICE&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22Bonneville%20Power%20Administration%22%20%22rate%20schedules%22&type=NOTICE&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 111,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-grants-energy",
+          "title": "Federal funding open to Tribes that mentions energy",
+          "why": "Grants.gov lists open and forecast federal funding that names Tribal governments or Tribal organizations as eligible and mentions energy; read each listing's eligibility section before relying on it.",
+          "source": "grants",
+          "scope": "federal",
+          "query": "energy",
+          "filters": {
+            "tribal_eligibility": true
+          },
+          "official_url": "https://simpler.grants.gov/search?query=energy&status=forecasted,posted&eligibility=federally_recognized_native_american_tribal_governments,other_native_american_tribal_organizations",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=grants&q=energy&tribal=1&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 22,
+            "how": "Grants.gov search2 API, the request Policy Sentinel sends (eligibilities 07|11)",
+            "official_page": 200,
+            "note": "The official page lists 8; the interface Policy Sentinel calls returns 22, because the two match keywords differently."
+          }
+        },
+        {
+          "id": "ef-grants-solar",
+          "title": "Federal funding open to Tribes that mentions solar",
+          "why": "Grants.gov lists open and forecast federal funding that names Tribal governments or Tribal organizations as eligible and mentions solar; an empty result means no such listing is posted.",
+          "source": "grants",
+          "scope": "federal",
+          "query": "solar",
+          "filters": {
+            "tribal_eligibility": true
+          },
+          "official_url": "https://simpler.grants.gov/search?query=solar&status=forecasted,posted&eligibility=federally_recognized_native_american_tribal_governments,other_native_american_tribal_organizations",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=grants&q=solar&tribal=1&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "empty",
+            "results": 0,
+            "how": "Grants.gov search2 API, the request Policy Sentinel sends (eligibilities 07|11)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ef-govinfo-bills",
+          "title": "Bills in the 119th Congress that mention Tribal energy",
+          "why": "GovInfo publishes the official text of bills in the 119th Congress (2025 to 2026); this search finds the ones that use the phrase Tribal energy.",
+          "source": "govinfo",
+          "scope": "federal",
+          "query": "collection:BILLS AND congress:119 AND (\"Tribal energy\")",
+          "official_url": "https://www.govinfo.gov/app/search/%7B%22query%22%3A%22collection%3ABILLS%20AND%20congress%3A119%20AND%20(%5C%22Tribal%20energy%5C%22)%22%2C%22offset%22%3A0%7D",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=govinfo&q=collection%3ABILLS%20AND%20congress%3A119%20AND%20%28%22Tribal%20energy%22%29",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "ef-congress-s1181",
+          "title": "S. 1181, Tribal Energy Fairness Act of 2025",
+          "why": "This Senate bill would amend the Department of Energy's Tribal loan guarantee program; it was referred to the Committee on Energy and Natural Resources in March 2025.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "s 1181 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/senate-bill/1181",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=s%201181%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "ef-ua-1545-bq13",
+          "title": "Unified Agenda entries for the Treasury rule on Tribal entities",
+          "why": "The Unified Agenda is the federal government's twice-yearly list of planned rules; this entry shows each edition that carried the Treasury Department's rule on entities wholly owned by Tribal governments, under Regulation Identifier Number (RIN) 1545-BQ13.",
+          "source": "unified-agenda",
+          "scope": "federal",
+          "query": "1545-BQ13",
+          "official_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=1545-BQ13",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=1545-BQ13&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 9,
+            "how": "reginfo.gov, the page Policy Sentinel links to from a result with a RIN",
+            "official_page": 200,
+            "note": "Editions: 2026, Spring 2025, Fall 2024, Spring 2024, Fall 2023, Spring 2023, Fall 2022, Spring 2022, Fall 2021."
+          }
+        },
+        {
+          "id": "ef-wa-hb1216",
+          "title": "Washington HB 1216 (2023-24), clean energy siting",
+          "why": "The Washington bill on clean energy siting and permitting; as introduced, it names Tribal governments and Tribal resources repeatedly.",
+          "source": "washington",
+          "scope": "state",
+          "query": "HB 1216 2023-24",
+          "official_url": "https://app.leg.wa.gov/billsummary?BillNumber=1216&Year=2023&Initiative=false",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=state&source=washington&q=HB%201216%202023-24&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced)",
+            "official_page": 200,
+            "note": "Caption: clean energy siting."
+          }
+        }
+      ],
+      "follow": [
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "Docket No. RM21-17-000",
+          "title": "Building for the Future Through Electric Regional Transmission Planning and Cost Allocation",
+          "agency": "Federal Energy Regulatory Commission",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20RM21-17-000&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20RM21-17-000&match=docket&run=1",
+          "latest": {
+            "document_number": "2026-11539",
+            "date": "2026-06-09",
+            "title": "Building for the Future Through Electric Regional Transmission Planning and Cost Allocation; Notice of Motion for Extension of Time To Comply"
+          },
+          "reason": "The Federal Energy Regulatory Commission's long-term regional transmission planning rule (Order No. 1920); new notices show compliance deadlines and extensions.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "Docket No. RM22-7-000",
+          "title": "Applications for Permits To Site Interstate Electric Transmission Facilities",
+          "agency": "Federal Energy Regulatory Commission",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20RM22-7-000&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20RM22-7-000&match=docket&run=1",
+          "latest": {
+            "document_number": "2024-10879",
+            "date": "2024-05-29",
+            "title": "Applications for Permits To Site Interstate Electric Transmission Facilities"
+          },
+          "reason": "The Federal Energy Regulatory Commission's rule on federal permits for interstate transmission lines (Orders 1977 and 1977-A); new notices show how routes and applicant duties are set.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "Docket No. RM24-9-000",
+          "title": "Alliance for Tribal Clean Energy; Notice of Petition for Rulemaking and Intent To Hold Tribal Consultation Meetings",
+          "agency": "Federal Energy Regulatory Commission",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20RM24-9-000&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20RM24-9-000&match=docket&run=1",
+          "latest": {
+            "document_number": "2024-21997",
+            "date": "2024-09-26",
+            "title": "Alliance for Tribal Clean Energy; Notice of Tribal Consultation"
+          },
+          "reason": "The docket for the Alliance for Tribal Clean Energy's petition on interconnection deposits and withdrawal penalties, with the Commission's Tribal consultation notices.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "1545-BQ13",
+          "title": "Entities Wholly Owned by Indian Tribal Governments",
+          "agency": "Treasury Department; Internal Revenue Service",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=1545-BQ13&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=1545-BQ13&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=1545-BQ13",
+          "latest": {
+            "document_number": "2025-22874",
+            "date": "2025-12-16",
+            "title": "Entities Wholly Owned by Indian Tribal Governments"
+          },
+          "reason": "The final rule (December 2025) on how entities wholly owned by Tribal governments are treated for federal tax purposes, including elective payment of energy credits.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "Docket No. BOEM-2024-0042",
+          "title": "Pacific Wind Lease Sale 2 for Commercial Leasing for Wind Power Development on the Outer Continental Shelf Offshore Oregon, Final Sale Notice",
+          "agency": "Bureau of Ocean Energy Management",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20No.%20BOEM-2024-0042&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20No.%20BOEM-2024-0042&match=docket&run=1",
+          "latest": {
+            "document_number": "2024-19619",
+            "date": "2024-09-03",
+            "title": "Pacific Wind Lease Sale 2 for Commercial Leasing for Wind Power Development on the Outer Continental Shelf Offshore Oregon-Final Sale Notice"
+          },
+          "reason": "The final sale notice for two Oregon lease areas in the Brookings and Coos Bay wind energy areas; a docket to watch if Pacific leasing returns.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "BPA File No.: BP-27",
+          "title": "Revision of Fiscal Year 2026-2028 Power Rate Schedules and General Rate Schedule Provisions for the Remainder of the BP-26 Rate Period",
+          "agency": "Bonneville Power Administration",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=BPA%20File%20No.%3A%20BP-27&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=BPA%20File%20No.%3A%20BP-27&match=docket&run=1",
+          "latest": {
+            "document_number": "2026-19050",
+            "date": "2026-09-17",
+            "title": "Revision of Fiscal Year (FY) 2026-2028 Power Rate Schedules and General Rate Schedule Provisions (GRSPs) for the Remainder of BP-26 Rate Period; Public Hearing and Opportunities for Public Review and Comment"
+          },
+          "reason": "An expedited Bonneville Power Administration rate proceeding that follows a court decision; it adds power rate adjustment mechanisms that can change what Northwest power customers pay.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "BPA File No.: BP-26E",
+          "title": "Revision of ACS-26 Rate Schedules",
+          "agency": "Bonneville Power Administration",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=BPA%20File%20No.%3A%20BP-26E&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=BPA%20File%20No.%3A%20BP-26E&match=docket&run=1",
+          "latest": {
+            "document_number": "2026-20518",
+            "date": "2026-10-07",
+            "title": "Revision of ACS-26 Rate Schedules; Public Hearing and Opportunities for Public Review and Comment"
+          },
+          "reason": "An expedited Bonneville Power Administration proceeding on charges and credits tied to the California Independent System Operator's Energy Imbalance Market; proposed effective date February 1, 2027.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2026-03309",
+          "identifier": "91 FR 8017 (FR Doc. 2026-03309)",
+          "title": "Indian Energy Service Center; Receipt of Tribal Energy Resource Agreement for the Southern Ute Indian Tribe of the Southern Ute Reservation, Colorado",
+          "agency": "Interior Department; Indian Affairs Bureau",
+          "date": "2026-02-19",
+          "url": "https://www.federalregister.gov/d/2026-03309",
+          "reason": "The most recent notice that the Department of the Interior received a Tribe's final proposed Tribal Energy Resource Agreement (Southern Ute Indian Tribe, February 2026).",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-05698",
+          "identifier": "90 FR 14648 (FR Doc. 2025-05698)",
+          "title": "Notice of Early Public and Governmental Engagement for Potential Designation of Tribal Energy Access, Southwestern Grid Connector, and Lake Erie-Canada National Interest Electric Transmission Corridors; Reopening of Comment Period",
+          "agency": "Energy Department",
+          "date": "2025-04-03",
+          "url": "https://www.federalregister.gov/d/2025-05698",
+          "reason": "The Department of Energy's reopened comment period on three potential national interest transmission corridors, including the Tribal Energy Access Corridor.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "S. 1181 (119th Congress)",
+          "title": "Tribal Energy Fairness Act of 2025",
+          "url": "https://www.congress.gov/bill/119th-congress/senate-bill/1181",
+          "verified_how": "GovInfo text of BILLS-119s1181is",
+          "reason": "Would amend the Department of Energy's Tribal loan guarantee program.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "H.R. 1 (119th Congress)",
+          "title": "An Act To provide for reconciliation pursuant to title II of H. Con. Res. 14",
+          "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+          "verified_how": "GovInfo text of BILLS-119hr1enr",
+          "reason": "Public Law 119-21, called the One Big Beautiful Bill Act in the House; section 50402 rescinds unobligated funds under Inflation Reduction Act section 50145, the Tribal Energy Loan Guarantee Program, and section 50403 reshapes the Department of Energy's loan authority.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "washington",
+          "identifier": "HB 1216 (2023-24)",
+          "title": "Clean energy siting",
+          "url": "https://app.leg.wa.gov/billsummary?BillNumber=1216&Year=2023&Initiative=false",
+          "verified_how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced). Caption: clean energy siting.",
+          "reason": "The Washington clean energy siting bill that names Tribal governments and Tribal resources throughout its introduced text.",
+          "importable": false,
+          "verified": "2026-10-29"
+        }
+      ],
+      "follow_file": "data/policy-sentinel/follow-energy-feasibility.json"
+    },
+    "data-centers": {
+      "title": "Data Centers",
+      "searches": [
+        {
+          "id": "dc-fr-presidential",
+          "title": "Presidential documents that name data centers",
+          "why": "These executive orders and proclamations mention data centers, including Executive Order 14318 on permitting and Proclamation 11014 on electricity costs; neither mentions Tribes.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"data center\"",
+          "filters": {
+            "document_type": "PRESDOCU"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22data%20center%22&conditions%5Btype%5D%5B%5D=PRESDOCU&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22data%20center%22&type=PRESDOCU&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 11,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-fr-doe-ai",
+          "title": "Department of Energy notices on artificial intelligence and data centers",
+          "why": "The Department of Energy asked for public input on artificial intelligence infrastructure on its lands in April 2025 and on expanding grid capacity for data center demand in September 2025.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"data centers\" \"artificial intelligence\" \"Department of Energy\"",
+          "filters": {
+            "document_type": "NOTICE"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22data%20centers%22%20%22artificial%20intelligence%22%20%22Department%20of%20Energy%22&conditions%5Btype%5D%5B%5D=NOTICE&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22data%20centers%22%20%22artificial%20intelligence%22%20%22Department%20of%20Energy%22&type=NOTICE&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 8,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-fr-epa-nsr",
+          "title": "Environmental Protection Agency proposal on beginning construction before an air permit",
+          "why": "The Environmental Protection Agency proposed in May 2026 to change what counts as beginning construction under its New Source Review air permit rules, separating the emitting source from non-emitting components.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "2060-AW84",
+          "filters": {
+            "match": "rin"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=2060-AW84&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=2060-AW84&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-fr-epa-turbines",
+          "title": "Air standards for stationary combustion turbines",
+          "why": "The Environmental Protection Agency issued its review of the air standards for stationary combustion turbines in January 2026; gas turbines are the generators in most gas-fired power plants, including plants proposed to supply data centers.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "2060-AW21",
+          "filters": {
+            "match": "rin"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=2060-AW21&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=2060-AW21&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 3,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-fr-ceq-nepa",
+          "title": "Council on Environmental Quality removal of National Environmental Policy Act rules",
+          "why": "The Council on Environmental Quality removed its governmentwide environmental review regulations (final rule January 2026), so each federal agency now sets its own review procedures.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "0331-AA10",
+          "filters": {
+            "match": "rin"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=0331-AA10&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=0331-AA10&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 4,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-fr-ferc-data-centers",
+          "title": "Data centers in Federal Energy Regulatory Commission notices",
+          "why": "These Federal Register documents mention both data centers and the Federal Energy Regulatory Commission, which regulates the interstate power grid.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"data centers\" \"Federal Energy Regulatory Commission\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22data%20centers%22%20%22Federal%20Energy%20Regulatory%20Commission%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22data%20centers%22%20%22Federal%20Energy%20Regulatory%20Commission%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 39,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "dc-grants-water",
+          "title": "Federal funding open to Tribes that mentions water",
+          "why": "Data centers draw on local water supplies; Grants.gov lists open and forecast federal funding that names Tribal governments or Tribal organizations as eligible and mentions water.",
+          "source": "grants",
+          "scope": "federal",
+          "query": "water",
+          "filters": {
+            "tribal_eligibility": true
+          },
+          "official_url": "https://simpler.grants.gov/search?query=water&status=forecasted,posted&eligibility=federally_recognized_native_american_tribal_governments,other_native_american_tribal_organizations",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=grants&q=water&tribal=1&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 27,
+            "how": "Grants.gov search2 API, the request Policy Sentinel sends (eligibilities 07|11)",
+            "official_page": 200,
+            "note": "The official page lists 7; the interface Policy Sentinel calls returns 27, because the two match keywords differently."
+          }
+        },
+        {
+          "id": "dc-govinfo-bills",
+          "title": "Bills in the 119th Congress that mention data centers",
+          "why": "GovInfo publishes the official text of bills in the 119th Congress (2025 to 2026); this search finds the ones that mention data centers.",
+          "source": "govinfo",
+          "scope": "federal",
+          "query": "collection:BILLS AND congress:119 AND (\"data center\" OR \"data centers\")",
+          "official_url": "https://www.govinfo.gov/app/search/%7B%22query%22%3A%22collection%3ABILLS%20AND%20congress%3A119%20AND%20(%5C%22data%20center%5C%22%20OR%20%5C%22data%20centers%5C%22)%22%2C%22offset%22%3A0%7D",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=govinfo&q=collection%3ABILLS%20AND%20congress%3A119%20AND%20%28%22data%20center%22%20OR%20%22data%20centers%22%29",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "dc-congress-s5645",
+          "title": "S. 5645, Data Center Community Empowerment Act of 2026",
+          "why": "This Senate bill would direct the Department of Energy to give State, local and Tribal governments technical help and independent analysis of proposed data centers when they ask.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "s 5645 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/senate-bill/5645",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=s%205645%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "dc-congress-hr9939",
+          "title": "H.R. 9939, No AI Data Centers on Federal Lands Act",
+          "why": "This House bill would prohibit artificial intelligence data centers on Federal land and defines Federal land to exclude land held in trust for a Tribe or Tribal member.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "hr 9939 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/house-bill/9939",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=hr%209939%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "dc-congress-hr9825",
+          "title": "H.R. 9825, Data Center Water and Energy Transparency Act of 2026",
+          "why": "This House bill would require data center operators to report energy and water use to States or federal agencies; it was referred to the Committee on Energy and Commerce in July 2026.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "hr 9825 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/house-bill/9825",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=hr%209825%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "dc-ua-2060-aw84",
+          "title": "Unified Agenda entries for the Environmental Protection Agency air permit proposal",
+          "why": "The Unified Agenda is the federal government's twice-yearly list of planned rules; this entry shows each edition that carried the Environmental Protection Agency's proposal on beginning construction, under Regulation Identifier Number (RIN) 2060-AW84.",
+          "source": "unified-agenda",
+          "scope": "federal",
+          "query": "2060-AW84",
+          "official_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=2060-AW84",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=2060-AW84&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 2,
+            "how": "reginfo.gov, the page Policy Sentinel links to from a result with a RIN",
+            "official_page": 200,
+            "note": "Editions: 2026, Spring 2025."
+          }
+        },
+        {
+          "id": "dc-wa-hb2515",
+          "title": "Washington HB 2515 (2025-26), large energy use facilities",
+          "why": "The 2026 Washington bill on emerging large energy use facilities, which its findings identify as data centers; as introduced, its text does not mention Tribes.",
+          "source": "washington",
+          "scope": "state",
+          "query": "HB 2515 2025-26",
+          "official_url": "https://app.leg.wa.gov/billsummary?BillNumber=2515&Year=2025&Initiative=false",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=state&source=washington&q=HB%202515%202025-26&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced)",
+            "official_page": 200,
+            "note": "Caption: addressing emerging large energy use facilities."
+          }
+        }
+      ],
+      "follow": [
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-14212",
+          "identifier": "90 FR 35385 (FR Doc. 2025-14212)",
+          "title": "Accelerating Federal Permitting of Data Center Infrastructure",
+          "agency": "Executive Office of the President",
+          "date": "2025-07-28",
+          "url": "https://www.federalregister.gov/d/2025-14212",
+          "reason": "Executive Order 14318 sets federal permitting policy for data centers; its text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2026-04645",
+          "identifier": "91 FR 11439 (FR Doc. 2026-04645)",
+          "title": "Ratepayer Protection Pledge",
+          "agency": "Executive Office of the President",
+          "date": "2026-03-09",
+          "url": "https://www.federalregister.gov/d/2026-04645",
+          "reason": "Proclamation 11014 records the Ratepayer Protection Pledge, under which large technology companies agree to pay the full cost of the electricity and delivery upgrades their data centers need.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "2060-AW84",
+          "title": "Begin Actual Construction in the New Source Review (NSR) Preconstruction Permitting Program",
+          "agency": "Environmental Protection Agency",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=2060-AW84&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=2060-AW84&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=2060-AW84",
+          "latest": {
+            "document_number": "2026-09524",
+            "date": "2026-05-13",
+            "title": "Begin Actual Construction in the New Source Review (NSR) Preconstruction Permitting Program"
+          },
+          "reason": "The Environmental Protection Agency's proposal to separate construction of an emitting source from construction of non-emitting components; the final rule is the next step.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "2060-AW21",
+          "title": "New Source Performance Standards Review for Stationary Combustion Turbines and Stationary Gas Turbines",
+          "agency": "Environmental Protection Agency",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=2060-AW21&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=2060-AW21&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=2060-AW21",
+          "latest": {
+            "document_number": "2026-00677",
+            "date": "2026-01-15",
+            "title": "New Source Performance Standards Review for Stationary Combustion Turbines and Stationary Gas Turbines"
+          },
+          "reason": "Air standards for the gas turbines used in power plants; the January 2026 final rule was corrected in July 2026.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "0331-AA10",
+          "title": "Removal of National Environmental Policy Act Implementing Regulations",
+          "agency": "Council on Environmental Quality",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=0331-AA10&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=0331-AA10&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=0331-AA10",
+          "latest": {
+            "document_number": "2026-00178",
+            "date": "2026-01-08",
+            "title": "Removal of National Environmental Policy Act Implementing Regulations"
+          },
+          "reason": "The Council on Environmental Quality's removal of its governmentwide environmental review regulations, which leaves review procedures to each agency.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "1990-AA52",
+          "title": "Revision of National Environmental Policy Act Implementing Procedures",
+          "agency": "Department of Energy",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=1990-AA52&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=1990-AA52&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=1990-AA52",
+          "latest": {
+            "document_number": "2025-12383",
+            "date": "2025-07-03",
+            "title": "Revision of National Environmental Policy Act Implementing Procedures"
+          },
+          "reason": "The Department of Energy's July 2025 interim final rule that moves most of its environmental review procedures out of the Code of Federal Regulations and into a guidance document.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "1090-AB18",
+          "title": "National Environmental Policy Act Implementing Regulations",
+          "agency": "Department of the Interior",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=1090-AB18&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=1090-AB18&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=1090-AB18",
+          "latest": {
+            "document_number": "2026-03708",
+            "date": "2026-02-24",
+            "title": "National Environmental Policy Act Implementing Regulations"
+          },
+          "reason": "The Department of the Interior's final rule (February 2026) that moves most of its environmental review procedures into a departmental handbook.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-05936",
+          "identifier": "90 FR 14972 (FR Doc. 2025-05936)",
+          "title": "Request for Information on Artificial Intelligence Infrastructure on DOE Lands",
+          "agency": "Energy Department",
+          "date": "2025-04-07",
+          "url": "https://www.federalregister.gov/d/2025-05936",
+          "reason": "The Department of Energy's April 2025 request for information on artificial intelligence infrastructure on its lands.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-18058",
+          "identifier": "90 FR 45032 (FR Doc. 2025-18058)",
+          "title": "Accelerating Speed to Power/Winning the Artificial Intelligence Race: Federal Action To Rapidly Expand Grid Capacity and Enable Electricity Demand Growth",
+          "agency": "Energy Department",
+          "date": "2025-09-18",
+          "url": "https://www.federalregister.gov/d/2025-18058",
+          "reason": "The Department of Energy's September 2025 request for public input on expanding grid capacity to meet demand growth from data centers and other large users.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "ferc",
+          "identifier": "Docket No. RM26-4-000",
+          "title": "Interconnection of Large Loads to the Interstate Transmission System (advance notice of proposed rulemaking)",
+          "agency": "Federal Energy Regulatory Commission",
+          "url": "https://www.ferc.gov/news-events/news/ferc-issues-notice-extending-comment-period-proposed-anopr-interconnection-large",
+          "reason": "The Federal Energy Regulatory Commission's proceeding on connecting data centers and other large loads to the transmission grid; the Federal Register index does not carry this docket, so follow it on the Commission's site.",
+          "importable": false,
+          "verified": "2026-10-29",
+          "verified_how": "Opened in a browser; the Commission's site blocks scripts."
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "S. 5645 (119th Congress)",
+          "title": "Data Center Community Empowerment Act of 2026",
+          "url": "https://www.congress.gov/bill/119th-congress/senate-bill/5645",
+          "verified_how": "GovInfo text of BILLS-119s5645is",
+          "reason": "Would give State, local and Tribal governments technical help and independent analysis of proposed data centers on request.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "H.R. 9939 (119th Congress)",
+          "title": "No AI Data Centers on Federal Lands Act",
+          "url": "https://www.congress.gov/bill/119th-congress/house-bill/9939",
+          "verified_how": "GovInfo text of BILLS-119hr9939ih",
+          "reason": "Would prohibit artificial intelligence data centers on Federal land and excludes Tribal trust land from that definition.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "H.R. 9825 (119th Congress)",
+          "title": "Data Center Water and Energy Transparency Act of 2026",
+          "url": "https://www.congress.gov/bill/119th-congress/house-bill/9825",
+          "verified_how": "GovInfo text of BILLS-119hr9825ih",
+          "reason": "Would require data center operators to report energy and water use.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "washington",
+          "identifier": "HB 2515 (2025-26)",
+          "title": "Large energy use facilities",
+          "url": "https://app.leg.wa.gov/billsummary?BillNumber=2515&Year=2025&Initiative=false",
+          "verified_how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced). Caption: addressing emerging large energy use facilities.",
+          "reason": "The 2026 Washington bill on data centers and other large energy users; its introduced text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "oregon",
+          "identifier": "HB 3546 (2025 Regular Session)",
+          "title": "Relating to large energy use facilities",
+          "agency": "Oregon Legislature",
+          "url": "https://olis.oregonlegislature.gov/liz/2025R1/Measures/Overview/HB3546",
+          "reason": "Oregon's enacted law (Chapter 323) directing the Public Utility Commission to create a service class for large energy use facilities; Policy Sentinel cannot search Oregon, so follow it at the Legislature's site.",
+          "importable": false,
+          "verified": "2026-10-29",
+          "verified_how": "Opened in a browser; the page lists the bill as enrolled, Chapter 323."
+        }
+      ],
+      "follow_file": "data/policy-sentinel/follow-data-centers.json"
+    },
+    "ai": {
+      "title": "Artificial Intelligence",
+      "searches": [
+        {
+          "id": "ai-fr-presidential",
+          "title": "Presidential documents on artificial intelligence",
+          "why": "These executive orders include Executive Order 14365 on state artificial intelligence laws and Executive Order 14277 on education; Executive Orders 14277, 14365, 14409 and 14434 do not mention Tribes.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"artificial intelligence\"",
+          "filters": {
+            "document_type": "PRESDOCU"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22artificial%20intelligence%22&conditions%5Btype%5D%5B%5D=PRESDOCU&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22artificial%20intelligence%22&type=PRESDOCU&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 68,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-fr-ed-priority",
+          "title": "Department of Education priority on artificial intelligence",
+          "why": "The Department of Education finalized a supplemental priority on artificial intelligence in April 2026, which it can use to steer discretionary grant competitions.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "Docket ID ED-2025-OS-0118",
+          "filters": {
+            "match": "docket"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20ID%20ED-2025-OS-0118&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20ID%20ED-2025-OS-0118&match=docket&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 2,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-fr-ftc",
+          "title": "Federal Trade Commission policy statement on the accuracy of artificial intelligence systems",
+          "why": "The Federal Trade Commission proposed a policy statement in July 2026 on how the law against deceptive practices applies to companies that sell artificial intelligence systems.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "File No. P264200",
+          "filters": {
+            "match": "docket"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=File%20No.%20P264200&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=File%20No.%20P264200&match=docket&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-fr-tribal-consultation",
+          "title": "Artificial intelligence and Tribal consultation",
+          "why": "These Federal Register documents mention both artificial intelligence and Tribal consultation.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"artificial intelligence\" \"Tribal consultation\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22artificial%20intelligence%22%20%22Tribal%20consultation%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22artificial%20intelligence%22%20%22Tribal%20consultation%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 43,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-fr-data-sovereignty",
+          "title": "Tribal data sovereignty in federal notices",
+          "why": "These federal notices use the phrase Tribal data sovereignty, including the National Institutes of Health's October 2026 Tribal consultation and listening session.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"Tribal data sovereignty\"",
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22Tribal%20data%20sovereignty%22&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22Tribal%20data%20sovereignty%22&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 5,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-fr-rfi",
+          "title": "Federal requests for information on artificial intelligence",
+          "why": "Each federal request for public input on artificial intelligence, such as the Office of Science and Technology Policy's September 2025 request on regulatory reform, is a point where a Tribal government can ask for consultation.",
+          "source": "federal-register",
+          "scope": "federal",
+          "query": "\"artificial intelligence\" \"Request for Information\"",
+          "filters": {
+            "document_type": "NOTICE"
+          },
+          "official_url": "https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=%22artificial%20intelligence%22%20%22Request%20for%20Information%22&conditions%5Btype%5D%5B%5D=NOTICE&order=relevance",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=%22artificial%20intelligence%22%20%22Request%20for%20Information%22&type=NOTICE&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 156,
+            "how": "Federal Register API, the request Policy Sentinel sends (first page)",
+            "official_page": 200
+          }
+        },
+        {
+          "id": "ai-grants-ai",
+          "title": "Federal funding open to Tribes that mentions artificial intelligence",
+          "why": "Grants.gov lists open and forecast federal funding that names Tribal governments or Tribal organizations as eligible and mentions artificial intelligence.",
+          "source": "grants",
+          "scope": "federal",
+          "query": "artificial intelligence",
+          "filters": {
+            "tribal_eligibility": true
+          },
+          "official_url": "https://simpler.grants.gov/search?query=artificial%20intelligence&status=forecasted,posted&eligibility=federally_recognized_native_american_tribal_governments,other_native_american_tribal_organizations",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=grants&q=artificial%20intelligence&tribal=1&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 54,
+            "how": "Grants.gov search2 API, the request Policy Sentinel sends (eligibilities 07|11)",
+            "official_page": 200,
+            "note": "The official page lists 19; the interface Policy Sentinel calls returns 54, because the two match keywords differently."
+          }
+        },
+        {
+          "id": "ai-govinfo-bills",
+          "title": "Bills in the 119th Congress that mention artificial intelligence and Tribes",
+          "why": "GovInfo publishes the official text of bills in the 119th Congress (2025 to 2026); this search finds the ones that mention both artificial intelligence and Tribal governments or institutions.",
+          "source": "govinfo",
+          "scope": "federal",
+          "query": "collection:BILLS AND congress:119 AND (\"artificial intelligence\" AND Tribal)",
+          "official_url": "https://www.govinfo.gov/app/search/%7B%22query%22%3A%22collection%3ABILLS%20AND%20congress%3A119%20AND%20(%5C%22artificial%20intelligence%5C%22%20AND%20Tribal)%22%2C%22offset%22%3A0%7D",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=govinfo&q=collection%3ABILLS%20AND%20congress%3A119%20AND%20%28%22artificial%20intelligence%22%20AND%20Tribal%29",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "ai-congress-s5050",
+          "title": "S. 5050, Expanding AI Voices Act",
+          "why": "This Senate bill would have the National Science Foundation award grants to broaden participation in artificial intelligence research and education, counting Tribal Colleges and Universities among eligible institutions.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "s 5050 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/senate-bill/5050",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=s%205050%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "ai-congress-hr10515",
+          "title": "H.R. 10515, Artificial Intelligence Education and Workforce Readiness Act of 2026",
+          "why": "This House bill would let Tribal Colleges and Universities use federal funds to develop artificial intelligence curricula that respect Tribal cultural knowledge and data governance principles.",
+          "source": "congress",
+          "scope": "federal",
+          "query": "hr 10515 119",
+          "official_url": "https://www.congress.gov/bill/119th-congress/house-bill/10515",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=congress&q=hr%2010515%20119",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "unchecked",
+            "results": null,
+            "how": "Keyed source: Policy Sentinel holds the api.data.gov key, so this query was not run here."
+          }
+        },
+        {
+          "id": "ai-wa-hb2225",
+          "title": "Washington HB 2225 (2025-26), artificial intelligence companion chatbots",
+          "why": "The 2026 Washington bill on regulating artificial intelligence companion chatbots; as introduced, its text does not mention Tribes.",
+          "source": "washington",
+          "scope": "state",
+          "query": "HB 2225 2025-26",
+          "official_url": "https://app.leg.wa.gov/billsummary?BillNumber=2225&Year=2025&Initiative=false",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=state&source=washington&q=HB%202225%202025-26&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced)",
+            "official_page": 200,
+            "note": "Caption: regulation of artificial intelligence companion chatbots."
+          }
+        },
+        {
+          "id": "ai-wa-hb1170",
+          "title": "Washington HB 1170 (2025-26), notice of content made with artificial intelligence",
+          "why": "The Washington bill on informing users when content is developed or modified by artificial intelligence; as introduced, its text does not mention Tribes.",
+          "source": "washington",
+          "scope": "state",
+          "query": "HB 1170 2025-26",
+          "official_url": "https://app.leg.wa.gov/billsummary?BillNumber=1170&Year=2025&Initiative=false",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=state&source=washington&q=HB%201170%202025-26&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced)",
+            "official_page": 200,
+            "note": "Caption: informing users when content is developed or modified by artificial intelligence."
+          }
+        },
+        {
+          "id": "ai-ua-0955-aa13",
+          "title": "Unified Agenda entries for the Department of Health and Human Services request on artificial intelligence in clinical care",
+          "why": "The Unified Agenda is the federal government's twice-yearly list of planned rules; this entry shows each edition that carried the Department of Health and Human Services' effort to speed the use of artificial intelligence in clinical care, under Regulation Identifier Number (RIN) 0955-AA13.",
+          "source": "unified-agenda",
+          "scope": "federal",
+          "query": "0955-AA13",
+          "official_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=0955-AA13",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=0955-AA13&match=rin&run=1",
+          "checked": {
+            "date": "2026-10-29",
+            "status": "ok",
+            "results": 1,
+            "how": "reginfo.gov, the page Policy Sentinel links to from a result with a RIN",
+            "official_page": 200,
+            "note": "Editions: 2026."
+          }
+        }
+      ],
+      "follow": [
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-23092",
+          "identifier": "90 FR 58499 (FR Doc. 2025-23092)",
+          "title": "Ensuring a National Policy Framework for Artificial Intelligence",
+          "agency": "Executive Office of the President",
+          "date": "2025-12-16",
+          "url": "https://www.federalregister.gov/d/2025-23092",
+          "reason": "Executive Order 14365 sets the federal approach to state artificial intelligence laws; its text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-07368",
+          "identifier": "90 FR 17519 (FR Doc. 2025-07368)",
+          "title": "Advancing Artificial Intelligence Education for American Youth",
+          "agency": "Executive Office of the President",
+          "date": "2025-04-28",
+          "url": "https://www.federalregister.gov/d/2025-07368",
+          "reason": "Executive Order 14277 sets federal policy on artificial intelligence education for youth; its text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2026-11415",
+          "identifier": "91 FR 34565 (FR Doc. 2026-11415)",
+          "title": "Promoting Advanced Artificial Intelligence Innovation and Security",
+          "agency": "Executive Office of the President",
+          "date": "2026-06-05",
+          "url": "https://www.federalregister.gov/d/2026-11415",
+          "reason": "Executive Order 14409 covers artificial intelligence innovation and security; its text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2026-20321",
+          "identifier": "91 FR 63129 (FR Doc. 2026-20321)",
+          "title": "Inaugurating the Era of Super Intelligence",
+          "agency": "Executive Office of the President",
+          "date": "2026-10-02",
+          "url": "https://www.federalregister.gov/d/2026-20321",
+          "reason": "Executive Order 14434, the most recent artificial intelligence executive order in the Federal Register; its text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "Docket ID ED-2025-OS-0118",
+          "title": "Final Priority and Definitions: Secretary's Supplemental Priority and Definitions on Artificial Intelligence",
+          "agency": "Department of Education",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=Docket%20ID%20ED-2025-OS-0118&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=Docket%20ID%20ED-2025-OS-0118&match=docket&run=1",
+          "latest": {
+            "document_number": "2026-07087",
+            "date": "2026-04-13",
+            "title": "Final Priority and Definitions-Secretary's Supplemental Priority and Definitions on Advancing Artificial Intelligence in Education"
+          },
+          "reason": "The Department of Education's supplemental priority on artificial intelligence for grant competitions.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "docket",
+          "source": "federal-register",
+          "identifier": "File No. P264200",
+          "title": "Policy Statement Concerning the Suppression of Accuracy in Artificial Intelligence Systems",
+          "agency": "Federal Trade Commission",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=File%20No.%20P264200&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=File%20No.%20P264200&match=docket&run=1",
+          "latest": {
+            "document_number": "2026-13628",
+            "date": "2026-07-07",
+            "title": "Policy Statement Concerning the Suppression of Accuracy in Artificial Intelligence Systems"
+          },
+          "reason": "The Federal Trade Commission's proposed statement on deceptive practices by companies that sell artificial intelligence systems; the final statement is the next step.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "rin",
+          "source": "federal-register",
+          "identifier": "0955-AA13",
+          "title": "Request for Information: Accelerating the Adoption and Use of Artificial Intelligence as Part of Clinical Care",
+          "agency": "Department of Health and Human Services",
+          "url": "https://www.federalregister.gov/documents/search?conditions%5Bregulation_id_number%5D=0955-AA13&order=newest",
+          "policy_sentinel_url": "https://atniclimate.github.io/policy-sentinel/?scope=federal&source=federal-register&q=0955-AA13&match=rin&run=1",
+          "unified_agenda_url": "https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=0955-AA13",
+          "latest": {
+            "document_number": "2025-23641",
+            "date": "2025-12-23",
+            "title": "Request for Information: Accelerating the Adoption and Use of Artificial Intelligence as Part of Clinical Care"
+          },
+          "reason": "The Department of Health and Human Services' December 2025 request for input on artificial intelligence in clinical care.",
+          "importable": true,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "document",
+          "source": "federal-register",
+          "id": "2025-02305",
+          "identifier": "90 FR 9088 (FR Doc. 2025-02305)",
+          "title": "Request for Information on the Development of an Artificial Intelligence (AI) Action Plan",
+          "agency": "National Science Foundation",
+          "date": "2025-02-06",
+          "url": "https://www.federalregister.gov/d/2025-02305",
+          "reason": "The February 2025 request for information on the national Artificial Intelligence Action Plan, which the National Congress of American Indians answered with comments in March 2025.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "S. 5050 (119th Congress)",
+          "title": "Expanding AI Voices Act",
+          "url": "https://www.congress.gov/bill/119th-congress/senate-bill/5050",
+          "verified_how": "GovInfo text of BILLS-119s5050is",
+          "reason": "Would fund National Science Foundation awards that broaden participation in artificial intelligence research and name Tribal Colleges and Universities among eligible institutions.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "congress",
+          "identifier": "H.R. 10515 (119th Congress)",
+          "title": "Artificial Intelligence Education and Workforce Readiness Act of 2026",
+          "url": "https://www.congress.gov/bill/119th-congress/house-bill/10515",
+          "verified_how": "GovInfo text of BILLS-119hr10515ih",
+          "reason": "Would add artificial intelligence curricula that respect Tribal cultural knowledge and data governance principles to the allowed uses of Tribal College and University funds.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "washington",
+          "identifier": "HB 2225 (2025-26)",
+          "title": "Regulation of artificial intelligence companion chatbots",
+          "url": "https://app.leg.wa.gov/billsummary?BillNumber=2225&Year=2025&Initiative=false",
+          "verified_how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced). Caption: regulation of artificial intelligence companion chatbots.",
+          "reason": "A 2026 Washington bill on companion chatbots; its introduced text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        },
+        {
+          "kind": "bill",
+          "source": "washington",
+          "identifier": "HB 1170 (2025-26)",
+          "title": "Informing users when content is developed or modified by artificial intelligence",
+          "url": "https://app.leg.wa.gov/billsummary?BillNumber=1170&Year=2025&Initiative=false",
+          "verified_how": "Washington Legislature bill file, the address Policy Sentinel reads (bill as introduced). Caption: informing users when content is developed or modified by artificial intelligence.",
+          "reason": "A Washington bill on telling users when artificial intelligence made or changed content; its introduced text does not mention Tribes.",
+          "importable": false,
+          "verified": "2026-10-29"
+        }
+      ],
+      "follow_file": "data/policy-sentinel/follow-ai.json"
+    }
+  }
+}

@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "followed": [
+    {
+      "id": "federal-register#rin:2060-AW84",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "2060-AW84",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 26958 (FR Doc. 2026-09524)",
+        "title": "Begin Actual Construction in the New Source Review (NSR) Preconstruction Permitting Program",
+        "issuingBody": "Environmental Protection Agency",
+        "kind": "Proposed Rule",
+        "date": "2026-05-13",
+        "officialUrl": "https://www.federalregister.gov/d/2026-09524",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-09524",
+        "commentsCloseOn": "2026-06-29",
+        "docketIds": [
+          "EPA-HQ-OAR-2025-0618",
+          "FRL-12757-01-OAR"
+        ],
+        "rins": [
+          "2060-AW84"
+        ],
+        "cfrRefs": [
+          {
+            "title": 40,
+            "part": "49"
+          },
+          {
+            "title": 40,
+            "part": "51"
+          },
+          {
+            "title": 40,
+            "part": "52"
+          }
+        ],
+        "topics": [
+          "Administrative practice and procedure",
+          "Air pollution control",
+          "Environmental protection",
+          "Incorporation by reference",
+          "Indians",
+          "Indians-law",
+          "Indians-tribal government",
+          "Intergovernmental relations"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:2060-AW21",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "2060-AW21",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 1910 (FR Doc. 2026-00677)",
+        "title": "New Source Performance Standards Review for Stationary Combustion Turbines and Stationary Gas Turbines",
+        "issuingBody": "Environmental Protection Agency",
+        "kind": "Rule",
+        "date": "2026-01-15",
+        "officialUrl": "https://www.federalregister.gov/d/2026-00677",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-00677",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "EPA-HQ-OAR-2024-0419",
+          "FRL-11542-02-OAR"
+        ],
+        "rins": [
+          "2060-AW21"
+        ],
+        "cfrRefs": [
+          {
+            "title": 40,
+            "part": "60"
+          }
+        ],
+        "topics": [
+          "Administrative practice and procedure",
+          "Air pollution control",
+          "Environmental protection",
+          "Incorporation by reference",
+          "Reporting and recordkeeping requirements"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:0331-AA10",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "0331-AA10",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 618 (FR Doc. 2026-00178)",
+        "title": "Removal of National Environmental Policy Act Implementing Regulations",
+        "issuingBody": "Council on Environmental Quality",
+        "kind": "Rule",
+        "date": "2026-01-08",
+        "officialUrl": "https://www.federalregister.gov/d/2026-00178",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-00178",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "CEQ-2025-0002"
+        ],
+        "rins": [
+          "0331-AA10"
+        ],
+        "cfrRefs": [
+          {
+            "title": 40,
+            "part": "1500"
+          },
+          {
+            "title": 40,
+            "part": "1501"
+          },
+          {
+            "title": 40,
+            "part": "1502"
+          },
+          {
+            "title": 40,
+            "part": "1503"
+          },
+          {
+            "title": 40,
+            "part": "1504"
+          },
+          {
+            "title": 40,
+            "part": "1505"
+          },
+          {
+            "title": 40,
+            "part": "1506"
+          },
+          {
+            "title": 40,
+            "part": "1507"
+          },
+          {
+            "title": 40,
+            "part": "1508"
+          }
+        ],
+        "topics": [
+          "Administrative practice and procedure",
+          "Environmental impact statements",
+          "Environmental protection",
+          "Natural resources"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:1990-AA52",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "1990-AA52",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "90 FR 29676 (FR Doc. 2025-12383)",
+        "title": "Revision of National Environmental Policy Act Implementing Procedures",
+        "issuingBody": "Energy Department",
+        "kind": "Rule",
+        "date": "2025-07-03",
+        "officialUrl": "https://www.federalregister.gov/d/2025-12383",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2025-12383",
+        "commentsCloseOn": "2025-08-04",
+        "docketIds": [
+          "DOE-HQ-2025-0026"
+        ],
+        "rins": [
+          "1990-AA52"
+        ],
+        "cfrRefs": [
+          {
+            "title": 10,
+            "part": "205"
+          },
+          {
+            "title": 10,
+            "part": "1021"
+          }
+        ],
+        "topics": [
+          "Administrative practice and procedure",
+          "Classified information",
+          "Confidential business information",
+          "Environmental impact statements",
+          "Environmental protection",
+          "Freedom of information",
+          "Hazardous waste",
+          "Natural resources",
+          "Nuclear energy",
+          "Nuclear materials",
+          "Nuclear power plants and reactors",
+          "Penalties",
+          "Reporting and recordkeeping requirements",
+          "Sex discrimination",
+          "Waste treatment and disposal"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:1090-AB18",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "1090-AB18",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 8738 (FR Doc. 2026-03708)",
+        "title": "National Environmental Policy Act Implementing Regulations",
+        "issuingBody": "Interior Department; Office of the Secretary",
+        "kind": "Rule",
+        "date": "2026-02-24",
+        "officialUrl": "https://www.federalregister.gov/d/2026-03708",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-03708",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "267D0102DM",
+          "DS6CS00000",
+          "DLSN00000.000000",
+          "DOI-2025-0004"
+        ],
+        "rins": [
+          "1090-AB18"
+        ],
+        "cfrRefs": [
+          {
+            "title": 43,
+            "part": "46"
+          }
+        ],
+        "topics": [
+          "Environmental impact statements",
+          "Environmental protection"
+        ]
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    }
+  ]
+}

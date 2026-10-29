@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "followed": [
+    {
+      "id": "federal-register#docket:Docket ID ED-2025-OS-0118",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "Docket ID ED-2025-OS-0118",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 18774 (FR Doc. 2026-07087)",
+        "title": "Final Priority and Definitions-Secretary's Supplemental Priority and Definitions on Advancing Artificial Intelligence in Education",
+        "issuingBody": "Education Department",
+        "kind": "Rule",
+        "date": "2026-04-13",
+        "officialUrl": "https://www.federalregister.gov/d/2026-07087",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-07087",
+        "commentsCloseOn": null,
+        "docketIds": [
+          "Docket ID ED-2025-OS-0118"
+        ],
+        "rins": [],
+        "cfrRefs": [
+          {
+            "title": 34,
+            "part": "75"
+          }
+        ],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#docket:File No. P264200",
+      "sourceId": "federal-register",
+      "kind": "docket",
+      "value": "File No. P264200",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "91 FR 41638 (FR Doc. 2026-13628)",
+        "title": "Policy Statement Concerning the Suppression of Accuracy in Artificial Intelligence Systems",
+        "issuingBody": "Federal Trade Commission",
+        "kind": "Notice",
+        "date": "2026-07-07",
+        "officialUrl": "https://www.federalregister.gov/d/2026-13628",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2026-13628",
+        "commentsCloseOn": "2026-07-31",
+        "docketIds": [
+          "File No. P264200"
+        ],
+        "rins": [],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    },
+    {
+      "id": "federal-register#rin:0955-AA13",
+      "sourceId": "federal-register",
+      "kind": "rin",
+      "value": "0955-AA13",
+      "record": {
+        "sourceId": "federal-register",
+        "identifier": "90 FR 60108 (FR Doc. 2025-23641)",
+        "title": "Request for Information: Accelerating the Adoption and Use of Artificial Intelligence as Part of Clinical Care",
+        "issuingBody": "Health and Human Services Department; Office of the Secretary",
+        "kind": "Notice",
+        "date": "2025-12-23",
+        "officialUrl": "https://www.federalregister.gov/d/2025-23641",
+        "textUrl": null,
+        "retrievedAt": "2026-10-29T20:33:16.097Z",
+        "summary": null,
+        "textAvailable": true,
+        "matchKey": "fr:2025-23641",
+        "commentsCloseOn": "2026-02-23",
+        "docketIds": [],
+        "rins": [
+          "0955-AA13"
+        ],
+        "cfrRefs": [],
+        "topics": []
+      },
+      "followedAt": "2026-10-29T20:33:16.097Z",
+      "lastChecked": null
+    }
+  ]
+}
