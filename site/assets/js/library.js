@@ -202,6 +202,26 @@ function renderLibrary(entries) {
   app.hidden = false;
 }
 
+// "N new since your last visit": the last-seen date stays in this browser and is never sent anywhere. Without storage, the line stays hidden.
+const sinceLine = document.querySelector('[data-whats-new-since]');
+if (sinceLine) {
+  fetch(new URL('data/whats-new.json', ROOT))
+    .then((response) => (response.ok ? response.json() : Promise.reject(new Error('whats-new.json'))))
+    .then(({ items }) => {
+      const seen = localStorage.getItem('atni-last-seen');
+      localStorage.setItem('atni-last-seen', items[0].date);
+      const count = seen ? items.filter((item) => item.date > seen).length : 0;
+      sinceLine.textContent = `${count} new since your last visit`;
+      sinceLine.hidden = !count;
+    })
+    .catch(() => {});
+}
+const newest = document.getElementById('whats-new');
+if (newest) {
+  if (window.location.hash === '#whats-new') newest.open = true;
+  window.addEventListener('beforeprint', () => { newest.open = true; });
+}
+
 fetch(new URL('data/library.json', ROOT))
   .then((response) => {
     if (!response.ok) throw new Error(`library.json: HTTP ${response.status}`);

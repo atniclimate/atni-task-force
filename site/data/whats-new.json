@@ -1,0 +1,378 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "generated": "2026-11-05",
+ "window_days": 90,
+ "items": [
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "ISO/IEC 30134-2:2026 Information technology, Data centres key performance indicators, Part 2: Power usage effectiveness (PUE)",
+   "url": "https://www.iso.org/standard/30134-2",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "Recommendation ITU-T L.1410 (11/2024), Methodology for environmental life cycle assessments of ICT goods, networks and services",
+   "url": "https://www.itu.int/epublications/en/publication/itu-t-l-1410-2024-11-methodology-for-environmental-life-cycle-assessments-of-information-and-communication-technology-goods-networks-and-services",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "Recommendation ITU-T L.1801 (02/2026)",
+   "url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-L.1801-202602-I!!PDF-E&lang=e&type=items",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "21 records from U.S. Energy Information Administration added to the library",
+   "url": "library/?q=U.S.%20Energy%20Information%20Administration",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "8 records from Green Software Foundation added to the library",
+   "url": "library/?q=Green%20Software%20Foundation",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "8 records from SEC EDGAR added to the library",
+   "url": "library/?q=SEC%20EDGAR",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "7 records from US EPA added to the library",
+   "url": "library/?q=US%20EPA",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "7 records from US EIA added to the library",
+   "url": "library/?q=US%20EIA",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "6 records from Netflix added to the library",
+   "url": "library/?q=Netflix",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "5 records from Lawrence Berkeley National Laboratory added to the library",
+   "url": "library/?q=Lawrence%20Berkeley%20National%20Laboratory",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "library",
+   "title": "285 more sources added to the library",
+   "url": "library/",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Source evidence behind the charts updated",
+   "url": "explorer/#all-sources",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Charts updated on the AI page",
+   "url": "ai/",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Charts updated on the Data Centers page",
+   "url": "data-centers/",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Charts updated on the Energy page",
+   "url": "energy/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Charts updated on the Energy Funding page",
+   "url": "energy/funding/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-05",
+   "kind": "data",
+   "title": "Charts updated on the What Tribal Plans Say page",
+   "url": "energy/potential/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "2024 United States Data Center Energy Usage Report",
+   "url": "https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "2025 Amazon Sustainability Report",
+   "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "2026 Northwest Regional Forecast of Power Loads and Resources",
+   "url": "https://www.pnucc.org/wp-content/uploads/2026-PNUCC-Northwest-Regional-Forecast-4-21-26-final.pdf",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "48 records from SEC EDGAR (data.sec.gov) added to the library",
+   "url": "library/?q=SEC%20EDGAR%20%28data.sec.gov%29",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "8 records from U.S. Energy Information Administration added to the library",
+   "url": "library/?q=U.S.%20Energy%20Information%20Administration",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "8 records from U.S. Bureau of Labor Statistics added to the library",
+   "url": "library/?q=U.S.%20Bureau%20of%20Labor%20Statistics",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "5 records from SEC EDGAR added to the library",
+   "url": "library/?q=SEC%20EDGAR",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-04",
+   "kind": "library",
+   "title": "90 more sources added to the library",
+   "url": "library/",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "policy",
+   "title": "Policy Watch searches rechecked",
+   "url": "energy/#policy-watch",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile (NIST AI 600-1)",
+   "url": "https://doi.org/10.6028/NIST.AI.600-1",
+   "area": "ai"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "Montana Artificial Intelligence in K-12 Education Guidelines, Version 2.0",
+   "url": "https://opi.mt.gov/Portals/182/Page%20Files/Homepage/Docs/Montana%20Artificial%20Intelligence%20in%20K12%20Education%20Guidelines.pdf",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "Tribal Energy Vision (2022 Energy Vision)",
+   "url": "https://critfc.org/energy-vision/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "16 records from Affiliated Tribes of Northwest Indians added to the library",
+   "url": "library/?q=Affiliated%20Tribes%20of%20Northwest%20Indians",
+   "area": "ai"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "15 records from U.S. House of Representatives (Congress.gov) added to the library",
+   "url": "library/?q=U.S.%20House%20of%20Representatives%20%28Congress.gov%29",
+   "area": "ai"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "11 records from U.S. Department of Energy, Office of Indian Energy added to the library",
+   "url": "library/?q=U.S.%20Department%20of%20Energy%2C%20Office%20of%20Indian%20Energy",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "8 records from U.S. Department of Energy added to the library",
+   "url": "library/?q=U.S.%20Department%20of%20Energy",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "7 records from Northwest Power and Conservation Council added to the library",
+   "url": "library/?q=Northwest%20Power%20and%20Conservation%20Council",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "5 records from The White House added to the library",
+   "url": "library/?q=The%20White%20House",
+   "area": "ai"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "5 records from National Congress of American Indians added to the library",
+   "url": "library/?q=National%20Congress%20of%20American%20Indians",
+   "area": "ai"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "5 records from Utility Dive added to the library",
+   "url": "library/?q=Utility%20Dive",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "library",
+   "title": "339 more sources added to the library",
+   "url": "library/",
+   "area": "cross-cutting"
+  },
+  {
+   "date": "2026-10-07",
+   "kind": "policy",
+   "title": "Revision of ACS-26 Rate Schedules; Public Hearing and Opportunities for Public Review and Comment",
+   "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=BPA%20File%20No.%3A%20BP-26E&order=newest",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-09-17",
+   "kind": "policy",
+   "title": "Revision of Fiscal Year (FY) 2026-2028 Power Rate Schedules and General Rate Schedule Provisions (GRSPs) for the Remainder of BP-26 Rate Period; Public Hearing and Opportunities for Public Review and Comment",
+   "url": "https://www.federalregister.gov/documents/search?conditions%5Bdocket_id%5D=BPA%20File%20No.%3A%20BP-27&order=newest",
+   "area": "energy-feasibility"
+  }
+ ],
+ "ledger": {
+  "claims/aiunits.json": "fc59f38bcb40",
+  "claims/anonymized.json": "5e74f7b323c8",
+  "claims/atni.json": "35b2bf0513b2",
+  "claims/demand.json": "70d0cb93f857",
+  "claims/econ.json": "f16f449a3eb6",
+  "claims/externalities.json": "bbf9d6a7770c",
+  "claims/factors.json": "1ac3229d6915",
+  "claims/finance.json": "b4e2ca3aff3f",
+  "claims/footprint.json": "0cf85351a11a",
+  "claims/funding.json": "a6cdc20e4559",
+  "claims/jobs.json": "7bfb972b14c4",
+  "claims/local.json": "180a048037d0",
+  "claims/potential.json": "12b9a6305a4d",
+  "claims/prices.json": "9492f6f55ad8",
+  "claims/prose-ai.json": "a144ced18e2a",
+  "claims/prose-dc.json": "defaf264d459",
+  "claims/prose-energy.json": "8b3ad69f890e",
+  "claims/prose-ru.json": "f606b51ac8b9",
+  "claims/resources.json": "5685098f81ea",
+  "claims/services.json": "3f60b542e4cb",
+  "claims/site-counts.json": "26b0d88fba1e",
+  "claims/sovereign.json": "a9ed583b236d",
+  "claims/tradeoffs.json": "b1d93d344d5c",
+  "follow/0331-AA10": "2026-11-05",
+  "follow/0955-AA13": "2026-11-05",
+  "follow/1090-AB18": "2026-11-05",
+  "follow/1545-BQ13": "2026-11-05",
+  "follow/1990-AA52": "2026-11-05",
+  "follow/2060-AW21": "2026-11-05",
+  "follow/2060-AW84": "2026-11-05",
+  "follow/90 FR 14648 (FR Doc. 2025-05698)": "2026-11-05",
+  "follow/90 FR 14972 (FR Doc. 2025-05936)": "2026-11-05",
+  "follow/90 FR 17519 (FR Doc. 2025-07368)": "2026-11-05",
+  "follow/90 FR 35385 (FR Doc. 2025-14212)": "2026-11-05",
+  "follow/90 FR 45032 (FR Doc. 2025-18058)": "2026-11-05",
+  "follow/90 FR 58499 (FR Doc. 2025-23092)": "2026-11-05",
+  "follow/90 FR 9088 (FR Doc. 2025-02305)": "2026-11-05",
+  "follow/91 FR 11439 (FR Doc. 2026-04645)": "2026-11-05",
+  "follow/91 FR 34565 (FR Doc. 2026-11415)": "2026-11-05",
+  "follow/91 FR 63129 (FR Doc. 2026-20321)": "2026-11-05",
+  "follow/91 FR 8017 (FR Doc. 2026-03309)": "2026-11-05",
+  "follow/BPA File No.: BP-26E": "2026-11-05",
+  "follow/BPA File No.: BP-27": "2026-11-05",
+  "follow/Docket ID ED-2025-OS-0118": "2026-11-05",
+  "follow/Docket No. BOEM-2024-0042": "2026-11-05",
+  "follow/Docket No. RM21-17-000": "2026-11-05",
+  "follow/Docket No. RM22-7-000": "2026-11-05",
+  "follow/Docket No. RM24-9-000": "2026-11-05",
+  "follow/Docket No. RM26-4-000": "2026-11-05",
+  "follow/File No. P264200": "2026-11-05",
+  "follow/H.R. 1 (119th Congress)": "2026-11-05",
+  "follow/H.R. 10515 (119th Congress)": "2026-11-05",
+  "follow/H.R. 9825 (119th Congress)": "2026-11-05",
+  "follow/H.R. 9939 (119th Congress)": "2026-11-05",
+  "follow/HB 1170 (2025-26)": "2026-11-05",
+  "follow/HB 1216 (2023-24)": "2026-11-05",
+  "follow/HB 2225 (2025-26)": "2026-11-05",
+  "follow/HB 2515 (2025-26)": "2026-11-05",
+  "follow/HB 3546 (2025 Regular Session)": "2026-11-05",
+  "follow/S. 1181 (119th Congress)": "2026-11-05",
+  "follow/S. 5050 (119th Congress)": "2026-11-05",
+  "follow/S. 5645 (119th Congress)": "2026-11-05",
+  "plates/ai-capex-cash.json": "346c3571681e",
+  "plates/ai-company-footprint.json": "b13efff0337a",
+  "plates/ai-company-money.json": "36bbb9dfcdd2",
+  "plates/ai-displacement.json": "5f36ec19fe2c",
+  "plates/ai-guidance-2026.json": "0c4f198b07cd",
+  "plates/ai-heavy-ai.json": "22f03c1f2eeb",
+  "plates/ai-holdings.json": "cb57c957b41e",
+  "plates/ai-jobs-sector.json": "f9eed56d4eeb",
+  "plates/ai-occupations.json": "5888e11ad6a2",
+  "plates/ai-per-day.json": "c43d8ab4d38f",
+  "plates/ai-same-hour.json": "9e53021f07ac",
+  "plates/ai-scale.json": "605b5f5606b3",
+  "plates/dc-cooling.json": "2e99ed5216d6",
+  "plates/dc-eia-servers.json": "f0a16ef35781",
+  "plates/dc-forecast-check.json": "3c835ccd9b24",
+  "plates/dc-iea-world.json": "50db43e7a192",
+  "plates/dc-jobs-per-mw.json": "5586d6d1fd9f",
+  "plates/dc-lbnl-us.json": "658ee35405ce",
+  "plates/dc-pnw-load.json": "7596c0f0837e",
+  "plates/dc-project.json": "56701eb52152",
+  "plates/dc-tradeoff-matrix.json": "5f20364373e2",
+  "plates/dc-water-intensity.json": "ae77361cf7da",
+  "plates/energy-deadlines-catalog.json": "2dba8582ec83",
+  "plates/energy-deadlines.json": "fa73c314c2dc",
+  "plates/energy-types-by-stage-plans.json": "2baa46d8d682",
+  "plates/energy-types-by-stage.json": "27d3fb086f6a"
+ }
+}
