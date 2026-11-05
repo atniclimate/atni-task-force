@@ -28,7 +28,7 @@ MODEL = vp.SITE / "data" / "resource-model.json"
 LIMITS = bp.EVIDENCE / "claim-limits.json"
 MARKER = re.compile(r"(<!-- explorer:(?P<name>[\w:.-]+) -->)(.*?)(<!-- /explorer:(?P=name) -->)", re.S)
 POUR = re.compile(r'<span data-m="(?P<spec>[^"]+)">[^<]*</span>')
-CLAIM = re.compile(r"\b(?:au|dem|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
+CLAIM = re.compile(r"\b(?:au|dem|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b")
 MS = ("wh", "usd", "g", "ml")
 
 SAY = {
@@ -80,6 +80,8 @@ INPUT_NAMES = {
     "emb_tokens_kg_m": "embodied carbon per million tokens", "rev_meta": "Meta revenue per hour", "paid_video_month": "video plan price", "video_hours_month": "viewing hours a month", "chat_hours_month": "chat hours a month", "eps": "kWh per revenue dollar",
     "small_model_factor": "small-model energy factor", "reasoning_energy_mult": "reasoning energy multiple", "agent_token_mult": "agent token multiple", "cache_hit": "cache hit share", "fed_copies": "copies per Nation",
     "fed_moved_share": "share of data moving each month", "cloud_admin_h_month": "cloud paid hours a month", "central_admin_h_month": "central copy paid hours a month",
+    "exit_tb": "terabytes to move", "exit_admin_h": "paid hours to run the move, per copy", "exit_other_usd": "any other one-time bill", "exit_node_copies": "copies on the Nation's node", "exit_fed_pulls": "pulls the store bills, federated set",
+    "exit_link_mbps": "the Nation's link speed", "p_b2_egress": "B2 egress list price", "whole_service_kg_tb": "whole-service storage footprint per TB-year",
 }
 WORDS = {
     "price": {"api_list": "API list", "seat_list": "seat list", "self_run": "self-run, at cost", "revenue_standin": "platform revenue, not a cost", "paid_subscription": "paid plan", "none": "no price here"},
@@ -91,6 +93,8 @@ WORDS = {
     "order": ["api_list", "seat_list", "self_run", "revenue_standin", "paid_subscription", "none"],
     "off": "runs off this ruler",
     "orNever": "or never",
+    "leaves": "Rows that leave, each with why it does not meet the rule",  # over the list under the plate
+    "ghost": "leaves at this rule",  # a row the custody rule removes keeps its place on the plot, with no mark
 }
 USE_ROWS = {
     "screen": ("Your screen and router, {screen} hours", "in the week", "none", False, "your screen and router"),
@@ -137,7 +141,27 @@ ARCH = {
               price=["hyper", "colo", "node_100k", "node_100k_fallback", "node_1m", "node_1m_fallback", "laptop", "laptop_with_fallback", "phone_wall", "phone_wall_fallback"],
               grid=["hyper_same_grid", "colo", "node_100k", "node_100k_fallback", "node_1m", "node_1m_fallback", "laptop", "laptop_with_fallback", "phone_wall", "phone_wall_fallback"],
               scenario=["hyper", "node_100k_hydro", "node_1m_hydro"]),
+    # On energy, carbon, and water the store changes nothing, so S3 stands for all three and the head says so; only the price needs every store.
+    "E": dict(energy=["move_s3_node", "move_s3_federated", "year_s3", "year_node", "year_federated"],
+              price=["move_s3_node", "move_r2_node", "move_b2_node", "move_s3_federated", "move_r2_federated", "move_b2_federated", "year_s3", "year_r2", "year_b2", "year_node", "year_federated"],
+              grid=["move_s3_node", "move_s3_federated", "year_cloud_same_grid", "year_node", "year_federated"]),
 }
+COMPARISONS = {"A": "Office suite", "B": "Video", "C": "Shared data", "D": "AI compute", "E": "Leaving a cloud"}
+# A move row is one time and a year row is one year, so they never stand in one list.
+EXIT_GROUPS = (
+    {"id": "move", "stem": "move_", "heads": {"wh": "The move, one time. The energy is the same from R2 or B2: free egress is a price, not zero energy.", "usd": "The move, one time. Each price is list egress plus the assumed hours.",
+                                              "g": "The move, one time, on the network's grid.", "ml": "The move, one time, on the network's grid.",
+                                              "g_words": "The move, one time, on the network's grid: no bar, since the year rows sit on one grid.",
+                                              "ml_words": "The move, one time, on the network's grid: no bar, since the year rows sit on one grid."}},
+    {"id": "year", "stem": "year_", "heads": {"wh": "A year of holding the data. The cloud's figure is drives only, and the same on R2 and B2.", "usd": "A year of holding the data. Each row names its price basis.",
+                                              "g": "A year of holding the data, on one grid.", "ml": "A year of holding the data, on one grid.",
+                                              "g_words": "A year of holding the data: no bar, since fewer than two of these rows sit on one grid.",
+                                              "ml_words": "A year of holding the data: no bar, since fewer than two of these rows sit on one grid."}},
+)
+EXIT_MOVE_PRICE = "list egress plus assumed hours"  # the move group's price head says this once, so each move row prints its price on one line
+PAYBACKS = {"node_vs_s3": "One copy on the Nation's node, against S3", "node_vs_r2": "Against R2", "node_vs_b2": "Against B2", "federated_vs_s3": "Three copies across Nations' nodes, against S3", "federated_vs_r2": "Against R2", "federated_vs_b2": "Against B2"}
+REPO = "https://github.com/atniclimate/atni-task-force/blob/main/"  # docs/ and scripts/ are not served with site/, so the page links to them in the public repository
+TYPED_INPUTS = ["cloud_admin_h_month", "exit_tb", "exit_admin_h", "exit_other_usd"]  # the model inputs a field on the page takes, and so a scenario file may carry
 # The waffles: each number is checked against the claim's own quote or value below.
 WAFFLES = {
     "iea_2025": {"claim": "lf-001", "ai": 155, "of": 485, "label": "IEA world, 2025", "def": "Facility class: AI-focused data centers, by share of all data center electricity. An AI-focused site also runs non-AI work.", "unit": "TWh"},
@@ -152,13 +176,13 @@ class BuildError(Exception):
 
 
 def num(v, d=None):
-    """As the page's num: two significant figures, three at 100 and above, and no trailing zero below 1."""
+    """As the page's num: two significant figures, three at 100 and above, and no trailing zero."""
     if not v:
         return "0"
     if abs(v) >= 99.5:
         return f"{float(f'{v:.{(d or 3) - 1}e}'):,.12g}"
     text = format(Decimal(f"{v:.{(d or 2) - 1}e}"), "f")
-    return text.rstrip("0") if abs(float(text)) < 1 else text
+    return text.rstrip("0").rstrip(".") if "." in text else text
 
 
 def usd(v):
@@ -198,7 +222,12 @@ def short_labels(pub):
         "arch.C.central_b2": "One central copy, B2", "arch.C.federated": "Federated, one copy per Nation", "arch.C.federated_replicas": "Federated, three copies per Nation",
         "arch.D.hyper": "Hyperscaler, median prompt", "arch.D.hyper_same_grid": "Hyperscaler, on the node's grid", "arch.D.colo": "Regional colocation, energy only", "arch.D.laptop": "Laptops, small model",
         "arch.D.laptop_with_fallback": "Laptops, with cloud fallback", "arch.D.phone": "Phones, battery energy", "arch.D.phone_wall": "Phones, at the wall", "arch.D.phone_wall_fallback": "Phones at the wall, with cloud fallback",
+        "arch.E.year_s3": "Stay a year in S3", "arch.E.year_r2": "Stay a year in R2", "arch.E.year_b2": "Stay a year in B2", "arch.E.year_cloud_same_grid": "Stay a year, on the node's grid",
+        "arch.E.year_node": "A year, one copy on the Nation's node", "arch.E.year_federated": "A year, three copies across Nations' nodes",
     }
+    for store, name in (("s3", "S3"), ("r2", "R2"), ("b2", "B2")):
+        out[f"arch.E.move_{store}_node"] = f"Move, {name} to the Nation's node"
+        out[f"arch.E.move_{store}_federated"] = f"Move, {name} to a federated set"
     for v in views:
         out[f"arch.B.local_{v}"] = f"Local box, {v:,} views a year"
     for name, n in zip(("node_100k", "node_1m"), node):
@@ -208,7 +237,7 @@ def short_labels(pub):
     return out
 
 
-UNIT_WORDS = {"hour": "per hour", "prompt": "per prompt", "session": "per session", "image": "per image", "clip": "per clip", "query": "per query", "seat-month": "per seat-month", "hour-view": "per hour-view", "one unit of the work": "per unit of this work"}
+UNIT_WORDS = {"hour": "per hour", "prompt": "per prompt", "session": "per session", "image": "per image", "clip": "per clip", "query": "per query", "seat-month": "per seat-month", "hour-view": "per hour-view", "one unit of the work": "per unit of this work", "one time": "one time"}
 
 
 def row_meta(pub):
@@ -251,6 +280,8 @@ def row_meta(pub):
     for key, r in rows.items():  # a self-run figure with a list price inside it says so, since bases are never summed elsewhere
         if key.endswith("_fallback") or key.endswith("_with_fallback"):
             r["pt"] = "self-run plus API list on the cloud share"
+        if key.startswith("arch.E.move_"):
+            r["pt"] = EXIT_MOVE_PRICE
     return rows
 
 
@@ -266,8 +297,11 @@ def boards(pub):
             board[name] = [prefix + k for k in keys]
         board.setdefault("price", board["energy"])
         board.setdefault("grid", board["energy"])
-        if letter == "C":
+        if letter in ("C", "E"):
             board["plain"] = True
+        if letter == "E":
+            board["head"] = "One time for a move, one year for a year row; stored data has no hour"
+            board["groups"] = [{"id": g["id"], "heads": g["heads"], "rows": [k for k in board["rows"] if k.startswith(prefix + g["stem"])]} for g in EXIT_GROUPS]
         out["arch." + letter] = board
     hour_rows = ["catalog.chat_hour", "catalog.coding_hour", "catalog.short_hour", "catalog.video_hour"] + [r["key"] for r in pub["hour_baseline"]]
     unit_rows = [r["key"] for r in pub["catalog"] if r["key"] not in hour_rows]
@@ -286,7 +320,7 @@ def inline_data(pub):
         sel[name] = {"def": spec["default"], "opts": spec["options"], "say": {o: say_of(name, o, setting) for o, setting in spec["options"].items()}}
     swept = [k for k, v in pub["inputs"].items() if v["low"] != v["value"] or v["high"] != v["value"]]
     names = {k: INPUT_NAMES.get(k) or pub["inputs"][k]["unit"] for k in swept}
-    names.update(SETTING_NAMES)
+    names.update(SETTING_NAMES, exit_tb=INPUT_NAMES["exit_tb"])  # exit_tb is typed, though nothing sweeps it
     check = {}
 
     def add_check(r):
@@ -308,8 +342,12 @@ def inline_data(pub):
     fields = {"screen": 7, "chat": a["prompts_per_hour"]["options"][a["prompts_per_hour"]["default"]]["prompts_per_hour"], "coding": 1,
               "images": a["images_per_hour"]["options"][a["images_per_hour"]["default"]]["images_per_hour"], "clips": a["clips_per_hour"]["options"][a["clips_per_hour"]["default"]]["clips_per_hour"],
               "searches": a["searches_per_hour"]["options"][a["searches_per_hour"]["default"]]["searches_per_hour"], "social": 1, "streaming": 1, "gb": 0}
+    custody = pub["custody"]
     return {
         "schema": 1, "tier": "T0", "built": pub["built"], "price_date": pub["price_date"],
+        "custody": {k: custody[k] for k in ("label", "default", "options", "fixed_line", "reasons", "cost_labels", "rows")}, "comparisons": COMPARISONS, "typed": TYPED_INPUTS,
+        "measured": {"label": pub["measured"]["label"], "inputs": {k: {**rule, "claims": pub["inputs"][k]["claims"]} for k, rule in pub["measured"]["inputs"].items()}},
+        **({"carbon_damage": pub["carbon_damage"]} if "carbon_damage" in pub else {}),  # the damage layer lifts out with the model's own block
         "hash": hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()[:8],
         "inputs": inputs, "sel": sel, "scenario": pub["scenario"], "from_sel": pub["scenario_from_selectors"], "names": names, "words": WORDS, "line": LINE, "fields": fields,
         "rows": row_meta(pub), "boards": boards(pub), "check": check,
@@ -389,10 +427,11 @@ def wall_html(data, board, st):
     spec = data["boards"][board]
     layout = st["walls"][board]
     visible = set(spec.get("energy", spec["rows"])) - ({"use.seat"} if board == "use" else set())
-    rows = "".join(wall_row(data, key, st, layout, key in visible) for key in spec["rows"])
+    phases = {g["rows"][0]: f'<li class="wall-group" data-phase="{g["id"]}">{escape(g["heads"]["wh"])}</li>' for g in spec.get("groups", [])}
+    rows = "".join(phases.get(key, "") + wall_row(data, key, st, layout, key in visible) for key in spec["rows"])
     plain = " is-plain" if spec.get("plain") else ""
     side = ('<p class="wall-head" aria-hidden="true"><span></span><span class="wall-sides"><span>Your side, by time</span><span>Beyond the wall, by count</span></span><span></span></p>'
-            if not spec.get("plain") else '<p class="wall-head" aria-hidden="true"><span></span><span class="wall-sides"><span></span><span>One year of holding the data; stored data has no hour</span></span><span></span></p>')
+            if not spec.get("plain") else f'<p class="wall-head" aria-hidden="true"><span></span><span class="wall-sides"><span></span><span>{escape(spec.get("head", "One year of holding the data; stored data has no hour"))}</span></span><span></span></p>')
     note = '<p class="caption wall-gridnote" hidden></p>' if board.startswith("arch.") else ""
     off = any((layout["items"].get(key) or {}).get("range", [0, 0, ""])[2] for key in visible)
     # The ruler says this once, under its own axis; the row prints the whole spread in words.
@@ -508,7 +547,42 @@ def setting_html(pub, data, name, prefix="", why=True):
 
 def drawer_html(pub, data):
     groups = "".join(f'<h3>{escape(title)}</h3>{"".join(setting_html(pub, data, n) for n in names)}' for title, names in DRAWER)
-    return f'<div class="x-drawer-head"><h2 class="label">Settings</h2><button type="button" class="button x-close" data-close-settings data-js hidden>Close</button></div><p class="caption">Each setting reaches every tab, and all but wage and tariff reach the address bar, so a shared link cannot carry a Nation\'s figures. Press Escape to close.</p>{groups}'
+    return (f'<div class="x-drawer-head"><h2 class="label">Settings</h2><button type="button" class="button x-close" data-close-settings data-js hidden>Close</button></div><p class="caption">Each setting reaches every tab, and all but wage and tariff reach the address bar, so a shared link cannot carry a Nation\'s figures. Press Escape to close.</p>'
+            f'{scenario_html()}{groups}{readings_html(pub)}{damage_html(pub)}')
+
+
+def scenario_html():
+    """Save and load a scenario file on the reader's own machine. The warning's words live in resource-model.js, one place, and explorer.js fills them."""
+    return ('<div class="x-scenario" data-js hidden><div class="x-scenario-actions"><button type="button" class="button button-secondary" data-scenario-save>Save a scenario file</button>'
+            '<label class="button button-secondary x-file">Load a scenario file<input type="file" accept=".json,application/json" data-scenario-load></label></div>'
+            '<div class="x-scenario-warn" id="scenario-warning" data-scenario-warn hidden><p><strong data-scenario-warning></strong> It saves to this machine and nowhere else: this page sends nothing anywhere. Keep it where you would keep those figures.</p>'
+            '<div class="x-scenario-actions"><button type="button" class="button" data-scenario-confirm aria-describedby="scenario-warning">Save the file</button><button type="button" class="button button-secondary" data-scenario-cancel>Cancel</button></div></div>'
+            '<div class="caption x-scenario-status" role="status" data-scenario-status></div></div>')
+
+
+def readings_html(pub):
+    """One line for each input a reader can measure: its name, the model's figure with its spread and claims, and the field beside it. The list prints without scripts; the field waits on one."""
+    rows = []
+    for key, rule in pub["measured"]["inputs"].items():
+        spec = pub["inputs"][key]
+        spread = f' ({spec["low"]:g} to {spec["high"]:g})' if spec["low"] != spec["high"] else ""
+        claims = ", ".join(spec["claims"]) or "no source, an assumption"
+        rows.append(f'<li class="x-reading"><label for="m-{key}">{escape(rule["label"])}, {escape(rule["unit"])}</label>'
+                    f'<input id="m-{key}" type="number" min="{rule["min"]:g}" max="{rule["max"]:g}" step="any" inputmode="decimal" data-measured="{key}" data-js hidden>'
+                    f'<span class="caption">Model {spec["value"]:g}{spread}; {claims}. <code>{key}</code></span></li>')
+    return (f'<h3 id="readings" tabindex="-1">Your Own Readings</h3><p class="caption">A reading you took yourself stands in for the model\'s figure for as long as this page stays open. Every row it moves carries the label &ldquo;{escape(pub["measured"]["label"])}&rdquo;, '
+            f'through Copy Reading, print, and CSV. It never enters the address or the claims record, and the public site receives nothing. <a href="{REPO}docs/FIELD-PROTOCOL.md">How to take a reading</a>; <a href="{REPO}scripts/fit_idle.py">the fit script</a>.</p>'
+            f'<div class="caption x-reading-status" role="status" data-measured-why></div><button type="button" class="button button-secondary" data-clear-measured hidden>Clear my readings</button><ul class="x-readings-list">{"".join(rows)}</ul>')
+
+
+def damage_html(pub):
+    """The carbon damage control, default off. It lifts out with the model's own block."""
+    spec = pub.get("carbon_damage")
+    if not spec:
+        return ""
+    options = "".join(f'<option value="{attr(k)}">{escape(f["label"])}</option>' for k, f in spec["families"].items())
+    return (f'<h3>Illustrative Carbon Damage</h3><p class="caption">{escape(spec["federal_status"])} {escape(spec["never"])} {escape(spec["tonnes_first"])}</p>'
+            f'<div class="x-field" data-js hidden><label for="damage">{escape(spec["label"])}</label><select id="damage" data-damage><option value="off" selected>Off</option>{options}</select></div>')
 
 
 FIELD_WORDS = {
@@ -573,9 +647,9 @@ def basin_word(tag):
     return tag.rsplit(",", 1)[0]
 
 
-def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled="", table_extra=""):
+def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled="", table_extra="", lead=""):
     """A plate's first screen is the poster, its companions, the Reading, Copy and Reset, and one line of receipts. How it is modeled folds up, and receipts live in Sources.
-    extra is the custom kinds' readout and Reading; also is a further disclosure after How this is modeled; modeled joins that disclosure; table_extra stands over the table."""
+    extra is the custom kinds' readout and Reading; lead stands under the Reading, on the first screen; also is a further disclosure after How this is modeled; modeled joins that disclosure; table_extra stands over the table."""
     views = ('<fieldset class="segmented plate-views" data-js hidden><legend class="sr-only">Detail view</legend>' +
              "".join(f'<label><input type="radio" name="view-{name}" value="{v}"{" checked" if v == "reading" else ""}><span>{t}</span></label>' for v, t in (("reading", "Reading"), ("sources", "Sources"), ("table", "Table"))) + "</fieldset>")
     d = st["details"].get(name) if kind == "row" else None
@@ -586,8 +660,11 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
         body = (readout_html(d["value"], d["unit"], d["qual"]) +
                 f'<div class="x-measures"><div class="x-figure"><strong class="x-big" data-d="price">{escape(d["price"])}</strong><span class="caption" data-d="price-word">{escape(price_word(data, key))}</span></div>'
                 f'<div class="x-figure"><strong class="x-big" data-d="co2">{big_html(d["co2"])}</strong><span class="caption">location-based</span></div>'
-                f'<div class="x-water" data-d="water">{water}</div></div>'
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>')
+                f'<div class="x-water" data-d="water">{water}</div>'
+                + ('<span class="x-figure" data-d="hours" hidden><strong class="x-big" data-d="hours-n"></strong><span class="caption">assumed, no source</span></span>' if name == "arch" else "")  # a move's paid hours, which its title is about
+                + '</div>'
+                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>'
+                f'<div class="x-damage" data-d="damage" hidden></div>')
         modeled = (f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p>'
                    f'<p class="caption">Price: <span data-d="price-tag">{escape(d["priceTag"])}</span>. CO2e: <span data-d="co2-tag">{escape(d["co2Tag"])}</span>. Water: <span data-d="water-basis">{escape("; ".join(w["tag"] for w in d["water"]))}</span>.</p>'
                    f'<div class="x-tokens" data-d="tokens" hidden></div>')
@@ -596,7 +673,7 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
     actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button button-secondary" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
     tally = '<button type="button" class="plate-tally" data-tally hidden></button>'
     more = f'<details class="plate-more x-modeled" open><summary>How this is modeled</summary>{modeled}<div data-d="note" class="x-note-slot" data-js hidden></div></details>'
-    return (f'{views}<div class="plate-view" data-view="reading">{body}{more}{also}{actions}{tally}</div>'
+    return (f'{views}<div class="plate-view" data-view="reading">{body}{lead}{more}{also}{actions}{tally}</div>'
             f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
             f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>')
 
@@ -781,8 +858,8 @@ def place_columns(pub):
     places = {p["key"]: p for p in pub["places"]}
     tree = {f"where.prompt.{place}.wh": r["energy_wh"]["value"] for place, r in pub["where_it_runs"]["prompt"]["places"].items()}
     tree.update({r["key"] + ".wh": r["energy_wh"]["value"] for r in pub["architectures"]["D"]["options"]})
-    pues = lambda p: f'PUE {p["pue"]["value"]}' if p.get("pue") else "PUE not applicable"
-    water = lambda p: f'site water {p["site_water"]["value"]} L per kWh'
+    pues = lambda p: f'PUE {p["pue"]["value"]:g}' if p.get("pue") else "PUE not applicable"
+    water = lambda p: f'site water {p["site_water"]["value"]:g} L per kWh'
     return [
         ("Hyperscale", tree["where.prompt.hyper.wh"], f'{pues(places["hyper"])}, utilization {places["hyper"]["u"]["value"]}, {water(places["hyper"])}; {places["hyper"]["grid_default"]}.', ""),
         ("Regional colocation", tree["where.prompt.colo.wh"], f'{pues(places["colo"])}, utilization {places["colo"]["u"]["value"]}, {water(places["colo"])}; {places["colo"]["grid_default"]}.', ""),
@@ -925,6 +1002,56 @@ def wins_words(letter, spec, pub):
     return wins.replace(hit[0], f'carbon only as a declared clean feed, a scenario ({num(options["local_hydro"])} kg a year on hydro; on one grid {num(options["local"])} kg against the cloud\'s {num(options["cloud_same_grid"])} kg, gf-035, gf-001)')
 
 
+NESTED_READINGS = {"s3": "S3", "r2": "R2", "b2": "B2", "node": "the Nation's own node", "federated": "the federated set"}
+
+
+def exit_note(pub):
+    """Comparison E's typed fields, off the address as every typed number is. The hours and the other bill have no source, so they stay visible and say so."""
+    hours, other = pub["inputs"]["exit_admin_h"], pub["inputs"]["exit_other_usd"]
+    field = lambda name, label, value: f'<div class="x-field"><label for="e-{name}">{escape(label)}</label><input id="e-{name}" type="number" min="0" step="any" inputmode="decimal" value="{value:g}" data-input="{name}"></div>'
+    return (f'<div class="x-fields x-exit-fields" data-js hidden>{field("exit_tb", "Terabytes", pub["scenario"]["exit_tb"])}{field("exit_admin_h", "Paid hours per copy", hours["value"])}{field("exit_other_usd", "Other bill, dollars", other["value"])}</div>'
+            f'<p class="caption" role="status" data-input-why></p>'
+            f'<p class="caption">{escape(pub["scenario_labels"]["exit_tb"])} The hours ({hours["value"]:g}; {hours["low"]:g} to {hours["high"]:g}) and any other bill (${other["value"]:g}; ${other["low"]:g} to ${other["high"]:,g}) have no source: labeled assumptions.</p>')
+
+
+def paybacks_html(st):
+    """Years for the move to pay back, for the selected row's holder: one sentence under the Reading. A payback can be never, so each prints as a crossover does, and a one-time price never joins a year's."""
+    return f'<p class="x-payback-line" data-group="comparison:E" data-payback-line>{escape(st["paybackLine"])}</p>'
+
+
+def paybacks_table(st):
+    """All six paybacks, for the Table view, where the first screen has no budget to keep."""
+    rows = "".join(f'<li><span>{escape(PAYBACKS[k])}:</span> <strong data-payback="{k}">{escape(st["paybacks"][k])}</strong></li>' for k in PAYBACKS)
+    return f'<div class="x-paybacks" data-group="comparison:E"><p class="label">Years for the move to pay back</p><ul class="x-readings">{rows}</ul><p class="caption">Each range is one change at a time. Never means not at these settings.</p></div>'
+
+
+def custody_html(pub, st):
+    """What each rule leaves out, for the page without scripts and for print. The live page writes the same words at its own settings, from the same function in resource-model.js."""
+    out = []
+    for rule, by_letter in st["custody"].items():
+        for letter, block in by_letter.items():
+            left = "".join(f'<li><strong>{escape(r["label"])}.</strong> {escape(r["figures"])}. {escape(r["reason"])}</li>' for r in block["left"])
+            notes = "".join(f'<li><strong>{escape(r["label"])}.</strong> {escape(r["note"])}</li>' for r in block["notes"])
+            rows = "".join(f'<tr><th scope="row">{escape(c["label"])}</th><td>{escape(c["kept"])}</td><td>{escape(c["left"])}</td></tr>' for c in block["cost"] or [])
+            cost = (f'<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways"><table class="data-table x-custody-cost"><caption>What the rule costs, at the default settings</caption>'
+                    f'<thead><tr><th scope="col">Line</th><th scope="col">Rows that stay</th><th scope="col">Rows that leave</th></tr></thead><tbody>{rows}</tbody></table></div>') if rows else ""
+            said = "".join(f'<p class="caption">{escape(x)}</p>' for x in (block["said"], block["oneTime"]) if x)
+            stays = f'<p class="label">Rows that stay, with a note</p><ul class="x-named">{notes}</ul>' if notes else ""
+            out.append(f'<div class="x-custody-block" data-group="comparison:{letter}"><h3 class="x-custody-title">What This Rule Leaves Out</h3><p class="caption">{escape(COMPARISONS[letter])}. {escape(pub["custody"]["label"])}: {escape(block["label"])}.</p>'
+                       f'<div class="x-custody-grid"><div><p class="label">{escape(WORDS["leaves"])}</p><ul class="x-named">{left}</ul>{stays}</div><div>{cost}{said}</div></div></div>')
+    return "".join(out)
+
+
+def damage_method(pub):
+    """The published families, for the page without scripts and for print: each one's own currency and year, none converted. It lifts out with the model's own block."""
+    spec = pub.get("carbon_damage")
+    if not spec:
+        return ""
+    rows = [(f["label"], f["low"], "none in the source" if f["central"] is None else f["central"], f["high"], f["unit"], f["kind"], f'{f["spread"]} {f["limit"]} {", ".join(f["claims"])}') for f in spec["families"].values()]
+    return (f'<h3>Illustrative Carbon Damage, Off by Default</h3><p>{escape(spec["federal_status"])} {escape(spec["never"])} {escape(spec["tonnes_first"])} The column reads &ldquo;{escape(spec["column"])}&rdquo;, as of {escape(spec["as_of"])}. It is never added to a price or ranked against one.</p>'
+            + table_of(("Family", "Low", "Central", "High", "Unit", "What it is", "Spread, limit, and claims"), rows))
+
+
 def arch_words(pub, data, st):
     """Wins, loses, and the readings, one comparison at a time. Words for the default settings."""
     out = []
@@ -933,11 +1060,14 @@ def arch_words(pub, data, st):
             if "." not in k:
                 return r["label"]
             stop = k.split(".")[1]
+            if stop in NESTED_READINGS:
+                return f'{r["label"]}: {NESTED_READINGS[stop]}'
             counts = {"node_100k": pub["scenario"]["node_prompts_100k"], "node_1m": pub["scenario"]["node_prompts_1m"]}
             return f'{r["label"]}: {counts[stop] if stop in counts else int(stop):,}'
         readings = "".join(f'<li>{escape(reading_label(k, r))}: <strong data-reading="arch.{letter}.readings.{k}">{escape(st["readings"][f"arch.{letter}.readings.{k}"])}</strong></li>' for k, r in spec["readings"].items())
+        payback_label = f'<p class="caption">{escape(spec["payback_label"])}.</p>' if "payback_label" in spec else ""
         out.append(f'<div class="x-arch-words" data-group="comparison:{letter}"><p class="label">Wins, at the default settings</p><p class="caption">{escape(wins_words(letter, spec, pub))}</p><p class="label">Loses, at the default settings</p><p class="caption">{escape(spec["loses"])}</p>'
-                   f'<p class="caption">{escape(spec["note"])}</p>'
+                   f'<p class="caption">{escape(spec["note"])}</p>{payback_label}'
                    f'<details class="plate-more"><summary>Figures beside the rows</summary><ul class="x-readings">{readings}</ul></details></div>')
     return "".join(out)
 
@@ -1058,7 +1188,7 @@ def build():
         return segmented("workload", "Workload", stops, "prompt", 'data-opt="workload"') + measure_html("where")
 
     def arch_controls():
-        stops = [(k, f"{k}. {t}") for k, t in (("A", "Office suite"), ("B", "Video"), ("C", "Shared data"), ("D", "AI compute"))]
+        stops = [(k, f"{k}. {t}") for k, t in COMPARISONS.items()]
         return segmented("comparison", "Comparison", stops, "A", 'data-opt="comparison"') + measure_html("arch")
 
     def place_strip_block():
@@ -1088,7 +1218,13 @@ def build():
         "controls:arch": arch_controls,
         "controls:arch-money": lambda: setting_html(pub, data, "wage", "arch-", why=False) + setting_html(pub, data, "node_already_on", "arch-", why=False),
         "plot:arch": lambda: "".join(f'<div data-group="comparison:{letter}">{wall_html(data, "arch." + letter, st)}</div>' for letter in pub["architectures"]),
-        "detail:arch": lambda: detail_html("arch", st, data, table=table_for("arch"), also=f'<details class="plate-more" open><summary>What wins, what loses, and what reverses it</summary>{arch_words(pub, data, st)}{arch_pairs(pub, data)}</details>'),
+        "detail:arch": lambda: detail_html("arch", st, data, table=table_for("arch"), lead=paybacks_html(st), table_extra=paybacks_table(st), also=f'<details class="plate-more" open><summary>What wins, what loses, and what reverses it</summary>{arch_words(pub, data, st)}{arch_pairs(pub, data)}</details>'),
+        "controls:custody": lambda: segmented("custody", pub["custody"]["label"], [(k, o["label"]) for k, o in pub["custody"]["options"].items()], pub["custody"]["default"], "data-custody"),
+        "custody:line": lambda: escape(pub["custody"]["fixed_line"]),
+        "custody:left": lambda: custody_html(pub, st),
+        "exit:note": lambda: exit_note(pub),
+        "method:damage": lambda: damage_method(pub),
+        "method:illustrations": lambda: "".join(f"<li>{escape(x)}</li>" for x in pub["scenario_labels"].values()),
         "notes:arch": lambda: notes_for(pub, "arch", claims, limits),
         "controls:lever": lambda: measure_html("lever"),
         "plot:lever": lambda: lever_html(data, st),

@@ -1,0 +1,114 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "model-v2",
+ "claims": [
+  {
+   "id": "mv-001",
+   "entity": "Amazon Web Services, free data transfer out when moving off AWS",
+   "metric": "egress charge under the leaving program, on request and approval",
+   "value": 0,
+   "low": null,
+   "high": null,
+   "unit": "USD per GB, credited after approval",
+   "year": 2026,
+   "boundary": "Data transfer out to the internet when an eligible customer moves all of its data off AWS, or all of its data off one service. A credit on request, not a list price. Eligible customers outside the EU have 180 days, as of the page's 10/08/2026 update.",
+   "source": {
+    "title": "Free data transfer out to internet when moving out of AWS",
+    "publisher": "AWS News Blog",
+    "url": "https://aws.amazon.com/blogs/aws/free-data-transfer-out-to-internet-when-moving-out-of-aws/",
+    "published": "2024-03-05",
+    "kind": "company-report"
+   },
+   "quote": "AWS offers eligible customers free data transfer out to the internet when they move all of their data off of AWS from all Eligible Accounts or all of their data off of a particular AWS service across their Eligible Accounts",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "mv-002",
+   "entity": "Google Cloud, free data transfer when exiting",
+   "metric": "egress charge under the exit program, on request",
+   "value": 0,
+   "low": null,
+   "high": null,
+   "unit": "USD per GB, on an approved Exit Notice",
+   "year": 2026,
+   "boundary": "A customer migrating all of its workloads and data from the relevant Google Cloud service to another provider or an on-premises data center, after submitting an Exit Notice.",
+   "source": {
+    "title": "Applying for free data transfer when exiting Google Cloud",
+    "publisher": "Google Cloud",
+    "url": "https://cloud.google.com/exit-cloud",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "you are eligible for free data transfer when you migrate all of your workloads and data from the relevant Google Cloud service to another cloud provider or an on-premises data center.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "mv-003",
+   "entity": "UK Competition and Markets Authority, free switching programmes at AWS, Google, and Microsoft",
+   "metric": "conditions on free egress when leaving a cloud",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2025,
+   "boundary": "A regulator's reading of three programs as they stood in its 2024 and 2025 evidence: leaving all data or one whole service, pre-approval, deleting what remains or closing the account, a time limit, and the vendor's right to change the program.",
+   "source": {
+    "title": "Appendix N: Egress fees, free switching programmes",
+    "publisher": "UK Competition and Markets Authority",
+    "url": "https://assets.publishing.service.gov.uk/media/67976be7419bdbc8514fde5d/.Appendix_N.pdf",
+    "published": "2025-01-28",
+    "kind": "agency"
+   },
+   "quote": "On 13 March 2024, Microsoft announced that it also offers free egress globally for customers leaving Azure when taking their data out of the Azure infrastructure via the internet to switch to another cloud provider or an on-premises.",
+   "derived": null,
+   "status": "partly",
+   "limit": "A UK regulator's reading dated 01/28/2025; AWS has since moved its time limit from 60 to 180 days outside the EU, so check each program's current terms."
+  },
+  {
+   "id": "mv-004",
+   "entity": "A coding session in median text prompts, this site's model",
+   "metric": "session energy at its input extremes over the median text prompt",
+   "value": null,
+   "low": 30,
+   "high": 2900,
+   "unit": "median text prompts",
+   "year": 2026,
+   "boundary": "Modeled, data center only. The low and high are the model's input extremes for one median coding session, each over the 0.30 Wh median text prompt, so this is a spread and not a measurement of any session.",
+   "source": {
+    "title": "Resource Use Explorer model (resource-model.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/resource-model.json",
+    "published": "2026-11-05",
+    "kind": "dataset"
+   },
+   "quote": "\"key\": \"catalog.coding_session\", \"energy_wh\": {\"value\": 36.1937, \"low\": 8.98192, \"high\": 871.411}",
+   "derived": "8.98192 Wh / 0.30 Wh = 29.9, printed as 30; 871.411 Wh / 0.30 Wh = 2,905, printed as 2,900.",
+   "status": "partly",
+   "limit": "Modeled: a ratio of two modeled extremes from this site's process model, not a measurement of any coding session."
+  },
+  {
+   "id": "mv-005",
+   "entity": "Office of Management and Budget, M-25-27, status of a federal social cost of greenhouse gases",
+   "metric": "federal policy on a uniform monetized estimate of greenhouse gas impacts",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2025,
+   "boundary": "The federal position as of the memorandum's date, 05/05/2025. It speaks for the federal government, not for any state or Nation.",
+   "source": {
+    "title": "M-25-27, Guidance Implementing Section 6 of Executive Order 14154, Entitled \"Unleashing American Energy\"",
+    "publisher": "Office of Management and Budget, Executive Office of the President",
+    "url": "https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-27-Guidance-Implementing-Section-6-of-Executive-Order-14154-Entitled-Unleashing-American-Energy.pdf",
+    "published": "2025-05-05",
+    "kind": "agency"
+   },
+   "quote": "As such, it is no longer Federal government policy to maintain a uniform estimate of the monetized impacts of greenhouse gas emissions.",
+   "derived": null,
+   "status": "verified"
+  }
+ ]
+}

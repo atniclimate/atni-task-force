@@ -46,6 +46,9 @@ for (const [id, spec] of Object.entries(D.boards)) {
 for (const name of ['use', 'where', 'arch', 'catalog']) out.details[name] = V.detailOf(D.first[name]);
 out.readings = {};
 for (const [letter, opts] of Object.entries(V.t.arch)) for (const k of Object.keys(ex.flatten(opts.readings))) out.readings[`arch.${letter}.readings.${k}`] = V.reading(`arch.${letter}.readings.${k}`);
+out.paybacks = Object.fromEntries(Object.keys(V.t.arch.E.payback).map((k) => [k, V.payback(k)]));
+out.paybackLine = V.paybackLine('node'); // the move's first row is the one-copy move
+out.custody = Object.fromEntries(Object.keys(D.custody.options).filter((rule) => rule !== D.custody.default).map((rule) => [rule, Object.fromEntries(Object.keys(V.t.arch).map((letter) => [letter, V.custody(letter, rule)]))]));
 const week = out.week;
 out.weekWords = {
   list: ex.usd(week.list), earned: ex.usd(week.earned), seat: week.seat ? ex.usd(week.seat) : '', g: ex.plainFig(week.g, 'g'), home: ex.plainFig(week.water.home, 'ml'), cloud: ex.plainFig(week.water.cloud, 'ml'),

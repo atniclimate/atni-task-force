@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "tier": "T0",
- "built": "2026-11-04",
+ "built": "2026-11-05",
  "price_date": "11/04/2026",
  "purpose": "The Resource Use Explorer model: every number the page uses, with its low, high, kind, and evidence ids, and every row at the default settings. Modeled estimates, not measurements.",
  "units": {
@@ -1067,7 +1067,7 @@
    "status": "assumption",
    "claims": [],
    "segment": "device",
-   "note": ""
+   "note": "No source; an assumption."
   },
   "sync_w": {
    "value": 2,
@@ -1092,7 +1092,7 @@
    "status": "assumption",
    "claims": [],
    "segment": "device",
-   "note": ""
+   "note": "No source; an assumption."
   },
   "nas_w": {
    "value": 46,
@@ -1587,7 +1587,7 @@
    "status": "assumption",
    "claims": [],
    "segment": "price",
-   "note": ""
+   "note": "No source; an assumption."
   },
   "mini_box_usd": {
    "value": 300,
@@ -1598,7 +1598,7 @@
    "status": "assumption",
    "claims": [],
    "segment": "price",
-   "note": ""
+   "note": "No source; an assumption."
   },
   "nas_chassis_usd": {
    "value": 400,
@@ -1609,7 +1609,7 @@
    "status": "assumption",
    "claims": [],
    "segment": "price",
-   "note": ""
+   "note": "No source; an assumption."
   },
   "nas_raw_tb": {
    "value": 12,
@@ -2311,6 +2311,104 @@
    ],
    "segment": "",
    "note": "The same per-operator figure as a NAS, for one operator instead of ten."
+  },
+  "exit_admin_h": {
+   "value": 40,
+   "low": 8,
+   "high": 160,
+   "unit": "paid hours to run the move, per copy, one time",
+   "basis": "assumed",
+   "status": "assumption",
+   "claims": [],
+   "segment": "price",
+   "note": "No source. Scripting the pull, checking every file against its checksum, cutting over, and emptying the store; one working day to one working month. A Nation's own figure replaces it."
+  },
+  "exit_other_usd": {
+   "value": 0,
+   "low": 0,
+   "high": 1000,
+   "unit": "USD, any other one-time bill",
+   "basis": "assumed",
+   "status": "assumption",
+   "claims": [],
+   "segment": "price",
+   "note": "No source. A cold-tier retrieval fee, request charges, a contract's minimum, or an early-exit term; zero on plain hot storage on a plain account."
+  },
+  "exit_node_copies": {
+   "value": 1,
+   "low": 1,
+   "high": 2,
+   "unit": "copies on the Nation's own node or nodes",
+   "basis": "assumed",
+   "status": "assumption",
+   "claims": [
+    "ec-030"
+   ],
+   "segment": "local node",
+   "note": "One box, or a second box at the same Nation. One box is not the durability of three replicas."
+  },
+  "exit_fed_pulls": {
+   "value": 1,
+   "low": 1,
+   "high": 3,
+   "unit": "pulls billed by the store, federated set",
+   "basis": "assumed",
+   "status": "assumption",
+   "claims": [],
+   "segment": "price",
+   "note": "One pull, then peer copies that pay no egress; three pulls if each Nation takes its copy from the store."
+  },
+  "exit_link_mbps": {
+   "value": 100,
+   "low": 25,
+   "high": 1000,
+   "unit": "Mbps, the Nation's link",
+   "basis": "assumed",
+   "status": "assumption",
+   "claims": [
+    "sf-056"
+   ],
+   "segment": "network",
+   "note": "100 Mbps is the download half of the standard in sf-056; 25 and 1,000 are illustrations. Line rate with no overhead, so the days are a lower bound."
+  },
+  "whole_service_kg_tb": {
+   "value": 223,
+   "low": 166,
+   "high": 280,
+   "unit": "kg CO2e per TB-year, a service's whole footprint",
+   "basis": "modeled",
+   "status": "partly",
+   "claims": [
+    "ec-026"
+   ],
+   "segment": "check",
+   "note": "Four data centres, on a service boundary; central is the midpoint. A check on another boundary, never a row."
+  },
+  "p_r2_egress": {
+   "value": 0,
+   "low": 0,
+   "high": 0,
+   "unit": "USD per GB",
+   "basis": "measured",
+   "status": "verified",
+   "claims": [
+    "px-051"
+   ],
+   "segment": "price",
+   "note": "Free is a price, not zero energy."
+  },
+  "p_b2_egress": {
+   "value": 0,
+   "low": 0,
+   "high": 0.01,
+   "unit": "USD per GB",
+   "basis": "measured",
+   "status": "verified",
+   "claims": [
+    "px-052"
+   ],
+   "segment": "price",
+   "note": "Free to three times average monthly stored data, then 0.01 dollars per GB; up to three pulls of the data stay inside it."
   }
  },
  "assumptions": {
@@ -2444,7 +2542,10 @@
     }
    },
    "label": "Agent turns per hour",
-   "why": "An assumption: the median session runs 3 turns in 4.2 minutes and the mean 6.1 turns in 62.6 minutes (au-043), 5.85 an hour, so no rate is the answer. The hour row multiplies the mean turn; 43 median turns an hour is the other supportable pairing."
+   "why": "An assumption: the median session runs 3 turns in 4.2 minutes and the mean 6.1 turns in 62.6 minutes (au-043), 5.85 an hour, so no rate is the answer. The hour row multiplies the mean turn; 43 median turns an hour is the other supportable pairing.",
+   "claims": [
+    "au-043"
+   ]
   },
   "images_per_hour": {
    "default": "10",
@@ -2722,7 +2823,10 @@
     }
    },
    "label": "Wage for paid hours",
-   "why": "A vendor's 60 dollars, or 25, or 0 if staff time is already paid. The largest line in every self-hosted price."
+   "why": "A vendor's 60 dollars, or 25, or 0 if staff time is already paid. The largest line in every self-hosted price.",
+   "claims": [
+    "sf-051"
+   ]
   },
   "tariff": {
    "default": "wa_commercial",
@@ -12051,6 +12155,2043 @@
    "wins": "A laptop that is on anyway wins on energy per answer it can give (24 against 300 Wh, 110 with the cloud share); a node wins on who holds the data and on a model for a language the cloud does not serve. On one grid the node catches the hyperscaler on energy and carbon only above 2,761,361 prompts a year (a declared hydro feed moves the carbon crossover to 79,643, and 504,154 with embodied carbon on both sides); these print as ranges.",
    "loses": "Energy at 100,000 prompts a year (4,015 against 300 Wh per 1,000, 3,854 of it idle) and at 1,000,000 (546); carbon on one grid at both counts; price against a like-class model ($2.89 at 1,000,000 against $0.20 at Haiku list, not the $4.00 frontier list); local hardware is 1.4 to 1.5 times less efficient per watt for the same model (sf-036, lf-012); cost per million tokens swings 73 times with how busy one GPU is (sf-041); a 7B model is a different product from a frontier one (sf-037, lf-013); water under the reservoir convention on hydro power; and the queries the local model cannot answer go to the cloud anyway (sf-035).",
    "note": "The token chain would put the hyperscaler at 447 Wh; the measured median is used where one exists. Hydro 21 g is a life-cycle factor and eGRID rates count combustion only; the same-grid rows avoid mixing them. Crossovers print as ranges, never as one count."
+  },
+  "E": {
+   "title": "Leaving a cloud: a one-time move of one Nation's data",
+   "unit_of_comparison": "one time for a move row; one year for a year row; stored data has no hour",
+   "options": [
+    {
+     "key": "arch.E.move_s3_node",
+     "label": "Move one copy from a hyperscale store (S3) to the Nation's own node",
+     "unit": "one time",
+     "counted": "energy: the network carrying one copy out, at the network setting, with no drive energy at either end, which the year rows hold; CO2e: that energy on the network's grid; price: one pull at list egress, the assumed hours, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 16000.0,
+      "low": 16000.0,
+      "high": 65000.0
+     },
+     "price_usd": {
+      "value": 3300.0,
+      "low": 480.0,
+      "high": 11700.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Egress at list (px-049), plus assumed hours and an assumed other bill. AWS, Google, and Microsoft each run a free exit program on request, with conditions (mv-001, mv-002, mv-003); the row keeps list as its central figure because approval is theirs to give, and its spread runs to zero."
+     },
+     "co2e_g": {
+      "value": 5600.0,
+      "low": 5600.0,
+      "high": 22750.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 72320.0,
+      "low": 72320.0,
+      "high": 293800.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-049",
+      "mv-001",
+      "mv-002",
+      "mv-003",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16000.0,
+        "at_high": 65000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1300.0,
+        "at_high": 16000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 1380.0,
+        "at_high": 10500.0,
+        "swing_over_central": 2.76364
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 900.0,
+        "at_high": 3300.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.727273
+       },
+       {
+        "name": "p_egress",
+        "type": "input",
+        "at_low": 2400.0,
+        "at_high": 3500.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 5600.0,
+        "at_high": 22750.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 208.0,
+        "at_high": 11668.8,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 455.0,
+        "at_high": 5600.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 72320.0,
+        "at_high": 293800.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 5876.0,
+        "at_high": 72320.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 49716.6,
+        "at_high": 108800.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 900.0,
+       "low": 0.0,
+       "high": 1100.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 2400.0,
+       "low": 480.0,
+       "high": 9600.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.move_r2_node",
+     "label": "Move one copy from R2 to the Nation's own node",
+     "unit": "one time",
+     "counted": "energy: the network carrying one copy out, at the network setting, with no drive energy at either end, which the year rows hold; CO2e: that energy on the network's grid; price: one pull at list egress, the assumed hours, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 16000.0,
+      "low": 16000.0,
+      "high": 65000.0
+     },
+     "price_usd": {
+      "value": 2400.0,
+      "low": 480.0,
+      "high": 10600.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "No egress charge (px-051), plus assumed hours and an assumed other bill. Free egress is a price, not zero energy."
+     },
+     "co2e_g": {
+      "value": 5600.0,
+      "low": 5600.0,
+      "high": 22750.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 72320.0,
+      "low": 72320.0,
+      "high": 293800.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-051",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16000.0,
+        "at_high": 65000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1300.0,
+        "at_high": 16000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 480.0,
+        "at_high": 9600.0,
+        "swing_over_central": 3.8
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 0.0,
+        "at_high": 2400.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "exit_other_usd",
+        "type": "input",
+        "at_low": 2400.0,
+        "at_high": 3400.0,
+        "swing_over_central": 0.416667
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 5600.0,
+        "at_high": 22750.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 208.0,
+        "at_high": 11668.8,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 455.0,
+        "at_high": 5600.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 72320.0,
+        "at_high": 293800.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 5876.0,
+        "at_high": 72320.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 49716.6,
+        "at_high": 108800.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 2400.0,
+       "low": 480.0,
+       "high": 9600.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.move_b2_node",
+     "label": "Move one copy from B2 to the Nation's own node",
+     "unit": "one time",
+     "counted": "energy: the network carrying one copy out, at the network setting, with no drive energy at either end, which the year rows hold; CO2e: that energy on the network's grid; price: one pull at list egress, the assumed hours, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 16000.0,
+      "low": 16000.0,
+      "high": 65000.0
+     },
+     "price_usd": {
+      "value": 2400.0,
+      "low": 480.0,
+      "high": 10700.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Egress free to three times stored data, then a list rate (px-052), plus assumed hours and an assumed other bill."
+     },
+     "co2e_g": {
+      "value": 5600.0,
+      "low": 5600.0,
+      "high": 22750.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 72320.0,
+      "low": 72320.0,
+      "high": 293800.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-052",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16000.0,
+        "at_high": 65000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1300.0,
+        "at_high": 16000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 480.0,
+        "at_high": 9600.0,
+        "swing_over_central": 3.8
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 0.0,
+        "at_high": 2400.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "exit_other_usd",
+        "type": "input",
+        "at_low": 2400.0,
+        "at_high": 3400.0,
+        "swing_over_central": 0.416667
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 5600.0,
+        "at_high": 22750.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 208.0,
+        "at_high": 11668.8,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 455.0,
+        "at_high": 5600.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 72320.0,
+        "at_high": 293800.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 5876.0,
+        "at_high": 72320.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 49716.6,
+        "at_high": 108800.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 0.0,
+       "low": 0.0,
+       "high": 100.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 2400.0,
+       "low": 480.0,
+       "high": 9600.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.move_s3_federated",
+     "label": "Move the data from a hyperscale store (S3) to a federated set of Nations' nodes",
+     "unit": "one time",
+     "counted": "energy: the network carrying each copy, one from the store and the rest from the store or a peer, at the network setting, with no drive energy at either end; CO2e: that energy on the network's grid; price: the billed pulls at list egress (a peer copy pays none), the assumed hours at each Nation that takes a copy, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 48000.0,
+      "low": 32000.0,
+      "high": 195000.0
+     },
+     "price_usd": {
+      "value": 8100.0,
+      "low": 960.0,
+      "high": 33100.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Egress at list (px-049), plus assumed hours and an assumed other bill. AWS, Google, and Microsoft each run a free exit program on request, with conditions (mv-001, mv-002, mv-003); the row keeps list as its central figure because approval is theirs to give, and its spread runs to zero."
+     },
+     "co2e_g": {
+      "value": 16800.0,
+      "low": 11200.0,
+      "high": 68250.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 216960.0,
+      "low": 144640.0,
+      "high": 881400.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-049",
+      "mv-001",
+      "mv-002",
+      "mv-003",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 48000.0,
+        "at_high": 195000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 3900.0,
+        "at_high": 48000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 32000.0,
+        "at_high": 48000.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 2340.0,
+        "at_high": 29700.0,
+        "swing_over_central": 3.37778
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 900.0,
+        "at_high": 8100.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.888889
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 5700.0,
+        "at_high": 8100.0,
+        "swing_over_central": 0.296296
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16800.0,
+        "at_high": 68250.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 624.0,
+        "at_high": 35006.4,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1365.0,
+        "at_high": 16800.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 216960.0,
+        "at_high": 881400.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 17628.0,
+        "at_high": 216960.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 149150.0,
+        "at_high": 326400.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 900.0,
+       "low": 0.0,
+       "high": 3300.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 7200,
+       "low": 960.0,
+       "high": 28800.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.move_r2_federated",
+     "label": "Move the data from R2 to a federated set of Nations' nodes",
+     "unit": "one time",
+     "counted": "energy: the network carrying each copy, one from the store and the rest from the store or a peer, at the network setting, with no drive energy at either end; CO2e: that energy on the network's grid; price: the billed pulls at list egress (a peer copy pays none), the assumed hours at each Nation that takes a copy, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 48000.0,
+      "low": 32000.0,
+      "high": 195000.0
+     },
+     "price_usd": {
+      "value": 7200.0,
+      "low": 960.0,
+      "high": 29800.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "No egress charge (px-051), plus assumed hours and an assumed other bill. Free egress is a price, not zero energy."
+     },
+     "co2e_g": {
+      "value": 16800.0,
+      "low": 11200.0,
+      "high": 68250.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 216960.0,
+      "low": 144640.0,
+      "high": 881400.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-051",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 48000.0,
+        "at_high": 195000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 3900.0,
+        "at_high": 48000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 32000.0,
+        "at_high": 48000.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 1440.0,
+        "at_high": 28800.0,
+        "swing_over_central": 3.8
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 0.0,
+        "at_high": 7200.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 4800.0,
+        "at_high": 7200.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16800.0,
+        "at_high": 68250.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 624.0,
+        "at_high": 35006.4,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1365.0,
+        "at_high": 16800.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 216960.0,
+        "at_high": 881400.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 17628.0,
+        "at_high": 216960.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 149150.0,
+        "at_high": 326400.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 0,
+       "low": 0.0,
+       "high": 0.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 7200,
+       "low": 960.0,
+       "high": 28800.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.move_b2_federated",
+     "label": "Move the data from B2 to a federated set of Nations' nodes",
+     "unit": "one time",
+     "counted": "energy: the network carrying each copy, one from the store and the rest from the store or a peer, at the network setting, with no drive energy at either end; CO2e: that energy on the network's grid; price: the billed pulls at list egress (a peer copy pays none), the assumed hours at each Nation that takes a copy, and any other one-time bill",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 48000.0,
+      "low": 32000.0,
+      "high": 195000.0
+     },
+     "price_usd": {
+      "value": 7200.0,
+      "low": 960.0,
+      "high": 30100.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Egress free to three times stored data, then a list rate (px-052), plus assumed hours and an assumed other bill."
+     },
+     "co2e_g": {
+      "value": 16800.0,
+      "low": 11200.0,
+      "high": 68250.0,
+      "grid": "location-based average: network US 350 g (gf-007)"
+     },
+     "water_ml": {
+      "value": 216960.0,
+      "low": 144640.0,
+      "high": 881400.0,
+      "convention": "no site water on the network; US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "px-052",
+      "fp-127"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 48000.0,
+        "at_high": 195000.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 3900.0,
+        "at_high": 48000.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 32000.0,
+        "at_high": 48000.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "usd": [
+       {
+        "name": "exit_admin_h",
+        "type": "input",
+        "at_low": 1440.0,
+        "at_high": 28800.0,
+        "swing_over_central": 3.8
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 0.0,
+        "at_high": 7200.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 4800.0,
+        "at_high": 7200.0,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "g": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 16800.0,
+        "at_high": 68250.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 624.0,
+        "at_high": 35006.4,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 1365.0,
+        "at_high": 16800.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       }
+      ],
+      "ml": [
+       {
+        "name": "net_fixed_avg",
+        "type": "input",
+        "at_low": 216960.0,
+        "at_high": 881400.0,
+        "swing_over_central": 3.0625
+       },
+       {
+        "name": "network_mode",
+        "type": "setting",
+        "at_low": 17628.0,
+        "at_high": 216960.0,
+        "low_option": "marginal",
+        "high_option": "average",
+        "swing_over_central": 0.91875
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 149150.0,
+        "at_high": 326400.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.816972
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "net_fixed_avg",
+      "usd": "exit_admin_h",
+      "g": "net_fixed_avg",
+      "ml": "net_fixed_avg"
+     },
+     "price_readings": [
+      {
+       "label": "Egress at list, for every pull billed by the store",
+       "value": 0,
+       "low": 0.0,
+       "high": 300.0,
+       "basis": "api_list",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Assumed hours to run the move, at the wage setting",
+       "value": 7200,
+       "low": 960.0,
+       "high": 28800.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      },
+      {
+       "label": "Any other one-time bill, an assumption",
+       "value": 0,
+       "low": 0.0,
+       "high": 1000.0,
+       "basis": "self_run",
+       "date": "11/04/2026"
+      }
+     ]
+    },
+    {
+     "key": "arch.E.year_s3",
+     "label": "Stay: one year in S3, three replicas",
+     "unit": "one year",
+     "counted": "three replicas in one region, drives only, the same coefficient and boundary as comparison C",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 187902.0,
+      "low": 108852.0,
+      "high": 346896.0
+     },
+     "price_usd": {
+      "value": 3480.0,
+      "low": 3120.0,
+      "high": 5280.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Storage list (px-048) plus one assumed admin hour a month"
+     },
+     "co2e_g": {
+      "value": 65765.7,
+      "low": 38098.1,
+      "high": 121414.0,
+      "grid": "location-based average: US eGRID 350 g per kWh (gf-007)"
+     },
+     "water_ml": {
+      "value": 916962.0,
+      "low": 521400.0,
+      "high": 1966900.0,
+      "convention": "site 0.36 L per kWh (tr-009) plus US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "ec-021",
+      "ec-030",
+      "px-048"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 164776.0,
+        "at_high": 346896.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 125268.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.333333
+       },
+       {
+        "name": "pue_hyper",
+        "type": "input",
+        "at_low": 186194.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.00909091
+       }
+      ],
+      "usd": [
+       {
+        "name": "central_admin_h_month",
+        "type": "input",
+        "at_low": 3120.0,
+        "at_high": 5280.0,
+        "swing_over_central": 0.62069
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 2760.0,
+        "at_high": 3480.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.206897
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 2442.73,
+        "at_high": 137037.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 57671.5,
+        "at_high": 121414.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 43843.8,
+        "at_high": 65765.7,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "ml": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 804105.0,
+        "at_high": 1692850.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 651510.0,
+        "at_high": 1345380.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.756703
+       },
+       {
+        "name": "dc_generation_water",
+        "type": "setting",
+        "at_low": 330708.0,
+        "at_high": 916962.0,
+        "low_option": "ercot",
+        "high_option": "us",
+        "swing_over_central": 0.639344
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "stor_wh_tb_h",
+      "usd": "central_admin_h_month",
+      "g": "grid_dc",
+      "ml": "stor_wh_tb_h"
+     }
+    },
+    {
+     "key": "arch.E.year_r2",
+     "label": "Stay: one year in R2",
+     "unit": "one year",
+     "counted": "the same drives-only energy; the store's replication is not published here, so the row carries the same three replicas",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 187902.0,
+      "low": 108852.0,
+      "high": 346896.0
+     },
+     "price_usd": {
+      "value": 2520.0,
+      "low": 2160.0,
+      "high": 4320.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Storage list (px-050) plus one assumed admin hour a month"
+     },
+     "co2e_g": {
+      "value": 65765.7,
+      "low": 38098.1,
+      "high": 121414.0,
+      "grid": "location-based average: US eGRID 350 g per kWh (gf-007)"
+     },
+     "water_ml": {
+      "value": 916962.0,
+      "low": 521400.0,
+      "high": 1966900.0,
+      "convention": "site 0.36 L per kWh (tr-009) plus US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "ec-021",
+      "px-050"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 164776.0,
+        "at_high": 346896.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 125268.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.333333
+       },
+       {
+        "name": "pue_hyper",
+        "type": "input",
+        "at_low": 186194.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.00909091
+       }
+      ],
+      "usd": [
+       {
+        "name": "central_admin_h_month",
+        "type": "input",
+        "at_low": 2160.0,
+        "at_high": 4320.0,
+        "swing_over_central": 0.857143
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 1800.0,
+        "at_high": 2520.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.285714
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 2442.73,
+        "at_high": 137037.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 57671.5,
+        "at_high": 121414.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 43843.8,
+        "at_high": 65765.7,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "ml": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 804105.0,
+        "at_high": 1692850.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 651510.0,
+        "at_high": 1345380.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.756703
+       },
+       {
+        "name": "dc_generation_water",
+        "type": "setting",
+        "at_low": 330708.0,
+        "at_high": 916962.0,
+        "low_option": "ercot",
+        "high_option": "us",
+        "swing_over_central": 0.639344
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "stor_wh_tb_h",
+      "usd": "central_admin_h_month",
+      "g": "grid_dc",
+      "ml": "stor_wh_tb_h"
+     }
+    },
+    {
+     "key": "arch.E.year_b2",
+     "label": "Stay: one year in B2",
+     "unit": "one year",
+     "counted": "the same drives-only energy; the store's replication is not published here, so the row carries the same three replicas",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 187902.0,
+      "low": 108852.0,
+      "high": 346896.0
+     },
+     "price_usd": {
+      "value": 1554.0,
+      "low": 1194.0,
+      "high": 3354.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "Storage list (px-052) plus one assumed admin hour a month"
+     },
+     "co2e_g": {
+      "value": 65765.7,
+      "low": 38098.1,
+      "high": 121414.0,
+      "grid": "location-based average: US eGRID 350 g per kWh (gf-007)"
+     },
+     "water_ml": {
+      "value": 916962.0,
+      "low": 521400.0,
+      "high": 1966900.0,
+      "convention": "site 0.36 L per kWh (tr-009) plus US generation 4.52 L per kWh (tr-005); basin not stated"
+     },
+     "claims": [
+      "ec-021",
+      "px-052"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 164776.0,
+        "at_high": 346896.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 125268.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.333333
+       },
+       {
+        "name": "pue_hyper",
+        "type": "input",
+        "at_low": 186194.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.00909091
+       }
+      ],
+      "usd": [
+       {
+        "name": "central_admin_h_month",
+        "type": "input",
+        "at_low": 1194.0,
+        "at_high": 3354.0,
+        "swing_over_central": 1.38996
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 834.0,
+        "at_high": 1554.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.46332
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 2442.73,
+        "at_high": 137037.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.04657
+       },
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 57671.5,
+        "at_high": 121414.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 43843.8,
+        "at_high": 65765.7,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "ml": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 804105.0,
+        "at_high": 1692850.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "grid_dc",
+        "type": "setting",
+        "at_low": 651510.0,
+        "at_high": 1345380.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 0.756703
+       },
+       {
+        "name": "dc_generation_water",
+        "type": "setting",
+        "at_low": 330708.0,
+        "at_high": 916962.0,
+        "low_option": "ercot",
+        "high_option": "us",
+        "swing_over_central": 0.639344
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "stor_wh_tb_h",
+      "usd": "central_admin_h_month",
+      "g": "grid_dc",
+      "ml": "stor_wh_tb_h"
+     }
+    },
+    {
+     "key": "arch.E.year_cloud_same_grid",
+     "label": "Stay: the same replicas, on the node's grid",
+     "unit": "one year",
+     "counted": "the same energy on the node's grid, the only fair carbon pair",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 187902.0,
+      "low": 108852.0,
+      "high": 346896.0
+     },
+     "price_usd": {
+      "value": 3480.0,
+      "low": 3120.0,
+      "high": 5280.0,
+      "basis": "api_list",
+      "date": "11/04/2026",
+      "note": "S3 list, as above"
+     },
+     "co2e_g": {
+      "value": 54115.8,
+      "low": 31349.3,
+      "high": 99906.0,
+      "grid": "location-based average: the local node's grid setting, NWPP 288 g by default (gf-001)"
+     },
+     "water_ml": {
+      "value": 651510.0,
+      "low": 348674.0,
+      "high": 1553390.0,
+      "convention": "site 0.36 L per kWh (tr-009) plus NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037)"
+     },
+     "claims": [
+      "ec-021",
+      "gf-001"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 164776.0,
+        "at_high": 346896.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 125268.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.333333
+       },
+       {
+        "name": "pue_hyper",
+        "type": "input",
+        "at_low": 186194.0,
+        "at_high": 187902.0,
+        "swing_over_central": 0.00909091
+       }
+      ],
+      "usd": [
+       {
+        "name": "central_admin_h_month",
+        "type": "input",
+        "at_low": 3120.0,
+        "at_high": 5280.0,
+        "swing_over_central": 0.62069
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 2760.0,
+        "at_high": 3480.0,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.206897
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 2442.73,
+        "at_high": 137037.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.48715
+       },
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 47455.4,
+        "at_high": 99906.0,
+        "swing_over_central": 0.969231
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 36077.2,
+        "at_high": 54115.8,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "ml": [
+       {
+        "name": "hydro_convention",
+        "type": "setting",
+        "at_low": 157027.0,
+        "at_high": 2920310.0,
+        "low_option": "excluded",
+        "high_option": "primary_purpose",
+        "swing_over_central": 4.24136
+       },
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 651510.0,
+        "at_high": 1345380.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 1.06501
+       },
+       {
+        "name": "stor_wh_tb_h",
+        "type": "input",
+        "at_low": 571324.0,
+        "at_high": 1202790.0,
+        "swing_over_central": 0.969231
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "stor_wh_tb_h",
+      "usd": "central_admin_h_month",
+      "g": "grid_local",
+      "ml": "hydro_convention"
+     }
+    },
+    {
+     "key": "arch.E.year_node",
+     "label": "The year after: one copy on the Nation's own node",
+     "unit": "one year",
+     "counted": "one NAS box all year, or drives only when the node is already on (the setting); durability one box",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 443256.0,
+      "low": 131400.0,
+      "high": 1208880.0
+     },
+     "price_usd": {
+      "value": 901.953,
+      "low": 428.7,
+      "high": 6303.28,
+      "basis": "self_run",
+      "date": "11/04/2026",
+      "note": "Box and drives over life, electricity, one paid hour a month"
+     },
+     "co2e_g": {
+      "value": 127658.0,
+      "low": 37843.2,
+      "high": 348157.0,
+      "grid": "location-based average: NWPP 288 g (gf-001)"
+     },
+     "water_ml": {
+      "value": 1377320.0,
+      "low": 385422.0,
+      "high": 4023110.0,
+      "convention": "0 on site; NWPP mix 3.11 L per kWh on the Columbia reservoir convention, 0.48 with reservoir evaporation excluded"
+     },
+     "claims": [
+      "lf-032",
+      "sf-043",
+      "sf-052",
+      "sv-042"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "exit_node_copies",
+        "type": "input",
+        "at_low": 443256.0,
+        "at_high": 886512.0,
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "node_already_on",
+        "type": "setting",
+        "at_low": 75160.8,
+        "at_high": 443256.0,
+        "low_option": "yes",
+        "high_option": "no",
+        "swing_over_central": 0.830435
+       },
+       {
+        "name": "nas_w",
+        "type": "input",
+        "at_low": 144540.0,
+        "at_high": 443256.0,
+        "swing_over_central": 0.673913
+       }
+      ],
+      "usd": [
+       {
+        "name": "nas_admin_h_month",
+        "type": "input",
+        "at_low": 541.953,
+        "at_high": 2701.95,
+        "swing_over_central": 2.3948
+       },
+       {
+        "name": "exit_node_copies",
+        "type": "input",
+        "at_low": 901.953,
+        "at_high": 1803.91,
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 181.953,
+        "at_high": 901.953,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.798268
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 5762.33,
+        "at_high": 323267.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.48715
+       },
+       {
+        "name": "exit_node_copies",
+        "type": "input",
+        "at_low": 127658.0,
+        "at_high": 255315.0,
+        "swing_over_central": 1.0
+       },
+       {
+        "name": "node_already_on",
+        "type": "setting",
+        "at_low": 21646.3,
+        "at_high": 127658.0,
+        "low_option": "yes",
+        "high_option": "no",
+        "swing_over_central": 0.830435
+       }
+      ],
+      "ml": [
+       {
+        "name": "hydro_convention",
+        "type": "setting",
+        "at_low": 210852.0,
+        "at_high": 6729370.0,
+        "low_option": "excluded",
+        "high_option": "primary_purpose",
+        "swing_over_central": 4.73274
+       },
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 1377320.0,
+        "at_high": 3014140.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 1.1884
+       },
+       {
+        "name": "exit_node_copies",
+        "type": "input",
+        "at_low": 1377320.0,
+        "at_high": 2754650.0,
+        "swing_over_central": 1.0
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "exit_node_copies",
+      "usd": "nas_admin_h_month",
+      "g": "grid_local",
+      "ml": "hydro_convention"
+     },
+     "note": "One box is not the durability of three replicas. A second box at the same Nation doubles this row, the top of its spread."
+    },
+    {
+     "key": "arch.E.year_federated",
+     "label": "The year after: three copies on a federated set of Nations' nodes",
+     "unit": "one year",
+     "counted": "three boxes at three Nations, or drives only when the nodes are already on (the setting); the cloud row's durability, across three sites",
+     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
+     "energy_wh": {
+      "value": 1329770.0,
+      "low": 262800.0,
+      "high": 1813320.0
+     },
+     "price_usd": {
+      "value": 2705.86,
+      "low": 857.401,
+      "high": 9454.92,
+      "basis": "self_run",
+      "date": "11/04/2026",
+      "note": "Boxes and drives over life, electricity, one paid hour a month at each Nation"
+     },
+     "co2e_g": {
+      "value": 382973.0,
+      "low": 75686.4,
+      "high": 522236.0,
+      "grid": "location-based average: NWPP 288 g (gf-001)"
+     },
+     "water_ml": {
+      "value": 4131970.0,
+      "low": 770844.0,
+      "high": 6034670.0,
+      "convention": "0 on site; NWPP mix 3.11 L per kWh on the Columbia reservoir convention, 0.48 with reservoir evaporation excluded"
+     },
+     "claims": [
+      "lf-032",
+      "sf-043",
+      "sf-052",
+      "sv-042",
+      "ec-030",
+      "sf-044"
+     ],
+     "drivers": {
+      "wh": [
+       {
+        "name": "node_already_on",
+        "type": "setting",
+        "at_low": 225482.0,
+        "at_high": 1329770.0,
+        "low_option": "yes",
+        "high_option": "no",
+        "swing_over_central": 0.830435
+       },
+       {
+        "name": "nas_w",
+        "type": "input",
+        "at_low": 433620.0,
+        "at_high": 1329770.0,
+        "swing_over_central": 0.673913
+       },
+       {
+        "name": "pue_room",
+        "type": "input",
+        "at_low": 1208880.0,
+        "at_high": 1813320.0,
+        "swing_over_central": 0.454545
+       }
+      ],
+      "usd": [
+       {
+        "name": "fed_admin_h_month",
+        "type": "input",
+        "at_low": 1625.86,
+        "at_high": 8105.86,
+        "swing_over_central": 2.3948
+       },
+       {
+        "name": "wage",
+        "type": "setting",
+        "at_low": 545.86,
+        "at_high": 2705.86,
+        "low_option": "0",
+        "high_option": "60",
+        "swing_over_central": 0.798268
+       },
+       {
+        "name": "replicas",
+        "type": "input",
+        "at_low": 1803.91,
+        "at_high": 2705.86,
+        "swing_over_central": 0.333333
+       }
+      ],
+      "g": [
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 17287.0,
+        "at_high": 969800.0,
+        "low_option": "wind",
+        "high_option": "diesel",
+        "swing_over_central": 2.48715
+       },
+       {
+        "name": "node_already_on",
+        "type": "setting",
+        "at_low": 64938.9,
+        "at_high": 382973.0,
+        "low_option": "yes",
+        "high_option": "no",
+        "swing_over_central": 0.830435
+       },
+       {
+        "name": "nas_w",
+        "type": "input",
+        "at_low": 124883.0,
+        "at_high": 382973.0,
+        "swing_over_central": 0.673913
+       }
+      ],
+      "ml": [
+       {
+        "name": "hydro_convention",
+        "type": "setting",
+        "at_low": 632555.0,
+        "at_high": 20188100.0,
+        "low_option": "excluded",
+        "high_option": "primary_purpose",
+        "swing_over_central": 4.73274
+       },
+       {
+        "name": "grid_local",
+        "type": "setting",
+        "at_low": 4131970.0,
+        "at_high": 9042420.0,
+        "low_option": "nwpp",
+        "high_option": "hydro",
+        "swing_over_central": 1.1884
+       },
+       {
+        "name": "node_already_on",
+        "type": "setting",
+        "at_low": 700639.0,
+        "at_high": 4131970.0,
+        "low_option": "yes",
+        "high_option": "no",
+        "swing_over_central": 0.830435
+       }
+      ]
+     },
+     "moves_most": {
+      "wh": "node_already_on",
+      "usd": "fed_admin_h_month",
+      "g": "grid_local",
+      "ml": "hydro_convention"
+     },
+     "note": "With the nodes already on, drives only, this lands near the cloud's figure; the difference is the parity drives."
+    }
+   ],
+   "readings": {
+    "egress_per_pull_usd.s3": {
+     "label": "Egress for one pull of the Nation's data, at each store's list (px-049, px-051, px-052)",
+     "basis": "api_list",
+     "value": 900.0,
+     "low": 0.0,
+     "high": 1100.0,
+     "date": "11/04/2026"
+    },
+    "egress_per_pull_usd.r2": {
+     "label": "Egress for one pull of the Nation's data, at each store's list (px-049, px-051, px-052)",
+     "basis": "api_list",
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.0,
+     "date": "11/04/2026"
+    },
+    "egress_per_pull_usd.b2": {
+     "label": "Egress for one pull of the Nation's data, at each store's list (px-049, px-051, px-052)",
+     "basis": "api_list",
+     "value": 0.0,
+     "low": 0.0,
+     "high": 100.0,
+     "date": "11/04/2026"
+    },
+    "copies.node": {
+     "label": "Copies held after the move, on the Nation's own node and across the federated set",
+     "value": 1.0,
+     "low": 1.0,
+     "high": 2.0
+    },
+    "copies.federated": {
+     "label": "Copies held after the move, on the Nation's own node and across the federated set",
+     "value": 3.0,
+     "low": 2.0,
+     "high": 3.0
+    },
+    "transfer_days_one_copy": {
+     "label": "Days on the wire for one copy at the link's line rate, with no overhead, so a lower bound",
+     "value": 9.25926,
+     "low": 0.925926,
+     "high": 37.037
+    },
+    "hardware_usd.node": {
+     "label": "Boxes and drives bought for the new home, one time; the year rows count them over their life",
+     "basis": "self_run",
+     "value": 666.64,
+     "low": 380.0,
+     "high": 3392.0,
+     "date": "11/04/2026"
+    },
+    "hardware_usd.federated": {
+     "label": "Boxes and drives bought for the new home, one time; the year rows count them over their life",
+     "basis": "self_run",
+     "value": 1999.92,
+     "low": 760.0,
+     "high": 5088.0,
+     "date": "11/04/2026"
+    },
+    "embodied_own_node_g": {
+     "label": "Embodied carbon of the node's drives per year, at 20 kg per TB (sf-024), with its spread to under 1 (sf-025)",
+     "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
+     "value": 48000.0,
+     "low": 1428.57,
+     "high": 213333.0
+    },
+    "embodied_federated_set_g": {
+     "label": "Embodied carbon of the federated set's drives per year, at the same coefficient and life",
+     "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
+     "value": 144000.0,
+     "low": 2857.14,
+     "high": 320000.0
+    },
+    "embodied_cloud_replicas_g": {
+     "label": "Embodied carbon of the cloud's replicas per year, at the same coefficient and life, so both sides sit on one boundary",
+     "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
+     "value": 120000.0,
+     "low": 2857.14,
+     "high": 200000.0
+    },
+    "node_w_at_energy_tie": {
+     "label": "Watts at which one box a year uses what the cloud's drives-only figure uses, on this boundary",
+     "value": 19.5,
+     "low": 4.142,
+     "high": 39.6
+    },
+    "cloud_service_boundary_g": {
+     "label": "A ceiling on another boundary: the same data at one agency's whole-service figure for online storage (ec-026)",
+     "grid": "another boundary: the global warming potential of a service in four data centres, not this row's drives on a grid",
+     "value": 2230000.0,
+     "low": 1660000.0,
+     "high": 2800000.0
+    }
+   },
+   "wins": "At the default settings the move ends a vendor's hold on the data, which no row prices. One copy on the Nation's own node costs less a year than S3, R2, or B2 at list, each side with one paid hour a month, and the move pays back within a few years; three copies across three Nations' nodes cost less than S3 only. At the assumed hours, the bill for leaving is mostly hours, not egress, and the vendors' free exit programs can take the egress to zero on their terms (mv-001, mv-002, mv-003).",
+   "loses": "Energy: a box runs all year against the store's drives-only figure, so the year after uses more unless the node is already on or draws under the tie printed beside it. Carbon on one grid follows energy. Durability: one box is not three replicas. Three copies cost more a year than R2 or B2, so that move never pays back against them. The hours are an assumption with no source, and the days on the wire depend on the link (sf-056).",
+   "note": "Comparison E never sits on the hour axis. A move row is one time and a year row is one year; the page prints them apart and adds them for no one. One storage coefficient (ec-021) and one boundary on every year row, the same as comparison C, so the cloud's figure is drives only, a floor, while the box is counted whole: the boundary leans toward the cloud. The one whole-service figure in the record prints beside it as a ceiling on another boundary (ec-026), and the record holds no whole-service figure for a local box, so the two are never subtracted. Migration hours and any other one-time bill have no source in the record; both are labeled assumptions with a range.",
+   "payback": {
+    "node_vs_s3": {
+     "value": 1.28004,
+     "low_one_input_or_setting": 0.349101,
+     "high_one_input_or_setting": 4.24139,
+     "never_under": []
+    },
+    "node_vs_r2": {
+     "value": 1.48327,
+     "low_one_input_or_setting": 0.0,
+     "high_one_input_or_setting": 5.93308,
+     "never_under": [
+      "nas_admin_h_month high"
+     ]
+    },
+    "node_vs_b2": {
+     "value": 3.68072,
+     "low_one_input_or_setting": 0.0,
+     "high_one_input_or_setting": 14.7229,
+     "never_under": [
+      "nas_admin_h_month high",
+      "exit_node_copies high"
+     ]
+    },
+    "federated_vs_s3": {
+     "value": 10.4632,
+     "low_one_input_or_setting": 0.406478,
+     "high_one_input_or_setting": 38.3651,
+     "never_under": [
+      "fed_admin_h_month high"
+     ]
+    },
+    "federated_vs_r2": {
+     "value": null,
+     "low_one_input_or_setting": 0.0,
+     "high_one_input_or_setting": 41.077,
+     "never_under": [
+      "central"
+     ]
+    },
+    "federated_vs_b2": {
+     "value": null,
+     "low_one_input_or_setting": 0.0,
+     "high_one_input_or_setting": 11.1087,
+     "never_under": [
+      "central"
+     ]
+    }
+   },
+   "payback_label": "Years for the move's one-time price to pay back against a store's yearly price, a self-run cost against a list price, each side with its own paid hours; never means it does not pay back at these settings"
   }
  },
  "levers": [
@@ -14990,7 +17131,7 @@
  "qualitative": {
   "what_no_resource_number_captures": [
    "Custody and jurisdiction over the data.",
-   "Consent: no Nation's data leaves its node.",
+   "Consent: whether data leaves a node is each Nation's decision, and no figure here stands for it.",
    "Working when the link is down (sf-056).",
    "Who can change the price and when (px-007 on 12/01/2026; px-045 on 07/01/2026).",
    "A model for a language the cloud does not serve (Te Hiku Media, 92 percent for te reo Maori, lf-058).",
@@ -17584,8 +19725,1984 @@
     ],
     "flips_with_all_inputs_at_extremes": false,
     "stable": false
+   },
+   {
+    "id": "e_node_energy",
+    "label": "Leaving: one copy on the Nation's node against the cloud's three replicas, energy a year",
+    "a": 443256.0,
+    "b": 187902.0,
+    "a_is_lower": false,
+    "ratio_a_over_b": 2.35897,
+    "flips_on_one_input": [
+     "nas_w at 15"
+    ],
+    "flips_on_one_setting": [
+     "node_already_on = yes"
+    ],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_federated_energy",
+    "label": "Leaving: three copies across Nations' nodes against the cloud's three replicas, energy a year",
+    "a": 1329770.0,
+    "b": 187902.0,
+    "a_is_lower": false,
+    "ratio_a_over_b": 7.07692,
+    "flips_on_one_input": [],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": false,
+    "stable": true
+   },
+   {
+    "id": "e_node_carbon",
+    "label": "Leaving: one copy on the Nation's node against the cloud, one grid, carbon a year",
+    "a": 127658.0,
+    "b": 54115.8,
+    "a_is_lower": false,
+    "ratio_a_over_b": 2.35897,
+    "flips_on_one_input": [
+     "nas_w at 15"
+    ],
+    "flips_on_one_setting": [
+     "node_already_on = yes"
+    ],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_federated_carbon",
+    "label": "Leaving: three copies across Nations' nodes against the cloud, one grid, carbon a year",
+    "a": 382973.0,
+    "b": 54115.8,
+    "a_is_lower": false,
+    "ratio_a_over_b": 7.07692,
+    "flips_on_one_input": [],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": false,
+    "stable": true
+   },
+   {
+    "id": "e_node_price_s3",
+    "label": "Leaving: one copy on the Nation's node against S3, price a year",
+    "a": 901.953,
+    "b": 3480.0,
+    "a_is_lower": true,
+    "ratio_a_over_b": 0.259182,
+    "flips_on_one_input": [],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": true
+   },
+   {
+    "id": "e_node_price_r2",
+    "label": "Leaving: one copy on the Nation's node against R2, price a year",
+    "a": 901.953,
+    "b": 2520.0,
+    "a_is_lower": true,
+    "ratio_a_over_b": 0.357918,
+    "flips_on_one_input": [
+     "nas_admin_h_month at 3.5"
+    ],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_node_price_b2",
+    "label": "Leaving: one copy on the Nation's node against B2, price a year",
+    "a": 901.953,
+    "b": 1554.0,
+    "a_is_lower": true,
+    "ratio_a_over_b": 0.580407,
+    "flips_on_one_input": [
+     "nas_admin_h_month at 3.5",
+     "exit_node_copies at 2"
+    ],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_federated_price_s3",
+    "label": "Leaving: three copies across Nations' nodes against S3, price a year",
+    "a": 2705.86,
+    "b": 3480.0,
+    "a_is_lower": true,
+    "ratio_a_over_b": 0.777546,
+    "flips_on_one_input": [
+     "fed_admin_h_month at 3.5"
+    ],
+    "flips_on_one_setting": [],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_federated_price_r2",
+    "label": "Leaving: three copies across Nations' nodes against R2, price a year",
+    "a": 2705.86,
+    "b": 2520.0,
+    "a_is_lower": false,
+    "ratio_a_over_b": 1.07375,
+    "flips_on_one_input": [
+     "replicas at 2",
+     "fed_admin_h_month at 0.5",
+     "central_admin_h_month at 3.5"
+    ],
+    "flips_on_one_setting": [
+     "wage = 25",
+     "wage = 0",
+     "node_already_on = yes"
+    ],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
+   },
+   {
+    "id": "e_federated_price_b2",
+    "label": "Leaving: three copies across Nations' nodes against B2, price a year",
+    "a": 2705.86,
+    "b": 1554.0,
+    "a_is_lower": false,
+    "ratio_a_over_b": 1.74122,
+    "flips_on_one_input": [
+     "central_admin_h_month at 3.5"
+    ],
+    "flips_on_one_setting": [
+     "wage = 0"
+    ],
+    "flips_with_all_inputs_at_extremes": true,
+    "stable": false
    }
   ]
+ },
+ "upkeep": {
+  "A": {
+   "cloud": {
+    "idle_w": 0.0,
+    "admin_h": 24
+   },
+   "cloud_with_sync": {
+    "idle_w": 0.0,
+    "admin_h": 24
+   },
+   "cloud_same_grid": {
+    "idle_w": 0.0,
+    "admin_h": 24
+   },
+   "local": {
+    "idle_w": 45,
+    "admin_h": 168
+   },
+   "local_hydro": {
+    "idle_w": 45,
+    "admin_h": 168
+   },
+   "local_two_boxes": {
+    "idle_w": 90,
+    "admin_h": 168
+   }
+  },
+  "B": {
+   "platform": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "cache": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "local_1000": {
+    "idle_w": 8,
+    "admin_h": 12
+   },
+   "local_10000": {
+    "idle_w": 8,
+    "admin_h": 12
+   },
+   "local_100000": {
+    "idle_w": 8,
+    "admin_h": 12
+   }
+  },
+  "C": {
+   "ten_copies": {
+    "idle_w": 460,
+    "admin_h": 120
+   },
+   "central_s3": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "central_s3_with_pulls": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "central_r2": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "central_b2": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "federated": {
+    "idle_w": 460,
+    "admin_h": 120
+   },
+   "federated_replicas": {
+    "idle_w": 460,
+    "admin_h": 120
+   }
+  },
+  "D": {
+   "hyper": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "hyper_same_grid": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "colo": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "laptop": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "laptop_with_fallback": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "phone": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "phone_wall": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "phone_wall_fallback": {
+    "idle_w": 0.0,
+    "admin_h": 0.0
+   },
+   "node_100k": {
+    "idle_w": 40,
+    "admin_h": 24
+   },
+   "node_100k_hydro": {
+    "idle_w": 40,
+    "admin_h": 24
+   },
+   "node_100k_fallback": {
+    "idle_w": 40,
+    "admin_h": 24
+   },
+   "node_1m": {
+    "idle_w": 40,
+    "admin_h": 24
+   },
+   "node_1m_hydro": {
+    "idle_w": 40,
+    "admin_h": 24
+   },
+   "node_1m_fallback": {
+    "idle_w": 40,
+    "admin_h": 24
+   }
+  },
+  "E": {
+   "year_s3": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "year_r2": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "year_b2": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "year_cloud_same_grid": {
+    "idle_w": 0.0,
+    "admin_h": 12
+   },
+   "year_node": {
+    "idle_w": 46,
+    "admin_h": 12
+   },
+   "year_federated": {
+    "idle_w": 138,
+    "admin_h": 36
+   },
+   "move_s3_node": {
+    "idle_w": 0.0,
+    "admin_h": 40
+   },
+   "move_r2_node": {
+    "idle_w": 0.0,
+    "admin_h": 40
+   },
+   "move_b2_node": {
+    "idle_w": 0.0,
+    "admin_h": 40
+   },
+   "move_s3_federated": {
+    "idle_w": 0.0,
+    "admin_h": 120
+   },
+   "move_r2_federated": {
+    "idle_w": 0.0,
+    "admin_h": 120
+   },
+   "move_b2_federated": {
+    "idle_w": 0.0,
+    "admin_h": 120
+   }
+  }
+ },
+ "field_lines": {
+  "idle": {
+   "office_server": {
+    "default_w": 45,
+    "idle_share": 1.0,
+    "halves_at_w": 22.5,
+    "doubles_at_w": 90.0
+   },
+   "nas_ten_nations": {
+    "default_w": 46,
+    "idle_share": 0.999567,
+    "halves_at_w": 22.99,
+    "doubles_at_w": 92.0199
+   },
+   "nas_own_node": {
+    "default_w": 46,
+    "idle_share": 1.0,
+    "halves_at_w": 23.0,
+    "doubles_at_w": 92.0
+   },
+   "node_100k": {
+    "default_w": 40,
+    "idle_share": 0.960044,
+    "halves_at_w": 19.1676,
+    "doubles_at_w": 81.6648
+   },
+   "node_1m": {
+    "default_w": 40,
+    "idle_share": 0.706119,
+    "halves_at_w": 11.6762,
+    "doubles_at_w": 96.6476
+   },
+   "media_box_1000": {
+    "default_w": 8,
+    "idle_share": 0.96616,
+    "halves_at_w": 3.8599,
+    "doubles_at_w": 16.2802
+   },
+   "media_box_10000": {
+    "default_w": 8,
+    "idle_share": 0.740604,
+    "halves_at_w": 2.599,
+    "doubles_at_w": 18.802
+   },
+   "media_box_100000": {
+    "default_w": 8,
+    "idle_share": 0.222099,
+    "halves_at_w": null,
+    "doubles_at_w": 44.0199
+   }
+  },
+  "cache_share_top": {
+   "session_times": 1.86145,
+   "hour_times": 1.74331
+  },
+  "coding_usd_miss_times": 3.20646
+ },
+ "scenario_labels": {
+  "office_users": "An illustrative office of 50 people; no Nation's office.",
+  "nations": "An illustration: ten Nations sharing one dataset.",
+  "shared_tb": "An illustration: ten terabytes shared.",
+  "fed_tb": "The ten terabytes split ten ways: one terabyte held by each Nation.",
+  "views": "Three illustrative audience sizes, in views a year.",
+  "views_block": "The unit of comparison B: a block of 1,000 views.",
+  "prompts_block": "The unit of comparison D: a block of 1,000 prompts.",
+  "node_prompts_100k": "An illustration of one Nation's pooled demand, in prompts a year.",
+  "node_prompts_1m": "An illustration of one Nation's pooled demand, in prompts a year.",
+  "wage_readings": "The three wages printed beside the office price: a vendor's 60 dollars (sf-051), 25, and 0 where staff time is already paid.",
+  "exit_tb": "An illustration, the size of comparison C; no Nation's holdings. The reader types their own.",
+  "cache_share_top": "The top of the cache share's spread, where the field protocol asks what a logged share would change."
+ },
+ "custody": {
+  "label": "Where this data may be held",
+  "default": "any",
+  "options": {
+   "any": {
+    "label": "Any place",
+    "allows": [
+     "vendor",
+     "platform",
+     "host",
+     "federated",
+     "node",
+     "device"
+    ]
+   },
+   "node": {
+    "label": "A node a Nation controls",
+    "allows": [
+     "node",
+     "device"
+    ]
+   },
+   "federated": {
+    "label": "A federated set of Nations' nodes",
+    "allows": [
+     "federated",
+     "node",
+     "device"
+    ]
+   }
+  },
+  "fixed_line": "Each Nation decides for itself. This setting shows what a rule would cost in idle watts, paid hours, and price; it does not say which rule is right, and no number here stands for consent or custody.",
+  "reasons": {
+   "vendor": "Held on a vendor's drives under the vendor's contract.",
+   "platform": "Served from a platform's network, and the platform decides what it holds.",
+   "host": "Held in a host's building under the host's contract; this row does not assume a Nation runs the facility.",
+   "federated": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+  },
+  "cost_labels": {
+   "idle_w": "Idle watts the Nation carries all year; a vendor's idle sits inside the vendor's own figure",
+   "admin_h": "Paid hours a year the row counts",
+   "usd": "Price as the row states it, with its basis",
+   "wh": "Energy as the row states it, at these settings"
+  },
+  "rows": {
+   "arch.A.cloud": {
+    "holder": "vendor"
+   },
+   "arch.A.cloud_with_sync": {
+    "holder": "vendor"
+   },
+   "arch.A.cloud_same_grid": {
+    "holder": "vendor",
+    "cost": "skip"
+   },
+   "arch.A.local": {
+    "holder": "node"
+   },
+   "arch.A.local_hydro": {
+    "holder": "node",
+    "cost": "skip"
+   },
+   "arch.A.local_two_boxes": {
+    "holder": "node"
+   },
+   "arch.B.platform": {
+    "holder": "platform"
+   },
+   "arch.B.cache": {
+    "holder": "platform",
+    "reason": "A box inside a network, placed by the platform, which decides what it holds."
+   },
+   "arch.B.local_1000": {
+    "holder": "node"
+   },
+   "arch.B.local_10000": {
+    "holder": "node"
+   },
+   "arch.B.local_100000": {
+    "holder": "node"
+   },
+   "arch.C.ten_copies": {
+    "holder": "federated"
+   },
+   "arch.C.central_s3": {
+    "holder": "vendor"
+   },
+   "arch.C.central_s3_with_pulls": {
+    "holder": "vendor"
+   },
+   "arch.C.central_r2": {
+    "holder": "vendor"
+   },
+   "arch.C.central_b2": {
+    "holder": "vendor"
+   },
+   "arch.C.federated": {
+    "holder": "node",
+    "note": "Each Nation holds its own data. What another Nation reads crosses the link only when the holder grants it."
+   },
+   "arch.C.federated_replicas": {
+    "holder": "federated"
+   },
+   "arch.D.hyper": {
+    "holder": "vendor"
+   },
+   "arch.D.hyper_same_grid": {
+    "holder": "vendor",
+    "cost": "skip"
+   },
+   "arch.D.colo": {
+    "holder": "host"
+   },
+   "arch.D.node_100k": {
+    "holder": "node",
+    "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.node_100k_hydro": {
+    "holder": "node",
+    "cost": "skip",
+    "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.node_100k_fallback": {
+    "holder": "vendor",
+    "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+   },
+   "arch.D.node_1m": {
+    "holder": "node",
+    "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.node_1m_hydro": {
+    "holder": "node",
+    "cost": "skip",
+    "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.node_1m_fallback": {
+    "holder": "vendor",
+    "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+   },
+   "arch.D.laptop": {
+    "holder": "device",
+    "cost": "skip",
+    "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.phone": {
+    "holder": "device",
+    "cost": "skip",
+    "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.phone_wall": {
+    "holder": "device",
+    "cost": "skip",
+    "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+   },
+   "arch.D.laptop_with_fallback": {
+    "holder": "vendor",
+    "cost": "skip",
+    "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+   },
+   "arch.D.phone_wall_fallback": {
+    "holder": "vendor",
+    "cost": "skip",
+    "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+   },
+   "arch.E.year_s3": {
+    "holder": "vendor"
+   },
+   "arch.E.move_s3_node": {
+    "holder": "node",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.move_s3_federated": {
+    "holder": "federated",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.year_r2": {
+    "holder": "vendor"
+   },
+   "arch.E.move_r2_node": {
+    "holder": "node",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.move_r2_federated": {
+    "holder": "federated",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.year_b2": {
+    "holder": "vendor"
+   },
+   "arch.E.move_b2_node": {
+    "holder": "node",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.move_b2_federated": {
+    "holder": "federated",
+    "cost": "one_time",
+    "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+   },
+   "arch.E.year_cloud_same_grid": {
+    "holder": "vendor",
+    "cost": "skip"
+   },
+   "arch.E.year_node": {
+    "holder": "node"
+   },
+   "arch.E.year_federated": {
+    "holder": "federated"
+   }
+  },
+  "by_rule": {
+   "any": {
+    "rule": "any",
+    "label": "Any place",
+    "fixed_line": "Each Nation decides for itself. This setting shows what a rule would cost in idle watts, paid hours, and price; it does not say which rule is right, and no number here stands for consent or custody.",
+    "comparisons": {
+     "A": {
+      "kept": [
+       {
+        "key": "arch.A.cloud"
+       },
+       {
+        "key": "arch.A.cloud_with_sync"
+       },
+       {
+        "key": "arch.A.cloud_same_grid"
+       },
+       {
+        "key": "arch.A.local"
+       },
+       {
+        "key": "arch.A.local_hydro"
+       },
+       {
+        "key": "arch.A.local_two_boxes"
+       }
+      ],
+      "left": [],
+      "cost": null
+     },
+     "B": {
+      "kept": [
+       {
+        "key": "arch.B.platform"
+       },
+       {
+        "key": "arch.B.local_1000"
+       },
+       {
+        "key": "arch.B.local_10000"
+       },
+       {
+        "key": "arch.B.local_100000"
+       },
+       {
+        "key": "arch.B.cache"
+       }
+      ],
+      "left": [],
+      "cost": null
+     },
+     "C": {
+      "kept": [
+       {
+        "key": "arch.C.ten_copies"
+       },
+       {
+        "key": "arch.C.central_s3"
+       },
+       {
+        "key": "arch.C.central_s3_with_pulls"
+       },
+       {
+        "key": "arch.C.central_r2"
+       },
+       {
+        "key": "arch.C.central_b2"
+       },
+       {
+        "key": "arch.C.federated",
+        "note": "Each Nation holds its own data. What another Nation reads crosses the link only when the holder grants it."
+       },
+       {
+        "key": "arch.C.federated_replicas"
+       }
+      ],
+      "left": [],
+      "cost": null
+     },
+     "D": {
+      "kept": [
+       {
+        "key": "arch.D.hyper"
+       },
+       {
+        "key": "arch.D.hyper_same_grid"
+       },
+       {
+        "key": "arch.D.colo"
+       },
+       {
+        "key": "arch.D.node_100k",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_100k_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_100k_fallback"
+       },
+       {
+        "key": "arch.D.node_1m",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m_fallback"
+       },
+       {
+        "key": "arch.D.laptop",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.laptop_with_fallback"
+       },
+       {
+        "key": "arch.D.phone",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone_wall",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone_wall_fallback"
+       }
+      ],
+      "left": [],
+      "cost": null
+     },
+     "E": {
+      "kept": [
+       {
+        "key": "arch.E.move_s3_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_r2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_b2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_s3_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_r2_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_b2_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.year_s3"
+       },
+       {
+        "key": "arch.E.year_r2"
+       },
+       {
+        "key": "arch.E.year_b2"
+       },
+       {
+        "key": "arch.E.year_cloud_same_grid"
+       },
+       {
+        "key": "arch.E.year_node"
+       },
+       {
+        "key": "arch.E.year_federated"
+       }
+      ],
+      "left": [],
+      "cost": null,
+      "one_time": {
+       "usd": [
+        2400.0,
+        8100.0
+       ],
+       "wh": [
+        16000.0,
+        48000.0
+       ],
+       "admin_h": [
+        40,
+        120
+       ]
+      }
+     }
+    }
+   },
+   "node": {
+    "rule": "node",
+    "label": "A node a Nation controls",
+    "fixed_line": "Each Nation decides for itself. This setting shows what a rule would cost in idle watts, paid hours, and price; it does not say which rule is right, and no number here stands for consent or custody.",
+    "comparisons": {
+     "A": {
+      "kept": [
+       {
+        "key": "arch.A.local"
+       },
+       {
+        "key": "arch.A.local_hydro"
+       },
+       {
+        "key": "arch.A.local_two_boxes"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.A.cloud",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.A.cloud_with_sync",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.A.cloud_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          45,
+          90
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          168,
+          168
+         ],
+         "left": [
+          24,
+          24
+         ]
+        },
+        "usd": {
+         "kept": [
+          10616.4,
+          11152.9
+         ],
+         "left": [
+          9840.0,
+          9840.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "seat_list"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          433620.0,
+          867240.0
+         ],
+         "left": [
+          110000.0,
+          260000.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "B": {
+      "kept": [
+       {
+        "key": "arch.B.local_1000"
+       },
+       {
+        "key": "arch.B.local_10000"
+       },
+       {
+        "key": "arch.B.local_100000"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.B.platform",
+        "reason": "Served from a platform's network, and the platform decides what it holds."
+       },
+       {
+        "key": "arch.B.cache",
+        "reason": "A box inside a network, placed by the platform, which decides what it holds."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          8,
+          8
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          12,
+          12
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "usd": {
+         "kept": [
+          8.00524,
+          788.577
+         ],
+         "left": [
+          60.0,
+          60.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "none"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          3470.88,
+          79788.0
+         ],
+         "left": [
+          19.3778,
+          2050.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "wh"
+       ],
+       "kept_lower_on": [
+        "usd"
+       ]
+      }
+     },
+     "C": {
+      "kept": [
+       {
+        "key": "arch.C.federated",
+        "note": "Each Nation holds its own data. What another Nation reads crosses the link only when the holder grants it."
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.C.ten_copies",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       },
+       {
+        "key": "arch.C.central_s3",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_s3_with_pulls",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_r2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_b2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.federated_replicas",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          460,
+          460
+         ],
+         "left": [
+          0.0,
+          460
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          120,
+          120
+         ],
+         "left": [
+          12,
+          120
+         ]
+        },
+        "usd": {
+         "kept": [
+          8530.9,
+          8530.9
+         ],
+         "left": [
+          1554.0,
+          12480.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "self_run"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          4434480.0,
+          4434480.0
+         ],
+         "left": [
+          187902.0,
+          4592560.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "D": {
+      "kept": [
+       {
+        "key": "arch.D.node_100k",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_100k_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.laptop",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone_wall",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.D.hyper",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.D.hyper_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.D.colo",
+        "reason": "Held in a host's building under the host's contract; this row does not assume a Nation runs the facility."
+       },
+       {
+        "key": "arch.D.node_100k_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.node_1m_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.laptop_with_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.phone_wall_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          40,
+          40
+         ],
+         "left": [
+          0.0,
+          40
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          24,
+          24
+         ],
+         "left": [
+          0.0,
+          24
+         ]
+        },
+        "usd": {
+         "kept": [
+          2.88988,
+          28.7404
+         ],
+         "left": [
+          0.255,
+          29.8844
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "self_run"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          545.857,
+          4014.82
+         ],
+         "left": [
+          300.0,
+          4100.62
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "E": {
+      "kept": [
+       {
+        "key": "arch.E.move_s3_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_r2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_b2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.year_node"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.E.move_s3_federated",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       },
+       {
+        "key": "arch.E.move_r2_federated",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       },
+       {
+        "key": "arch.E.move_b2_federated",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       },
+       {
+        "key": "arch.E.year_s3",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_r2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_b2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_cloud_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_federated",
+        "reason": "Holds copies on other Nations' nodes, so the data leaves this Nation's own node."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          46,
+          46
+         ],
+         "left": [
+          0.0,
+          138
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          12,
+          12
+         ],
+         "left": [
+          12,
+          36
+         ]
+        },
+        "usd": {
+         "kept": [
+          901.953,
+          901.953
+         ],
+         "left": [
+          1554.0,
+          3480.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "self_run"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          443256.0,
+          443256.0
+         ],
+         "left": [
+          187902.0,
+          1329770.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "wh"
+       ],
+       "kept_lower_on": [
+        "usd"
+       ]
+      },
+      "one_time": {
+       "usd": [
+        2400.0,
+        3300.0
+       ],
+       "wh": [
+        16000.0,
+        16000.0
+       ],
+       "admin_h": [
+        40,
+        40
+       ]
+      }
+     }
+    }
+   },
+   "federated": {
+    "rule": "federated",
+    "label": "A federated set of Nations' nodes",
+    "fixed_line": "Each Nation decides for itself. This setting shows what a rule would cost in idle watts, paid hours, and price; it does not say which rule is right, and no number here stands for consent or custody.",
+    "comparisons": {
+     "A": {
+      "kept": [
+       {
+        "key": "arch.A.local"
+       },
+       {
+        "key": "arch.A.local_hydro"
+       },
+       {
+        "key": "arch.A.local_two_boxes"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.A.cloud",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.A.cloud_with_sync",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.A.cloud_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          45,
+          90
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          168,
+          168
+         ],
+         "left": [
+          24,
+          24
+         ]
+        },
+        "usd": {
+         "kept": [
+          10616.4,
+          11152.9
+         ],
+         "left": [
+          9840.0,
+          9840.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "seat_list"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          433620.0,
+          867240.0
+         ],
+         "left": [
+          110000.0,
+          260000.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "B": {
+      "kept": [
+       {
+        "key": "arch.B.local_1000"
+       },
+       {
+        "key": "arch.B.local_10000"
+       },
+       {
+        "key": "arch.B.local_100000"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.B.platform",
+        "reason": "Served from a platform's network, and the platform decides what it holds."
+       },
+       {
+        "key": "arch.B.cache",
+        "reason": "A box inside a network, placed by the platform, which decides what it holds."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          8,
+          8
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          12,
+          12
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "usd": {
+         "kept": [
+          8.00524,
+          788.577
+         ],
+         "left": [
+          60.0,
+          60.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "none"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          3470.88,
+          79788.0
+         ],
+         "left": [
+          19.3778,
+          2050.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "wh"
+       ],
+       "kept_lower_on": [
+        "usd"
+       ]
+      }
+     },
+     "C": {
+      "kept": [
+       {
+        "key": "arch.C.ten_copies"
+       },
+       {
+        "key": "arch.C.federated",
+        "note": "Each Nation holds its own data. What another Nation reads crosses the link only when the holder grants it."
+       },
+       {
+        "key": "arch.C.federated_replicas"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.C.central_s3",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_s3_with_pulls",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_r2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.C.central_b2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          460,
+          460
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          120,
+          120
+         ],
+         "left": [
+          12,
+          12
+         ]
+        },
+        "usd": {
+         "kept": [
+          8530.9,
+          9037.08
+         ],
+         "left": [
+          1554.0,
+          12480.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          4434480.0,
+          4592560.0
+         ],
+         "left": [
+          187902.0,
+          347902.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "D": {
+      "kept": [
+       {
+        "key": "arch.D.node_100k",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_100k_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.node_1m_hydro",
+        "note": "The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.laptop",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       },
+       {
+        "key": "arch.D.phone_wall",
+        "note": "Stays on the device, which counts only where the Nation controls the device and its sync. The queries a local model cannot answer go unanswered under this rule (sf-035)."
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.D.hyper",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.D.hyper_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.D.colo",
+        "reason": "Held in a host's building under the host's contract; this row does not assume a Nation runs the facility."
+       },
+       {
+        "key": "arch.D.node_100k_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.node_1m_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.laptop_with_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       },
+       {
+        "key": "arch.D.phone_wall_fallback",
+        "reason": "Sends the queries a local model cannot answer to a hyperscaler, so part of the work leaves the node."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          40,
+          40
+         ],
+         "left": [
+          0.0,
+          40
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          24,
+          24
+         ],
+         "left": [
+          0.0,
+          24
+         ]
+        },
+        "usd": {
+         "kept": [
+          2.88988,
+          28.7404
+         ],
+         "left": [
+          0.255,
+          29.8844
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list",
+           "self_run"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          545.857,
+          4014.82
+         ],
+         "left": [
+          300.0,
+          4100.62
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "admin_h",
+        "usd",
+        "wh"
+       ],
+       "kept_lower_on": []
+      }
+     },
+     "E": {
+      "kept": [
+       {
+        "key": "arch.E.move_s3_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_r2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_b2_node",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_s3_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_r2_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.move_b2_federated",
+        "note": "The data stays on the vendor's drives until the last copy is checked and the store is emptied."
+       },
+       {
+        "key": "arch.E.year_node"
+       },
+       {
+        "key": "arch.E.year_federated"
+       }
+      ],
+      "left": [
+       {
+        "key": "arch.E.year_s3",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_r2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_b2",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       },
+       {
+        "key": "arch.E.year_cloud_same_grid",
+        "reason": "Held on a vendor's drives under the vendor's contract."
+       }
+      ],
+      "cost": {
+       "lines": {
+        "idle_w": {
+         "kept": [
+          46,
+          138
+         ],
+         "left": [
+          0.0,
+          0.0
+         ]
+        },
+        "admin_h": {
+         "kept": [
+          12,
+          36
+         ],
+         "left": [
+          12,
+          12
+         ]
+        },
+        "usd": {
+         "kept": [
+          901.953,
+          2705.86
+         ],
+         "left": [
+          1554.0,
+          3480.0
+         ],
+         "bases": {
+          "kept": [
+           "self_run"
+          ],
+          "left": [
+           "api_list"
+          ]
+         }
+        },
+        "wh": {
+         "kept": [
+          443256.0,
+          1329770.0
+         ],
+         "left": [
+          187902.0,
+          187902.0
+         ]
+        }
+       },
+       "kept_higher_on": [
+        "idle_w",
+        "wh"
+       ],
+       "kept_lower_on": [
+        "usd"
+       ]
+      },
+      "one_time": {
+       "usd": [
+        2400.0,
+        8100.0
+       ],
+       "wh": [
+        16000.0,
+        48000.0
+       ],
+       "admin_h": [
+        40,
+        120
+       ]
+      }
+     }
+    }
+   }
+  }
+ },
+ "measured": {
+  "label": "your measurement, not verified by ATNI",
+  "travels": {
+   "row": "Every row a typed value moved carries the label beside its figures.",
+   "copy": "Copy Reading adds the measured line after the Reading of a moved row.",
+   "print": "The measured line prints at the foot of every plate, and every moved row prints the label.",
+   "csv": "The file opens with the measured line as its first row, and a measured column holds the label on every moved row.",
+   "address": "A typed value never enters the address, so a shared link cannot carry it.",
+   "claims": "A typed value is never written to the claims record. The input's claims step aside for that run and are named as replaced; the page has no way to write to the record."
+  },
+  "inputs": {
+   "dev_phone": {
+    "label": "Phone energy",
+    "unit": "Wh per hour",
+    "min": 0,
+    "max": 1000
+   },
+   "dev_laptop": {
+    "label": "Laptop draw",
+    "unit": "Wh per hour",
+    "min": 0,
+    "max": 1000
+   },
+   "dev_tv": {
+    "label": "Television draw",
+    "unit": "Wh per hour",
+    "min": 0,
+    "max": 5000
+   },
+   "router_w": {
+    "label": "Router draw",
+    "unit": "W",
+    "min": 0,
+    "max": 1000
+   },
+   "office_w": {
+    "label": "Office server draw",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+   },
+   "mini_w": {
+    "label": "Media box idle",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+   },
+   "nas_w": {
+    "label": "NAS idle",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+   },
+   "node_w": {
+    "label": "AI node idle",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+   },
+   "stream_w": {
+    "label": "Draw per stream",
+    "unit": "W",
+    "min": 0,
+    "max": 10000
+   },
+   "sync_w": {
+    "label": "Laptop draw added by cloud editing",
+    "unit": "W",
+    "min": 0,
+    "max": 1000
+   },
+   "a_idle": {
+    "label": "Idle fraction a",
+    "unit": "of full power",
+    "min": 0,
+    "max": 1
+   },
+   "u_room": {
+    "label": "Room utilization U",
+    "unit": "of full capacity",
+    "min": 0.001,
+    "max": 1
+   },
+   "pue_room": {
+    "label": "Room power usage effectiveness",
+    "unit": "ratio",
+    "min": 1,
+    "max": 5
+   },
+   "j_node": {
+    "label": "AI node energy per token",
+    "unit": "J",
+    "min": 0,
+    "max": 1000
+   },
+   "j_laptop": {
+    "label": "Laptop energy per token",
+    "unit": "J",
+    "min": 0,
+    "max": 1000
+   },
+   "kb_prompt": {
+    "label": "Data per prompt",
+    "unit": "kB",
+    "min": 0,
+    "max": 100000
+   },
+   "coding_gb_per_hour": {
+    "label": "Data per coding hour",
+    "unit": "GB",
+    "min": 0,
+    "max": 1000
+   },
+   "cache_share": {
+    "label": "Cache share c",
+    "unit": "of fresh input energy",
+    "min": 0,
+    "max": 1
+   }
+  }
  },
  "computed_defaults": {
   "settings": {
@@ -18175,6 +22292,42 @@
       "usd": 8619.59,
       "g": 1276630.0,
       "ml": 13773900.0
+     },
+     "arch.E.move_s3_node": {
+      "wh": 1300.0,
+      "usd": 3300.0,
+      "g": 455.0,
+      "ml": 5876.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 1300.0,
+      "usd": 2400.0,
+      "g": 455.0,
+      "ml": 5876.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 1300.0,
+      "usd": 2400.0,
+      "g": 455.0,
+      "ml": 5876.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 3900.0,
+      "usd": 8100.0,
+      "g": 1365.0,
+      "ml": 17628.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 3900.0,
+      "usd": 7200.0,
+      "g": 1365.0,
+      "ml": 17628.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 3900.0,
+      "usd": 7200.0,
+      "g": 1365.0,
+      "ml": 17628.0
      }
     }
    },
@@ -18443,6 +22596,60 @@
       "usd": 1.16777,
       "g": 105.692,
       "ml": 979.535
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 10016.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 10016.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 10016.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 30048.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 30048.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 30048.0,
+      "ml": 216960.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 117627.0,
+      "ml": 916962.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 117627.0,
+      "ml": 916962.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 117627.0,
+      "ml": 916962.0
      }
     },
     "nwpp": {
@@ -18619,6 +22826,60 @@
       "usd": 1.16777,
       "g": 76.6912,
       "ml": 858.324
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 4608.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 4608.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 4608.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 13824.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 13824.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 13824.0,
+      "ml": 149150.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 54115.8,
+      "ml": 651510.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 54115.8,
+      "ml": 651510.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 54115.8,
+      "ml": 651510.0
      }
     },
     "bpa": {
@@ -18795,6 +23056,60 @@
       "usd": 1.16777,
       "g": 56.2107,
       "ml": 858.324
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 788.8,
+      "ml": 49716.6
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 788.8,
+      "ml": 49716.6
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 788.8,
+      "ml": 49716.6
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 2366.4,
+      "ml": 149150.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 2366.4,
+      "ml": 149150.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 2366.4,
+      "ml": 149150.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 9263.57,
+      "ml": 651510.0
      }
     },
     "nw_short_run_margin": {
@@ -18971,6 +23286,60 @@
       "usd": 1.16777,
       "g": 114.443,
       "ml": 858.324
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 11648.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 11648.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 11648.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 34944.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 34944.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 34944.0,
+      "ml": 149150.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 136793.0,
+      "ml": 651510.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 136793.0,
+      "ml": 651510.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 136793.0,
+      "ml": 651510.0
      }
     },
     "nw_long_run_margin": {
@@ -19147,6 +23516,60 @@
       "usd": 1.16777,
       "g": 58.759,
       "ml": 858.324
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 1264.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 1264.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 1264.0,
+      "ml": 49716.6
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 3792.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 3792.0,
+      "ml": 149150.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 3792.0,
+      "ml": 149150.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 14844.3,
+      "ml": 651510.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 14844.3,
+      "ml": 651510.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 14844.3,
+      "ml": 651510.0
      }
     },
     "hydro": {
@@ -19323,6 +23746,60 @@
       "usd": 1.16777,
       "g": 53.7826,
       "ml": 1175.16
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 336.0,
+      "ml": 108800.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 336.0,
+      "ml": 108800.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 336.0,
+      "ml": 108800.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 1008.0,
+      "ml": 326400.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 1008.0,
+      "ml": 326400.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 1008.0,
+      "ml": 326400.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 3945.94,
+      "ml": 1345380.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 3945.94,
+      "ml": 1345380.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 3945.94,
+      "ml": 1345380.0
      }
     },
     "wind": {
@@ -19498,6 +23975,60 @@
       "wh": 266.289,
       "usd": 1.16777,
       "g": 53.0962,
+      "ml": null
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 208.0,
+      "ml": null
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 208.0,
+      "ml": null
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 208.0,
+      "ml": null
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 624.0,
+      "ml": null
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 624.0,
+      "ml": null
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 624.0,
+      "ml": null
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 2442.73,
+      "ml": null
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 2442.73,
+      "ml": null
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 2442.73,
       "ml": null
      }
     },
@@ -19675,6 +24206,60 @@
       "usd": 1.16777,
       "g": 55.6702,
       "ml": null
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 688.0,
+      "ml": null
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 688.0,
+      "ml": null
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 688.0,
+      "ml": null
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 2064.0,
+      "ml": null
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 2064.0,
+      "ml": null
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 2064.0,
+      "ml": null
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 8079.79,
+      "ml": null
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 8079.79,
+      "ml": null
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 8079.79,
+      "ml": null
      }
     },
     "diesel": {
@@ -19850,6 +24435,60 @@
       "wh": 266.289,
       "usd": 1.16777,
       "g": 114.555,
+      "ml": null
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 11668.8,
+      "ml": null
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 11668.8,
+      "ml": null
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 11668.8,
+      "ml": null
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 35006.4,
+      "ml": null
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 35006.4,
+      "ml": null
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 35006.4,
+      "ml": null
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 137037.0,
+      "ml": null
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 137037.0,
+      "ml": null
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 137037.0,
       "ml": null
      }
     }
@@ -20030,6 +24669,60 @@
       "usd": 1.16777,
       "g": 82.0108,
       "ml": 711.839
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 3300.0,
+      "g": 5600.0,
+      "ml": 22400.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 5600.0,
+      "ml": 22400.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 2400.0,
+      "g": 5600.0,
+      "ml": 22400.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 8100.0,
+      "g": 16800.0,
+      "ml": 67200.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 16800.0,
+      "ml": 67200.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 7200.0,
+      "g": 16800.0,
+      "ml": 67200.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 65765.7,
+      "ml": 330708.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 65765.7,
+      "ml": 330708.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 65765.7,
+      "ml": 330708.0
      }
     }
    },
@@ -20624,6 +25317,24 @@
       "usd": 4.03388,
       "g": 56.9407,
       "ml": 2114.84
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 21852.5,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 65557.6,
+      "ml": 4131970.0
      }
     },
     "wa": {
@@ -20716,6 +25427,24 @@
       "usd": 4.03388,
       "g": 91.7118,
       "ml": 2114.84
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 21232.9,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 50087.9,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 150264.0,
+      "ml": 4131970.0
      }
     },
     "nw_short_run_margin": {
@@ -20808,6 +25537,24 @@
       "usd": 4.03388,
       "g": 427.414,
       "ml": 2114.84
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 136793.0,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 322690.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 968071.0,
+      "ml": 4131970.0
      }
     },
     "nw_long_run_margin": {
@@ -20900,6 +25647,24 @@
       "usd": 4.03388,
       "g": 73.1527,
       "ml": 2114.84
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 14844.3,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 35017.2,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 105052.0,
+      "ml": 4131970.0
      }
     },
     "hydro": {
@@ -20992,6 +25757,24 @@
       "usd": 4.03388,
       "g": 41.493,
       "ml": 4130.53
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 3945.94,
+      "ml": 1345380.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 9308.38,
+      "ml": 3014140.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 27925.1,
+      "ml": 9042420.0
      }
     },
     "wind": {
@@ -21083,6 +25866,24 @@
       "wh": 631.657,
       "usd": 4.03388,
       "g": 37.1261,
+      "ml": null
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 2442.73,
+      "ml": null
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 5762.33,
+      "ml": null
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 17287.0,
       "ml": null
      }
     },
@@ -21176,6 +25977,24 @@
       "usd": 4.03388,
       "g": 53.5018,
       "ml": null
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 8079.79,
+      "ml": null
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 19060.0,
+      "ml": null
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 57180.0,
+      "ml": null
      }
     },
     "diesel": {
@@ -21267,6 +26086,24 @@
       "wh": 631.657,
       "usd": 4.03388,
       "g": 428.123,
+      "ml": null
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 137037.0,
+      "ml": null
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 323267.0,
+      "ml": null
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 969800.0,
       "ml": null
      }
     },
@@ -21360,6 +26197,24 @@
       "usd": 4.03388,
       "g": 221.08,
       "ml": 2885.98
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 155140.0,
+      "ml": 2003520.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 465419.0,
+      "ml": 6010550.0
      }
     }
    },
@@ -21590,6 +26445,24 @@
       "usd": 1.16777,
       "g": 82.0108,
       "ml": 504.56
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 54115.8,
+      "ml": 157027.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 127658.0,
+      "ml": 210852.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 382973.0,
+      "ml": 632555.0
      }
     },
     "primary_purpose": {
@@ -21766,6 +26639,24 @@
       "usd": 1.16777,
       "g": 82.0108,
       "ml": 3158.83
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 54115.8,
+      "ml": 2920310.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 127658.0,
+      "ml": 6729370.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 382973.0,
+      "ml": 20188100.0
      }
     }
    },
@@ -21927,6 +26818,24 @@
       "usd": 1.16777,
       "g": 82.0108,
       "ml": 1401.39
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 54115.8,
+      "ml": 1090700.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 901.953,
+      "g": 127658.0,
+      "ml": 2413350.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2705.86,
+      "g": 382973.0,
+      "ml": 7240050.0
      }
     }
    },
@@ -22064,6 +26973,78 @@
       "usd": 3.19388,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 1900.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 1000.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 1000.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 3900.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 3000.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 3000.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 3060.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 2100.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 1134.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 3060.0,
+      "g": 54115.8,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 481.953,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 1445.86,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     },
     "0": {
@@ -22198,6 +27179,78 @@
       "usd": 2.59388,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.move_s3_node": {
+      "wh": 16000.0,
+      "usd": 900.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_r2_node": {
+      "wh": 16000.0,
+      "usd": 0.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_b2_node": {
+      "wh": 16000.0,
+      "usd": 0.0,
+      "g": 5600.0,
+      "ml": 72320.0
+     },
+     "arch.E.move_s3_federated": {
+      "wh": 48000.0,
+      "usd": 900.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_r2_federated": {
+      "wh": 48000.0,
+      "usd": 0.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.move_b2_federated": {
+      "wh": 48000.0,
+      "usd": 0.0,
+      "g": 16800.0,
+      "ml": 216960.0
+     },
+     "arch.E.year_s3": {
+      "wh": 187902.0,
+      "usd": 2760.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_r2": {
+      "wh": 187902.0,
+      "usd": 1800.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_b2": {
+      "wh": 187902.0,
+      "usd": 834.0,
+      "g": 65765.7,
+      "ml": 916962.0
+     },
+     "arch.E.year_cloud_same_grid": {
+      "wh": 187902.0,
+      "usd": 2760.0,
+      "g": 54115.8,
+      "ml": 651510.0
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 181.953,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 545.86,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     }
    },
@@ -22293,6 +27346,18 @@
       "usd": 4.02749,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 896.767,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2690.3,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     },
     "wa_residential": {
@@ -22385,6 +27450,18 @@
       "usd": 4.04589,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 911.705,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2735.11,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     },
     "us_residential": {
@@ -22477,6 +27554,18 @@
       "usd": 4.06805,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 929.701,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2789.1,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     },
     "us_industrial": {
@@ -22569,6 +27658,18 @@
       "usd": 4.02045,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 891.049,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2673.15,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     },
     "bpa_wholesale": {
@@ -22661,6 +27762,18 @@
       "usd": 3.99592,
       "g": 187.237,
       "ml": 2114.84
+     },
+     "arch.E.year_node": {
+      "wh": 443256.0,
+      "usd": 871.129,
+      "g": 127658.0,
+      "ml": 1377320.0
+     },
+     "arch.E.year_federated": {
+      "wh": 1329770.0,
+      "usd": 2613.39,
+      "g": 382973.0,
+      "ml": 4131970.0
      }
     }
    },
@@ -22738,6 +27851,18 @@
       "usd": 3.9916,
       "g": 76.23,
       "ml": 917.165
+     },
+     "arch.E.year_node": {
+      "wh": 75160.8,
+      "usd": 781.573,
+      "g": 21646.3,
+      "ml": 233546.0
+     },
+     "arch.E.year_federated": {
+      "wh": 225482.0,
+      "usd": 2344.72,
+      "g": 64938.9,
+      "ml": 700639.0
      }
     }
    }
@@ -23173,6 +28298,102 @@
    }
   }
  },
+ "carbon_damage": {
+  "label": "Show an illustrative carbon damage",
+  "default": "off",
+  "column": "illustrative damage, not a price, not federal policy",
+  "column_avoidance": "illustrative avoidance cost, not a damage estimate, not a price, not federal policy",
+  "as_of": "11/04/2026",
+  "federal_status": "It is no longer federal policy to keep one estimate of these damages (mv-005, 05/05/2025). Each figure below is someone's published estimate, in that source's own currency and year; none is converted here.",
+  "never": "No dollar on water, health, fish, places, or culture.",
+  "tonnes_first": "A project shows its tonnes first, and any dollar beside them.",
+  "families": {
+   "epa_2020": {
+    "label": "EPA 2023 report, CO2 emitted in 2020",
+    "low": 120,
+    "central": 190,
+    "high": 340,
+    "unit": "2020 USD per metric ton CO2",
+    "claims": [
+     "ex-001",
+     "ex-002",
+     "ex-003"
+    ],
+    "kind": "damage estimate, global",
+    "spread": "Near-term discount rate of 2.5, 2.0, and 1.5 percent, so the spread is a discount-rate choice.",
+    "limit": "Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved."
+   },
+   "epa_2030": {
+    "label": "EPA 2023 report, CO2 emitted in 2030",
+    "low": 140,
+    "central": 230,
+    "high": 380,
+    "unit": "2020 USD per metric ton CO2",
+    "claims": [
+     "ex-004",
+     "ex-005",
+     "ex-006"
+    ],
+    "kind": "damage estimate, global",
+    "spread": "Near-term discount rate of 2.5, 2.0, and 1.5 percent.",
+    "limit": "Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved."
+   },
+   "uba": {
+    "label": "Umweltbundesamt (Germany), Methodenkonvention 3.1",
+    "low": 195,
+    "central": 195,
+    "high": 680,
+    "unit": "2020 EUR per tonne CO2e",
+    "claims": [
+     "ex-010",
+     "ex-011"
+    ],
+    "kind": "damage estimate, global",
+    "spread": "How future generations count: its recommended rate of 1 percent pure time preference, and 0 percent, which it asks readers to run beside it.",
+    "limit": "Euro, not dollars. A newer edition exists and was not opened."
+   },
+   "epa_2017_domestic": {
+    "label": "EPA 2017 interim values, domestic damages only, CO2 emitted in 2030",
+    "low": 1,
+    "central": null,
+    "high": 7,
+    "unit": "2011 USD per metric ton CO2",
+    "claims": [
+     "ex-008",
+     "ex-009"
+    ],
+    "kind": "damage estimate, domestic only",
+    "spread": "7 and 3 percent discount rates. The source gives no central value. This is the low end of the published record.",
+    "limit": "The last published table in this frame, not a 2026 value. Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved."
+   },
+   "ec_2019": {
+    "label": "European Commission Handbook 2019, up to 2030",
+    "low": 60,
+    "central": 100,
+    "high": 189,
+    "unit": "2016 EUR per tonne CO2e",
+    "claims": [
+     "ex-012"
+    ],
+    "kind": "avoidance cost, not a damage estimate",
+    "spread": "Low, central, and high of a literature average of the cost of meeting the Paris target.",
+    "limit": "Euro, not dollars. What meeting a target costs, not what the harm is."
+   },
+   "ec_2019_long": {
+    "label": "European Commission Handbook 2019, 2040 to 2060",
+    "low": 156,
+    "central": 269,
+    "high": 498,
+    "unit": "2016 EUR per tonne CO2e",
+    "claims": [
+     "ex-013"
+    ],
+    "kind": "avoidance cost, not a damage estimate",
+    "spread": "Low, central, and high of a literature average of the cost of meeting the Paris target.",
+    "limit": "Euro, not dollars. What meeting a target costs, not what the harm is."
+   }
+  }
+ },
  "scenario": {
   "office_users": 50,
   "nations": 10,
@@ -23191,7 +28412,9 @@
    60,
    25,
    0
-  ]
+  ],
+  "exit_tb": 10,
+  "cache_share_top": 0.25
  },
  "scenario_from_selectors": {
   "i_dc_measured": [
@@ -23225,6 +28448,7 @@
   "au-048": "A top-down ceiling that counts all of Google's data center electricity against its reported tokens, so it cannot confirm a per-token figure.",
   "ec-017": "A benchmark ratio on open models, not a production figure, and a reasoning answer is not the same answer.",
   "ec-018": "A company preprint that masks its absolute energy scale; the ratio varies widely with how many requests run at once.",
+  "ec-026": "One agency's study of four data centres; its boundary is stated only as the service's global warming potential, and life-cycle terms are likely but not confirmed from the page.",
   "ec-030": "Only the abstract-level statements of this study were read; it describes a few cloud regions over six months.",
   "ec-044": "A short-run figure for buyers switching between providers of the same model, not an elasticity of total AI use.",
   "ec-054": "A student capstone on one university's account, not peer reviewed.",
@@ -23280,6 +28504,7 @@
   "lf-074": "Our sums of client plus server lower bound, without the paper's device idle-wait term; one compute-heavy music-matching task; server side is a best-case lower bound; sign depends on phone generation.",
   "lf-076": "Software power counters, not wall power; values read from the PDF text layer of one figure (12.6 against 9.1 Wh per 1,000 tokens); cooling excluded; one bench, not several organizations.",
   "lf-078": "Modeled defaults (PUE 1.58, 50 percent utilization from hyperscale); page undated; flatters a small local server.",
+  "mv-003": "A UK regulator's reading dated 01/28/2025; AWS has since moved its time limit from 60 to 180 days outside the EU, so check each program's current terms.",
   "px-019": "Token charges of sessions routed through one service over thirty days; it excludes energy, network, and device.",
   "px-035": "All Meta Family revenue spread over time in one app, so it overstates any one app, and Meta publishes no time spent; revenue, not a cost.",
   "px-039": "A ceiling: ad revenue from all viewing over TV hours only; revenue, not a cost.",

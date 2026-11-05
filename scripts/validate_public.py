@@ -62,7 +62,7 @@ PLATE_BLOCK = re.compile(r'<script type="application/json" id="plate-data-([^"]+
 POURED = re.compile(r'<[a-z][^<>]*\sdata-pour="([^"]+)"[^<>]*>')
 CLAIM_STATUS = {"verified", "partly"}
 LOCAL_PATH_FIX = ": replace it with a path relative to the page, or delete it"
-CLAIM_ID = re.compile(r"\b(?:au|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
+CLAIM_ID = re.compile(r"\b(?:au|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b")
 
 TYPES = {"resolution", "report", "policy", "legislation", "article", "academic", "dataset", "tool", "website", "news"}
 AREAS = {"energy-feasibility", "data-centers", "ai", "summit", "cross-cutting"}

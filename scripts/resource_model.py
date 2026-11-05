@@ -9,8 +9,8 @@ equations only. Ranges are input extremes run through the same equations: a spre
 
     python scripts/resource_model.py [--params FILE] [--comparison FILE] [--out FILE]
     python scripts/resource_model.py --self-test
-    python scripts/resource_model.py --export    the public JSON and CSV in site/data/
-    python scripts/resource_model.py --oracle    300 seeded settings with Python's answers, for the page's check
+    python scripts/resource_model.py --export    the public JSON and CSV in site/data/ (--out-dir FOLDER writes them elsewhere)
+    python scripts/resource_model.py --oracle    300 seeded settings with Python's answers, for the page's check (--oracle-file FILE writes it elsewhere)
 
 Standard library only.
 """
@@ -322,11 +322,18 @@ def video_comparison(p, c, dc, net, room):
     return out
 
 
+def _store_year(p, n, tb_each, hours, net_wh=0.0):
+    """n local nodes each holding tb_each for a year: whole boxes, or drives only when the nodes are already on. Returns Wh at the nodes and dollars."""
+    on = p["already_on"]
+    wh = n * (tb_each * p["stor_wh_tb_h"] * HOURS * p["pue_room"] if on else p["nas_w"] * HOURS * p["pue_room"])
+    hardware = n * (tb_each * p["hdd_usd_tb"] + (0.0 if on else p["nas_chassis_usd"])) / p["life"]
+    return wh, self_run_price(hardware, (wh + net_wh) / 1000, p["tariff"], hours, p["wage"])
+
+
 def data_comparison(p, c, dc, net, room):
     """One storage coefficient and one boundary on every row; the already-on setting reaches every local row."""
     n, tb = p["nations"], p["shared_tb"]
     gb_total = tb * 1000
-    on = p["already_on"]
     nas_wh = p["nas_w"] * HOURS * p["pue_room"]
     pull_wh = n * gb_total * c["i_net"]
     query_wh = p["fed_moved_share"] * gb_total * 12 * c["i_net"]
@@ -342,10 +349,9 @@ def data_comparison(p, c, dc, net, room):
 
     def local(tb_each, hours, label):
         """n local nodes each holding tb_each: whole boxes, or drives only when the nodes are already on."""
-        wh = n * (drives_wh(tb_each) if on else nas_wh)
-        hardware = n * (tb_each * p["hdd_usd_tb"] + (0.0 if on else p["nas_chassis_usd"])) / p["life"]
         net_wh = pull_wh if label == "copies" else query_wh
-        return four([room(wh), net(net_wh)], self_run_price(hardware, (wh + net_wh) / 1000, p["tariff"], hours, p["wage"]))
+        wh, usd = _store_year(p, n, tb_each, hours, net_wh)
+        return four([room(wh), net(net_wh)], usd)
 
     fed_tb = p["fed_tb"] * p["fed_copies"]
     return {
@@ -370,6 +376,105 @@ def data_comparison(p, c, dc, net, room):
             "duplicate_bytes_removed_gb": n * gb_total * p["dedupe"],
         },
     }
+
+
+def exit_comparison(p, dc, net, room, same_grid):
+    """One Nation leaves a cloud store, once, for its own node or a federated set of Nations' nodes, on comparison C's coefficient and boundary.
+    A move row is one time and counts only the move; a year row is a year of holding the data, before or after. Nothing here adds the two."""
+    i_net = net_intensity({**p, "connection": "wifi"})  # a Nation's move runs on its fixed link, whatever the reader's own connection is
+    tb, gb = p["exit_tb"], p["exit_tb"] * 1000
+    raw = tb * p["nas_raw_tb"] / p["shared_tb"]
+    box = raw * p["hdd_usd_tb"] + (0.0 if p["already_on"] else p["nas_chassis_usd"])
+    cloud_wh = tb * p["replicas"] * p["stor_wh_tb_h"] * HOURS * p["pue_hyper"]
+    admin = p["central_admin_h_month"] * 12 * p["wage"]
+    stay = {"s3": gb * p["p_s3"] * 12 + admin, "r2": gb * p["p_r2"] * 12 + admin, "b2": tb * p["p_b2_tb"] * 12 + admin}
+    rate = {"s3": p["p_egress"], "r2": p["p_r2_egress"], "b2": p["p_b2_egress"]}
+    node_copies, fed_copies = p["exit_node_copies"], p["replicas"]
+    node_wh, node_usd = _store_year(p, node_copies, raw, node_copies * p["nas_admin_h_month"] * 12)
+    fed_wh, fed_usd = _store_year(p, fed_copies, raw, fed_copies * p["fed_admin_h_month"] * 12)
+    out = {"year_%s" % s: four([dc(cloud_wh)], usd) for s, usd in stay.items()}
+    out["year_cloud_same_grid"] = four([same_grid(cloud_wh)], stay["s3"])
+    out["year_node"] = four([room(node_wh)], node_usd)
+    out["year_federated"] = four([room(fed_wh)], fed_usd)
+    payback = {}
+    # the node takes one copy over the wire and any second copy across its own room; the federated set takes every copy over the wire, and only the billed pulls pay egress
+    for dest, wire, pulls, year_usd in (("node", 1.0, 1.0, node_usd), ("federated", fed_copies, p["exit_fed_pulls"], fed_usd)):
+        for s in stay:
+            egress, labor = pulls * gb * rate[s], wire * p["exit_admin_h"] * p["wage"]
+            row = four([net(wire * gb * i_net)], egress + labor + p["exit_other_usd"])
+            row.update(egress_usd=egress, labor_usd=labor, other_bill_usd=p["exit_other_usd"])
+            out["move_%s_%s" % (s, dest)] = row
+            payback["%s_vs_%s" % (dest, s)] = _positive(row["usd"], stay[s] - year_usd)
+    out["payback"] = payback
+    embodied = p["emb_hdd_kg_tb"] / p["life"] * 1000
+    out["readings"] = {
+        "egress_per_pull_usd": {s: gb * rate[s] for s in rate},
+        "copies": {"node": node_copies, "federated": fed_copies},
+        "transfer_days_one_copy": tb * 8e6 / p["exit_link_mbps"] / 86400,
+        "hardware_usd": {"node": node_copies * box, "federated": fed_copies * box},
+        "embodied_own_node_g": node_copies * raw * embodied,
+        "embodied_federated_set_g": fed_copies * raw * embodied,
+        "embodied_cloud_replicas_g": tb * p["replicas"] * embodied,
+        "node_w_at_energy_tie": cloud_wh / (node_copies * HOURS * p["pue_room"]),
+        "cloud_service_boundary_g": tb * p["whole_service_kg_tb"] * 1000,  # a ceiling on another boundary, printed beside the drives-only floor and never as the row
+    }
+    return out
+
+
+def upkeep(p):
+    """What each architecture row asks of the Nation that runs it: the idle watts it carries all year and the paid hours the row counts. A vendor's idle sits inside
+    the vendor's own figure, so the Nation carries none of it. These are the lines the custody view prints; they score nothing."""
+    off, n = 1 - p["already_on"], p["nations"]
+    held = lambda tb: p["stor_wh_tb_h"] * tb if p["already_on"] else p["nas_w"]
+    year = lambda month: month * 12
+    raw = p["exit_tb"] * p["nas_raw_tb"] / p["shared_tb"]
+    cloud_a = (0.0, year(p["cloud_admin_h_month"]))
+    local_a = (p["office_w"], year(p["office_admin_h_month"]))
+    central = (0.0, year(p["central_admin_h_month"]))
+    node_d = (off * p["node_w"], p["node_admin_h_year"])
+    node_copies, fed_copies = p["exit_node_copies"], p["replicas"]
+    table = {
+        "A": {"cloud": cloud_a, "cloud_with_sync": cloud_a, "cloud_same_grid": cloud_a, "local": local_a, "local_hydro": local_a, "local_two_boxes": (2 * local_a[0], local_a[1])},
+        "B": {"platform": (0.0, 0.0), "cache": (0.0, 0.0), **{"local_%d" % v: (off * p["mini_w"], year(p["mini_admin_h_month"])) for v in p["views"]}},
+        "C": {"ten_copies": (n * held(p["nas_raw_tb"]), n * year(p["nas_admin_h_month"])), "central_s3": central, "central_s3_with_pulls": central, "central_r2": central, "central_b2": central,
+              "federated": (n * held(p["fed_tb"] * p["fed_copies"]), n * year(p["fed_admin_h_month"])), "federated_replicas": (n * held(p["fed_tb"] * p["replicas"]), n * year(p["fed_admin_h_month"]))},
+        "D": {"hyper": (0.0, 0.0), "hyper_same_grid": (0.0, 0.0), "colo": (0.0, 0.0), "laptop": (0.0, 0.0), "laptop_with_fallback": (0.0, 0.0), "phone": (0.0, 0.0), "phone_wall": (0.0, 0.0), "phone_wall_fallback": (0.0, 0.0),
+              **{name + end: node_d for name in ("node_100k", "node_1m") for end in ("", "_hydro", "_fallback")}},
+        "E": {"year_s3": central, "year_r2": central, "year_b2": central, "year_cloud_same_grid": central, "year_node": (node_copies * held(raw), node_copies * year(p["nas_admin_h_month"])),
+              "year_federated": (fed_copies * held(raw), fed_copies * year(p["fed_admin_h_month"])),
+              **{"move_%s_node" % s: (0.0, p["exit_admin_h"]) for s in ("s3", "r2", "b2")}, **{"move_%s_federated" % s: (0.0, fed_copies * p["exit_admin_h"]) for s in ("s3", "r2", "b2")}},
+    }
+    return {letter: {k: {"idle_w": i, "admin_h": h} for k, (i, h) in rows.items()} for letter, rows in table.items()}
+
+
+def _watts_for(times, row_wh, watts, per_w):
+    """Idle watts at which a row reaches times its energy; None when idle alone cannot take it there."""
+    if not per_w:
+        return None
+    w = (times * row_wh - (row_wh - watts * per_w)) / per_w
+    return w if w > 0 else None
+
+
+def field_lines(p, cat, arch):
+    """What a field reading would change, worked from the defaults. The page and the field protocol read these, so their sentences cannot drift from the model."""
+    off, room = 1 - p["already_on"], HOURS * p["pue_room"]
+    rows = {"office_server": (arch["A"]["local"], "office_w", room),
+            "nas_ten_nations": (arch["C"]["federated"], "nas_w", off * p["nations"] * room),
+            "nas_own_node": (arch["E"]["year_node"], "nas_w", off * p["exit_node_copies"] * room),
+            "node_100k": (arch["D"]["node_100k"], "node_w", off * room * p["prompts_block"] / p["node_prompts_100k"]),
+            "node_1m": (arch["D"]["node_1m"], "node_w", off * room * p["prompts_block"] / p["node_prompts_1m"]),
+            **{"media_box_%d" % v: (arch["B"]["local_%d" % v], "mini_w", off * room * p["views_block"] / v) for v in p["views"]}}
+    idle = {}
+    for name, (row, key, per_w) in rows.items():
+        idle[name] = {"default_w": p[key], "idle_share": p[key] * per_w / row["wh"], "halves_at_w": _watts_for(0.5, row["wh"], p[key], per_w), "doubles_at_w": _watts_for(2.0, row["wh"], p[key], per_w)}
+    top = {**p, "cache_share": p["cache_share_top"]}
+    median = (p["coding_fresh"], p["coding_out"], p["coding_cached"])
+    mean = (p["coding_fresh_mean"], p["coding_out_mean"], p["coding_cached_mean"])
+    hour = cat["coding_hour"]
+    return {"idle": idle,
+            "cache_share_top": {"session_times": tokens_wh(*median, top) / tokens_wh(*median, p),
+                                "hour_times": (hour["wh"] - hour["layers"]["data_center"] + p["turns_per_hour"] * tokens_wh(*mean, top)) / hour["wh"]},
+            "coding_usd_miss_times": hour["top_down_usd"] / hour["usd"]}
 
 
 def compute_comparison(p, dc, room, hydro, home):
@@ -538,15 +643,20 @@ def compute(p):
     b_opt = video_comparison(p, c, dc, net, room)
     c_opt = data_comparison(p, c, dc, net, room)
     d_opt, d_c = compute_comparison(p, dc, room, hydro, home)
+    same_grid = lambda wh: layer(wh, p["grid_local"], p["wue_site"], gen_water(p, p["gen_local"]), "local")
+    e_opt = exit_comparison(p, dc, net, room, same_grid)
+    arch = {"A": a_opt, "B": b_opt, "C": c_opt, "D": d_opt, "E": e_opt}
     return {
         "same_hour": sh,
         "catalog": cat,
         "hour": hour_baseline(p, cat, dc, net, home, c),
         "where": where_it_runs(p, cat),
-        "arch": {"A": a_opt, "B": b_opt, "C": c_opt, "D": d_opt},
+        "arch": arch,
         "cross": crossovers(p, d_c),
         "lever": lever_rows(p, cat, c, a_opt, b_opt, c_opt, d_opt, dc, net, room),
         "topdown": top_down(p, cat, sh),
+        "upkeep": upkeep(p),
+        "field": field_lines(p, cat, arch),
     }
 
 
@@ -725,10 +835,13 @@ def _num(x):
     return "%g" % x
 
 
-def crossover_spread(central_tree, oat, runs):
+def crossover_spread(central_tree, oat, runs, where=("cross",)):
     out = {}
-    for key, value in central_tree["cross"].items():
-        r = "cross." + key
+    node = central_tree
+    for part in where:
+        node = node[part]
+    for key, value in node.items():
+        r = ".".join(where) + "." + key
         vals, never = [], []
         if value is None:
             never.append("central")
@@ -1104,6 +1217,8 @@ def build(doc, cm):
                 readings[k]["date"] = doc["price_date"]
         architectures[letter] = {"title": spec["title"], "unit_of_comparison": spec["unit"], "options": options, "readings": readings,
                                  "wins": spec["wins"], "loses": spec["loses"], "note": spec.get("note", "")}
+        if "payback" in tree["arch"][letter]:  # a payback can be never, so it prints as a crossover does, not as a low and a high
+            architectures[letter].update(payback=crossover_spread(tree, oat, runs, ("arch", letter, "payback")), payback_label=spec["payback_label"])
 
     where = {}
     for w, wm in doc["workloads"].items():
@@ -1150,6 +1265,8 @@ def build(doc, cm):
     cross_spread = crossover_spread(tree, oat, runs)
 
     arch_paths = ["arch.%s.%s" % (l, n) for l, s in doc["architectures"].items() for n in s["options"]]
+    # comparison E mixes one-time rows with year rows, so it sits out of the ranking across all rows
+    ranked_paths = ["arch.%s.%s" % (l, n) for l, s in doc["architectures"].items() if s.get("in_driver_ranking", True) for n in s["options"]]
     selector_out = {}
     for name, options in runs.items():
         selector_out[name] = {}
@@ -1174,8 +1291,10 @@ def build(doc, cm):
         "backtest": {"rows": bt, "summary": backtest_summary(bt), "note": doc["backtest_note"]},
         "sensitivity": {"method": doc["sensitivity_method"], "rows": sens_rows,
                         "global_catalog": global_ranking(cat_keys, central, oat, runs, inputs),
-                        "global_architectures": global_ranking(arch_paths, central, oat, runs, inputs)},
+                        "global_architectures": global_ranking(ranked_paths, central, oat, runs, inputs)},
         "stability": {"method": doc["stability_method"], "comparisons": stable},
+        "upkeep": tree["upkeep"], "field_lines": tree["field"], "scenario_labels": doc["scenario_labels"],
+        "custody": custody_block(doc, tree), "measured": doc["measured"],
         "computed_defaults": {
             "settings": {name: sel["default"] for name, sel in selectors.items()},
             "same_hour": sh_out,
@@ -1184,6 +1303,8 @@ def build(doc, cm):
             "crossovers": tree["cross"],
         },
     }
+    if "carbon_damage" in doc:  # the one line that joins the damage layer to the file; see its block below
+        output["carbon_damage"] = doc["carbon_damage"]
     same = output["computed_defaults"].pop("same_hour")
     output = rounded(output)
     output["computed_defaults"]["same_hour"] = same  # kept exact: the tests compare it to the comparison model
@@ -1196,7 +1317,137 @@ def _inputs_out(inputs):
 
 
 def _selectors_out(selectors):
-    return {k: {"default": s["default"], "options": s["options"], "label": s["label"], "why": s.get("why", "")} for k, s in selectors.items()}
+    return {k: {"default": s["default"], "options": s["options"], "label": s["label"], "why": s.get("why", ""), **({"claims": s["claims"]} if s.get("claims") else {})} for k, s in selectors.items()}
+
+
+# ---------------------------------------------------------------- the custody setting
+
+def _span(values):
+    found = [v for v in values if v is not None]
+    return [min(found), max(found)] if found else None
+
+
+def custody_view(doc, tree, rule):
+    """What one custody setting keeps and what leaves, and what the rule costs in idle watts, paid hours, price, and energy. A row that breaches the rule leaves the comparison
+    whole, with its reason, and its figures do not change: nothing is scored lower, and no number here stands for consent or custody."""
+    spec = doc["custody"]
+    allowed = set(spec["options"][rule]["allows"])
+    out = {"rule": rule, "label": spec["options"][rule]["label"], "fixed_line": spec["fixed_line"], "comparisons": {}}
+    for letter, arch in doc["architectures"].items():
+        kept, left, costed, one_time = [], [], {"kept": [], "left": []}, []
+        for name in arch["options"]:
+            key = "arch.%s.%s" % (letter, name)
+            row = spec["rows"][key]
+            stays = row["holder"] in allowed
+            if stays:
+                kept.append({"key": key, **({"note": row["note"]} if row.get("note") else {})})
+            else:
+                left.append({"key": key, "reason": row.get("reason") or spec["reasons"][row["holder"]]})
+            if row.get("cost") == "one_time":
+                if stays:
+                    one_time.append(name)
+            elif row.get("cost") != "skip":
+                costed["kept" if stays else "left"].append(name)
+        view = {"kept": kept, "left": left, "cost": None}
+        if left:
+            lines = {}
+            for field in ("idle_w", "admin_h"):
+                lines[field] = {side: _span(tree["upkeep"][letter][n][field] for n in names) for side, names in costed.items()}
+            for field in ("usd", "wh"):
+                lines[field] = {side: _span(tree["arch"][letter][n][field] for n in names) for side, names in costed.items()}
+            lines["usd"]["bases"] = {side: sorted({arch["options"][n]["price_basis"] for n in names}) for side, names in costed.items()}
+            both = [(f, l) for f, l in lines.items() if l["kept"] and l["left"]]
+            view["cost"] = {"lines": lines, "kept_higher_on": [f for f, l in both if l["kept"][0] > l["left"][0]], "kept_lower_on": [f for f, l in both if l["kept"][0] < l["left"][0]]}
+        if one_time:
+            view["one_time"] = {"usd": _span(tree["arch"][letter][n]["usd"] for n in one_time), "wh": _span(tree["arch"][letter][n]["wh"] for n in one_time),
+                                "admin_h": _span(tree["upkeep"][letter][n]["admin_h"] for n in one_time)}
+        out["comparisons"][letter] = view
+    return out
+
+
+def custody_block(doc, tree):
+    spec = doc["custody"]
+    return {k: spec[k] for k in ("label", "default", "options", "fixed_line", "reasons", "cost_labels", "rows")} | {"by_rule": {rule: custody_view(doc, tree, rule) for rule in spec["options"]}}
+
+
+# ---------------------------------------------------------------- the measured-by-us value
+
+MEASURED_LABEL = "your measurement, not verified by ATNI"
+ROW_TREES = ("catalog", "hour", "where", "arch", "lever")
+
+
+def apply_measured(doc, inputs, base, typed):
+    """A typed value stands in for an input in this run and nowhere else. It takes no spread, keeps no claim, and carries the label; the label comes from here, never from
+    what the reader or a file supplies. Nothing in this model or on the page writes to the claims record. Returns new inputs, new base values, and the records."""
+    spec = doc["measured"]["inputs"]
+    new_inputs, new_base, records = dict(inputs), dict(base), []
+    for key, raw in typed.items():
+        rule = spec.get(key)
+        if rule is None:
+            raise ValueError("%s does not take a measured value" % key)
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            value = math.nan
+        if isinstance(raw, bool) or not rule["min"] <= value <= rule["max"]:  # a NaN fails the comparison too
+            raise ValueError("%s takes a number from %s to %s %s; %r was not used" % (rule["label"], _num(rule["min"]), _num(rule["max"]), rule["unit"], raw))
+        records.append({"input": key, "label": rule["label"], "value": value, "unit": rule["unit"], "model_value": inputs[key]["central"], "replaces_claims": list(inputs[key]["claims"]), "note": MEASURED_LABEL})
+        new_inputs[key] = dict(inputs[key], central=value, low=value, high=value, kind="your measurement", status=MEASURED_LABEL, claims=[])
+        new_base[key] = value
+    return new_inputs, new_base, sorted(records, key=lambda r: r["input"])
+
+
+def moved_rows(before, after):
+    """The rows a typed value changed, from two flat trees: these carry the label."""
+    rows = set()
+    for k in set(before) | set(after):
+        head, _, measure = k.rpartition(".")
+        if measure in MEASURES and k.split(".")[0] in ROW_TREES and before.get(k) != after.get(k):
+            rows.add(head)
+    return sorted(rows)
+
+
+def measured_line(records, used=True):
+    """The one sentence that travels with any figure a typed value touched: copy, print, and CSV all use it. Unused, it names the reading without saying the figures include it."""
+    if not records:
+        return ""
+    items = "; ".join("%s %s %s (model %s)" % (r["label"], _num(r["value"]), r["unit"], _num(r["model_value"])) for r in records)
+    return "Includes %s: %s." % (MEASURED_LABEL, items) if used else "%s%s: %s." % (MEASURED_LABEL[0].upper(), MEASURED_LABEL[1:], items)
+
+
+def copied_reading(reading, row, records, moved):
+    """Copy Reading: a moved row's Reading never leaves without the line."""
+    return "%s %s" % (reading, measured_line(records)) if row in moved else reading
+
+
+def outputs_csv(flat, records, moved):
+    """Every row at the current settings. The line comes first and the label sits on every row it moved; the label holds a comma, so both are quoted. The page's Download writes the same two things."""
+    lines = ['"# %s"' % measured_line(records)] if records else []
+    lines.append("row,measure,value,measured")
+    for k in sorted(flat):
+        head, _, measure = k.rpartition(".")
+        if measure in MEASURES and k.split(".")[0] in ROW_TREES:
+            lines.append('%s,%s,%r,%s' % (head, measure, flat[k], '"%s"' % MEASURED_LABEL if head in moved else ""))
+    return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------- the carbon damage layer
+# Off by default, and the owner may yet rule it out. To remove it: delete this block, the carbon_damage section of the parameters, the line in build() that names it, the
+# ex and mv-005 claim ids, and damage_cases in write_oracle(). compute() never reads it, so no row, price, or ranking changes.
+
+def carbon_damage(g, family):
+    """One family's low, central, and high for g grams of CO2e, in that family's own currency and year; never one number. A family with no central value keeps it None rather than a midpoint."""
+    return {k: None if family[k] is None else g / 1e6 * family[k] for k in ("low", "central", "high")}
+
+
+def damage_column(doc, g, choice="off"):
+    """The damage column for one row: None until a reader turns it on and picks a family. It is its own column, never added to a price or ranked against one."""
+    spec = doc["carbon_damage"]
+    if choice == "off":
+        return None
+    family = spec["families"][choice]
+    column = spec.get("column_avoidance", spec["column"]) if family["kind"].startswith("avoidance") else spec["column"]  # an avoidance cost never wears the damage head
+    return {"column": column, "as_of": spec["as_of"], "family": family["label"], "unit": family["unit"], "kind": family["kind"], "claims": family["claims"], **carbon_damage(g, family)}
 
 
 # ---------------------------------------------------------------- report
@@ -1295,6 +1546,42 @@ def self_test():
     assert close(tr["first_differences"]["intercept_log_per_year"], 0.0, 1e-9) and close(tr["first_differences"]["b"], 2.0, 1e-9)
     ps = project_scale(100, 1.0, 0.36, 350, 2000000)
     assert close(ps["mwh_per_year"], 876000) and close(ps["site_water_l_per_year"], 315360000) and close(ps["co2e_t_per_year"], 306600) and close(ps["share_of_load"], 0.438)
+    q = {"exit_tb": 2, "shared_tb": 10, "nas_raw_tb": 12, "replicas": 3, "stor_wh_tb_h": 1.0, "pue_hyper": 1.0, "pue_room": 1.0, "central_admin_h_month": 1, "wage": 10, "p_s3": 0.01, "p_r2": 0.005, "p_b2_tb": 2.0, "p_egress": 0.1,
+         "p_r2_egress": 0.0, "p_b2_egress": 0.0, "exit_node_copies": 1, "nas_admin_h_month": 1, "fed_admin_h_month": 1, "already_on": 0, "nas_w": 10, "hdd_usd_tb": 10, "nas_chassis_usd": 100, "life": 5, "tariff": 0.1, "exit_fed_pulls": 1,
+         "exit_admin_h": 10, "exit_other_usd": 5, "exit_link_mbps": 100, "emb_hdd_kg_tb": 20, "whole_service_kg_tb": 200}
+    q.update(network_mode="average", connection="cellular", net_fixed_avg=2.0, net_fixed_marg=0.1)
+    plain = lambda wh: layer(wh, 100, 0.0, 1.0)
+    e = exit_comparison(q, plain, plain, plain, plain)
+    assert close(e["year_s3"]["usd"], 360) and close(e["year_r2"]["usd"], 240) and close(e["year_b2"]["usd"], 168)
+    assert close(e["move_s3_node"]["usd"], 200 + 100 + 5) and close(e["move_s3_node"]["wh"], 4000) and close(e["move_r2_federated"]["usd"], 300 + 5) and close(e["move_r2_federated"]["wh"], 12000)
+    assert close(e["move_s3_federated"]["egress_usd"], 200), "a peer copy pays no egress"
+    assert close(e["readings"]["transfer_days_one_copy"], 16e6 / 100 / 86400) and close(e["year_node"]["wh"], 10 * HOURS)
+    year_node = (2.4 * 10 + 100) / 5 + 87.6 * 0.1 + 12 * 10
+    assert close(e["year_node"]["usd"], year_node) and close(e["payback"]["node_vs_s3"], 305 / (360 - year_node))
+    assert _watts_for(0.5, 100, 10, 8) == 3.75 and _watts_for(0.5, 100, 10, 1) is None and _watts_for(2, 100, 10, 0) is None
+    custody_doc = {"custody": {"options": {"any": {"label": "any", "allows": ["vendor", "node"]}, "node": {"label": "node", "allows": ["node"]}}, "fixed_line": "line", "reasons": {"vendor": "because"},
+                               "rows": {"arch.X.a": {"holder": "vendor"}, "arch.X.b": {"holder": "node"}}},
+                   "architectures": {"X": {"options": {"a": {"price_basis": "api_list"}, "b": {"price_basis": "self_run"}}}}}
+    custody_tree = {"arch": {"X": {"a": {"usd": 1.0, "wh": 5.0}, "b": {"usd": 2.0, "wh": 4.0}}}, "upkeep": {"X": {"a": {"idle_w": 0.0, "admin_h": 1.0}, "b": {"idle_w": 9.0, "admin_h": 1.0}}}}
+    v = custody_view(custody_doc, custody_tree, "node")["comparisons"]["X"]
+    assert [r["key"] for r in v["kept"]] == ["arch.X.b"] and v["left"] == [{"key": "arch.X.a", "reason": "because"}]
+    assert v["cost"]["kept_higher_on"] == ["idle_w", "usd"] and v["cost"]["kept_lower_on"] == ["wh"] and custody_view(custody_doc, custody_tree, "any")["comparisons"]["X"]["cost"] is None
+    measured_doc = {"measured": {"inputs": {"w": {"label": "Idle", "unit": "W", "min": 0, "max": 100}}}}
+    ins, b, rec = apply_measured(measured_doc, {"w": {"central": 40.0, "low": 30.0, "high": 50.0, "claims": ["sf-001"], "kind": "assumed", "status": "partly"}}, {"w": 40.0}, {"w": "62"})
+    assert b["w"] == 62 and ins["w"]["low"] == ins["w"]["high"] == 62 and ins["w"]["claims"] == [] and rec[0]["replaces_claims"] == ["sf-001"]
+    assert measured_line(rec) == "Includes your measurement, not verified by ATNI: Idle 62 W (model 40)."
+    assert measured_line(rec, used=False) == "Your measurement, not verified by ATNI: Idle 62 W (model 40)."
+    damage_doc = {"carbon_damage": {"column": "damage", "column_avoidance": "avoidance", "as_of": "x", "families": {"d": {"label": "D", "unit": "u", "kind": "damage estimate", "claims": [], "low": 1, "central": 2, "high": 3},
+                                                                                                       "a": {"label": "A", "unit": "u", "kind": "avoidance cost, not a damage estimate", "claims": [], "low": 1, "central": 2, "high": 3}}}}
+    assert damage_column(damage_doc, 1e6, "d")["column"] == "damage" and damage_column(damage_doc, 1e6, "a")["column"] == "avoidance" and damage_column(damage_doc, 1e6) is None
+    assert moved_rows({"arch.A.x.wh": 1.0, "arch.A.y.wh": 2.0}, {"arch.A.x.wh": 1.5, "arch.A.y.wh": 2.0}) == ["arch.A.x"]
+    for bad in ({"w": -1}, {"w": "many"}, {"w": True}, {"w": float("nan")}, {"v": 1}):
+        try:
+            apply_measured(measured_doc, {"w": {"central": 40.0, "claims": []}}, {"w": 40.0}, bad)
+        except ValueError:
+            continue
+        raise AssertionError("a bad typed value passed: %r" % bad)
+    assert carbon_damage(1e6, {"low": 1, "central": None, "high": 7}) == {"low": 1.0, "central": None, "high": 7.0}
     print("self-test passed")
 
 
@@ -1303,7 +1590,7 @@ def self_test():
 PUBLIC = ROOT / "site" / "data"
 ORACLE = ROOT / "work" / "site-refresh" / "tmp" / "explorer-oracle.json"
 WEEK_HOURS = 168.0
-CLAIM_ID = r"\b(?:au|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b"
+CLAIM_ID = r"\b(?:au|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b"
 # Words addressed to the builders of the page, and the facility the owner has not yet worded, stay out of the public file.
 PUBLIC_WORDS = (
     ("No general field figure; one Tribally owned colocation facility self-reports 1.28 (lf-059 note), inside the range.", "No general field figure."),
@@ -1365,7 +1652,7 @@ def export_public(doc, cm, out_dir=PUBLIC):
     out = build(doc, cm)
     out["inputs"], out["assumptions"] = _inputs_out(inputs), _selectors_out(selectors)  # unrounded: the page computes from these
     out["scenario"], out["scenario_from_selectors"] = doc["scenario"], doc["scenario_from_selectors"]
-    out["purpose"] = "The Resource Use Explorer model: every number the page uses, with its low, high, kind, and evidence ids, and every row at the default settings. Modeled estimates, not measurements."
+    out["purpose"] ="The Resource Use Explorer model: every number the page uses, with its low, high, kind, and evidence ids, and every row at the default settings. Modeled estimates, not measurements."
     high = compute({**base, **selectors["chat_kind"]["options"]["high_reasoning"]})
     words = PUBLIC_WORDS + (("moves this row from 15 to 172 Wh", "moves this row from 15 to %.0f Wh, %.0f of it in the data center" % (
         high["catalog"]["chat_hour"]["wh"], high["same_hour"]["chat"]["data_center"])),)
@@ -1389,6 +1676,7 @@ def export_public(doc, cm, out_dir=PUBLIC):
     if missing:
         raise SystemExit("partly claims with no public limit: %s" % missing)
     out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "resource-model.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     with open(out_dir / "resource-model-inputs.csv", "w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle, lineterminator="\n")
@@ -1440,8 +1728,17 @@ def write_oracle(doc, cm, path=ORACLE, cases=300, seed=20261104):
     import re
     inputs, selectors, base = resolve(doc, cm)
     rng = random.Random(seed)
+    rule_rng = random.Random(seed + 1)  # its own stream, so every older case keeps the settings and fields it had
     kept = re.compile(r"^(catalog|hour|where|arch|lever)\.[^ ]*\.(wh|usd|g|ml|ml_by_place\.\w+)$")
     near = lambda v: None if v is None else float("%.12g" % v)
+
+    def near_all(node):
+        if isinstance(node, dict):
+            return {k: near_all(v) for k, v in node.items()}
+        if isinstance(node, list):
+            return [near_all(v) for v in node]
+        return near(node) if isinstance(node, float) else node
+
     choices = {"screen": (0, 1, 7, 40), "chat": (0, 3, 10, 70, 400), "coding": (0, 0.5, 1, 8, 30), "images": (0, 10, 25), "clips": (0, 2, 9), "searches": (0, 10, 150),
                "social": (0, 1, 12), "streaming": (0, 1, 20), "gb": (0, 15, 100, 2000)}
     out = []
@@ -1465,13 +1762,30 @@ def write_oracle(doc, cm, path=ORACLE, cases=300, seed=20261104):
         drivers = {"%s.%s" % (r, m): [e["name"] for e in rank_drivers("%s.%s" % (r, m), flat, oat, runs, inputs)[:3]]
                    for r in ("catalog." + k for k in tree["catalog"]) for m in MEASURES if "%s.%s" % (r, m) in flat}
         spread = crossover_spread(tree, oat, runs)
+        rule = doc["custody"]["default"] if i == 0 else rule_rng.choice(sorted(doc["custody"]["options"]))
+        payback = crossover_spread(tree, oat, runs, ("arch", "E", "payback"))
         out.append({
+            "custody_rule": rule, "custody": near_all(custody_view(doc, tree, rule)),
+            "payback": {k: [near(c["value"]), near(c["low_one_input_or_setting"]), near(c["high_one_input_or_setting"]), len(c["never_under"])] for k, c in payback.items()},
             "settings": settings, "fields": fields, "tree": {k: near(v) for k, v in flat.items() if not k.startswith("topdown.")},
             "ranges": {k: [near(a), near(b)] for k, (a, b) in ranges.items()}, "drivers": drivers,
             "crossovers": {k: [near(c["value"]), near(c["low_one_input_or_setting"]), near(c["high_one_input_or_setting"]), len(c["never_under"])] for k, c in spread.items()},
             "your_use": {k: {t: ({m: near(x) for m, x in v.items()} if isinstance(v, dict) else near(v)) for t, v in row.items()} for k, row in your_use(p, fields).items()},
         })
-    Path(path).write_text(json.dumps({"seed": seed, "cases": out}, separators=(",", ":")), encoding="utf-8")
+    typed_cases = []
+    for typed in ({"node_w": 62}, {"nas_w": 15, "mini_w": 5}, {"a_idle": 0.25, "u_room": 0.2}, {"dev_phone": 3.2, "router_w": 6}, {"cache_share": 0.25}):
+        ins, q, records = apply_measured(doc, inputs, base, typed)
+        before, after = flatten(compute(base)), flatten(compute(q))
+        moved = moved_rows(before, after)
+        central = {k: v for k, v in after.items() if kept.match(k) and k.rpartition(".")[0] in moved}
+        typed_cases.append({"typed": typed, "line": measured_line(records), "line_unused": measured_line(records, used=False), "records": records, "moved": moved, "tree": {k: near(v) for k, v in central.items()},
+                            "ranges": {k: [near(a), near(b)] for k, (a, b) in input_extremes(ins, q, central, one_at_a_time(ins, q)).items()}})
+    refused = ({"node_w": -1}, {"node_w": "many"}, {"node_w": True}, {"u_room": 0}, {"pue_room": 0.5}, {"a_idle": 1.5}, {"p_in": 3})
+    extra = {"measured_cases": typed_cases, "measured_refused": list(refused)}
+    if "carbon_damage" in doc:  # part of the removable damage layer
+        extra["damage_cases"] = [{"g": g, "family": name, "column": damage_column(doc, g, name)["column"], **carbon_damage(g, family)} for name, family in doc["carbon_damage"]["families"].items() for g in (73.0, 306600e6)]
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_text(json.dumps({"seed": seed, "cases": out, **extra}, separators=(",", ":")), encoding="utf-8")
     return len(out)
 
 
@@ -1482,7 +1796,9 @@ def main():
     parser.add_argument("--comparison", default=str(COMPARISON))
     parser.add_argument("--out", default=str(OUT))
     parser.add_argument("--export", action="store_true", help="write site/data/resource-model.json and resource-model-inputs.csv")
+    parser.add_argument("--out-dir", default=str(PUBLIC), help="the folder --export writes to")
     parser.add_argument("--oracle", action="store_true", help="write the page's oracle, seeded random settings with Python's answers")
+    parser.add_argument("--oracle-file", default=str(ORACLE), help="the file --oracle writes to")
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -1491,9 +1807,9 @@ def main():
     doc, cm = load(args.params, args.comparison)
     if args.export or args.oracle:
         if args.export:
-            print(json.dumps(export_public(doc, cm)))
+            print(json.dumps(export_public(doc, cm, args.out_dir)))
         if args.oracle:
-            print(json.dumps({"oracle_cases": write_oracle(doc, cm)}))
+            print(json.dumps({"oracle_cases": write_oracle(doc, cm, args.oracle_file)}))
         return
     out = build(doc, cm)
     Path(args.out).write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

@@ -20,7 +20,7 @@
 .x-settings-button:hover { background: var(--grid); }
 /* A phone: the tabs fill their row and scroll (the kit fades their edge), so the button wraps to its own row under them. */
 @media (max-width: 719px) { .x-settings-button { min-height: 44px; margin-block: 4px 8px; } }
-.x-band { display: block; max-width: none; margin: 0; font-size: 1rem; line-height: 1.4; color: var(--atni-text-body); }
+.x-band { display: block; max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); } /* one line at 1440, now that it also says the public site receives nothing */
 .x-band .wrap { display: block; padding-block: 8px 4px; }
 main .x-band a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 .x-check-top { max-width: none; margin: 0; padding: 8px var(--gutter); }
@@ -157,6 +157,55 @@ html:not(.x-live) .x-plot > [data-group="scale:unit"] { margin-top: 24px; } /* o
 .plate[data-view="table"] .x-or-never { display: none; } /* the track can be narrower than the word here, and the value column and the table both print it */
 .x-or-never { position: absolute; z-index: 2; left: min(calc(var(--hi, var(--x)) * 100% + 6px), calc(100% - 3.5rem)); top: 50%; transform: translateY(-50%); font-style: normal; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-body); }
 
+/* A reader's own reading: the model's label on every row it moved, in heading ink so it is read with the figure, and its one sentence at the plate's foot. */
+.x-measured-tag { display: block; margin-top: 2px; font-family: var(--body); font-weight: 500; font-size: 0.875rem; line-height: 1.25; color: var(--atni-text-heading); }
+.x-plot [data-row]:has(.x-measured-tag) { padding-block: 4px; }
+.x-measured-line { grid-column: 1 / -1; max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-heading); }
+/* Comparison E: two kinds of row under two heads, which sit over the rule and the needle. A price row names its basis on a second line, so it keeps the height. */
+[data-board="arch.E"][data-measure="usd"] { --row: 52px; }
+.wall-row.is-one-line { --row: 40px; } /* a move's price: its basis is in the group head, so the figure and its spread hold one line */
+.wall-row.is-one-line .ladder-value > .ladder-tag { order: 0; flex-basis: auto; margin-top: 0; }
+.wall[data-measure="usd"] .wall-head { display: none; } /* a price has no side of the wall, so the head's words go, and their room with them */
+.wall-group[data-phase] { position: relative; z-index: 4; background: var(--plot-ground); }
+.x-exit-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.x-payback-line { max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); font-variant-numeric: tabular-nums; }
+.x-paybacks { display: grid; gap: 4px; margin-bottom: 12px; }
+.x-paybacks .label { margin: 0; color: var(--atni-text-heading); }
+.x-paybacks .x-readings { gap: 2px; margin: 0; font-size: 0.9375rem; }
+.x-paybacks strong { font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); font-variant-numeric: tabular-nums; }
+/* The custody setting stands over the plot it filters, in the kit's switch, with its fixed line under it. What a rule leaves out stands under the plate, with its reason and what the rule costs. */
+.x-custody-setting { display: grid; gap: 4px; margin-bottom: 8px; padding-top: 8px; }
+.x-custody-setting legend { position: static; width: auto; height: auto; margin: 0 0 2px; overflow: visible; clip: auto; white-space: normal; }
+.x-custody-setting .caption { max-width: none; margin: 0; }
+.x-custody-line { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); } /* the standing sentence at the foot's size; the live count above it leads */
+.x-custody-now { color: var(--atni-text-heading); }
+/* A row the custody rule removes keeps its place, as the kit's ghost row does: its label at 40 percent, no mark, and its reason in secondary ink over the track. */
+.wall-row.is-ghost { cursor: default; }
+.wall-row.is-ghost .ladder-label { opacity: 0.4; }
+.wall-row.is-ghost .ladder-value { font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; letter-spacing: 0; color: var(--atni-text-secondary); }
+@media (min-width: 720px) { .wall-row.is-ghost .ladder-value { grid-column: 2 / -1; grid-row: 1; justify-self: start; position: relative; z-index: 2; padding-inline: 8px; background: var(--plot-ground); } }
+tr.is-ghost > th { opacity: 0.4; }
+tr.is-ghost > td { font-size: 0.875rem; color: var(--atni-text-secondary); }
+.x-custody-now:empty { display: none; }
+@media screen and (min-width: 1100px) { .x-has-custody { --above: 148px; } }
+.x-custody { margin: 0 0 16px; }
+.x-custody-block > :first-child { margin-top: 0; }
+.x-custody-title { margin: 0 0 4px; font-size: 1.125rem; }
+.x-custody-grid { display: grid; gap: 12px 32px; align-items: start; margin-top: 8px; }
+.x-custody-grid > div { display: grid; gap: 8px; min-width: 0; }
+.x-custody-grid .x-named { margin: 0; }
+.x-custody-grid .label { margin: 0; }
+.x-custody-cost { width: 100%; font-size: 0.9375rem; }
+.x-custody-cost td { text-align: left; }
+.x-custody-cost th[scope="row"] { font-weight: 400; color: var(--atni-text-body); }
+@media (min-width: 1100px) { .x-custody-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* The illustrative damage: its own line under the figures, never beside the price. The DOM keeps the model's words exact; only the first letter is raised. */
+.x-damage { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.x-damage-head { font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.25; color: var(--atni-text-secondary); }
+.x-damage-head::first-letter { text-transform: uppercase; }
+.x-damage-figures { font-size: 1rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.x-outputs .x-damage-row { cursor: default; }
+
 /* The detail zone: the energy large, then three figures in one row, each with its basis in few words, then the sentence. */
 .x-measures { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr)); gap: 8px 16px; align-items: start; }
 .x-water { display: contents; }
@@ -200,6 +249,7 @@ a.x-c { white-space: nowrap; }
 .x-chip { display: inline-block; padding: 1px 6px; font-size: 0.875rem; color: var(--atni-text-heading); background: var(--tag-bg); }
 .x-named { display: grid; gap: 6px; margin: 8px 0; padding-left: 1rem; font-size: 0.9375rem; line-height: 1.4; }
 .x-named li { margin: 0; }
+.x-named li::marker { color: var(--baseline); } /* orange is the needle, the selection, the underline, links, and one button */
 .x-text-table td { text-align: left; }
 .plate-table { min-width: 34rem; }
 .plate-table td { text-align: left; }
@@ -269,7 +319,7 @@ q.plate-quote { display: block; quotes: none; }
 .x-settings-now { display: none; columns: 2; margin: 0 0 12px; font-size: 0.875rem; }
 html:not(.x-live) .x-settings-now { display: block; }
 
-/* The Settings drawer: beside the plate, under the notice, with the plate compressed rather than covered, so a reader sees the Wall and the readout move. */
+/* The Settings drawer: beside the plate, under the notice, so a reader sees the Wall move. From 1600px the plate compresses beside it; below, it covers the detail column only. */
 .x-drawer { display: grid; gap: 10px; padding: 16px; background: var(--atni-ground-overlay); align-content: start; }
 .x-drawer h3 { margin: 10px 0 0; font-size: 1.0625rem; }
 .x-drawer-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -281,11 +331,35 @@ html:not(.x-live) .x-settings-now { display: block; }
 .x-live .x-drawer fieldset:not(:focus-within) .x-why-line { display: none; }
 html:not(.x-live) .x-drawer { margin: 24px var(--gutter) 0; }
 .x-live .x-drawer { position: fixed; z-index: 5; top: 0; right: 0; bottom: 0; width: min(22rem, 100vw); overflow-y: auto; overscroll-behavior: contain; border-left: 1px solid var(--rule); }
-@media screen and (min-width: 1100px) {
-  .x-live .x-drawer { top: var(--drawer-top, 64px); }
+/* Below 1600px a compressed plate leaves the label column about 110px, so the drawer covers the detail column instead and the claim and plot keep their width; each field prints the model figure it stands in for. */
+@media screen and (min-width: 1100px) { .x-live .x-drawer { top: var(--drawer-top, 64px); width: min(22rem, 26vw); } }
+@media screen and (min-width: 1600px) {
+  .x-live .x-drawer { width: 22rem; }
   .has-drawer main > .panel > .wrap { padding-right: calc(22rem + 16px); }
   .has-drawer .x-plate.plate-fit, .has-drawer .x-plate.plate-fit[data-view="table"] { --l: clamp(6.5rem, 22%, 14rem); --v: clamp(7rem, 22%, 11rem); grid-template-columns: minmax(15rem, 19fr) minmax(0, 54fr) minmax(16rem, 20fr); }
 }
+/* In the drawer: the scenario file first, since it holds everything below it, then a reader's own readings, each field beside the model's figure it stands in for. */
+.x-scenario { display: grid; gap: 8px; }
+.x-scenario-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.x-scenario-actions .button { min-height: 44px; padding: 8px 12px; }
+.x-file { position: relative; cursor: pointer; }
+.x-file input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.x-file:focus-within { outline: 3px solid var(--atni-text-link); outline-offset: 3px; }
+.x-scenario-warn { display: grid; gap: 8px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.x-scenario-warn p { margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
+.x-scenario-warn strong { color: var(--atni-text-heading); }
+.x-scenario-status:empty, .x-reading-status:empty { display: none; }
+.x-scenario-status p, .x-reading-status p { margin: 0; }
+.x-scenario-status .x-named { margin: 4px 0 0; }
+.x-reading-status { color: var(--atni-text-heading); }
+.x-readings-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.x-reading { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 2px 10px; align-items: center; margin: 0; }
+.x-reading label { grid-column: 1 / -1; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.25; color: var(--atni-text-heading); }
+.x-reading input { width: 100%; min-height: 44px; padding: 8px; font-family: var(--body); font-size: 1rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 1px solid var(--control); border-radius: 0; }
+.x-reading input[aria-invalid="true"] { border-color: var(--energy-mark); border-width: 2px; }
+.x-reading .caption { font-size: 0.875rem; line-height: 1.25; overflow-wrap: anywhere; }
+html:not(.x-live) .x-reading .caption { grid-column: 1 / -1; }
+#readings:focus { outline: 3px solid var(--atni-text-link); outline-offset: 3px; }
 [data-theme="light"] .x-drawer { background: #EEF1F6; }
 @media (prefers-color-scheme: light) { [data-theme="auto"] .x-drawer { background: #EEF1F6; } }
 
@@ -328,6 +402,11 @@ html:not(.x-live) .x-drawer { margin: 24px var(--gutter) 0; }
   .x-lever .ladder-track::after { top: calc(50% - 1px); bottom: auto; }
   .x-note-slot { display: none; }
   .x-plate [data-d="sources"] { display: none; } /* every receipt prints once, under All Sources, and each row's chips print in its note */
+  .x-plate .x-custody-setting { display: block !important; margin-bottom: 8pt; padding-top: 0; } /* the kit's print drops a switch; the fixed line stays with the setting, and the list of settings names the rule */
+  .x-custody-setting > [data-js] { display: none; }
+  .x-custody[data-rule="any"] { display: none; } /* nothing left out, so nothing to list; a rule that leaves rows out prints them under every comparison */
+  .x-measured-line { margin-top: 8pt; }
+  .x-measured-tag, .x-measured-line { color: inherit; }
   .x-plate[data-plate-x="use"] .plate-controls { display: grid !important; } /* all nine inputs print, at the values shown */
   .x-plate[data-plate-x="use"] .x-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .x-more-inputs > summary { display: none; }

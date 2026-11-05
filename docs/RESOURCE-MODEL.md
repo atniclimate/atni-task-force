@@ -1,10 +1,10 @@
-# Resource Use Explorer: the one model (11/04/2026, revised after review)
+# Resource Use Explorer: the one model (11/04/2026, revised after review; second version 11/05/2026)
 
 Local working file. Decision document for the Resource Use Explorer (BRIEF.md, "New owner goal"). It picks one model from the four school proposals (`design/school-*.md`,
 Jev scores in `school-rubric.md`), extends the same-hour comparison in `design/COMPARISON-METHOD.md` and `evidence/comparison-model.json` without changing a number in it,
-and tells the next agent what to build. Every figure below is the output of `scripts/resource_model.py` on `evidence/resource-model-params.json` (148 inputs), which
-reads the same-hour inputs by key and asserts that the chat, video, and short-video hours reproduce `computed_defaults`. Results in full: `RESOURCE-MODEL-RESULTS.md`.
-Section 15 records the four independent attacks and the Jev fairness check, and what each changed. T0 only.
+and tells the next agent what to build. Every figure below is the output of `scripts/resource_model.py` on `evidence/resource-model-params.json` (177 inputs, 20 of them read
+from the same-hour model), which reads the same-hour inputs by key and asserts that the chat, video, and short-video hours reproduce `computed_defaults`. Results in full:
+`RESOURCE-MODEL-RESULTS.md`. Section 15 records the four independent attacks, the Jev fairness check, and the second version of 11/05/2026, and what each changed. T0 only.
 
 ## 1. The Decision
 
@@ -14,7 +14,7 @@ columns that matter to a Tribal decision-maker, field measurability (0.53, the h
 the only piece of arithmetic that answers "where should it run", and it turns the owner's levers (local, federated, cached, routed) into terms of one equation instead of
 four separate stories.
 
-**What it is, said plainly: a bottom-up process model checked against published figures.** It is an engineering accounting identity with 148 read, chosen, or assumed
+**What it is, said plainly: a bottom-up process model checked against published figures.** It is an engineering accounting identity with 177 read, chosen, or assumed
 inputs. It estimates no coefficient and its ranges are spreads, not distributions. It is not the "generalizable econometric model" the brief asked for, and the owner should
 be told so: the identity generalizes, the coefficients do not, and the only statistical content is a descriptive company ratio plus diagnostics (section 5). The idle
 term itself is untested: no back-test row touches it (section 15).
@@ -79,6 +79,12 @@ Full equations, per layer L in {data center or node, network, router, device} an
   ad-funded services carry a labeled revenue reading, which is revenue, not a cost (section 5).
 - **Project scale**, no defaults: `MWh = MW x load factor x 8,760`; site liters `= MWh x 1,000 x L per kWh`; tonnes CO2e `= MWh x g per kWh / 1,000`; share `= MWh over a
   load the reader enters` (`project_scale()` in the script). Hosting a building and serving a Nation's own computing are separate decisions.
+- **Leaving a cloud, one time** (comparison E): `E_move = copies x GB x i_net`, on a fixed link whatever the reader's own connection is; `CO2e = E_move x I_network`;
+  `$_move = pulls x GB x egress + copies x hours x wage + other bill`. The year before and the year after are comparison C's storage arithmetic at the Nation's size. Payback
+  `= $_move / ($_stay - $_after)`, or never when the year after costs more. Nothing adds a one-time row to a year row.
+- **What a reader's rule keeps** (section 10): `kept = rows whose holder the rule allows`. A filter, not a term: no equation reads it, and no row's figures change.
+- **A reader's own reading** (section 10): `p[input] = typed value`, for one run, with no spread and no claim.
+- **Illustrative carbon damage**, off by default (section 5): `tonnes x family's low, central, and high`, a column of its own that no other equation reads.
 
 ## 4. The Catalog (central values; DC and network at US grid 350 g, 0.36 + 4.52 L/kWh; router and device at NWPP 288 g, 3.11 L/kWh)
 
@@ -97,7 +103,7 @@ Full equations, per layer L in {data center or node, network, router, device} an
 | Video delivery, one hour-view | 1 GB served | 2.05 | 0.060 | 0.72 | 9.4 | DC + network; retail delivery list (px-053) |
 
 Read: the router and screen are 12 Wh of every phone hour (the phone's 2 Wh is battery energy; 6.2 at the wall, lf-022) and the activity adds 0.8 to 3 Wh; a coding
-session is anywhere from 30 to 2,900 median prompts (9 to 871 Wh), and the coding hour (54 to 878 Wh) is the one row where the server passes the device. The chat and
+session is anywhere from 30 to 2,900 median prompts (9 to 871 Wh, mv-004), and the coding hour (54 to 878 Wh) is the one row where the server passes the device. The chat and
 video hours reorder with the router rule and the kind of chat, so no ratio between hours prints. The seat-month is illustrative and is the first row to replace with a
 field measurement.
 
@@ -126,6 +132,14 @@ field measurement.
   common growth trend, not an elasticity: with a common time trend it is 0.49 (se 0.20), with firm trends 0.41 (0.24), with year effects 0.37 (0.45), and in first
   differences 0.30 (0.19) with an intercept of 0.20 log points a year, so electricity grew about 22 percent a year whatever revenue did; three firms allow no
   significance test and revenue is nominal.
+- **Illustrative carbon damage, one reader-set control, off by default** (`carbon_damage` in the parameters; `carbon_damage()` and `damage_column()` in the script; ECONOMETRIC-NOTE.md
+  section 5). The reader picks a published family and sees its low, central, and high, never one number, in each source's own currency and year: EPA 2023 for CO2 emitted in 2020 ($120,
+  $190, $340) or 2030 ($140, $230, $380), ex-001 to ex-006; Umweltbundesamt (195 and 680 euro), ex-010, ex-011; the European Commission Handbook's avoidance cost (60, 100, 189 euro up to
+  2030; 156, 269, 498 from 2040 to 2060), ex-012, ex-013, which is not a damage estimate and says so; and EPA's 2017 domestic values ($1 and $7, no central), ex-008, ex-009, the low end.
+  Its own column reads "illustrative damage, not a price, not federal policy", dated; OMB M-25-27 is its receipt for that last word (mv-005). It is never added to the price column or
+  ranked against a price basis, and `compute()` never reads it. The EPA families are per tonne of CO2 and the rows are CO2e, an unresolved gap the family states. Project scale shows
+  tonnes first. No dollar on water, health, fish, places, or culture. At $190 a 73 g coding hour is 1.4 cents ($0.0088 to $0.025) and a 100 MW year at 350 g is $58 million ($37 million to
+  $104 million): trivial per hour, large at project scale, and 2.8 times apart on a discount rate. The block lifts out with one deletion, and a test proves it: the owner may yet rule it out.
 
 ## 6. Where It Runs
 
@@ -195,6 +209,24 @@ the NPU: 73 Wh (lf-018), 181 at the wall (lf-022), 266 with the cloud share; the
 Local hardware is 1.4 to 1.5 times less efficient per watt for the same model (sf-036, lf-012), the cost per million tokens swings 73 times with how busy one GPU is
 (sf-041), and a 7B model is a different product from a frontier one (sf-037, lf-013).
 
+**E. Leaving a cloud, a one-time move of one Nation's data, 10 TB as an illustration, the size of comparison C; one storage coefficient and one boundary on every year row.** A move row is
+one time and a year row is one year; nothing adds them. The move, to the Nation's own node: 16 kWh of network for the one copy, 5.6 kg on the network's grid, 72 L; $3,300 from S3 ($900 of
+list egress, $2,400 for 40 assumed hours at $60, $0 of any other bill) and $2,400 from R2 or B2, whose egress is free (px-051; B2 to three times stored data, px-052), a price and not zero
+energy. To a federated set, three copies: 48 kWh, $8,100 from S3 and $7,200 from R2 or B2, because a peer copy pays no egress but takes the same network and its own hours. Nine days on the
+wire at 100 Mbps, a lower bound (0.93 at 1,000; 37 at 25; sf-056). AWS, Google, and Microsoft each run a free exit program on request, with conditions the vendor sets (mv-001, mv-002, mv-003), so
+the S3 row keeps list as its central figure and its spread runs to zero. The hours (40; 8 to 160) and any other bill ($0; $0 to $1,000) have no source and print as labeled assumptions, and at
+the assumed hours the bill for leaving is mostly hours, not egress. The year: S3 $3,480, R2 $2,520, B2 $1,554, each 188 kWh, drives only, three replicas, one assumed paid hour a month. One copy
+on the Nation's own NAS box: 443 kWh (131 to 1,209), $902, 128 kg against the cloud's 54 kg on one grid; embodied 48 kg a year against 120 kg for the cloud's replicas at the same coefficient and
+life (spread to under 1 kg per TB, sf-025). Three copies across three Nations' nodes, the cloud's durability: 1,330 kWh, $2,706, 383 kg, and 225 kWh when the nodes are already on, the setting.
+The move pays back against S3 in 1.3 years (0.35 to 4.2), R2 in 1.5 (0 to 5.9, or never at 3.5 paid hours a month), and B2 in 3.7 (0 to 15, or never); three copies pay back against S3 in 10
+years (0.41 to 38, or never) and never against R2 or B2 at these settings. **What this changes, said plainly.** Local still loses on watt-hours: 2.4 times the cloud's figure at one copy, 7.1
+times at three, and no single change reverses the three-copy row; a 15 W two-bay box (sf-043) or a node already on reverses the one-copy row, where one box is held against three replicas (the tie
+is 19.5 W). It wins on price against list storage at one copy, even with hours paid at $60, and that sharpens section 9: the paid hours that sink comparisons A and C come from 14 hours a month and
+from ten operators, not from one Nation's one box with one hour a month on each side. At 3.5 paid hours a month, the top of a seller's figure, the order reverses against R2 and B2, and at equal
+durability it holds against S3 only. The boundary leans toward the cloud: its figure is drives only and the box is whole. The one whole-service figure in the record, 166 to 280 kg per TB-year
+(ec-026), makes this data 1,660 to 2,800 kg a year on another boundary, a ceiling beside the 66 kg floor, and the record holds no whole-service figure for a local box, so the two are never
+subtracted and the watt-hour order is a finding on the record's one shared boundary, not on every boundary.
+
 **Project scale, no defaults (added under review).** The reader enters site megawatts, a load factor, cooling (0 dry, 0.36 operator average, 1.74 to 2.5 tower), and a
 grid factor, and a load to compare with; the panel returns MWh a year, site liters, tonnes CO2e, and the share. For scale, 100 MW for a year is 876 GWh, 315 million
 liters at 0.36 L per kWh and 1.86 billion at the tower midpoint. Hosting a building does not supply a Nation's own computing.
@@ -232,6 +264,24 @@ Tribally owned colocation facility exists, lf-059, sf-053, with a self-reported 
 arrangement before it is a number. On the other side, also text only: vendor support, maturity, format fidelity, and a second site for free. The page shows these beside
 the four measures as words and lets the reader weigh them; the model never turns them into watt-hours or dollars.
 
+**A rule a reader can set, and what it costs (`custody` in the parameters; `custody_view()` in the script).** One setting, "Where this data may be held", with three options: any place; a node a
+Nation controls; a federated set of Nations' nodes. Each row names who holds the data (a vendor, a platform, a host, a federated set, a node, a device). A row that breaches the rule is not scored
+lower: it leaves the comparison whole, its figures unchanged, and is listed with its reason. The cloud fallback rows leave too, because they send what a local model cannot answer to a hyperscaler;
+a local row that stays says those queries go unanswered under the rule (sf-035). Beside what stays, the view prints what the rule costs on four lines, the span of the rows that stay against the
+span of the rows that leave: idle watts the Nation carries, paid hours a year, price with its basis, and energy, and it names where the rows that stay run higher and where they run lower. Under a node
+a Nation controls: office suite, 45 to 90 W, 168 hours, $10,616 to $11,153, and 434 to 867 kWh against 0 W, 24 hours, $9,840, and 110 to 260 kWh; shared data, only query in place stands, 460 W, 120
+hours, $8,531, and 4,434 kWh against as little as 0 W, 12 hours, $1,554, and 188 kWh; leaving a cloud, 46 W, 12 hours, $902, and 443 kWh against 0 W, 12 hours, $1,554 to $3,480, and 188 kWh, where
+price runs lower and energy higher. The fixed line stays with the setting: "Each Nation decides for itself. This setting shows what a rule would cost in idle watts, paid hours, and price; it does
+not say which rule is right, and no number here stands for consent or custody." The model never converts consent or custody to a number, and a filter is not a recommendation.
+
+**A reader's own reading (`measured` in the parameters; `apply_measured()` in the script; `FIELD-PROTOCOL.md`).** Device watts, router watts, the office, media, NAS, and AI node watts, the idle fraction,
+room utilization, room PUE, joules per token, data per prompt and per coding hour, and the cache share can each take a typed value. It recomputes every row it touches for that run, takes no spread,
+drops the input's claims for that run (named as replaced), and carries the label "your measurement, not verified by ATNI". The label comes from the model, never from what a reader or a file supplies.
+How it travels: `moved_rows()` finds the rows it changed, each of which prints the label; `measured_line()` is the one sentence that goes with it, added to a moved row's Copy Reading
+(`copied_reading()`), printed at the foot of every plate, and written first in the CSV, whose `measured` column holds the label on every moved row (`outputs_csv()`). It stays out of the address, as
+every typed number does. Nothing in the model or on the page writes it to the claims record. A scenario file, when one is built (idea E5), carries typed values under their input names and re-stamps
+them on import; no label is ever read from a file. A Nation's release of a reading is that Nation's decision.
+
 ## 11. AI Is Not Data Centers
 
 Five separations the page makes explicit. (1) In the same hour the screen and router are about 12 Wh on every phone row with the router charged by time (a television
@@ -239,7 +289,7 @@ alone is 100 Wh or more), and the activity adds 0.8 to 3 Wh, chat or video (view
 mixed: AI-focused facilities were 155 of 485 TWh worldwide in 2025 (32 percent, lf-001, IEA) and AI workloads 15 to 25 percent (lf-002, second-hand); the growth is AI,
 310 of the 460 TWh the IEA adds by 2030 (67 percent), and in LBNL's US reference case AI servers reach 55 percent in 2030 (lf-003), training 20 to 35 percent of AI server
 draw (lf-004). (3) AI can run outside a data center: the place profile moves 1,000 prompts from 300 Wh in a hyperscaler to 24 Wh on laptops that are on anyway, at a cost
-in quality, and 11 to 29 percent of queries go to the cloud regardless (sf-035); a busy data center has the lowest energy per answer at equal model size because its
+in quality, and 11 to 29 percent of queries go to the cloud regardless (sf-035, whose derived line shows the rounding and the 50 percent of a 4B model, the top of this row's spread); a busy data center has the lowest energy per answer at equal model size because its
 hardware sits idle least, which is arithmetic about utilization and not a reason to site one, and a dedicated local node catches up only above about 2.8 million prompts a
 year on one grid. (4) Data centers run things that are not AI: the video, storage, office, and search rows. (5) One person's chat is not the buildout: all of ChatGPT's text
 chat is about 0.27 TWh a year on Google's median prompt (0.22 to 0.55 across the median figures), text only, a floor for one product against the IEA's 485 TWh global
@@ -256,8 +306,17 @@ person-day is 52 times the short row's data center segment, fp-059), printed as 
 and high from one change, "or never"), never as one count. The central value is one defensible setting, not a mean. Two significant figures. Every segment carries the
 same-hour basis label (measured, reported, modeled) and its claim ids; a number enters only with status verified, or partly with the limit printed. Each row names the one
 input that moves it most: chat, kind of chat and prompts per hour; coding, turns per hour and the cache-read share c; video, the 45 times intensity dispute; local rows,
-idle watts, U, and the wage; water, the hydro convention; carbon, the grid. Of 42 printed comparisons, 26 reverse on one input end or one setting; the back-test table
-(section 13) prints beside the tool.
+idle watts, U, and the wage; water, the hydro convention; carbon, the grid. Of 52 printed comparisons, 33 reverse on one input end or one setting (26 of the 42 from before comparison E, and 7 of its
+10); the back-test table (section 13) prints beside the tool. Three things print apart from these spreads. A payback can be never, so it prints as a crossover does: central, the low and high from
+one change, "or never". A typed value has no spread of its own and carries its label (section 10). The illustrative carbon damage is a published family's low, central, and high, which are the
+source's own discount choices, not a spread of this model (section 5).
+
+**What a field reading would change, worked from the defaults (`field_lines()`; the page and `FIELD-PROTOCOL.md` read these).** Each local row moves with its own box's watts: office server 45 W, media
+box 8 W, NAS 46 W, AI node 40 W. The rows that are nearly all idle move about one for one, so half a default about halves the row and twice about doubles it: the office server halves at 22.5 W and
+doubles at 90 W; the NAS at 23 and 92; the node at 100,000 prompts a year (96 percent idle) at 19 and 82; the node at 1,000,000 prompts (71 percent idle) at 12 and 97; the media box at 1,000 views a year
+at 3.9 and 16, and at 100,000 views (22 percent idle) it cannot halve on idle alone and doubles at 44. The earlier sentence, "under twenty watts halves every local energy row; over a hundred doubles
+them", did not follow from the defaults and is gone: at 1,000 views a year twenty watts more than doubles the 8 W box's row. A logged cache share at the top of its spread, 0.25, raises the coding session 1.86 times and
+the coding hour 1.74 times; it does not double them. The dollars per hour of agent time miss by 3.2 times (px-016).
 
 ## 13. Implementation Instructions for the Next Agent
 
@@ -297,6 +356,8 @@ in the shape of `comparison-model.json`: `inputs`, `assumptions` (the selectors)
 | embodied | H100 board 1,312; server see gf-051; mini 30; desktop 250; HDD 20 (under 1) per TB | kg CO2e | gf-050; gf-051; sv-036; sf-023; sf-024 sf-025 | partly, unresolved |
 | revenue readings; paid | Netflix 0.256; YouTube 0.122; Meta 0.115 to 0.195; Search 0.05 per query (revenue, not a cost); Netflix 8.99 and ChatGPT Plus 20 per month | $ per hour; $ per month | px-042 px-043 px-039 px-035 px-040; px-044 px-047 | partly; verified |
 | top-down checks | 3.6 Wh per 1k tokens; 15.1 Wh per person-day; 2.2 kWh per user-year (the seat row itself); 210 g per user-month; 0.112 kWh per $ (0.075 to 0.29); 0.089 kg per $; $13 per active day | mixed | au-048; fp-059; sf-016; sf-017 sv-052 sv-053; rs-001 rs-020 rs-033 fin-028 fin-029 fin-031; ec-053 ec-054; px-016 | partly; checks only |
+| leaving a cloud | hours to run the move 40 (8 to 160) per copy; any other one-time bill 0 (0 to 1,000); copies on the Nation's node 1 (1 to 2); pulls billed, federated set 1 (1 to 3); link 100 Mbps (25 to 1,000); R2 egress 0; B2 egress 0 (to 0.01); whole-service storage 223 (166 to 280) kg per TB-year, a check only | h; $; copies; pulls; Mbps; $ per GB; kg | assumption; assumption; ec-030; assumption; sf-056; px-051; px-052; ec-026 | assumptions; verified; partly |
+| egress programs | free on request, with conditions, at AWS, Google, and Microsoft; never the row's central figure | $ per GB | mv-001 mv-002 mv-003 | verified; partly |
 
 Read the quote before using sf-016 (the 2.2 kWh is in its note and is the whole service), gf-051 (3,424 kg is a four-year product footprint; split it), and au-017 (the
 measured DeepSeek value sits in the quote). Solar prints no generation water until a PV claim is added.
@@ -306,7 +367,14 @@ measured DeepSeek value sits in the quote). Solar prints no generation water unt
 (node unpriced), the four comparisons with their crossovers (views per year against the platform at both intensities and both network conventions; prompts per year
 against the hyperscaler on energy, on carbon on one grid, under the hydro scenario with and without embodied carbon, and on price against frontier and open-weight lists),
 the levers, the top-down checks, the trend-controlled panel (`ols`, `trend_controlled`), and `computed_defaults` for every selector at every option. Print the one input
-that moves each row.
+that moves each row. Second version: `exit_comparison` (comparison E), `upkeep` (idle watts and paid hours per row), `field_lines`, `custody_view`, `apply_measured`, `moved_rows`, `measured_line`,
+`copied_reading`, `outputs_csv`, `carbon_damage`, `damage_column`; `scripts/fit_idle.py` reads plug-meter readings and imports `idle_mult`, so the fit and the model hold one formula.
+
+**Porting the second version to the page.** `--export --out-dir FOLDER` and `--oracle --oracle-file FILE` write the public files and the oracle elsewhere, so a port can read them before they land on the
+site. The tree gains `arch.E.*`, `upkeep.*`, and `field.*`; each oracle case gains `custody_rule`, `custody`, and `payback`, and the oracle gains `measured_cases`, `measured_refused`, and `damage_cases`.
+Older cases keep their settings and fields, because the custody rule draws from its own random stream. Custody and the typed values stay off the address, and the custody setting is not one of the
+global settings. `scripts/build_explorer.py` needs comparison E in `ARCH` and its row words, with its one-time rows apart from its year rows, and its `CLAIM` pattern and `scripts/validate_public.py`'s
+`CLAIM_ID` pattern need `ex` and `mv`; `scripts/build_plates.py --export-claims econ sovereign model-v2` ships the claims the second version names.
 
 **Calibration (only these, only on these figures).** `a` is the accelerator's idle fraction (ec-020); the server anchors sf-008 and sv-039 print and set no row; the
 decode-to-prefill ratio from au-030 and au-031 (ratio 3 lands at 1.00 and 0.51, ratio 10 at 0.49 and 0.50) and sv-028 (5.3 against 2.2), keeping 3 because 10 breaks
@@ -321,7 +389,7 @@ chose the ratio). Held out: median factor 1.9, 4 of 7 within two times, worst 8.
 times on a large reasoning model (au-017), and the coding hour at 6 mean turns sits 3.2 times under the published $3.25 (43 mean turns give $7.26). Then run Jev on the
 derived rows (`rm_jev.py`) and the fairness cases (`fc_rerun9.py`), and record the output before the pour.
 
-**Tests (`tests/test_resource_model.py`, 28, skipping when the JSON is absent so CI stays green before the pour):** (1) the chat, video, and short hours equal
+**Tests (`tests/test_resource_model.py`, 65, skipping when the JSON is absent so CI stays green before the pour; those added for the second version cover comparison E, the custody view, the typed value and its label, the damage layer and its removal, the field lines, the derived lines, the trace, and the idle fit):** (1) the chat, video, and short hours equal
 `comparison-model.json` `computed_defaults.same_hour` at default, low, and high; (2) `idle_mult(0.5) == 1` and it decreases with U; (3) the coding session reproduces
 au-045 within 3 percent; (4) every claim id cited exists in an evidence file with status verified or partly; (5) low <= central <= high for every input and every printed
 range; (6) every water figure carries a convention label and every carbon figure a grid label that is not market-based; (7) every price carries a `basis` and a date;
@@ -404,6 +472,16 @@ as it passed no fair control; on the structural fixes the boundary and misleads 
 those remain the voice editor's to-do: Jev reads a dense comparison of unlike services as misleading however it is framed, and the page should let the reader pick one
 setting at a time rather than print the pair.
 
+**The second version (11/05/2026).** Added, in Python first, with no change to any figure above: comparison E (section 7), the custody setting and the typed value (section 10), the carbon damage layer
+(section 5), the plug-meter fit (`scripts/fit_idle.py`, `FIELD-PROTOCOL.md`), and the field lines (section 12). Each item names its fix as above.
+- "Under twenty watts halves, over a hundred doubles" did not follow from the default (X, S): removed; `field_lines()` prints each row's own halving and doubling watts.
+- "A cache share near 0.25 doubles the coding rows" was high (R): rerun at 1.86 times on the session and 1.74 on the hour.
+- "The one back-test the model misses by about three times" (R): px-016 misses by 3.2, and sf-017, which is not held out, by 3.3, so it is not the one; the page names the row.
+- "11 to 29 percent" rested on a rounding no claim showed (C): sf-035 now carries the derived line, and it shows 50 percent for a 4B model. The model's own spread runs there, so the sentence on laptops understates; the wording is the page's next call.
+- "30 to 2,900 prompts" had no claim (C): mv-004 holds it as a modeled spread, with its arithmetic.
+- The trace: every input resolves to a claim or to an assumption labeled by kind and in words; the numbers typed into the scenario now carry labels (`scenario_labels`); the wage and turn settings name their claims. A chart scale on the page, 0.05 Wh per square, is a design choice with no claim.
+- Fairness, on one run each, read as the ranked list section 15 says it is: the new two-sided rows score as every two-sided row does (boundary 0.05 to 0.15, misleads 0.55 to 0.70), and the boundary score is earned, since the cloud is drives only and the box whole; that gap now prints as a floor and a ceiling. The custody sentence passed the rule (follows 0.67, misleads 0.36). The idle sentence moved the right way (misleads 0.84 to 0.74); the cache sentence did not improve (misleads 0.58 to 0.66), though the old one was wrong and the new one is the rerun's arithmetic.
+
 **Decisions left to the owner.** (1) Whether the page may call this a model at all in the brief's sense: it is a process model, not an econometric one. (2) Whether 2
 assumed cloud administration hours a month (0 to 14) is the right default; at 14 the office price comparison reverses. (3) Whether the hydro scenario rows belong on the
-page at all, or only the one-grid rows with clean power as a lever. (4) The wording about the Tribally owned facility's self-reported PUE.
+page at all, or only the one-grid rows with clean power as a lever. (4) The wording about the Tribally owned facility's self-reported PUE. (5) Whether the carbon damage layer ships at all; it is off by default and lifts out clean. (6) Whether 40 hours is a fair central figure for running a move, a number with no source.

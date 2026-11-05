@@ -74,9 +74,9 @@ stor_wh_tb_h,0.65,0.57,1.2,"Wh per TB-hour, device",modeled,verified,ec-021 lf-0
 replicas,3,2,3,copies,assumed,assumption,ec-030,data center,"Capacity and redundancy drive stored-data emissions, so the factor is stated."
 seat_gb,100,30,500,GB stored per seat,assumed,assumption,sv-019 px-046,data center,"Quotas run 30 GB to 2 TB pooled; no source gives use. Printed beside the seat row and not added to it, since the 2011 service figure likely includes storage."
 seat_kwh_yr,2.2,2.2,6.6,"kWh per user-year, suite compute",modeled,partly,sf-016,data center,"A 2011 vendor bound on Gmail, read as whole-service energy with storage inside; the high is an assumption. Email, not a suite. The weakest input; illustrative."
-seat_hours_month,160,120,180,active hours per month,assumed,assumption,,device,
+seat_hours_month,160,120,180,active hours per month,assumed,assumption,,device,No source; an assumption.
 sync_w,2,1,10,W added by cloud editing,assumed,assumption,sf-014 sf-015,device,"Range from 2015; one 2012 meter reads 3.8. Central is an assumption, and the comparison reverses inside this range."
-active_hours,1500,1000,2000,hours per user-year,assumed,assumption,,device,
+active_hours,1500,1000,2000,hours per user-year,assumed,assumption,,device,No source; an assumption.
 nas_w,46,15,46,"W idle, NAS",modeled,partly,lf-032 sf-043,local node,"Four-bay figure is researched, not metered; two-bay measured 15 to 18."
 mini_w,8,7,9,"W idle, mini PC",measured,partly,sf-042 lf-033,local node,One blog's wall meter.
 stream_w,1,0,2,W per stream,measured,partly,lf-033,local node,
@@ -112,9 +112,9 @@ p_delivery,0.06,0.06,0.06,USD per hour-view,measured,verified,px-053,price,"One 
 node_usd,6950,899,6950,"USD, desk AI node",measured,verified,px-059 lf-044,price,Out of stock on the read date.
 hdd_usd_tb,22.22,18,56,USD per TB,measured,partly,sf-052 lf-044,price,Moves weekly; one tracker's low.
 office_box_usd,2000,899,6950,"USD, office server",assumed,assumption,lf-044 px-059,price,
-office_tb,20,10,40,TB,assumed,assumption,,price,
-mini_box_usd,300,150,600,"USD, mini PC",assumed,assumption,,price,
-nas_chassis_usd,400,200,800,"USD, NAS chassis",assumed,assumption,,price,
+office_tb,20,10,40,TB,assumed,assumption,,price,No source; an assumption.
+mini_box_usd,300,150,600,"USD, mini PC",assumed,assumption,,price,No source; an assumption.
+nas_chassis_usd,400,200,800,"USD, NAS chassis",assumed,assumption,,price,No source; an assumption.
 nas_raw_tb,12,10,16,raw TB per Nation for 10 TB held,assumed,assumption,,price,Ten terabytes plus parity; used for both price and embodied carbon.
 life,5,3,7,years of hardware life,assumed,assumption,ec-048 gf-051,price,
 tariff_wa_com,0.1097,0.1097,0.1097,USD per kWh,measured,verified,sv-023,price,"State average, not any customer's rate."
@@ -168,3 +168,11 @@ coding_out_mean,4000,4000,4000,output tokens per mean turn,measured,verified,au-
 coding_turns_mean,6.1,6.1,6.1,user turns per mean session,measured,verified,au-043 au-045,,"The mean session (6.1 turns in 62.6 minutes) is the better aggregate; the median is typical, a floor for totals."
 cloud_admin_h_month,2,0,14,"paid hours per month, cloud seats for 50 users",assumed,assumption,,,"No source. The seller's 14 hours for the local suite covers user administration the cloud also needs, so part of it belongs on the cloud side; 0 to the local figure is the spread."
 central_admin_h_month,1,0.5,3.5,"paid hours per month, one operator of the central copy",assumed,assumption,sv-042,,"The same per-operator figure as a NAS, for one operator instead of ten."
+exit_admin_h,40,8,160,"paid hours to run the move, per copy, one time",assumed,assumption,,price,"No source. Scripting the pull, checking every file against its checksum, cutting over, and emptying the store; one working day to one working month. A Nation's own figure replaces it."
+exit_other_usd,0,0,1000,"USD, any other one-time bill",assumed,assumption,,price,"No source. A cold-tier retrieval fee, request charges, a contract's minimum, or an early-exit term; zero on plain hot storage on a plain account."
+exit_node_copies,1,1,2,copies on the Nation's own node or nodes,assumed,assumption,ec-030,local node,"One box, or a second box at the same Nation. One box is not the durability of three replicas."
+exit_fed_pulls,1,1,3,"pulls billed by the store, federated set",assumed,assumption,,price,"One pull, then peer copies that pay no egress; three pulls if each Nation takes its copy from the store."
+exit_link_mbps,100,25,1000,"Mbps, the Nation's link",assumed,assumption,sf-056,network,"100 Mbps is the download half of the standard in sf-056; 25 and 1,000 are illustrations. Line rate with no overhead, so the days are a lower bound."
+whole_service_kg_tb,223,166,280,"kg CO2e per TB-year, a service's whole footprint",modeled,partly,ec-026,check,"Four data centres, on a service boundary; central is the midpoint. A check on another boundary, never a row."
+p_r2_egress,0,0,0,USD per GB,measured,verified,px-051,price,"Free is a price, not zero energy."
+p_b2_egress,0,0,0.01,USD per GB,measured,verified,px-052,price,"Free to three times average monthly stored data, then 0.01 dollars per GB; up to three pulls of the data stay inside it."

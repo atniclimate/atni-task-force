@@ -928,7 +928,7 @@
     "kind": "preprint"
    },
    "quote": "First, local LMs successfully answer 88.7% of these queries, with accuracy varying by domain.",
-   "derived": null,
+   "derived": "Queries left unanswered: 100 - 88.7 = 11.3 with the best-of-local ensemble, printed as 11; 100 - 71.4 = 28.6 with the best single model, printed as 29; 100 - 49.6 = 50.4 with a 4B model, printed as 50.",
    "status": "partly"
   },
   {

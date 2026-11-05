@@ -14,8 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("resource_model", ROOT / "scripts" / "resource_model.py")
 rm = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rm)
+fit_spec = importlib.util.spec_from_file_location("fit_idle", ROOT / "scripts" / "fit_idle.py")
+fit = importlib.util.module_from_spec(fit_spec)
+fit_spec.loader.exec_module(fit)
 
-need_files = pytest.mark.skipif(not (rm.OUT.exists() and rm.PARAMS.exists() and rm.COMPARISON.exists()), reason="evidence files absent")
+need_files =pytest.mark.skipif(not (rm.OUT.exists() and rm.PARAMS.exists() and rm.COMPARISON.exists()), reason="evidence files absent")
 
 
 @pytest.fixture(scope="module")
@@ -142,8 +145,8 @@ def test_every_cited_claim_exists_and_is_usable(world):  # (4)
     for _, node in walk(world["out"]):
         if isinstance(node.get("claims"), list):
             cited.update(node["claims"])
-    text = json.dumps({k: world["out"][k] for k in ("catalog", "architectures", "levers", "qualitative", "places")}, ensure_ascii=False)
-    cited.update(re.findall(r"\b(?:fp|ec|sf|gf|au|px|sv|lf|tr|rs|fin|dem)-\d{3}\b", text))
+    text = json.dumps({k: world["out"][k] for k in ("catalog", "architectures", "levers", "qualitative", "places", "custody", "carbon_damage")}, ensure_ascii=False)
+    cited.update(re.findall(r"\b(?:fp|ec|ex|sf|gf|au|px|sv|lf|mv|tr|rs|fin|dem)-\d{3}\b", text))
     assert len(cited) > 100
     for c in sorted(cited):
         assert c in index, c
@@ -385,3 +388,389 @@ def test_public_code_has_no_local_paths_or_keys():
     assert not re.search(r"[A-Za-z]:[/\\]", text)
     assert "API_KEY" not in text and "environ" not in text
     assert not set(re.findall(r"^(?:import|from) (\w+)", text, re.M)) - {"argparse", "json", "math", "statistics", "sys", "pathlib"}
+    text = (ROOT / "scripts" / "fit_idle.py").read_text(encoding="utf-8")
+    assert not re.search(r"[A-Za-z]:[/\\]", text)
+    assert "API_KEY" not in text and "environ" not in text and "urllib" not in text and "socket" not in text, "the fit sends nothing anywhere"
+    assert not set(re.findall(r"^(?:import|from) (\w+)", text, re.M)) - {"argparse", "csv", "io", "json", "math", "pathlib", "sys", "resource_model"}
+
+
+# ---------------------------------------------------------------- comparison E, leaving a cloud
+
+def row_of(world, path):
+    node = world["tree"]
+    for part in path.split("."):
+        node = node[part]
+    return node
+
+
+@need_files
+def test_a_year_in_a_store_is_comparison_c_at_the_same_size(world):
+    c, e = world["tree"]["arch"]["C"], world["tree"]["arch"]["E"]
+    assert world["base"]["exit_tb"] == world["base"]["shared_tb"]
+    for s in ("s3", "r2", "b2"):
+        assert e["year_" + s]["wh"] == pytest.approx(c["central_" + s]["wh"]) and e["year_" + s]["usd"] == pytest.approx(c["central_" + s]["usd"]), s
+    assert e["readings"]["egress_per_pull_usd"]["s3"] * world["base"]["nations"] == pytest.approx(c["readings"]["egress_one_pull_each_usd"])
+
+
+@need_files
+def test_a_move_counts_what_it_says_and_nothing_more(world):
+    p, e = world["base"], world["tree"]["arch"]["E"]
+    gb = p["exit_tb"] * 1000
+    move = e["move_s3_node"]
+    assert move["wh"] == pytest.approx(gb * p["net_fixed_avg"]) and move["g"] == pytest.approx(move["wh"] * p["grid_dc"] / 1000)
+    assert move["usd"] == pytest.approx(gb * p["p_egress"] + p["exit_admin_h"] * p["wage"] + p["exit_other_usd"])
+    assert move["egress_usd"] + move["labor_usd"] + move["other_bill_usd"] == pytest.approx(move["usd"])
+    assert e["move_r2_node"]["wh"] == move["wh"] and e["move_r2_node"]["egress_usd"] == 0, "free egress is a price, not zero energy"
+    fed = e["move_s3_federated"]
+    assert fed["wh"] == pytest.approx(p["replicas"] * move["wh"]) and fed["egress_usd"] == pytest.approx(move["egress_usd"]) and fed["labor_usd"] == pytest.approx(p["replicas"] * move["labor_usd"]), "a peer copy pays no egress and still takes hours and network"
+    other = rm.compute({**p, "nas_w": 15, "connection": "cellular"})["arch"]["E"]["move_s3_node"]
+    assert other["wh"] == move["wh"], "no box watts in a move, and a Nation's fixed link is not the reader's phone"
+    for r in world["out"]["architectures"]["E"]["options"]:
+        if r["key"].split(".")[-1].startswith("move_"):
+            assert all(word in r["counted"] for word in ("energy:", "CO2e:", "price:")), r["key"]
+            assert r["unit"] == "one time" and {x["basis"] for x in r["price_readings"]} == {"api_list", "self_run"}, r["key"]
+        else:
+            assert r["unit"] == "one year", r["key"]
+
+
+@need_files
+def test_migration_labor_and_other_bills_are_labeled_assumptions_with_a_range(world):
+    for key in ("exit_admin_h", "exit_other_usd"):
+        v = world["inputs"][key]
+        assert v["kind"] == "assumed" and v["status"] == "assumption" and not v["claims"] and v["low"] < v["high"] and v["note"].startswith("No source"), key
+    assert world["base"]["cache_share_top"] == world["inputs"]["cache_share"]["high"]
+    words = world["out"]["architectures"]["E"]["note"]
+    assert "labeled assumptions" in words
+
+
+@need_files
+def test_the_year_after_uses_the_box_or_the_drives(world):
+    p, e = world["base"], world["tree"]["arch"]["E"]
+    assert e["year_node"]["wh"] == pytest.approx(p["nas_w"] * rm.HOURS * p["pue_room"]) and e["year_federated"]["wh"] == pytest.approx(p["replicas"] * e["year_node"]["wh"])
+    assert e["year_cloud_same_grid"]["wh"] == e["year_s3"]["wh"] and e["year_cloud_same_grid"]["g"] < e["year_s3"]["g"]
+    raw = p["exit_tb"] * p["nas_raw_tb"] / p["shared_tb"]
+    on = rm.compute({**p, "already_on": 1})["arch"]["E"]
+    assert on["year_node"]["wh"] == pytest.approx(raw * p["stor_wh_tb_h"] * rm.HOURS * p["pue_room"]), "the already-on setting reaches the new rows"
+    embodied = world["out"]["architectures"]["E"]["readings"]
+    assert embodied["embodied_cloud_replicas_g"]["grid"] and embodied["embodied_own_node_g"]["grid"], "embodied carbon prints on both sides, on one boundary"
+    assert e["readings"]["transfer_days_one_copy"] == pytest.approx(p["exit_tb"] * 8e6 / p["exit_link_mbps"] / 86400)
+    ceiling = embodied["cloud_service_boundary_g"]
+    assert ceiling["low"] == pytest.approx(p["exit_tb"] * 166e3) and ceiling["high"] == pytest.approx(p["exit_tb"] * 280e3) and "another boundary" in ceiling["grid"], "a ceiling beside the floor, named as another boundary"
+    assert "never subtracted" in world["out"]["architectures"]["E"]["note"]
+
+
+@need_files
+def test_local_wins_on_custody_not_watt_hours_and_the_words_say_where_it_wins_on_price(world):
+    e, reversals = world["tree"]["arch"]["E"], {s["id"]: s for s in world["out"]["stability"]["comparisons"]}
+    # watt-hours: the local rows use more, and three copies, the cloud's durability, use more on every single change
+    assert e["year_node"]["wh"] > e["year_s3"]["wh"] and e["year_federated"]["wh"] > e["year_s3"]["wh"] and e["year_node"]["g"] > e["year_cloud_same_grid"]["g"]
+    assert reversals["e_federated_energy"]["stable"] and reversals["e_federated_carbon"]["stable"]
+    assert set(reversals["e_node_energy"]["flips_on_one_input"] + reversals["e_node_energy"]["flips_on_one_setting"]) == {"nas_w at 15", "node_already_on = yes"}
+    # price, as the row's words state it
+    assert all(e["year_node"]["usd"] < e["year_" + s]["usd"] for s in ("s3", "r2", "b2"))
+    assert e["year_federated"]["usd"] < e["year_s3"]["usd"] and e["year_federated"]["usd"] > e["year_r2"]["usd"] and e["year_federated"]["usd"] > e["year_b2"]["usd"]
+    assert not reversals["e_node_price_r2"]["stable"] and not reversals["e_node_price_b2"]["stable"]
+    assert e["move_s3_node"]["labor_usd"] > e["move_s3_node"]["egress_usd"], "at the assumed hours, the bill is mostly hours"
+    pay = world["out"]["architectures"]["E"]["payback"]
+    assert all(pay["node_vs_" + s]["value"] < 5 for s in ("s3", "r2", "b2")), "within a few years"
+    assert pay["federated_vs_s3"]["value"] > 5 and pay["federated_vs_r2"]["value"] is None and pay["federated_vs_b2"]["value"] is None
+    assert pay["federated_vs_s3"]["never_under"], "a payback prints its or-never"
+
+
+@need_files
+def test_the_ranking_across_rows_is_unmoved_by_a_comparison_of_unlike_periods(world):
+    names = {e["name"] for rows in world["out"]["sensitivity"]["global_architectures"].values() for e in rows}
+    assert not {n for n in names if n.startswith("exit_")}
+
+
+# ---------------------------------------------------------------- the custody setting
+
+@need_files
+def test_every_row_has_a_holder_and_every_rule_partitions_the_rows(world):
+    doc, spec = world["doc"], world["doc"]["custody"]
+    assert spec["default"] == "any" and set(spec["options"]) == {"any", "node", "federated"}
+    every = {"arch.%s.%s" % (l, n) for l, a in doc["architectures"].items() for n in a["options"]}
+    assert set(spec["rows"]) == every
+    assert {r["holder"] for r in spec["rows"].values()} <= set(spec["options"]["any"]["allows"])
+    for rule in spec["options"]:
+        view = rm.custody_view(doc, world["tree"], rule)["comparisons"]
+        for letter, v in view.items():
+            kept, left = [r["key"] for r in v["kept"]], [r["key"] for r in v["left"]]
+            assert sorted(kept + left) == sorted("arch.%s.%s" % (letter, n) for n in doc["architectures"][letter]["options"]), (rule, letter)
+            assert kept, "a rule always leaves something standing"
+            assert all(r["reason"] for r in v["left"]), "a row that leaves says why"
+    assert all(not v["left"] and v["cost"] is None for v in rm.custody_view(doc, world["tree"], "any")["comparisons"].values())
+
+
+@need_files
+def test_a_row_that_breaches_leaves_whole_and_is_not_scored(world):
+    doc, tree = world["doc"], world["tree"]
+    before = json.dumps(tree["arch"], sort_keys=True)
+    view = rm.custody_view(doc, tree, "node")
+    assert json.dumps(tree["arch"], sort_keys=True) == before, "no row's figures change"
+    for v in view["comparisons"].values():
+        assert all(set(r) == {"key", "reason"} for r in v["left"]), "a left row carries words, never a number"
+    words = json.dumps(doc["custody"]).lower()
+    assert not re.search(r"\b(score|weight|penalty|points|rating)\b", words)
+    assert "Each Nation decides for itself" in view["fixed_line"] and "no number here stands for consent or custody" in view["fixed_line"]
+    assert "custody" not in world["selectors"] and "custody" not in world["out"]["assumptions"], "not a setting of the model's numbers"
+    assert all("custody" not in k for k in rm.flatten(tree)), "the tree holds no custody figure"
+
+
+@need_files
+def test_what_each_rule_keeps_and_lets_go(world):
+    doc, tree = world["doc"], world["tree"]
+    node = rm.custody_view(doc, tree, "node")["comparisons"]
+    fed = rm.custody_view(doc, tree, "federated")["comparisons"]
+    names = lambda v, side: {r["key"].split(".")[-1] for r in v[side]}
+    assert names(node["A"], "left") == {"cloud", "cloud_with_sync", "cloud_same_grid"} and "local" in names(node["A"], "kept")
+    assert names(node["C"], "kept") == {"federated"}, "only query in place keeps each Nation's data on its own node"
+    assert names(fed["C"], "kept") == {"ten_copies", "federated", "federated_replicas"}
+    assert names(node["B"], "left") == {"platform", "cache"}
+    for rule in (node, fed):
+        for row in ("node_100k_fallback", "node_1m_fallback", "laptop_with_fallback", "phone_wall_fallback"):
+            assert row in names(rule["D"], "left"), row
+        assert "colo" in names(rule["D"], "left") and "node_1m" in names(rule["D"], "kept")
+    reason = {r["key"]: r["reason"] for r in node["D"]["left"]}
+    assert "hyperscaler" in reason["arch.D.node_1m_fallback"]
+    assert names(node["E"], "kept") == {"move_s3_node", "move_r2_node", "move_b2_node", "year_node"}
+    assert {"year_federated", "move_s3_federated"} <= names(fed["E"], "kept") and "year_s3" in names(fed["E"], "left")
+
+
+@need_files
+def test_the_cost_of_a_rule_is_the_rows_own_figures_and_shows_where_local_loses(world):
+    doc, tree = world["doc"], world["tree"]
+    a = rm.custody_view(doc, tree, "node")["comparisons"]["A"]["cost"]
+    t, up = tree["arch"]["A"], tree["upkeep"]["A"]
+    assert a["lines"]["wh"]["kept"] == [t["local"]["wh"], t["local_two_boxes"]["wh"]] and a["lines"]["wh"]["left"] == [t["cloud"]["wh"], t["cloud_with_sync"]["wh"]]
+    assert a["lines"]["usd"]["left"] == [t["cloud"]["usd"], t["cloud"]["usd"]] and a["lines"]["usd"]["bases"] == {"kept": ["self_run"], "left": ["seat_list"]}
+    assert a["lines"]["idle_w"]["kept"] == [up["local"]["idle_w"], up["local_two_boxes"]["idle_w"]] and a["lines"]["idle_w"]["left"] == [0.0, 0.0]
+    assert a["lines"]["admin_h"]["kept"][0] == world["base"]["office_admin_h_month"] * 12
+    assert set(a["kept_higher_on"]) == {"idle_w", "admin_h", "usd", "wh"}, "local loses here, and the view says so"
+    views = rm.custody_view(doc, tree, "node")["comparisons"]
+    assert "wh" in views["E"]["cost"]["kept_higher_on"] and "usd" in views["E"]["cost"]["kept_lower_on"], "and it says where local wins"
+    assert views["E"]["one_time"]["usd"] == [tree["arch"]["E"]["move_r2_node"]["usd"], tree["arch"]["E"]["move_s3_node"]["usd"]], "a one-time bill sits apart from the yearly lines"
+    assert "one_time" not in views["A"]
+    for letter in tree["arch"]:
+        assert set(tree["upkeep"][letter]) == set(doc["architectures"][letter]["options"]), letter
+    on = rm.compute({**world["base"], "already_on": 1})
+    assert on["upkeep"]["D"]["node_1m"]["idle_w"] == 0 and on["upkeep"]["C"]["federated"]["idle_w"] < tree["upkeep"]["C"]["federated"]["idle_w"], "the already-on setting reaches the idle line"
+
+
+# ---------------------------------------------------------------- the measured-by-us value
+
+@need_files
+def test_a_typed_value_recomputes_and_carries_the_label(world):
+    doc, inputs, base = world["doc"], world["inputs"], world["base"]
+    saved = json.dumps([inputs, base], sort_keys=True, default=str)
+    ins, q, records = rm.apply_measured(doc, inputs, base, {"node_w": "62"})
+    assert json.dumps([inputs, base], sort_keys=True, default=str) == saved, "a typed value changes nothing outside this run"
+    assert q["node_w"] == 62 and ins["node_w"]["low"] == ins["node_w"]["high"] == 62 and ins["node_w"]["claims"] == [] and ins["node_w"]["status"] == rm.MEASURED_LABEL
+    assert "node_w" not in rm.swept(ins), "it takes no spread from the record"
+    assert records == [{"input": "node_w", "label": "AI node idle", "value": 62.0, "unit": "W", "model_value": 40, "replaces_claims": inputs["node_w"]["claims"], "note": rm.MEASURED_LABEL}]
+    before, after = rm.flatten(world["tree"]), rm.flatten(rm.compute(q))
+    moved = rm.moved_rows(before, after)
+    assert "arch.D.node_100k" in moved and "arch.D.node_1m_fallback" in moved and "catalog.chat_prompt" not in moved and "arch.C.federated" not in moved
+    assert after["arch.D.node_100k.wh"] == pytest.approx(before["arch.D.node_100k.wh"] + 22 * rm.HOURS * base["pue_room"] * base["prompts_block"] / base["node_prompts_100k"])
+    line = rm.measured_line(records)
+    assert line == "Includes your measurement, not verified by ATNI: AI node idle 62 W (model 40)."
+    assert rm.measured_line([]) == ""
+
+
+@need_files
+def test_the_label_survives_copy_and_csv(world):
+    doc, inputs, base = world["doc"], world["inputs"], world["base"]
+    _, q, records = rm.apply_measured(doc, inputs, base, {"nas_w": 15})
+    after = rm.flatten(rm.compute(q))
+    moved = rm.moved_rows(rm.flatten(world["tree"]), after)
+    line = rm.measured_line(records)
+    assert rm.copied_reading("A Reading.", "arch.C.federated", records, moved) == "A Reading. " + line
+    assert rm.copied_reading("A Reading.", "catalog.chat_prompt", records, moved) == "A Reading."
+    import csv
+    import io
+    rows = list(csv.reader(io.StringIO(rm.outputs_csv(after, records, moved))))
+    assert rows[0] == ["# " + line] and rows[1] == ["row", "measure", "value", "measured"]
+    labels = {r[0]: r[3] for r in rows[2:]}
+    assert labels["arch.C.federated"] == rm.MEASURED_LABEL and labels["catalog.chat_prompt"] == "" and all(v == rm.MEASURED_LABEL for k, v in labels.items() if k in moved)
+    assert rm.outputs_csv(after, [], []).startswith("row,measure,value,measured"), "no line when nothing was typed"
+    assert rm.MEASURED_LABEL == doc["measured"]["label"]
+    assert {"row", "copy", "print", "csv", "address", "claims"} == set(doc["measured"]["travels"])
+
+
+@pytest.mark.parametrize("typed", [{"node_w": -1}, {"node_w": "many"}, {"node_w": True}, {"node_w": None}, {"node_w": float("nan")}, {"node_w": float("inf")}, {"u_room": 0}, {"pue_room": 0.5}, {"a_idle": 1.5}, {"p_in": 3}])
+@need_files
+def test_a_bad_typed_value_is_refused_and_says_why(world, typed):
+    with pytest.raises(ValueError) as e:
+        rm.apply_measured(world["doc"], world["inputs"], world["base"], typed)
+    assert list(typed)[0] in str(e.value) or world["doc"]["measured"]["inputs"][list(typed)[0]]["label"] in str(e.value)
+
+
+@need_files
+def test_a_measured_input_is_an_input_and_no_setting_can_overwrite_it(world):
+    spec = world["doc"]["measured"]["inputs"]
+    assert set(spec) <= set(world["inputs"])
+    set_by_settings = {k for s in world["selectors"].values() for setting in s["options"].values() for k in setting}
+    assert not set(spec) & set_by_settings
+    for key, rule in spec.items():
+        assert rule["min"] <= world["inputs"][key]["low"] and world["inputs"][key]["high"] <= rule["max"], "the record's own spread stays typeable: " + key
+    for name in ("node_w", "nas_w", "dev_phone", "a_idle", "u_room"):
+        assert name in spec, "device watts, NAS watts, node idle, and the idle term"
+
+
+@need_files
+def test_a_typed_value_never_reaches_a_file_the_model_writes(world):
+    out = json.dumps(world["out"])
+    assert "62" not in json.dumps(world["out"]["measured"]) and "typed" not in {k for k in world["out"]}
+    assert "your measurement" in out and "measured_values" not in out
+    index = _claim_index()
+    assert not [c for c in index.values() if rm.MEASURED_LABEL in json.dumps(c)], "the record holds no measured-by-us row"
+
+
+# ---------------------------------------------------------------- the carbon damage layer
+
+@need_files
+def test_damage_is_off_by_default_and_never_one_number(world):
+    spec, index = world["doc"]["carbon_damage"], _claim_index()
+    assert spec["default"] == "off" and spec["column"] == "illustrative damage, not a price, not federal policy"
+    assert re.fullmatch(r"\d\d/\d\d/\d{4}", spec["as_of"])
+    assert rm.damage_column(world["doc"], 73.0) is None
+    for name, family in spec["families"].items():
+        numbers = {family[k] for k in ("low", "central", "high") if family[k] is not None}
+        assert len(numbers) >= 2, name
+        assert family["low"] <= (family["central"] if family["central"] is not None else family["low"]) <= family["high"], name
+        assert family["claims"] and all(c.startswith("ex-") and index[c]["status"] in ("verified", "partly") for c in family["claims"]), name
+        assert all(str(family[k]) in json.dumps([index[c]["quote"] for c in family["claims"]]) for k in ("low", "high")), name
+    assert "mv-005" in spec["federal_status"]
+
+
+@need_files
+def test_damage_reproduces_the_note_and_stays_in_its_own_column(world):
+    doc = world["doc"]
+    epa = doc["carbon_damage"]["families"]["epa_2020"]
+    coding = rm.damage_column(doc, 73.0, "epa_2020")
+    assert (coding["low"], coding["central"], coding["high"]) == (pytest.approx(0.00876), pytest.approx(0.01387), pytest.approx(0.02482))
+    assert coding["column"] == doc["carbon_damage"]["column"] and coding["unit"] == epa["unit"] and coding["claims"] == epa["claims"] and coding["as_of"]
+    project = rm.carbon_damage(306600e6, epa)
+    assert (project["low"], project["central"], project["high"]) == (pytest.approx(36.792e6), pytest.approx(58.254e6), pytest.approx(104.244e6))
+    assert rm.carbon_damage(1e6, doc["carbon_damage"]["families"]["epa_2017_domestic"])["central"] is None, "no invented midpoint"
+    assert "price_usd" not in coding and "usd" not in coding
+    flat = rm.flatten(world["tree"])
+    assert not [k for k in flat if "damage" in k], "compute never reads it, so no price or ranking can"
+
+
+@need_files
+def test_no_dollar_on_water_health_fish_places_or_culture(world):
+    spec = world["doc"]["carbon_damage"]
+    assert spec["never"] == "No dollar on water, health, fish, places, or culture."
+    words = json.dumps({k: v for k, v in spec.items() if k != "never"}).lower()
+    assert not re.search(r"\b(water|health|fish|salmon|sacred|culture|place)\b", words)
+
+
+@need_files
+def test_the_damage_layer_lifts_out_clean(world):
+    doc, cm = world["doc"], world["cm"]
+    without = {k: v for k, v in doc.items() if k != "carbon_damage"}
+    a, b = rm.build(doc, cm), rm.build(without, cm)
+    assert "carbon_damage" in a and "carbon_damage" not in b
+    assert {k: v for k, v in a.items() if k != "carbon_damage"} == b
+    assert "carbon_damage" in world["out"]
+
+
+# ---------------------------------------------------------------- the lines the page and the protocol read
+
+@need_files
+def test_idle_thresholds_follow_from_the_defaults(world):
+    base, field = world["base"], world["tree"]["field"]["idle"]
+    for name, key, row in (("node_100k", "node_w", "arch.D.node_100k"), ("node_1m", "node_w", "arch.D.node_1m"), ("office_server", "office_w", "arch.A.local"), ("nas_ten_nations", "nas_w", "arch.C.federated"),
+                           ("nas_own_node", "nas_w", "arch.E.year_node"), ("media_box_1000", "mini_w", "arch.B.local_1000")):
+        wh = row_of(world, row)["wh"]
+        at = lambda w: rm.flatten(rm.compute({**base, key: w}))[row + ".wh"]
+        assert at(field[name]["halves_at_w"]) == pytest.approx(0.5 * wh, rel=1e-9), name
+        assert at(field[name]["doubles_at_w"]) == pytest.approx(2 * wh, rel=1e-9), name
+    assert field["media_box_100000"]["halves_at_w"] is None, "a row mostly network and stream does not halve on idle alone"
+    # the sentence this replaces said 20 W halves and 100 W doubles every local row; it holds for no default as written
+    rows = rm.flatten(rm.compute({**base, "mini_w": 20}))
+    assert rows["arch.B.local_1000.wh"] > 2 * world["tree"]["arch"]["B"]["local_1000"]["wh"], "twenty watts raises an 8 W box's row"
+    assert field["node_100k"]["doubles_at_w"] < 100 and field["node_1m"]["halves_at_w"] < 20
+
+
+@need_files
+def test_the_cache_and_cost_lines_equal_a_rerun(world):
+    base, field, tree = world["base"], world["tree"]["field"], world["tree"]
+    top = rm.compute({**base, "cache_share": world["inputs"]["cache_share"]["high"]})["catalog"]
+    assert field["cache_share_top"]["session_times"] == pytest.approx(top["coding_session"]["wh"] / tree["catalog"]["coding_session"]["wh"])
+    assert field["cache_share_top"]["hour_times"] == pytest.approx(top["coding_hour"]["wh"] / tree["catalog"]["coding_hour"]["wh"])
+    assert 1.7 < field["cache_share_top"]["hour_times"] < field["cache_share_top"]["session_times"] < 1.9, "near 0.25 raises the coding rows 1.7 to 1.9 times; it does not double them"
+    assert field["coding_usd_miss_times"] == pytest.approx(3.2, abs=0.05)
+    rows = {r["id"]: r for r in world["out"]["backtest"]["rows"]}
+    assert rows["px-016"]["factor"] == pytest.approx(field["coding_usd_miss_times"], rel=1e-3), "the back-test row the sentence names"
+
+
+@need_files
+def test_the_two_derived_lines_hold(world):
+    index, cat = _claim_index(), {r["key"]: r for r in world["out"]["catalog"]}
+    mv = index["mv-004"]
+    session, prompt = cat["catalog.coding_session"]["energy_wh"], world["base"]["e_prompt"]
+    assert float("%.2g" % (session["low"] / prompt)) == mv["low"] == 30 and float("%.2g" % (session["high"] / prompt)) == mv["high"] == 2900
+    assert str(session["low"]) in mv["derived"] and str(session["high"]) in mv["derived"] and mv["limit"]
+    sf = index["sf-035"]
+    cover = world["inputs"]["local_coverage"]
+    for share, shown in ((cover["high"], "11"), (cover["central"], "29"), (cover["low"], "50")):
+        assert "%.1f" % (100 - 100 * share) in sf["derived"] and "printed as %s" % shown in sf["derived"], shown
+
+
+@need_files
+def test_every_figure_resolves_to_a_claim_or_a_labeled_assumption(world):
+    index = _claim_index()
+    for key, v in world["inputs"].items():
+        assert v["claims"] or v["kind"] == "assumed", key
+        for c in v["claims"]:
+            assert index[c]["status"] in ("verified", "partly"), (key, c)
+        if not v["claims"]:
+            assert v["note"], "an input with no source says so in words: " + key
+    labels = world["doc"]["scenario_labels"]
+    assert set(labels) == set(world["doc"]["scenario"]), "every number typed into the scenario has its label"
+    for name, sel in world["doc"]["selectors"].items():
+        literal = [v for setting in sel.get("options", {}).values() for v in setting.values() if isinstance(v, (int, float)) and not isinstance(v, bool)]
+        if literal and name != "node_already_on":
+            assert sel.get("claims") or re.search(r"no source|reader's own", sel.get("why", ""), re.I), name
+
+
+# ---------------------------------------------------------------- the idle fit and the field protocol
+
+def test_fit_idle_self_test():
+    fit.self_test()
+
+
+def test_fit_idle_prints_its_limit_beside_every_result():
+    lines = fit.report(fit.FIXTURE, fit.FAKE_MODEL)
+    results = [x for x in lines if not x.startswith("Warning") and x not in fit.CLOSING]
+    assert results and all(x.endswith("Limit: one device's readings do not generalize.") for x in results)
+    assert fit.CLOSING[-1] == "These readings stay with you. The public site receives nothing, and any release is that Nation's decision."
+    assert "your measurement, not verified by ATNI" in fit.CLOSING[0]
+
+
+def test_fit_idle_matches_a_second_estimator():
+    import statistics
+    rows = fit.read_rows(fit.FIXTURE)
+    points = [(r["u"], r["w"]) for r in rows if r["phase"] == "sweep"]
+    line = fit.fit_line(points)
+    other = statistics.linear_regression([u for u, _ in points], [w for _, w in points])
+    assert line["slope"] == pytest.approx(other.slope) and line["intercept"] == pytest.approx(other.intercept)
+
+
+def test_fit_idle_refuses_a_bad_file_without_a_traceback(tmp_path, capsys, monkeypatch):
+    bad = tmp_path / "bad.csv"
+    bad.write_text("utilization,watts\n50,10\n", encoding="utf-8")
+    monkeypatch.setattr("sys.argv", ["fit_idle.py", str(bad)])
+    assert fit.main() == 2
+    assert "0 to 1" in capsys.readouterr().err
+
+
+def test_field_protocol_says_what_it_must():
+    text = (ROOT / "docs" / "FIELD-PROTOCOL.md").read_text(encoding="utf-8")
+    assert "The public site receives nothing" in text and "that Nation's decision" in text and "fit_idle.py" in text
+    assert "your measurement, not verified by ATNI" in text and "do not generalize" in text
+    assert chr(0x2014) not in text and " -- " not in text
+    assert not re.search(r"[A-Za-z]:[/\\][A-Za-z]", text)
+    assert not re.search(r"\b(?:tribal|tribes?|indigenous|intertribal)\b", text), "capitalized"

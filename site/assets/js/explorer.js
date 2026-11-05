@@ -1,7 +1,7 @@
 // Resource Use Explorer: the page around the model, which is resource-model.js. Text by textContent only.
 (function () {
 'use strict';
-const { MS, TAGS, FEED, blank, Run, Views, projectScale, num, usd, pct, grouped, words, leverText, plainFig } = window.resourceModel;
+const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario } = window.resourceModel;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -45,25 +45,63 @@ function byBasis(board, keys) { // rows by price basis, with a rule between grou
   return sorted;
 }
 const bySize = (keys, m) => { const sorted = [...keys].sort((a, b) => (V.val(b, m) ?? -1) - (V.val(a, m) ?? -1)); sorted.forEach((key, i) => { rowNodes.get(key).style.order = i; }); return sorted; };
+function byPhase(board, groups, keys, wordsOnly) { // a move row is one time and a year row is one year, so each stands under its own head and nothing reads as a sum
+  let at = 0;
+  return groups.flatMap((g) => {
+    const head = $(`.wall-group[data-phase="${g.id}"]`, board);
+    const here = keys.filter((key) => g.rows.includes(key));
+    const kept = here.filter(V.keeps);
+    head.hidden = !here.length;
+    head.textContent = (kept.length && kept.every((key) => wordsOnly.includes(key)) && g.heads[`${S.m}_words`]) || g.heads[S.m]; // the head says once that its rows carry no bar
+    head.style.order = at++;
+    here.forEach((key) => { rowNodes.get(key).style.order = at++; });
+    return here;
+  });
+}
 const feedGrid = (f) => (f === 'hydro' ? V.p.grid_hydro : V.p[FEED[f][0]]);
 const oneGrid = (key) => (V.at(V.t, key).feeds || []).every((f) => feedGrid(f) === V.p.grid_local);
+const ghostWords = (key) => { // the model's reason, to its first clause: the list under the plate keeps the whole sentence
+  const r = D.custody.rows[key];
+  const text = r.reason || D.custody.reasons[r.holder];
+  const cut = text.search(/[,;.]/);
+  return `${D.words.ghost}: ${text[0].toLowerCase()}${text.slice(1, cut < 0 ? undefined : cut)}`;
+};
 
 function paintWall(id) {
   const spec = D.boards[id];
   const board = $(`[data-board="${id}"]`);
   const { m } = S;
-  const list = (m === 'usd' ? spec.price : m === 'wh' ? spec.energy : spec.grid) || spec.rows;
-  const scenario = m === 'g' || m === 'ml' ? spec.scenario || [] : [];
+  const all = (m === 'usd' ? spec.price : m === 'wh' ? spec.energy : spec.grid) || spec.rows;
+  const list = all.filter(V.keeps);
+  const ghosts = all.filter((key) => !V.keeps(key)); // a row the custody rule removes keeps its place, faint and with no mark, so the plot keeps its shape and says where the row went
+  const scenario = (m === 'g' || m === 'ml' ? spec.scenario || [] : []).filter(V.keeps);
   const visible = V.boardKeys(id, m);
+  const drawn = [...all.filter((key) => visible.includes(key) || ghosts.includes(key)), ...visible.filter((key) => !all.includes(key))];
   const at = V.boardScale(id, m);
   let wordsOnly = id.startsWith('arch.') && (m === 'g' || m === 'ml') ? list.filter((key) => !oneGrid(key)) : []; // different grids: words, no bar
   if (list.length - wordsOnly.length < 2 && wordsOnly.length) wordsOnly = list; // one bar alone compares with nothing
   board.dataset.measure = m;
-  for (const key of spec.rows) { const n = rowNodes.get(key); n.hidden = !visible.includes(key); n.style.order = ''; }
+  for (const key of spec.rows) {
+    const n = rowNodes.get(key);
+    const ghost = ghosts.includes(key);
+    n.hidden = !drawn.includes(key);
+    n.classList.toggle('is-ghost', ghost);
+    if (ghost) { n.setAttribute('aria-disabled', 'true'); n.removeAttribute('aria-posinset'); n.removeAttribute('aria-setsize'); } else n.removeAttribute('aria-disabled');
+    n.style.order = '';
+  }
   for (const head of $$('.wall-group', board)) { head.hidden = !(head.dataset.scenario !== undefined && scenario.length); head.style.order = ''; }
-  let order = visible;
-  if (m === 'usd' || (id === 'catalog.hour' && S.opts.sort === 'tag')) order = byBasis(board, visible);
-  else if (id === 'catalog.hour') order = bySize(visible, m);
+  let order = drawn;
+  if (spec.groups) order = byPhase(board, spec.groups, drawn, wordsOnly);
+  else if (m === 'usd' || (id === 'catalog.hour' && S.opts.sort === 'tag')) order = byBasis(board, drawn);
+  else if (id === 'catalog.hour') order = bySize(drawn, m);
+  for (const key of ghosts) {
+    const n = rowNodes.get(key);
+    n.classList.remove('is-beside', 'is-one-line');
+    for (const tag of TAGS) seg($(`.w-${tag}`, n), null);
+    $('.wall-range', n).hidden = true;
+    $('.wall-needle', n).hidden = true;
+    $('.ladder-value', n).replaceChildren(el('span', 'x-ghost-words', ghostWords(key)));
+  }
   if (scenario.length) { $('.wall-group[data-scenario]', board).style.order = 5000; scenario.forEach((key, i) => { rowNodes.get(key).style.order = 5001 + i; }); }
   const lay = V.layout(m === 'usd' ? [] : visible.filter((key) => !wordsOnly.includes(key)), m, spec.plain, at);
   board.style.setProperty('--wall', lay.wall.toFixed(4));
@@ -83,8 +121,10 @@ function paintWall(id) {
     const needle = $('.wall-needle', n);
     needle.hidden = !item;
     if (item) needle.style.left = pct(item.end);
-    const f = V.cell(key, m, at);
-    const extra = wordsOnly.includes(key) ? 'on another grid, no bar' : beside ? 'inside the seat figure; printed beside, not added' : '';
+    const oneLine = id === 'arch.E' && m === 'usd' && key.startsWith('arch.E.move_'); // the group head names the move's price basis once, so the figure and its spread share a line
+    n.classList.toggle('is-one-line', oneLine);
+    const f = oneLine ? figure(V.val(key, 'usd'), ...V.spread(key, 'usd'), 'usd') : V.cell(key, m, at);
+    const extra = wordsOnly.includes(key) && id !== 'arch.E' ? 'on another grid, no bar' : beside ? 'inside the seat figure; printed beside, not added' : ''; // E's group head says it once
     cell($('.ladder-value', n), { ...f, tag: [f.tag, extra].filter(Boolean).join(' ') });
   }
   axisInto(board, lay.ticks);
@@ -94,7 +134,7 @@ function paintWall(id) {
     note.hidden = !wordsOnly.length;
     note.textContent = wordsOnly.length ? `Rows on different grids carry no bar: ${[...new Set(wordsOnly.map(V.grids))].join(' against ')}, and the local grid is ${V.p.grid_local} g per kWh. Set them to one feed in Settings to draw them.` : '';
   }
-  return [...order.filter((key) => !scenario.includes(key)), ...scenario];
+  return [...order.filter((key) => !scenario.includes(key) && !ghosts.includes(key)), ...scenario]; // the arrows step past a ghost
 }
 function paintRuler(id) {
   const spec = D.boards[id];
@@ -162,20 +202,91 @@ const painters = {
   cross: () => allOf('cross.', paintCross, `cross.${S.opts.crossover}`),
   catalog: () => { const hour = paintWall('catalog.hour'); const unit = paintRuler('catalog.unit'); return S.opts.scale === 'unit' ? unit : hour; }, // both stay live; the arrows step the view shown
 };
+const measuredTag = (key) => (V.isMoved(key) ? [el('span', 'x-measured-tag', D.measured.label)] : []); // the label comes from the model, on every row a reading moved
 function paintTables() {
+  const on = S.damage !== 'off';
   for (const [key, tr] of tableRows) {
     if (key === 'use.seat') tr.hidden = S.mode !== 'office';
+    const gone = key.startsWith('arch.') && !V.keeps(key); // as on the plot: the row stays, with its reason and no figure
+    tr.classList.toggle('is-ghost', gone);
     const fill = (c, text) => { const td = $(`[data-c="${c}"]`, tr); if (td) td.textContent = text; };
     const th = $('th', tr);
-    if (th) th.textContent = V.label(key);
+    if (th) th.replaceChildren(V.label(key), ...measuredTag(key));
     if (key.startsWith('lever.')) for (const m of MS) { const r = V.lever(key, m); fill(m, `${leverText(r.before, m)} then ${leverText(r.after, m)}${blank(r.ratio) ? '' : `, ${num(r.ratio)}`}`); }
+    else if (gone) MS.forEach((m, i) => fill(m, i ? '' : ghostWords(key)));
     else if (!key.startsWith('cross.')) { const t = V.table(key); for (const m of MS) fill(m, t[m]); }
+    const td = $('td[data-c="damage"]', tr);
+    if (td && on) td.textContent = gone ? '' : V.damageFig(V.damage(key));
   }
   for (const id of ['cross.prompts', 'cross.views']) {
     const { items } = V.crossings(D.boards[id].rows);
     for (const [key, c] of Object.entries(items)) { const td = $('[data-c="count"]', tableRows.get(key)); td.textContent = words(V.crossWords(c, D.boards[id].noun)); $('[data-c="ends"]', tableRows.get(key)).textContent = V.crossEnds(c); }
   }
+  $$('[data-damage-col]').forEach((n) => { n.hidden = !on; });
+  if (!on) return;
+  const c = V.damageOf(1); // the family's own words; the figure is each row's
+  $$('th[data-damage-col]').forEach((th) => { th.textContent = `Damage, ${V.damageCurrency(c)}`; });
+  $$('caption [data-damage-col]').forEach((n) => { n.textContent = ` Damage column: ${c.family}, ${c.kind}; ${c.column}, as of ${c.as_of}.`; });
 }
+// What the custody rule leaves out, always listed under the plate with its reason, and what the rule costs. One block for each comparison, so print holds them all.
+function custodyBlock(letter) {
+  const c = V.custody(letter);
+  const block = el('div', 'x-custody-block');
+  block.dataset.group = `comparison:${letter}`;
+  block.hidden = S.opts.comparison !== letter;
+  if (!c.left.length) { block.append(el('p', 'caption', `${D.custody.label}: ${c.label}. No row leaves this comparison at this setting.`)); return block; }
+  block.append(el('h3', 'x-custody-title', 'What This Rule Leaves Out'), el('p', 'caption', `${D.comparisons[letter]}. ${D.custody.label}: ${c.label}.`));
+  const named = (rows, text) => { const ul = el('ul', 'x-named'); ul.append(...rows.map((r) => { const li = el('li'); li.append(el('strong', '', `${r.label}.`), ` ${text(r)}`); return li; })); return ul; };
+  const leaves = el('div');
+  leaves.append(el('p', 'label', D.words.leaves), named(c.left, (r) => `${r.figures}. ${r.reason}`));
+  if (c.notes.length) leaves.append(el('p', 'label', 'Rows that stay, with a note'), named(c.notes, (r) => r.note));
+  const costs = el('div');
+  if (c.cost) {
+    const table = el('table', 'data-table x-custody-cost');
+    const head = el('tr');
+    head.append(...['Line', 'Rows that stay', 'Rows that leave'].map((t) => { const th = el('th', '', t); th.scope = 'col'; return th; }));
+    const body = el('tbody');
+    body.append(...c.cost.map((line) => { const tr = el('tr'); const th = el('th', '', line.label); th.scope = 'row'; tr.append(th, el('td', '', line.kept), el('td', '', line.left)); return tr; }));
+    const thead = el('thead');
+    thead.append(head);
+    table.append(el('caption', '', 'What the rule costs, at these settings'), thead, body);
+    const scroll = el('div', 'table-scroll');
+    Object.entries({ tabindex: 0, role: 'group', 'aria-label': 'Table, scrolls sideways' }).forEach(([k, v]) => scroll.setAttribute(k, v));
+    scroll.append(table);
+    costs.append(scroll);
+  }
+  for (const text of [c.said, c.oneTime]) if (text) costs.append(el('p', 'caption', text));
+  const grid = el('div', 'x-custody-grid');
+  grid.append(leaves, costs);
+  block.append(grid);
+  return block;
+}
+function paintCustody() {
+  const box = $('.x-custody');
+  box.dataset.rule = S.custody;
+  box.replaceChildren(...Object.keys(D.comparisons).map(custodyBlock));
+  const left = V.custody(S.opts.comparison).left.length;
+  $('[data-custody-now]').textContent = !left ? '' : `${left} ${left === 1 ? 'row leaves' : 'rows leave'} this comparison at this setting. ${left === 1 ? 'It stays faint on the plot, and is' : 'Each stays faint on the plot, and is'} listed under the plate with its reason.`;
+}
+// The one sentence a reading carries, at the foot of every plate of rows, and whether this plate holds a row it moved.
+function paintMeasured() {
+  const line = V.measuredLine();
+  for (const name of Object.keys(painters)) {
+    const plate = plateOf(name);
+    const foot = $('[data-measured-line]', plate);
+    foot.hidden = !line;
+    foot.textContent = !line ? '' : $$('.plate-plot [data-row]', plate).some((n) => V.isMoved(n.dataset.row)) ? line : `${V.measuredLine(false)} No row on this plate uses it.`;
+  }
+  $('[data-clear-measured]').hidden = !line;
+}
+const damageNodes = (key) => {
+  const c = V.damage(key);
+  if (!c) return [];
+  const family = D.carbon_damage.families[S.damage];
+  const note = el('p', 'caption', `${c.kind.startsWith('avoidance') ? 'Not a price. ' : ''}${c.family}. ${c.kind}. ${family.spread} ${family.limit} `);
+  for (const [i, id] of c.claims.entries()) { const a = el('a', 'x-c', id); a.href = `#src-${id}`; note.append(...(i ? [', ', a] : [a])); }
+  return [el('p', 'x-damage-head', `${c.column}, as of ${c.as_of}`), el('p', 'x-damage-figures', V.damageWords(c)), note];
+};
 
 const priceWord = (key) => (blank(V.val(key, 'usd')) ? D.rows[key].pn || D.words.price.none : D.rows[key].pt || D.words.price[V.basis(key)]);
 const basinWord = (tag) => tag.slice(0, tag.lastIndexOf(',')); // the model writes "basin, convention", and a convention has no comma
@@ -188,7 +299,7 @@ function detail(name, key) {
   const noteId = D.rows[key]?.note;
   const long = () => d('value').parentElement.classList.toggle('is-long', d('value').textContent.length >= 9);
   const big = (node, f) => { node.replaceChildren(el('span', '', f.num), ' ', el('span', 'x-big-unit', f.unit)); return node; };
-  const readout = (r) => { text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), r.reading, r.value); };
+  const readout = (r) => { text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), V.copied(r.reading, key), r.value); };
   if (key.startsWith('lever.')) {
     const r = V.leverDetail(key, S.m);
     readout(r);
@@ -205,8 +316,19 @@ function detail(name, key) {
     text('water-basis', r.water.map((w) => w.tag).join('; ') || 'no figure');
     d('layers').replaceChildren(...r.layers.map((l) => { const li = el('li'); li.append(el('span', `plate-square w-key-${l.tag}${l.on ? '' : ' is-hollow'}`), el('strong', '', l.text), el('span', '', l.label)); return li; }));
     text('spread', r.spread); text('moves', r.moves);
+    const hours = d('hours');
+    if (hours) { // a move's paid hours stand with its figures, since the comparison's title is about them
+      const h = key.startsWith('arch.E.move_') ? V.t.upkeep.E[key.split('.').pop()].admin_h : null;
+      hours.hidden = blank(h);
+      if (!blank(h)) big(d('hours-n'), { num: num(h), unit: h === 1 ? 'hour' : 'hours' });
+    }
+    const payback = $('[data-payback-line]', plate);
+    if (payback && key.startsWith('arch.E.')) payback.textContent = V.paybackLine(key.endsWith('_federated') ? 'federated' : 'node');
     const tokens = d('tokens');
     if (tokens) tokens.hidden = !D.rows[key]?.ai;
+    const damage = d('damage');
+    damage.replaceChildren(...damageNodes(key));
+    damage.hidden = !damage.children.length;
   }
   long();
   const master = noteId && document.getElementById(noteId);
@@ -267,11 +389,13 @@ function refresh(reason) {
   $$('.plate-status').forEach((n) => { n.textContent = ''; }); // what it reported is no longer the state
   const line = V.line();
   $$('[data-setting-line]').forEach((n) => { n.textContent = line; });
-  $$('[data-setting-list]').forEach((n) => n.replaceChildren(...Object.keys(D.sel).map((name) => el('li', '', `${D.names[name]}: ${D.sel[name].say[S.settings[name]]}`))));
+  const also = [S.custody !== D.custody.default && `${D.custody.label}: ${D.custody.options[S.custody].label}`, S.damage !== 'off' && `${D.carbon_damage.label}: ${D.carbon_damage.families[S.damage].label}`, ...Object.entries(S.inputs).map(([k, v]) => `${D.names[k]}, typed: ${v}`)].filter(Boolean);
+  $$('[data-setting-list]').forEach((n) => n.replaceChildren(...[...Object.keys(D.sel).map((name) => `${D.names[name]}: ${D.sel[name].say[S.settings[name]]}`), ...also].map((line) => el('li', '', line))));
   $$('[data-if]').forEach((n) => { const [k, v] = n.dataset.if.split(':'); n.hidden = String(V.p[k]) !== v; });
   $$('[data-reading]').forEach((n) => { n.textContent = V.reading(n.dataset.reading); });
   $$('[data-group]').forEach((n) => { const [k, v] = n.dataset.group.split(':'); n.hidden = S.opts[k] !== v; });
-  for (const [key, n] of rowNodes) if (D.rows[key]) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : [])); }
+  $$('[data-payback]').forEach((n) => { n.textContent = V.payback(n.dataset.payback); });
+  for (const [key, n] of rowNodes) if (D.rows[key]) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : []), ...measuredTag(key)); }
   for (const name of Object.keys(painters)) {
     const order = painters[name]();
     shown[name] = order.filter((key) => !rowNodes.get(key).hidden);
@@ -285,13 +409,18 @@ function refresh(reason) {
   $$('[data-admin-tie]').forEach((n) => { n.textContent = V.adminWords(); });
   paintWeek();
   paintTables();
+  paintCustody();
+  paintMeasured();
   syncControls();
 }
 function syncControls() {
   $$('input[data-setting]').forEach((n) => { n.checked = S.settings[n.dataset.setting] === n.value; });
   $$('input[data-opt]').forEach((n) => { n.checked = (n.dataset.opt === 'm' ? S.m : n.dataset.opt === 'mode' ? S.mode : S.opts[n.dataset.opt]) === n.value; });
   $$('input[data-field]').forEach((n) => { if (document.activeElement !== n) n.value = n.dataset.field === 'seats' ? S.seats : S.fields[n.dataset.field]; });
-  $$('input[data-input]').forEach((n) => { if (document.activeElement !== n) n.value = S.inputs[n.dataset.input] ?? D.inputs[n.dataset.input][0]; });
+  $$('input[data-input]').forEach((n) => { if (document.activeElement !== n) n.value = S.inputs[n.dataset.input] ?? D.inputs[n.dataset.input]?.[0] ?? D.scenario[n.dataset.input]; });
+  $$('input[data-measured]').forEach((n) => { if (document.activeElement !== n) n.value = S.measured[n.dataset.measured] ?? ''; });
+  $$('input[data-custody]').forEach((n) => { n.checked = S.custody === n.value; });
+  $$('select[data-damage]').forEach((n) => { n.value = S.damage; });
   $$('[data-office]').forEach((n) => { n.hidden = S.mode !== 'office'; });
 }
 const fieldDefault = (k) => (k === 'gb' && S.mode === 'office' ? D.inputs.seat_gb[0] : D.fields[k]);
@@ -329,7 +458,7 @@ function selfCheck() {
   top.hidden = !fails.length;
   if (fails.length) top.textContent = said;
 }
-// The drawer starts under the disclaimer band, so the plate compresses beside it and nothing the reader is watching is covered.
+// The drawer starts under the disclaimer band. From 1600px the plate compresses beside it; below, it covers the detail column only, so the plot keeps its width and the reader sees rows move.
 const placeDrawer = () => document.documentElement.style.setProperty('--drawer-top', `${Math.max(0, $('.x-band').getBoundingClientRect().bottom)}px`);
 const drawerSaid = (open) => $$('[data-open-settings]').forEach((n) => { n.setAttribute('aria-controls', 'settings'); n.setAttribute('aria-expanded', open); });
 function openDrawer(from) {
@@ -339,7 +468,7 @@ function openDrawer(from) {
   drawerSaid(true);
   document.documentElement.classList.add('has-drawer');
   placeDrawer();
-  drawer.focus();
+  (from.dataset.at ? document.getElementById(from.dataset.at) : drawer).focus();
 }
 function closeDrawer() {
   const drawer = $('#settings');
@@ -362,16 +491,48 @@ function project() {
   $('[data-po-poster]', box).parentElement.classList.toggle('is-long', !blank(r.mwh) && r.mwh >= 1e7);
   $('[data-po-unit]', box).textContent = blank(r.mwh) ? '' : 'MWh';
   $('[data-po-qual]', box).textContent = blank(r.mwh) ? 'Enter megawatts and a load factor.' : 'a year, at the load factor entered';
+  const damage = blank(r.co2) ? null : V.damageOf(r.co2 * 1e6); // a project shows its tonnes first, and any dollar beside them
+  $('[data-po-damage-row]', box).hidden = !damage;
+  if (damage) { $('[data-po-damage-label]', box).textContent = `${damage.column}, as of ${damage.as_of}`; $('[data-po="damage"]', box).textContent = V.damageWords(damage, 'this project\'s CO2e'); }
 }
-function outputsCsv() {
-  const rows = [['row', 'measure', 'value', 'low', 'high', 'price_basis', 'settings']];
-  const setting = Object.entries(S.settings).map(([k, v]) => `${k}=${v}`).join(' ');
-  for (const key of Object.keys(D.check)) {
-    const r = V.at(V.t, key);
-    for (const m of ['wh', 'usd', 'g']) { const [lo, hi] = V.spread(key, m); rows.push([key, m, r[m], lo, hi, m === 'usd' ? V.basis(key) : '', setting]); }
-    for (const part of V.water(key)) rows.push([key, `ml ${part.place}`, part.v, part.lo, part.hi, '', setting]);
+function save(name, text, type) { // a file for the reader's own machine, made in the browser; nothing is sent anywhere
+  const a = el('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  a.click();
+}
+const closeWarning = () => { $('[data-scenario-warn]').hidden = true; $('[data-scenario-save]').focus(); };
+function saveScenario() {
+  const now = new Date();
+  save('resource-use-scenario.json', `${JSON.stringify(V.scenarioFile(`${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`), null, 1)}\n`, 'application/json');
+  closeWarning();
+  $('[data-scenario-status]').textContent = 'Saved resource-use-scenario.json to this machine. Nothing was sent anywhere.';
+}
+// An inbound file is untrusted: the model reads it against the input schema, and on any problem nothing changes and the reader sees each problem. Its words never reach the page, only the model's own.
+const SCENARIO_LARGEST = 65536; // bytes; a real one is about two kilobytes
+async function loadScenario(input) {
+  const file = input.files[0];
+  input.value = ''; // so the same file can be chosen again
+  if (!file) return;
+  const status = $('[data-scenario-status]');
+  let read;
+  try {
+    read = file.size > SCENARIO_LARGEST ? { problems: ['That file is too large to be a scenario from this page, so nothing was changed.'] } : readScenario(D, await file.text());
+  } catch {
+    read = { problems: ['That file could not be read, so nothing was changed. Choose it again, or choose another.'] };
   }
-  return rows.map((r) => r.map((c) => (blank(c) ? '' : c)).join(',')).join('\n');
+  if (read.problems.length) {
+    const list = el('ul', 'x-named');
+    list.append(...read.problems.slice(0, 8).map((p) => el('li', '', p)));
+    status.replaceChildren(el('p', '', 'That file was not loaded, and nothing changed.'), list, ...(read.problems.length > 8 ? [el('p', '', `And ${read.problems.length - 8} more.`)] : []));
+    return;
+  }
+  const { scenario: f } = read;
+  const fresh = V.fresh();
+  Object.assign(S, { settings: { ...fresh.settings, ...f.settings }, fields: { ...fresh.fields, ...f.fields }, inputs: f.inputs, measured: f.measured, mode: f.mode ?? fresh.mode, seats: f.seats ?? fresh.seats, custody: f.custody ?? fresh.custody, damage: f.damage ?? fresh.damage });
+  refresh('settings');
+  project();
+  status.textContent = `Scenario loaded from your own machine.${V.records.length ? ` Its readings carry the label: ${D.measured.label}.` : ''}${read.otherBuild ? ' It was saved against another build of the model, so its figures follow this page\'s model.' : ''}`;
 }
 function setView(plate, name) {
   plate.dataset.view = name;
@@ -434,9 +595,23 @@ function onInput(e) {
   } else if (t.dataset.input) {
     const bad = t.value === '' || !(+t.value >= 0);
     t.setAttribute('aria-invalid', bad);
-    $('[data-input-why]').textContent = bad ? 'Enter a number zero or above. The figures keep the last good value.' : '';
+    $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? 'Enter a number zero or above. The figures keep the last good value.' : '';
     if (!bad) { S.inputs[t.dataset.input] = +t.value; refresh('settings'); }
-  } else if (t.dataset.pf) project();
+  } else if (t.dataset.measured) {
+    const why = $('[data-measured-why]');
+    try {
+      if (t.value === '') delete S.measured[t.dataset.measured]; // a cleared field goes back to the model's figure
+      else Object.assign(S.measured, applyMeasured(D, { [t.dataset.measured]: t.value }).values);
+      t.removeAttribute('aria-invalid');
+      refresh('settings');
+      why.textContent = V.measuredLine();
+    } catch (error) { // the model says what it allows; the figures keep the last good value
+      t.setAttribute('aria-invalid', true);
+      why.textContent = `${error.message}. The figures keep the last good value.`;
+    }
+  } else if (t.dataset.custody !== undefined) { S.custody = t.value; refresh(); }
+  else if (t.dataset.damage !== undefined) { S.damage = t.value; refresh(); project(); }
+  else if (t.dataset.pf) project();
 }
 function choose(plate, key) { // a reader's own selection: the figure they asked for shows at the top of the detail
   picked = key;
@@ -449,14 +624,18 @@ function onClick(e) {
   if (hit('[data-open-settings]')) { e.preventDefault(); openDrawer(hit('[data-open-settings]')); }
   else if (hit('[data-close-settings]')) closeDrawer();
   else if (hit('.x-plate .receipt, .x-plate a.x-c') && $('[data-d="receipt"]', hit('.x-plate'))) { e.preventDefault(); openReceipt(hit('.x-plate .receipt, .x-plate a.x-c')); }
-  else if (hit('.plate-plot [data-row]')) choose(hit('.x-plate'), hit('[data-row]').dataset.row);
+  else if (hit('.plate-plot [data-row]:not(.is-ghost)')) choose(hit('.x-plate'), hit('[data-row]').dataset.row);
   else if (hit('[data-tally]')) { setView(hit('.x-plate'), 'sources'); $('.plate-views input[value="sources"]', hit('.x-plate')).focus(); } // the button leaves with its view, so focus goes to the view switch
   else if (hit('[data-about]')) { e.preventDefault(); const about = $(hit('[data-about]').getAttribute('href')); about.open = true; $('summary', about).focus(); } // folded with scripts, and a link to a details does not open it
   else if (hit('[data-copy]')) copyReading(hit('.x-plate'));
-  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
+  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('[data-measured-why]').textContent = ''; $('[data-scenario-status]').textContent = ''; $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
   else if (hit('[data-example]')) { for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`).value = t.dataset[k]; project(); }
-  else if (hit('[data-outputs]')) { const a = el('a'); a.href = URL.createObjectURL(new Blob([outputsCsv()], { type: 'text/csv' })); a.download = 'resource-model-outputs.csv'; a.click(); }
+  else if (hit('[data-outputs]')) save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv');
+  else if (hit('[data-clear-measured]')) { S.measured = {}; refresh('settings'); $('[data-measured-why]').textContent = 'Your readings are cleared, and the model\'s figures are back.'; $('input[data-measured]').focus(); }
+  else if (hit('[data-scenario-save]')) { $('[data-scenario-status]').textContent = ''; $('[data-scenario-warn]').hidden = false; $('[data-scenario-confirm]').focus(); } // the warning comes before the file exists
+  else if (hit('[data-scenario-confirm]')) saveScenario();
+  else if (hit('[data-scenario-cancel]')) closeWarning();
 }
 function wirePlot(plot) {
   const plate = plot.closest('.x-plate');
@@ -476,7 +655,7 @@ function wirePlot(plot) {
     rowNodes.get(key).scrollIntoView({ block: 'nearest' }); // the arrows are the keyboard's scroll here, so the row they reach must come into view
   });
   const holding = () => $$('[data-d="note"], [data-d="chips"], [data-d="receipt"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
-  on(plot, 'pointerover', (e) => { const row = e.target.closest('[data-row]'); if (row && !holding()) detail(name, row.dataset.row); });
+  on(plot, 'pointerover', (e) => { const row = e.target.closest('[data-row]:not(.is-ghost)'); if (row && !holding()) detail(name, row.dataset.row); });
   on(plot, 'pointerleave', () => { if (!holding()) detail(name, S.sel[name]); });
 }
 function fit() {
@@ -510,12 +689,30 @@ for (const zone of $$('.x-plate.is-live > :is(.plate-claim, .plate-detail, .plat
 }
 $$('.x-plate').forEach((plate) => { if ($('.plate-views', plate)) { setView(plate, 'reading'); listSources(plate); } });
 $$('[data-d="tokens"]').forEach((slot) => slot.append(...$('#x-tokens').cloneNode(true).children));
+for (const name of Object.keys(painters)) { const foot = el('p', 'plate-foot x-measured-line'); foot.dataset.measuredLine = ''; foot.hidden = true; plateOf(name).append(foot); }
+$('[data-scenario-warning]').textContent = SCENARIO_WARNING;
+// The damage column stands in every table of rows, waiting on the control. It is its own column and never joins the price.
+if (D.carbon_damage) {
+  for (const [key, tr] of tableRows) {
+    if (key.startsWith('lever.') || key.startsWith('cross.')) continue;
+    const td = el('td');
+    td.dataset.c = 'damage';
+    td.dataset.damageCol = '';
+    td.hidden = true;
+    tr.append(td);
+    const headRow = $('thead tr', tr.closest('table'));
+    if (!$('[data-damage-col]', headRow)) { const th = el('th', '', 'Damage'); th.scope = 'col'; th.dataset.damageCol = ''; th.hidden = true; headRow.append(th); } // the head names the currency, and the caption the family, once
+    const caption = $('caption', tr.closest('table'));
+    if (caption && !$('[data-damage-col]', caption)) { const note = el('span'); note.dataset.damageCol = ''; note.hidden = true; caption.append(note); }
+  }
+}
 readQuery();
 on(document, 'input', onInput);
 on(document, 'focusin', (e) => { if (e.target.dataset?.whyText) $('[data-why]').textContent = e.target.dataset.whyText; });
 on(document, 'change', (e) => {
-  if (e.target.dataset.field || e.target.dataset.input) { e.target.removeAttribute('aria-invalid'); syncControls(); }
-  if (e.target.dataset.input) $('[data-input-why]').textContent = '';
+  if (e.target.dataset.field || e.target.dataset.input || e.target.dataset.measured) { e.target.removeAttribute('aria-invalid'); syncControls(); }
+  if (e.target.dataset.input) $('[data-input-why]', e.target.closest('.x-admin-note')).textContent = '';
+  if (e.target.dataset.scenarioLoad !== undefined) loadScenario(e.target);
   if (e.target.closest?.('.plate-views')) setView(e.target.closest('.x-plate'), e.target.value);
 });
 on(document, 'click', onClick);

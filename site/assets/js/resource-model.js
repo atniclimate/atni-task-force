@@ -219,11 +219,18 @@ function video(p, c, L) {
   return out;
 }
 
+// n local nodes each holding tbEach for a year: whole boxes, or drives only when the nodes are already on. Returns Wh at the nodes and dollars.
+function storeYear(p, n, tbEach, hours, netWh = 0) {
+  const on = p.already_on;
+  const wh = n * (on ? tbEach * p.stor_wh_tb_h * HOURS * p.pue_room : p.nas_w * HOURS * p.pue_room);
+  const hardware = n * (tbEach * p.hdd_usd_tb + (on ? 0 : p.nas_chassis_usd)) / p.life;
+  return [wh, selfRun(hardware, (wh + netWh) / 1000, p.tariff, hours, p.wage)];
+}
+
 function data(p, c, L) {
   const n = p.nations;
   const tb = p.shared_tb;
   const total = tb * 1000;
-  const on = p.already_on;
   const nasWh = p.nas_w * HOURS * p.pue_room;
   const pullWh = n * total * c.i_net;
   const queryWh = p.fed_moved_share * total * 12 * c.i_net;
@@ -235,9 +242,8 @@ function data(p, c, L) {
   const fedHours = n * p.fed_admin_h_month * 12;
   const drivesWh = (held) => held * p.stor_wh_tb_h * HOURS * p.pue_room;
   const local = (each, hours, netWh) => {
-    const wh = n * (on ? drivesWh(each) : nasWh);
-    const hardware = n * (each * p.hdd_usd_tb + (on ? 0 : p.nas_chassis_usd)) / p.life;
-    return four([L.room(wh), L.net(netWh)], selfRun(hardware, (wh + netWh) / 1000, p.tariff, hours, p.wage));
+    const [wh, price] = storeYear(p, n, each, hours, netWh);
+    return four([L.room(wh), L.net(netWh)], price);
   };
   const fedTb = p.fed_tb * p.fed_copies;
   return {
@@ -261,6 +267,112 @@ function data(p, c, L) {
       embodied_federated_g: n * fedTb * p.emb_hdd_kg_tb / p.life * 1000,
       duplicate_bytes_removed_gb: n * total * p.dedupe,
     },
+  };
+}
+
+// One Nation leaves a cloud store, once, for its own node or a federated set of Nations' nodes. A move row is one time and a year row is one year; nothing here adds the two.
+function leaving(p, L) {
+  const iNet = netIntensity({ ...p, connection: 'wifi' }); // a Nation's move runs on its fixed link, whatever the reader's own connection is
+  const tb = p.exit_tb;
+  const gb = tb * 1000;
+  const raw = tb * p.nas_raw_tb / p.shared_tb;
+  const box = raw * p.hdd_usd_tb + (p.already_on ? 0 : p.nas_chassis_usd);
+  const cloudWh = tb * p.replicas * p.stor_wh_tb_h * HOURS * p.pue_hyper;
+  const admin = p.central_admin_h_month * 12 * p.wage;
+  const stay = { s3: gb * p.p_s3 * 12 + admin, r2: gb * p.p_r2 * 12 + admin, b2: tb * p.p_b2_tb * 12 + admin };
+  const rate = { s3: p.p_egress, r2: p.p_r2_egress, b2: p.p_b2_egress };
+  const nodeCopies = p.exit_node_copies;
+  const fedCopies = p.replicas;
+  const [nodeWh, nodeUsd] = storeYear(p, nodeCopies, raw, nodeCopies * p.nas_admin_h_month * 12);
+  const [fedWh, fedUsd] = storeYear(p, fedCopies, raw, fedCopies * p.fed_admin_h_month * 12);
+  const out = {};
+  for (const [s, price] of Object.entries(stay)) out[`year_${s}`] = four([L.dc(cloudWh)], price);
+  out.year_cloud_same_grid = four([layer(cloudWh, p.grid_local, p.wue_site, genWater(p, p.gen_local), 'local', 'dc', 'local')], stay.s3);
+  out.year_node = four([L.room(nodeWh)], nodeUsd);
+  out.year_federated = four([L.room(fedWh)], fedUsd);
+  const payback = {};
+  // the node takes one copy over the wire; the federated set takes every copy over the wire, and only the billed pulls pay egress
+  for (const [dest, wire, pulls, yearUsd] of [['node', 1, 1, nodeUsd], ['federated', fedCopies, p.exit_fed_pulls, fedUsd]]) {
+    for (const s of Object.keys(stay)) {
+      const egress = pulls * gb * rate[s];
+      const labor = wire * p.exit_admin_h * p.wage;
+      const row = Object.assign(four([L.net(wire * gb * iNet)], egress + labor + p.exit_other_usd), { egress_usd: egress, labor_usd: labor, other_bill_usd: p.exit_other_usd });
+      out[`move_${s}_${dest}`] = row;
+      payback[`${dest}_vs_${s}`] = positive(row.usd, stay[s] - yearUsd);
+    }
+  }
+  const embodied = p.emb_hdd_kg_tb / p.life * 1000;
+  out.payback = payback;
+  out.readings = {
+    egress_per_pull_usd: { s3: gb * rate.s3, r2: gb * rate.r2, b2: gb * rate.b2 },
+    copies: { node: nodeCopies, federated: fedCopies },
+    transfer_days_one_copy: tb * 8e6 / p.exit_link_mbps / 86400,
+    hardware_usd: { node: nodeCopies * box, federated: fedCopies * box },
+    embodied_own_node_g: nodeCopies * raw * embodied,
+    embodied_federated_set_g: fedCopies * raw * embodied,
+    embodied_cloud_replicas_g: tb * p.replicas * embodied,
+    node_w_at_energy_tie: cloudWh / (nodeCopies * HOURS * p.pue_room),
+    cloud_service_boundary_g: tb * p.whole_service_kg_tb * 1000, // a ceiling on another boundary, printed beside the drives-only floor and never as the row
+  };
+  return out;
+}
+
+// What each architecture row asks of the Nation that runs it: the idle watts it carries all year and the paid hours it counts. A vendor's idle sits inside the vendor's own figure. These lines score nothing.
+function upkeep(p) {
+  const off = 1 - p.already_on;
+  const n = p.nations;
+  const held = (tb) => (p.already_on ? p.stor_wh_tb_h * tb : p.nas_w);
+  const raw = p.exit_tb * p.nas_raw_tb / p.shared_tb;
+  const nodeCopies = p.exit_node_copies;
+  const fedCopies = p.replicas;
+  const each = (names, row) => Object.fromEntries(names.map((name) => [name, row]));
+  const none = [0, 0];
+  const localA = [p.office_w, p.office_admin_h_month * 12];
+  const central = [0, p.central_admin_h_month * 12];
+  const stores = ['s3', 'r2', 'b2'];
+  const table = {
+    A: { ...each(['cloud', 'cloud_with_sync', 'cloud_same_grid'], [0, p.cloud_admin_h_month * 12]), local: localA, local_hydro: localA, local_two_boxes: [2 * localA[0], localA[1]] },
+    B: { platform: none, cache: none, ...each(p.views.map((v) => `local_${v}`), [off * p.mini_w, p.mini_admin_h_month * 12]) },
+    C: {
+      ten_copies: [n * held(p.nas_raw_tb), n * p.nas_admin_h_month * 12], ...each(['central_s3', 'central_s3_with_pulls', 'central_r2', 'central_b2'], central),
+      federated: [n * held(p.fed_tb * p.fed_copies), n * p.fed_admin_h_month * 12], federated_replicas: [n * held(p.fed_tb * p.replicas), n * p.fed_admin_h_month * 12],
+    },
+    D: {
+      ...each(['hyper', 'hyper_same_grid', 'colo', 'laptop', 'laptop_with_fallback', 'phone', 'phone_wall', 'phone_wall_fallback'], none),
+      ...each(['node_100k', 'node_1m'].flatMap((name) => ['', '_hydro', '_fallback'].map((end) => name + end)), [off * p.node_w, p.node_admin_h_year]),
+    },
+    E: {
+      ...each(['year_s3', 'year_r2', 'year_b2', 'year_cloud_same_grid'], central), year_node: [nodeCopies * held(raw), nodeCopies * p.nas_admin_h_month * 12], year_federated: [fedCopies * held(raw), fedCopies * p.fed_admin_h_month * 12],
+      ...each(stores.map((s) => `move_${s}_node`), [0, p.exit_admin_h]), ...each(stores.map((s) => `move_${s}_federated`), [0, fedCopies * p.exit_admin_h]),
+    },
+  };
+  return Object.fromEntries(Object.entries(table).map(([letter, rows]) => [letter, Object.fromEntries(Object.entries(rows).map(([k, [idle_w, admin_h]]) => [k, { idle_w, admin_h }]))]));
+}
+
+// What a field reading would change, worked from the current inputs. The page's sentences read these, so they cannot drift from the model.
+function wattsFor(times, rowWh, watts, perW) {
+  if (!perW) return null;
+  const w = (times * rowWh - (rowWh - watts * perW)) / perW;
+  return w > 0 ? w : null;
+}
+function fieldLines(p, cat, arch) {
+  const off = 1 - p.already_on;
+  const room = HOURS * p.pue_room;
+  const rows = {
+    office_server: [arch.A.local, 'office_w', room], nas_ten_nations: [arch.C.federated, 'nas_w', off * p.nations * room], nas_own_node: [arch.E.year_node, 'nas_w', off * p.exit_node_copies * room],
+    node_100k: [arch.D.node_100k, 'node_w', off * room * p.prompts_block / p.node_prompts_100k], node_1m: [arch.D.node_1m, 'node_w', off * room * p.prompts_block / p.node_prompts_1m],
+  };
+  for (const v of p.views) rows[`media_box_${v}`] = [arch.B[`local_${v}`], 'mini_w', off * room * p.views_block / v];
+  const idle = {};
+  for (const [name, [row, key, perW]] of Object.entries(rows)) idle[name] = { default_w: p[key], idle_share: p[key] * perW / row.wh, halves_at_w: wattsFor(0.5, row.wh, p[key], perW), doubles_at_w: wattsFor(2, row.wh, p[key], perW) };
+  const top = { ...p, cache_share: p.cache_share_top };
+  const median = [p.coding_fresh, p.coding_out, p.coding_cached];
+  const mean = [p.coding_fresh_mean, p.coding_out_mean, p.coding_cached_mean];
+  const hour = cat.coding_hour;
+  return {
+    idle,
+    cache_share_top: { session_times: tokensWh(...median, top) / tokensWh(...median, p), hour_times: (hour.wh - hour.layers.data_center + p.turns_per_hour * tokensWh(...mean, top)) / hour.wh },
+    coding_usd_miss_times: hour.top_down_usd / hour.usd,
   };
 }
 
@@ -433,9 +545,10 @@ function compute(p) {
   const B = video(p, c, L);
   const C = data(p, c, L);
   const [D, dc] = prompts(p, L);
+  const arch = { A, B, C, D, E: leaving(p, L) };
   return {
-    same_hour: sh, catalog: cat, hour, where: whereItRuns(p, cat), arch: { A, B, C, D }, cross: crossovers(p, dc),
-    lever: levers(p, cat, c, B, C, D, L), use: yourUnits(p, cat, hour, L), p,
+    same_hour: sh, catalog: cat, hour, where: whereItRuns(p, cat), arch, cross: crossovers(p, dc),
+    lever: levers(p, cat, c, B, C, D, L), upkeep: upkeep(p), field: fieldLines(p, cat, arch), use: yourUnits(p, cat, hour, L), p,
   };
 }
 
@@ -451,11 +564,11 @@ function baseOf(D, settings) {
 }
 // Same procedure as input_extremes and rank_drivers in Python, over any figure read from a run of the model.
 class Run {
-  constructor(D, settings, inputs) { // inputs: numbers the reader typed over the model's, never a setting
+  constructor(D, settings, inputs, measured = {}) { // inputs: numbers the reader typed over the model's, never a setting. measured: a reader's own readings, which take no spread.
     this.D = D;
-    this.base = { ...baseOf(D, settings), ...inputs };
+    this.base = { ...baseOf(D, settings), ...inputs, ...measured };
     this.tree = compute(this.base);
-    this.swept = Object.keys(D.inputs).filter((k) => D.inputs[k][1] !== D.inputs[k][0] || D.inputs[k][2] !== D.inputs[k][0]);
+    this.swept = Object.keys(D.inputs).filter((k) => !Object.hasOwn(measured, k) && (D.inputs[k][1] !== D.inputs[k][0] || D.inputs[k][2] !== D.inputs[k][0]));
     this.ends = new Map();
     this.memo = new Map();
   }
@@ -504,12 +617,13 @@ class Run {
     }
     return entries.sort((a, b) => b.swing - a.swing);
   }
-  // A crossover as a range: the central count, the low and high from one change, and every change under which it never comes.
-  crossover(key) {
-    const value = this.tree.cross[key];
+  // A crossover as a range: the central count, the low and high from one change, and every change under which it never comes. A payback prints the same way, from where it stands in the tree.
+  crossover(key, where = ['cross']) {
+    const of = (t) => where.reduce((o, k) => o[k], t)[key];
+    const value = of(this.tree);
     const hits = blank(value) ? [] : [[value, null]];
     const never = blank(value) ? [null] : [];
-    const see = (t, name) => { const v = t.cross[key]; if (!blank(v)) hits.push([v, name]); else if (!blank(value)) never.push(name); };
+    const see = (t, name) => { const v = of(t); if (!blank(v)) hits.push([v, name]); else if (!blank(value)) never.push(name); };
     this.oat.forEach(([lo, hi], i) => { see(lo, [this.swept[i], 1]); see(hi, [this.swept[i], 2]); });
     for (const [name, options] of this.runs) for (const [o, t] of options) see(t, [name, o]);
     const low = hits.reduce((m, v) => (!m || v[0] < m[0] ? v : m), null);
@@ -529,15 +643,155 @@ function flatten(tree, prefix = '', out = {}) {
   return out;
 }
 
+// ---------------------------------------------------------------- the custody setting, a reader's own reading, and the carbon damage layer, as custody_view, apply_measured, and damage_column in Python
+const span = (values) => { const found = values.filter((v) => !blank(v)); return found.length ? [Math.min(...found), Math.max(...found)] : null; };
+// What one rule keeps and what leaves, and what it costs in idle watts, paid hours, price, and energy. A row that breaches the rule leaves whole, with its reason: nothing is scored lower, and no number here stands for consent or custody.
+function custodyView(D, tree, rule) {
+  const spec = D.custody;
+  const allowed = spec.options[rule].allows;
+  const out = { rule, label: spec.options[rule].label, fixed_line: spec.fixed_line, comparisons: {} };
+  for (const letter of Object.keys(tree.arch)) {
+    const kept = [];
+    const left = [];
+    const costed = { kept: [], left: [] };
+    const oneTime = [];
+    for (const key of D.boards[`arch.${letter}`].rows) {
+      const row = spec.rows[key];
+      const stays = allowed.includes(row.holder);
+      if (stays) kept.push(row.note ? { key, note: row.note } : { key });
+      else left.push({ key, reason: row.reason || spec.reasons[row.holder] });
+      if (row.cost === 'one_time') { if (stays) oneTime.push(key); } else if (row.cost !== 'skip') costed[stays ? 'kept' : 'left'].push(key);
+    }
+    const name = (key) => key.split('.').pop();
+    const view = { kept, left, cost: null };
+    if (left.length) {
+      const sides = (read) => ({ kept: span(costed.kept.map(read)), left: span(costed.left.map(read)) });
+      const lines = {
+        idle_w: sides((key) => tree.upkeep[letter][name(key)].idle_w), admin_h: sides((key) => tree.upkeep[letter][name(key)].admin_h),
+        usd: sides((key) => tree.arch[letter][name(key)].usd), wh: sides((key) => tree.arch[letter][name(key)].wh),
+      };
+      lines.usd.bases = { kept: [...new Set(costed.kept.map((key) => D.rows[key].pb))].sort(), left: [...new Set(costed.left.map((key) => D.rows[key].pb))].sort() };
+      const both = Object.entries(lines).filter(([, l]) => l.kept && l.left);
+      view.cost = { lines, kept_higher_on: both.filter(([, l]) => l.kept[0] > l.left[0]).map(([f]) => f), kept_lower_on: both.filter(([, l]) => l.kept[0] < l.left[0]).map(([f]) => f) };
+    }
+    if (oneTime.length) {
+      view.one_time = { usd: span(oneTime.map((key) => tree.arch[letter][name(key)].usd)), wh: span(oneTime.map((key) => tree.arch[letter][name(key)].wh)), admin_h: span(oneTime.map((key) => tree.upkeep[letter][name(key)].admin_h)) };
+    }
+    out.comparisons[letter] = view;
+  }
+  return out;
+}
+
+// %g, as Python prints a typed value in the measured line.
+function shortest(x) {
+  if (!x) return '0';
+  const rounded = +x.toPrecision(6);
+  const e = Math.floor(Math.log10(Math.abs(rounded)));
+  if (e >= -4 && e < 6) return String(rounded);
+  const [mantissa, power] = x.toExponential(5).split('e');
+  return `${mantissa.replace(/\.?0+$/, '')}e${power[0]}${power.slice(1).padStart(2, '0')}`;
+}
+const NUMBER_TEXT = /^\s*[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?\s*$/;
+// A typed value stands in for an input in this run and nowhere else. The label comes from the model, never from what a reader or a file supplies. A bad value is refused with what is allowed.
+function applyMeasured(D, typed) {
+  const spec = D.measured.inputs;
+  const values = {};
+  const records = [];
+  for (const [key, raw] of Object.entries(typed)) {
+    if (!Object.hasOwn(spec, key)) throw new Error(`${String(key).slice(0, 40)} does not take a measured value`);
+    const rule = spec[key];
+    const value = typeof raw === 'number' ? raw : typeof raw === 'string' && NUMBER_TEXT.test(raw) ? Number(raw) : NaN;
+    if (!(value >= rule.min && value <= rule.max)) throw new Error(`${rule.label} takes a number from ${shortest(rule.min)} to ${shortest(rule.max)} ${rule.unit}; that value was not used`);
+    values[key] = value;
+    records.push({ input: key, label: rule.label, value, unit: rule.unit, model_value: D.inputs[key][0], replaces_claims: [...rule.claims], note: D.measured.label });
+  }
+  records.sort((a, b) => (a.input < b.input ? -1 : 1));
+  return { values, records };
+}
+const ROW_TREES = ['catalog', 'hour', 'where', 'arch', 'lever'];
+// The rows a typed value changed, from two flat trees: these carry the label.
+function movedRows(before, after) {
+  const rows = new Set();
+  for (const k of new Set([...Object.keys(before), ...Object.keys(after)])) {
+    const cut = k.lastIndexOf('.');
+    if (MS.includes(k.slice(cut + 1)) && ROW_TREES.includes(k.split('.')[0]) && before[k] !== after[k]) rows.add(k.slice(0, cut));
+  }
+  return [...rows].sort();
+}
+// The one sentence that travels with any figure a typed value touched: copy, print, and CSV all use it. Unused, it names the reading without saying the figures include it.
+const measuredLine = (D, records, used = true) => {
+  if (!records.length) return '';
+  const items = records.map((r) => `${r.label} ${shortest(r.value)} ${r.unit} (model ${shortest(r.model_value)})`).join('; ');
+  return used ? `Includes ${D.measured.label}: ${items}.` : `${D.measured.label[0].toUpperCase()}${D.measured.label.slice(1)}: ${items}.`;
+};
+
+// Off by default, and the owner may yet rule it out: compute() never reads it, so no row, price, or ranking changes. One family's low, central, and high in its own currency and year; a family with no central keeps it null.
+const carbonDamage = (g, family) => Object.fromEntries(['low', 'central', 'high'].map((k) => [k, blank(family[k]) ? null : g / 1e6 * family[k]]));
+function damageColumn(D, g, choice = 'off') {
+  if (choice === 'off') return null;
+  const family = D.carbon_damage.families[choice];
+  const column = family.kind.startsWith('avoidance') ? D.carbon_damage.column_avoidance ?? D.carbon_damage.column : D.carbon_damage.column; // an avoidance cost never wears the damage head
+  return { column, as_of: D.carbon_damage.as_of, family: family.label, unit: family.unit, kind: family.kind, claims: family.claims, ...carbonDamage(g, family) };
+}
+
+// A scenario file: settings and typed values on the reader's own machine. Inbound files are untrusted, so only known names and allowed values pass, the whole file is refused on any problem, and nothing in it can set a label or a sentence.
+const SCENARIO_KIND = 'atni-resource-use-explorer-scenario';
+const SCENARIO_WARNING = 'This file may hold your Nation\'s figures.';
+const SCENARIO_MAX = 1e9;
+const SCENARIO_KEYS = ['kind', 'schema', 'notice', 'saved', 'model_hash', 'settings', 'mode', 'seats', 'fields', 'inputs', 'measured', 'custody', 'damage'];
+function readScenario(D, text) {
+  let raw;
+  try { raw = JSON.parse(text); } catch { return { problems: ['This file is not JSON, so nothing was changed. Choose a scenario file saved from this page.'] }; }
+  const isSet = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  if (!isSet(raw) || raw.kind !== SCENARIO_KIND || raw.schema !== 1) return { problems: ['This is not a scenario file saved from this page, so nothing was changed.'] };
+  const problems = [];
+  const said = (v) => String(v).slice(0, 40);
+  for (const k of Object.keys(raw)) if (!SCENARIO_KEYS.includes(k)) problems.push(`Unknown entry: ${said(k)}.`);
+  const section = (name) => {
+    if (raw[name] === undefined) return {};
+    if (isSet(raw[name])) return raw[name];
+    problems.push(`${name} must be a set of names and values.`);
+    return {};
+  };
+  const count = (v, low) => typeof v === 'number' && Number.isFinite(v) && v >= low && v <= SCENARIO_MAX;
+  const scenario = { settings: {}, fields: {}, inputs: {}, measured: {} };
+  for (const [name, option] of Object.entries(section('settings'))) {
+    if (!Object.hasOwn(D.sel, name)) problems.push(`Unknown setting: ${said(name)}.`);
+    else if (typeof option !== 'string' || !Object.hasOwn(D.sel[name].opts, option)) problems.push(`${D.names[name] || name} has no such option.`);
+    else scenario.settings[name] = option;
+  }
+  for (const [name, v] of Object.entries(section('fields'))) {
+    if (!Object.hasOwn(D.fields, name)) problems.push(`Unknown Your Use input: ${said(name)}.`);
+    else if (!count(v, 0)) problems.push(`The ${name} count must be a number zero or above.`);
+    else scenario.fields[name] = v;
+  }
+  for (const [name, v] of Object.entries(section('inputs'))) {
+    if (!D.typed.includes(name)) problems.push(`Unknown typed input: ${said(name)}.`);
+    else if (!count(v, 0)) problems.push(`${D.names[name] || name} must be a number zero or above.`);
+    else scenario.inputs[name] = v;
+  }
+  for (const [name, v] of Object.entries(section('measured'))) {
+    if (typeof v !== 'number') problems.push(`${Object.hasOwn(D.measured.inputs, name) ? D.measured.inputs[name].label : said(name)} must be a plain number; a label is never read from a file.`);
+    else try { Object.assign(scenario.measured, applyMeasured(D, { [name]: v }).values); } catch (error) { problems.push(`${error.message}.`); }
+  }
+  if (raw.mode !== undefined) { if (raw.mode === 'person' || raw.mode === 'office') scenario.mode = raw.mode; else problems.push('Who is counted must be person or office.'); }
+  if (raw.seats !== undefined) { if (count(raw.seats, 1)) scenario.seats = raw.seats; else problems.push('Staff seats must be a number of one or more.'); }
+  if (raw.custody !== undefined) { if (typeof raw.custody === 'string' && Object.hasOwn(D.custody.options, raw.custody)) scenario.custody = raw.custody; else problems.push(`${D.custody.label} has no such option.`); }
+  if (raw.damage !== undefined) {
+    if (raw.damage === 'off' || (D.carbon_damage && typeof raw.damage === 'string' && Object.hasOwn(D.carbon_damage.families, raw.damage))) scenario.damage = raw.damage;
+    else problems.push('The illustrative damage control has no such option.');
+  }
+  return { problems, scenario, otherBuild: raw.model_hash !== D.hash };
+}
+
 // ---------------------------------------------------------------- figures in words
 const grouped = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(v);
-// Two significant figures, three at 100 and above; d overrides. Below 1 no trailing zero: 0.0008, not 0.00080.
+// Two significant figures, three at 100 and above; d overrides. No trailing zero, here or on the plates: 3, not 3.0.
 function num(v, d) {
   const a = Math.abs(v);
   if (!a) return '0';
   if (a >= 99.5) return grouped(Number(v.toPrecision(d || 3)));
-  const s = v.toPrecision(d || 2);
-  return Math.abs(+s) < 1 ? String(+s) : s;
+  return String(+v.toPrecision(d || 2));
 }
 const cents = (s) => (+s && s.length < 4 ? (+s).toFixed(2) : s); // money keeps its cents below a dollar: $0.20, $0.04, $0.004
 const usd = (v) => (Math.abs(v) >= 100 ? `$${grouped(Number(v.toPrecision(3)))}` : Math.abs(v) >= 1 ? `$${v.toFixed(2)}` : `$${cents(num(v))}`);
@@ -565,10 +819,27 @@ function Views(D) {
   const at = (t, key) => key.split('.').reduce((o, k) => (blank(o) ? o : o[k]), t);
   V.at = at;
   V.fresh = () => ({
-    settings: Object.fromEntries(Object.entries(D.sel).map(([k, s]) => [k, s.def])), fields: { ...D.fields }, inputs: {}, mode: 'person', seats: D.scenario.office_users, m: 'wh',
+    settings: Object.fromEntries(Object.entries(D.sel).map(([k, s]) => [k, s.def])), fields: { ...D.fields }, inputs: {}, measured: {}, custody: D.custody.default, damage: 'off', mode: 'person', seats: D.scenario.office_users, m: 'wh',
     opts: { workload: 'prompt', comparison: 'A', crossover: 'prompts', waffle: 'iea_2025', sort: 'value', scale: 'hour' }, sel: { ...D.first },
   });
-  V.set = (S) => { V.S = S; V.run = new Run(D, S.settings, S.inputs); V.p = V.run.base; V.t = V.run.tree; };
+  V.set = (S) => {
+    V.S = S;
+    V.run = new Run(D, S.settings, S.inputs, S.measured);
+    V.p = V.run.base;
+    V.t = V.run.tree;
+    V.records = applyMeasured(D, S.measured).records;
+    V.moved = new Set();
+    if (V.records.length) { // what a reading changed at these settings; Your Use and the crossovers are rows on this page too, though the model's CSV does not hold them
+      const before = compute({ ...baseOf(D, S.settings), ...S.inputs });
+      V.moved = new Set(movedRows(flatten(before), flatten(V.t)));
+      for (const k of Object.keys(before.use)) if (MS.some((m) => before.use[k][m] !== V.t.use[k][m])) V.moved.add(`use.${k}`);
+      for (const k of Object.keys(before.cross)) if (before.cross[k] !== V.t.cross[k]) V.moved.add(`cross.${k}`);
+    }
+  };
+  V.isMoved = (key) => V.moved.has(key) || V.moved.has(`${key}.before`) || V.moved.has(`${key}.after`);
+  V.measuredLine = (used = true) => measuredLine(D, V.records, used);
+  V.copied = (reading, key) => (V.isMoved(key) ? `${reading} ${V.measuredLine()}` : reading); // Copy Reading: a moved row's Reading never leaves without the line
+  V.keeps = (key) => !key.startsWith('arch.') || D.custody.options[V.S.custody].allows.includes(D.custody.rows[key].holder); // the custody rule removes rows; it changes no figure
   // The cloud's paid hours a month at which the office suite's two prices meet, at these settings. Null when the local suite is already the cheaper, or paid hours cost nothing.
   V.adminTie = () => {
     const { cloud, local, readings } = V.t.arch.A;
@@ -626,7 +897,7 @@ function Views(D) {
   V.boardKeys = (id, m) => {
     const spec = D.boards[id];
     const list = (m === 'usd' ? spec.price : m === 'wh' ? spec.energy : spec.grid) || spec.rows;
-    return id === 'use' ? list.filter((key) => key !== 'use.seat' || V.S.mode === 'office') : [...list, ...(m === 'g' || m === 'ml' ? spec.scenario || [] : [])];
+    return id === 'use' ? list.filter((key) => key !== 'use.seat' || V.S.mode === 'office') : [...list, ...(m === 'g' || m === 'ml' ? spec.scenario || [] : [])].filter(V.keeps);
   };
   V.boardScale = (id, m) => (m === 'usd' ? null : scaleOf(Math.max(0, ...V.boardKeys(id, m).map((key) => Math.abs(val(key, m) || 0))), m)); // one unit down a board
   V.rowTag = (key) => (/^(catalog|hour)\./.test(key) ? D.words.price[V.basis(key)] : ''); // a Catalog row names its price basis under its label; the value cell keeps the figure and its spread
@@ -739,7 +1010,7 @@ function Views(D) {
       layers: TAGS.map((tag) => ({ tag, on: !!by[tag], text: by[tag] ? plainFig(parts[tag], 'wh') : 'not counted', label: D.words.layer[tag] })),
       spread: wall ? `${spread} The phone's line is battery energy; ${num(wall)} Wh at the wall.` : spread,
       moves: V.moves(key, m) ? `Moves it most: ${V.moves(key, m)}.` : '',
-      reading: `${V.label(key)}: ${words(wh)}, ${blank(val(key, 'usd')) ? 'no price' : `${price.num} ${D.words.price[V.basis(key)]}`}, ${words({ ...g, tag: '' })}, water ${water.length ? water.map((part) => `${plainFig(part.v, 'ml')} (${basinWord(part.place)})`).join(' and ') : 'not in the record'}. Modeled, not measured.`,
+      reading: `${V.label(key)}: ${words(wh)}, ${blank(val(key, 'usd')) ? 'no price' : `${price.num} ${D.rows[key].pt || D.words.price[V.basis(key)]}`}, ${words({ ...g, tag: '' })}, water ${water.length ? water.map((part) => `${plainFig(part.v, 'ml')} (${basinWord(part.place)})`).join(' and ') : 'not in the record'}. Modeled, not measured.`,
     };
   };
   V.leverDetail = (key, m = 'wh') => {
@@ -796,9 +1067,13 @@ function Views(D) {
     if (blank(v)) return 'no tie at these settings';
     const [lo, hi] = V.run.spread(`reading:${key}`, (t) => at(t, key));
     if (name.startsWith('ratio_')) return `${num(lo)} to ${num(hi)} times, a spread`;
-    if (name.includes('tie')) return name.includes('wage') ? `$${num(v)} an hour` : `${num(v)} W`;
+    if (name.includes('tie')) return name.includes('wage') ? `$${num(v)} an hour` : `${num(v, name.startsWith('node_w') ? 3 : 2)} W`;
     if (name.includes('swing')) return `${num(v)} times`;
     if (name.includes('duplicate')) return `${num(v)} GB`;
+    if (name.startsWith('copies') || name.startsWith('transfer_days')) { // a count, and days on the wire: no unit a measure's scale would pick
+      const noun = name.startsWith('copies') ? (v === 1 && hi === 1 ? 'copy' : 'copies') : 'days';
+      return `${num(v)}${lo === hi ? '' : ` (${num(lo)} to ${num(hi)})`} ${noun}`;
+    }
     const m = name.includes('usd') ? 'usd' : /(^|_)g(_|$)/.test(name) ? 'g' : name.includes('ml') ? 'ml' : 'wh';
     return words(figure(v, lo, hi, m));
   };
@@ -807,10 +1082,73 @@ function Views(D) {
     const text = `${names.map(sayOf).join(', ')}.`;
     return text[0].toUpperCase() + text.slice(1);
   };
+  // What a custody rule leaves out and what it costs, in words, for the block under the plate. The figures are the rows' own.
+  const listed = (names) => (names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`);
+  const COST_WORDS = { idle_w: 'idle watts', admin_h: 'paid hours', usd: 'price', wh: 'energy' };
+  const COST_FIGURE = { idle_w: (x) => `${num(x)} W`, admin_h: (x) => `${num(x)} hours`, usd, wh: (x) => plainFig(x, 'wh') };
+  const spanWords = (s, f) => (!s ? 'no row' : s[0] === s[1] ? f(s[0]) : `${f(s[0])} to ${f(s[1])}`);
+  V.custody = (letter, rule = V.S.custody) => {
+    const view = custodyView(D, V.t, rule).comparisons[letter];
+    const basisWords = (bases) => bases.map((b) => D.words.price[b]).join(' and ');
+    const out = {
+      rule, label: D.custody.options[rule].label,
+      left: view.left.map(({ key, reason }) => ({ key, label: V.label(key), reason, figures: `${plainFig(val(key, 'wh'), 'wh')}; ${blank(val(key, 'usd')) ? 'no price' : `${usd(val(key, 'usd'))}, ${D.rows[key].pt || D.words.price[V.basis(key)]}`}` })),
+      notes: view.kept.filter((k) => k.note).map(({ key, note }) => ({ key, label: V.label(key), note })),
+      cost: null, said: '', oneTime: '',
+    };
+    if (view.cost) {
+      const { lines, kept_higher_on: higher, kept_lower_on: lower } = view.cost;
+      out.cost = Object.entries(lines).map(([f, l]) => {
+        const basis = f === 'usd' ? [basisWords(l.bases.kept), basisWords(l.bases.left)] : ['', ''];
+        return { label: D.custody.cost_labels[f], kept: [spanWords(l.kept, COST_FIGURE[f]), basis[0]].filter(Boolean).join(', '), left: [spanWords(l.left, COST_FIGURE[f]), basis[1]].filter(Boolean).join(', ') };
+      });
+      const parts = [higher.length && `higher on ${listed(higher.map((f) => COST_WORDS[f]))}`, lower.length && `lower on ${listed(lower.map((f) => COST_WORDS[f]))}`].filter(Boolean);
+      out.said = parts.length ? `Lowest figure against lowest figure, the rows that stay run ${parts.join(', and ')}. A vendor's figure may count fewer items than a node's; the plate's boundary note says what each row counts.` : '';
+    }
+    if (view.one_time) out.oneTime = `The move itself, one time and never added to a year: ${spanWords(view.one_time.usd, usd)}, ${spanWords(view.one_time.wh, (x) => plainFig(x, 'wh'))}, ${spanWords(view.one_time.admin_h, COST_FIGURE.admin_h)}.`;
+    return out;
+  };
+  // A payback can be never, so it prints as a crossover does.
+  V.payback = (key) => words(V.crossWords(V.run.crossover(key, ['arch', 'E', 'payback']), 'years'));
+  // One holder's three paybacks in one sentence, for the selected row; the Table keeps all six.
+  const PAYBACK_SUBJECT = { node: 'One copy on the Nation\'s node', federated: 'Three copies across Nations\' nodes' };
+  V.paybackLine = (side) => {
+    const say = (store) => { const k = `${side}_vs_${store}`; return blank(V.run.crossover(k, ['arch', 'E', 'payback']).value) ? 'never at these settings' : `in ${V.payback(k)}`; };
+    return `${PAYBACK_SUBJECT[side]} pays back against S3 ${say('s3')}; against R2 ${say('r2')}; against B2 ${say('b2')}. Each range is one change at a time.`;
+  };
+  // The illustrative damage of one row, or null with the control off. Its own column, in the family's own currency and year; never a sum with a price.
+  V.damageOf = (g) => (V.S.damage === 'off' ? null : damageColumn(D, g, V.S.damage));
+  V.damage = (key) => V.damageOf(val(key, 'g'));
+  V.damageCurrency = (c) => c.unit.split(' per ')[0];
+  V.damageFig = (c) => { // central first, low and high beside it, never one number alone
+    const sym = V.damageCurrency(c).endsWith('USD') ? '$' : '';
+    return blank(c.central) ? `${sym}${num(c.low)} to ${num(c.high)}, no central in the source` : `${sym}${num(c.central)} (${num(c.low)} to ${num(c.high)})`;
+  };
+  V.damageWords = (c, what = 'this row\'s CO2e') => `${c.family}, ${c.kind.startsWith('avoidance') ? 'an avoidance cost' : 'an estimate'}: ${V.damageFig(c)}, ${V.damageCurrency(c)}, for ${what}`;
+  V.scenarioFile = (saved) => {
+    const { settings, mode, seats, fields, inputs, measured, custody, damage } = V.S;
+    return { kind: SCENARIO_KIND, schema: 1, notice: SCENARIO_WARNING, saved, model_hash: D.hash, settings, mode, seats, fields, inputs, measured, custody, damage };
+  };
+  // Every row at the current settings. A reading's line comes first and the label sits on every row it moved; the label holds a comma, so both are quoted, as outputs_csv in Python.
+  V.outputsCsv = () => {
+    const setting = [...Object.entries(V.S.settings), ...Object.entries(V.S.inputs)].map(([k, v]) => `${k}=${v}`).join(' ');
+    const rows = [['row', 'measure', 'value', 'low', 'high', 'price_basis', 'settings', 'measured']];
+    for (const key of Object.keys(D.check)) {
+      const r = at(V.t, key);
+      const mark = V.moved.has(key) ? `"${D.measured.label}"` : '';
+      for (const m of ['wh', 'usd', 'g']) { const [lo, hi] = V.spread(key, m); rows.push([key, m, r[m], lo, hi, m === 'usd' ? V.basis(key) : '', setting, mark]); }
+      for (const part of V.water(key)) rows.push([key, `ml ${part.place}`, part.v, part.lo, part.hi, '', setting, mark]);
+    }
+    const line = V.measuredLine();
+    return [...(line ? [`"# ${line}"`] : []), ...rows.map((r) => r.map((c) => (blank(c) ? '' : c)).join(','))].join('\n');
+  };
   return V;
 }
 
-const api = { MS, TAGS, FEED, blank, compute, baseOf, Run, flatten, Views, projectScale, num, usd, figure, words, pct, grouped, leverText, plainFig };
+const api = {
+  MS, TAGS, FEED, SCENARIO_KIND, SCENARIO_WARNING, blank, compute, baseOf, Run, flatten, Views, projectScale, num, usd, figure, words, pct, grouped, leverText, plainFig,
+  custodyView, applyMeasured, movedRows, measuredLine, carbonDamage, damageColumn, readScenario,
+};
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else window.resourceModel = api;
 }());

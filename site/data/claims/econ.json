@@ -659,6 +659,7 @@
    "status": "partly"
   },
   {
+   "limit": "One agency's study of four data centres; its boundary is stated only as the service's global warming potential, and life-cycle terms are likely but not confirmed from the page.",
    "id": "ec-026",
    "entity": "German Environment Agency (UBA) Green Cloud Computing method, online storage",
    "metric": "global warming potential of online storage in four data centres",
@@ -1384,7 +1385,7 @@
    "source": {
     "title": "Key Questions on Energy and AI",
     "publisher": "International Energy Agency",
-    "url": "https://iea.blob.core.windows.net/assets/3575ae9f-50bc-4cbb-9ca9-4b9b7f063e91/KeyQuestionsonEnergyandAI.pdf",
+    "url": "https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf",
     "published": "2026-04-16",
     "kind": "agency"
    },
@@ -1409,7 +1410,7 @@
    "source": {
     "title": "Key Questions on Energy and AI",
     "publisher": "International Energy Agency",
-    "url": "https://iea.blob.core.windows.net/assets/3575ae9f-50bc-4cbb-9ca9-4b9b7f063e91/KeyQuestionsonEnergyandAI.pdf",
+    "url": "https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf",
     "published": "2026-04-16",
     "kind": "agency"
    },
