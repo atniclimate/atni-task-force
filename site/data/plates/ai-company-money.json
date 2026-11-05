@@ -6,7 +6,7 @@
  "fit": true,
  "eyebrow": "Paying for it",
  "gap": "not reported",
- "title": "Capital spending has nearly caught operating cash flow at Amazon: {c[fin-003][series_fiscal_year_ends][7][usd_billion]:.0f} billion dollars against {c[fin-010][series_fiscal_year_ends][7][usd_billion]:.0f} in fiscal 2025",
+ "title": "In the nine months to 09/30/2026, capital spending passed operating cash flow at Amazon, {c[fin-089][value]:.0f} billion dollars against {c[fin-090][value]:.0f}, and at Alphabet, {c[fin-087][value]:.0f} against {c[fin-088][value]:.0f}; the chart shows full fiscal years",
  "subtitle": "Billion dollars, by fiscal year, from SEC filings on a cash basis. Capital spending and operating cash flow share one scale.",
  "text": [
   "Seven large companies sit at the center of the buildout. Their filings show debt rising at Amazon, Alphabet, and Meta, and cash and securities falling at Microsoft and Apple; their own reports show electricity, water, and location-based emissions over the same years. Fiscal years differ (Microsoft June, Apple September, NVIDIA January), and every axis says so."
@@ -361,5 +361,11 @@
    "year": "Fiscal year",
    "end": "Year ends"
   }
- }
+ },
+ "cites": [
+  "fin-087",
+  "fin-088",
+  "fin-089",
+  "fin-090"
+ ]
 }

@@ -1,7 +1,7 @@
 input,value,low,high,unit,kind,status,claims,layer,note
 e_prompt,0.3,0.24,0.6,Wh per text prompt,measured,same-hour input,fp-001 fp-017 fp-012 fp-021 fp-015,data center,"measured (Google production median 0.24) and modeled (Joule median 0.31, interquartile 0.16 to 0.60; Jegham GPT-4o short prompt 0.42; OpenAI statement 0.34 'average query', no method; Epoch 0.6 including a development share)"
 kb_prompt,50,5,500,KB per prompt and reply,modeled,same-hour input,fp-134,network,"modeled from one phone-app measurement (several KB per prompt, 62 KB for a web-search prompt); 500 KB is an allowance for web clients and images"
-i_dc,0.45,0.35,30.1,Wh per GB served,modeled,same-hour input,fp-122 fp-130 fp-037 fp-043,data center,"modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35; DESNZ's scenario assumes 15 Wh of IT energy per GB streamed plus non-IT, which its Tables 5.3 and 5.4 make 11.1, 19.6 and 30.1 Wh per GB in the low, medium and high cases (0.155, 0.274 and 0.422 kWh over 14 GB)"
+i_dc,0.45,0.171,55,Wh per GB served,modeled,same-hour input,fp-122 fp-130 fp-037 fp-142 fp-141 sv-048 ec-024 fp-147 fp-149 fp-150,data center,"modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35. The low is the DESNZ follow-up of 07/28/2026, 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). The high is Sustainable Web Design's top-down 55 Wh per GB (ec-024, fp-147), all data center energy over all internet bytes. One operator measured 1.15 (sv-048)"
 short_gb,0.39,0.25,2.0,GB per hour,modeled,same-hour input,fp-053 fp-054 fp-055 fp-130,network,modeled (ENGIE 256 MB per day over 39.5 minutes of 700 kb/s video; upper allowance for HD feeds and preloading)
 short_ceiling,13.9,9.1,13.9,"Wh per hour of short-video feed, ceiling",modeled,same-hour input,fp-059 fp-055 fp-097,data center,"modeled bound: Meta's 15.1 Wh per daily active person per day spread over 65 minutes of daily Facebook and Instagram use (ENGIE) gives 13.9 Wh per hour; over Similarweb's 100 Instagram minutes, 9.1. All Meta products, AI training and offices included"
 net_fixed_avg,1.6,1.6,6.5,Wh per GB,modeled,same-hour input,fp-127 fp-124,network,modeled (DESNZ 2024 extrapolation 1.6; Carbon Trust 2020 regression 6.5)
@@ -12,10 +12,10 @@ router_w,10,5.88,15,W,modeled,same-hour input,fp-126 fp-133 fp-049,home router,m
 router_wh_per_gb,25,25,25,Wh per GB,modeled,same-hour input,fp-126,home router,modeled (Carbon Trust conventional allocation of a 10 W router by household data)
 dev_phone,2.0,1.0,3.0,Wh per hour,measured,same-hour input,fp-049 fp-088 fp-086 fp-090 fp-133 fp-132,device,"measured for video (TNO 2.22 at 75 percent brightness; Greenspector YouTube 5.28 mAh per minute, about 1.2 Wh per hour at 3.85 V and 50 percent brightness); modeled for chat (Greenspector ChatGPT 5.5 to 7.2 mAh per minute, 1.05 to 1.36 times its YouTube rate); DIMPACT 1 to 2 W"
 dev_laptop,22,15,30,Wh per hour,modeled,same-hour input,fp-132 fp-133,device,modeled (Carbon Trust Table 10 portable computer 22 W; DIMPACT 15 to 30 W)
-dev_tv,100,40,120,Wh per hour,modeled,same-hour input,fp-008 fp-122 fp-043 fp-132 fp-133,device,"modeled (100 W television in Google, DIMPACT, DESNZ and Carbon Trust; DIMPACT range 40 to 120 W)"
+dev_tv,100,40,120,Wh per hour,modeled,same-hour input,fp-008 fp-122 fp-143 fp-132 fp-133,device,"modeled (100 W television in Google, DIMPACT, DESNZ and Carbon Trust; DIMPACT range 40 to 120 W)"
 gb_phone,1.0,0.17,3.0,GB per hour,modeled,same-hour input,fp-130,network,"modeled (Carbon Trust: SD 1, HD 3, mobile save-data 0.17, automatic 0.25)"
 gb_laptop,1.9,1.0,3.0,GB per hour,modeled,same-hour input,fp-130,network,"modeled (Carbon Trust laptop mix 55 percent SD, 45 percent HD)"
-gb_tv,3.0,1.0,7.0,GB per hour,modeled,same-hour input,fp-130 fp-043,network,"modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)"
+gb_tv,3.0,1.0,7.0,GB per hour,modeled,same-hour input,fp-130 fp-143,network,"modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)"
 meta_wh_person_day,15.1,15.1,15.1,Wh per daily active person per day,measured,same-hour input,fp-059 fp-060 fp-084,data center,reported (Meta 2024: 18.42 TWh total electricity over 3.35 billion daily active people)
 short_minutes_day,100,100,115,minutes per day,measured,same-hour input,fp-097 fp-096,check,"reported (Similarweb, Instagram 100 and TikTok 115 minutes, August 2026)"
 e_prompt_mean,0.34,0.34,0.34,Wh per text prompt,modeled,same-hour input,fp-001 fp-017 fp-012 fp-021 fp-015,data center,"measured (Google production median 0.24) and modeled (Joule median 0.31, interquartile 0.16 to 0.60; Jegham GPT-4o short prompt 0.42; OpenAI statement 0.34 'average query', no method; Epoch 0.6 including a development share)"
@@ -40,15 +40,16 @@ clip_seconds,8,8,8,seconds,assumed,assumption,fp-070,price,The estimate's clip l
 search_base_wh,0.3,0.3,0.3,Wh per search,measured,verified,fp-071 sv-056,data center,"2009 figure, the only one; the Joule authors say it likely overestimates today."
 pue_hyper,1.1,1.09,1.1,PUE,measured,verified,gf-053 au-011,data center,
 pue_colo,1.45,1.36,1.58,PUE,modeled,verified,tr-065 sf-022,data center,National 1.45; low is LBNL's 2030 aggregate; high is the Uptime survey.
-pue_room,1.1,1.0,1.5,PUE,assumed,assumption,,local node,No general field figure.
+pue_room,1.1,1.0,1.5,PUE,assumed,assumption,lf-078,local node,No general field figure. A modeling tool's on-premise default of 1.58 (lf-078) sits above it.
 u_hyper,0.5,0.45,0.5,utilization share,modeled,verified,sf-020 ec-028,data center,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
 u_colo,0.3,0.21,0.35,utilization share,modeled,verified,sf-020 ec-028,data center,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
 u_room,0.1,0.05,0.15,utilization share,modeled,verified,lf-024 sv-038 ec-028,local node,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
 a_idle,0.11,0.11,0.36,"idle power over maximum power, accelerator",modeled,partly,ec-020 sf-008 sv-039 lf-024,data center,"GPU idle fraction, A100 46 of 407 W (ec-020), because every row the multiplier touches is accelerator work. The conventional-server anchors, sf-008 (solves to 0.25) and sv-039 (0.36), appear in the calibration block and set no row; 0.36 is the high. Untested: no back-test row touches the idle term, and the linear power curve is a simplification lf-024's own numbers do not follow (75 percent of peak at 10 percent load implies 0.72 against its stated 50 percent idle)."
-local_penalty,1.45,1.4,1.5,"ratio, energy per answer, local over cloud hardware, same model",measured,partly,sf-036 lf-012,local node,
+local_penalty,1.45,1.4,1.5,"ratio, energy per answer, local over cloud hardware, same model",measured,partly,sf-036 lf-012 lf-076,local node,"A pooled home cluster against one cloud GPU server reads about 1.39 (lf-076), at the low edge. It does not carry to phones, where the sign can reverse (lf-074)."
 grid_us,350,350,350,g CO2e per kWh,measured,verified,gf-007,grid,"eGRID 2023, location-based average."
 grid_us_nonbaseload,626,626,626,g CO2e per kWh,measured,verified,gf-007,grid,"eGRID non-baseload, a stand-in for a US margin."
-grid_nwpp,288,288,288,g CO2e per kWh,measured,verified,gf-001,grid,eGRID subregion; crosses state lines; not a Tribal Nation or utility factor.
+grid_nwpp,288,288,288,g CO2e per kWh,measured,verified,gf-001,grid,eGRID subregion; crosses state lines; not a Tribal Nation or utility factor. An unofficial rebuild of 2024 data reads 264 (gf-061); EPA has not released eGRID2024.
+grid_bpa,49.3,16.0,49.7,g CO2e per kWh,measured,verified,gf-062 gf-064,grid,"Regulator-assigned factor for power sold by BPA, data year 2027; not any customer's delivered electricity and not comparable to eGRID without naming the method. The series ran 16.0 to 49.7 across data years 2022 to 2027."
 grid_wa,113,113,113,g CO2 per kWh,measured,verified,gf-009,grid,"In-state generation, CO2 not CO2e, exports included; not a delivered-electricity factor."
 grid_nw_srm,728,728,728,g CO2 per kWh,modeled,verified,gf-019,grid,AVERT Northwest short-run fossil margin.
 grid_nw_lrm,79,79,79,g CO2 per kWh,modeled,verified,gf-023,grid,"Cambium long-run margin, levelized."
@@ -79,8 +80,8 @@ active_hours,1500,1000,2000,hours per user-year,assumed,assumption,,device,
 nas_w,46,15,46,"W idle, NAS",modeled,partly,lf-032 sf-043,local node,"Four-bay figure is researched, not metered; two-bay measured 15 to 18."
 mini_w,8,7,9,"W idle, mini PC",measured,partly,sf-042 lf-033,local node,One blog's wall meter.
 stream_w,1,0,2,W per stream,measured,partly,lf-033,local node,
-node_w,40,30,250,"W idle, desk node",assumed,partly,gf-054 sv-039,local node,30 to 45 measured on one box with no GPU load; 250 is 36 percent of a 700 W GPU machine.
-office_w,45,30,60,"W, one office server",measured,partly,gf-054,local node,"One tester, one product."
+node_w,40,30,250,"W idle, desk node",assumed,partly,gf-054 sv-039 lf-067,local node,30 to 45 measured on one box with no GPU load; 250 is 36 percent of a 700 W GPU machine.
+office_w,45,30,60,"W, one office server",measured,partly,gf-054 lf-067,local node,"One tester, one product; a certifier's test machine read 31.5 to 32.5 W with nothing running (lf-067)."
 j_node,1.5,1.11,4.0,"J per token, net of idle",measured,partly,au-027 au-028 sf-038,local node,"Local code models, GPU only; 4.0 is an unbatched H100 estimate."
 j_laptop,0.25,0.09,0.25,"J per token, 3 to 9B model",modeled,partly,sf-037 lf-009,device,"System power is an estimate, not a wall meter."
 j_phone_query,262,122,3590,J per query,measured,partly,lf-018 sf-039 lf-008,device,Phone NPU; low is a small board; high is a consumer GPU with thinking on.
@@ -100,13 +101,13 @@ p_open_cache,0.015,0.015,0.015,USD per M cache reads,measured,verified,px-014,pr
 p_small_in,0.1,0.1,0.1,USD per M input tokens,measured,verified,au-051,price,Haiku 5.5.
 p_small_out,0.5,0.5,0.5,USD per M output tokens,measured,verified,au-051,price,
 p_image,0.0336,0.0336,0.0336,USD per 1K image,measured,verified,px-027,price,
-p_clip_s,0.1,0.1,0.1,USD per second of 720p video,measured,verified,px-028,price,"Gemini Omni; Veo's older prices are stale, so the energy and the price describe different models."
+p_clip_s,0.1,0.1,0.1,USD per second of 720p video,measured,verified,px-028 px-061,price,"Gemini Omni; Veo 3.1 Preview left the Gemini API on 10/22/2026 (px-061), and Google Cloud's Veo rate card does not define its unit, so the energy and the price describe different models."
 p_search,0.014,0.014,0.014,USD per grounded search call,measured,verified,px-029,price,
 seat_usd,14.0,7.0,23.5,USD per user-month,measured,verified,px-045 px-046 lf-043 sv-018,price,
 p_s3,0.023,0.023,0.023,USD per GB-month,measured,verified,px-048,price,
 p_r2,0.015,0.015,0.015,USD per GB-month,measured,verified,px-050,price,
 p_b2_tb,6.95,6.95,6.95,USD per TB per 30 days,measured,verified,px-052,price,
-p_egress,0.09,0.0,0.11,USD per GB,measured,partly,px-049 px-051 sf-050,price,"S3 list, free at R2, 0.11 at Google Cloud on a rival's page."
+p_egress,0.09,0.0,0.11,USD per GB,measured,partly,px-049 px-051 sf-050 px-063,price,"S3 list, 0.087 at Azure's next tier, free at R2, 0.11 at Google Cloud on a rival's page."
 p_delivery,0.06,0.06,0.06,USD per hour-view,measured,verified,px-053,price,"One dollar per 1,000 minutes."
 node_usd,6950,899,6950,"USD, desk AI node",measured,verified,px-059 lf-044,price,Out of stock on the read date.
 hdd_usd_tb,22.22,18,56,USD per TB,measured,partly,sf-052 lf-044,price,Moves weekly; one tracker's low.
@@ -121,7 +122,7 @@ tariff_or_com,0.098,0.098,0.098,USD per kWh,measured,verified,sv-024,price,
 tariff_wa_res,0.1317,0.1317,0.1317,USD per kWh,measured,verified,lf-041,price,
 tariff_us_res,0.1723,0.1723,0.1723,USD per kWh,measured,verified,sv-022,price,
 tariff_us_ind,0.0851,0.0851,0.0851,USD per kWh,measured,verified,ec-050,price,
-tariff_bpa,0.04016,0.04016,0.04016,"USD per kWh, wholesale to a utility",measured,verified,px-058,price,Before transmission and retail charges.
+tariff_bpa,0.04016,0.04016,0.04016,"USD per kWh, wholesale to a utility",measured,verified,px-058 px-067,price,Before transmission and retail charges. BP-27 proposes an increase; this holds the current average until the Record of Decision on 12/18/2026.
 tariff_home,0.1317,0.1317,0.1723,"USD per kWh, a home or a personal device",measured,verified,lf-041 sv-022,price,
 office_admin_h_month,14,8,20,"paid hours per month, 50 users",assumed,assumption,sv-042 sf-051,price,"Between 8 hours for 25 users and 20 for 100, a seller's figures."
 mini_admin_h_month,1,0.5,3.5,paid hours per month,assumed,assumption,sv-042,price,
@@ -139,7 +140,7 @@ emb_hdd_kg_tb,20,1,20,kg CO2e per TB of hard disk,modeled,partly,sf-024 sf-025,e
 emb_hdd_low_kg_tb,1,1,1,kg CO2e per TB of hard disk,modeled,partly,sf-025,embodied,Under 1; used at 1 for the printed low reading.
 emb_tokens_kg_m,0.017,0.017,0.025,"kg CO2e per M tokens, accelerator card only",modeled,partly,au-011,embodied,The framework calls it a lower bound.
 rev_netflix,0.256,0.256,0.256,USD per hour viewed,modeled,partly,px-043,price,"Revenue, not a cost: it does not bound what serving it costs; not a list price."
-rev_youtube,0.122,0.122,0.122,USD of ads per TV hour,modeled,partly,px-039,price,"Revenue, not a cost; not a list price."
+rev_youtube,0.122,0.122,0.122,USD of ads per TV hour,modeled,partly,px-039 px-065,price,"Revenue, not a cost; not a list price."
 rev_meta,0.155,0.115,0.195,USD per hour of single-app time,modeled,partly,px-035,price,"Midpoint of a range; revenue, not a cost; TikTok has no figure of its own."
 rev_search,0.05,0.05,0.05,USD per query,modeled,partly,px-040,price,"Revenue, not a cost; not a list price."
 paid_video_month,8.99,8.99,26.99,USD per member-month,measured,verified,px-044,price,Falls with use.

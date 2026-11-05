@@ -1392,6 +1392,122 @@
    "quote": "100-year (AR6) | 1 | 29.8 | 273",
    "derived": "29.8 / 28 = 1.064",
    "status": "verified"
+  },
+  {
+   "limit": "Unofficial reproduction of EPA's code by Cornerstone; EPA has not released eGRID2024; one year of a hydro-driven value.",
+   "id": "gf-061",
+   "entity": "eGRID subregion NWPP (WECC Northwest), 2024 data, unofficial rebuild of EPA's code",
+   "metric": "total output emission rate, CO2e, location-based (AR5 GWPs)",
+   "value": 264.16,
+   "low": null,
+   "high": null,
+   "unit": "kg CO2e/MWh",
+   "year": 2024,
+   "boundary": "EPA's public eGRID code (development branch) run by a third party on 2024 EIA and CEMS data retrieved 03/11/2026; same method as gf-001 (power plants in the subregion, net generation, location-based, average, before grid losses); AR5 GWPs (CH4 28, N2O 265). NOT released by EPA.",
+   "basis": "average",
+   "layer": "grid",
+   "source": {
+    "title": "eGRID2024 (comparison workbook eGRID2023_vs_eGRID2024.xlsx)",
+    "publisher": "Cornerstone Sustainability Data Initiative (Zenodo record 18968658), running EPA's eGRID code",
+    "url": "https://zenodo.org/records/18968658",
+    "published": "2026-03-17",
+    "kind": "model"
+   },
+   "quote": "NWPP | WECC Northwest | 2024 development branch eGRID subregion CO2e output emission rate (kg/MWh) 264.1598568 | 2023 eGRID subregion CO2e output emission rate (kg/MWh) 288.20700720000002 | Pct difference (2024 development branch to 2023) -8.3437077514609506E-02",
+   "derived": "264.16 kg/MWh = 264.2 g/kWh = 582.4 lb/MWh (264.16 / 0.45359237). Change from 2023: 264.16 / 288.21 - 1 = -8.3 percent. The 2024 main-branch value is 264.25 kg/MWh.",
+   "status": "partly"
+  },
+  {
+   "id": "gf-062",
+   "entity": "Bonneville Power Administration (asset-controlling supplier), system emission factor for Washington reporting",
+   "metric": "assigned system emission factor, CO2e, for power delivered in data year 2027 (based on calendar year 2025 reported data)",
+   "value": 0.0493,
+   "low": 0.016,
+   "high": 0.0497,
+   "unit": "t CO2e/MWh",
+   "year": 2025,
+   "boundary": "Factor Ecology assigns to wholesale electricity procured from BPA's system when claimed as specified-source power under WAC 173-441, calculated from BPA's CY2025 annual report that Ecology verified. A regulatory reporting factor for the power BPA sells, not a measure of any one customer's electricity, and the page does not describe what the factor counts beyond emissions reported under WAC 173-441-070(3). Low and high are the assigned values across data years 2022 to 2027 (0.0160 to 0.0497).",
+   "basis": "average (specified-source system factor)",
+   "layer": "grid",
+   "source": {
+    "title": "Asset-Controlling Supplier (ACS) Systems Emission Factor (Pub. No. 25-14-079)",
+    "publisher": "Washington State Department of Ecology",
+    "url": "https://apps.ecology.wa.gov/publications/documents/2514079.pdf",
+    "published": "2026-10-01",
+    "kind": "agency"
+   },
+   "quote": "Table 1: Asset-Controlling Supplier (ACS) System Emission Factor (EF) for data year 2027 (reported in 2028) ... Bonneville Power Administration (BPA) 0.0493 MT CO2e per MWh",
+   "derived": "0.0493 t/MWh x 1,000 = 49.3 kg/MWh = 49.3 g/kWh. Against eGRID NWPP 2023 (288.2 g/kWh, gf-001): 288.2 / 49.3 = 5.8 times (arithmetic only: a 2023 location-based average against a 2027 specified-source factor, two accounting methods). Step from data year 2024 (0.0160) to 2025 (0.0452): 0.0452 / 0.0160 = 2.8; to 2027 (0.0493): 3.1.",
+   "status": "verified"
+  },
+  {
+   "id": "gf-063",
+   "entity": "Oregon, all electricity providers reporting to the state greenhouse gas reporting program, and the adjusted statewide mix",
+   "metric": "direct emission factor, CO2e, electricity supplied in Oregon (2024 reported data)",
+   "value": 0.265,
+   "low": null,
+   "high": 0.372,
+   "unit": "t CO2e/MWh (all providers 0.265; adjusted statewide mix 0.372)",
+   "year": 2024,
+   "boundary": "Direct emissions reported by Oregon electricity providers (2024 data; BPA's 2022 data); unspecified purchases at the default 0.428 t CO2e/MWh; electricity consumed in other states such as Washington is not included. The adjusted statewide mix removes the utilities that opted into utility-specific values (mostly BPA customers), so it is higher. Upstream emissions are modeled separately (OR-GREET 4.0) and are not in these two numbers.",
+   "basis": "average",
+   "layer": "grid",
+   "source": {
+    "title": "Electricity Carbon Intensity Values for 2026",
+    "publisher": "Oregon Department of Environmental Quality, Clean Fuels Program",
+    "url": "https://www.oregon.gov/deq/ghgp/Documents/cfpECIV2026.pdf",
+    "published": "2026-01-05",
+    "kind": "agency"
+   },
+   "quote": "Table 2. All providers of electricity and the adjusted statewide mix ... Emissions Factor MTCO2e/MWh 0.265 0.372",
+   "derived": "0.265 t/MWh = 265 g/kWh; 0.372 = 372 g/kWh. In grams per megajoule the table reads 73.679 and 103.230; 103.230 x 3.6 = 371.6 g/kWh. Statewide grid mix with modeled upstream: 103.23 + 23.77 = 127.00 gCO2e/MJ = 457.2 g/kWh.",
+   "status": "verified"
+  },
+  {
+   "id": "gf-064",
+   "entity": "Oregon utilities that opted into a utility-specific carbon intensity (28 listed), mostly Bonneville Power Administration customers",
+   "metric": "utility-specific direct emission factor, CO2e",
+   "value": 0.016,
+   "low": 0.012,
+   "high": 0.241,
+   "unit": "t CO2e/MWh (16 of 28 at 0.016; range 0.012 to 0.241)",
+   "year": 2024,
+   "boundary": "Direct emissions from the same state program as gf-063, with BPA-supplied power assigned BPA's 2022 data. Utility rows list MWh and emissions; Umatilla Electric Cooperative (8.6 million MWh, 0.132) and Northern Wasco PUD (1.5 million MWh, 0.241) are the highest-volume and highest-intensity rows.",
+   "basis": "average",
+   "layer": "grid",
+   "source": {
+    "title": "Electricity Carbon Intensity Values for 2026",
+    "publisher": "Oregon Department of Environmental Quality, Clean Fuels Program",
+    "url": "https://www.oregon.gov/deq/ghgp/Documents/cfpECIV2026.pdf",
+    "published": "2026-01-05",
+    "kind": "agency"
+   },
+   "quote": "Utilities are allowed to opt in to receive a utility-specific carbon intensity value as opposed to the statewide grid mix carbon intensity value. Many of these opt-in utilities are customers of the Bonneville Power Administration",
+   "derived": "Ashland Electric Department 168,124 MWh, 2,678 t, 0.016. Northern Wasco PUD 1,541,824 MWh, 371,378 t, 0.241 (371,378 / 1,541,824 = 0.241). Milton-Freewater City Light & Power 107,037 MWh, 1,248 t, 0.012. Umatilla Electric Cooperative 8,604,130 MWh, 1,138,717 t, 0.132. 0.241 / 0.016 = 15 times.",
+   "status": "verified"
+  },
+  {
+   "id": "gf-065",
+   "entity": "Pacific Northwest regional power system (Northwest Power and Conservation Council, draft Ninth Power Plan)",
+   "metric": "what drives year-to-year carbon from regional electricity generation",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative finding",
+   "year": 2026,
+   "boundary": "Appendix B reports annual regional CO2 (Figure B-16) and CO2 intensity against the U.S. (Figure B-17) as figures only; no numeric table in the text.",
+   "basis": "n/a",
+   "layer": "method",
+   "source": {
+    "title": "Technical Appendix B: Existing System Parameters and Policies (Draft Ninth Power Plan)",
+    "publisher": "Northwest Power and Conservation Council",
+    "url": "https://www.nwcouncil.org/fs/19984/ninthplan_appendixb.pdf",
+    "published": "2026-08-04",
+    "kind": "agency"
+   },
+   "quote": "In the Pacific Northwest, the amount of annual carbon emitted from the generation of electricity is directly related to hydro conditions.",
+   "derived": null,
+   "status": "verified"
   }
  ]
 }

@@ -38,8 +38,8 @@ import validate_public as vp  # noqa: E402  (the release rules; it reads no PDF 
 
 EVIDENCE = vp.ROOT / "work" / "site-refresh" / "evidence"
 LOCAL_ONLY = {"note", "recheck"}  # working notes and check logs; a public limit travels as "limit"
-# Our own arithmetic with no source quote (ec-055, ec-056), and the one Tribally owned facility the owner has not yet worded (lf-059, sf-053, sf-054).
-HELD_BACK = {"ec-055", "ec-056", "lf-059", "sf-053", "sf-054"}
+# Our own arithmetic with no source quote (ec-055, ec-056), and the one Tribally owned facility the owner has not yet worded (lf-059, lf-070, lf-071, sf-053, sf-054).
+HELD_BACK = {"ec-055", "ec-056", "lf-059", "lf-070", "lf-071", "sf-053", "sf-054"}
 HOUSE_WORDS = re.compile(r"\b(?:tribes?|tribal|indigenous|[iI]ntertribal|treat(?:y|ies))\b")
 LINE_KINDS = {"lines", "multiples"}
 RULER_KINDS = {"ladder", "bars"}

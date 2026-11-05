@@ -1,0 +1,322 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "externalities",
+ "claims": [
+  {
+   "id": "ex-001",
+   "entity": "EPA 2023 SC-CO2, emissions year 2020, near-term Ramsey rate 2.5%",
+   "metric": "social cost of carbon dioxide",
+   "value": 120,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2020,
+   "boundary": "Global damages from one tonne of CO2 emitted in 2020; average of three damage modules (DSCIM, GIVE, Howard and Sterner meta-analysis); dynamic Ramsey discounting calibrated to a 2.5% near-term rate; certainty-equivalent. Not federal policy since 2025.",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "Table ES.1: Estimates of the Social Cost of Greenhouse Gases (SC-GHG), 2020-2080 (2020 dollars) ... Emission Year 2.5% 2.0% 1.5% ... 2020 120 190 340 1,300 1,600 2,300 35,000 54,000 87,000",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-002",
+   "entity": "EPA 2023 SC-CO2, emissions year 2020, near-term Ramsey rate 2.0%",
+   "metric": "social cost of carbon dioxide",
+   "value": 190,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2020,
+   "boundary": "Same as ex-001 at the 2.0% near-term rate (EPA's central value).",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "2020 120 190 340 1,300 1,600 2,300 35,000 54,000 87,000 (SC-CO2 columns 2.5%, 2.0%, 1.5%)",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-003",
+   "entity": "EPA 2023 SC-CO2, emissions year 2020, near-term Ramsey rate 1.5%",
+   "metric": "social cost of carbon dioxide",
+   "value": 340,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2020,
+   "boundary": "Same as ex-001 at the 1.5% near-term rate.",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "2020 120 190 340 1,300 1,600 2,300 35,000 54,000 87,000 (SC-CO2 columns 2.5%, 2.0%, 1.5%)",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-004",
+   "entity": "EPA 2023 SC-CO2, emissions year 2030, near-term Ramsey rate 2.5%",
+   "metric": "social cost of carbon dioxide",
+   "value": 140,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "Same as ex-001 for CO2 emitted in 2030.",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "2030 140 230 380 1,900 2,400 3,200 45,000 66,000 100,000",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-005",
+   "entity": "EPA 2023 SC-CO2, emissions year 2030, near-term Ramsey rate 2.0%",
+   "metric": "social cost of carbon dioxide",
+   "value": 230,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "Same as ex-001 for CO2 emitted in 2030, 2.0% rate.",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "2030 140 230 380 1,900 2,400 3,200 45,000 66,000 100,000",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-006",
+   "entity": "EPA 2023 SC-CO2, emissions year 2030, near-term Ramsey rate 1.5%",
+   "metric": "social cost of carbon dioxide",
+   "value": 380,
+   "low": null,
+   "high": null,
+   "unit": "2020 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "Same as ex-001 for CO2 emitted in 2030, 1.5% rate.",
+   "source": {
+    "title": "Report on the Social Cost of Greenhouse Gases: Estimates Incorporating Recent Scientific Advances",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/system/files/documents/2023-12/epa_scghg_2023_report_final.pdf",
+    "published": "2023-11-28",
+    "kind": "agency"
+   },
+   "quote": "2030 140 230 380 1,900 2,400 3,200 45,000 66,000 100,000",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-007",
+   "entity": "EPA 2023 central SC-CO2 restated in 2026 dollars",
+   "metric": "social cost of carbon dioxide, inflation-adjusted by a third party",
+   "value": 240,
+   "low": null,
+   "high": null,
+   "unit": "2026 USD per metric ton CO2 (approximate)",
+   "year": 2026,
+   "boundary": "RFF's restatement of ex-002; the deflator used is not shown in the sentence.",
+   "source": {
+    "title": "Adopting the Social Cost of Carbon for State Benefit-Cost Analysis: A Primer for Practitioners",
+    "publisher": "Resources for the Future",
+    "url": "https://media.rff.org/documents/Report_26-11_Final.pdf",
+    "published": "2026-08-12",
+    "kind": "preprint"
+   },
+   "quote": "a central value of $190 per metric ton of CO2 (in 2020 US dollars, or equivalent to about $240 in 2026 dollars)",
+   "derived": "240 / 190 = 1.263, an implied 26 percent price change 2020 to 2026; not independently checked against a price index",
+   "status": "partly"
+  },
+  {
+   "id": "ex-008",
+   "entity": "EPA 2017 interim domestic SC-CO2, emissions year 2030, 3% discount rate",
+   "metric": "domestic-only social cost of carbon dioxide under 2003 Circular A-4 rates",
+   "value": 7,
+   "low": null,
+   "high": null,
+   "unit": "2011 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "US-domestic damages only; 3 percent constant discount rate (2003 Circular A-4). This is the framing EO 14154 points to ('consistent with ... Circular A-4 of September 17, 2003'); no current official table has been issued, so this is the last published one in that frame, not a 2026 value.",
+   "source": {
+    "title": "Regulatory Impact Analysis for the Review of the Clean Power Plan: Proposal",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/sites/default/files/2017-10/documents/ria_proposed-cpp-repeal_2017-10_0.pdf",
+    "published": "2017-10-10",
+    "kind": "agency"
+   },
+   "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $7 per metric ton of CO2 emissions (2011$), using a 7 and 3 percent discount rate, respectively.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-009",
+   "entity": "EPA 2017 interim domestic SC-CO2, emissions year 2030, 7% discount rate",
+   "metric": "domestic-only social cost of carbon dioxide under 2003 Circular A-4 rates",
+   "value": 1,
+   "low": null,
+   "high": null,
+   "unit": "2011 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "As ex-008 at 7 percent.",
+   "source": {
+    "title": "Regulatory Impact Analysis for the Review of the Clean Power Plan: Proposal",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/sites/default/files/2017-10/documents/ria_proposed-cpp-repeal_2017-10_0.pdf",
+    "published": "2017-10-10",
+    "kind": "agency"
+   },
+   "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $7 per metric ton of CO2 emissions (2011$), using a 7 and 3 percent discount rate, respectively.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-010",
+   "entity": "Umweltbundesamt (Germany) climate cost rate, 1% pure time preference",
+   "metric": "climate cost per tonne CO2 equivalent",
+   "value": 195,
+   "low": null,
+   "high": null,
+   "unit": "2020 EUR per tonne CO2e",
+   "year": 2020,
+   "boundary": "Global damages, with a 1 percent pure rate of time preference (welfare today weighted above future generations); UBA's recommended central rate in Methodenkonvention 3.1. A newer Methodenkonvention 4.0 exists on the UBA site and was not opened.",
+   "source": {
+    "title": "Methodenkonvention 3.1 zur Ermittlung von Umweltkosten: Kostensaetze",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/1410/publikationen/2020-12-21_methodenkonvention_3_1_kostensaetze.pdf",
+    "published": "2020-12-21",
+    "kind": "agency"
+   },
+   "quote": "Tabelle 1: UBA-Empfehlung zu den Klimakosten in €2020 / t CO2 äq ... 1% reine Zeitpräferenzrate 195 215 250",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-011",
+   "entity": "Umweltbundesamt (Germany) climate cost rate, 0% pure time preference",
+   "metric": "climate cost per tonne CO2 equivalent",
+   "value": 680,
+   "low": null,
+   "high": null,
+   "unit": "2020 EUR per tonne CO2e",
+   "year": 2020,
+   "boundary": "As ex-010 with equal weight on current and future generations.",
+   "source": {
+    "title": "Methodenkonvention 3.1 zur Ermittlung von Umweltkosten: Kostensaetze",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/1410/publikationen/2020-12-21_methodenkonvention_3_1_kostensaetze.pdf",
+    "published": "2020-12-21",
+    "kind": "agency"
+   },
+   "quote": "0% reine Zeitpräferenzrate 680 700 765",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-012",
+   "entity": "European Commission Handbook on external costs of transport 2019, climate avoidance cost, short and medium run",
+   "metric": "climate change avoidance cost (not a damage cost)",
+   "value": 100,
+   "low": 60,
+   "high": 189,
+   "unit": "2016 EUR per tonne CO2e",
+   "year": 2016,
+   "boundary": "Cost of meeting the Paris 1.5-2 C target, averaged from the literature after dropping the lowest and highest values; applies up to 2030. The Handbook states that it uses avoidance cost because damage costs 'have serious limitations'.",
+   "source": {
+    "title": "Handbook on the external costs of transport, Version 2019 - 1.1",
+    "publisher": "European Commission DG MOVE, CE Delft",
+    "url": "https://cedelft.eu/wp-content/uploads/sites/2/2021/03/CE_Delft_4K83_Handbook_on_the_external_costs_of_transport_Final.pdf",
+    "published": "2019-01-01",
+    "kind": "agency"
+   },
+   "quote": "Table 24 - Climate change avoidance costs in €/tCO2 equivalent (€2016) Low Central High: Short-and-medium-run (up to 2030) 60 100 189",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-013",
+   "entity": "European Commission Handbook on external costs of transport 2019, climate avoidance cost, long run",
+   "metric": "climate change avoidance cost (not a damage cost)",
+   "value": 269,
+   "low": 156,
+   "high": 498,
+   "unit": "2016 EUR per tonne CO2e",
+   "year": 2016,
+   "boundary": "As ex-012 for 2040 to 2060.",
+   "source": {
+    "title": "Handbook on the external costs of transport, Version 2019 - 1.1",
+    "publisher": "European Commission DG MOVE, CE Delft",
+    "url": "https://cedelft.eu/wp-content/uploads/sites/2/2021/03/CE_Delft_4K83_Handbook_on_the_external_costs_of_transport_Final.pdf",
+    "published": "2019-01-01",
+    "kind": "agency"
+   },
+   "quote": "Long run (from 2040 to 2060) 156 269 498",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-014",
+   "entity": "Bilal and Kaenzig, macroeconomic damage estimate of the social cost of carbon",
+   "metric": "social cost of carbon dioxide from an estimated (reduced-form then structural) damage function",
+   "value": 1200,
+   "low": 399,
+   "high": 2015,
+   "unit": "USD per metric ton CO2 (year of dollars not stated in the abstract)",
+   "year": 2026,
+   "boundary": "One research team's estimate: damage functions estimated from global temperature variability, then used in a neoclassical growth model. 'In excess of' 1,200; the low and high are the stated 95 percent confidence interval. Working paper, revised 01/2026; not federal and not the consensus.",
+   "source": {
+    "title": "The Macroeconomic Impact of Climate Change: Global vs. Local Temperature",
+    "publisher": "NBER Working Paper 32450",
+    "url": "https://www.nber.org/papers/w32450",
+    "published": "2026-01-13",
+    "kind": "preprint"
+   },
+   "quote": "Business-as-usual warming implies a present welfare loss of more than 30%, and a Social Cost of Carbon in excess of $1,200 per ton. ... The 95% confidence interval for the SCC ranges from $399 per ton to $2,015 per ton.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ex-015",
+   "entity": "AWARE water scarcity characterization factor (WULCA)",
+   "metric": "relative water scarcity weight for a basin and month, index not dollars",
+   "value": 1,
+   "low": 0.1,
+   "high": 100,
+   "unit": "dimensionless index (1 = world average remaining water per area)",
+   "year": 2024,
+   "boundary": "Weights a volume of water consumed by how little water remains per area after human and ecosystem demand; a consensus LCIA midpoint method aligned to ISO 14046. It is NOT a price and does not value any use of water. AWARE 2.0 (2025) also exists and was not opened beyond its abstract.",
+   "source": {
+    "title": "AWARE 1.2 method documentation",
+    "publisher": "WULCA, UNEP-SETAC Life Cycle Initiative",
+    "url": "https://nexus.openlca.org/ws/files/36467",
+    "published": "2024-11-25",
+    "kind": "model"
+   },
+   "quote": "The CFs in this method range from 0.1 to 100 and can be applied to calculate water scarcity footprints. A CF value of 1 corresponds to regions with a remaining water availability per area over time that aligns with the world average",
+   "derived": null,
+   "status": "partly"
+  }
+ ]
+}

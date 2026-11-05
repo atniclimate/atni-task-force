@@ -1534,6 +1534,86 @@
    "quote": "The first standard requiring cloud providers to share real-time energy and carbon data in a common format.",
    "derived": null,
    "status": "partly"
+  },
+  {
+   "id": "sf-061",
+   "entity": "IPFS (peer-to-peer, content-addressed storage): DHT server nodes",
+   "metric": "share of DHT server nodes hosted in cloud data centers",
+   "value": 79.6,
+   "low": null,
+   "high": null,
+   "unit": "percent of DHT server nodes (20,300 in data centers; 4,737, or 18.6 percent, non-cloud)",
+   "year": 2023,
+   "boundary": "Measurement of node IP addresses against a cloud-provider database, from DHT crawls run at least twice a day from 2023-04-18 to 2023-05-26 (101 snapshots; the Aug 2022 to Nov 2022 and Feb 2023 to Apr 2023 windows are the paper's separate DHT traffic and Hydra node collection, not these crawls) [corrected 11/04/2026 against the paper text]; counts DHT servers (nodes with a public IP address), not the machines behind NAT. Hosting location only; not energy.",
+   "layer": [
+    "data center",
+    "metric"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "The Cloud Strikes Back: Investigating the Decentralization of IPFS",
+    "publisher": "Lancaster University eprint of the IMC 2023 paper (Balduf, Ascigil, Keizer, Pavlou, Scheuermann, Korczynski, Krol)",
+    "url": "https://eprints.lancs.ac.uk/id/eprint/210684/5/main.pdf",
+    "published": "2023-11-29",
+    "kind": "peer-reviewed"
+   },
+   "quote": "An average of 20300 (79.6%) of the nodes are hosted in data centers, with only 4737 (18.6%) non-cloud nodes.",
+   "derived": "The three largest providers host 13,259 nodes (51.9 percent of nodes, stated). 20,300 / (20,300 + 4,737) = 81 percent of the classified nodes, 79.6 percent of all (the paper does not state what the remainder is; it defines a BOTH label for peers with cloud and non-cloud addresses, so the remainder may be BOTH, an inference).",
+   "status": "verified"
+  },
+  {
+   "limit": "Press report with an administrator's opinion; evidence of a gap, not a measurement.",
+   "id": "sf-062",
+   "entity": "PeerTube (federated video with peer-to-peer delivery)",
+   "metric": "state of the evidence on carbon saved by peer-to-peer video delivery",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative finding",
+   "year": 2025,
+   "boundary": "Journalist's report quoting named individuals with differing views (Marcus Förster, role not stated, calls WebRTC peer-to-peer 'definitely not efficient'; system administrator Lukas Rose sees peer-to-peer as a route to fewer data centres and lower energy use); no measurement.",
+   "layer": [
+    "energy",
+    "co2e",
+    "metric"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Decentralised YouTube Alternative PeerTube: Is It More Sustainable Thanks to Peer-To-Peer?",
+    "publisher": "RESET.org (Digital for Good)",
+    "url": "https://en.reset.org/decentralised-youtube-alternative-peertube-is-it-more-sustainable-thanks-to-peer-to-peer/",
+    "published": "2025-04-14",
+    "kind": "press"
+   },
+   "quote": "Without studies, we currently lack an overall assessment of how much CO2 we can save via P2P connections.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-063",
+   "entity": "Blue Angel DE-UZ 215 (resource and energy-efficient software products), list of awarded products",
+   "metric": "number of products listed, and whether any is a standalone office suite",
+   "value": 6,
+   "low": null,
+   "high": null,
+   "unit": "products listed on 11/04/2026",
+   "year": 2026,
+   "boundary": "The label's public product page read on 11/04/2026 with no filter applied. The label requires published energy measurements, so absence from the list means no certified measurement, not that a product is inefficient.",
+   "layer": [
+    "energy",
+    "metric"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Ressourcen- und energieeffiziente Softwareprodukte (DE-UZ 215), product list",
+    "publisher": "Blauer Engel (RAL gGmbH, German ecolabel)",
+    "url": "https://www.blauer-engel.de/de/produktwelt/software",
+    "published": null,
+    "kind": "agency"
+   },
+   "quote": "Treffer: 6 ... Green Metrics Tool ... HOLMES ... KADAI Open Source Software for Task Management ... KDE Okular ... Nextcloud Server ... OpenCloud",
+   "derived": null,
+   "status": "verified"
   }
  ]
 }

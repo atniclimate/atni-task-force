@@ -51,8 +51,8 @@
   },
   "i_dc": {
    "value": 0.45,
-   "low": 0.35,
-   "high": 30.1,
+   "low": 0.171,
+   "high": 55,
    "unit": "Wh per GB served",
    "basis": "modeled",
    "status": "same-hour input",
@@ -60,10 +60,16 @@
     "fp-122",
     "fp-130",
     "fp-037",
-    "fp-043"
+    "fp-142",
+    "fp-141",
+    "sv-048",
+    "ec-024",
+    "fp-147",
+    "fp-149",
+    "fp-150"
    ],
    "segment": "data center",
-   "note": "modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35; DESNZ's scenario assumes 15 Wh of IT energy per GB streamed plus non-IT, which its Tables 5.3 and 5.4 make 11.1, 19.6 and 30.1 Wh per GB in the low, medium and high cases (0.155, 0.274 and 0.422 kWh over 14 GB)"
+   "note": "modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35. The low is the DESNZ follow-up of 07/28/2026, 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). The high is Sustainable Web Design's top-down 55 Wh per GB (ec-024, fp-147), all data center energy over all internet bytes. One operator measured 1.15 (sv-048)"
   },
   "short_gb": {
    "value": 0.39,
@@ -222,7 +228,7 @@
    "claims": [
     "fp-008",
     "fp-122",
-    "fp-043",
+    "fp-143",
     "fp-132",
     "fp-133"
    ],
@@ -264,7 +270,7 @@
    "status": "same-hour input",
    "claims": [
     "fp-130",
-    "fp-043"
+    "fp-143"
    ],
    "segment": "network",
    "note": "modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)"
@@ -602,9 +608,11 @@
    "unit": "PUE",
    "basis": "assumed",
    "status": "assumption",
-   "claims": [],
+   "claims": [
+    "lf-078"
+   ],
    "segment": "local node",
-   "note": "No general field figure."
+   "note": "No general field figure. A modeling tool's on-premise default of 1.58 (lf-078) sits above it."
   },
   "u_hyper": {
    "value": 0.5,
@@ -674,10 +682,11 @@
    "status": "partly",
    "claims": [
     "sf-036",
-    "lf-012"
+    "lf-012",
+    "lf-076"
    ],
    "segment": "local node",
-   "note": ""
+   "note": "A pooled home cluster against one cloud GPU server reads about 1.39 (lf-076), at the low edge. It does not carry to phones, where the sign can reverse (lf-074)."
   },
   "grid_us": {
    "value": 350,
@@ -716,7 +725,21 @@
     "gf-001"
    ],
    "segment": "grid",
-   "note": "eGRID subregion; crosses state lines; not a Tribal Nation or utility factor."
+   "note": "eGRID subregion; crosses state lines; not a Tribal Nation or utility factor. An unofficial rebuild of 2024 data reads 264 (gf-061); EPA has not released eGRID2024."
+  },
+  "grid_bpa": {
+   "value": 49.3,
+   "low": 16.0,
+   "high": 49.7,
+   "unit": "g CO2e per kWh",
+   "basis": "measured",
+   "status": "verified",
+   "claims": [
+    "gf-062",
+    "gf-064"
+   ],
+   "segment": "grid",
+   "note": "Regulator-assigned factor for power sold by BPA, data year 2027; not any customer's delivered electricity and not comparable to eGRID without naming the method. The series ran 16.0 to 49.7 across data years 2022 to 2027."
   },
   "grid_wa": {
    "value": 113,
@@ -1121,7 +1144,8 @@
    "status": "partly",
    "claims": [
     "gf-054",
-    "sv-039"
+    "sv-039",
+    "lf-067"
    ],
    "segment": "local node",
    "note": "30 to 45 measured on one box with no GPU load; 250 is 36 percent of a 700 W GPU machine."
@@ -1134,10 +1158,11 @@
    "basis": "measured",
    "status": "partly",
    "claims": [
-    "gf-054"
+    "gf-054",
+    "lf-067"
    ],
    "segment": "local node",
-   "note": "One tester, one product."
+   "note": "One tester, one product; a certifier's test machine read 31.5 to 32.5 W with nothing running (lf-067)."
   },
   "j_node": {
    "value": 1.5,
@@ -1408,10 +1433,11 @@
    "basis": "measured",
    "status": "verified",
    "claims": [
-    "px-028"
+    "px-028",
+    "px-061"
    ],
    "segment": "price",
-   "note": "Gemini Omni; Veo's older prices are stale, so the energy and the price describe different models."
+   "note": "Gemini Omni; Veo 3.1 Preview left the Gemini API on 10/22/2026 (px-061), and Google Cloud's Veo rate card does not define its unit, so the energy and the price describe different models."
   },
   "p_search": {
    "value": 0.014,
@@ -1491,10 +1517,11 @@
    "claims": [
     "px-049",
     "px-051",
-    "sf-050"
+    "sf-050",
+    "px-063"
    ],
    "segment": "price",
-   "note": "S3 list, free at R2, 0.11 at Google Cloud on a rival's page."
+   "note": "S3 list, 0.087 at Azure's next tier, free at R2, 0.11 at Google Cloud on a rival's page."
   },
   "p_delivery": {
    "value": 0.06,
@@ -1682,10 +1709,11 @@
    "basis": "measured",
    "status": "verified",
    "claims": [
-    "px-058"
+    "px-058",
+    "px-067"
    ],
    "segment": "price",
-   "note": "Before transmission and retail charges."
+   "note": "Before transmission and retail charges. BP-27 proposes an increase; this holds the current average until the Record of Decision on 12/18/2026."
   },
   "tariff_home": {
    "value": 0.1317,
@@ -1922,7 +1950,8 @@
    "basis": "modeled",
    "status": "partly",
    "claims": [
-    "px-039"
+    "px-039",
+    "px-065"
    ],
    "segment": "price",
    "note": "Revenue, not a cost; not a list price."
@@ -2302,7 +2331,7 @@
     }
    },
    "label": "Prompts the reader sends in the hour",
-   "why": "No source measures a chat hour. WildChat averages 2.52 prompts per conversation (fp-095) and OpenAI users average 3.67 per day (fp-034); ten per hour is one every six minutes, slow for someone chatting steadily, so 2.52, 10, 30 and 60 are offered as equal presets and no preset is the answer."
+   "why": "No source measures a chat hour. Epoch AI's panel has a median of 2 prompts per conversation (fp-151) and 4.3 prompts a day (fp-154), with no duration; WildChat's older free-service mean is 2.52 per conversation (fp-095); OpenAI users average 3.67 per day (fp-034). Ten per hour is one every six minutes, slow for someone chatting steadily, so 2.52, 10, 30 and 60 are offered as equal presets; 30 and 60 are heavy-use sensitivities with no field support, and no preset is the answer."
   },
   "chat_kind": {
    "default": "short_text",
@@ -2333,12 +2362,15 @@
     "measured_delivery": {
      "i_dc": 0.45
     },
-    "desnz_assumed": {
-     "i_dc": 19.6
+    "desnz_followup": {
+     "i_dc": 0.171
+    },
+    "top_down": {
+     "i_dc": 55
     }
    },
    "label": "Streaming data center energy per GB served",
-   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130); desnz_assumed is the DESNZ scenario's 15 Wh of IT energy per GB plus non-IT (fp-043, medium case; its low and high cases are 11.1 and 30.1). The 45-times gap is an assumed serving intensity, not an allocation of encoding and storage, which DESNZ attributes at about 0.01 Wh per viewer."
+   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an upper bound and not a literal share (fp-150). The allocation is unsettled (fp-149)."
   },
   "device": {
    "default": "phone",
@@ -2477,6 +2509,10 @@
      "grid_dc": 288,
      "gen_dc": "mix"
     },
+    "bpa": {
+     "grid_dc": 49.3,
+     "gen_dc": "mix"
+    },
     "nw_short_run_margin": {
      "grid_dc": 728,
      "gen_dc": "mix"
@@ -2503,7 +2539,7 @@
     }
    },
    "label": "Grid for the data center and network (the same feeds as the node, so neither side gets a feed the other cannot)",
-   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports."
+   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports. The BPA factor is regulator-assigned for power bought from BPA, on a different accounting method from eGRID, so the gap between the two is not a grid effect."
   },
   "dc_generation_water": {
    "default": "us",
@@ -2523,6 +2559,10 @@
    "options": {
     "nwpp": {
      "grid_home": 288,
+     "gen_home": "mix"
+    },
+    "bpa": {
+     "grid_home": 49.3,
      "gen_home": "mix"
     },
     "wa": {
@@ -2555,13 +2595,17 @@
     }
    },
    "label": "Grid for the router and device",
-   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports."
+   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports. The BPA factor is regulator-assigned for power bought from BPA, on a different accounting method from eGRID, so the gap between the two is not a grid effect."
   },
   "grid_local": {
    "default": "nwpp",
    "options": {
     "nwpp": {
      "grid_local": 288,
+     "gen_local": "mix"
+    },
+    "bpa": {
+     "grid_local": 49.3,
      "gen_local": "mix"
     },
     "wa": {
@@ -2598,13 +2642,17 @@
     }
    },
    "label": "Grid for a local node",
-   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports."
+   "why": "Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports. The BPA factor is regulator-assigned for power bought from BPA, on a different accounting method from eGRID, so the gap between the two is not a grid effect."
   },
   "grid_colo": {
    "default": "nwpp",
    "options": {
     "nwpp": {
      "grid_colo": 288,
+     "gen_colo": "mix"
+    },
+    "bpa": {
+     "grid_colo": 49.3,
      "gen_colo": "mix"
     },
     "us": {
@@ -2629,7 +2677,7 @@
     }
    },
    "label": "Grid for regional colocation",
-   "why": "The building sets the grid; a regional site draws the regional mix. Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports."
+   "why": "The building sets the grid; a regional site draws the regional mix. Carbon is location-based only. Average, short-run margin, and long-run margin differ nine times for the same kilowatt-hour in the Northwest, so the choice is printed on the figure. Hydro, wind, and solar are life-cycle factors (gf-035, gf-034, gf-033) while eGRID rates count combustion only, and a feed is a declared supply arrangement, not a location factor, unless the machine is physically behind that meter; hydro already committed elsewhere is not clean new supply. Wind, solar, and diesel print no generation water until a claim for them is added. Washington's in-state rate is CO2, not CO2e, and includes exports. The BPA factor is regulator-assigned for power bought from BPA, on a different accounting method from eGRID, so the gap between the two is not a grid effect."
   },
   "hydro_convention": {
    "default": "columbia",
@@ -3835,7 +3883,7 @@
    "basis": "Data center: a modeled bound; ranking compute is unmeasured. Network and router: modeled. Device: measured for video.",
    "energy_wh": {
     "value": 12.7995,
-    "low": 7.3675,
+    "low": 7.32275,
     "high": 44.9
    },
    "price_usd": {
@@ -3848,13 +3896,13 @@
    },
    "co2e_g": {
     "value": 3.73582,
-    "low": 2.15206,
+    "low": 2.1364,
     "high": 14.599,
     "grid": "location-based average: data center and network US 350 g (gf-007); router and device NWPP 288 g (gf-001)"
    },
    "water_ml": {
     "value": 40.9644,
-    "low": 22.4075,
+    "low": 22.1932,
     "high": 197.476,
     "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; router and device: NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037); kept apart by basin, never summed"
    },
@@ -3881,18 +3929,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 12.7605,
-      "at_high": 24.363,
-      "swing_over_central": 0.906481
+      "at_low": 12.6907,
+      "at_high": 26.524,
+      "swing_over_central": 1.08077
      },
      {
-      "name": "router_allocation",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 2.7995,
-      "at_high": 12.7995,
-      "low_option": "excluded",
-      "high_option": "by_time",
-      "swing_over_central": 0.781281
+      "at_low": 12.6907,
+      "at_high": 26.524,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 1.08077
      }
     ],
     "usd": [
@@ -3926,9 +3974,9 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 3.72218,
-      "at_high": 7.78305,
-      "swing_over_central": 1.08701
+      "at_low": 3.69774,
+      "at_high": 8.5394,
+      "swing_over_central": 1.29601
      }
     ],
     "ml": [
@@ -3953,9 +4001,9 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 40.7741,
-      "at_high": 97.3943,
-      "swing_over_central": 1.38218
+      "at_low": 40.4334,
+      "at_high": 107.94,
+      "swing_over_central": 1.64793
      }
     ]
    },
@@ -3986,8 +4034,8 @@
    "basis": "Data center: modeled from measured hours. Network and router: modeled. Device: measured for video.",
    "energy_wh": {
     "value": 14.05,
-    "low": 7.2115,
-    "high": 127.8
+    "low": 7.18107,
+    "high": 202.5
    },
    "price_usd": {
     "value": 0.256,
@@ -3999,20 +4047,20 @@
    },
    "co2e_g": {
     "value": 4.1735,
-    "low": 2.09747,
-    "high": 43.614,
+    "low": 2.08681,
+    "high": 69.759,
     "grid": "location-based average: data center and network US 350 g (gf-007); router and device NWPP 288 g (gf-001)"
    },
    "water_ml": {
     "value": 46.7155,
-    "low": 21.6948,
-    "high": 660.044,
+    "low": 21.5491,
+    "high": 1083.59,
     "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; router and device: NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037); kept apart by basin, never summed"
    },
    "claims": [
     "fp-122",
     "fp-130",
-    "fp-043",
+    "fp-141",
     "fp-127",
     "fp-126",
     "fp-049",
@@ -4035,18 +4083,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 13.95,
-      "at_high": 43.7,
-      "swing_over_central": 2.11744
+      "at_low": 13.771,
+      "at_high": 68.6,
+      "swing_over_central": 3.90242
      },
      {
-      "name": "router_allocation",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 4.05,
-      "at_high": 29.05,
-      "low_option": "excluded",
-      "high_option": "by_data",
-      "swing_over_central": 1.77936
+      "at_low": 13.771,
+      "at_high": 68.6,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 3.90242
      }
     ],
     "usd": [],
@@ -4063,18 +4111,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 4.1385,
-      "at_high": 14.551,
-      "swing_over_central": 2.49491
+      "at_low": 4.07585,
+      "at_high": 23.266,
+      "swing_over_central": 4.5981
      },
      {
-      "name": "grid_home",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 0.8735,
-      "at_high": 9.4691,
-      "low_option": "wind",
-      "high_option": "diesel",
-      "swing_over_central": 2.05957
+      "at_low": 4.07585,
+      "at_high": 23.266,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 4.5981
      }
     ],
     "ml": [
@@ -4088,20 +4136,20 @@
       "swing_over_central": 6.92212
      },
      {
-      "name": "hydro_convention",
-      "type": "setting",
-      "at_low": 15.1363,
-      "at_high": 191.608,
-      "low_option": "excluded",
-      "high_option": "primary_purpose",
-      "swing_over_central": 3.77759
-     },
-     {
       "name": "i_dc",
       "type": "input",
-      "at_low": 46.2275,
-      "at_high": 191.407,
-      "swing_over_central": 3.10775
+      "at_low": 45.3539,
+      "at_high": 312.919,
+      "swing_over_central": 5.72756
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 45.3539,
+      "at_high": 312.919,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 5.72756
      }
     ]
    },
@@ -4263,8 +4311,8 @@
    "basis": "Modeled: serving intensity from measured hours over a modeled data volume; network modeled.",
    "energy_wh": {
     "value": 2.05,
-    "low": 0.3315,
-    "high": 109.8
+    "low": 0.30107,
+    "high": 184.5
    },
    "price_usd": {
     "value": 0.06,
@@ -4276,14 +4324,14 @@
    },
    "co2e_g": {
     "value": 0.7175,
-    "low": 0.116025,
-    "high": 38.43,
+    "low": 0.105375,
+    "high": 64.575,
     "grid": "location-based average: data center and network US 350 g (gf-007); router and device NWPP 288 g (gf-001)"
    },
    "water_ml": {
     "value": 9.428,
-    "low": 1.51444,
-    "high": 600.141,
+    "low": 1.36869,
+    "high": 1023.69,
     "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; router and device: NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037); kept apart by basin, never summed"
    },
    "claims": [
@@ -4297,9 +4345,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 1.95,
-      "at_high": 31.7,
-      "swing_over_central": 14.5122
+      "at_low": 1.771,
+      "at_high": 56.6,
+      "swing_over_central": 26.7459
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 1.771,
+      "at_high": 56.6,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 26.7459
      },
      {
       "name": "connection",
@@ -4309,15 +4366,6 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.4146
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 2.05,
-      "at_high": 21.2,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.34146
      }
     ],
     "usd": [],
@@ -4325,9 +4373,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 0.6825,
-      "at_high": 11.095,
-      "swing_over_central": 14.5122
+      "at_low": 0.61985,
+      "at_high": 19.81,
+      "swing_over_central": 26.7459
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 0.61985,
+      "at_high": 19.81,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 26.7459
      },
      {
       "name": "connection",
@@ -4337,24 +4394,24 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.4146
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 0.7175,
-      "at_high": 7.42,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.34146
      }
     ],
     "ml": [
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 8.94,
-      "at_high": 154.12,
-      "swing_over_central": 15.3988
+      "at_low": 8.06648,
+      "at_high": 275.632,
+      "swing_over_central": 28.3799
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 8.06648,
+      "at_high": 275.632,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 28.3799
      },
      {
       "name": "connection",
@@ -4364,15 +4421,6 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.2185
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 9.428,
-      "at_high": 102.88,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.91218
      }
     ]
    },
@@ -8030,8 +8078,8 @@
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 2050.0,
-      "low": 331.5,
-      "high": 109800.0
+      "low": 301.07,
+      "high": 184500.0
      },
      "price_usd": {
       "value": 60.0,
@@ -8043,14 +8091,14 @@
      },
      "co2e_g": {
       "value": 717.5,
-      "low": 116.025,
-      "high": 38430.0,
+      "low": 105.374,
+      "high": 64575.0,
       "grid": "location-based average: data center and network US 350 g (gf-007); router and device NWPP 288 g (gf-001)"
      },
      "water_ml": {
       "value": 9428.0,
-      "low": 1514.44,
-      "high": 600141.0,
+      "low": 1368.69,
+      "high": 1023690.0,
       "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; router and device: NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037); kept apart by basin, never summed"
      },
      "claims": [
@@ -8065,9 +8113,18 @@
        {
         "name": "i_dc",
         "type": "input",
-        "at_low": 1950.0,
-        "at_high": 31700.0,
-        "swing_over_central": 14.5122
+        "at_low": 1771.0,
+        "at_high": 56600.0,
+        "swing_over_central": 26.7459
+       },
+       {
+        "name": "video_dc_intensity",
+        "type": "setting",
+        "at_low": 1771.0,
+        "at_high": 56600.0,
+        "low_option": "desnz_followup",
+        "high_option": "top_down",
+        "swing_over_central": 26.7459
        },
        {
         "name": "connection",
@@ -8077,15 +8134,6 @@
         "low_option": "wifi",
         "high_option": "cellular",
         "swing_over_central": 11.4146
-       },
-       {
-        "name": "video_dc_intensity",
-        "type": "setting",
-        "at_low": 2050.0,
-        "at_high": 21200.0,
-        "low_option": "measured_delivery",
-        "high_option": "desnz_assumed",
-        "swing_over_central": 9.34146
        }
       ],
       "usd": [],
@@ -8093,9 +8141,18 @@
        {
         "name": "i_dc",
         "type": "input",
-        "at_low": 682.5,
-        "at_high": 11095.0,
-        "swing_over_central": 14.5122
+        "at_low": 619.85,
+        "at_high": 19810.0,
+        "swing_over_central": 26.7459
+       },
+       {
+        "name": "video_dc_intensity",
+        "type": "setting",
+        "at_low": 619.85,
+        "at_high": 19810.0,
+        "low_option": "desnz_followup",
+        "high_option": "top_down",
+        "swing_over_central": 26.7459
        },
        {
         "name": "connection",
@@ -8105,24 +8162,24 @@
         "low_option": "wifi",
         "high_option": "cellular",
         "swing_over_central": 11.4146
-       },
-       {
-        "name": "video_dc_intensity",
-        "type": "setting",
-        "at_low": 717.5,
-        "at_high": 7420.0,
-        "low_option": "measured_delivery",
-        "high_option": "desnz_assumed",
-        "swing_over_central": 9.34146
        }
       ],
       "ml": [
        {
         "name": "i_dc",
         "type": "input",
-        "at_low": 8940.0,
-        "at_high": 154120.0,
-        "swing_over_central": 15.3988
+        "at_low": 8066.48,
+        "at_high": 275632.0,
+        "swing_over_central": 28.3799
+       },
+       {
+        "name": "video_dc_intensity",
+        "type": "setting",
+        "at_low": 8066.48,
+        "at_high": 275632.0,
+        "low_option": "desnz_followup",
+        "high_option": "top_down",
+        "swing_over_central": 28.3799
        },
        {
         "name": "connection",
@@ -8132,15 +8189,6 @@
         "low_option": "wifi",
         "high_option": "cellular",
         "swing_over_central": 11.2185
-       },
-       {
-        "name": "video_dc_intensity",
-        "type": "setting",
-        "at_low": 9428.0,
-        "at_high": 102880.0,
-        "low_option": "measured_delivery",
-        "high_option": "desnz_assumed",
-        "swing_over_central": 9.91218
        }
       ]
      },
@@ -8826,7 +8874,7 @@
     }
    },
    "wins": "When the link out is slow, metered, or down, and when many people watch the same thing (sf-030, sf-031). The embedded cache wins on energy (19 against 2,050 Wh per 1,000 views), an upper bound the platform places.",
-   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box never beats the platform's serving energy at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year) and beats it above about 4,167 views a year at the DESNZ intensity. The embedded cache loses on control.",
+   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box never beats the platform's serving energy at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year), or at the DESNZ follow-up's lower one; only the top-down average, an upper bound, would reverse it. The embedded cache loses on control.",
    "note": "A network credit, charging the Nation's own network at marginal cost against the platform's average, is a convention and prints as one."
   },
   "C": {
@@ -12845,8 +12893,8 @@
     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
     "energy_wh": {
      "value": 2050.0,
-     "low": 331.5,
-     "high": 109800.0
+     "low": 301.07,
+     "high": 184500.0
     },
     "price_usd": {
      "value": 60.0,
@@ -12858,14 +12906,14 @@
     },
     "co2e_g": {
      "value": 717.5,
-     "low": 116.025,
-     "high": 38430.0,
+     "low": 105.374,
+     "high": 64575.0,
      "grid": "location-based average: data center and network US 350 g (gf-007); router and device NWPP 288 g (gf-001)"
     },
     "water_ml": {
      "value": 9428.0,
-     "low": 1514.44,
-     "high": 600141.0,
+     "low": 1368.69,
+     "high": 1023690.0,
      "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; router and device: NWPP mix 3.11 L per kWh on the Columbia reservoir convention (gf-008, gf-040, gf-037); kept apart by basin, never summed"
     },
     "claims": [],
@@ -12874,9 +12922,18 @@
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 1950.0,
-       "at_high": 31700.0,
-       "swing_over_central": 14.5122
+       "at_low": 1771.0,
+       "at_high": 56600.0,
+       "swing_over_central": 26.7459
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 1771.0,
+       "at_high": 56600.0,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 26.7459
       },
       {
        "name": "connection",
@@ -12886,15 +12943,6 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 11.4146
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 2050.0,
-       "at_high": 21200.0,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 9.34146
       }
      ],
      "usd": [],
@@ -12902,9 +12950,18 @@
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 682.5,
-       "at_high": 11095.0,
-       "swing_over_central": 14.5122
+       "at_low": 619.85,
+       "at_high": 19810.0,
+       "swing_over_central": 26.7459
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 619.85,
+       "at_high": 19810.0,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 26.7459
       },
       {
        "name": "connection",
@@ -12914,24 +12971,24 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 11.4146
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 717.5,
-       "at_high": 7420.0,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 9.34146
       }
      ],
      "ml": [
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 8940.0,
-       "at_high": 154120.0,
-       "swing_over_central": 15.3988
+       "at_low": 8066.48,
+       "at_high": 275632.0,
+       "swing_over_central": 28.3799
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 8066.48,
+       "at_high": 275632.0,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 28.3799
       },
       {
        "name": "connection",
@@ -12941,15 +12998,6 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 11.2185
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 9428.0,
-       "at_high": 102880.0,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 9.91218
       }
      ]
     },
@@ -12967,8 +13015,8 @@
     "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
     "energy_wh": {
      "value": 425.822,
-     "low": 34.102,
-     "high": 33052.8
+     "low": 31.059,
+     "high": 55462.8
     },
     "price_usd": {
      "value": 60.0,
@@ -12980,14 +13028,14 @@
     },
     "co2e_g": {
      "value": 148.156,
-     "low": 11.8935,
-     "high": 11562.7,
+     "low": 10.8285,
+     "high": 19406.2,
      "grid": "location-based average: data center and network US 350 g (gf-007); the cache NWPP 288 g (gf-001)"
     },
     "water_ml": {
      "value": 1937.02,
-     "low": 154.669,
-     "high": 180441.0,
+     "low": 140.093,
+     "high": 307506.0,
      "convention": "data center and network: site 0.36 plus US generation 4.52 L per kWh; the cache: NWPP mix 3.11 L per kWh on the Columbia reservoir convention; kept apart by basin, never summed"
     },
     "claims": [],
@@ -12996,9 +13044,18 @@
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 405.822,
-       "at_high": 6355.82,
-       "swing_over_central": 13.973
+       "at_low": 370.022,
+       "at_high": 11335.8,
+       "swing_over_central": 25.7521
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 370.022,
+       "at_high": 11335.8,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 25.7521
       },
       {
        "name": "connection",
@@ -13008,15 +13065,6 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 11.0455
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 425.822,
-       "at_high": 4255.82,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 8.99436
       }
      ],
      "usd": [],
@@ -13024,9 +13072,18 @@
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 141.156,
-       "at_high": 2223.66,
-       "swing_over_central": 14.0561
+       "at_low": 128.626,
+       "at_high": 3966.66,
+       "swing_over_central": 25.9053
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 128.626,
+       "at_high": 3966.66,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 25.9053
       },
       {
        "name": "connection",
@@ -13036,24 +13093,24 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 11.1112
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 148.156,
-       "at_high": 1488.66,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 9.0479
       }
      ],
      "ml": [
       {
        "name": "i_dc",
        "type": "input",
-       "at_low": 1839.42,
-       "at_high": 30875.4,
-       "swing_over_central": 14.99
+       "at_low": 1664.72,
+       "at_high": 55177.8,
+       "swing_over_central": 27.6264
+      },
+      {
+       "name": "video_dc_intensity",
+       "type": "setting",
+       "at_low": 1664.72,
+       "at_high": 55177.8,
+       "low_option": "desnz_followup",
+       "high_option": "top_down",
+       "swing_over_central": 27.6264
       },
       {
        "name": "connection",
@@ -13063,15 +13120,6 @@
        "low_option": "wifi",
        "high_option": "cellular",
        "swing_over_central": 10.9753
-      },
-      {
-       "name": "video_dc_intensity",
-       "type": "setting",
-       "at_low": 1937.02,
-       "at_high": 20627.4,
-       "low_option": "measured_delivery",
-       "high_option": "desnz_assumed",
-       "swing_over_central": 9.64903
       }
      ]
     },
@@ -14846,10 +14894,12 @@
    ]
   },
   "views_desnz_same_network": {
-   "value": 4166.92,
-   "low_one_input_or_setting": 1336.01,
-   "high_one_input_or_setting": 34537.6,
-   "never_under": []
+   "value": null,
+   "low_one_input_or_setting": 450807.0,
+   "high_one_input_or_setting": 450807.0,
+   "never_under": [
+    "central"
+   ]
   },
   "views_measured_network_credit": {
    "value": 94009.8,
@@ -14861,10 +14911,13 @@
    ]
   },
   "views_desnz_network_credit": {
-   "value": 3860.19,
-   "low_one_input_or_setting": 1241.15,
-   "high_one_input_or_setting": 31060.1,
-   "never_under": []
+   "value": 142492.0,
+   "low_one_input_or_setting": 14168.0,
+   "high_one_input_or_setting": 745532.0,
+   "never_under": [
+    "gb_phone low",
+    "stream_w high"
+   ]
   },
   "prompts_energy_vs_hyper": {
    "value": 2761360.0,
@@ -15441,22 +15494,61 @@
     "independent": true,
     "known_miss": "",
     "note": "A top-down price against the modeled coding hour at list; the hours per active day are an assumption (2 to 8), and the mean turn at 6 an hour against 43 median turns an hour spans the published figure."
+   },
+   {
+    "id": "fp-141",
+    "label": "DESNZ follow-up, data center per viewing hour, 3.5 GB",
+    "unit": "Wh",
+    "published": 0.6,
+    "model": 1.575,
+    "ratio": 2.625,
+    "factor": 2.625,
+    "within_2x": false,
+    "independent": true,
+    "known_miss": "",
+    "note": "A consultant scenario, not a measurement; the model's default comes from DIMPACT's own assessments, and no input is shared. The model also offers this reading as a setting, but it is not the default."
+   },
+   {
+    "id": "fp-143",
+    "label": "DESNZ follow-up, whole chain per viewing hour, television",
+    "unit": "Wh",
+    "published": 192.3,
+    "model": 116.15,
+    "ratio": 0.604004,
+    "factor": 1.65562,
+    "within_2x": true,
+    "independent": false,
+    "known_miss": "",
+    "note": "Takes its network inputs from Carbon Trust, as the model does, so a fit here would be circular."
+   },
+   {
+    "id": "fp-146",
+    "label": "Ofcom and Carnstone, OTT hour per device, UK 2021",
+    "unit": "Wh",
+    "published": 113.0,
+    "model": 116.15,
+    "ratio": 1.02788,
+    "factor": 1.02788,
+    "within_2x": true,
+    "independent": false,
+    "known_miss": "",
+    "note": "Mixed devices with a 75 percent television share, against a television hour; its data center input is the same 1.3 Wh the model's default rests on."
    }
   ],
   "summary": {
    "all": {
-    "n": 13,
-    "median_factor": 1.76788,
-    "within_2x": 8,
+    "n": 16,
+    "median_factor": 1.71175,
+    "within_2x": 10,
     "worst_factor": 8.07158,
-    "geometric_mean_factor": 2.15424
+    "geometric_mean_factor": 2.04846
    },
    "independent": {
-    "n": 7,
-    "median_factor": 1.90673,
+    "n": 8,
+    "median_factor": 2.23114,
     "within_2x": 4,
     "worst_factor": 8.07158,
-    "geometric_mean_factor": 2.31775
+    "geometric_mean_factor": 2.3541
    }
   },
   "note": "Ratio is model over published. Factor is the larger of the ratio and its inverse. Independent means the figure set no coefficient, chose no setting, and shares no input with the row it tests. Figures that are not independent are printed but are not evidence that the model works."
@@ -16082,18 +16174,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 12.7605,
-      "at_high": 24.363,
-      "swing_over_central": 0.906481
+      "at_low": 12.6907,
+      "at_high": 26.524,
+      "swing_over_central": 1.08077
      },
      {
-      "name": "router_allocation",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 2.7995,
-      "at_high": 12.7995,
-      "low_option": "excluded",
-      "high_option": "by_time",
-      "swing_over_central": 0.781281
+      "at_low": 12.6907,
+      "at_high": 26.524,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 1.08077
      }
     ],
     "usd": [
@@ -16127,9 +16219,9 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 3.72218,
-      "at_high": 7.78305,
-      "swing_over_central": 1.08701
+      "at_low": 3.69774,
+      "at_high": 8.5394,
+      "swing_over_central": 1.29601
      }
     ],
     "ml": [
@@ -16154,9 +16246,9 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 40.7741,
-      "at_high": 97.3943,
-      "swing_over_central": 1.38218
+      "at_low": 40.4334,
+      "at_high": 107.94,
+      "swing_over_central": 1.64793
      }
     ]
    },
@@ -16174,18 +16266,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 13.95,
-      "at_high": 43.7,
-      "swing_over_central": 2.11744
+      "at_low": 13.771,
+      "at_high": 68.6,
+      "swing_over_central": 3.90242
      },
      {
-      "name": "router_allocation",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 4.05,
-      "at_high": 29.05,
-      "low_option": "excluded",
-      "high_option": "by_data",
-      "swing_over_central": 1.77936
+      "at_low": 13.771,
+      "at_high": 68.6,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 3.90242
      }
     ],
     "usd": [],
@@ -16202,18 +16294,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 4.1385,
-      "at_high": 14.551,
-      "swing_over_central": 2.49491
+      "at_low": 4.07585,
+      "at_high": 23.266,
+      "swing_over_central": 4.5981
      },
      {
-      "name": "grid_home",
+      "name": "video_dc_intensity",
       "type": "setting",
-      "at_low": 0.8735,
-      "at_high": 9.4691,
-      "low_option": "wind",
-      "high_option": "diesel",
-      "swing_over_central": 2.05957
+      "at_low": 4.07585,
+      "at_high": 23.266,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 4.5981
      }
     ],
     "ml": [
@@ -16227,20 +16319,20 @@
       "swing_over_central": 6.92212
      },
      {
-      "name": "hydro_convention",
-      "type": "setting",
-      "at_low": 15.1363,
-      "at_high": 191.608,
-      "low_option": "excluded",
-      "high_option": "primary_purpose",
-      "swing_over_central": 3.77759
-     },
-     {
       "name": "i_dc",
       "type": "input",
-      "at_low": 46.2275,
-      "at_high": 191.407,
-      "swing_over_central": 3.10775
+      "at_low": 45.3539,
+      "at_high": 312.919,
+      "swing_over_central": 5.72756
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 45.3539,
+      "at_high": 312.919,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 5.72756
      }
     ]
    },
@@ -16314,9 +16406,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 1.95,
-      "at_high": 31.7,
-      "swing_over_central": 14.5122
+      "at_low": 1.771,
+      "at_high": 56.6,
+      "swing_over_central": 26.7459
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 1.771,
+      "at_high": 56.6,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 26.7459
      },
      {
       "name": "connection",
@@ -16326,15 +16427,6 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.4146
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 2.05,
-      "at_high": 21.2,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.34146
      }
     ],
     "usd": [],
@@ -16342,9 +16434,18 @@
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 0.6825,
-      "at_high": 11.095,
-      "swing_over_central": 14.5122
+      "at_low": 0.61985,
+      "at_high": 19.81,
+      "swing_over_central": 26.7459
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 0.61985,
+      "at_high": 19.81,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 26.7459
      },
      {
       "name": "connection",
@@ -16354,24 +16455,24 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.4146
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 0.7175,
-      "at_high": 7.42,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.34146
      }
     ],
     "ml": [
      {
       "name": "i_dc",
       "type": "input",
-      "at_low": 8.94,
-      "at_high": 154.12,
-      "swing_over_central": 15.3988
+      "at_low": 8.06648,
+      "at_high": 275.632,
+      "swing_over_central": 28.3799
+     },
+     {
+      "name": "video_dc_intensity",
+      "type": "setting",
+      "at_low": 8.06648,
+      "at_high": 275.632,
+      "low_option": "desnz_followup",
+      "high_option": "top_down",
+      "swing_over_central": 28.3799
      },
      {
       "name": "connection",
@@ -16381,15 +16482,6 @@
       "low_option": "wifi",
       "high_option": "cellular",
       "swing_over_central": 11.2185
-     },
-     {
-      "name": "video_dc_intensity",
-      "type": "setting",
-      "at_low": 9.428,
-      "at_high": 102.88,
-      "low_option": "measured_delivery",
-      "high_option": "desnz_assumed",
-      "swing_over_central": 9.91218
      }
     ]
    }
@@ -16415,7 +16507,7 @@
      "type": "input",
      "rows_first": 1,
      "rows_moved": 3,
-     "mean_swing_over_central": 5.84537
+     "mean_swing_over_central": 10.5763
     },
     {
      "name": "turns_per_hour",
@@ -16538,7 +16630,7 @@
      "type": "input",
      "rows_first": 1,
      "rows_moved": 3,
-     "mean_swing_over_central": 6.03137
+     "mean_swing_over_central": 10.88
     },
     {
      "name": "turns_per_hour",
@@ -16548,18 +16640,18 @@
      "mean_swing_over_central": 5.87225
     },
     {
+     "name": "video_dc_intensity",
+     "type": "setting",
+     "rows_first": 0,
+     "rows_moved": 3,
+     "mean_swing_over_central": 10.88
+    },
+    {
      "name": "connection",
      "type": "setting",
      "rows_first": 0,
      "rows_moved": 5,
      "mean_swing_over_central": 2.68862
-    },
-    {
-     "name": "video_dc_intensity",
-     "type": "setting",
-     "rows_first": 0,
-     "rows_moved": 3,
-     "mean_swing_over_central": 3.88238
     },
     {
      "name": "grid_home",
@@ -16589,7 +16681,7 @@
      "type": "input",
      "rows_first": 1,
      "rows_moved": 3,
-     "mean_swing_over_central": 6.62958
+     "mean_swing_over_central": 11.9185
     },
     {
      "name": "grid_dc",
@@ -16786,7 +16878,7 @@
      "type": "input",
      "rows_first": 1,
      "rows_moved": 1,
-     "mean_swing_over_central": 14.5122
+     "mean_swing_over_central": 26.7459
     },
     {
      "name": "grid_home",
@@ -16844,7 +16936,7 @@
      "type": "input",
      "rows_first": 1,
      "rows_moved": 1,
-     "mean_swing_over_central": 15.3988
+     "mean_swing_over_central": 28.3799
     },
     {
      "name": "e_prompt",
@@ -16874,13 +16966,13 @@
     "a_is_lower": false,
     "ratio_a_over_b": 1.06767,
     "flips_on_one_input": [
-     "i_dc at 30.1",
+     "i_dc at 55",
      "net_fixed_avg at 6.5",
      "gb_phone at 3"
     ],
     "flips_on_one_setting": [
      "prompts_per_hour = 2.52",
-     "video_dc_intensity = desnz_assumed",
+     "video_dc_intensity = top_down",
      "device = laptop",
      "device = tv",
      "connection = cellular",
@@ -16897,13 +16989,13 @@
     "a_is_lower": false,
     "ratio_a_over_b": 1.4638,
     "flips_on_one_input": [
-     "i_dc at 30.1",
+     "i_dc at 55",
      "net_fixed_avg at 6.5",
      "gb_phone at 3"
     ],
     "flips_on_one_setting": [
      "prompts_per_hour = 2.52",
-     "video_dc_intensity = desnz_assumed",
+     "video_dc_intensity = top_down",
      "device = laptop",
      "device = tv",
      "connection = cellular"
@@ -17005,6 +17097,7 @@
     "ratio_a_over_b": 0.23652,
     "flips_on_one_input": [],
     "flips_on_one_setting": [
+     "grid_dc = bpa",
      "grid_dc = nw_long_run_margin",
      "grid_dc = hydro",
      "grid_dc = wind",
@@ -17033,10 +17126,10 @@
     "a_is_lower": false,
     "ratio_a_over_b": 1.69311,
     "flips_on_one_input": [
-     "i_dc at 30.1"
+     "i_dc at 55"
     ],
     "flips_on_one_setting": [
-     "video_dc_intensity = desnz_assumed"
+     "video_dc_intensity = top_down"
     ],
     "flips_with_all_inputs_at_extremes": true,
     "stable": false
@@ -17049,13 +17142,14 @@
     "a_is_lower": true,
     "ratio_a_over_b": 0.976039,
     "flips_on_one_input": [
-     "i_dc at 0.35",
+     "i_dc at 0.171",
      "gb_phone at 0.17",
      "pue_room at 1.5",
      "mini_w at 9",
      "stream_w at 2"
     ],
     "flips_on_one_setting": [
+     "video_dc_intensity = desnz_followup",
      "network_mode = marginal"
     ],
     "flips_with_all_inputs_at_extremes": true,
@@ -17215,6 +17309,7 @@
     "flips_on_one_setting": [
      "grid_local = nw_short_run_margin",
      "grid_local = diesel",
+     "grid_colo = bpa",
      "grid_colo = hydro",
      "grid_colo = wind",
      "grid_colo = solar"
@@ -17307,6 +17402,7 @@
      "node_w at 250"
     ],
     "flips_on_one_setting": [
+     "grid_dc = bpa",
      "grid_dc = nw_long_run_margin",
      "grid_dc = hydro",
      "grid_dc = wind",
@@ -17479,6 +17575,7 @@
      "grid_dc = us_nonbaseload",
      "grid_dc = nw_short_run_margin",
      "grid_dc = diesel",
+     "grid_local = bpa",
      "grid_local = wa",
      "grid_local = nw_long_run_margin",
      "grid_local = hydro",
@@ -17627,16 +17724,16 @@
      "ml": 2.5866
     },
     "short_hour": {
-     "wh": 7.3675,
+     "wh": 7.32275,
      "usd": 0.115,
-     "g": 2.15206,
-     "ml": 22.4075
+     "g": 2.1364,
+     "ml": 22.1932
     },
     "video_hour": {
-     "wh": 7.2115,
+     "wh": 7.18107,
      "usd": 0.256,
-     "g": 2.09747,
-     "ml": 21.6948
+     "g": 2.08681,
+     "ml": 21.5491
     },
     "seat_month": {
      "wh": 183.333,
@@ -17645,10 +17742,10 @@
      "ml": 878.167
     },
     "video_delivery": {
-     "wh": 0.3315,
+     "wh": 0.30107,
      "usd": 0.06,
-     "g": 0.116025,
-     "ml": 1.51444
+     "g": 0.105375,
+     "ml": 1.36869
     }
    },
    "high": {
@@ -17701,10 +17798,10 @@
      "ml": 197.476
     },
     "video_hour": {
-     "wh": 127.8,
+     "wh": 202.5,
      "usd": 0.256,
-     "g": 43.614,
-     "ml": 660.044
+     "g": 69.759,
+     "ml": 1083.59
     },
     "seat_month": {
      "wh": 550.0,
@@ -17713,10 +17810,10 @@
      "ml": 3118.5
     },
     "video_delivery": {
-     "wh": 109.8,
+     "wh": 184.5,
      "usd": 0.06,
-     "g": 38.43,
-     "ml": 600.141
+     "g": 64.575,
+     "ml": 1023.69
     }
    }
   },
@@ -17795,30 +17892,56 @@
    },
    "video_dc_intensity": {
     "measured_delivery": {},
-    "desnz_assumed": {
+    "desnz_followup": {
      "catalog.short_hour": {
-      "wh": 20.268,
+      "wh": 12.6907,
       "usd": 0.155,
-      "g": 6.3498,
-      "ml": 77.4107
+      "g": 3.69774,
+      "ml": 40.4334
      },
      "catalog.video_hour": {
-      "wh": 33.2,
+      "wh": 13.771,
       "usd": 0.256,
-      "g": 10.876,
-      "ml": 140.167
+      "g": 4.07585,
+      "ml": 45.3539
      },
      "catalog.video_delivery": {
-      "wh": 21.2,
+      "wh": 1.771,
       "usd": 0.06,
-      "g": 7.42,
-      "ml": 102.88
+      "g": 0.61985,
+      "ml": 8.06648
      },
      "arch.B.platform": {
-      "wh": 21200.0,
+      "wh": 1771.0,
       "usd": 60.0,
-      "g": 7420.0,
-      "ml": 102880.0
+      "g": 619.85,
+      "ml": 8066.48
+     }
+    },
+    "top_down": {
+     "catalog.short_hour": {
+      "wh": 26.524,
+      "usd": 0.155,
+      "g": 8.5394,
+      "ml": 107.94
+     },
+     "catalog.video_hour": {
+      "wh": 68.6,
+      "usd": 0.256,
+      "g": 23.266,
+      "ml": 312.919
+     },
+     "catalog.video_delivery": {
+      "wh": 56.6,
+      "usd": 0.06,
+      "g": 19.81,
+      "ml": 275.632
+     },
+     "arch.B.platform": {
+      "wh": 56600.0,
+      "usd": 60.0,
+      "g": 19810.0,
+      "ml": 275632.0
      }
     }
    },
@@ -18495,6 +18618,182 @@
       "wh": 266.289,
       "usd": 1.16777,
       "g": 76.6912,
+      "ml": 858.324
+     }
+    },
+    "bpa": {
+     "catalog.chat_prompt": {
+      "wh": 0.3,
+      "usd": 0.004,
+      "g": 0.01479,
+      "ml": 1.04019
+     },
+     "catalog.chat_hour": {
+      "wh": 15.0008,
+      "usd": 0.04,
+      "g": 3.60394,
+      "ml": 47.6918
+     },
+     "catalog.coding_session": {
+      "wh": 36.1937,
+      "usd": 0.18456,
+      "g": 1.78435,
+      "ml": 125.494
+     },
+     "catalog.coding_hour": {
+      "wh": 210.619,
+      "usd": 1.01358,
+      "g": 13.2479,
+      "ml": 725.929
+     },
+     "catalog.image": {
+      "wh": 0.63,
+      "usd": 0.0336,
+      "g": 0.031059,
+      "ml": 2.18439
+     },
+     "catalog.clip": {
+      "wh": 30.8,
+      "usd": 0.8,
+      "g": 1.51844,
+      "ml": 106.792
+     },
+     "catalog.search_ai": {
+      "wh": 0.6,
+      "usd": 0.018,
+      "g": 0.02958,
+      "ml": 2.08037
+     },
+     "catalog.short_hour": {
+      "wh": 12.7995,
+      "usd": 0.155,
+      "g": 3.49542,
+      "ml": 39.8349
+     },
+     "catalog.video_hour": {
+      "wh": 14.05,
+      "usd": 0.256,
+      "g": 3.55707,
+      "ml": 43.8194
+     },
+     "catalog.seat_month": {
+      "wh": 183.333,
+      "usd": 14.0,
+      "g": 9.03833,
+      "ml": 635.669
+     },
+     "catalog.video_delivery": {
+      "wh": 2.05,
+      "usd": 0.06,
+      "g": 0.101065,
+      "ml": 6.53194
+     },
+     "arch.A.cloud": {
+      "wh": 110000.0,
+      "usd": 9840.0,
+      "g": 5423.0,
+      "ml": 381402.0
+     },
+     "arch.A.cloud_with_sync": {
+      "wh": 260000.0,
+      "usd": 9840.0,
+      "g": 48623.0,
+      "ml": 847495.0
+     },
+     "arch.B.platform": {
+      "wh": 2050.0,
+      "usd": 60.0,
+      "g": 101.065,
+      "ml": 6531.94
+     },
+     "arch.B.local_1000": {
+      "wh": 79788.0,
+      "usd": 788.577,
+      "g": 22597.0,
+      "ml": 247924.0
+     },
+     "arch.B.local_10000": {
+      "wh": 10408.8,
+      "usd": 78.9663,
+      "g": 2615.81,
+      "ml": 32343.1
+     },
+     "arch.B.local_100000": {
+      "wh": 3470.88,
+      "usd": 8.00524,
+      "g": 617.693,
+      "ml": 10785.0
+     },
+     "arch.C.ten_copies": {
+      "wh": 4592560.0,
+      "usd": 9037.08,
+      "g": 1284470.0,
+      "ml": 14270400.0
+     },
+     "arch.C.central_s3": {
+      "wh": 187902.0,
+      "usd": 3480.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.C.central_s3_with_pulls": {
+      "wh": 347902.0,
+      "usd": 12480.0,
+      "g": 17151.6,
+      "ml": 1148680.0
+     },
+     "arch.C.central_r2": {
+      "wh": 187902.0,
+      "usd": 2520.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.C.central_b2": {
+      "wh": 187902.0,
+      "usd": 1554.0,
+      "g": 9263.57,
+      "ml": 651510.0
+     },
+     "arch.C.federated": {
+      "wh": 4434480.0,
+      "usd": 8530.9,
+      "g": 1276670.0,
+      "ml": 13779200.0
+     },
+     "arch.C.federated_replicas": {
+      "wh": 4434480.0,
+      "usd": 8619.78,
+      "g": 1276670.0,
+      "ml": 13779200.0
+     },
+     "arch.D.hyper": {
+      "wh": 300.0,
+      "usd": 4.0,
+      "g": 14.79,
+      "ml": 1040.19
+     },
+     "arch.D.node_100k_fallback": {
+      "wh": 4100.62,
+      "usd": 29.8844,
+      "g": 1160.5,
+      "ml": 12772.7
+     },
+     "arch.D.node_1m_fallback": {
+      "wh": 631.657,
+      "usd": 4.03388,
+      "g": 161.437,
+      "ml": 1993.63
+     },
+     "arch.D.laptop_with_fallback": {
+      "wh": 110.106,
+      "usd": 1.1472,
+      "g": 11.2299,
+      "ml": 373.018
+     },
+     "arch.D.phone_wall_fallback": {
+      "wh": 266.289,
+      "usd": 1.16777,
+      "g": 56.2107,
       "ml": 858.324
      }
     },
@@ -19736,6 +20035,68 @@
    },
    "grid_home": {
     "nwpp": {},
+    "bpa": {
+     "catalog.chat_hour": {
+      "wh": 15.0008,
+      "usd": 0.04,
+      "g": 1.64188,
+      "ml": 51.9311
+     },
+     "catalog.coding_hour": {
+      "wh": 210.619,
+      "usd": 1.01358,
+      "g": 70.1083,
+      "ml": 1006.52
+     },
+     "catalog.short_hour": {
+      "wh": 12.7995,
+      "usd": 0.155,
+      "g": 0.871425,
+      "ml": 40.9644
+     },
+     "catalog.video_hour": {
+      "wh": 14.05,
+      "usd": 0.256,
+      "g": 1.3091,
+      "ml": 46.7155
+     },
+     "arch.A.cloud_with_sync": {
+      "wh": 260000.0,
+      "usd": 9840.0,
+      "g": 45895.0,
+      "ml": 1002890.0
+     },
+     "arch.D.laptop": {
+      "wh": 24.3056,
+      "usd": 0.00320104,
+      "g": 1.19826,
+      "ml": 75.5244
+     },
+     "arch.D.laptop_with_fallback": {
+      "wh": 110.106,
+      "usd": 1.1472,
+      "g": 31.2283,
+      "ml": 494.228
+     },
+     "arch.D.phone": {
+      "wh": 72.7778,
+      "usd": 0.00958483,
+      "g": 3.58794,
+      "ml": 226.142
+     },
+     "arch.D.phone_wall": {
+      "wh": 180.489,
+      "usd": 0.0237704,
+      "g": 8.8981,
+      "ml": 560.831
+     },
+     "arch.D.phone_wall_fallback": {
+      "wh": 266.289,
+      "usd": 1.16777,
+      "g": 38.9281,
+      "ml": 979.535
+     }
+    },
     "wa": {
      "catalog.chat_hour": {
       "wh": 15.0008,
@@ -20173,6 +20534,98 @@
    },
    "grid_local": {
     "nwpp": {},
+    "bpa": {
+     "arch.A.cloud_same_grid": {
+      "wh": 110000.0,
+      "usd": 9840.0,
+      "g": 5423.0,
+      "ml": 381402.0
+     },
+     "arch.A.local": {
+      "wh": 433620.0,
+      "usd": 10616.4,
+      "g": 21377.5,
+      "ml": 1347380.0
+     },
+     "arch.A.local_two_boxes": {
+      "wh": 867240.0,
+      "usd": 11152.9,
+      "g": 42754.9,
+      "ml": 2694760.0
+     },
+     "arch.B.local_1000": {
+      "wh": 79788.0,
+      "usd": 788.577,
+      "g": 4414.67,
+      "ml": 250185.0
+     },
+     "arch.B.local_10000": {
+      "wh": 10408.8,
+      "usd": 78.9663,
+      "g": 994.274,
+      "ml": 34603.5
+     },
+     "arch.B.local_100000": {
+      "wh": 3470.88,
+      "usd": 8.00524,
+      "g": 652.234,
+      "ml": 13045.4
+     },
+     "arch.B.cache": {
+      "wh": 19.3778,
+      "usd": null,
+      "g": 0.955324,
+      "ml": 60.2123
+     },
+     "arch.C.ten_copies": {
+      "wh": 4592560.0,
+      "usd": 9037.08,
+      "g": 274525.0,
+      "ml": 14496400.0
+     },
+     "arch.C.federated": {
+      "wh": 4434480.0,
+      "usd": 8530.9,
+      "g": 219197.0,
+      "ml": 13781900.0
+     },
+     "arch.C.federated_replicas": {
+      "wh": 4434480.0,
+      "usd": 8619.78,
+      "g": 219197.0,
+      "ml": 13781900.0
+     },
+     "arch.D.hyper_same_grid": {
+      "wh": 300.0,
+      "usd": 4.0,
+      "g": 14.79,
+      "ml": 1040.19
+     },
+     "arch.D.node_100k": {
+      "wh": 4014.82,
+      "usd": 28.7404,
+      "g": 197.93,
+      "ml": 12475.2
+     },
+     "arch.D.node_100k_fallback": {
+      "wh": 4100.62,
+      "usd": 29.8844,
+      "g": 227.96,
+      "ml": 12893.9
+     },
+     "arch.D.node_1m": {
+      "wh": 545.857,
+      "usd": 2.88988,
+      "g": 26.9107,
+      "ml": 1696.13
+     },
+     "arch.D.node_1m_fallback": {
+      "wh": 631.657,
+      "usd": 4.03388,
+      "g": 56.9407,
+      "ml": 2114.84
+     }
+    },
     "wa": {
      "arch.A.cloud_same_grid": {
       "wh": 110000.0,
@@ -20912,6 +21365,14 @@
    },
    "grid_colo": {
     "nwpp": {},
+    "bpa": {
+     "arch.D.colo": {
+      "wh": 447.707,
+      "usd": 0.255,
+      "g": 22.0719,
+      "ml": 1552.33
+     }
+    },
     "us": {
      "arch.D.colo": {
       "wh": 447.707,
@@ -22283,9 +22744,9 @@
   },
   "crossovers": {
    "views_measured_same_network": null,
-   "views_desnz_same_network": 4166.92,
+   "views_desnz_same_network": null,
    "views_measured_network_credit": 94009.8,
-   "views_desnz_network_credit": 3860.19,
+   "views_desnz_network_credit": 142492.0,
    "prompts_energy_vs_hyper": 2761360.0,
    "prompts_carbon_same_grid": 2761360.0,
    "prompts_carbon_on_hydro_vs_hyper_us": 79643.2,
@@ -22330,20 +22791,20 @@
      "total": 9.28008
     },
     "video": {
-     "data_center": 0.0595,
+     "data_center": 0.029070000000000006,
      "network": 0.272,
      "router": 5.88,
      "device": 1.0,
-     "activity_added": 0.3315,
-     "total": 7.2115
+     "activity_added": 0.30107,
+     "total": 7.18107
     },
     "short": {
-     "data_center": 0.0875,
+     "data_center": 0.04275,
      "network": 0.4,
      "router": 5.88,
      "device": 1.0,
-     "activity_added": 0.48750000000000004,
-     "total": 7.3675
+     "activity_added": 0.44275000000000003,
+     "total": 7.32275
     }
    },
    "high": {
@@ -22356,12 +22817,12 @@
      "total": 24.0325
     },
     "video": {
-     "data_center": 90.30000000000001,
+     "data_center": 165.0,
      "network": 19.5,
      "router": 15,
      "device": 3.0,
-     "activity_added": 109.80000000000001,
-     "total": 127.80000000000001
+     "activity_added": 184.5,
+     "total": 202.5
     },
     "short": {
      "data_center": 13.9,
@@ -22538,20 +22999,20 @@
      "total": 15.0008
     },
     "video": {
-     "data_center": 19.6,
+     "data_center": 0.171,
      "network": 1.6,
      "router": 10,
      "device": 2.0,
-     "activity_added": 21.200000000000003,
-     "total": 33.2
+     "activity_added": 1.7710000000000001,
+     "total": 13.771
     },
     "short": {
-     "data_center": 7.644000000000001,
+     "data_center": 0.06669000000000001,
      "network": 0.6240000000000001,
      "router": 10,
      "device": 2.0,
-     "activity_added": 8.268,
-     "total": 20.268
+     "activity_added": 0.6906900000000001,
+     "total": 12.69069
     }
    },
    "prompts_2_5": {
@@ -22740,7 +23201,12 @@
   ],
   "i_dc_desnz": [
    "video_dc_intensity",
-   "desnz_assumed",
+   "desnz_followup",
+   "i_dc"
+  ],
+  "i_dc_top": [
+   "video_dc_intensity",
+   "top_down",
    "i_dc"
   ]
  },
@@ -22775,6 +23241,12 @@
   "fp-129": "Derived on this page from Carbon Trust's power-model parameters; Carbon Trust itself says the model has open questions on scaling to the whole network.",
   "fp-132": "An assumed device power taken from published studies and read from a table, not a measurement of a particular device.",
   "fp-134": "A measurement of one app on one phone model; 62 kilobytes is the web-search prompt, the largest case, and the low end follows the post's wording of several kilobytes.",
+  "fp-142": "Our division of a report total by the report's data volume; the report prints the totals but not a per-GB figure, and its inputs are consultant assumptions, not measurements.",
+  "fp-147": "A poster abstract that reuses a published factor (Sustainable Web Design); it adds no independent reading of data center energy per GB.",
+  "fp-149": "A range of four readings with different boundaries: two are consultant or top-down assumptions, one is participants' self-assessment, one is a single measured operator. It is a range with the allocation unsettled, not a point value.",
+  "fp-150": "The high end is a top-down, all-workload average multiplied by a streaming data rate. It exceeds the whole-chain figures of BBC (65.7 Wh) and Ofcom (113 Wh with the device), so it cannot be a literal per-hour data center share; it is an upper bound of an unsettled allocation.",
+  "fp-151": "US panel of 5,000 opted-in ChatGPT users who were active in 2026, unweighted, with survivorship bias; it counts prompts in a conversation, not minutes in a session.",
+  "fp-154": "US panel of 5,000 opted-in ChatGPT users who were active in 2026, unweighted, with survivorship bias; it counts prompts in a conversation, not minutes in a session.",
   "gf-033": "A literature median read by column position from a fact sheet, average and not place-specific.",
   "gf-034": "A literature median read by column position from a fact sheet, average and not place-specific.",
   "gf-035": "A literature median read by column position with no second source; it is life-cycle, unlike eGRID's combustion-only rates, and how reservoir methane was treated was not read.",
@@ -22785,6 +23257,7 @@
   "gf-051": "A vendor's modeled configuration estimate with a very wide stated uncertainty, split here to separate manufacture from use.",
   "gf-052": "A vendor-authored figure whose own numbers do not reconcile by about six percent.",
   "gf-054": "One tester's measurement of one product, not a standard; the range is idle only.",
+  "gf-061": "Unofficial reproduction of EPA's code by Cornerstone; EPA has not released eGRID2024; one year of a hydro-driven value.",
   "lf-001": "Chart text from a secondary publisher relaying IEA data; it is a facility class, and an AI-focused site also runs non-AI work.",
   "lf-002": "A second-hand estimate citing IEA and JLL, on a workload definition that must not be mixed with the facility share; JLL was not checked.",
   "lf-008": "One GPU board at batch size one with thinking on; the figure mixes model size and thinking, and excludes the rest of the machine.",
@@ -22804,6 +23277,9 @@
   "lf-055": "A press review, not a measured comparison.",
   "lf-056": "The state's own accounting of license fees only; other statements frame the saving differently, and about one desk in five still needs Microsoft Office.",
   "lf-058": "An accuracy figure reported by the toolkit vendor, with no energy or compute figure; credit belongs to Te Hiku Media, and this page does not speak for it.",
+  "lf-074": "Our sums of client plus server lower bound, without the paper's device idle-wait term; one compute-heavy music-matching task; server side is a best-case lower bound; sign depends on phone generation.",
+  "lf-076": "Software power counters, not wall power; values read from the PDF text layer of one figure (12.6 against 9.1 Wh per 1,000 tokens); cooling excluded; one bench, not several organizations.",
+  "lf-078": "Modeled defaults (PUE 1.58, 50 percent utilization from hyperscale); page undated; flatters a small local server.",
   "px-019": "Token charges of sessions routed through one service over thirty days; it excludes energy, network, and device.",
   "px-035": "All Meta Family revenue spread over time in one app, so it overstates any one app, and Meta publishes no time spent; revenue, not a cost.",
   "px-039": "A ceiling: ad revenue from all viewing over TV hours only; revenue, not a cost.",
@@ -22812,6 +23288,7 @@
   "px-043": "A slight overstatement, since hours viewed are stated as more than this count, and subscription revenue is paid whether or not a member watches; revenue, not a cost.",
   "px-049": "Second-hand: an article citing the AWS price list, which was not read directly.",
   "px-060": "Software license only; it excludes administration, support, training, compatibility work, and hardware, and every app is labeled alpha or in development.",
+  "px-065": "YouTube says 'over a billion' hours, a floor for viewing on televisions only, not a total across devices.",
   "sf-016": "A 2011 figure written by the cloud vendor; email stands in for an office suite, and no 2020s measurement of the same case was found.",
   "sf-023": "A vendor life-cycle estimate with a use phase inside, so it overstates the embodied line for a small machine.",
   "sf-024": "A secondary relay of a research estimate that disagrees sharply with the manufacturer's figure; the gap is unresolved.",

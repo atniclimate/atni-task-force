@@ -3,10 +3,10 @@
  "tier": "T0",
  "page": "ai/index.html",
  "id": "ai-holdings",
- "default": "nvidia-float",
+ "default": "apple-cap",
  "eyebrow": "Size and stakes",
- "title": "Public float ran from about {c[fin-078][value]:,.0f} billion dollars (Tesla) to {c[fin-077][value]:,.0f} (NVIDIA) on the dates their annual reports state; stakes in AI developers are carried at cost or mixed bases and sit on their own ruler",
- "subtitle": "Billion dollars. The two rulers hold different kinds of value, so they do not share an axis.",
+ "title": "Market capitalization on 10/30/2026 ran from about {c[fin-100][value]:,.0f} billion dollars (Meta) to {c[fin-101][value]:,.0f} (Apple), about {c[fin-106][value]:.0f} percent of the S&P benchmark's total for the seven; stakes in AI developers are carried at cost or mixed bases and sit on their own ruler",
+ "subtitle": "Billion dollars. The three rulers hold different kinds of value, so they do not share an axis.",
  "plot": {
   "type": "ladder",
   "units": {
@@ -14,8 +14,17 @@
   },
   "groups": [
    {
+    "id": "cap",
+    "label": "Market capitalization: all shares at the 10/30/2026 close",
+    "mark": "bar",
+    "domain": [
+     0,
+     6000
+    ]
+   },
+   {
     "id": "float",
-    "label": "Public float: shares held by non-affiliates, as of the date in each row",
+    "label": "Public float, a second reading: shares held by non-affiliates, as of the date in each row",
     "mark": "bar",
     "domain": [
      0,
@@ -33,14 +42,72 @@
    }
   ]
  },
- "reading": "{label}: {display}. {boundary} SEC filing, {published}.",
+ "reading": "{label}: {display}. {boundary} {evidence}",
  "details": [
-  "Alphabet's 265.1 billion dollars of cash and marketable securities at 09/30/2026 includes 90.4 billion of marketable equity securities, which the company does not break out by holding."
+  "Alphabet's 265.1 billion dollars of cash and marketable securities at 09/30/2026 includes 90.4 billion of marketable equity securities, which the company does not break out by holding.",
+  "NVIDIA reports its fiscal third quarter on 11/17/2026, so its share count and balance sheet here stop at 07/26/2026."
  ],
  "cites": [
-  "fin-047"
+  "fin-047",
+  "fin-109"
  ],
  "rows": [
+  {
+   "id": "apple-cap",
+   "group": "cap",
+   "label": "Apple",
+   "tag": "10/30/2026",
+   "claim": "fin-101",
+   "modeled": true
+  },
+  {
+   "id": "nvidia-cap",
+   "group": "cap",
+   "label": "NVIDIA",
+   "tag": "10/30/2026",
+   "claim": "fin-102",
+   "modeled": true
+  },
+  {
+   "id": "microsoft-cap",
+   "group": "cap",
+   "label": "Microsoft",
+   "tag": "10/30/2026",
+   "claim": "fin-097",
+   "modeled": true
+  },
+  {
+   "id": "alphabet-cap",
+   "group": "cap",
+   "label": "Alphabet",
+   "tag": "10/30/2026",
+   "claim": "fin-098",
+   "modeled": true
+  },
+  {
+   "id": "amazon-cap",
+   "group": "cap",
+   "label": "Amazon",
+   "tag": "10/30/2026",
+   "claim": "fin-099",
+   "modeled": true
+  },
+  {
+   "id": "tesla-cap",
+   "group": "cap",
+   "label": "Tesla",
+   "tag": "10/30/2026",
+   "claim": "fin-103",
+   "modeled": true
+  },
+  {
+   "id": "meta-cap",
+   "group": "cap",
+   "label": "Meta",
+   "tag": "10/30/2026",
+   "claim": "fin-100",
+   "modeled": true
+  },
   {
    "id": "nvidia-float",
    "group": "float",
@@ -163,5 +230,22 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "also": [
+  {
+   "claim": "fin-106",
+   "label": "The seven's share of the S&P 500, total market capitalization, 10/30/2026",
+   "say": "{display}"
+  },
+  {
+   "claim": "fin-071",
+   "label": "The same seven in the SPY fund, float-adjusted, 10/29/2026",
+   "say": "{display}"
+  },
+  {
+   "claim": "fin-105",
+   "label": "The S&P 500's ten largest, float-adjusted, 10/30/2026, a ceiling for the seven",
+   "say": "{display}"
+  }
+ ]
 }

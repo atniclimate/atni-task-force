@@ -74,7 +74,8 @@
  "reading_group": "{series}, {year}. Electricity, TWh: {elec}. Water consumed, megaliters: {use}. Water withdrawn, megaliters: {draw}. Scope 2 location-based, million tCO2e: {scope2}.",
  "tail": "Company reports; each figure keeps its own boundary.",
  "details": [
-  "Amazon publishes no electricity quantity. Market-based Scope 2 never goes on this chart; those figures are in the block under the plates."
+  "Amazon publishes no electricity quantity. Market-based Scope 2 never goes on this chart; those figures are in the block under the plates.",
+  "NVIDIA says its fiscal 2026 water figures are not comparable with earlier years because its data collection changed, so the last step on its water lines is a break, not a trend."
  ],
  "rows": [
   {
@@ -165,6 +166,17 @@
    "series": "Meta",
    "claim": "rs-045",
    "points": "series"
+  },
+  {
+   "panel": "use",
+   "series": "NVIDIA",
+   "claim": "rs-079",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 0.001,
+    "to": "megaliters"
+   }
   },
   {
    "panel": "draw",

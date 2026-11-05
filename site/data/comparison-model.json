@@ -39,18 +39,24 @@
   },
   "video_dc_wh_per_gb": {
    "value": 0.45,
-   "low": 0.35,
-   "high": 30.1,
+   "low": 0.171,
+   "high": 55,
    "unit": "Wh per GB served",
-   "basis": "modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35; DESNZ's scenario assumes 15 Wh of IT energy per GB streamed plus non-IT, which its Tables 5.3 and 5.4 make 11.1, 19.6 and 30.1 Wh per GB in the low, medium and high cases (0.155, 0.274 and 0.422 kWh over 14 GB)",
+   "basis": "modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35. The low is the DESNZ follow-up of 07/28/2026, 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). The high is Sustainable Web Design's top-down 55 Wh per GB (ec-024, fp-147), all data center energy over all internet bytes. One operator measured 1.15 (sv-048)",
    "claims": [
     "fp-122",
     "fp-130",
     "fp-037",
-    "fp-043"
+    "fp-142",
+    "fp-141",
+    "sv-048",
+    "ec-024",
+    "fp-147",
+    "fp-149",
+    "fp-150"
    ],
    "segment": "data center",
-   "note": "The 1-to-70 spread is not an allocation of encoding and storage. DESNZ attributes downloading and streaming entirely to the user (0.21 kWh for 14 GB at 0.015 kWh per GB) and its shared processing and storage shares are about 0.00001 kWh per user, so the dispute is the assumed serving energy per GB, about 45 times between DIMPACT and DESNZ. Every video row is GB times this intensity; the reader-chosen setting is video_dc_intensity."
+   "note": "The spread is an unsettled allocation, not a measurement error (fp-149). The DESNZ first report's 19.6 Wh per GB is retired by its authors (fp-144), so it is no longer a reading here. The high end cannot be a literal per-hour share: at 3.5 GB an hour it is above whole-chain figures (fp-150), so it is shown only as an upper bound. Every video row is GB times this intensity; the reader-chosen setting is video_dc_intensity."
   },
   "short_dc_ceiling_wh_per_hour": {
    "value": 13.9,
@@ -190,7 +196,7 @@
     "claims": [
      "fp-008",
      "fp-122",
-     "fp-043",
+     "fp-143",
      "fp-132",
      "fp-133"
     ]
@@ -225,7 +231,7 @@
     "basis": "modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)",
     "claims": [
      "fp-130",
-     "fp-043"
+     "fp-143"
     ]
    },
    "mix": {
@@ -261,8 +267,11 @@
     "fp-034",
     "fp-092",
     "fp-026",
-    "fp-094"
-   ]
+    "fp-094",
+    "fp-154"
+   ],
+   "panel": 4.3,
+   "panel_note": "Epoch AI's opted-in US panel (fp-154), a selected group with survivorship bias; a reference beside OpenAI's mean, not a replacement for it."
   },
   "video_minutes_per_day": {
    "value": 88,
@@ -298,14 +307,14 @@
   "stream_whole_chain_wh_per_hour": {
    "value": 188,
    "low": 53.7,
-   "high": 417.5,
+   "high": 263.1,
    "unit": "Wh per streaming hour, data center plus network plus router plus device",
-   "basis": "modeled published hours: Carbon Trust 2020 Europe 188 (70 percent television, router by data); Preist 2016 YouTube 53.7 (no idle equipment, low bitrate); BBC 2024 UK 65.7 (no standby); DESNZ 2025 scenario 162.5, 262.5 and 417.5 (low, medium, high). The low and high are the sources' own extremes, not the span of central estimates",
+   "basis": "modeled published hours: Carbon Trust 2020 Europe 188 (70 percent television, router by data); Preist 2016 YouTube 53.7 (no idle equipment, low bitrate); BBC 2024 UK 65.7 (no standby); DESNZ follow-up 2026 scenario 118.7, 192.3 and 263.1 (low, medium, high), which replaced its first report's 162.5 to 417.5. The low and high are the sources' own extremes, not the span of central estimates",
    "claims": [
     "fp-035",
     "fp-120",
     "fp-041",
-    "fp-044"
+    "fp-143"
    ],
    "note": "Used only as the published yardstick in view 3 and for the YouTube total in view 4; view 1 builds its own hour from segments and view 3 also uses that hour."
   },
@@ -752,7 +761,7 @@
     "label": "One hour of a 100 W television",
     "wh": 100,
     "claims": [
-     "fp-043",
+     "fp-143",
      "fp-008",
      "fp-122"
     ],
@@ -818,7 +827,7 @@
     60
    ],
    "label": "Prompts the reader sends in the hour",
-   "why": "No source measures a chat hour. WildChat averages 2.52 prompts per conversation (fp-095) and OpenAI users average 3.67 per day (fp-034); ten per hour is one every six minutes, slow for someone chatting steadily, so 2.52, 10, 30 and 60 are offered as equal presets and no preset is the answer."
+   "why": "No source measures a chat hour. Epoch AI's panel has a median of 2 prompts per conversation (fp-151) and 4.3 prompts a day (fp-154), with no duration; WildChat's older free-service mean is 2.52 per conversation (fp-095); OpenAI users average 3.67 per day (fp-034). Ten per hour is one every six minutes, slow for someone chatting steadily, so 2.52, 10, 30 and 60 are offered as equal presets; 30 and 60 are heavy-use sensitivities with no field support, and no preset is the answer."
   },
   "device": {
    "default": "phone",
@@ -861,11 +870,12 @@
    "default": "measured_delivery",
    "options": {
     "measured_delivery": 0.45,
-    "desnz_assumed": 19.6
+    "desnz_followup": 0.171,
+    "top_down": 55
    },
    "unit": "Wh per GB served",
    "label": "Streaming data center energy per GB served",
-   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130); desnz_assumed is the DESNZ scenario's 15 Wh of IT energy per GB plus non-IT (fp-043, medium case; its low and high cases are 11.1 and 30.1). The 45-times gap is an assumed serving intensity, not an allocation of encoding and storage, which DESNZ attributes at about 0.01 Wh per viewer."
+   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an upper bound and not a literal share (fp-150). The allocation is unsettled (fp-149)."
   },
   "chat_wh_per_prompt": {
    "default": 0.3,
@@ -928,7 +938,7 @@
    "equations": {
     "chat.data_center": "prompts_per_hour x chat_wh_per_prompt",
     "chat.network": "prompts_per_hour x chat_kb_per_prompt / 1e6 GB x net intensity (fixed or mobile; average or marginal)",
-    "video.data_center": "video_gb_per_hour[device] x video_dc_intensity (measured_delivery 0.45 or desnz_assumed 19.6 Wh per GB)",
+    "video.data_center": "video_gb_per_hour[device] x video_dc_intensity (measured_delivery 0.45, desnz_followup 0.171, or top_down 55 Wh per GB)",
     "video.network": "video_gb_per_hour[device] x net intensity",
     "short.data_center": "min(short_gb_per_hour x video_dc_intensity, short_dc_ceiling_wh_per_hour)",
     "short.network": "short_gb_per_hour x net intensity",
@@ -961,7 +971,7 @@
     "text_prompts": "Wh / chat_wh_per_prompt",
     "stream_hours_same_device": "Wh / view 1 video total for the reader's device",
     "stream_hours_published": "Wh / stream_whole_chain_wh_per_hour (188; range 53.7 to 417.5)",
-    "stream_hours_dc_only": "Wh / view 1 video data center segment for the reader's device (measured_delivery; desnz_assumed printed beside it)",
+    "stream_hours_dc_only": "Wh / view 1 video data center segment for the reader's device (measured_delivery; desnz_followup printed beside it)",
     "text_prompt_seconds": "chat_wh_per_prompt / each yardstick x 3600"
    },
    "note": "The AI side is data center only. The same-device and published hours include the viewer's screen and router, so those ratios flatter AI; the data-center-only ratio is like for like but rests on the 45-times serving-intensity dispute. All are printed; none is the answer."
@@ -1039,20 +1049,20 @@
      "total": 9.28008
     },
     "video": {
-     "data_center": 0.0595,
+     "data_center": 0.029070000000000006,
      "network": 0.272,
      "router": 5.88,
      "device": 1.0,
-     "activity_added": 0.3315,
-     "total": 7.2115
+     "activity_added": 0.30107,
+     "total": 7.18107
     },
     "short": {
-     "data_center": 0.0875,
+     "data_center": 0.04275,
      "network": 0.4,
      "router": 5.88,
      "device": 1.0,
-     "activity_added": 0.48750000000000004,
-     "total": 7.3675
+     "activity_added": 0.44275000000000003,
+     "total": 7.32275
     }
    },
    "high": {
@@ -1065,12 +1075,12 @@
      "total": 24.0325
     },
     "video": {
-     "data_center": 90.30000000000001,
+     "data_center": 165.0,
      "network": 19.5,
      "router": 15.0,
      "device": 3.0,
-     "activity_added": 109.80000000000001,
-     "total": 127.80000000000001
+     "activity_added": 184.5,
+     "total": 202.5
     },
     "short": {
      "data_center": 13.9,
@@ -1247,20 +1257,20 @@
      "total": 15.0008
     },
     "video": {
-     "data_center": 19.6,
+     "data_center": 0.171,
      "network": 1.6,
      "router": 10.0,
      "device": 2.0,
-     "activity_added": 21.200000000000003,
-     "total": 33.2
+     "activity_added": 1.7710000000000001,
+     "total": 13.771
     },
     "short": {
-     "data_center": 7.644000000000001,
+     "data_center": 0.06669000000000001,
      "network": 0.6240000000000001,
      "router": 10.0,
      "device": 2.0,
-     "activity_added": 8.268,
-     "total": 20.268
+     "activity_added": 0.6906900000000001,
+     "total": 12.69069
     }
    },
    "prompts_2_5": {
@@ -1427,10 +1437,10 @@
    "chat_day_high": 4.8,
    "meta_person": 15.1,
    "video_day": 0.6599999999999999,
-   "video_day_desnz": 28.746666666666666,
-   "video_day_high": 44.14666666666667,
+   "video_day_desnz": 0.2508,
+   "video_day_high": 80.66666666666666,
    "short_day": 0.29250000000000004,
-   "short_day_desnz": 12.740000000000002,
+   "short_day_desnz": 0.11115000000000001,
    "short_day_high": 15.1,
    "short_ceiling_per_hour_at_minutes": 9.059999999999999,
    "chat_day_household_pct": 0.0038308977035490604,
@@ -1440,13 +1450,13 @@
    "yardsticks": {
     "same_device_total": 14.05,
     "same_device_dc": 0.45,
-    "desnz_dc": 19.6,
+    "desnz_dc": 0.171,
     "published": 188
    },
    "text_prompt_seconds": {
     "same_device_total": 76.86832740213522,
     "same_device_dc": 2400.0,
-    "desnz_dc": 55.10204081632652,
+    "desnz_dc": 6315.78947368421,
     "published": 5.74468085106383
    },
    "reasoning_15x": {
@@ -1454,170 +1464,170 @@
     "prompts": 13.033333333333335,
     "hours_same_device": 0.2782918149466192,
     "hours_published": 0.020797872340425533,
-    "hours_published_low": 0.009365269461077845,
+    "hours_published_low": 0.014861269479285443,
     "hours_published_high": 0.0728119180633147,
     "hours_dc_delivery": 8.688888888888888,
-    "hours_dc_desnz": 0.19948979591836735
+    "hours_dc_desnz": 22.86549707602339
    },
    "o3_short": {
     "wh": 1.177,
     "prompts": 3.923333333333334,
     "hours_same_device": 0.08377224199288257,
     "hours_published": 0.00626063829787234,
-    "hours_published_low": 0.0028191616766467067,
+    "hours_published_low": 0.0044735841885214745,
     "hours_published_high": 0.02191806331471136,
     "hours_dc_delivery": 2.6155555555555554,
-    "hours_dc_desnz": 0.060051020408163264
+    "hours_dc_desnz": 6.883040935672514
    },
    "o3_long": {
     "wh": 12.222,
     "prompts": 40.74,
     "hours_same_device": 0.8698932384341637,
     "hours_published": 0.06501063829787233,
-    "hours_published_low": 0.029274251497005986,
+    "hours_published_low": 0.046453819840364875,
     "hours_published_high": 0.22759776536312848,
     "hours_dc_delivery": 27.159999999999997,
-    "hours_dc_desnz": 0.6235714285714286
+    "hours_dc_desnz": 71.4736842105263
    },
    "gpt5_high_medium": {
     "wh": 17.15,
     "prompts": 57.166666666666664,
     "hours_same_device": 1.2206405693950175,
     "hours_published": 0.09122340425531913,
-    "hours_published_low": 0.04107784431137724,
+    "hours_published_low": 0.06518434055492207,
     "hours_published_high": 0.3193668528864059,
     "hours_dc_delivery": 38.11111111111111,
-    "hours_dc_desnz": 0.8749999999999999
+    "hours_dc_desnz": 100.2923976608187
    },
    "gpt5_high_long": {
     "wh": 33.8,
     "prompts": 112.66666666666666,
     "hours_same_device": 2.4056939501779357,
     "hours_published": 0.17978723404255317,
-    "hours_published_low": 0.08095808383233533,
+    "hours_published_low": 0.1284682630178639,
     "hours_published_high": 0.6294227188081936,
     "hours_dc_delivery": 75.1111111111111,
-    "hours_dc_desnz": 1.7244897959183672
+    "hours_dc_desnz": 197.66081871345025
    },
    "gpt4o_long": {
     "wh": 2.875,
     "prompts": 9.583333333333334,
     "hours_same_device": 0.20462633451957293,
     "hours_published": 0.015292553191489361,
-    "hours_published_low": 0.0068862275449101795,
+    "hours_published_low": 0.010927404028886353,
     "hours_published_high": 0.053538175046554934,
     "hours_dc_delivery": 6.388888888888888,
-    "hours_dc_desnz": 0.14668367346938774
+    "hours_dc_desnz": 16.81286549707602
    },
    "deepseek_r1_long": {
     "wh": 29.078,
     "prompts": 96.92666666666666,
     "hours_same_device": 2.069608540925267,
     "hours_published": 0.15467021276595744,
-    "hours_published_low": 0.06964790419161676,
+    "hours_published_low": 0.11052071455720257,
     "hours_published_high": 0.5414897579143388,
     "hours_dc_delivery": 64.61777777777777,
-    "hours_dc_desnz": 1.4835714285714285
+    "hours_dc_desnz": 170.04678362573097
    },
    "image_sd3": {
     "wh": 0.634,
     "prompts": 2.1133333333333333,
     "hours_same_device": 0.04512455516014235,
     "hours_published": 0.003372340425531915,
-    "hours_published_low": 0.001518562874251497,
+    "hours_published_low": 0.0024097301406309384,
     "hours_published_high": 0.01180633147113594,
     "hours_dc_delivery": 1.4088888888888889,
-    "hours_dc_desnz": 0.0323469387755102
+    "hours_dc_desnz": 3.7076023391812862
    },
    "image_open_2023": {
     "wh": 1.35,
     "prompts": 4.500000000000001,
     "hours_same_device": 0.09608540925266904,
     "hours_published": 0.007180851063829788,
-    "hours_published_low": 0.0032335329341317367,
+    "hours_published_low": 0.005131128848346636,
     "hours_published_high": 0.025139664804469275,
     "hours_dc_delivery": 3.0,
-    "hours_dc_desnz": 0.06887755102040816
+    "hours_dc_desnz": 7.894736842105263
    },
    "veo3_8s": {
     "wh": 30.8,
     "prompts": 102.66666666666667,
     "hours_same_device": 2.192170818505338,
     "hours_published": 0.16382978723404257,
-    "hours_published_low": 0.07377245508982036,
+    "hours_published_low": 0.11706575446598251,
     "hours_published_high": 0.5735567970204841,
     "hours_dc_delivery": 68.44444444444444,
-    "hours_dc_desnz": 1.5714285714285714
+    "hours_dc_desnz": 180.1169590643275
    },
    "sora2pro_8s": {
     "wh": 418.5,
     "prompts": 1395.0,
     "hours_same_device": 29.7864768683274,
     "hours_published": 2.226063829787234,
-    "hours_published_low": 1.0023952095808384,
+    "hours_published_low": 1.5906499429874572,
     "hours_published_high": 7.793296089385475,
     "hours_dc_delivery": 930.0,
-    "hours_dc_desnz": 21.35204081632653
+    "hours_dc_desnz": 2447.368421052631
    },
    "wan_1_3b": {
     "wh": 90.5,
     "prompts": 301.6666666666667,
     "hours_same_device": 6.4412811387900355,
     "hours_published": 0.48138297872340424,
-    "hours_published_low": 0.21676646706586827,
+    "hours_published_low": 0.3439756746484226,
     "hours_published_high": 1.685288640595903,
     "hours_dc_delivery": 201.11111111111111,
-    "hours_dc_desnz": 4.61734693877551
+    "hours_dc_desnz": 529.2397660818713
    },
    "wan_14b": {
     "wh": 415.1,
     "prompts": 1383.6666666666667,
     "hours_same_device": 29.544483985765126,
     "hours_published": 2.2079787234042554,
-    "hours_published_low": 0.994251497005988,
+    "hours_published_low": 1.5777270999619917,
     "hours_published_high": 7.72998137802607,
     "hours_dc_delivery": 922.4444444444445,
-    "hours_dc_desnz": 21.178571428571427
+    "hours_dc_desnz": 2427.485380116959
    },
    "cogvideox_5s": {
     "wh": 944,
     "prompts": 3146.666666666667,
     "hours_same_device": 67.18861209964412,
     "hours_published": 5.0212765957446805,
-    "hours_published_low": 2.261077844311377,
+    "hours_published_low": 3.5879893576586848,
     "hours_published_high": 17.579143389199253,
     "hours_dc_delivery": 2097.777777777778,
-    "hours_dc_desnz": 48.16326530612245
+    "hours_dc_desnz": 5520.4678362573095
    },
    "agent_prompt": {
     "wh": 150,
     "prompts": 500.0,
     "hours_same_device": 10.676156583629894,
     "hours_published": 0.7978723404255319,
-    "hours_published_low": 0.3592814371257485,
+    "hours_published_low": 0.5701254275940707,
     "hours_published_high": 2.793296089385475,
     "hours_dc_delivery": 333.3333333333333,
-    "hours_dc_desnz": 7.653061224489796
+    "hours_dc_desnz": 877.1929824561403
    },
    "agent_session": {
     "wh": 600,
     "prompts": 2000.0,
     "hours_same_device": 42.704626334519574,
     "hours_published": 3.1914893617021276,
-    "hours_published_low": 1.437125748502994,
+    "hours_published_low": 2.280501710376283,
     "hours_published_high": 11.1731843575419,
     "hours_dc_delivery": 1333.3333333333333,
-    "hours_dc_desnz": 30.612244897959183
+    "hours_dc_desnz": 3508.771929824561
    },
    "agent_day": {
     "wh": 3000,
     "prompts": 10000.0,
     "hours_same_device": 213.52313167259786,
     "hours_published": 15.957446808510639,
-    "hours_published_low": 7.18562874251497,
+    "hours_published_low": 11.402508551881413,
     "hours_published_high": 55.865921787709496,
     "hours_dc_delivery": 6666.666666666666,
-    "hours_dc_desnz": 153.0612244897959
+    "hours_dc_desnz": 17543.859649122805
    }
   },
   "scale": {
@@ -1630,10 +1640,11 @@
    "chat_pct_iea_2025_high": 0.11288659793814433,
    "chat_pct_lbnl_2024": 0.142578125,
    "youtube_dc_twh_delivery": 0.47304,
-   "youtube_dc_twh_desnz": 20.60352,
+   "youtube_dc_twh_desnz": 0.1797552,
+   "youtube_dc_twh_top": 57.816,
    "youtube_whole_twh": 68.62,
    "youtube_whole_twh_low": 19.6005,
-   "youtube_whole_twh_high": 152.3875,
+   "youtube_whole_twh_high": 96.03150000000002,
    "nw_dc_twh_2030": 17.698704000000003,
    "nw_dc_twh_2030_low": 11.404644000000001,
    "nw_dc_twh_2030_high": 38.800667999999995,

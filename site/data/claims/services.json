@@ -1483,6 +1483,152 @@
    "derived": null,
    "status": "partly",
    "id": "sv-060"
+  },
+  {
+   "entity": "Google AI Overviews and AI Mode in Search",
+   "metric": "first-party energy, carbon or water per query",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "none published",
+   "year": 2026,
+   "boundary": "Gap record. Google's 2026 Environmental Report (fiscal 2025) was read in full extracted text: it has no mention of AI Overviews, no AI Mode, and no per-search figure. Its one per-prompt figure is the median Gemini Apps text prompt (May 2025 data), which its endnote says has not been independently verified.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Google 2026 Environmental Report",
+    "publisher": "Google",
+    "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
+    "published": "2026-06-24",
+    "kind": "company-report"
+   },
+   "quote": "we estimated that the median Gemini Apps text prompt uses 0.24 watt-hours (Wh) of energy, emits 0.03 grams of carbon dioxide equivalent (gCO2e), and consumes 0.26 milliliters (or about five drops) of water",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-061"
+  },
+  {
+   "entity": "Microsoft Copilot (consumer and Microsoft 365)",
+   "metric": "first-party energy per chat or per prompt",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "none published",
+   "year": 2026,
+   "boundary": "Gap record. Microsoft's 2026 Environmental Sustainability Report (fiscal 2025) was read in full extracted text. Its Copilot content is one task experiment (a summary that took five professionals a median of 41 minutes and 13.7 Wh of laptop energy took one Copilot prompt 0.29 Wh of datacenter energy; sv-027, sv-028) and a pointer to Microsoft research that large-scale inference can use under one watt-hour per query (fp-017).",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "2026 Environmental Sustainability Report: Responsibly building the AI future",
+    "publisher": "Microsoft",
+    "url": "https://aka.ms/SustainabilityReport2026",
+    "published": "2026-07-03",
+    "kind": "company-report"
+   },
+   "quote": "Using a single prompt, Copilot completed the same task in under a minute using 0.29 watt-hours of datacenter energy—roughly 55 times faster and 47 times more energy efficient.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-062"
+  },
+  {
+   "entity": "ITU-T Recommendation L.1801 (02/2026), guidelines for assessing the environmental impact of AI systems",
+   "metric": "rule for comparing environmental impact between AI systems or uses",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "A standards-body rule on what a comparison must hold equal. It fixes the discipline (identical functional unit and methods) but defines no common unit across chat, search, video or office use. Summary text as shown on ITU's publication page; the full Recommendation was not read.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Recommendation ITU-T L.1801 (02/2026): Guidelines for assessing the environmental impact of artificial intelligence systems",
+    "publisher": "International Telecommunication Union (ITU-T)",
+    "url": "https://www.itu.int/epublications/ru/publication/itu-t-l-1801-2026-02-guidelines-for-assessing-the-environmental-impact-of-artificial-intelligence-systems/en",
+    "published": "2026-02-05",
+    "kind": "agency"
+   },
+   "quote": "Comparative LCA requires identical functional units and methodological choices.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-063"
+  },
+  {
+   "limit": "A vendor-submitted certification annex: one test server, a scripted scenario, net of idle; it is not energy per user per month and says nothing about a whole office. The 0.04 Wh server figure is an allocation, not a separate meter reading: the annex says energy is not measured separately for client and server; under virtualization the single total (0.25 Wh) is split with an allocation factor derived from CPU share (Virtualisierungs-Allokations-Faktor), and automation overhead is assigned to the client.",
+   "entity": "Nextcloud Talk (self-hosted chat), standard usage scenario: one conversation, five more users added, each sends a 50 character message",
+   "metric": "server share of the scenario energy, allocated from one measured total (Blue Angel DE-UZ 215 measurement)",
+   "value": 0.04,
+   "low": null,
+   "high": null,
+   "unit": "Wh per scenario (server); client browser 0.22 Wh; both 0.25 Wh",
+   "year": 2026,
+   "boundary": "Measured on a dedicated bare-metal server (Fujitsu PRIMERGY TX1330 M3) with a USB power meter sampling every 99 ms, using the Green Metrics Tool v2.5.0 with Playwright and Firefox 140. Net of idle at the scenario test. The total (0.25 Wh) is the measured quantity; the server and client shares are an allocation of it (CPU-share based under virtualization), not separate meter readings. The client side is a headless browser on the test setup, not a phone. Human-to-human chat on a local server: no AI inference. Scenario duration was not extracted. German-language certification annex (Nextcloud Server, Anlage 7, extension 2025/2026).",
+   "layers": [
+    "local node",
+    "device"
+   ],
+   "basis": "marginal",
+   "source": {
+    "title": "Anlage 7 - Blauer Engel fuer Software: Nextcloud Server",
+    "publisher": "Nextcloud GmbH (Blue Angel for Software, DE-UZ 215, certification extension 2025/2026)",
+    "url": "https://portal.nextcloud.com/assets/files/Anlage_7_2025_2026.pdf",
+    "published": "2026-02-02",
+    "kind": "company-report"
+   },
+   "quote": "0.04 Wh B) Nextcloud - Talk - MariaDB",
+   "derived": "Scenario rows in the report: total 0.25 Wh, server 0.04 Wh, client 0.22 Wh (0.04 + 0.22 = 0.26, rounding).",
+   "status": "partly",
+   "id": "sv-064"
+  },
+  {
+   "limit": "An industry-average factor per dollar of purchases; it does not measure an AI service, a token or a prompt, and the dollar price of a token is not the industry's purchase price.",
+   "entity": "Data processing, hosting and related services (NAICS 518210), US industry average",
+   "metric": "supply chain greenhouse gas emission factor per dollar of purchases, with margins",
+   "value": 0.089,
+   "low": null,
+   "high": null,
+   "unit": "kg CO2e per 2024 USD, purchaser price",
+   "year": 2025,
+   "boundary": "Spend-based factor: supply chain emissions per dollar spent on the industry's output, built with US emissions data for 2023 (v1.4.0). An industry average, not an energy or token measure; it is not specific to AI, Copilot or Gemini spend.",
+   "layers": [
+    "price"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Supply Chain Greenhouse Gas Emission Factors for U.S. Commodities, v1.4.0",
+    "publisher": "Cornerstone Sustainability Data Initiative (Zenodo record; creators Wesley Ingwersen, Stanford University, and Ben Young, Eastern Research Group)",
+    "url": "https://zenodo.org/records/17202747",
+    "published": "2025-10-14",
+    "kind": "model"
+   },
+   "quote": "518210 Data Processing, Hosting, and Related Services All GHGs kg CO2e/2024 USD, purchaser price 0.089 0 0.089",
+   "derived": "Row 518210 of the CO2e sheet of SupplyChainGHGEmissionFactorsv1.4.0.xlsx: without margins 0.089, margins 0, with margins 0.089.",
+   "status": "partly",
+   "id": "sv-065"
+  },
+  {
+   "limit": "A developer's plan as reported by trade press; generation capacity, not compute capacity, energy use or water use, and not a statement by the Tribe.",
+   "entity": "Tribally owned developer's planned off-grid energy park for data center operators (Northern California)",
+   "metric": "planned total off-grid generation",
+   "value": 100,
+   "low": null,
+   "high": null,
+   "unit": "MW planned (existing microgrid 6 MW)",
+   "year": 2026,
+   "boundary": "A plan reported by trade press, not an operating compute footprint: the park starts off-grid on surplus power from an existing 6-MW microgrid and a research facility; a larger data center 'may' follow. No energy use, water use or compute capacity is given for any facility; the project is described as using a closed-loop water system.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Tribe-Owned Developer Sees Economic Opportunities in Siting Microgrid-Powered Energy Park for Data Centers",
+    "publisher": "Microgrid Knowledge",
+    "url": "https://www.microgridknowledge.com/community-microgrids/article/55375125/tribe-owned-developer-sees-economic-opportunities-in-siting-microgrid-powered-energy-park-for-data-centers",
+    "published": "2026-05-05",
+    "kind": "press"
+   },
+   "quote": "The developer plans to add off-grid generation, ultimately totaling 100 MW,",
+   "derived": "6 MW existing microgrid; 100 MW planned generation at full build-out.",
+   "status": "partly",
+   "id": "sv-066"
   }
  ]
 }

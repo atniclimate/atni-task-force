@@ -30,6 +30,26 @@
    "claim": "fin-084",
    "label": "Top five hyperscalers, 2027, per the same statement",
    "say": "{display}"
+  },
+  {
+   "claim": "fin-107",
+   "label": "NVIDIA's revenue outlook for the quarter ended 10/25/2026, not capital spending",
+   "say": "{display}"
+  },
+  {
+   "claim": "fin-108",
+   "label": "NVIDIA's commitments to buy property and equipment at 07/26/2026, not guidance",
+   "say": "{display}"
+  },
+  {
+   "claim": "fin-110",
+   "label": "Apple's revenue growth outlook for the December quarter, not capital spending",
+   "say": "{display}"
+  },
+  {
+   "claim": "fin-111",
+   "label": "Apple's manufacturing purchase obligations at 09/26/2026, not data centers",
+   "say": "{display}"
   }
  ],
  "rows": [

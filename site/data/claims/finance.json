@@ -12,6 +12,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 06/30/2026; 10-K filed 07/29/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
    "source": {
     "title": "Microsoft XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
@@ -111,6 +112,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/05/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
    "source": {
     "title": "Alphabet XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
@@ -217,6 +219,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/06/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquireProductiveAssets. ",
    "source": {
     "title": "Amazon XBRL company concept PaymentsToAcquireProductiveAssets",
@@ -337,6 +340,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
    "source": {
     "title": "Meta XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
@@ -443,6 +447,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
    "source": {
     "title": "Apple XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
@@ -534,6 +539,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 01/25/2026; 10-K filed 02/25/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag PaymentsToAcquireProductiveAssets. Series mixes tags PaymentsToAcquireProductiveAssets, PaymentsToAcquirePropertyPlantAndEquipment over time; check the tag on each row.",
    "source": {
     "title": "NVIDIA XBRL company concept PaymentsToAcquireProductiveAssets",
@@ -613,6 +619,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
    "source": {
     "title": "Tesla XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
@@ -719,6 +726,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 06/30/2026; 10-K filed 07/29/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Microsoft XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -818,6 +826,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/05/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Alphabet XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -924,6 +933,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/06/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Amazon XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -1044,6 +1054,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Meta XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -1150,6 +1161,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Apple XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -1241,6 +1253,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 01/25/2026; 10-K filed 02/25/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "NVIDIA XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -1347,6 +1360,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
    "source": {
     "title": "Tesla XBRL company concept NetCashProvidedByUsedInOperatingActivities",
@@ -1453,6 +1467,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, fiscal Q1 FY2027; 10-Q filed 10/28/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends June 30. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
    "source": {
     "title": "Microsoft XBRL company concept LongTermDebt",
@@ -1552,6 +1567,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/29/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebtNoncurrent. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
    "source": {
     "title": "Alphabet XBRL company concept LongTermDebtNoncurrent",
@@ -1659,6 +1675,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/30/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
    "source": {
     "title": "Amazon XBRL company concept LongTermDebt",
@@ -1765,6 +1782,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/22/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebtNoncurrent. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
    "source": {
     "title": "Meta XBRL company concept LongTermDebtNoncurrent",
@@ -1851,6 +1869,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends last Saturday of September. Headline value is the balance at ending 2026-09-26. XBRL tag LongTermDebt. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
    "source": {
     "title": "Apple XBRL company concept LongTermDebt",
@@ -1943,6 +1962,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 07/26/2026, fiscal Q2 FY2027; 10-Q filed 08/26/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the balance at ending 2026-07-26. XBRL tag LongTermDebt. ",
    "source": {
     "title": "NVIDIA XBRL company concept LongTermDebt",
@@ -2049,6 +2069,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/22/2026",
    "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
    "source": {
     "title": "Tesla XBRL company concept LongTermDebt",
@@ -2155,6 +2176,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 06/30/2026; 10-K filed 07/29/2026",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "Microsoft XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2254,6 +2276,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/05/2026",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "Alphabet XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2360,6 +2383,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2024,
+   "fiscal_period": "calendar year 2024 ended 12/31/2024; 10-K filed 02/07/2025",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2024-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "Amazon XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2424,6 +2448,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "Meta XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2530,6 +2555,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "Apple XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2621,6 +2647,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 01/25/2026; 10-K filed 02/25/2026",
    "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
    "source": {
     "title": "NVIDIA XBRL company concept PaymentsForRepurchaseOfCommonStock",
@@ -2727,6 +2754,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 06/30/2026; 10-K filed 07/29/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
    "source": {
     "title": "Microsoft XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -2826,6 +2854,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/05/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag Revenues. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
    "source": {
     "title": "Alphabet XBRL company concept Revenues",
@@ -2947,6 +2976,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 02/06/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
    "source": {
     "title": "Amazon XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -3067,6 +3097,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
    "source": {
     "title": "Meta XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -3187,6 +3218,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
    "source": {
     "title": "Apple XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -3278,6 +3310,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 01/25/2026; 10-K filed 02/25/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag Revenues. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
    "source": {
     "title": "NVIDIA XBRL company concept Revenues",
@@ -3392,6 +3425,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2025,
+   "fiscal_period": "calendar year 2025 ended 12/31/2025; 10-K filed 01/29/2026",
    "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
    "source": {
     "title": "Tesla XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -3513,6 +3547,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, fiscal Q1 FY2027; 10-Q filed 10/28/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends June 30. As of 2026-09-30. Excludes restricted cash.",
    "source": {
     "title": "Microsoft XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3583,6 +3618,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/29/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
    "source": {
     "title": "Alphabet XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3657,6 +3693,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/30/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
    "source": {
     "title": "Amazon XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3731,6 +3768,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/22/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
    "source": {
     "title": "Meta XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3793,6 +3831,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "fiscal year 2026 (FY2026) ended 09/26/2026; 10-K filed 11/03/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities plus noncurrent marketable securities. Fiscal year ends last Saturday of September. As of 2026-09-26. Excludes restricted cash.",
    "source": {
     "title": "Apple XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3859,6 +3898,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 07/26/2026, fiscal Q2 FY2027; 10-Q filed 08/26/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). As of 2026-07-26. Excludes restricted cash.",
    "source": {
     "title": "NVIDIA XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -3933,6 +3973,7 @@
    "high": null,
    "unit": "USD billion",
    "year": 2026,
+   "fiscal_period": "balance sheet at 09/30/2026, Q3 2026; 10-Q filed 10/22/2026",
    "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
    "source": {
     "title": "Tesla XBRL company concept CashAndCashEquivalentsAtCarryingValue",
@@ -4579,6 +4620,7 @@
    "status": "verified"
   },
   {
+   "limit": "A blog's reading of the SPY ETF weight on 10/29/2026, float-adjusted; one point in a range, not the index's own share.",
    "id": "fin-071",
    "entity": "Magnificent Seven (Apple, Microsoft, NVIDIA, Alphabet, Amazon, Meta, Tesla)",
    "metric": "share of SPY (S&P 500 ETF) holdings, 10/29/2026",
@@ -5567,6 +5609,1020 @@
    "derived": null,
    "status": "partly",
    "limit": "NVIDIA's chief financial officer states this for its five largest customers without naming them or saying whether finance leases are counted; it is a vendor's projection, not a company guide."
+  },
+  {
+   "id": "fin-085",
+   "entity": "Microsoft",
+   "metric": "capital expenditure, cash purchases of property and equipment, three months ended 09/30/2026 (year to date through fiscal Q1 FY2027)",
+   "value": 39.37,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "three months ended 09/30/2026 (year to date through fiscal Q1 FY2027); 10-Q filed 10/28/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends June 30. This claim covers the three months ended 09/30/2026 (year to date through fiscal Q1 FY2027) only; it is not a full year and must not be added to or compared with the annual claim fin-001 without saying so.",
+   "source": {
+    "title": "Microsoft XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-07-01\",\"end\":\"2026-09-30\",\"val\":39367000000,\"accn\":\"0001193125-26-436133\",\"fy\":2027,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-10-28\"",
+   "derived": "raw value 39367000000 USD / 1e9 = 39.37",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-086",
+   "entity": "Microsoft",
+   "metric": "operating cash flow, three months ended 09/30/2026 (year to date through fiscal Q1 FY2027)",
+   "value": 58.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "three months ended 09/30/2026 (year to date through fiscal Q1 FY2027); 10-Q filed 10/28/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends June 30. This claim covers the three months ended 09/30/2026 (year to date through fiscal Q1 FY2027) only; it is not a full year and must not be added to or compared with the annual claim fin-008 without saying so.",
+   "source": {
+    "title": "Microsoft XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-07-01\",\"end\":\"2026-09-30\",\"val\":58000000000,\"accn\":\"0001193125-26-436133\",\"fy\":2027,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-10-28\"",
+   "derived": "raw value 58000000000 USD / 1e9 = 58.0",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-087",
+   "entity": "Alphabet",
+   "metric": "capital expenditure, cash purchases of property and equipment, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 131.95,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/29/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-002 without saying so.",
+   "source": {
+    "title": "Alphabet XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":131953000000,\"accn\":\"0001652044-26-000084\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-29\"",
+   "derived": "raw value 131953000000 USD / 1e9 = 131.95",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-088",
+   "entity": "Alphabet",
+   "metric": "operating cash flow, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 127.15,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/29/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-009 without saying so.",
+   "source": {
+    "title": "Alphabet XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":127149000000,\"accn\":\"0001652044-26-000084\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-29\"",
+   "derived": "raw value 127149000000 USD / 1e9 = 127.15",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-089",
+   "entity": "Amazon",
+   "metric": "capital expenditure, cash purchases of property and equipment, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 175.67,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/30/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-003 without saying so.",
+   "source": {
+    "title": "Amazon XBRL company concept PaymentsToAcquireProductiveAssets",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/PaymentsToAcquireProductiveAssets.json",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":175670000000,\"accn\":\"0001018724-26-000040\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-30\"",
+   "derived": "raw value 175670000000 USD / 1e9 = 175.67",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquireProductiveAssets"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-090",
+   "entity": "Amazon",
+   "metric": "operating cash flow, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 113.84,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/30/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-010 without saying so.",
+   "source": {
+    "title": "Amazon XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":113841000000,\"accn\":\"0001018724-26-000040\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-30\"",
+   "derived": "raw value 113841000000 USD / 1e9 = 113.84",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-091",
+   "entity": "Meta",
+   "metric": "capital expenditure, cash purchases of property and equipment, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 83.06,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/22/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-004 without saying so.",
+   "source": {
+    "title": "Meta XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":83055000000,\"accn\":\"0001628280-26-066773\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+   "derived": "raw value 83055000000 USD / 1e9 = 83.06",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-092",
+   "entity": "Meta",
+   "metric": "operating cash flow, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 96.87,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/22/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-011 without saying so.",
+   "source": {
+    "title": "Meta XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":96873000000,\"accn\":\"0001628280-26-066773\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+   "derived": "raw value 96873000000 USD / 1e9 = 96.87",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-093",
+   "entity": "NVIDIA",
+   "metric": "capital expenditure, cash purchases of property and equipment, six months ended 07/26/2026 (year to date through fiscal Q2 FY2027)",
+   "value": 4.43,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "six months ended 07/26/2026 (year to date through fiscal Q2 FY2027); 10-Q filed 08/26/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). This claim covers the six months ended 07/26/2026 (year to date through fiscal Q2 FY2027) only; it is not a full year and must not be added to or compared with the annual claim fin-006 without saying so.",
+   "source": {
+    "title": "NVIDIA XBRL company concept PaymentsToAcquireProductiveAssets",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/PaymentsToAcquireProductiveAssets.json",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-26\",\"end\":\"2026-07-26\",\"val\":4434000000,\"accn\":\"0001045810-26-000075\",\"fy\":2027,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-08-26\"",
+   "derived": "raw value 4434000000 USD / 1e9 = 4.43",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquireProductiveAssets"
+   ],
+   "as_of": "2026-07-26"
+  },
+  {
+   "id": "fin-094",
+   "entity": "NVIDIA",
+   "metric": "operating cash flow, six months ended 07/26/2026 (year to date through fiscal Q2 FY2027)",
+   "value": 74.42,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "six months ended 07/26/2026 (year to date through fiscal Q2 FY2027); 10-Q filed 08/26/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). This claim covers the six months ended 07/26/2026 (year to date through fiscal Q2 FY2027) only; it is not a full year and must not be added to or compared with the annual claim fin-013 without saying so.",
+   "source": {
+    "title": "NVIDIA XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-26\",\"end\":\"2026-07-26\",\"val\":74421000000,\"accn\":\"0001045810-26-000075\",\"fy\":2027,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-08-26\"",
+   "derived": "raw value 74421000000 USD / 1e9 = 74.42",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-07-26"
+  },
+  {
+   "id": "fin-095",
+   "entity": "Tesla",
+   "metric": "capital expenditure, cash purchases of property and equipment, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 13.01,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/22/2026",
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-007 without saying so.",
+   "source": {
+    "title": "Tesla XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":13014000000,\"accn\":\"0001628280-26-066775\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+   "derived": "raw value 13014000000 USD / 1e9 = 13.01",
+   "status": "verified",
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-096",
+   "entity": "Tesla",
+   "metric": "operating cash flow, nine months ended 09/30/2026 (year to date through Q3 2026)",
+   "value": 14.9,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "nine months ended 09/30/2026 (year to date through Q3 2026); 10-Q filed 10/22/2026",
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. This claim covers the nine months ended 09/30/2026 (year to date through Q3 2026) only; it is not a full year and must not be added to or compared with the annual claim fin-014 without saying so.",
+   "source": {
+    "title": "Tesla XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"start\":\"2026-01-01\",\"end\":\"2026-09-30\",\"val\":14897000000,\"accn\":\"0001628280-26-066775\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+   "derived": "raw value 14897000000 USD / 1e9 = 14.9",
+   "status": "verified",
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-097",
+   "entity": "Microsoft",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 3875.8,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/22/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Microsoft cover page, shares outstanding (SEC XBRL dei:EntityCommonStockSharesOutstanding)",
+    "publisher": "SEC EDGAR",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/dei/EntityCommonStockSharesOutstanding.json",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "MSFT historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/msft/historical)",
+    "url": "https://api.nasdaq.com/api/quote/MSFT/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "\"end\":\"2026-10-22\",\"val\":7426194552,\"accn\":\"0001193125-26-436133\",\"fy\":2027,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-10-28\"",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$521.91\"",
+   "derived": "7,426,194,552 MSFT shares x $521.91 = $3,875.8 billion (shares as of 10/22/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-23",
+     "shares": 7428434704,
+     "class_detail": {
+      "MSFT": 7428434704
+     },
+     "close": 415.75,
+     "usd_billion": 3088.4,
+     "filing": "10-Q 0001193125-26-191507 filed 2026-04-29",
+     "share_quote": "\"end\":\"2026-04-23\",\"val\":7428434704,\"accn\":\"0001193125-26-191507\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-04-29\"",
+     "price_quote": "\"date\":\"04/23/2026\",\"close\":\"$415.75\""
+    },
+    {
+     "date": "2026-07-23",
+     "shares": 7425545491,
+     "class_detail": {
+      "MSFT": 7425545491
+     },
+     "close": 381.58,
+     "usd_billion": 2833.4,
+     "filing": "10-K 0001193125-26-323660 filed 2026-07-29",
+     "share_quote": "\"end\":\"2026-07-23\",\"val\":7425545491,\"accn\":\"0001193125-26-323660\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-07-29\"",
+     "price_quote": "\"date\":\"07/23/2026\",\"close\":\"$381.58\""
+    },
+    {
+     "date": "2026-10-22",
+     "shares": 7426194552,
+     "class_detail": {
+      "MSFT": 7426194552
+     },
+     "close": 521.08,
+     "usd_billion": 3869.6,
+     "filing": "10-Q 0001193125-26-436133 filed 2026-10-28",
+     "share_quote": "\"end\":\"2026-10-22\",\"val\":7426194552,\"accn\":\"0001193125-26-436133\",\"fy\":2027,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-10-28\"",
+     "price_quote": "\"date\":\"10/22/2026\",\"close\":\"$521.08\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-098",
+   "entity": "Alphabet",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 3431.3,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/21/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Alphabet's unlisted Class B shares are valued at the Class A (GOOGL) close, and Class C at the GOOG close. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Alphabet Form 10-Q cover page, shares outstanding by class",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "GOOGL historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/googl/historical)",
+    "url": "https://api.nasdaq.com/api/quote/GOOGL/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "As of October 21, 2026, there were 5,888 million shares of Alphabet’s Class A stock outstanding, 827 million shares of Alphabet's Class B stock outstanding, and 5,579 million shares of Alphabet's Class C stock outstanding.",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$279.84\"; \"date\":\"10/30/2026\",\"close\":\"$278.22\"",
+   "derived": "5,888,000,000 GOOGL shares x $279.84 + 827,000,000 B shares x $279.84 + 5,579,000,000 GOOG shares x $278.22 = $3,431.3 billion (shares as of 10/21/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-22",
+     "class_detail": {
+      "GOOGL": 5824000000.0,
+      "B": 836000000.0,
+      "GOOG": 5456000000.0
+     },
+     "close": {
+      "GOOGL": 339.32,
+      "B": 339.32,
+      "GOOG": 337.73
+     },
+     "usd_billion": 4102.5,
+     "filing": "10-Q 0001652044-26-000048 filed 2026-04-30",
+     "share_quote": "As of April 22, 2026, there were 5,824 million shares of Alphabet’s Class A stock outstanding, 836 million shares of Alphabet's Class B stock outstanding, and 5,456 million shares of Alphabet's Class C stock outstanding.",
+     "price_quote": "\"date\":\"04/22/2026\",\"close\":\"$339.32\"; \"date\":\"04/22/2026\",\"close\":\"$337.73\""
+    },
+    {
+     "date": "2026-07-15",
+     "class_detail": {
+      "GOOGL": 5868000000.0,
+      "B": 835000000.0,
+      "GOOG": 5527000000.0
+     },
+     "close": {
+      "GOOGL": 370.92,
+      "B": 370.92,
+      "GOOG": 370.21
+     },
+     "usd_billion": 4532.4,
+     "filing": "10-Q 0001652044-26-000071 filed 2026-07-23",
+     "share_quote": "As of July 15, 2026, there were 5,868 million shares of Alphabet’s Class A stock outstanding, 835 million shares of Alphabet's Class B stock outstanding, and 5,527 million shares of Alphabet's Class C stock outstanding.",
+     "price_quote": "\"date\":\"07/15/2026\",\"close\":\"$370.92\"; \"date\":\"07/15/2026\",\"close\":\"$370.21\""
+    },
+    {
+     "date": "2026-10-21",
+     "class_detail": {
+      "GOOGL": 5888000000.0,
+      "B": 827000000.0,
+      "GOOG": 5579000000.0
+     },
+     "close": {
+      "GOOGL": 334.76,
+      "B": 334.76,
+      "GOOG": 330.95
+     },
+     "usd_billion": 4094.3,
+     "filing": "10-Q 0001652044-26-000084 filed 2026-10-29",
+     "share_quote": "As of October 21, 2026, there were 5,888 million shares of Alphabet’s Class A stock outstanding, 827 million shares of Alphabet's Class B stock outstanding, and 5,579 million shares of Alphabet's Class C stock outstanding.",
+     "price_quote": "\"date\":\"10/21/2026\",\"close\":\"$334.76\"; \"date\":\"10/21/2026\",\"close\":\"$330.95\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-099",
+   "entity": "Amazon",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 2598.9,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/21/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Amazon cover page, shares outstanding (SEC XBRL dei:EntityCommonStockSharesOutstanding)",
+    "publisher": "SEC EDGAR",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/dei/EntityCommonStockSharesOutstanding.json",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "AMZN historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/amzn/historical)",
+    "url": "https://api.nasdaq.com/api/quote/AMZN/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "\"end\":\"2026-10-21\",\"val\":10813138306,\"accn\":\"0001018724-26-000040\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-30\"",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$240.35\"",
+   "derived": "10,813,138,306 AMZN shares x $240.35 = $2,598.9 billion (shares as of 10/21/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-22",
+     "shares": 10757109436,
+     "class_detail": {
+      "AMZN": 10757109436
+     },
+     "close": 255.36,
+     "usd_billion": 2746.9,
+     "filing": "10-Q 0001018724-26-000014 filed 2026-04-30",
+     "share_quote": "\"end\":\"2026-04-22\",\"val\":10757109436,\"accn\":\"0001018724-26-000014\",\"fy\":2026,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-04-30\"",
+     "price_quote": "\"date\":\"04/22/2026\",\"close\":\"$255.36\""
+    },
+    {
+     "date": "2026-07-22",
+     "shares": 10786313572,
+     "class_detail": {
+      "AMZN": 10786313572
+     },
+     "close": 244.85,
+     "usd_billion": 2641.0,
+     "filing": "10-Q 0001018724-26-000026 filed 2026-07-31",
+     "share_quote": "\"end\":\"2026-07-22\",\"val\":10786313572,\"accn\":\"0001018724-26-000026\",\"fy\":2026,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-07-31\"",
+     "price_quote": "\"date\":\"07/22/2026\",\"close\":\"$244.85\""
+    },
+    {
+     "date": "2026-10-21",
+     "shares": 10813138306,
+     "class_detail": {
+      "AMZN": 10813138306
+     },
+     "close": 262.37,
+     "usd_billion": 2837.0,
+     "filing": "10-Q 0001018724-26-000040 filed 2026-10-30",
+     "share_quote": "\"end\":\"2026-10-21\",\"val\":10813138306,\"accn\":\"0001018724-26-000040\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-30\"",
+     "price_quote": "\"date\":\"10/21/2026\",\"close\":\"$262.37\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-100",
+   "entity": "Meta",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 1572.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/16/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Meta's unlisted Class B shares are valued at the Class A (META) close. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Meta Form 10-Q cover page, shares outstanding by class",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066773/meta-20260930.htm",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "META historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/meta/historical)",
+    "url": "https://api.nasdaq.com/api/quote/META/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "Class A Common Stock | $0.000006 par value | 2,214,472,367 | shares outstanding as of October 16, 2026; Class B Common Stock | $0.000006 par value | 341,768,886 | shares outstanding as of October 16, 2026",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$614.99\"",
+   "derived": "2,214,472,367 META shares x $614.99 + 341,768,886 B shares x $614.99 = $1,572.1 billion (shares as of 10/16/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-24",
+     "class_detail": {
+      "META": 2196045588,
+      "B": 342377716
+     },
+     "close": {
+      "META": 675.03,
+      "B": 675.03
+     },
+     "usd_billion": 1713.5,
+     "filing": "10-Q 0001628280-26-028526 filed 2026-04-30",
+     "share_quote": "Class A Common Stock | $0.000006 par value | 2,196,045,588 | shares outstanding as of April 24, 2026; Class B Common Stock | $0.000006 par value | 342,377,716 | shares outstanding as of April 24, 2026",
+     "price_quote": "\"date\":\"04/24/2026\",\"close\":\"$675.03\""
+    },
+    {
+     "date": "2026-07-24",
+     "class_detail": {
+      "META": 2205128509,
+      "B": 342377716
+     },
+     "close": {
+      "META": 595.19,
+      "B": 595.19
+     },
+     "usd_billion": 1516.3,
+     "filing": "10-Q 0001628280-26-050705 filed 2026-07-30",
+     "share_quote": "Class A Common Stock | $0.000006 par value | 2,205,128,509 | shares outstanding as of July 24, 2026; Class B Common Stock | $0.000006 par value | 342,377,716 | shares outstanding as of July 24, 2026",
+     "price_quote": "\"date\":\"07/24/2026\",\"close\":\"$595.19\""
+    },
+    {
+     "date": "2026-10-16",
+     "class_detail": {
+      "META": 2214472367,
+      "B": 341768886
+     },
+     "close": {
+      "META": 709.325,
+      "B": 709.325
+     },
+     "usd_billion": 1813.2,
+     "filing": "10-Q 0001628280-26-066773 filed 2026-10-22",
+     "share_quote": "Class A Common Stock | $0.000006 par value | 2,214,472,367 | shares outstanding as of October 16, 2026; Class B Common Stock | $0.000006 par value | 341,768,886 | shares outstanding as of October 16, 2026",
+     "price_quote": "\"date\":\"10/16/2026\",\"close\":\"$709.325\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-101",
+   "entity": "Apple",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 5008.2,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/23/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Apple cover page, shares outstanding (SEC XBRL dei:EntityCommonStockSharesOutstanding)",
+    "publisher": "SEC EDGAR",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/dei/EntityCommonStockSharesOutstanding.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "AAPL historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/aapl/historical)",
+    "url": "https://api.nasdaq.com/api/quote/AAPL/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "\"end\":\"2026-10-23\",\"val\":14532182000,\"accn\":\"0000320193-26-000026\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-11-03\"",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$344.63\"",
+   "derived": "14,532,182,000 AAPL shares x $344.63 = $5,008.2 billion (shares as of 10/23/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-17",
+     "shares": 14687356000,
+     "class_detail": {
+      "AAPL": 14687356000
+     },
+     "close": 270.23,
+     "usd_billion": 3969.0,
+     "filing": "10-Q 0000320193-26-000013 filed 2026-05-01",
+     "share_quote": "\"end\":\"2026-04-17\",\"val\":14687356000,\"accn\":\"0000320193-26-000013\",\"fy\":2026,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-05-01\"",
+     "price_quote": "\"date\":\"04/17/2026\",\"close\":\"$270.23\""
+    },
+    {
+     "date": "2026-07-17",
+     "shares": 14594180000,
+     "class_detail": {
+      "AAPL": 14594180000
+     },
+     "close": 333.74,
+     "usd_billion": 4870.7,
+     "filing": "10-Q 0000320193-26-000020 filed 2026-07-31",
+     "share_quote": "\"end\":\"2026-07-17\",\"val\":14594180000,\"accn\":\"0000320193-26-000020\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-07-31\"",
+     "price_quote": "\"date\":\"07/17/2026\",\"close\":\"$333.74\""
+    },
+    {
+     "date": "2026-10-23",
+     "shares": 14532182000,
+     "class_detail": {
+      "AAPL": 14532182000
+     },
+     "close": 347.725,
+     "usd_billion": 5053.2,
+     "filing": "10-K 0000320193-26-000026 filed 2026-11-03",
+     "share_quote": "\"end\":\"2026-10-23\",\"val\":14532182000,\"accn\":\"0000320193-26-000026\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-11-03\"",
+     "price_quote": "\"date\":\"10/23/2026\",\"close\":\"$347.725\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-102",
+   "entity": "NVIDIA",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 4931.8,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 08/21/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. NVIDIA's newest share count is from the fiscal Q2 FY2027 10-Q (08/21/2026), 70 days before the price date, because the fiscal Q3 FY2027 10-Q is not yet filed; NVIDIA has been repurchasing stock (its cover count fell from 24.3 billion on 02/20/2026 to 24.1 billion on 08/21/2026), so a newer count is probably lower and this value probably slightly high. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "NVIDIA cover page, shares outstanding (SEC XBRL dei:EntityCommonStockSharesOutstanding)",
+    "publisher": "SEC EDGAR",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/dei/EntityCommonStockSharesOutstanding.json",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "NVDA historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/nvda/historical)",
+    "url": "https://api.nasdaq.com/api/quote/NVDA/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "\"end\":\"2026-08-21\",\"val\":24100000000,\"accn\":\"0001045810-26-000075\",\"fy\":2027,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-08-26\"",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$204.64\"",
+   "derived": "24,100,000,000 NVDA shares x $204.64 = $4,931.8 billion (shares as of 08/21/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-02-20",
+     "shares": 24300000000,
+     "class_detail": {
+      "NVDA": 24300000000
+     },
+     "close": 189.82,
+     "usd_billion": 4612.6,
+     "filing": "10-K 0001045810-26-000021 filed 2026-02-25",
+     "share_quote": "\"end\":\"2026-02-20\",\"val\":24300000000,\"accn\":\"0001045810-26-000021\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-02-25\"",
+     "price_quote": "\"date\":\"02/20/2026\",\"close\":\"$189.82\""
+    },
+    {
+     "date": "2026-05-15",
+     "shares": 24200000000,
+     "class_detail": {
+      "NVDA": 24200000000
+     },
+     "close": 225.32,
+     "usd_billion": 5452.7,
+     "filing": "10-Q 0001045810-26-000052 filed 2026-05-20",
+     "share_quote": "\"end\":\"2026-05-15\",\"val\":24200000000,\"accn\":\"0001045810-26-000052\",\"fy\":2027,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-05-20\"",
+     "price_quote": "\"date\":\"05/15/2026\",\"close\":\"$225.32\""
+    },
+    {
+     "date": "2026-08-21",
+     "shares": 24100000000,
+     "class_detail": {
+      "NVDA": 24100000000
+     },
+     "close": 214.72,
+     "usd_billion": 5174.8,
+     "filing": "10-Q 0001045810-26-000075 filed 2026-08-26",
+     "share_quote": "\"end\":\"2026-08-21\",\"val\":24100000000,\"accn\":\"0001045810-26-000075\",\"fy\":2027,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-08-26\"",
+     "price_quote": "\"date\":\"08/21/2026\",\"close\":\"$214.72\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Computed by us from two primary inputs (SEC cover-page share count, Nasdaq closing price); share counts are dated before the price date and unlisted classes use a listed class price. Cross-check against S&P Dow Jones Indices' published largest total market cap (5,029,592.25 USD million, fin-104): the match is exact only with Apple's older 07/17/2026 cover count (14,594,180,000 x $344.63 = 5,029,592.25 USD million). With the 10/23/2026 cover count used for Apple in fin-101 (14,532,182,000), the product is 5,008,225.9 USD million, 0.43 percent lower, so S&P's share counts lag the filing cover counts. The close and the arithmetic are supported; the share-count date is the open difference.",
+   "id": "fin-103",
+   "entity": "Tesla",
+   "metric": "market capitalization on 10/30/2026 (cover-page shares outstanding times Nasdaq closing price)",
+   "value": 1580.4,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026 (last trading day of October 2026); shares from the newest periodic filing, dated 10/15/2026",
+   "boundary": "All classes of common stock outstanding on the newest SEC cover page times the Nasdaq official closing price on 10/30/2026. Total market capitalization, not float-adjusted and not net of affiliates. Share counts are dated 7 to 15 days before 10/30/2026 (NVIDIA 70). No company or index publisher states this exact figure.",
+   "source": {
+    "title": "Tesla cover page, shares outstanding (SEC XBRL dei:EntityCommonStockSharesOutstanding)",
+    "publisher": "SEC EDGAR",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/dei/EntityCommonStockSharesOutstanding.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "source_price": {
+    "title": "TSLA historical quotes",
+    "publisher": "Nasdaq, Inc. (data endpoint behind nasdaq.com/market-activity/stocks/tsla/historical)",
+    "url": "https://api.nasdaq.com/api/quote/TSLA/historical?assetclass=stocks&fromdate=2026-10-28&todate=2026-11-03&limit=10",
+    "published": "2026-10-30",
+    "kind": "exchange closing price"
+   },
+   "quote": "\"end\":\"2026-10-15\",\"val\":3952757946,\"accn\":\"0001628280-26-066775\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+   "quote_price": "\"date\":\"10/30/2026\",\"close\":\"$399.81\"",
+   "derived": "3,952,757,946 TSLA shares x $399.81 = $1,580.4 billion (shares as of 10/15/2026, close on 10/30/2026)",
+   "status": "partly",
+   "series_cover_date_market_cap": [
+    {
+     "date": "2026-04-16",
+     "shares": 3755723871,
+     "class_detail": {
+      "TSLA": 3755723871
+     },
+     "close": 388.9,
+     "usd_billion": 1460.6,
+     "filing": "10-Q 0001628280-26-026673 filed 2026-04-23",
+     "share_quote": "\"end\":\"2026-04-16\",\"val\":3755723871,\"accn\":\"0001628280-26-026673\",\"fy\":2026,\"fp\":\"Q1\",\"form\":\"10-Q\",\"filed\":\"2026-04-23\"",
+     "price_quote": "\"date\":\"04/16/2026\",\"close\":\"$388.90\""
+    },
+    {
+     "date": "2026-07-16",
+     "shares": 3949547394,
+     "class_detail": {
+      "TSLA": 3949547394
+     },
+     "close": 391.06,
+     "usd_billion": 1544.5,
+     "filing": "10-Q 0001628280-26-049270 filed 2026-07-23",
+     "share_quote": "\"end\":\"2026-07-16\",\"val\":3949547394,\"accn\":\"0001628280-26-049270\",\"fy\":2026,\"fp\":\"Q2\",\"form\":\"10-Q\",\"filed\":\"2026-07-23\"",
+     "price_quote": "\"date\":\"07/16/2026\",\"close\":\"$391.06\""
+    },
+    {
+     "date": "2026-10-15",
+     "shares": 3952757946,
+     "class_detail": {
+      "TSLA": 3952757946
+     },
+     "close": 362.44,
+     "usd_billion": 1432.6,
+     "filing": "10-Q 0001628280-26-066775 filed 2026-10-22",
+     "share_quote": "\"end\":\"2026-10-15\",\"val\":3952757946,\"accn\":\"0001628280-26-066775\",\"fy\":2026,\"fp\":\"Q3\",\"form\":\"10-Q\",\"filed\":\"2026-10-22\"",
+     "price_quote": "\"date\":\"10/15/2026\",\"close\":\"$362.44\""
+    }
+   ],
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "The PDF was read at a third-party storage address, not on spglobal.com (the spglobal.com address returned a web page to a script), so the file's provenance rests on its S&P Dow Jones Indices layout and on the match of its largest total market cap (5,029,592.25 USD million) to Apple's 07/17/2026 cover share count times the 10/30/2026 close, which is exact; it is not an exact match to the 10/23/2026 count used in fin-101, which is 0.43 percent lower.",
+   "id": "fin-104",
+   "entity": "S&P 500 index (503 constituents)",
+   "metric": "total market capitalization of all constituents, 10/30/2026",
+   "value": 67879.34,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026",
+   "boundary": "Sum of constituent total market capitalizations (not float-adjusted) for the 503 constituents, as printed in the Country/Region Breakdown, in USD million (67,879,335.33). 503 constituents because some companies have more than one share class.",
+   "source": {
+    "title": "S&P 500 fact sheet, as of October 30, 2026",
+    "publisher": "S&P Dow Jones Indices (PDF read from a third-party storage copy)",
+    "url": "https://s3.amazonaws.com/bca2.0/fs-sp-500.pdf",
+    "published": "2026-10-31",
+    "kind": "agency"
+   },
+   "quote": "United States 503 67,879,335.33 100 (rendered row on page 4; columns left to right: Country/Region, Number of Constituents, Total Market Cap [USD Million], Index Weight [%]; the PDF text extract lists the numbers in a different order)",
+   "derived": "67,879,335.33 USD million / 1,000 = 67,879.34 USD billion",
+   "status": "partly",
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "The PDF was read at a third-party storage address, not on spglobal.com (the spglobal.com address returned a web page to a script), so the file's provenance rests on its S&P Dow Jones Indices layout and on the match of its largest total market cap (5,029,592.25 USD million) to Apple's 07/17/2026 cover share count times the 10/30/2026 close, which is exact; it is not an exact match to the 10/23/2026 count used in fin-101, which is 0.43 percent lower.",
+   "id": "fin-105",
+   "entity": "S&P 500 index",
+   "metric": "weight of the ten largest constituents, 10/30/2026",
+   "value": 37.3,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026",
+   "boundary": "Float-adjusted index weight. The ten are, in order: Apple, Nvidia, Microsoft, Amazon, Alphabet Class A, Broadcom, Meta Class A, Alphabet Class C, Eli Lilly, Tesla. All seven of the Magnificent Seven are among them, so their combined index weight is below 37.3 percent. The single largest constituent weighs 7.7 percent.",
+   "source": {
+    "title": "S&P 500 fact sheet, as of October 30, 2026",
+    "publisher": "S&P Dow Jones Indices (PDF read from a third-party storage copy)",
+    "url": "https://s3.amazonaws.com/bca2.0/fs-sp-500.pdf",
+    "published": "2026-10-31",
+    "kind": "agency"
+   },
+   "quote": "WEIGHT TOP 10 CONSTITUENTS [%] 37.3; WEIGHT LARGEST CONSTITUENT [%] 7.7; Top 10 Constituents By Index Weight: Apple Inc. AAPL, Nvidia Corp NVDA, Microsoft Corp MSFT, Amazon.com Inc AMZN, Alphabet Inc A GOOGL, Broadcom Inc AVGO, Meta Platforms, Inc. Class A META, Alphabet Inc C GOOG, Eli Lilly & Co LLY, Tesla, Inc TSLA",
+   "derived": null,
+   "status": "partly",
+   "as_of": "2026-10-30"
+  },
+  {
+   "limit": "Derived from the seven company claims (share counts dated before the price date, NVIDIA 70 days) and from a factsheet read at a third-party storage copy; total, not float-adjusted, market capitalization.",
+   "id": "fin-106",
+   "entity": "Magnificent Seven (Apple, Microsoft, NVIDIA, Alphabet, Amazon, Meta, Tesla)",
+   "metric": "combined market capitalization on 10/30/2026, and share of the S&P 500 total market capitalization",
+   "value": 33.9,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "fiscal_period": "point in time, 10/30/2026",
+   "boundary": "Combined $22,999 billion (sum of fin-097, fin-098, fin-099, fin-100, fin-101, fin-102, fin-103) divided by the S&P 500's total market capitalization of $67,879.34 billion (fin-104). Total market capitalization on both sides, not float-adjusted. Alphabet is counted once with all classes. A different basis from fin-071 (float-adjusted SPY weight 33.2 percent), so the two are not expected to match.",
+   "source": {
+    "title": "S&P 500 fact sheet, as of October 30, 2026",
+    "publisher": "S&P Dow Jones Indices (PDF read from a third-party storage copy)",
+    "url": "https://s3.amazonaws.com/bca2.0/fs-sp-500.pdf",
+    "published": "2026-10-31",
+    "kind": "agency"
+   },
+   "quote": "United States 100 503 67,879,335.33 (S&P 500 Total Market Cap [USD Million], 10/30/2026)",
+   "derived": "sum of seven = 3,875.8 + 3,431.3 + 2,598.9 + 1,572.1 + 5,008.2 + 4,931.8 + 1,580.4 = 22,998.5 USD billion; 22,998,522.8 / 67,879,335.33 = 33.88 percent",
+   "status": "partly",
+   "as_of": "2026-10-30"
+  },
+  {
+   "id": "fin-107",
+   "entity": "NVIDIA",
+   "metric": "revenue outlook, fiscal Q3 FY2027 (quarter ended 10/25/2026)",
+   "value": 108.0,
+   "low": 105.84,
+   "high": 110.16,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "fiscal Q3 FY2027, quarter ended 10/25/2026; outlook given 08/26/2026",
+   "boundary": "Company outlook for one quarter, plus or minus 2 percent, assuming no Data Center compute revenue from China. Revenue only; NVIDIA gave no capital expenditure guidance (fin-082). Actual results are due 11/17/2026 and will supersede this outlook.",
+   "source": {
+    "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 (Form 8-K, Exhibit 99.1)",
+    "publisher": "NVIDIA Corporation via SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "Revenue is expected to be $108.0 billion, plus or minus 2%. NVIDIA is not assuming any Data Center compute revenue from China in its outlook.",
+   "derived": "108.0 x 0.98 = 105.84; 108.0 x 1.02 = 110.16 (USD billion)",
+   "status": "verified",
+   "as_of": "2026-08-26"
+  },
+  {
+   "id": "fin-108",
+   "entity": "NVIDIA",
+   "metric": "capital expenditure commitments, future payments as of 07/26/2026",
+   "value": 8.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "commitments at 07/26/2026 (fiscal Q2 FY2027 balance date): 7 for the remainder of fiscal 2027, 1 for fiscal 2028",
+   "boundary": "Contractual future commitments to buy property and equipment, rounded to whole billions by the company; not guidance for capital expenditure and not a forecast of fiscal 2027 or 2028 spending. Cash capital expenditure for fiscal 2026 was 6.04 (fin-006) and 4.43 for the first six months of fiscal 2027 (fin-093).",
+   "source": {
+    "title": "CFO Commentary on Second Quarter Fiscal 2027 Results (Form 8-K, Exhibit 99.2)",
+    "publisher": "NVIDIA Corporation via SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27cfocommentary.htm",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "|Capital expenditures |7 | |1 |— |— |— |— | |8 | | (columns: Remainder of 2027, 2028, 2029, 2030, 2031, 2032 and thereafter, Total, in billions)",
+   "derived": "7 + 1 = 8 (USD billion); same table gives supply and capacity commitments of 279 in total (fin-061) and total commitments of 366",
+   "status": "verified",
+   "as_of": "2026-07-26"
+  },
+  {
+   "id": "fin-109",
+   "entity": "NVIDIA",
+   "metric": "fiscal Q3 FY2027 results and Form 10-Q: not yet reported as of 11/04/2026",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "none",
+   "year": 2026,
+   "fiscal_period": "fiscal Q3 FY2027, quarter ended 10/25/2026; results call 11/17/2026",
+   "boundary": "Absence as of 11/04/2026. The SEC submissions index for NVIDIA lists, as its newest periodic report, the Form 10-Q for the quarter ended 07/26/2026 (fiscal Q2 FY2027), filed 08/26/2026 (accession 0001045810-26-000075); no earnings 8-K item 2.02 after 08/26/2026. Every NVIDIA balance-sheet and cash-flow claim in this file is therefore at 07/26/2026 or at fiscal year end 01/25/2026.",
+   "source": {
+    "title": "NVIDIA Sets Conference Call for Third-Quarter Financial Results",
+    "publisher": "NVIDIA Corporation (investor relations)",
+    "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Sets-Conference-Call-for-Third-Quarter-Financial-Results/default.aspx",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "NVIDIA will host a conference call on Tuesday, November 17, at 2 p.m. PT (5 p.m. ET) to discuss its financial results for the third quarter of fiscal year 2027, which ended October 25, 2026.",
+   "derived": null,
+   "status": "verified",
+   "as_of": "2026-11-04"
+  },
+  {
+   "limit": "The guidance is spoken on Apple's call and reaches us only through a third-party transcript; Apple's 11/02/2026 Form 8-K press release (Exhibit 99.1) carries no outlook, and Apple's own audio replay at apple.com/investor/earnings-call was not listened to.",
+   "id": "fin-110",
+   "entity": "Apple",
+   "metric": "revenue outlook, December quarter 2026 (fiscal Q1 FY2027), year-over-year growth",
+   "value": null,
+   "low": 7.0,
+   "high": 10.0,
+   "unit": "percent year over year",
+   "year": 2026,
+   "fiscal_period": "December quarter 2026 (Apple fiscal Q1 FY2027); outlook given 11/02/2026",
+   "boundary": "Outlook for total company revenue growth in one quarter, assuming current tariff rates and policies and no worsening of the macroeconomic outlook. Same call: services growth 8 to 9 percent, gross margin 45 to 46 percent, operating expenses 20.4 to 20.8 USD billion, tax rate about 17 percent. No capital expenditure guidance (fin-081). Revenue only; it is not a cash or investment forecast.",
+   "source": {
+    "title": "Apple Q4 2026 Earnings Call Transcript",
+    "publisher": "StockAnalysis.com (third-party transcript of Apple's 11/02/2026 call)",
+    "url": "https://stockanalysis.com/stocks/aapl/transcripts/702819-q4-2026",
+    "published": "2026-11-02",
+    "kind": "press"
+   },
+   "quote": "We expect our December quarter total company revenue to grow between 7% and 10% year-over-year, which reflects our best view of constrained supply.",
+   "derived": null,
+   "status": "partly",
+   "as_of": "2026-11-02"
+  },
+  {
+   "id": "fin-111",
+   "entity": "Apple",
+   "metric": "manufacturing purchase obligations, 09/26/2026",
+   "value": 89.7,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "fiscal_period": "balance at 09/26/2026, end of fiscal year 2026 (FY2026); Form 10-K filed 11/03/2026",
+   "boundary": "Purchase commitments to outsourcing partners and component suppliers for forecasted component and manufacturing requirements, including 82.7 USD billion payable within 12 months. Not capital expenditure on data centers and not an AI-specific figure; it is the clearest forward cash commitment Apple states.",
+   "source": {
+    "title": "Apple Inc. Form 10-K for the fiscal year ended September 26, 2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000026/aapl-20260926.htm",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "As of September 26, 2026, the Company had manufacturing purchase obligations of $89.7 billion, with $82.7 billion payable within 12 months.",
+   "derived": null,
+   "status": "verified",
+   "as_of": "2026-09-26"
   }
  ]
 }

@@ -46,6 +46,41 @@
    "claim": "jb-057",
    "label": "Challenger, Gray and Christmas, announced cuts citing AI, 2025",
    "say": "{display}"
+  },
+  {
+   "claim": "jb-092",
+   "label": "The same count, September 2026 alone",
+   "say": "{display}"
+  },
+  {
+   "claim": "jb-086",
+   "label": "Challenger, Technology sector cuts for all reasons, 2026 through September",
+   "say": "{display}"
+  },
+  {
+   "claim": "jb-091",
+   "label": "Challenger, Technology sector hiring plans, 2026 through September",
+   "say": "{display}; plans, not hires"
+  },
+  {
+   "claim": "jb-089",
+   "label": "Challenger, Government sector cuts, 2026 through September",
+   "say": "{display}; total cuts are down this year mostly because this line's 2025 base was unusually large"
+  },
+  {
+   "claim": "jb-110",
+   "label": "Atlanta Fed survey of nearly 750 corporate executives",
+   "say": "little evidence of near-term declines in total employment; expectations and reports, not payroll data"
+  },
+  {
+   "claim": "jb-111",
+   "label": "S&P Global survey of firms worldwide, more staff against fewer because of AI, past 12 months",
+   "say": "{display}; a balance of firms, not a count of jobs"
+  },
+  {
+   "claim": "jb-116",
+   "label": "World Economic Forum, young workers in occupations with medium to high AI exposure",
+   "say": "{display}; exposure, not displacement"
   }
  ],
  "rows": [

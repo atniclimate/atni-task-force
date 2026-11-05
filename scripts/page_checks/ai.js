@@ -123,7 +123,7 @@ async function model() {
   closeWalk(oracle.project, project(250), 'project');
   eq(errors.join(), '', 'no script errors');
   // A disagreement is reported, not hidden.
-  const hostile = html.replace('"video_dc_wh_per_gb":{"value":0.45,"low":0.35', '"video_dc_wh_per_gb":{"value":0.45,"low":0.36');
+  const hostile = html.replace('"video_dc_wh_per_gb":{"value":0.45,"low":0.171', '"video_dc_wh_per_gb":{"value":0.45,"low":0.18');
   ok(hostile !== html, 'test edit applied');
   const bad = await load('', undefined, hostile);
   eq(bad.document.documentElement.dataset.modelCheck, 'failed', 'a changed input fails the self-check');
@@ -140,8 +140,8 @@ async function sameHourPlate() {
   // Defaults, against COMPARISON-METHOD section 5.
   eq(`${p.value.textContent} ${p.unit.textContent}`, '3 (2.4 to 6.03) Wh', 'default readout');
   eq(value('chat'), '3 (2.4 to 6.03) Wh', 'chat row');
-  eq(value('video'), '2.05 (0.332 to 110) Wh', 'video row');
-  eq(value('short'), '0.8 (0.488 to 26.9) Wh', 'short row');
+  eq(value('video'), '2.05 (0.301 to 185) Wh', 'video row');
+  eq(value('short'), '0.8 (0.443 to 26.9) Wh', 'short row');
   ok(p.row('chat').querySelector('.ladder-value .ladder-num').textContent === '3' && p.row('chat').querySelector('.ladder-value .ladder-tag').textContent === '(2.4 to 6.03)', 'the figure and its range are apart');
   ok(((rows, fold) => rows.length === 4 && rows.every((n) => fold.includes(n.querySelector('.ladder-label').firstChild.nodeValue.trim())))([...p.plot.querySelectorAll('.ladder-row[hidden]')], p.plot.querySelector('.plate-fold').textContent), 'the yardsticks fold into one line until the whole hour');
   ok(p.plot.querySelector('.ladder-row[data-row="household"]').hidden && !p.row('chat').classList.contains('is-gap'), 'their rows wait');
@@ -172,7 +172,7 @@ async function sameHourPlate() {
   const moves = [
     ['boundary dc', () => pick(window, p.radio('boundary', 'dc')), /data center/, '3 (2.4 to 6) Wh'],
     ['the data center ruler', async () => {
-      eq(ticks(), '0.01,0.1,1,10,100', 'decades around the numbers: video reaches down to 0.0595 here, so the floor is 0.01');
+      eq(ticks(), '0.01,0.1,1,10,100,1,000', 'decades around the numbers: video runs from 0.029 to 165 here, so the ruler spans 0.01 to 1,000');
       eq(p.facts.querySelectorAll('.plate-seg').length, 1, 'one part counted');
     }, ['0.0008', '10', '2'], null],
     ['boundary adds', () => pick(window, p.radio('boundary', 'adds')), /network/, '3 (2.4 to 6.03) Wh'],
@@ -186,15 +186,15 @@ async function sameHourPlate() {
       ok(leads(p.plot.querySelector('.ladder-tick[data-mark="fixed"] span').textContent, ['12 Wh']), 'tick label');
       ok(p.row('chat').classList.contains('has-band') && p.row('chat').style.getPropertyValue('--band') > 0, 'a wash up to the fixed line');
       ok(!p.row('household').classList.contains('is-gap') && !p.row('household').classList.contains('has-band'), 'a yardstick shows, with no wash');
-      eq(ticks(), '0,50,100,150', 'an even ruler from zero');
+      eq(ticks(), '0,100,200,300', 'an even ruler from zero');
       ok(/zero/.test(p.root.querySelector('.plate-claim > .caption + .caption').textContent), 'the caption says so');
       eq(p.facts.querySelectorAll('.plate-seg').length, 4, 'all four parts count');
       ok(holds(value('household'), ['28,740 Wh']), 'a household day stays off it, in words');
       ok(p.row('household').querySelector('.ladder-mark').hidden && !p.row('household').style.getPropertyValue('--x'), 'with no mark');
       ok(p.plot.querySelector('.plate-fold').hidden, 'nothing folds here');
       const onRuler = (k, part) => +p.row(k).style.getPropertyValue(part);
-      ok(Math.abs(onRuler('tv', '--x') - 100 / 150) < 1e-9 && Math.abs(p.row('chat').style.getPropertyValue('--band') - 12 / 150) < 1e-9, 'positions are linear');
-      ok(Math.abs(onRuler('bulb', '--hi') - 10.5 / 150) < 1e-9, 'a claim row moves to this ruler too');
+      ok(Math.abs(onRuler('tv', '--x') - 100 / 300) < 1e-9 && Math.abs(p.row('chat').style.getPropertyValue('--band') - 12 / 300) < 1e-9, 'positions are linear');
+      ok(Math.abs(onRuler('bulb', '--hi') - 10.5 / 300) < 1e-9, 'a claim row moves to this ruler too');
     }, /whole/, null],
     ['kind medium', () => pick(window, p.radio('chat_kind', 'medium_prompt')), ['24.2 Wh'], null],
     ['kind reasoning', () => pick(window, p.radio('chat_kind', 'reasoning')), ['51.1 Wh'], null],
@@ -220,10 +220,14 @@ async function sameHourPlate() {
   await pick(window, p.radio('network_mode', 'marginal'));
   ok(holds(p.reading.textContent, ['12.6 Wh']) && holds(p.reading.textContent, ['0.13']), `marginal: ${p.reading.textContent}`);
   await pick(window, p.radio('network_mode', 'average'));
-  await pick(window, p.radio('video_dc_intensity', 'desnz_assumed'));
-  ok(holds(p.reading.textContent, ['33.2 Wh']) && holds(p.reading.textContent, ['19.6']), `DESNZ: ${p.reading.textContent}`);
+  await pick(window, p.radio('video_dc_intensity', 'desnz_followup'));
+  ok(holds(p.reading.textContent, ['13.8 Wh']) && holds(p.reading.textContent, ['0.171']), `DESNZ follow-up: ${p.reading.textContent}`);
   ok(/scenario/.test(p.facts.textContent), 'the segment says so');
-  ok(p.chips().includes('fp-043'), 'and its receipt shows');
+  ok(p.chips().includes('fp-141'), 'and its receipt shows');
+  await pick(window, p.radio('video_dc_intensity', 'top_down'));
+  ok(holds(p.reading.textContent, ['68.6 Wh']) && holds(p.reading.textContent, ['55']), `top-down: ${p.reading.textContent}`);
+  ok(/upper bound/.test(p.facts.textContent), 'the top-down reading says it is an upper bound');
+  ok(p.chips().includes('fp-150'), 'and its limit has a receipt');
   await pick(window, p.radio('video_dc_intensity', 'measured_delivery'));
   key(window, p.plot, 'Home');
   ok(holds(p.reading.textContent, ['10 prompts']), 'Home returns to chat');
@@ -426,8 +430,8 @@ async function otherPlates() {
   ok(hv.plot.querySelector('.ladder-tick[data-mark="y-pub"] span').textContent.includes('188'), 'its tick');
   await pick(window, hv.radio('yard', 'dc'));
   ok(holds(hv.reading.textContent, ['40 minutes']) , `data center: ${hv.reading.textContent}`);
-  await pick(window, hv.radio('heavy_intensity', 'desnz_assumed'));
-  ok(hv.reading.textContent.includes('55.1 seconds'), `DESNZ yardstick: ${hv.reading.textContent}`);
+  await pick(window, hv.radio('heavy_intensity', 'desnz_followup'));
+  ok(hv.reading.textContent.includes('1.75 hours'), `DESNZ follow-up yardstick: ${hv.reading.textContent}`);
   await pick(window, hv.radio('heavy_intensity', 'measured_delivery'));
   await pick(window, hv.radio('yard', 'same'));
   await pick(window, hv.radio('heavy_device', 'tv'));
@@ -441,13 +445,18 @@ async function otherPlates() {
   walk(pd, 'ai-per-day');
   ok(holds(pd.reading.textContent, ['1.1', '0.857', '4.8) Wh']) && holds(pd.reading.textContent, ['0.0038 percent']), `per day: ${pd.reading.textContent}`);
   await moved(pd, 'ai-per-day', 'day_count', ['mean', 'eight']);
-  await pick(window, pd.radio('day_intensity', 'desnz_assumed'));
+  await pick(window, pd.radio('day_count', 'panel'));
+  ok(pd.reading.textContent.includes('1.29'), `Epoch panel count: ${pd.reading.textContent}`);
+  await pick(window, pd.radio('day_count', 'mean'));
+  await pick(window, pd.radio('day_intensity', 'desnz_followup'));
   ok(/video rows/.test(pd.facts.textContent), 'a setting that cannot move the chat row says so');
   await pick(window, pd.radio('day_intensity', 'measured_delivery'));
   fire(window, pd.row('yt').querySelector('.ladder-label'), 'click');
-  await moved(pd, 'ai-per-day', 'day_intensity', ['measured_delivery', 'desnz_assumed']);
-  await pick(window, pd.radio('day_intensity', 'desnz_assumed'));
-  ok(pd.reading.textContent.includes('28.7'), `DESNZ day: ${pd.reading.textContent}`);
+  await moved(pd, 'ai-per-day', 'day_intensity', ['measured_delivery', 'top_down']);
+  await pick(window, pd.radio('day_intensity', 'desnz_followup'));
+  ok(pd.reading.textContent.includes('0.25'), `DESNZ follow-up day: ${pd.reading.textContent}`);
+  await pick(window, pd.radio('day_intensity', 'top_down'));
+  ok(pd.reading.textContent.includes('80.7') && /upper bound/.test(pd.facts.textContent), `top-down day: ${pd.reading.textContent}`);
   await pick(window, pd.radio('day_intensity', 'measured_delivery'));
   fire(window, pd.row('chat').querySelector('.ladder-label'), 'click');
   await slide(window, pd.root.querySelector('[data-param="day_wh"] input[type=range]'), 0.6);
@@ -496,7 +505,7 @@ async function otherPlates() {
   const mo = plateOf(document, 'ai-company-money');
   eq(mo.plot.querySelectorAll('.m-title').length, 6, 'six panels');
   ok(leads(mo.reading.textContent, ['Amazon', '2025', '12/31/2025', '131.82', '139.51']), `money: ${mo.reading.textContent}`);
-  ok(holds(mo.root.querySelector('.plate-title').textContent, ['132 billion dollars', '140']), 'title from the series');
+  ok(holds(mo.root.querySelector('.plate-title').textContent, ['176 billion dollars', '114', '132', '127']), 'title from the filings');
   ok(holds(mo.reading.textContent, ['Amazon', '-42 billion dollars', '09/30/2026']) && !mo.root.querySelector('.plate-title').textContent.includes('free cash flow'), 'the free cash flow figure reads in the Reading, not the title');
   ok(mo.chips().includes('fin-057'), 'with its receipt');
   const topTick = (i) => Math.max(...[...mo.plot.querySelectorAll('.plate-svg > g')[i].querySelectorAll('.m-tick')].map((n) => +n.textContent.replace(/,/g, '')).filter((v) => v < 2000));
@@ -559,7 +568,7 @@ async function otherPlates() {
 
   const ho = plateOf(document, 'ai-holdings');
   walk(ho, 'ai-holdings');
-  eq(ho.plot.querySelectorAll('.ladder').length, 2, 'two rulers');
+  eq(ho.plot.querySelectorAll('.ladder').length, 3, 'three rulers');
   eq(ho.plot.querySelectorAll('.ladder')[0].dataset.form, 'bar', 'bars first');
   fire(window, ho.row('amazon-anthropic').querySelector('.ladder-label'), 'click');
   ok(ho.reading.textContent.includes('238.7') && ho.reading.textContent.includes('Limit:'), 'stake with its limit');
@@ -569,7 +578,7 @@ async function otherPlates() {
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   eq(document.querySelectorAll('section.panel').length, 8, 'all panels in the page');
-  eq(document.querySelectorAll('[data-plate]').length, 11, 'eleven plates');
+  eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#economics"]'), 'the strip is a jump list');
   for (const plate of document.querySelectorAll('[data-plate]')) {
     ok(plate.querySelector('.reading').textContent.length > 10, `${plate.id} has a default Reading`);

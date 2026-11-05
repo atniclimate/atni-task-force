@@ -17,6 +17,9 @@
   },
   "yt_d": {
    "model": "computed_defaults.scale.youtube_dc_twh_desnz"
+  },
+  "yt_t": {
+   "model": "computed_defaults.scale.youtube_dc_twh_top"
   }
  },
  "controls": [
@@ -57,8 +60,13 @@
     },
     {
      "value": "d",
-     "label": "DESNZ scenario",
+     "label": "DESNZ follow-up",
      "is": "yt_d"
+    },
+    {
+     "value": "t",
+     "label": "Top-down average",
+     "is": "yt_t"
     }
    ]
   }
@@ -118,7 +126,11 @@
     "fp-050",
     "fp-122",
     "fp-130",
-    "fp-043"
+    "fp-141",
+    "fp-142",
+    "ec-024",
+    "fp-147",
+    "fp-149"
    ],
    "formula": {
     "value": "scale_intensity"
@@ -151,7 +163,7 @@
     "fp-050",
     "fp-035",
     "fp-120",
-    "fp-044"
+    "fp-143"
    ],
    "formula": {
     "value": "now.youtube_whole_twh",

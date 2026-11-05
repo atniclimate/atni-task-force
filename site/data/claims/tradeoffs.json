@@ -1036,7 +1036,7 @@
   },
   {
    "id": "tr-050",
-   "entity": "US data centers (Li et al. restatement of LBNL)",
+   "entity": "US data centers (Li et al. restatement of LBNL 2024 Report; superseded basis)",
    "metric": "onsite water consumption projection",
    "value": null,
    "low": 150,
@@ -1351,7 +1351,7 @@
     "kind": "agency"
    },
    "quote": "The continued deployment of GPU- and ASIC- accelerated servers, with ever-increasing computing capabilities and power consumption, led to a 14% increase in U.S. data center electricity use between 2023 and 2024.",
-   "derived": "192 TWh in 2024 (dem-028) / 1.14 = about 168 TWh implied for 2023, against 176 TWh in the 2024 Report (dem-036), a revision of about -4.5%. LBNL does not print a 2023 value in the text read, so 168 is our arithmetic.",
+   "derived": "192 TWh in 2024 (dem-028) / 1.14 = about 168 TWh implied for 2023, against 176 TWh in the 2024 Report (dem-036), a revision of about -4.5% using the rounded 168, or -4.3% unrounded (168.4 / 176). The 14% is itself rounded, so 2023 lies between 167.7 and 169.2 TWh. LBNL does not print a 2023 value in the text read, so 168 is our arithmetic.",
    "status": "verified"
   },
   {
@@ -1416,6 +1416,116 @@
    "quote": "In 2023, energy consumption by a data center translates to national average of 4.52 L/kWh of indirect water consumption, along with 0.34 kg/ kWh emissions.",
    "derived": "61e9 kg (tr-006) / 176e9 kWh (tr-007) = 0.347 kg per kWh; LBNL prints the intensity as 0.34 kg per kWh in the sentence quoted.",
    "status": "verified"
+  },
+  {
+   "limit": "LBNL does not publish this figure. It multiplies LBNL's electricity for the year (2025 Update) by LBNL's 2023 national intensity (2024 Report), so it applies a 2023 grid mix to a later year and any change in the mix is not captured. Modeled, location-based, excludes power purchase agreements and onsite generation.",
+   "id": "tr-068",
+   "entity": "US data centers (derived: LBNL 2025 Update electricity x LBNL 2024 Report water intensity)",
+   "metric": "indirect water consumption through electricity use, rebased to the 2025 Update",
+   "value": 868,
+   "low": null,
+   "high": null,
+   "unit": "billion liters",
+   "year": 2024,
+   "boundary": "Water consumed at power plants for the electricity US data centers used in 2024, at the 2023 national data center intensity of 4.52 L/kWh. Same boundary as tr-004. Excludes chip manufacturing.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001758)",
+    "url": "https://www.osti.gov/servlets/purl/3374245",
+    "published": "2026-06-18",
+    "kind": "agency"
+   },
+   "quote": "The updated estimate of data center electricity use in 2024 is 192 terawatt-hours (TWh), accounting for 4.7% of total U.S. electricity consumption.",
+   "derived": "192 TWh = 192e9 kWh; 192e9 kWh x 4.52 L/kWh = 867.8e9 L, about 868 billion L. At the US all-sector average of 4.35 L/kWh (tr-005 boundary): 192e9 x 4.35 = 835.2e9 L. Against the 2024 Report's 2023 figure: 868 / 795.5 (176e9 x 4.52) = +9.1%; against the printed 'nearly 800': +8.5%.",
+   "status": "partly"
+  },
+  {
+   "limit": "LBNL does not publish this figure. It multiplies LBNL's electricity for the year (2025 Update) by LBNL's 2023 national intensity (2024 Report), so it applies a 2023 grid mix to a later year and any change in the mix is not captured. Modeled, location-based, excludes power purchase agreements and onsite generation. LBNL's text does not print a 2023 value, so 2023 electricity is back-calculated from a rounded growth rate.",
+   "id": "tr-069",
+   "entity": "US data centers (derived: LBNL 2025 Update revised 2023 electricity x LBNL 2024 Report water intensity)",
+   "metric": "indirect water consumption through electricity use, 2023 on the revised electricity history",
+   "value": 761,
+   "low": 758,
+   "high": 765,
+   "unit": "billion liters",
+   "year": 2023,
+   "boundary": "Same boundary as tr-004, with 2023 electricity taken from the 2025 Update's revised history instead of the 2024 Report's 176 TWh. low to high reflects only the rounding of LBNL's '14%'.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001758)",
+    "url": "https://www.osti.gov/servlets/purl/3374245",
+    "published": "2026-06-18",
+    "kind": "agency"
+   },
+   "quote": "The continued deployment of GPU- and ASIC- accelerated servers, with ever-increasing computing capabilities and power consumption, led to a 14% increase in U.S. data center electricity use between 2023 and 2024.",
+   "derived": "2023 electricity = 192 TWh / 1.14 = 168.4 TWh (from 14% rounded: 192 / 1.145 = 167.7 to 192 / 1.135 = 169.2). 168.4e9 kWh x 4.52 L/kWh = 761.3e9 L; the rounding range gives 757.9 to 764.6 billion L. Revision of 2023 electricity: 168.4 / 176 = -4.3%.",
+   "status": "partly"
+  },
+  {
+   "limit": "LBNL does not publish this figure. It multiplies LBNL's electricity for the year (2025 Update) by LBNL's 2023 national intensity (2024 Report), so it applies a 2023 grid mix to a later year and any change in the mix is not captured. Modeled, location-based, excludes power purchase agreements and onsite generation.",
+   "id": "tr-070",
+   "entity": "US data centers (derived: LBNL 2025 Update electricity x LBNL 2024 Report carbon intensity)",
+   "metric": "greenhouse gas emissions from electricity use, rebased to the 2025 Update",
+   "value": 65.3,
+   "low": null,
+   "high": null,
+   "unit": "billion kg CO2e (65 Mt)",
+   "year": 2024,
+   "boundary": "Scope 2 style, location-based: emissions of the grid mix serving data center locations, at the 2023 intensity of 0.34 kg CO2e/kWh. Same boundary as tr-006. Excludes embodied carbon of buildings and hardware, power purchase agreements and onsite generation.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001758)",
+    "url": "https://www.osti.gov/servlets/purl/3374245",
+    "published": "2026-06-18",
+    "kind": "agency"
+   },
+   "quote": "The updated estimate of data center electricity use in 2024 is 192 terawatt-hours (TWh), accounting for 4.7% of total U.S. electricity consumption.",
+   "derived": "192e9 kWh x 0.34 kg/kWh = 65.28e9 kg, about 65.3 billion kg (65 Mt). Using the unrounded 2024 Report ratio 61e9 / 176e9 = 0.3466 kg/kWh: 192e9 x 0.34659 = 66.545e9 kg, about 66.5 billion kg. Against the 2024 Report's 61 billion kg for 2023: 65.3 / 61 = +7.0%.",
+   "status": "partly"
+  },
+  {
+   "limit": "LBNL does not publish this figure. It multiplies LBNL's electricity for the year (2025 Update) by LBNL's 2023 national intensity (2024 Report), so it applies a 2023 grid mix to a later year and any change in the mix is not captured. Modeled, location-based, excludes power purchase agreements and onsite generation. LBNL's text does not print a 2023 value, so 2023 electricity is back-calculated from a rounded growth rate.",
+   "id": "tr-071",
+   "entity": "US data centers (derived: LBNL 2025 Update revised 2023 electricity x LBNL 2024 Report carbon intensity)",
+   "metric": "greenhouse gas emissions from electricity use, 2023 on the revised electricity history",
+   "value": 57.3,
+   "low": 57.0,
+   "high": 57.5,
+   "unit": "billion kg CO2e (57 Mt)",
+   "year": 2023,
+   "boundary": "Same boundary as tr-006, with 2023 electricity from the 2025 Update's revised history. low to high reflects only the rounding of LBNL's '14%'.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001758)",
+    "url": "https://www.osti.gov/servlets/purl/3374245",
+    "published": "2026-06-18",
+    "kind": "agency"
+   },
+   "quote": "The continued deployment of GPU- and ASIC- accelerated servers, with ever-increasing computing capabilities and power consumption, led to a 14% increase in U.S. data center electricity use between 2023 and 2024.",
+   "derived": "168.4e9 kWh x 0.34 kg/kWh = 57.26e9 kg; rounding range 167.7 to 169.2 TWh gives 57.0 to 57.5 billion kg. Against the 2024 Report's 61 billion kg: 57.3 / 61 = -6.1%, which mixes the -4.3% electricity revision with the rounding of 0.34 against the 0.3466 implied by 61 / 176.",
+   "status": "partly"
+  },
+  {
+   "limit": "Absence is shown in the text layer only. The report may carry a number inside a figure that the text extraction does not expose; none is mentioned in the text.",
+   "id": "tr-072",
+   "entity": "US data centers, LBNL 2025 Update (scope check)",
+   "metric": "whether the 2025 Update restates water, WUE, or carbon intensity",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2024,
+   "boundary": "A text search of the OSTI full-text rendering of the report (94,869 characters). Figures and images were not read, only their text. This is an absence finding, so it is only as good as the text layer.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001758)",
+    "url": "https://www.osti.gov/servlets/purl/3374245",
+    "published": "2026-06-18",
+    "kind": "agency"
+   },
+   "quote": "important to also understand how this growth interacts with, and may be constrained by, supply chain capacity, workforce availability, and water resources.",
+   "derived": "Case-insensitive counts in the extracted text: 'WUE' 0; 'liter' 0; 'emission' 0; 'greenhouse' 0; 'GHG' 0; 'CO2' 0; 'kg/kWh' 0; 'L/kWh' 0; 'water' 4 (the sentence quoted, which appears twice in the extraction, and a reviewer-acknowledgment line about 'environmental factors affecting energy and water consumption of those systems', also twice); 'carbon' 2 (both are the author name 'Carbone' in citations).",
+   "status": "partly"
   }
  ]
 }

@@ -528,7 +528,8 @@
    },
    "quote": "Under the standard build scenario, total active construction employment (“stock”) reaches roughly 30,000 workers, with annual new hires (“flow”) rising over 15,000 at peak.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "A modeled forecast of direct on-site construction workers from announced project pipelines, not a count of jobs, and it excludes indirect and induced jobs."
   },
   {
    "id": "jb-026",
@@ -549,7 +550,8 @@
    },
    "quote": "The total active operations staff (“stock”) grows steadily to about 50,000 full-time equivalents (FTEs) by 2030, with annual new hires (“flow”) peaking at about 6,000 FTEs in 2028 (under the standard scenario).",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "A modeled direct operations workforce for 2030, not a measured count, and it excludes indirect and induced jobs."
   },
   {
    "id": "jb-027",
@@ -570,7 +572,8 @@
    },
    "quote": "Under this broader measure, total active construction employment in a given year (“stock”) peaks at roughly 60,000 total jobs in 2026, while total operations-related employment approaches 110,000 by 2030 (see Appendix A3).",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "A modeled total that applies the paper's assumed multiplier of 2 for indirect and induced jobs, and the text read does not reconcile 110,000 with 2 times 50,000."
   },
   {
    "id": "jb-028",
@@ -635,7 +638,8 @@
    },
    "quote": "directly create about 500 construction jobs",
    "derived": "500 jobs x 2 years per 500 MW increment = 1,000 job-years / 500 MW = 2.0 direct construction job-years per MW",
-   "status": "partly"
+   "status": "partly",
+   "limit": "A model of one hypothetical Montana campus that counts only site work and warm shell, so it is neither a measured nor a typical national figure."
   },
   {
    "id": "jb-031",
@@ -698,7 +702,8 @@
    },
    "quote": "Data-processing employment rises by 26 percent and establishments by 27 percent, but related industries show no consistent response.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "An author-hosted preprint with no peer review stated in the text read, and county data-processing employment includes the facility's own employees."
   },
   {
    "id": "jb-034",
@@ -719,7 +724,8 @@
    },
    "quote": "Three to five years after a center opened, we found that these counties had roughly 1,000 to 1,300 additional nonconstruction jobs than comparable counties without data centers.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "The figure comes from the authors' own summary article, not from the SSRN working paper, which has not been read."
   },
   {
    "id": "jb-035",
@@ -1141,7 +1147,8 @@
    },
    "quote": "estimating more than 9% of the labor force—around 15mn workers—could lose their jobs during the 10-year AI transition he assumes.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "A bank economist's scenario projection that assumes a 15 percent productivity uplift, not an observation, and displaced does not mean permanently unemployed."
   },
   {
    "id": "jb-055",
@@ -1162,7 +1169,8 @@
    },
    "quote": "Those workers were roughly 10 percentage points more likely to remain unemployed a year after losing their jobs.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "Second-hand: the figure is read from press coverage of a Goldman Sachs note that has not been read, so it is unchecked at the primary source."
   },
   {
    "id": "jb-056",
@@ -1199,7 +1207,7 @@
     "title": "Challenger Report, December 2025",
     "publisher": "Challenger, Gray and Christmas",
     "url": "https://www.challengergray.com/wp-content/uploads/2026/01/Challenger-Report-December-2025.pdf",
-    "published": "2026-01-07",
+    "published": "2026-01-08",
     "kind": "company-report"
    },
    "quote": "So far this year, AI has been responsible for 54,836 announced layoff plans.",
@@ -1410,12 +1418,13 @@
     "title": "The Future of Jobs Report 2025",
     "publisher": "World Economic Forum",
     "url": "https://reports.weforum.org/docs/WEF_Future_of_Jobs_Report_2025.pdf",
-    "published": "2025-01-17",
+    "published": "2025-01-08",
     "kind": "company-report"
    },
    "quote": "In the next five years, 170 million jobs are projected to be created and 92 million jobs to be displaced, constituting a structural labour market churn of 22% of the 1.2 billion formal jobs in the dataset being studied.",
    "derived": "170 - 92 = 78 million; 78 / 1,200 = 6.5 percent (WEF states 7 percent)",
-   "status": "partly"
+   "status": "partly",
+   "limit": "Employer expectations from a survey of more than 1,000 firms for all structural labor-market drivers, not an estimate of AI effects alone."
   },
   {
    "id": "jb-068",
@@ -1458,7 +1467,8 @@
    },
    "quote": "Jobs requiring specific AI skills are growing almost eight times (69%) faster than the total jobs market (9%), with the average wage premium for AI skills rising to 62%",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "A consulting firm's analysis of job advertisements, so it shows a posted-pay association for AI skills, not a causal effect or an observed change in paid wages."
   },
   {
    "id": "jb-070",
@@ -1629,7 +1639,8 @@
    },
    "quote": "Based on a combined state and local sales tax rate of just over 10%, the beneficiary savings suggest that purchases of eligible equipment grew from $40.6 million in fiscal year 2023 to $141.7 million in fiscal year 2026.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "JLARC back-calculated purchases from beneficiary savings at a combined tax rate and states that it is uncertain how much of the spending is attributable to the exemption."
   },
   {
    "id": "jb-078",
@@ -1758,7 +1769,8 @@
    },
    "quote": "Data center operations currently pay approximately $622 million in wages, salaries, and benefits to employees, or direct labor income",
    "derived": "622.4 million USD / 2,629 direct jobs = about 237,000 USD per direct job, including benefits",
-   "status": "partly"
+   "status": "partly",
+   "limit": "A consultant model built on state QCEW data plus IMPLAN, not an agency count, and the figure is total compensation, not a typical wage."
   },
   {
    "id": "jb-084",
@@ -1803,6 +1815,685 @@
    "derived": null,
    "status": "partly",
    "limit": "Modeled from construction spending, not counted; the jobs are temporary, and the same report puts the direct input at about 1,913 workers once projects are annualized over 18 to 36 months."
+  },
+  {
+   "id": "jb-086",
+   "entity": "Technology sector, U.S. employers",
+   "metric": "announced job cuts, January through September 2026",
+   "value": 165925,
+   "low": null,
+   "high": null,
+   "unit": "announced cuts",
+   "year": 2026,
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm; announcements, not realized separations, and not a government count; the industry is the firm's assignment; cuts are all reasons combined, because the report does not split cuts by industry and by reason",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "The sector has announced 165,925 cuts this year, up 54% from the 107,878 announced through September 2025. Technology accounts for 29% of all job cuts announced in 2026, more than any other industry.",
+   "derived": "165,925 / 573,195 total cuts = 28.9 percent; 165,925 / 107,878 = 1.538, so +53.8 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-087",
+   "entity": "Transportation sector, U.S. employers",
+   "metric": "announced job cuts, January through September 2026",
+   "value": 44430,
+   "low": null,
+   "high": null,
+   "unit": "announced cuts",
+   "year": 2026,
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm; announcements, not realized separations, and not a government count; the industry is the firm's assignment; cuts are all reasons combined, because the report does not split cuts by industry and by reason",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "The sector has announced 44,430 cuts this year, the second-most of any industry and up 190% from the 15,329 announced through September 2025.",
+   "derived": "44,430 / 15,329 = 2.898, so +189.8 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-088",
+   "entity": "Retail sector, U.S. employers",
+   "metric": "announced job cuts, January through September 2026",
+   "value": 14434,
+   "low": null,
+   "high": null,
+   "unit": "announced cuts",
+   "year": 2026,
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm; announcements, not realized separations, and not a government count; the industry is the firm's assignment; cuts are all reasons combined, because the report does not split cuts by industry and by reason",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "Retail has announced 14,434 cuts, down 83% from 86,233.",
+   "derived": "14,434 / 86,233 = 0.167, so -83.3 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-089",
+   "entity": "Government sector, U.S. employers",
+   "metric": "announced job cuts, January through September 2026",
+   "value": 23010,
+   "low": null,
+   "high": null,
+   "unit": "announced cuts",
+   "year": 2026,
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm; announcements, not realized separations, and not a government count; the industry is the firm's assignment; cuts are all reasons combined, because the report does not split cuts by industry and by reason; the 2025 base of 299,755 is unusually large",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "Government 4,482 1,477 781 299,755 23,010",
+   "derived": "23,010 / 299,755 = 0.0768, so -92.3 percent; columns are Sep 2025, Aug 2026, Sep 2026, year to date 2025, year to date 2026",
+   "status": "verified"
+  },
+  {
+   "id": "jb-090",
+   "entity": "U.S. employers, announced hiring plans",
+   "metric": "hiring plans announced, January through September 2026",
+   "value": 210612,
+   "low": null,
+   "high": null,
+   "unit": "announced hires",
+   "year": 2026,
+   "boundary": "Hiring plans announced by U.S.-based employers and tallied by one outplacement firm; plans, not hires made; seasonal plans included",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "So far this year, companies have announced plans to hire 210,612 workers, up 3% from the 204,939 plans announced through September 2025.",
+   "derived": "210,612 / 204,939 = 1.028, so +2.8 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-091",
+   "entity": "Technology sector, U.S. employers, announced hiring plans",
+   "metric": "hiring plans announced, January through September 2026",
+   "value": 22361,
+   "low": null,
+   "high": null,
+   "unit": "announced hires",
+   "year": 2026,
+   "boundary": "Hiring plans announced by U.S.-based employers and tallied by one outplacement firm; plans, not hires made",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "For the year, Retail leads with 66,557, followed by Technology with 22,361 and Aerospace/Defense with 21,841.",
+   "derived": "165,925 cuts / 22,361 hiring plans = 7.4 cuts per announced hire in Technology, 2026 through September",
+   "status": "verified"
+  },
+  {
+   "id": "jb-092",
+   "entity": "U.S. employers, announced job cuts",
+   "metric": "cuts citing AI, September 2026 (month)",
+   "value": 3961,
+   "low": null,
+   "high": null,
+   "unit": "announced cuts",
+   "year": 2026,
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm; a reason of 'Artificial Intelligence' assigned by the firm; announcements, not realized separations",
+   "source": {
+    "title": "Challenger Report, September 2026",
+    "publisher": "Challenger, Gray and Christmas",
+    "url": "https://www.challengergray.com/wp-content/uploads/2026/10/Challenger-Report-September-2026.pdf",
+    "published": "2026-10-01",
+    "kind": "company-report"
+   },
+   "quote": "Artificial Intelligence was the fifth-most cited reason with 3,961 cuts in September, about 9% of the month's total.",
+   "derived": "3,961 / 43,281 total September cuts = 9.15 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-093",
+   "entity": "U.S. total construction",
+   "metric": "spending, seasonally adjusted annual rate, September 2026 (preliminary)",
+   "value": 2186.1,
+   "low": null,
+   "high": null,
+   "unit": "billion USD",
+   "year": 2026,
+   "boundary": "Public and private construction put in place, seasonally adjusted annual rate, not adjusted for price changes; dollars, not jobs; September 2026 preliminary",
+   "source": {
+    "title": "Monthly Construction Spending, September 2026 (CB26-176)",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/current/index.html",
+    "published": "2026-11-02",
+    "kind": "agency"
+   },
+   "quote": "Construction spending during September 2026 was estimated at a seasonally adjusted annual rate of $2,186.1 billion, 1.9 percent (±0.7 percent) below the revised August estimate of $2,227.4 billion. The September figure is 2.7 percent (±1.5 percent) below the September 2025 estimate of $2,245.8 billion.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-094",
+   "entity": "U.S. private manufacturing construction",
+   "metric": "spending, seasonally adjusted annual rate, September 2026 (preliminary)",
+   "value": 167226,
+   "low": null,
+   "high": null,
+   "unit": "million USD",
+   "year": 2026,
+   "boundary": "Private construction put in place, seasonally adjusted annual rate, millions of dollars, not adjusted for price changes; dollars of work, not jobs or hours; September 2026 is preliminary; columns are Sep 2026 (p), Aug 2026 (r), Jul 2026 (r), Jun, May 2026, Sep 2025, then percent change Aug to Sep 2026 and Sep 2025 to Sep 2026",
+   "source": {
+    "title": "Value of Private Construction Put in Place, Seasonally Adjusted Annual Rate",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/pdf/privsa.pdf",
+    "published": "2026-11-02",
+    "kind": "agency"
+   },
+   "quote": "Manufacturing 167,226 167,675 167,742 168,924 171,381 203,744 -0.3 -17.9",
+   "derived": "167,226 / 203,744 = 0.821, so -17.9 percent from September 2025",
+   "status": "verified"
+  },
+  {
+   "id": "jb-095",
+   "entity": "U.S. private computer, electronic, and electrical manufacturing construction",
+   "metric": "spending, seasonally adjusted annual rate, September 2026 (preliminary)",
+   "value": 52591,
+   "low": null,
+   "high": null,
+   "unit": "million USD",
+   "year": 2026,
+   "boundary": "Private construction put in place, seasonally adjusted annual rate, millions of dollars, not adjusted for price changes; dollars of work, not jobs or hours; September 2026 is preliminary; columns are Sep 2026 (p), Aug 2026 (r), Jul 2026 (r), Jun, May 2026, Sep 2025, then percent change Aug to Sep 2026 and Sep 2025 to Sep 2026",
+   "source": {
+    "title": "Value of Private Construction Put in Place, Seasonally Adjusted Annual Rate",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/pdf/privsa.pdf",
+    "published": "2026-11-02",
+    "kind": "agency"
+   },
+   "quote": "Computer/electronic/electrical 52,591 52,086 52,458 52,134 54,756 90,222 1.0 -41.7",
+   "derived": "52,591 / 90,222 = 0.583, so -41.7 percent from September 2025",
+   "status": "verified"
+  },
+  {
+   "id": "jb-096",
+   "entity": "U.S. private electric power construction",
+   "metric": "spending, seasonally adjusted annual rate, September 2026 (preliminary)",
+   "value": 146874,
+   "low": null,
+   "high": null,
+   "unit": "million USD",
+   "year": 2026,
+   "boundary": "Private construction put in place, seasonally adjusted annual rate, millions of dollars, not adjusted for price changes; dollars of work, not jobs or hours; September 2026 is preliminary; columns are Sep 2026 (p), Aug 2026 (r), Jul 2026 (r), Jun, May 2026, Sep 2025, then percent change Aug to Sep 2026 and Sep 2025 to Sep 2026",
+   "source": {
+    "title": "Value of Private Construction Put in Place, Seasonally Adjusted Annual Rate",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/pdf/privsa.pdf",
+    "published": "2026-11-02",
+    "kind": "agency"
+   },
+   "quote": "Electric 146,874 144,981 142,825 138,550 134,574 128,827 1.3 14.0",
+   "derived": "146,874 / 128,827 = 1.140, so +14.0 percent from September 2025",
+   "status": "verified"
+  },
+  {
+   "id": "jb-097",
+   "entity": "Utilities sector (NAICS 22)",
+   "metric": "projected employment change, 2025-35 (major industry sector)",
+   "value": 9.8,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change",
+   "source": {
+    "title": "Employment Projections 2025-2035 (USDL-26-1422)",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/news.release/pdf/ecopro.pdf",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Utilities is projected to have the fastest job growth (+9.8 percent) of all major industry sectors over the 2025−35 decade. However, this fast growth is projected to account for an increase of only 58,800 new jobs because of the sector’s relatively small employment size.",
+   "derived": "Table: 601.3 thousand in 2025 to 660.1 thousand in 2035, +58.8 thousand, +9.8 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-098",
+   "entity": "Computing infrastructure providers, data processing, web hosting, and related services (NAICS 518210)",
+   "metric": "projected employment change, 2025-35 (detailed industry)",
+   "value": 25.1,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change; wage and salary employment, so smaller than the FRED series (jb-045), which also counts self-employed and unpaid family workers",
+   "source": {
+    "title": "Employment Projections 2025-2035 (USDL-26-1422)",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/news.release/pdf/ecopro.pdf",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Accelerated AI adoption is also expected to support employment growth in the computing infrastructure providers, data processing, web hosting, and related services industry. As a result, this industry is projected to grow 25.1 percent and add 120,400 new jobs over the projections period.",
+   "derived": "120.4 thousand / 0.251 = about 480 thousand implied 2025 base; implied 2035 level about 600 thousand",
+   "status": "verified"
+  },
+  {
+   "id": "jb-099",
+   "entity": "Construction sector (NAICS 23)",
+   "metric": "projected employment change, 2025-35 (major industry sector)",
+   "value": 5.0,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change",
+   "source": {
+    "title": "Employment by major industry sector",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/emp/tables/employment-by-major-industry-sector.htm",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Construction | 23 | 6,461.4 | 8,266.7 | 8,677.4 | 1,805.3 | 410.7 | 27.9 | 5.0 |",
+   "derived": "8,266.7 to 8,677.4 thousand = +410.7 thousand; 410.7 / 8,266.7 = 4.97 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-100",
+   "entity": "Manufacturing sector (NAICS 31-33)",
+   "metric": "projected employment change, 2025-35 (major industry sector)",
+   "value": 0.6,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change",
+   "source": {
+    "title": "Employment by major industry sector",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/emp/tables/employment-by-major-industry-sector.htm",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Manufacturing | 31, 32, 33 | 12,309.8 | 12,633.7 | 12,705.8 | 323.9 | 72.1 | 2.6 | 0.6 |",
+   "derived": "12,633.7 to 12,705.8 thousand = +72.1 thousand; 72.1 / 12,633.7 = 0.57 percent",
+   "status": "verified"
+  },
+  {
+   "id": "jb-101",
+   "entity": "Office and administrative support occupations (SOC 43)",
+   "metric": "projected employment change, 2025-35 (occupational group)",
+   "value": -4.0,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change; the largest decline of the 22 major occupational groups; AI is one named factor among automation tools, not the only one",
+   "source": {
+    "title": "Employment Projections 2025-2035 (USDL-26-1422)",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/news.release/pdf/ecopro.pdf",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Similarly, the continued integration of automation tools, including those powered by AI, into workflows is likely to reduce demand for several office and administrative support occupations. This occupational group is projected to decline at the fastest pace (-4.0 percent) and to shed 752,100 jobs over the 2025−35 decade, the most of any major occupational group.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-102",
+   "entity": "Professional, scientific, and technical services sector (NAICS 54)",
+   "metric": "projected employment change, 2025-35 (major industry sector)",
+   "value": 8.6,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2035,
+   "boundary": "BLS 2025-35 projection, wage and salary employment for industries (major sector or detailed industry), total employment for occupations; BLS applies AI adjustments conservatively (jb-016) and says uncertainty is very high; a projection, not an observed change",
+   "source": {
+    "title": "Employment Projections 2025-2035 (USDL-26-1422)",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/news.release/pdf/ecopro.pdf",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Demand for AI-based systems, research and development, and associated consulting services is expected to drive the need for workers in professional, scientific, and technical services. This major industry sector is projected to be the third fastest growing sector (+8.6 percent) over the projections period. This fast growth is projected to result in 926,700 new jobs, the second largest job growth of any sector.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-103",
+   "entity": "BLS AI exposure categories",
+   "metric": "coverage and imputation (method)",
+   "value": 831,
+   "low": null,
+   "high": null,
+   "unit": "occupations",
+   "year": 2035,
+   "boundary": "Detailed occupations for which BLS publishes projections; five outside sources (three theoretical, two observed usage); four relative categories Low, Moderate, High, Very high; not a forecast of job loss",
+   "source": {
+    "title": "Artificial Intelligence (AI) exposure categories",
+    "publisher": "U.S. Bureau of Labor Statistics",
+    "url": "https://www.bls.gov/emp/publications/ai-exposure-categories.htm",
+    "published": "2026-08-27",
+    "kind": "agency"
+   },
+   "quote": "Across 4,155 possible occupation-source combinations for the detailed occupations for which BLS publishes projections data (831 occupations times 5 sources), 3,944 were observed and 211 were imputed, affecting 75 occupations.",
+   "derived": "831 x 5 = 4,155; 3,944 + 211 = 4,155; 211 / 4,155 = 5.1 percent imputed",
+   "status": "verified"
+  },
+  {
+   "id": "jb-104",
+   "entity": "Manufacturing job postings requiring AI skills",
+   "metric": "share of postings, second half of 2025",
+   "value": 11,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2025,
+   "boundary": "Lightcast online job postings for manufacturing establishments against all sectors; postings are a hiring-demand indicator, not vacancies or jobs; a staff note, not Federal Reserve policy",
+   "source": {
+    "title": "AI on the Factory Floor: Evidence from Manufacturing Job Postings (FEDS Notes)",
+    "publisher": "Board of Governors of the Federal Reserve System",
+    "url": "https://www.federalreserve.gov/econres/notes/feds-notes/ai-on-the-factory-floor-evidence-from-manufacturing-job-postings-20260930.html",
+    "published": "2026-09-30",
+    "kind": "agency"
+   },
+   "quote": "Second, AI skill requirements show a more recent and rapid emergence: after remaining flat and modest through early 2025, AI-related requirements surged in the second half of last year, reaching 11 percent in manufacturing versus 8 percent economy-wide.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "Posted wages in a small sample of AI-related postings, with large swings; an association with skill demand, not pay for workers displaced or hired.",
+   "id": "jb-105",
+   "entity": "Manufacturing job postings requiring AI skills",
+   "metric": "posted wage premium over all manufacturing postings, over the sample period (wage chart data through July 2026)",
+   "value": 70,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "boundary": "Lightcast postings with wage data (about 50 percent of recent postings); small sample of AI-related postings; posted wages, not paid wages; production occupations alone show a premium of roughly 30 percent; the note says 'over the sample period' and does not give one year, so the year is the note's publication year",
+   "source": {
+    "title": "AI on the Factory Floor: Evidence from Manufacturing Job Postings (FEDS Notes)",
+    "publisher": "Board of Governors of the Federal Reserve System",
+    "url": "https://www.federalreserve.gov/econres/notes/feds-notes/ai-on-the-factory-floor-evidence-from-manufacturing-job-postings-20260930.html",
+    "published": "2026-09-30",
+    "kind": "agency"
+   },
+   "quote": "Among all manufacturing positions, postings requiring AI skills are associated with wages that are, on average, around 70 percent higher than all manufacturing posted wages over the sample period, with substantial volatility likely stemming from the small sample of AI-related postings and shifts in which types of positions require these skills.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A trade association survey of its member firms; the 60 and 36 percent are not adjusted for firm size, which the same digest shows drives hiring (79 percent of firms over $500 million added at least 5 percent headcount, 30 percent of firms under $50 million).",
+   "id": "jb-106",
+   "entity": "Construction firms that worked on a data center project",
+   "metric": "share that added workers, past year",
+   "value": 60,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "boundary": "Member firms of a trade association that answered one survey question (802 respondents; 28 percent worked on a data center project); self-selected, not a random sample; firms with no data center work: 36 percent added workers",
+   "source": {
+    "title": "Data-center demand, immigration crackdown add to tight labor market, AGC-NCCER survey finds (AGC Data DIGEST, Vol. 26, No. 33)",
+    "publisher": "Associated General Contractors of America",
+    "url": "https://www.agc.org/sites/default/files/users/user21902/datadigest20260904_.pdf",
+    "published": "2026-09-04",
+    "kind": "company-report"
+   },
+   "quote": "Of the 802 who responded to this question, 28% reported working on a data center project during the past year; 60% of those respondents reported their firm added workers, compared to 36% of firms that did no data center work.",
+   "derived": "60 - 36 = 24 percentage points",
+   "status": "partly"
+  },
+  {
+   "id": "jb-107",
+   "entity": "Transmission, distribution, and storage (TDS) sector (electricity and fuels)",
+   "metric": "employment, 2025, and change from 2024",
+   "value": 1.5,
+   "low": null,
+   "high": null,
+   "unit": "million workers",
+   "year": 2025,
+   "boundary": "DOE survey of employers (BW Research Partnership), TDS covers electricity transmission and distribution and storage plus the transportation and storage of fuels (natural gas and liquid fuels), not electric power only; USEER is not comparable to BLS QCEW or OEWS counts; published date from the document listing",
+   "source": {
+    "title": "2026 United States Energy & Employment Report (USEER)",
+    "publisher": "U.S. Department of Energy, Office of Policy",
+    "url": "https://www.energy.gov/documents/2026-useer-national-report",
+    "published": "2026-08-14",
+    "kind": "agency"
+   },
+   "quote": "The TDS sector employed 1.5 million workers and grew by 2% (+28,000 workers) in 2025 from 2024",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-108",
+   "entity": "Energy sector employers, electrically skilled occupations",
+   "metric": "shortage attributed to data centers (qualitative)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2025,
+   "boundary": "DOE survey statement; no count of unfilled jobs is given in the highlight; attribution to data centers is the report's, not measured separately from other demand",
+   "source": {
+    "title": "2026 United States Energy & Employment Report (USEER)",
+    "publisher": "U.S. Department of Energy, Office of Policy",
+    "url": "https://www.energy.gov/documents/2026-useer-national-report",
+    "published": "2026-08-14",
+    "kind": "agency"
+   },
+   "quote": "There are particularly high shortages in electrically skilled occupations due to additional demand from the rapidly expanding data center sector.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-109",
+   "entity": "U.S. corporate executives (survey of nearly 750), by sector",
+   "metric": "labor productivity gains from AI, by sector (qualitative)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2026,
+   "boundary": "Survey of nearly 750 corporate executives; perceived and expected gains; a working paper, not peer reviewed",
+   "source": {
+    "title": "Artificial Intelligence, Productivity, and the Workforce: Evidence from Corporate Executives (Working Paper 2026-04)",
+    "publisher": "Federal Reserve Bank of Atlanta",
+    "url": "https://www.atlantafed.org/research-and-data/publications/working-papers/2026/03/25/04-artificial-intelligence-productivity-and-the-workforce-evidence-from-corporate-executives",
+    "published": "2026-03-25",
+    "kind": "preprint"
+   },
+   "quote": "Labor productivity gains are positive, vary across sectors, and are expected to strengthen in 2026, with the largest effects concentrated in high-skill services and finance.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "jb-110",
+   "entity": "U.S. corporate executives (survey of nearly 750), employment",
+   "metric": "near-term employment effect of AI, by firm size (qualitative)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2026,
+   "boundary": "Survey of nearly 750 corporate executives; expectations and reports, not payroll data; a working paper, not peer reviewed",
+   "source": {
+    "title": "Artificial Intelligence, Productivity, and the Workforce: Evidence from Corporate Executives (Working Paper 2026-04)",
+    "publisher": "Federal Reserve Bank of Atlanta",
+    "url": "https://www.atlantafed.org/research-and-data/publications/working-papers/2026/03/25/04-artificial-intelligence-productivity-and-the-workforce-evidence-from-corporate-executives",
+    "published": "2026-03-25",
+    "kind": "preprint"
+   },
+   "quote": "In labor markets, we find little evidence of near-term aggregate employment declines due to AI, though larger companies anticipate AI-driven workforce reductions, while smaller firms expect modest gains.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A survey balance of firms reporting more against fewer staff because of AI, not a count of jobs; shown with the survey's own words.",
+   "id": "jb-111",
+   "entity": "Firms worldwide, net employment impact of AI adoption",
+   "metric": "net balance, past 12 months",
+   "value": -5,
+   "low": null,
+   "high": null,
+   "unit": "percentage points",
+   "year": 2025,
+   "boundary": "S&P Global Purchasing Managers' Index special survey and 451 Research survey of firms worldwide; net balance = percent of firms reporting more staff due to AI minus percent reporting fewer; a diffusion measure, not a count of jobs; private-sector firms",
+   "source": {
+    "title": "The AI and labor landscape 2026: Increased investment, persistent productivity gains and a recalibrated employment outlook",
+    "publisher": "S&P Global Market Intelligence",
+    "url": "https://www.spglobal.com/content/dam/spglobal/global-assets/en/special-reports/The%20AI%20and%20Labor%20Landscape%202026.pdf",
+    "published": "2026-06-25",
+    "kind": "company-report"
+   },
+   "quote": "the latest findings show a negative global net impact for the past year (-5 points) and a marginal decline forecast for 2026 (-2 points).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "The -7 comes from chart labels read through a text extractor; the sentence states the direction only. A survey balance, not a count of jobs.",
+   "id": "jb-112",
+   "entity": "Manufacturing firms, net employment impact of AI adoption",
+   "metric": "net balance, 2025",
+   "value": -7,
+   "low": null,
+   "high": null,
+   "unit": "percentage points",
+   "year": 2025,
+   "boundary": "S&P Global Purchasing Managers' Index special survey and 451 Research survey of firms worldwide; net balance = percent of firms reporting more staff due to AI minus percent reporting fewer; a diffusion measure, not a count of jobs; private-sector firms; the value is read from chart labels in the PDF text, with the text stating only that the effect is slightly more pronounced among manufacturers",
+   "source": {
+    "title": "The AI and labor landscape 2026: Increased investment, persistent productivity gains and a recalibrated employment outlook",
+    "publisher": "S&P Global Market Intelligence",
+    "url": "https://www.spglobal.com/content/dam/spglobal/global-assets/en/special-reports/The%20AI%20and%20Labor%20Landscape%202026.pdf",
+    "published": "2026-06-25",
+    "kind": "company-report"
+   },
+   "quote": "The net impact on employment was slightly more pronounced among manufacturing firms (see dashboard figure above).",
+   "derived": "Chart labels for 2025: Manufacturing employment -7, Services employment -6, so manufacturing is 1 point more negative",
+   "status": "partly"
+  },
+  {
+   "limit": "The -6 comes from chart labels read through a text extractor; the quoted sentence does not state it. A survey balance, not a count of jobs.",
+   "id": "jb-113",
+   "entity": "Services firms, net employment impact of AI adoption",
+   "metric": "net balance, 2025",
+   "value": -6,
+   "low": null,
+   "high": null,
+   "unit": "percentage points",
+   "year": 2025,
+   "boundary": "S&P Global Purchasing Managers' Index special survey and 451 Research survey of firms worldwide; net balance = percent of firms reporting more staff due to AI minus percent reporting fewer; a diffusion measure, not a count of jobs; private-sector firms; the value is read from chart labels in the PDF text",
+   "source": {
+    "title": "The AI and labor landscape 2026: Increased investment, persistent productivity gains and a recalibrated employment outlook",
+    "publisher": "S&P Global Market Intelligence",
+    "url": "https://www.spglobal.com/content/dam/spglobal/global-assets/en/special-reports/The%20AI%20and%20Labor%20Landscape%202026.pdf",
+    "published": "2026-06-25",
+    "kind": "company-report"
+   },
+   "quote": "Globally, goods producers and service providers reported productivity gains and revenue growth as the main benefits of AI investment.",
+   "derived": "Chart labels for 2025: Services revenues +22, productivity +38, employment -6",
+   "status": "partly"
+  },
+  {
+   "id": "jb-114",
+   "entity": "Firms worldwide, roles reduced and roles added because of AI (qualitative)",
+   "metric": "named role categories",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2025,
+   "boundary": "S&P Global Purchasing Managers' Index special survey and 451 Research survey of firms worldwide; net balance = percent of firms reporting more staff due to AI minus percent reporting fewer; a diffusion measure, not a count of jobs; private-sector firms",
+   "source": {
+    "title": "The AI and labor landscape 2026: Increased investment, persistent productivity gains and a recalibrated employment outlook",
+    "publisher": "S&P Global Market Intelligence",
+    "url": "https://www.spglobal.com/content/dam/spglobal/global-assets/en/special-reports/The%20AI%20and%20Labor%20Landscape%202026.pdf",
+    "published": "2026-06-25",
+    "kind": "company-report"
+   },
+   "quote": "reductions in roles such as administration and office support, translation, manufacturing, production and customer service were partially offset by new positions to manage AI initiatives, including technical, software and digital functions.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "The series page lists the 2025 edition first of five and shows no later one; that the 2025 edition is the newest is read from the listing order, and the absence of an announced next edition is not proof that none is planned.",
+   "id": "jb-115",
+   "entity": "World Economic Forum, Future of Jobs Report series",
+   "metric": "latest edition and status as of 11/04/2026 (method)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2025,
+   "boundary": "WEF series page, which counts five editions; the newest listed is the 2025 edition. No later edition and no date for the next one was found on the page or in search results",
+   "source": {
+    "title": "Reports (Future of Jobs series page)",
+    "publisher": "World Economic Forum",
+    "url": "https://www.weforum.org/publications/series/future-of-jobs/",
+    "published": "2026-11-04",
+    "kind": "company-report"
+   },
+   "quote": "Learn how global trends like tech innovation and green transition will transform jobs, skills, and workforce strategies in The Future of Jobs Report 2025 Jan 8, 2025",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "Exposure of occupations to AI-driven task change, not displacement; built on PwC data whose exposure definition differs from Stanford's (jb-046) and BLS's (jb-017).",
+   "id": "jb-116",
+   "entity": "Young workers worldwide in occupations with medium to high AI exposure",
+   "metric": "share of young workers",
+   "value": 37,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "boundary": "WEF insight report in collaboration with PwC, June 2026; analysis of occupational exposure to AI-driven task change, not job loss; regional shares: Eastern Asia 75, Northern America 69, Europe 63 percent",
+   "source": {
+    "title": "Artificial Intelligence and the Future of Entry-Level Work: A Framework for Safeguarding and Reinventing Early Career Pathways",
+    "publisher": "World Economic Forum, with PwC",
+    "url": "https://reports.weforum.org/docs/WEF_Artificial_Intelligence_and_the_Future_of_Entry_Level_Work_2026.pdf",
+    "published": "2026-06-22",
+    "kind": "company-report"
+   },
+   "quote": "Globally, more than one in three (37%) young workers are employed in occupations with medium to high exposure to AI-driven task change, including three in four young workers in Eastern Asia (75%) and two in three young workers in Northern America (69%) and Europe (63%).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "jb-117",
+   "entity": "Sectors by AI exposure for entry-level roles (qualitative)",
+   "metric": "highest and lowest exposure sectors",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2026,
+   "boundary": "WEF insight report in collaboration with PwC, June 2026; exposure is task exposure, not job loss; entry-level roles",
+   "source": {
+    "title": "Artificial Intelligence and the Future of Entry-Level Work: A Framework for Safeguarding and Reinventing Early Career Pathways",
+    "publisher": "World Economic Forum, with PwC",
+    "url": "https://reports.weforum.org/docs/WEF_Artificial_Intelligence_and_the_Future_of_Entry_Level_Work_2026.pdf",
+    "published": "2026-06-22",
+    "kind": "company-report"
+   },
+   "quote": "Sectors with the highest exposure include Financial Services, Information and Communication, Professional Services, Science and Education, whereas entry-level roles in sectors such as Agriculture, Construction and Food Services are comparatively less affected.",
+   "derived": null,
+   "status": "verified"
   }
  ]
 }

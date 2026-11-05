@@ -1466,6 +1466,62 @@
    "quote": "Under parallel adoption scenarios, net annual CO₂ emissions increase by 0.47–1.8 gigatonnes (1.2–4.8% of 2024 global energy-related CO₂ emissions).",
    "derived": null,
    "status": "partly"
+  },
+  {
+   "id": "ec-061",
+   "entity": "ITU-T L.1801 (02/2026), clause 8.1.2.2 and Appendix IV",
+   "metric": "example functional units the Recommendation gives for AI systems (text: tokens; image, speech, video: bytes)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a (units: prompt, generated and thinking tokens; bytes of image, audio or video)",
+   "year": 2026,
+   "boundary": "Examples inside an LCA standard for AI systems; the Appendix does not form an integral part of the Recommendation. Quality and duration are not part of the examples.",
+   "source": {
+    "title": "Recommendation ITU-T L.1801 (02/2026), Guidelines for assessing the environmental impact of artificial intelligence systems",
+    "publisher": "International Telecommunication Union",
+    "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-L.1801-202602-I!!PDF-E&type=items",
+    "published": "2026-02-17",
+    "kind": "standard"
+   },
+   "quote": "Some examples of a functional unit for different kinds of AI systems: Text generation: X prompt tokens & Y generated tokens & Z thinking tokens. Image generation: X bytes. Automatic speech recognition: X bytes of audio recording. Video generation: X bytes of video.",
+   "derived": null,
+   "status": "verified",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a"
+  },
+  {
+   "id": "ec-062",
+   "entity": "SCI for AI (Green Software Foundation), Consumer functional units table",
+   "metric": "suggested functional units by AI system type",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a (per token, per second, per image, per workflow execution and others)",
+   "year": 2025,
+   "boundary": "Consumer-side boundary; the specification keeps a separate Provider table (per FLOP, per training token, per billion parameters). Suggestions, 'indicative and not exhaustive'.",
+   "source": {
+    "title": "Software Carbon Intensity for Artificial Intelligence (SCI for AI), SPEC.md",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci-ai/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "| Large Language Models (LLMs) | Per Token | | Video Generation | Per Second | | Image Generation | Per Image | | Agentic AI | Per Workflow Execution | | OCR/Document Analysis | Per Page Processed | | Classical Machine Learning (e.g., Classification) | Per Inference | | Machine Translation | Per Character Translated | | Speech Recognition | Per Second of Audio Processed | | Text-to-Speech | Per Character of Text Processed |",
+   "derived": null,
+   "status": "verified",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a"
   }
  ]
 }

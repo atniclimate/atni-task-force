@@ -1,0 +1,134 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-jobs-sector",
+ "default": "jb-098",
+ "eyebrow": "Jobs by sector",
+ "title": "By 2035, BLS projects +{c[jb-098][value]} percent in computing and hosting and +{c[jb-097][value]} in utilities, against {c[jb-101][value]} in office and administrative support; in jobs, that one loss is larger than those two gains together",
+ "subtitle": "Projected percent change in employment, 2025 to 2035. Percents hide size: a large group's small fall can outweigh a small group's large rise.",
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "sector_sort",
+   "label": "Sort",
+   "default": "value",
+   "options": [
+    {
+     "value": "value",
+     "label": "By change"
+    },
+    {
+     "value": "tag",
+     "label": "By kind"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "bars",
+  "signed": true,
+  "sort": "sector_sort",
+  "projected": true,
+  "domain": [
+   -10,
+   30
+  ],
+  "axis_label": "Projected percent change, 2025 to 2035",
+  "marks": [
+   {
+    "id": "all",
+    "label": "All occupations",
+    "claim": "jb-010"
+   }
+  ]
+ },
+ "reading": "{label}: {display} projected change, 2025 to 2035. BLS Employment Projections, {published}.",
+ "rows": [
+  {
+   "id": "jb-098",
+   "label": "Computing, data processing, and hosting",
+   "claim": "jb-098",
+   "tag": "Detailed industry",
+   "cols": {
+    "kind": "Detailed industry"
+   },
+   "detail": "BLS's own count: about 120,400 more jobs."
+  },
+  {
+   "id": "jb-097",
+   "label": "Utilities",
+   "claim": "jb-097",
+   "tag": "Major sector",
+   "cols": {
+    "kind": "Major sector"
+   },
+   "detail": "From 601,300 jobs in 2025 to 660,100 in 2035, about 58,800 more."
+  },
+  {
+   "id": "jb-102",
+   "label": "Professional, scientific, and technical services",
+   "claim": "jb-102",
+   "tag": "Major sector",
+   "cols": {
+    "kind": "Major sector"
+   }
+  },
+  {
+   "id": "jb-099",
+   "label": "Construction",
+   "claim": "jb-099",
+   "tag": "Major sector",
+   "cols": {
+    "kind": "Major sector"
+   },
+   "detail": "From 8,266,700 jobs in 2025 to 8,677,400 in 2035, about 410,700 more."
+  },
+  {
+   "id": "jb-100",
+   "label": "Manufacturing",
+   "claim": "jb-100",
+   "tag": "Major sector",
+   "cols": {
+    "kind": "Major sector"
+   },
+   "detail": "From 12,633,700 jobs in 2025 to 12,705,800 in 2035, about 72,100 more."
+  },
+  {
+   "id": "jb-101",
+   "label": "Office and administrative support",
+   "claim": "jb-101",
+   "tag": "Occupational group",
+   "cols": {
+    "kind": "Occupational group"
+   },
+   "detail": "About 752,100 fewer jobs, the largest decline of the 22 major occupational groups."
+  }
+ ],
+ "cites": [
+  "jb-016"
+ ],
+ "details": [
+  "BLS applies AI adjustments conservatively and calls uncertainty very high. A sector count includes every cause, so none of these rows measures AI's effect alone."
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Sector or group",
+    "field": "label"
+   },
+   {
+    "label": "Kind",
+    "field": "kind"
+   },
+   {
+    "label": "Change, percent",
+    "field": "text"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

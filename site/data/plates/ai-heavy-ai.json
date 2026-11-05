@@ -87,8 +87,12 @@
      "label": "Measured delivery"
     },
     {
-     "value": "desnz_assumed",
-     "label": "DESNZ scenario"
+     "value": "desnz_followup",
+     "label": "DESNZ follow-up"
+    },
+    {
+     "value": "top_down",
+     "label": "Top-down average"
     }
    ]
   }
@@ -160,7 +164,7 @@
  },
  "reading": "{label}: about {display}; text prompts, {prompts}; hours of this yardstick, {yard}, {hours}. {evidence}",
  "details": [
-  "The whole-chain yardsticks include the viewer's screen and router, so they flatter AI; the data center yardstick is like for like but rests on a 45-times dispute over serving energy."
+  "The whole-chain yardsticks include the viewer's screen and router, so they flatter AI; the data center yardstick is like for like but rests on an unsettled allocation of serving energy, so a prompt's reading on it moves with the setting."
  ],
  "rows": [
   {
@@ -349,5 +353,13 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "cites": [
+  "ec-024",
+  "fp-141",
+  "fp-142",
+  "fp-143",
+  "fp-147",
+  "fp-149"
+ ]
 }

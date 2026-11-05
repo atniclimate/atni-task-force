@@ -283,7 +283,7 @@ def test_design_document_numbers_hold(world):
     assert d["colo"]["wh"] == pytest.approx(448, rel=0.01) and d["node_100k"]["usd"] == pytest.approx(28.74, rel=0.001) and d["node_1m_hydro"]["g"] == pytest.approx(11.5, rel=0.01)
     assert d["hyper_same_grid"]["wh"] == d["hyper"]["wh"] and d["node_1m"]["g"] > d["hyper_same_grid"]["g"], "on one grid the node still loses at a million"
     assert d["readings"]["hyper_small_model_usd"] == pytest.approx(0.20, rel=0.01)
-    assert t["cross"]["views_desnz_same_network"] == pytest.approx(4167, rel=0.001) and t["cross"]["views_measured_network_credit"] == pytest.approx(94010, rel=0.001)
+    assert t["cross"]["views_desnz_same_network"] is None and t["cross"]["views_measured_network_credit"] == pytest.approx(94010, rel=0.001)
     assert t["cross"]["prompts_energy_vs_hyper"] == pytest.approx(2.76e6, rel=0.01) and t["cross"]["prompts_carbon_on_hydro_vs_hyper_us"] == pytest.approx(79.6e3, rel=0.01)
     assert t["cross"]["prompts_carbon_same_grid"] == pytest.approx(t["cross"]["prompts_energy_vs_hyper"]), "on one feed the carbon crossover is the energy crossover"
     assert rm.project_scale(100, 1.0, 0.36, 350)["site_water_l_per_year"] == pytest.approx(315.36e6)

@@ -16,10 +16,10 @@
    "model": "inputs.household_wh_per_day.value"
   },
   "video_floor": {
-   "model": "computed_defaults.per_person_day.video_day"
+   "model": "computed_defaults.per_person_day.video_day_desnz"
   },
   "short_floor": {
-   "model": "computed_defaults.per_person_day.short_day"
+   "model": "computed_defaults.per_person_day.short_day_desnz"
   }
  },
  "controls": [
@@ -32,6 +32,10 @@
     {
      "value": "mean",
      "label": "3.67, OpenAI's mean"
+    },
+    {
+     "value": "panel",
+     "label": "4.3, Epoch AI's panel"
     },
     {
      "value": "eight",
@@ -50,8 +54,12 @@
      "label": "Measured delivery"
     },
     {
-     "value": "desnz_assumed",
-     "label": "DESNZ scenario"
+     "value": "desnz_followup",
+     "label": "DESNZ follow-up"
+    },
+    {
+     "value": "top_down",
+     "label": "Top-down average"
     }
    ]
   },
@@ -73,7 +81,7 @@
     "label": "One person's day: text prompts and video delivery",
     "domain": [
      0,
-     50
+     100
     ]
    },
    {
@@ -81,7 +89,7 @@
     "label": "Another boundary: all products, AI training, and offices",
     "domain": [
      0,
-     50
+     100
     ]
    }
   ]
@@ -105,7 +113,8 @@
     "fp-001",
     "fp-017",
     "fp-012",
-    "fp-075"
+    "fp-075",
+    "fp-154"
    ],
    "formula": {
     "value": "now.chat_day",
@@ -124,7 +133,11 @@
     "fp-098",
     "fp-130",
     "fp-122",
-    "fp-043"
+    "fp-141",
+    "fp-142",
+    "ec-024",
+    "fp-147",
+    "fp-149"
    ],
    "formula": {
     "value": "now.video_day",
@@ -132,7 +145,7 @@
     "high": "now.video_day_high"
    },
    "equation": "Minutes / 60 x GB per hour x Wh per GB served",
-   "detail": "0.66 Wh on measured delivery, 28.7 Wh at the DESNZ scenario's assumed intensity, and 44.1 Wh at its high case. The gap is a dispute over serving energy, not an allocation."
+   "detail": "0.66 Wh on measured delivery, 0.251 Wh at the DESNZ follow-up's intensity, and 80.7 Wh at a top-down average that spreads all data center energy over all bytes. The allocation is unsettled, so read this as a range."
   },
   {
    "id": "ig",
@@ -145,7 +158,8 @@
     "fp-055",
     "fp-059",
     "fp-122",
-    "fp-043"
+    "fp-141",
+    "fp-142"
    ],
    "formula": {
     "value": "now.short_day",
@@ -153,7 +167,7 @@
     "high": "now.short_day_high"
    },
    "equation": "Minutes / 60 x GB per hour x Wh per GB served",
-   "detail": "Delivery only: ranking and recommendation compute are unmeasured. 12.7 Wh at the DESNZ intensity; the high end is capped at Meta's whole day."
+   "detail": "Delivery only: ranking and recommendation compute are unmeasured. 0.111 Wh at the DESNZ follow-up's intensity; the high end is capped at Meta's whole day."
   },
   {
    "id": "meta",

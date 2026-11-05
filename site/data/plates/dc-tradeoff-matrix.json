@@ -12,13 +12,22 @@
   "The matrix shows what is known for each of the seven tradeoffs and what remains open. Set a project's size, cooling, and grid below; the instrument reads the water and power that follow."
  ],
  "default": "water--national",
- "reading": "{label}, {column}: {display}, {year}. {evidence}",
+ "reading": "{label}, {column}: {display}. {evidence}",
  "plot": {
   "type": "matrix",
   "columns": [
-   {"id": "national", "label": "At national scale"},
-   {"id": "unit", "label": "Per unit, or one site"},
-   {"id": "open", "label": "Open question"}
+   {
+    "id": "national",
+    "label": "At national scale"
+   },
+   {
+    "id": "unit",
+    "label": "Per unit, or one site"
+   },
+   {
+    "id": "open",
+    "label": "Open question"
+   }
   ],
   "units": {
    "billion liters (nearly)": "billion liters",
@@ -35,7 +44,8 @@
    "acres (site; low = 57 acres of building floor area per the source)": "acres",
    "degrees C (average)": "degrees C",
    "MWh heat per MWh electricity": "MWh of heat per MWh",
-   "million tonnes per year": "million tonnes a year"
+   "million tonnes per year": "million tonnes a year",
+   "billion kg CO2e (65 Mt)": "Mt CO2e"
   }
  },
  "rows": [
@@ -44,12 +54,30 @@
    "label": "Water",
    "cells": {
     "national": [
-     {"claim": "tr-001", "say": "{display} on site"},
-     {"claim": "tr-004", "say": "about {display} at power plants"}
+     {
+      "claim": "tr-001",
+      "say": "{display} on site, LBNL 2024 Report, {year}"
+     },
+     {
+      "claim": "tr-004",
+      "say": "about {display} at power plants, LBNL 2024 Report, {year}"
+     },
+     {
+      "claim": "tr-068",
+      "say": "about {display} at power plants, derived, {year}",
+      "modeled": true
+     }
     ],
     "unit": [
-     {"claim": "tr-009", "say": "{display} on site", "range": false},
-     {"claim": "tr-005", "say": "{display} at the plant"}
+     {
+      "claim": "tr-009",
+      "say": "{display} on site, {year}",
+      "range": false
+     },
+     {
+      "claim": "tr-005",
+      "say": "{display} at the plant, {year}"
+     }
     ],
     "open": "Watershed and season"
    }
@@ -58,8 +86,18 @@
    "id": "power",
    "label": "Power",
    "cells": {
-    "national": [{"claim": "dem-028", "say": "{display} in 2024"}],
-    "unit": [{"claim": "tr-065", "say": "PUE {display}, all facilities"}],
+    "national": [
+     {
+      "claim": "dem-028",
+      "say": "{display}, {year}"
+     }
+    ],
+    "unit": [
+     {
+      "claim": "tr-065",
+      "say": "PUE {display}, all facilities, {year}"
+     }
+    ],
     "open": "Workload split: no operator discloses it"
    }
   },
@@ -68,12 +106,33 @@
    "label": "Emissions",
    "cells": {
     "national": [
-     {"claim": "tr-006", "say": "{display} from electricity, US"},
-     {"claim": "tr-035", "say": "{display} now, IEA, world", "range": false}
+     {
+      "claim": "tr-006",
+      "say": "{display} from electricity, US, LBNL 2024 Report, {year}"
+     },
+     {
+      "claim": "tr-070",
+      "say": "about {display} from electricity, US, derived, {year}",
+      "modeled": true
+     },
+     {
+      "claim": "tr-035",
+      "say": "{display} now, IEA, world, {year}",
+      "range": false
+     }
     ],
     "unit": [
-     {"claim": "tr-038", "say": "{display} at hyperscale sites, preprint", "range": false, "modeled": true},
-     {"claim": "tr-066", "say": "against {display} national, same preprint", "modeled": true}
+     {
+      "claim": "tr-038",
+      "say": "{display} at hyperscale sites, preprint, {year}",
+      "range": false,
+      "modeled": true
+     },
+     {
+      "claim": "tr-066",
+      "say": "against {display} national, same preprint, {year}",
+      "modeled": true
+     }
     ],
     "open": "Embodied carbon per rack"
    }
@@ -83,11 +142,21 @@
    "label": "Air",
    "cells": {
     "national": [
-     {"claim": "tr-051", "say": "under {display}, Virginia backup generators"}
+     {
+      "claim": "tr-051",
+      "say": "under {display}, Virginia backup generators, {year}"
+     }
     ],
     "unit": [
-     {"claim": "tr-047", "say": "{display}, Memphis permit"},
-     {"claim": "tr-044", "say": "over {display} in health burden, modeled, US", "modeled": true}
+     {
+      "claim": "tr-047",
+      "say": "{display}, Memphis permit, {year}"
+     },
+     {
+      "claim": "tr-044",
+      "say": "over {display} in health burden, modeled, US, {year}",
+      "modeled": true
+     }
     ],
     "open": "Regional monitoring"
    }
@@ -96,8 +165,22 @@
    "id": "land",
    "label": "Land",
    "cells": {
-    "national": [{"claim": "tr-054", "say": "new builds average {display} of floor", "range": false, "modeled": true}],
-    "unit": [{"claim": "tr-055", "say": "{display}, one campus", "range": false, "modeled": true}],
+    "national": [
+     {
+      "claim": "tr-054",
+      "say": "new builds average {display} of floor, {year}",
+      "range": false,
+      "modeled": true
+     }
+    ],
+    "unit": [
+     {
+      "claim": "tr-055",
+      "say": "{display}, one campus, {year}",
+      "range": false,
+      "modeled": true
+     }
+    ],
     "open": "Land per MW"
    }
   },
@@ -105,8 +188,20 @@
    "id": "heat",
    "label": "Heat",
    "cells": {
-    "national": [{"claim": "tr-053", "say": "+{display} land surface around AI sites, preprint", "modeled": true}],
-    "unit": [{"claim": "tr-061", "say": "reuse potential {display}, vendor model", "modeled": true}],
+    "national": [
+     {
+      "claim": "tr-053",
+      "say": "+{display} land surface around AI sites, preprint, {year}",
+      "modeled": true
+     }
+    ],
+    "unit": [
+     {
+      "claim": "tr-061",
+      "say": "reuse potential {display}, vendor model, {year}",
+      "modeled": true
+     }
+    ],
     "open": "Air temperature"
    }
   },
@@ -114,10 +209,22 @@
    "id": "materials",
    "label": "Materials",
    "cells": {
-    "national": [{"claim": "tr-056", "say": "{display} of copper by 2028", "modeled": true}],
+    "national": [
+     {
+      "claim": "tr-056",
+      "say": "{display} of copper by 2028",
+      "modeled": true
+     }
+    ],
     "unit": [
-     {"claim": "tr-032", "say": "{display} per wafer layer, TSMC"},
-     {"claim": "tr-057", "say": "{display} of e-waste by 2030"}
+     {
+      "claim": "tr-032",
+      "say": "{display} per wafer layer, TSMC, {year}"
+     },
+     {
+      "claim": "tr-057",
+      "say": "{display} of e-waste by 2030"
+     }
     ],
     "open": "Embodied impacts upstream"
    }

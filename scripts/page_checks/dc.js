@@ -165,7 +165,7 @@ async function tradeoffs() {
   eq(m.plot.getAttribute('role'), 'grid', 'matrix is a grid');
   eq(m.plot.querySelectorAll('td[data-row]').length, 21, 'seven rows by three columns');
   ok(leads(m.reading.textContent, ['66 billion liters', '2023']), 'default Reading');
-  eq(m.chips().length, 2, 'a receipt per figure');
+  eq(m.chips().length, 3, 'a receipt per figure');
   key(window, m.plot, 'ArrowRight');
   ok(leads(m.reading.textContent, ['0.36 L per kWh']), 'right moves a column');
   key(window, m.plot, 'ArrowDown');
@@ -330,7 +330,7 @@ async function noScripts() {
   ok(holds(document.querySelector('#dc-project .plate-setting').textContent, ['125']), 'the setting named');
   ok(document.querySelector('#dc-jobs-per-mw .plate-plot [data-row="naics"]'), 'without scripts the fixed record stays in the plot');
   ok(document.querySelector('.section-strip a[href="resource-use/"]') && !document.querySelector('header .subnav'), 'the other page of the family is a link in the strip');
-  eq([...document.querySelectorAll('#dc-tradeoff-matrix td[data-row="water--national"] .matrix-bar')].map((n) => n.style.getPropertyValue('--x')).join(), '0.0825,1.0', 'two water figures, scaled within the cell');
+  eq([...document.querySelectorAll('#dc-tradeoff-matrix td[data-row="water--national"] .matrix-bar')].map((n) => n.style.getPropertyValue('--x')).join(), '0.076,0.9217,1.0', 'three water figures, scaled within the cell');
   eq(document.querySelectorAll('#dc-tradeoff-matrix td[data-row="power--national"] .matrix-bar').length, 0, 'a lone figure has nothing to compare');
   eq(document.querySelectorAll('#dc-tradeoff-matrix td[data-row="emissions--national"] .matrix-bar').length, 0, 'nor figures in different units');
   eq(document.querySelector('[data-pour="dem-058"]').textContent, '22,000 aMW', 'a poured figure');

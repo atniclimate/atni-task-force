@@ -67,7 +67,7 @@ each segment labeled measured or modeled."
 `#questions` and `dc-project`. "The same model, three more ways: inside the data center per person per day, heavy AI work against a video yardstick, and all of ChatGPT's text messages against the buildout. This
 comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights; those questions are on the data centers page."
 
-**AI Work.** h2 "Economics and the Global Frontier"; the held slot block stays exactly as it is, first; then `ai-occupations` and `ai-displacement`. Opening, outside the slot markers: "The written brief for
+**AI Work.** h2 "Economics and the Global Frontier"; the held slot block stays exactly as it is, first; then `ai-occupations`, `ai-jobs-sector` (BLS 2025 to 2035 by sector, jb-097 to jb-102; percent on the axis, job counts in each row's detail), and `ai-displacement`. Opening, outside the slot markers: "The written brief for
 this section is in development. The measured record is here now: the Bureau of Labor Statistics' ten-year projection by occupation, including the trades that build data centers, and the studies that have looked
 for AI's effect on employment so far, which disagree and are shown together."
 
@@ -108,7 +108,7 @@ Pacific Northwest grid factor in the record). Projection: none. Fixed foot line:
 
 **`ai-per-day`** (AI Energy). Question: inside the data center, what does one person's day cost? Title: "An average weekly ChatGPT user's text prompts cost about 1 Wh a day in the data center, a floor; Meta
 reports 15 Wh per daily person for all its products, on another boundary (2024 to 2025)". Data: view `per_person_day`: chat day 3.67 x 0.30 = 1.10 (fp-034, fp-001; low 0.86, high 4.80 with the count of 8 marked
-unsourced, fp-094); at the 0.34 average 1.25 (fp-012); YouTube 88 minutes on a phone 0.66, 28.7 at DESNZ (fp-098); Instagram 100 minutes 0.29, 12.7 at DESNZ, capped at 15.1 (fp-097); Meta per daily active
+unsourced, fp-094); at the 0.34 average 1.25 (fp-012); YouTube 88 minutes on a phone 0.66, 0.25 at the DESNZ follow-up, 80.7 at the top-down upper bound (fp-098); Instagram 100 minutes 0.29, 0.11 at the DESNZ follow-up, capped at 15.1 (fp-097); Meta per daily active
 person 15.1 (fp-059, fp-060) in its own group "another boundary: all products, training, offices". Form: horizontal bars, linear Wh, two groups with a rule between (a bar chart because the values span 0.3 to 15
 on one basis per group); hollow where modeled. Controls: `chat_messages_per_day` {3.67 | 8, unsourced}, `video_dc_intensity`, `chat_wh_per_prompt`. Detail: the arithmetic (median times mean, labeled a floor),
 the household share (fp-075: 0.0038 percent), receipts. Reading: "{row}: about {value} Wh a day inside the data center ({basis}); {share} percent of a household's 28,740 Wh. {evidence}, {year}." Table: row, Wh
@@ -118,15 +118,15 @@ per day, low, high, basis, boundary, claims. Excluded: fp-058 (wrong at source),
 yardstick (modeled, 2025 to 2026)". Data rows: one text prompt 0.30 (fp-001, fp-017); reasoning query 3.91 (fp-019); GPT-5 high reasoning, long query 33.8 (new claim from fp-025's note, section 4); image 0.63
 (new derived claim, fp-066 x 2); Veo 3 clip 30.8 (fp-070); Sora 2 Pro clip 315 to 534 (new claim from fp-070's note); Wan2.1 1.3B 90.5 (fp-068); Wan2.1 14B 415.1 (fp-069); CogVideoX 944 (fp-067); Claude Code
 prompt 150 (fp-031), median session 600 (fp-032), average day 3,000 (new claim from fp-032's note). Yardstick ticks on the ruler in context ink, labeled: the phone video hour 14.1 (model view 1), the published
-European hour 188 with 53.7 to 417.5 (fp-035, fp-120, fp-044), the data center segment alone 0.45, 19.6 at DESNZ (fp-122, fp-130, fp-043). Form: log ladder, Wh, 0.1 to 10,000; squares, hollow for modeled rows;
+European hour 188 with 53.7 to 263.1 (fp-035, fp-120, fp-143), the data center segment alone 0.45, 0.171 at the DESNZ follow-up (fp-122, fp-130, fp-141, fp-142). Form: log ladder, Wh, 0.1 to 10,000; squares, hollow for modeled rows;
 each row's overhead in its label suffix (GPU only; no PUE; one user's logs). Controls: yardstick {phone hour | published hour | data center only}, default phone hour; `device`; `video_dc_intensity`. Detail: Wh,
 prompt equivalents, hours of the chosen yardstick, the overhead sentence, receipts. Reading: "{row}: about {value} Wh, or {prompts} text prompts and {hours} of {yardstick}. {evidence}, {year}." Table: row, Wh,
 low, high, prompts, hours by each yardstick, overhead, claims. Excluded: fp-071, fp-072 (2009 search); fp-030 (test conditions); fp-065 (2023 image, older method); any Anthropic chat figure (fp-033 records
 none). Projection: none.
 
 **`ai-scale`** (AI Energy). Question: is chat the growth? Title: "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year on a median-prompt floor; the buildout adds hundreds (2025 to 2030)".
-Data: ChatGPT 2.5 billion messages a day x 0.30 Wh = 0.27 TWh, 0.22 to 0.55 (fp-092, fp-001); YouTube 1 billion hours a day, a 2016 floor (fp-050): 0.47 on measured delivery, 20.6 at DESNZ, whole chain 68.6
-with 19.6 to 152 (fp-035, fp-120, fp-044); IEA bound for all searches as AI queries, under 4 TWh (dem-045); IEA 2025 485 (dem-040); LBNL US 2024 192 (dem-028); Council data centers 2030 17.7 TWh, 11.4 to 38.8
+Data: ChatGPT 2.5 billion messages a day x 0.30 Wh = 0.27 TWh, 0.22 to 0.55 (fp-092, fp-001); YouTube 1 billion hours a day, a 2016 floor (fp-050): 0.47 on measured delivery, 0.18 at the DESNZ follow-up, 57.8 at the top-down upper bound, whole chain 68.6
+with 19.6 to 96 (fp-035, fp-120, fp-143); IEA bound for all searches as AI queries, under 4 TWh (dem-045); IEA 2025 485 (dem-040); LBNL US 2024 192 (dem-028); Council data centers 2030 17.7 TWh, 11.4 to 38.8
 (new derived claim from dem-075); IEA 2030 945 (dem-048) and LBNL 2030 649, 521 to 843 (dem-029, dem-030) as projections. Form: log ladder, TWh a year, 0.1 to 1,000; squares with range lines; projection rows
 hollow with a dashed range line and "2030, projected" in the label. Controls: `chat_wh_per_prompt` {0.24 | 0.30 | 0.34 | 0.60}; `video_dc_intensity`. Detail: the arithmetic, the exclusions (reasoning, images,
 video, agents, API, training), the Jevons pair fp-009 against rs-003, receipts. Reading: "{row}: about {value} TWh a year ({low} to {high}); {basis}. {evidence}, {year}." Table: row, TWh, low, high, year,

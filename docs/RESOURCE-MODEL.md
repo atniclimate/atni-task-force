@@ -162,7 +162,7 @@ Wh network per view, 2,050 Wh, $60 at a retail delivery list (px-053; margin, pl
 (sf-042, lf-033), priced at cost plus labor: 79,800 Wh per 1,000 views at 1,000 views a year (78.2 Wh per view node only, 77.1 of it idle floor), 10,400 at 10,000, 3,470
 at 100,000 (1.87 node only); $789 a year with one paid hour a month, $69 without; one box on one link against a global network with redundancy. On the same network the
 local box never beats the platform's serving energy at the measured intensity (1.1 W per stream is above 0.45 Wh per GB-hour) and beats it above about 4,200 views a year
-at the DESNZ intensity (1,300 to 35,000 on one change); if the Nation's own network is credited at marginal cost (0.13 Wh per GB) against the platform's average (1.6),
+at the DESNZ first report's intensity, which its authors retired on 07/28/2026; at the follow-up's lower intensity it never does (about 450,000 on one change); if the Nation's own network is credited at marginal cost (0.13 Wh per GB) against the platform's average (1.6),
 the crossover is about 94,000 views a year (13,500 to 250,000, or never). That credit is a convention and prints as one. The embedded cache (Netflix Open Connect class,
 360 W at 180 Gbps, sf-028): 0.018 Wh per GB at 25 percent load plus one upstream fill per title, 19 Wh in all, an upper bound; it wins on energy and loses on control,
 because the platform places it and decides what it holds (sf-029, lf-034). Local wins when the link out is slow, metered, or down, and when many people watch the same
@@ -282,7 +282,7 @@ in the shape of `comparison-model.json`: `inputs`, `assumptions` (the selectors)
 | PUE hyper; colo; room | 1.10 (1.09 to 1.10); 1.45 (1.36 to 1.58); 1.10 (1.0 to 1.5) | ratio | gf-053 au-011; tr-065 sf-022; assumption | verified; verified; assumption |
 | U hyper; colo; room | 0.50; 0.30 (0.21 to 0.35); 0.10 (0.05 to 0.15), one definition | share | sf-020; lf-024 sv-038 ec-028 | verified; untested |
 | idle fraction a | 0.11; 0.11 to 0.36 (accelerator; server anchors 0.25 and 0.36 set no row) | share of P_max | ec-020; sf-008 sv-039 lf-024 | partly; untested |
-| grid factors | US 350; NWPP 288; WA 113 (CO2); NW short-run 728; long-run 79; hydro 21; wind 13; solar 43; diesel 730; the same feeds on every place | g per kWh | gf-007 gf-001 gf-009 gf-019 gf-023 gf-035 gf-034 gf-033 gf-047 gf-049 | verified; life-cycle partly |
+| grid factors | US 350; NWPP 288; BPA-assigned 49.3 (gf-062, a different accounting method); WA 113 (CO2); NW short-run 728; long-run 79; hydro 21; wind 13; solar 43; diesel 730; the same feeds on every place | g per kWh | gf-007 gf-001 gf-009 gf-019 gf-023 gf-035 gf-034 gf-033 gf-047 gf-049 | verified; life-cycle partly |
 | site WUE | 0.36; 0.27 to 1.15; local 0 | L per kWh | tr-009 tr-028 fp-006; gf-044 | verified |
 | generation water | US 4.52 (1.40 ERCOT); hydro convention 6.8 (0; 38); gas 0.776; hydro share NWPP 0.387, BPA 0.775 | L per kWh; share | tr-005 gf-041; gf-040 gf-046 gf-039; gf-037; gf-008 gf-018 | verified |
 | storage; replicas | 0.65 (0.57 to 1.2), one coefficient on every row; 3 (2 to 3) | Wh per TB-hour; copies | ec-021 lf-027 gf-052; ec-030 | verified; assumption |
@@ -313,7 +313,7 @@ decode-to-prefill ratio from au-030 and au-031 (ratio 3 lands at 1.00 and 0.51, 
 au-032 (0.25), a choice stated as one; c stays 0.10 with its band because nothing measures it. Nothing else is tuned, and the held-out rows below are never used to set a
 coefficient.
 
-**Back-test (model over published; held out means the figure set no coefficient, chose no setting, shares no input, and tests the unit law).** Held out, 7: fp-017 Joule
+**Back-test (model over published; held out means the figure set no coefficient, chose no setting, shares no input, and tests the unit law).** Held out, 8 (fp-141 DESNZ follow-up data center hour added 11/04/2026, 2.6): fp-017 Joule
 median 0.31 Wh (1.44); sv-048 UBA HD stream 2.3 Wh (0.39); fp-041 BBC hour 65.7 Wh (1.77); gf-052 Seagate 5.09 kWh per TB-year (1.12); lf-025 Google 2011 email server
 70 kWh per user-year (0.12); au-017 DeepSeek-R1 20.9 Wh (0.52); px-016 $3.25 per coding hour (0.31). Printed, not held out, 6: au-032 (0.80, chose the ratio); fp-035
 (0.62, shares inputs); sf-017 (0.31, another boundary); au-036 (1.48, tests the revenue constant, not the model); fp-031 (0.86, shares the cache assumption); sv-028 (5.28,
@@ -388,8 +388,8 @@ S changed the script. Rerun: `python scripts\resource_model.py`, 28 tests pass, 
   labeled retail against a self-run row at cost plus labor; the UI inputs require a basis column and forbid sorting across bases; px-042 is added to the Netflix row.
 - The seat-month row (A, C): as above.
 - One chat prompt priced two ways (A): the catalog prompt is priced at the energy median's own 500-in, 300-out shape ($0.0040), the same as comparison D.
-- The back-test is flattered (X, R): au-036 is marked not held out (it tests the revenue constant); the headline quotes the held-out set only (7 figures, median 1.9, 4
-  within two times, worst 8.1), and the results document names every figure that is not held out.
+- The back-test is flattered (X, R): au-036 is marked not held out (it tests the revenue constant); the headline quotes the held-out set only (8 figures since 11/04/2026, median 2.2, 4
+  within two times, worst 8.1; before fp-141 was added, 7 figures, median 1.9), and the results document names every figure that is not held out.
 
 **Jev fairness check (every flagged family).** A1 to A4: one grid on both sides (`cloud_same_grid`), a cloud admin-hours line (2 a month, 0 to 14), the energy ratio
 replaced by its spread. B: same network as the default pair, the 12 Wh viewer side once, the one-box-one-link and cache-upper-bound caveats. C: the already-on setting on

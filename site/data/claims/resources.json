@@ -17,7 +17,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Total electricity consumption214 MWh 18,058,300 21,586,400 24,994,000 31,713,900 43,586,600",
@@ -45,7 +45,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Data centers MWh 17,429,800 20,616,500 23,980,800 30,637,100 42,415,800",
@@ -73,7 +73,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "our total electricity consumption grew by 37% in 2025, up from 27% in 2024",
@@ -94,12 +94,13 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Since 2019, our total electricity demand has increased by over 250%",
    "derived": "If growth is at least 250%, 2019 consumption was at most 43,586,600 / 3.5 = 12,453,314 MWh (about 12.5 TWh). Implied 2019 level is derived, not reported; Google's data table starts in 2021.",
-   "status": "partly"
+   "status": "partly",
+   "limit": "Google states the growth only as 'over 250%' since 2019 and tabulates no 2019 electricity figure (its data table starts in 2021), so this is a floor on the growth, not a measured level; any 2019 base is implied, not reported."
   },
   {
    "id": "rs-005",
@@ -115,7 +116,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Scope 1 tCO2e 65,300 50,200 57,600 89,400 75,100 71,700 86,100",
@@ -145,7 +146,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Scope 2 (market-based) tCO2e 788,200 921,200 1,769,400 2,430,200 3,288,000 2,898,600 2,815,000",
@@ -175,7 +176,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Scope 2 (location-based) tCO2e 5,173,000 5,845,000 6,498,700 7,963,700 9,085,700 11,067,100 15,148,700",
@@ -205,7 +206,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Total operational emissions: scope 1 and 2 (market-based) tCO2e 853,500 971,400 1,827,000 2,519,600 3,363,100 2,970,300 2,901,100",
@@ -235,7 +236,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Total scope 3 (ambition-based) tCO2e 7,149,000 6,181,000 6,635,000 7,039,000 7,543,000 9,263,000 11,572,000",
@@ -265,7 +266,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Total scope 3 GHGP-aligned tCO2e 9,501,000 8,398,000 9,332,000 10,079,000 11,557,000 12,967,000 15,946,000",
@@ -295,7 +296,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "GHGP-aligned emissions tCO2e 10,354,500 9,369,400 11,159,000 12,598,600 14,920,100 15,937,300 18,847,100",
@@ -325,7 +326,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Ambition-based emissions tCO2e 8,002,500 7,152,400 8,462,000 9,558,600 10,906,100 12,233,300 14,473,100",
@@ -355,7 +356,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Water withdrawal Million gallons 6,297 7,600 8,653 11,011 14,689",
@@ -390,7 +391,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Water consumption Million gallons 4,562 5,565 6,352 8,135 10,869",
@@ -425,7 +426,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Data centers Million gallons 13,562 3,039 10,523",
@@ -446,7 +447,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Water replenished Million gallons 271 1,036 4,590 7,717",
@@ -473,7 +474,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "CFE across Google data centers (hourly) % 65 64 64 66 65",
@@ -501,7 +502,7 @@
     "title": "Google 2026 Environmental Report",
     "publisher": "Google",
     "url": "https://sustainability.google/files/google-2026-environmental-report.pdf",
-    "published": "2026-06-24",
+    "published": "2026-06-30",
     "kind": "company-report"
    },
    "quote": "Network and end-user devices used to access web-based software are not considered to be direct-use phase emissions and are not within the reporting boundary for use of sold products.",
@@ -1254,7 +1255,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "Amazon's Carbon Footprint 51.17 60.64 71.54 65.37 65.28 69.55 80.85 16 %",
@@ -1284,7 +1285,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "Emissions from Direct Operations (Scope 1)* 5.76 9.62 12.11 13.02 14.22 15.13 15.37 2 %",
@@ -1314,7 +1315,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "Emissions from Purchased Electricity (Scope 2) 5.50 5.27 4.07 3.06 2.76 2.80 3.74 34 %",
@@ -1344,7 +1345,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "Emissions from Indirect Sources (Scope 3)* 39.91 45.75 55.36 49.29 48.30 51.62 61.74 20 %",
@@ -1374,7 +1375,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "In 2025, Amazon's global leased, owned, and shared data centers withdrew 9.4 billion liters of water.",
@@ -1398,7 +1399,7 @@
     "title": "2025 Amazon Sustainability Report",
     "publisher": "Amazon",
     "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
-    "published": "2026-07-14",
+    "published": "2026-07-01",
     "kind": "company-report"
    },
    "quote": "0.12 L/kWh global Water Use Effectiveness (WUE) for Amazon data centers, a 20% improvement from 2024 and 52% since 2021",
@@ -1455,7 +1456,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Total MWh 3,737,000 3,777,000 3,487,000 3,199,000 2,854,000",
@@ -1472,6 +1473,7 @@
    }
   },
   {
+   "limit": "Apple prints exactly 55,200 for five fiscal years while the components move (fleet vehicles 10,100 to 17,000; other emissions 2,400 to 9,700), and its assurance statements give 55,202 (FY2022) and 55,200 (FY2023 to FY2025), so a year-to-year change in Apple's Scope 1 cannot be read from this series. The passages searched do not explain the constancy.",
    "id": "rs-055",
    "entity": "Apple",
    "metric": "Scope 1 emissions, corporate",
@@ -1485,11 +1487,11 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Scope 1 55,200 55,200 55,200 55,200 55,200",
-   "derived": null,
+   "derived": "Components sum to 55,200 in every year while they move: FY2025 35,400 + 10,100 + 9,700; FY2024 37,400 + 15,400 + 2,400; FY2023 35,300 + 17,000 + 2,900; FY2022 39,700 + 12,600 + 2,900; FY2021 40,070 + 12,090 + 3,040 (natural gas, diesel, propane + fleet vehicles + other emissions). Earlier years as printed in the 2023 to 2025 editions: FY2018 57,440; FY2019 52,730; FY2020 47,430.",
    "status": "partly",
    "series": {
     "2019": 52730,
@@ -1515,7 +1517,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Scope 2 (market-based) 1,100 3,300 3,400 3,000 2,780",
@@ -1545,7 +1547,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Total 548,142 648,652 55,197 3,737 3,737 1,140,231",
@@ -1553,6 +1555,7 @@
    "status": "verified"
   },
   {
+   "limit": "Apple's corporate boundary widened from FY2022 (work from home, other cloud, fuel- and energy-related activity), so FY2021 and earlier are not comparable; Scope 1 is the unexplained constant 55,200 (rs-055); Apple offsets the whole corporate total with credits, which this figure does not net.",
    "id": "rs-058",
    "entity": "Apple",
    "metric": "corporate gross emissions (Scope 1 + 2 market + corporate Scope 3)",
@@ -1566,7 +1569,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Gross emissions 570,100 666,800 471,400 324,000 166,380",
@@ -1594,7 +1597,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Gross emissions (Scope 3) 14,710,000 14,600,000 15,570,000 20,280,000 23,020,000",
@@ -1624,7 +1627,7 @@
     "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
     "publisher": "Apple",
     "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
-    "published": "2026-08-28",
+    "published": "2026-04-16",
     "kind": "company-report"
    },
    "quote": "Total million gallons 1,796 1,756 1,610 1,527 1,407",
@@ -1804,6 +1807,7 @@
    }
   },
   {
+   "limit": "NVIDIA says its fiscal 2026 water values are not comparable with earlier years because its data collection changed, so the series has a break; it counts offices and labs, not leased data centers.",
    "id": "rs-067",
    "entity": "NVIDIA",
    "metric": "water withdrawal",
@@ -1821,15 +1825,16 @@
     "kind": "company-report"
    },
    "quote": "Water withdrawal 451,297 409,814 382,636 GRI 303-3",
-   "derived": "451,297 m3 = 451 ML. Consumption 105,531 = withdrawal 451,297 - discharge 345,766. Megaliters for the plate: cubic meters / 1,000 = ML, rounded to one decimal; the series_ml field holds every year.",
+   "derived": "451,297 m3 = 451 ML. Consumption 105,531 = withdrawal 451,297 - discharge 345,766. Megaliters for the plate: cubic meters / 1,000 = ML, rounded to one decimal; the series_ml field holds every year. FY23 376,656 is from the FY25 report. FY25 and FY24 (409,814; 382,636) are the same in the FY25 and FY26 reports, so the break is flagged but not restated.",
    "status": "partly",
-   "limit": "NVIDIA says its fiscal 2026 water values are not comparable with earlier years because its data collection changed, so the series has a break; it counts offices and labs, not leased data centers.",
    "series": {
+    "2023": 376656,
     "2024": 382636,
     "2025": 409814,
     "2026": 451297
    },
    "series_ml": {
+    "2023": 376.7,
     "2024": 382.6,
     "2025": 409.8,
     "2026": 451.3
@@ -1849,7 +1854,7 @@
     "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
     "publisher": "Tesla",
     "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
-    "published": "2026-07-10",
+    "published": "2026-07-07",
     "kind": "company-report"
    },
    "quote": "Totals 302,000* 837,000* 1,139,000 755,000* 1,057,000",
@@ -1875,7 +1880,7 @@
     "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
     "publisher": "Tesla",
     "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
-    "published": "2026-07-10",
+    "published": "2026-07-07",
     "kind": "company-report"
    },
    "quote": "Totals 302,000* 837,000* 1,139,000 755,000* 1,057,000",
@@ -1901,7 +1906,7 @@
     "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
     "publisher": "Tesla",
     "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
-    "published": "2026-07-10",
+    "published": "2026-07-07",
     "kind": "company-report"
    },
    "quote": "Totals 302,000* 837,000* 1,139,000 755,000* 1,057,000",
@@ -1947,7 +1952,7 @@
     "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
     "publisher": "Tesla",
     "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
-    "published": "2026-07-10",
+    "published": "2026-07-07",
     "kind": "company-report"
    },
    "quote": "Electricity Consumption* (non-renewable) 1,444,849,499 1,673,681,511 1,129,864,000 Electricity Consumption* (renewable) 1,088,919,397 681,364,318 420,083,000",
@@ -1973,7 +1978,7 @@
     "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
     "publisher": "Tesla",
     "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
-    "published": "2026-07-10",
+    "published": "2026-07-07",
     "kind": "company-report"
    },
    "quote": "Total Freshwater Withdrawal 5,447,800 6,042,627 3,871,927",
@@ -2039,6 +2044,118 @@
    "series": {
     "2024": 17.76,
     "2025": 21.82
+   }
+  },
+  {
+   "id": "rs-077",
+   "entity": "Apple",
+   "metric": "Scope 1 emissions as stated in the independent assurance statements",
+   "value": 55200,
+   "low": null,
+   "high": null,
+   "unit": "tCO2e",
+   "year": 2025,
+   "boundary": "Worldwide occupied properties, WRI/WBCSD GHG Protocol, fiscal years ending late September, as listed in the assurance statement of each edition.",
+   "source": {
+    "title": "Apple 2026 Environmental Progress Report (fiscal year 2025), independent assurance statement",
+    "publisher": "Apple",
+    "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
+    "published": "2026-04-16",
+    "kind": "company-report"
+   },
+   "quote": "Scope 1 GHG Emissions 55,200 Metric tonnes of carbon dioxide equivalent (tCO2e) Worldwide occupied properties / WRI/WBCSD GHG Protocol",
+   "derived": "Assurance statement values by edition: FY2022 55,202 (2023 edition); FY2023 55,200 (2024 edition); FY2024 55,200 (2025 edition); FY2025 55,200 (2026 edition). Largest spread 55,202 - 55,197 (appendix, rs-078) = 5 t.",
+   "status": "verified",
+   "series": {
+    "2022": 55202,
+    "2023": 55200,
+    "2024": 55200,
+    "2025": 55200
+   }
+  },
+  {
+   "id": "rs-078",
+   "entity": "Apple",
+   "metric": "Scope 1 emissions, corporate facilities appendix total (FY2025), April release against August reissue",
+   "value": 55197,
+   "low": null,
+   "high": null,
+   "unit": "tCO2e",
+   "year": 2025,
+   "boundary": "Appendix A corporate facilities energy supplement, fiscal year 2025, summed over offices, data centers, colocation and retail stores.",
+   "source": {
+    "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
+    "publisher": "Apple",
+    "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
+    "published": "2026-04-16",
+    "kind": "company-report"
+   },
+   "quote": "Page 94 of each PDF, Scope 1 emissions column, read by cell position because plain text extraction scrambles this table. Total row: 55,197 (08/28/2026 file); 53,687 (04/13/2026 file, Internet Archive capture 04/21/2026). Data center subtotal row: 4,756 (August); 3,246 (April). Within it, Viborg, Denmark: 16 (August); a dash (April). Colocation facilities, China: 1,494 (August); a dash (April). Retail stores: 2,331 in both.",
+   "derived": "55,197 - 53,687 = 1,510; Data center subtotal 4,756 - 3,246 = 1,510. The 1,510 is the new Viborg 16 plus the new China colocation 1,494 (16 + 1,494 = 1,510). Check of August sums from the same cells: Maiden 707 + Mesa 440 + Prineville 730 + Reno 1,066 + Viborg 16 + Waukee 303 + China colocation 1,494 = 4,756; corporate 48,110 + data center 4,756 + retail 2,331 = 55,197. April: 707 + 440 + 730 + 1,066 + 303 = 3,246; 48,110 + 3,246 + 2,331 = 53,687. 55,197 rounds to the 55,200 in the main table; 53,687 does not.",
+   "status": "verified",
+   "series": {
+    "04/2026 release": 53687,
+    "08/2026 reissue": 55197
+   }
+  },
+  {
+   "limit": "NVIDIA says FY26 water values are not comparable with earlier years because data collection changed, so the fall from 141,772 to 105,531 m3 is a break, not a trend; it counts offices and labs, not leased data centers.",
+   "id": "rs-079",
+   "entity": "NVIDIA",
+   "metric": "water consumption",
+   "value": 105531,
+   "low": null,
+   "high": null,
+   "unit": "cubic meters",
+   "year": 2026,
+   "boundary": "Fiscal year ending late January (FY26 = 01/27/2025 to 01/25/2026). Offices and labs under NVIDIA's operational control; leased data centers are upstream (Scope 3 category 8). Fabless.",
+   "source": {
+    "title": "NVIDIA Sustainability Report Fiscal Year 2026",
+    "publisher": "NVIDIA",
+    "url": "https://images.nvidia.com/aem-dam/Solutions/documents/NVIDIA-Sustainability-Report-Fiscal-Year-2026.pdf",
+    "published": "2026-06-09",
+    "kind": "company-report"
+   },
+   "quote": "Water (m3)** 451,297 409,814 382,636 GRI 303-3; 105,531 141,772 134,219 GRI 303-5; 345,766 268,043 248,417 GRI 303-4. ** Due to changes in data collection methods, FY26 water values are not comparable to prior-year data.",
+   "derived": "Withdrawal minus discharge: FY26 451,297 - 345,766 = 105,531; FY25 409,814 - 268,043 = 141,771 (printed 141,772); FY24 382,636 - 248,417 = 134,219; FY23 376,656 - 178,807 = 197,849 (FY25 report). FY26 / FY25 = 105,531 / 141,772 = 0.744 (-25.6%), shown only to say it must not be read as a decline.",
+   "status": "partly",
+   "series": {
+    "2023": 197849,
+    "2024": 134219,
+    "2025": 141772,
+    "2026": 105531
+   },
+   "series_ml": {
+    "2023": 197.8,
+    "2024": 134.2,
+    "2025": 141.8,
+    "2026": 105.5
+   }
+  },
+  {
+   "id": "rs-080",
+   "entity": "Tesla",
+   "metric": "Giga Berlin-Brandenburg water consumption",
+   "value": 0.3,
+   "low": null,
+   "high": null,
+   "unit": "million cubic meters",
+   "year": 2025,
+   "boundary": "One factory (Giga Berlin-Brandenburg), calendar year 2025, stated by Tesla as 'about'. Permitted allowance is 1.4 million cubic meters per year.",
+   "source": {
+    "title": "Tesla Impact Report 2025 (Extended Version), page 50",
+    "publisher": "Tesla",
+    "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
+    "published": "2026-07-07",
+    "kind": "company-report"
+   },
+   "quote": "we only consumed a fraction of that in 2025 --about 0.3 million cubic meters, down from 0.45 million cubic meters in 2024.",
+   "derived": "0.3 / 1.4 = 21% of the permitted volume (2024: 0.45 / 1.4 = 32%).",
+   "status": "verified",
+   "series": {
+    "2023": 0.45,
+    "2024": 0.45,
+    "2025": 0.3
    }
   }
  ]

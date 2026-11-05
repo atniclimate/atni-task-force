@@ -1487,6 +1487,78 @@
    "quote": "For instance, the 8B model on batch size 64 reduces energy per token by 41% (0.20 J to 0.12 J).",
    "derived": "1 J/token = 1e6 J per million tokens / 3600 J per Wh = 277.78 Wh per million tokens. Converted, per OUTPUT token unless stated, with the boundary in brackets: 0.12 J = 33 Wh (GPU only, 8B, batch 64); 0.10 J = 28 Wh and 0.51 J = 142 Wh (GPU, Qwen3 8B and 32B, English); 3.10 J = 861 Wh (GPU net of idle draw, local 7B code model on Ollama, batch size not stated, incl. prompt processing); Joule standard query 0.31 Wh / 300 output tokens = 3.72 J = 1,033 Wh (full node plus PUE, includes the 500 input tokens); Joule reasoning 3.91 Wh / 5,000 = 2.81 J = 781 Wh; Watershed hyperscaler 870 Wh output, 290 Wh input (IT energy before PUE); Couch 1,950 output, 390 input; claude-carbon Sonnet 1.0 J = 278 Wh; Blackwell agent 58.4 J = 16,218 Wh and saturated serving 0.92 J = 256 Wh (whole system, no facility). Reading: whole-service per-output-token figures cluster at about 0.8 to 2 kWh per million output tokens; GPU-only batched figures are about 6 to 30 times lower; the unbatched dedicated agent rig is about 19 times higher than the whole-service figure (16,218 / 870) and 63 times the same rig when saturated.",
    "status": "verified"
+  },
+  {
+   "limit": "A selected panel of 5,000 US ChatGPT users who opted in; it counts prompts in a ChatGPT thread, not tokens or minutes, and does not describe other assistants.",
+   "id": "au-060",
+   "entity": "ChatGPT conversations (Epoch AI panel of 5,000 US YouGov respondents)",
+   "metric": "prompts per conversation, mean (the median is 2 in every month but September 2023)",
+   "value": 5.8,
+   "low": null,
+   "high": null,
+   "unit": "prompts per conversation, mean, December 2025",
+   "year": 2025,
+   "boundary": "The data are the exported ChatGPT histories of 5,000 US YouGov panelists who opted in and who all used ChatGPT at some point in 2026; Epoch states the statistics describe this selected panel and need not generalize to ChatGPT users more broadly. Counts are prompts and messages, not tokens. A 'conversation' is a ChatGPT thread, not a timed session; no minutes, no tokens.",
+   "source": {
+    "title": "How do people actually use ChatGPT? (ChatGPT usage explorer)",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/latest/introducing-the-chatgpt-usage-explorer",
+    "published": "2026-10-01",
+    "kind": "model"
+   },
+   "quote": "For every month except September 2023, the median conversation was comprised of just two prompts, while the mean rose from 3.7 prompts in December 2022 to 5.8 in December 2025.",
+   "derived": "About 8.3 million messages across about 660,000 conversations in the exported histories = 12.6 messages per conversation (prompts, replies and tool messages together), against 5.8 prompts mean; the two counts cover different things and are not reconciled here.",
+   "status": "partly",
+   "basis": "average",
+   "layers": []
+  },
+  {
+   "limit": "The mean over weekly active users in a selected US ChatGPT panel, not a typical user.",
+   "id": "au-061",
+   "entity": "ChatGPT weekly active users (Epoch AI panel)",
+   "metric": "prompts per calendar day among weekly active panelists, July 2025",
+   "value": 4.3,
+   "low": null,
+   "high": null,
+   "unit": "prompts per day per weekly active panelist, July 2025",
+   "year": 2025,
+   "boundary": "The data are the exported ChatGPT histories of 5,000 US YouGov panelists who opted in and who all used ChatGPT at some point in 2026; Epoch states the statistics describe this selected panel and need not generalize to ChatGPT users more broadly. Counts are prompts and messages, not tokens.",
+   "source": {
+    "title": "How do people actually use ChatGPT? (ChatGPT usage explorer)",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/latest/introducing-the-chatgpt-usage-explorer",
+    "published": "2026-10-01",
+    "kind": "model"
+   },
+   "quote": "In July 2025, weekly active panelists sent 4.3 prompts per day, compared with about 3.7 implied by OpenAI’s published figures.",
+   "derived": null,
+   "status": "partly",
+   "basis": "average",
+   "layers": []
+  },
+  {
+   "limit": "The median of a selected US ChatGPT panel; the mean is 158 because a few heavy users send most prompts.",
+   "id": "au-062",
+   "entity": "ChatGPT active panelists (Epoch AI panel)",
+   "metric": "messages (prompts plus replies) per active panelist per month, median, December 2025",
+   "value": 36,
+   "low": null,
+   "high": null,
+   "unit": "messages per active panelist per month, median (mean 158)",
+   "year": 2025,
+   "boundary": "The data are the exported ChatGPT histories of 5,000 US YouGov panelists who opted in and who all used ChatGPT at some point in 2026; Epoch states the statistics describe this selected panel and need not generalize to ChatGPT users more broadly. Counts are prompts and messages, not tokens. Counts prompts plus replies; tool messages are not counted.",
+   "source": {
+    "title": "How do people actually use ChatGPT? (ChatGPT usage explorer)",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/latest/introducing-the-chatgpt-usage-explorer",
+    "published": "2026-10-01",
+    "kind": "model"
+   },
+   "quote": "The median number of messages per active panelist, counting prompts and replies, rose from 14 in January 2023 to 36 in December 2025.",
+   "derived": null,
+   "status": "partly",
+   "basis": "median",
+   "layers": []
   }
  ]
 }

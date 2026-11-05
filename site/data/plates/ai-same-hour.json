@@ -213,8 +213,12 @@
      "label": "Measured delivery"
     },
     {
-     "value": "desnz_assumed",
-     "label": "DESNZ scenario"
+     "value": "desnz_followup",
+     "label": "DESNZ follow-up"
+    },
+    {
+     "value": "top_down",
+     "label": "Top-down average"
     }
    ]
   },
@@ -266,7 +270,9 @@
  },
  "reading": "{label}, counted at this boundary: {boundary}. About {display} for the hour. {evidence}",
  "details": [
-  "The router and the device are the same on every row, so they never explain a difference between rows."
+  "The router and the device are the same on every row, so they never explain a difference between rows.",
+  "The data center share of a streamed hour is unsettled: current readings run from about 0.6 to about 190 Wh at 3.5 GB an hour, with the bottom-up ones near 1 to 4 Wh. The high end is a top-down average spread over all bytes, an upper bound and not a literal share.",
+  "An AI chat app drew 0.7 to 3.3 W on one iPhone, the same order as the phone here, so chat is not lighter on the device. No source measures a chat app and a video app on one phone and one network."
  ],
  "rows": [
   {
@@ -284,7 +290,9 @@
     "fp-127",
     "fp-126",
     "fp-133",
-    "fp-049"
+    "fp-049",
+    "fp-161",
+    "fp-162"
    ],
    "formula": {
     "dc": {
@@ -528,7 +536,7 @@
    "cites": [
     "fp-008",
     "fp-122",
-    "fp-043",
+    "fp-143",
     "fp-133"
    ],
    "formula": {
@@ -573,13 +581,22 @@
   "fp-129",
   "fp-053",
   "fp-132",
-  "fp-043",
+  "fp-141",
+  "fp-142",
+  "fp-143",
+  "fp-144",
+  "fp-147",
+  "fp-149",
+  "fp-150",
+  "ec-024",
   "fp-008",
   "fp-086",
-  "fp-090"
+  "fp-090",
+  "fp-151",
+  "fp-154"
  ],
  "limits": {
-  "fp-095": "Turns per conversation in one free chatbot service's logs from 2023 and 2024; it gives no duration, so it is not a rate per hour."
+  "fp-095": "Turns per conversation in one free chatbot service's logs from 2023 and 2024; it gives no duration, so it is not a rate per hour. Epoch AI's newer panel has a median of 2 prompts per conversation and 4.3 prompts a day, also with no duration."
  },
  "foot": [
   {

@@ -40,8 +40,8 @@ function perDay(s) {
   const chat = (s.chat_messages_per_day ?? C.value) * s.chat_wh_per_prompt;
   return {
     chat_day: chat, chat_day_low: C.low * P.low, chat_day_mean: C.value * P.mean, chat_day_high: C.high * P.high, meta_person: meta,
-    video_day: vmin * phone * perGb, video_day_desnz: vmin * phone * VIDEO_DC.desnz_assumed, video_day_high: vmin * phone * I.video_dc_wh_per_gb.high,
-    short_day: smin * shortGb * perGb, short_day_desnz: smin * shortGb * VIDEO_DC.desnz_assumed, short_day_high: Math.min(smin * I.short_dc_ceiling_wh_per_hour.value, meta),
+    video_day: vmin * phone * perGb, video_day_desnz: vmin * phone * VIDEO_DC.desnz_followup, video_day_high: vmin * phone * I.video_dc_wh_per_gb.high,
+    short_day: smin * shortGb * perGb, short_day_desnz: smin * shortGb * VIDEO_DC.desnz_followup, short_day_high: Math.min(smin * I.short_dc_ceiling_wh_per_hour.value, meta),
     short_ceiling_per_hour_at_minutes: meta / smin, chat_day_household_pct: chat / house * 100, meta_household_pct: meta / house * 100,
   };
 }
@@ -49,7 +49,7 @@ function heavy(s) {
   const e = s.chat_wh_per_prompt;
   const W = I.stream_whole_chain_wh_per_hour;
   const hour = sameHour(s).video;
-  const yardsticks = { same_device_total: hour.total, same_device_dc: hour.data_center, desnz_dc: I.video_gb_per_hour[s.device].value * VIDEO_DC.desnz_assumed, published: W.value };
+  const yardsticks = { same_device_total: hour.total, same_device_dc: hour.data_center, desnz_dc: I.video_gb_per_hour[s.device].value * VIDEO_DC.desnz_followup, published: W.value };
   const out = { yardsticks, text_prompt_seconds: Object.fromEntries(Object.entries(yardsticks).map(([k, v]) => [k, e / v * 3600])) };
   for (const [key, { wh: v }] of Object.entries(want.heavy_ai)) {
     if (v !== undefined) out[key] = { wh: v, prompts: v / e, hours_same_device: v / yardsticks.same_device_total, hours_published: v / W.value, hours_published_low: v / W.high, hours_published_high: v / W.low, hours_dc_delivery: v / yardsticks.same_device_dc, hours_dc_desnz: v / yardsticks.desnz_dc };
@@ -69,7 +69,7 @@ function scale(s) {
   return {
     chat_twh: chat, chat_twh_low: year(P.low), chat_twh_mean: year(P.mean), chat_twh_high: year(P.high), chat_amw: msgs * s.chat_wh_per_prompt / 24 / 1e6,
     chat_pct_iea_2025: chat / S.iea_world_2025_twh.value * 100, chat_pct_iea_2025_high: year(P.high) / S.iea_world_2025_twh.value * 100, chat_pct_lbnl_2024: chat / S.lbnl_us_2024_twh.value * 100,
-    youtube_dc_twh_delivery: hours * mix * VIDEO_DC.measured_delivery / 1e12, youtube_dc_twh_desnz: hours * mix * VIDEO_DC.desnz_assumed / 1e12,
+    youtube_dc_twh_delivery: hours * mix * VIDEO_DC.measured_delivery / 1e12, youtube_dc_twh_desnz: hours * mix * VIDEO_DC.desnz_followup / 1e12, youtube_dc_twh_top: hours * mix * VIDEO_DC.top_down / 1e12,
     youtube_whole_twh: hours * W.value / 1e12, youtube_whole_twh_low: hours * W.low / 1e12, youtube_whole_twh_high: hours * W.high / 1e12,
     nw_dc_twh_2030: nw.value * 8.76 / 1000, nw_dc_twh_2030_low: nw.low * 8.76 / 1000, nw_dc_twh_2030_high: nw.high * 8.76 / 1000, nw_dc_pct_of_region: nw.value / S.nw_region_amw.value * 100,
     iea_growth_2025_2030_twh: S.iea_world_2030_twh.value - S.iea_world_2025_twh.value, lbnl_growth_2024_2030_twh: S.lbnl_us_2030_twh.value - S.lbnl_us_2024_twh.value,
@@ -85,7 +85,7 @@ function modelCheck() {
   const [p0, , p2, p3] = A.prompts_per_hour.presets;
   const alt = {
     laptop: ['device', 'laptop'], tv: ['device', 'tv'], router_by_data: ['router_allocation', 'by_data'], router_excluded: ['router_allocation', 'excluded'], cellular: ['connection', 'cellular'], marginal: ['network_mode', 'marginal'],
-    desnz: ['video_dc_intensity', 'desnz_assumed'], prompts_2_5: ['prompts_per_hour', p0], prompts_30: ['prompts_per_hour', p2], prompts_60: ['prompts_per_hour', p3],
+    desnz: ['video_dc_intensity', 'desnz_followup'], prompts_2_5: ['prompts_per_hour', p0], prompts_30: ['prompts_per_hour', p2], prompts_60: ['prompts_per_hour', p3],
     kind_medium: ['chat_wh_per_prompt', KIND.medium_prompt], kind_reasoning: ['chat_wh_per_prompt', KIND.reasoning], kind_high: ['chat_wh_per_prompt', KIND.high_reasoning],
   };
   const hours = { default: sameHour(BASE), low: sameHour(BASE, 'low'), high: sameHour(BASE, 'high') };
@@ -116,6 +116,7 @@ const COUNTED = { dc: 1, adds: 2, whole: 4 };
 const ACTIVITY = ['chat', 'video', 'short'];
 const STREAM_ONLY = 'The streaming setting moves the video rows, not this one.';
 const CHAT_ONLY = 'The chat settings move the chat row, not this one.';
+const TOP_DOWN = 'The top-down average spreads all data center energy over all bytes. It is an upper bound of an unsettled allocation, not a literal share of this hour.';
 const KIND_RANGE = { medium_prompt: { low: KIND.medium_prompt, high: KIND.medium_prompt }, reasoning: { low: k_r_low, high: k_r_high }, high_reasoning: { low: k_h_low, high: k_h_high } };
 
 // Receipts for these settings, beyond the row's.
@@ -124,10 +125,11 @@ function settingCites(st) {
   const out = [...(KIND_CITES[st.chat_kind] || [])];
   if (st.connection === 'cellular') out.push(...(st.network_mode === 'average' ? ['fp-128', 'fp-125', 'fp-053'] : ['fp-053', 'fp-129']));
   else out.push(st.network_mode === 'marginal' ? 'fp-129' : 'fp-124');
-  if (st.video_dc_intensity === 'desnz_assumed') out.push('fp-043');
+  if (st.video_dc_intensity === 'desnz_followup') out.push('fp-141', 'fp-142');
+  if (st.video_dc_intensity === 'top_down') out.push('ec-024', 'fp-147', 'fp-150');
   if (st.device === 'laptop') out.push('fp-132');
-  if (st.device === 'tv') out.push('fp-008', 'fp-043', 'fp-132');
-  if (st.prompts === A.prompts_per_hour.presets[0]) out.push('fp-095');
+  if (st.device === 'tv') out.push('fp-008', 'fp-143', 'fp-132');
+  if (st.prompts === A.prompts_per_hour.presets[0]) out.push('fp-095', 'fp-151', 'fp-154');
   return out;
 }
 function markEvidence(rows, st) {
@@ -141,7 +143,7 @@ function markEvidence(rows, st) {
     if (!ACTIVITY.includes(r.key)) continue;
     const [dc, , , device] = r.segments;
     if (r.key === 'chat') Object.assign(dc, short ? { hollow: undefined, word: 'measured at Google only' } : { hollow: true, word: 'modeled' });
-    else Object.assign(dc, { hollow: true, word: st.video_dc_intensity === 'desnz_assumed' ? 'a scenario input' : r.key === 'video' ? 'modeled from measured hours' : 'modeled' });
+    else Object.assign(dc, { hollow: true, word: { desnz_followup: 'a scenario input', top_down: 'a top-down average' }[st.video_dc_intensity] ?? (r.key === 'video' ? 'modeled from measured hours' : 'modeled') });
     if (r.key === 'video' && st.device === 'phone') Object.assign(device, { hollow: undefined, word: 'measured during video' });
     else Object.assign(device, { hollow: true, word: st.device === 'phone' ? 'modeled from video measurements' : 'modeled' });
   }
@@ -254,7 +256,10 @@ plate.register('ai-same-hour', {
         if (!short) ctx.fact('This kind of chat sets its own energy per prompt, so the Wh per short text prompt setting does not move this row.');
         if (st.chat_kind === 'medium_prompt' || st.chat_kind === 'high_reasoning') ctx.fact(`From a preprint that a peer-reviewed paper says overstates production figures ${over_lo} to ${over_hi} times.`);
         if (st.video_dc_intensity !== BASE.video_dc_intensity) ctx.fact(STREAM_ONLY);
-      } else if (st.prompts !== BASE.prompts_per_hour || !short || st.chat_wh_per_prompt !== BASE.chat_wh_per_prompt) ctx.fact(CHAT_ONLY);
+      } else {
+        if (st.prompts !== BASE.prompts_per_hour || !short || st.chat_wh_per_prompt !== BASE.chat_wh_per_prompt) ctx.fact(CHAT_ONLY);
+        if (st.video_dc_intensity === 'top_down') ctx.fact(TOP_DOWN);
+      }
     }
     if (ctx.reason !== 'select') {
       fillSegmentCells(ctx.plot.closest('.plate'), now);
@@ -275,8 +280,9 @@ plate.register('ai-heavy-ai', {
     const st = ctx.state;
     const { yardsticks: y } = heavy({ ...BASE, device: st.heavy_device, video_dc_intensity: st.heavy_intensity });
     ctx.inputs.y_same = y.same_device_total;
-    ctx.inputs.y_dc = st.heavy_intensity === 'desnz_assumed' ? y.desnz_dc : y.same_device_dc;
+    ctx.inputs.y_dc = y.same_device_dc;
     ctx.auto();
+    if (st.heavy_intensity === 'top_down') ctx.fact(TOP_DOWN);
     const per = ctx.inputs.yard;
     if (ctx.reason !== 'select') {
       for (const r of ctx.data.rows) {
@@ -296,18 +302,20 @@ plate.register('ai-heavy-ai', {
 
 plate.register('ai-per-day', {
   render(ctx) {
-    const count = I.chat_messages_per_day[ctx.state.day_count === 'eight' ? 'high' : 'value'];
+    const count = I.chat_messages_per_day[{ eight: 'high', panel: 'panel' }[ctx.state.day_count] ?? 'value'];
     const st = ctx.state;
     ctx.inputs.now = perDay({ ...BASE, chat_wh_per_prompt: st.day_wh, video_dc_intensity: st.day_intensity, chat_messages_per_day: count });
     ctx.auto();
     if (ctx.key === 'chat' && st.day_intensity !== BASE.video_dc_intensity) ctx.fact(STREAM_ONLY);
     if ((ctx.key === 'yt' || ctx.key === 'ig') && (st.day_count !== 'mean' || st.day_wh !== BASE.chat_wh_per_prompt)) ctx.fact(CHAT_ONLY);
+    if ((ctx.key === 'yt' || ctx.key === 'ig') && st.day_intensity === 'top_down') ctx.fact(TOP_DOWN);
   },
 });
 plate.register('ai-scale', {
   render(ctx) {
     ctx.inputs.now = scale({ ...BASE, chat_wh_per_prompt: I.chat_wh_per_prompt[ctx.state.scale_wh] });
     ctx.auto();
+    if (ctx.key === 'ytdc' && ctx.state.scale_intensity === 't') ctx.fact(TOP_DOWN);
   },
 });
 
