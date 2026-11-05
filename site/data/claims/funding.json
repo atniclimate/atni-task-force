@@ -152,8 +152,8 @@
     "published": "2026-10-29",
     "kind": "dataset"
    },
-   "quote": "This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.",
-   "derived": "The file's count of searches by energy type and cooling use. In energy-funding.json.",
+   "quote": "\"queries\": 69",
+   "derived": "The file's count of searches: 35 by energy type, 23 by cooling use, and 11 by program link, counted from the kind of each record in live.queries. In energy-funding.json, live.counts.",
    "status": "verified"
   },
   {
@@ -173,8 +173,8 @@
     "published": "2026-10-29",
     "kind": "dataset"
    },
-   "quote": "This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.",
-   "derived": "The file's count of notices kept by the relevance rule. In energy-funding.json.",
+   "quote": "\"kept\": 3",
+   "derived": "The file's count of notices kept by the relevance rule. In energy-funding.json, live.counts.",
    "status": "verified"
   },
   {
@@ -194,8 +194,8 @@
     "published": "2026-10-29",
     "kind": "dataset"
    },
-   "quote": "This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.",
-   "derived": "The file's count of posted notices. In energy-funding.json.",
+   "quote": "\"posted\": 0",
+   "derived": "The file's count of posted notices. In energy-funding.json, live.counts.",
    "status": "verified"
   },
   {
@@ -215,8 +215,8 @@
     "published": "2026-10-29",
     "kind": "dataset"
    },
-   "quote": "This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.",
-   "derived": "The file's count of forecasted notices. In energy-funding.json.",
+   "quote": "\"forecasted\": 3",
+   "derived": "The file's count of forecasted notices. In energy-funding.json, live.counts.",
    "status": "verified"
   },
   {

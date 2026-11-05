@@ -108,10 +108,11 @@ def potential_claims(data):
                          "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
                          f"Count of Tribe records with a finding of type {t['id']}: {words}; {total} in all.", READING_LIMIT, stages=by, type_id=t["id"]))
     out += [
-        claim("ep-041", "Makah Tribe, local solar", "share of annual energy demand", 24, "percent", "Counted: the maximum potential rooftop, ground-mount, and carport solar in Neah Bay, 4.8 MW. Each Tribe's numbers will differ.", MAKAH_PLAN,
-              "This 4.8 MW of solar PV could meet roughly 24% of the annual energy demand of the Tribe.", None, None, 2025),
+        claim("ep-041", "Makah Tribe, local solar", "share of annual energy demand", 24, "percent", "Counted: the maximum potential rooftop, ground-mount, and carport solar in Neah Bay, 4.8 MW, from a plan dated 08/2025. Not counted: solar that exists today. Each Tribe's numbers will differ.", MAKAH_PLAN,
+              "This 4.8 MW of solar PV could meet roughly 24% of the annual energy demand of the Tribe.",
+              "The plan is dated 08/2025. The 4.8 MW is the plan's maximum potential for rooftop, ground-mount, and carport solar in Neah Bay, not installed capacity; the 24 percent is the plan's own figure for that potential.", None, 2025),
         claim("ep-042", "Makah Tribe, one small wind turbine", "share of annual energy demand", 0.5, "percent", "Counted: a single small turbine, on average, depending on the model and wind conditions. Each Tribe's numbers will differ.", MAKAH_PLAN,
-              "Depending on the turbine model and wind conditions, on average, a single turbine could meet roughly 0.5% of the annual energy demand of the Tribe.", None, None, 2025),
+              "Depending on the turbine model and wind conditions, on average, a single turbine could meet roughly 0.5% of the annual energy demand of the Tribe.", "The plan is dated 08/2025.", None, 2025),
     ]
     return out
 
@@ -146,8 +147,13 @@ def funding_claims(data):
     def count(claim_id, metric, value, unit, boundary, derived, limit):
         return claim(claim_id, "Program catalog", metric, value, unit, boundary, source, data["caveats"][0], f"{derived} In energy-funding.json.", limit, year)
 
-    def notice(claim_id, metric, value, unit, derived):  # counts of a retrieval, exact as stated; the page says in bold what an absent notice does not mean
-        return claim(claim_id, "Grants.gov notices", metric, value, unit, f"Retrieved {us(live['retrieved'][:10])}: searches for posted and forecasted notices open to Tribal governments.", source, live["source"]["attribution"], f"{derived} In energy-funding.json.", None, year)
+    def notice(claim_id, metric, key, unit, derived):  # counts of a retrieval, exact as stated; the quote is the file's own line for the count, not the license sentence
+        return claim(claim_id, "Grants.gov notices", metric, live["counts"][key], unit, f"Retrieved {us(live['retrieved'][:10])}: searches for posted and forecasted notices open to Tribal governments.", source,
+                     f'"{key}": {live["counts"][key]}', f"{derived} In energy-funding.json, live.counts.", None, year)
+
+    kinds = {k: sum(1 for q in live["queries"] if q["kind"] == k) for k in ("energy_type", "cooling_use", "program_link")}
+    if sum(kinds.values()) != live["counts"]["queries"]:
+        raise SystemExit("The search records by kind do not add up to the file's count of searches.")
 
     dated, undated = dated_rows(data), undated_programs(data)
     by = lambda status: sum(1 for p in programs if p["status"] == status)
@@ -159,10 +165,10 @@ def funding_claims(data):
         count("ef-004", "programs forecasted at the check", by("forecasted"), one(by("forecasted")), "Counted: programs with a future round announced but not open. Estimated dates are not deadlines.", "Count of program records with status forecasted.", PROGRAM_LIMIT),
         count("ef-005", "dated deadlines in the catalog", len(dated), one(len(dated)), "Counted: open or forecasted programs, and live notices, whose record holds a deadline date, passed or not.", "Count of those records.", PROGRAM_LIMIT),
         count("ef-006", "programs with no date in the catalog", len(undated), one(len(undated)), "Counted: open or forecasted programs whose record holds no deadline date. Not counted: closed programs.", "Count of those records.", PROGRAM_LIMIT),
-        notice("ef-007", "searches run", live["counts"]["queries"], "searches", "The file's count of searches by energy type and cooling use."),
-        notice("ef-008", "notices kept", live["counts"]["kept"], "notices", "The file's count of notices kept by the relevance rule."),
-        notice("ef-009", "posted notices kept", live["counts"]["posted"], "notices", "The file's count of posted notices."),
-        notice("ef-010", "forecasted notices kept", live["counts"]["forecasted"], "notices", "The file's count of forecasted notices."),
+        notice("ef-007", "searches run", "queries", "searches", f"The file's count of searches: {kinds['energy_type']} by energy type, {kinds['cooling_use']} by cooling use, and {kinds['program_link']} by program link, counted from the kind of each record in live.queries."),
+        notice("ef-008", "notices kept", "kept", "notices", "The file's count of notices kept by the relevance rule."),
+        notice("ef-009", "posted notices kept", "posted", "notices", "The file's count of posted notices."),
+        notice("ef-010", "forecasted notices kept", "forecasted", "notices", "The file's count of forecasted notices."),
     ]
     for i, r in enumerate(dated):
         read = f"Read {us(r['checked'])} on the agency's own page."

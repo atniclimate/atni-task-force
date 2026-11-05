@@ -921,7 +921,7 @@
    "high": null,
    "unit": "survey responses",
    "year": 2026,
-   "boundary": "Responses to the Task Force's survey through the Nation's Gadugi portal.",
+   "boundary": "Responses to the Task Force's survey through the Nation's Gadugi portal. The report counts 'survey responses provided by citizens', so this is a count of responses, not of people surveyed; the page says responses.",
    "source": {
     "title": "Report on the Impact of Data Centers on the Economy and Natural Environment of the Cherokee Nation Reservation",
     "publisher": "Cherokee Nation, Principal Chief's Task Force on Data Centers",
@@ -943,7 +943,7 @@
    "high": null,
    "unit": "percent of respondents",
    "year": 2026,
-   "boundary": "Respondents to the Task Force's survey, not all citizens.",
+   "boundary": "Respondents to the Task Force's survey, not all citizens. The percentage is of citizen respondents; the 1,593 in pdc-026 is a count of survey responses.",
    "source": {
     "title": "Report on the Impact of Data Centers on the Economy and Natural Environment of the Cherokee Nation Reservation",
     "publisher": "Cherokee Nation, Principal Chief's Task Force on Data Centers",

@@ -783,7 +783,7 @@
    "high": null,
    "unit": "percent",
    "year": 2025,
-   "boundary": "Counted: the maximum potential rooftop, ground-mount, and carport solar in Neah Bay, 4.8 MW. Each Tribe's numbers will differ.",
+   "boundary": "Counted: the maximum potential rooftop, ground-mount, and carport solar in Neah Bay, 4.8 MW, from a plan dated 08/2025. Not counted: solar that exists today. Each Tribe's numbers will differ.",
    "source": {
     "title": "Makah Strategic Energy Plan (PNNL-38051)",
     "publisher": "Pacific Northwest National Laboratory",
@@ -792,7 +792,7 @@
     "kind": "agency"
    },
    "quote": "This 4.8 MW of solar PV could meet roughly 24% of the annual energy demand of the Tribe.",
-   "derived": null,
+   "derived": "The plan is dated 08/2025. The 4.8 MW is the plan's maximum potential for rooftop, ground-mount, and carport solar in Neah Bay, not installed capacity; the 24 percent is the plan's own figure for that potential.",
    "status": "verified"
   },
   {
@@ -813,7 +813,7 @@
     "kind": "agency"
    },
    "quote": "Depending on the turbine model and wind conditions, on average, a single turbine could meet roughly 0.5% of the annual energy demand of the Tribe.",
-   "derived": null,
+   "derived": "The plan is dated 08/2025.",
    "status": "verified"
   }
  ]

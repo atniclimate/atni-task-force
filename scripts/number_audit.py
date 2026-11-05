@@ -8,8 +8,15 @@ Writes work/site-refresh/review/NUMBER-AUDIT.json (every token, with the reason 
 A bare year in a sentence that also holds a marked figure counts as that figure's qualifier, so the open count can reach zero as marks go in. Numbers in the
 Explorer's generated blocks are model output, set aside under their own reason and not traced here.
 
-shortcut: the exceptions read words near a number, so a quantity beside "Table" or "Section" passes and a year in a title that is not a link stays listed;
-read the list, and open the JSON's set-aside rows when a count looks wrong.
+Reasons a number is set aside (the JSON names the reason on every row): ordinal, document_number, document_number_in_link (NIST AI 600-1), box_number (Box 2.1),
+product_name (Veo 3), clock_time (1:28 PM), license_version (CC BY 4.0), year_in_title, year_in_label (a year in a table or figure row, column, or caption label),
+citation_date, site_date, unit_definition, reader_set, axis_tick, qualifies_marked_figure, and spelled_count_in_marked_sentence.
+
+A spelled count ("two million", "a thousand") is never marked. The rule (docs/PLATE-KIT.md): a claim marked or cited in the same sentence covers a spelled count in that
+sentence, and the pour need not wrap words; a spelled count in a sentence with no claim of its own stays open.
+
+shortcut: the exceptions read words near a number, so a quantity beside "Table" or "Section" passes and a year in a title that is not a link stays listed; the product
+names and issuer letters are short lists to extend by hand. Read the list, and open the JSON's set-aside rows when a count looks wrong.
 """
 from bisect import bisect_right
 from html.parser import HTMLParser
@@ -28,6 +35,7 @@ BLOCKS = {"address", "article", "aside", "blockquote", "button", "caption", "dd"
           "h1", "h2", "h3", "h4", "h5", "h6", "header", "label", "li", "main", "nav", "ol", "option", "output", "p", "section", "select", "summary", "svg", "table", "td", "text", "th", "tr", "ul"}
 MARKED_CLASSES = {"cr", "receipt", "x-c"}
 TITLE_CLASSES = {"plate-source-title", "entry-title"}
+LABELS = {"th", "caption", "figcaption", "legend"}  # a row, column, or figure label: a bare year here names a row, not a finding
 SKIP_BLOCK = re.compile(r"\s*(/?)(?:plate|bench|claims-cited)(?::\S+)?\s*$")
 MODEL_BLOCK = re.compile(r"\s*(/?)explorer:\S+\s*$")
 AXIS_CLASS = re.compile(r"axis|tick")
@@ -45,7 +53,15 @@ YEAR = re.compile(r"(?:19|20)\d{2}$")
 DOCUMENT_BEFORE = re.compile(r"\b(?:Resolutions?|Res\.|Nos?\.|Orders?|Docket|Public Law|Pub\. L\.|P\.L\.|H\.R\.|H\.B\.|S\.B\.|SB|HB|E\.O\.|EO|FR|Executive Order|Form|Bill|Rule|Notice)\s*#?\s*$|(?<![.\w])S\.\s*$")
 DOCUMENT_AFTER = re.compile(r"-[A-Z]\b|\s+(?:CFR|C\.F\.R\.|U\.S\.C\.|USC|FR|Fed\. Reg\.)\b")
 ORDINAL_BEFORE = re.compile(r"(?i)(?:\bpages?|\bpp?\.|\bsections?|\bsec\.|§+|\bchapters?|\btables?|\bfigures?|\bfig\.|\bparts?|\bappendix|\bsteps?|\bdays?|\bphases?|\bstages?|\btiers?|\bscopes?|\blevels?|\bversions?|\bv\.|\bquestions?|\bitems?|\bcategor(?:y|ies))\s+(?:\d+ to )?$|§\s*$")
-VERSION_BEFORE = re.compile(r"(?:License|BY(?:-[A-Z]+)+|ShareAlike)\s*$")
+VERSION_BEFORE = re.compile(r"(?i:licen[sc]e|polyform|apache|creative commons)(?:,?\s+(?:[A-Z][\w-]*|v|version))*\s*$|\bBY(?:-[A-Z]+)*\s*$|(?:ShareAlike|NonCommercial|CC0)\s*$")
+BOX_BEFORE = re.compile(r"\bBox(?:es)?\s+$")
+PRODUCT_BEFORE = re.compile(r"\b(?:Veo|Sora|Llama|Gemini|Gemma|Claude|Mistral|Mixtral|Qwen|DeepSeek|Grok|Kling|Phi|Pixel|Galaxy|iPhone|iPad|Windows|Ubuntu|macOS|Android|iOS|DGX|Blackwell|Stable Diffusion)\s+$")
+CLOCK_BEFORE = re.compile(r"\d{1,2}:$")
+CLOCK_AFTER = re.compile(r":\d{2}(?!\d)")
+# A standards-style number: an issuer's letters before it, and a part, edition, or revision after it (NIST AI 600-1, ISO/IEC 30134-2:2026).
+CODE_BEFORE = re.compile(r"\b(?:ISO|IEC|NIST|IEEE|ITU|ANSI|ASHRAE|RFC|FIPS|SP|AI|TR|EN|BS|DIN)(?:/[A-Z]+)?(?:-[A-Z])?\s+(?:[A-Z]\.?)?$")
+CODE_AFTER = re.compile(r"-\d|:\d{4}\b")
+ACRONYM_BEFORE = re.compile(r"\b[A-Z]{2,}[A-Za-z]*\s+$")
 TITLE_YEAR_BEFORE = re.compile(r"(?:Act of|Outlook|AEO|STEO|Report|Review|Plan|Strategy|Assessment|Budget|Forecast)\s*$")
 TITLE_YEAR_AFTER = re.compile(r"\s+(?:[A-Z][\w-]*\s+)*(?:Report|Outlook|Plan|Assessment|Review|Strategy|Convention|Act)\b")
 CITATION_BEFORE = re.compile(r"\([^()]*,\s*$")
@@ -64,7 +80,7 @@ class Walker(HTMLParser):
         self.stack, self.pieces, self.blocks, self.skipping, self.modeled = [], [], [], False, False
 
     def flush(self):
-        if any(text.strip() for text, _, _ in self.pieces):
+        if any(piece[0].strip() for piece in self.pieces):
             self.blocks.append(self.pieces)
         self.pieces = []
 
@@ -80,7 +96,7 @@ class Walker(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         classes = set((attrs.get("class") or "").split())
-        parent = self.stack[-1] if self.stack else {"reason": None, "title": False, "gone": False}
+        parent = self.stack[-1] if self.stack else {"reason": None, "title": False, "gone": False, "label": False}
         reason = parent["reason"]
         if "data-pour" in attrs or "data-claim" in attrs or classes & MARKED_CLASSES or (attrs.get("id") or "").startswith("src-"):
             reason = "marked"
@@ -90,10 +106,11 @@ class Walker(HTMLParser):
             reason = "axis_tick"
         title = parent["title"] or tag == "cite" or bool(classes & TITLE_CLASSES) or (tag == "a" and (attrs.get("href") or "").startswith("https://"))
         gone = parent["gone"] or tag in INVISIBLE or "hidden" in attrs
+        label = parent["label"] or tag in LABELS
         if tag in BLOCKS:
             self.flush()
         if tag not in VOID:
-            self.stack.append({"tag": tag, "reason": reason, "title": title, "gone": gone})
+            self.stack.append({"tag": tag, "reason": reason, "title": title, "gone": gone, "label": label})
 
     def handle_endtag(self, tag):
         if tag in BLOCKS:
@@ -104,9 +121,9 @@ class Walker(HTMLParser):
                 return
 
     def handle_data(self, data):
-        top = self.stack[-1] if self.stack else {"reason": None, "title": False, "gone": False}
+        top = self.stack[-1] if self.stack else {"reason": None, "title": False, "gone": False, "label": False}
         if not self.skipping and not top["gone"]:
-            self.pieces.append((data, top["reason"] or ("explorer_model" if self.modeled else None), top["title"]))
+            self.pieces.append((data, top["reason"] or ("explorer_model" if self.modeled else None), top["title"], top["label"]))
 
 
 def sentence_of(text, start):
@@ -122,24 +139,34 @@ def kind_of(found):
     if found["date"]:
         return "date"
     if found["words"]:
-        return "number"
+        return "spelled"
     token = found[0]
     if YEAR.match(token):
         return "year"
     return "percent" if found["pct"] else "money" if token.startswith("$") else "number"
 
 
-def exception(found, text, in_title, sentence, kind):
+def exception(found, text, in_title, sentence, kind, in_label=False):
     """Why this number needs no claim id, as far as code can tell, or None."""
     before, after = text[max(0, found.start() - 80):found.start()], text[found.end():found.end() + 60]
     if found["ord"]:
         return "ordinal"
     if DOCUMENT_BEFORE.search(before) or DOCUMENT_AFTER.match(after):
         return "document_number"
+    if CODE_AFTER.match(after) and (CODE_BEFORE.search(before) or (in_title and ACRONYM_BEFORE.search(before))):
+        return "document_number_in_link" if in_title else "document_number"
+    if BOX_BEFORE.search(before):
+        return "box_number"
+    if PRODUCT_BEFORE.search(before):
+        return "product_name"
+    if (CLOCK_AFTER.match(after) and kind == "number") or (CLOCK_BEFORE.search(before) and len(found[0]) == 2):
+        return "clock_time"
     if ORDINAL_BEFORE.search(before):
         return "ordinal"
     if VERSION_BEFORE.search(before):
         return "license_version"
+    if kind == "year" and in_label:
+        return "year_in_label"
     if UNIT_DEFINITION.match(sentence):
         return "unit_definition"
     if kind == "year" and (in_title or TITLE_YEAR_BEFORE.search(before) or TITLE_YEAR_AFTER.match(after)):
@@ -156,7 +183,7 @@ def exception(found, text, in_title, sentence, kind):
 def joined(pieces):
     """A block's text, and where each piece starts. Two inline elements that touch (a value and its label) read as separate words."""
     text, starts = "", []
-    for piece, _, _ in pieces:
+    for piece, *_ in pieces:
         if text and piece and text[-1].isalnum() and piece[0].isalnum():
             text += " "
         starts.append(len(text))
@@ -175,16 +202,18 @@ def audit_html(html):
         text, starts = joined(pieces)
         block_rows = []
         for found in TOKEN.finditer(text):
-            _, reason, in_title = pieces[bisect_right(starts, found.start()) - 1]
+            _, reason, in_title, in_label = pieces[bisect_right(starts, found.start()) - 1]
             sentence = sentence_of(text, found.start())
             kind = kind_of(found)
             if reason is None and CLAIM_ID.search(sentence):
                 reason = "claim_id_in_sentence"
-            block_rows.append({"token": " ".join(found[0].split()), "kind": kind, "sentence": sentence, "reason": reason or exception(found, text, in_title, sentence, kind)})
-        marked = {r["sentence"] for r in block_rows if r["reason"] == "marked"}
+            block_rows.append({"token": " ".join(found[0].split()), "kind": kind, "sentence": sentence, "reason": reason or exception(found, text, in_title, sentence, kind, in_label)})
+        marked = {r["sentence"] for r in block_rows if r["reason"] in ("marked", "claim_id_in_sentence")}
         for r in block_rows:
             if r["reason"] is None and r["kind"] == "year" and r["sentence"] in marked:
                 r["reason"] = "qualifies_marked_figure"
+            elif r["reason"] is None and r["kind"] == "spelled" and r["sentence"] in marked:
+                r["reason"] = "spelled_count_in_marked_sentence"
         rows += block_rows
     return rows
 

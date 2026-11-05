@@ -572,8 +572,8 @@
     "published": "2024-12-19",
     "kind": "agency"
    },
-   "quote": "By 2023, hyperscale and colocation account for 84% of the 66-billion-liter total, while internal data centers fell to just 12%, driven by water efficiency improvements.",
-   "derived": "66 billion liters / 3.785 liters per gallon = 17.4 billion gallons, printed as 17 billion.",
+   "quote": "By 2023, hyperscale and colocation account for 84% of the 66-billion-liter total, while internal data centers fell to just 12%, driven by water efficiency improvements. | One study estimates that in 2023, U.S. data centers directly used approximately 17 billion gallons of water, compared with 5.6 billion gallons in 2014.",
+   "derived": "The first quoted sentence (LBNL, the source above) gives the 66 billion liters. The second is the Congressional Research Service's statement of the same LBNL study (Data Centers and Water: Frequently Asked Questions, R49057, 07/31/2026, read 11/05/2026) and gives the 17 billion gallons. Our conversion agrees with it: 66 billion liters / 3.785 liters per gallon = 17.4 billion gallons, printed as 17 billion.",
    "status": "verified"
   },
   {
@@ -1315,7 +1315,7 @@
   },
   {
    "id": "ru-063",
-   "entity": "Streaming data center energy per GB, measured delivery (the Explorer's default)",
+   "entity": "Streaming data center energy per GB, from DIMPACT participants' reported energy per hour (the Explorer's default)",
    "metric": "data center electricity per GB served",
    "value": 0.45,
    "low": null,
@@ -1358,14 +1358,14 @@
   },
   {
    "id": "ru-065",
-   "entity": "YouTube viewing, data center electricity per year",
+   "entity": "YouTube viewing, data center electricity per year (the 0.47 TWh uses DIMPACT participants' reported energy, not a measured delivery figure)",
    "metric": "annual data center energy at three allocations, derived",
    "value": 0.47,
    "low": 0.18,
    "high": 57.8,
    "unit": "TWh",
    "year": 2016,
-   "boundary": "1 billion hours a day for 365 days times 2.88 GB an hour times the data center energy per gigabyte on three bases: measured delivery 0.45 Wh/GB (value), the UK follow-up 0.171 Wh/GB (low), and a top-down average 55 Wh/GB (high).",
+   "boundary": "1 billion hours a day for 365 days times 2.88 GB an hour times the data center energy per gigabyte on three bases: DIMPACT participants' reported 1.3 Wh per hour over 2.88 GB, 0.45 Wh/GB (value; our division, not a measured intensity), the UK follow-up 0.171 Wh/GB (low), and a top-down average 55 Wh/GB (high).",
    "source": {
     "title": "You know what's cool? A billion hours",
     "publisher": "YouTube",
@@ -1881,7 +1881,7 @@
    "high": null,
    "unit": "TWh",
    "year": 2030,
-   "boundary": "LBNL's statement of the IEA's 2025 projection for the United States; the IEA's own table was not re-read for this claim.",
+   "boundary": "LBNL's description of the IEA's 2025 projection for 2030, written as 'approximately 430 TWh' in LBNL's own text (re-read 11/05/2026); the IEA's own table was not re-read for this claim, and the sentence does not say whether the figure is for the United States alone, though LBNL's comparison is of U.S. data center electricity use.",
    "source": {
     "title": "United States Data Center Energy Usage Report: 2025 Update (OSTI)",
     "publisher": "Lawrence Berkeley National Laboratory, US DOE",
@@ -1889,7 +1889,7 @@
     "published": "2026-06-18",
     "kind": "agency"
    },
-   "quote": "above IEA (2025) at approximately 430 TWh.",
+   "quote": "Among industry estimates for 2030, the Reference Case falls in the upper-middle portion of the distribution--closely aligned with McKinsey (2024) and the updated EPRI (2026) estimate, which spans a wide range from roughly 390 to 800 TWh, and above IEA (2025) at approximately 430 TWh. IEA's projection for 2030, published in early 2025 and developed using a methodology broadly consistent with this report, is substantially lower than LBNL's updated Reference Case estimate.",
    "derived": null,
    "status": "partly",
    "limit": "Taken from LBNL's description of the IEA's earlier 2025 edition, not from the IEA's own table."
@@ -2306,7 +2306,7 @@
    "high": 5.0,
    "unit": "million tons",
    "year": 2030,
-   "boundary": "Scenario range for cumulative generative-AI e-waste; the abstract says tons, and the page reads them as tonnes.",
+   "boundary": "Scenario range for cumulative generative-AI e-waste; the abstract says tons, and the page prints tons as the study reports them, without converting to metric tonnes.",
    "source": {
     "title": "E-waste challenges of generative artificial intelligence",
     "publisher": "Nature Computational Science (Wang et al.)",
@@ -2317,7 +2317,7 @@
    "quote": "Our findings indicate that this e-waste stream could increase, potentially reaching a total accumulation of 1.2–5.0 million tons during 2020–2030, under different future GAI development settings.",
    "derived": null,
    "status": "partly",
-   "limit": "The abstract says million tons without saying short or metric; the page prints tonnes."
+   "limit": "The abstract says million tons without saying short or metric; the page prints tons, the unit as reported, and does not convert them."
   },
   {
    "id": "ru-110",

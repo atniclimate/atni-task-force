@@ -170,13 +170,23 @@ def test_audit_skips_what_is_marked_or_not_visible():
     ("<p>A kilowatt is 1,000 watts.</p>", "1,000", "unit_definition"),
     ('<div class="axis"><i>100</i></div>', "100", "axis_tick"),
     (f'<p>{mark("fp-141", "3.1 Wh")} in 2026.</p>', "2026", "qualifies_marked_figure"),
+    ('<p>See <a href="https://doi.org/10.6028/NIST.AI.600-1">NIST AI 600-1, 07/26/2024</a>.</p>', "600", "document_number_in_link"),
+    ("<p>The cost is set out in Box 2.1 of the report.</p>", "2.1", "box_number"),
+    ("<p>One 8-second Veo 3 clip.</p>", "3", "product_name"),
+    ("<p>Retrieved at 1:28 PM PDT.</p>", "1", "clock_time"),
+    ("<p>Retrieved at 1:28 PM PDT.</p>", "28", "clock_time"),
+    ("<p>Shared under CC BY 4.0 and the PolyForm Noncommercial 1.0.0 license.</p>", "4.0", "license_version"),
+    ("<p>Shared under CC BY 4.0 and the PolyForm Noncommercial 1.0.0 license.</p>", "1.0", "license_version"),
+    ('<table><tr><th scope="row">IEA, base case, 2030</th><td>modeled</td></tr></table>', "2030", "year_in_label"),
+    (f'<p>About a thousand students, and {mark("fp-141", "3.1 Wh")}.</p>', "a thousand", "spelled_count_in_marked_sentence"),
 ])
 def test_audit_exceptions(html, token, reason):
     assert reason_of(html, token) == reason
 
 
 def test_audit_keeps_what_the_exceptions_do_not_excuse():
-    for html, token in (("<p>In a survey of 1,458 teens.</p>", "1,458"), ("<p>Adopted on 08/21/2025.</p>", "08/21/2025"), ("<p>Load doubles by 2030.</p>", "2030")):
+    for html, token in (("<p>In a survey of 1,458 teens.</p>", "1,458"), ("<p>Adopted on 08/21/2025.</p>", "08/21/2025"), ("<p>Load doubles by 2030.</p>", "2030"),
+                       ("<table><tr><td>Load doubles by 2030</td></tr></table>", "2030"), ("<p>Nearly a thousand students.</p>", "a thousand")):
         assert open_tokens(html) == [token]
 
 

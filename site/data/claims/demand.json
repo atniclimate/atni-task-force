@@ -2009,7 +2009,7 @@
    "quote": "As a result, PGE customers have experienced an average decrease in electricity rates of 1.3 percent for residential customers, 2.1 percent decrease for commercial customers, and 1.4 percent decrease for industrial customers.",
    "derived": null,
    "status": "partly",
-   "limit": "The Oregon Public Utility Commission's report says data centers have seen this increase in one place and will see it in another, so it is read as an approved rate change under Order No. 26-239, not as bills already paid."
+   "limit": "An average across the residential class that the Oregon Public Utility Commission reports as the result of the approved filing under Order No. 26-239, not any one household's bill. The report gives no period or method for the average, so it is the Commission's statement, not our calculation."
   },
   {
    "id": "dem-091",
@@ -3252,6 +3252,28 @@
    "derived": "Observed 1.2 percent a year against the base forecast 0.6 percent a year (dem-143); difference +0.6 percentage points.",
    "status": "verified",
    "limit": "Growth rate over a period that starts in the utility's plan year and ends in 2014; the periods differ by utility.",
+   "series": null
+  },
+  {
+   "id": "dem-145",
+   "entity": "Oregon investor-owned utilities, Oregon PUC",
+   "metric": "Data center share of IOU load, projected for 2030",
+   "value": 25,
+   "low": null,
+   "high": null,
+   "unit": "percent (2030, projected)",
+   "year": 2030,
+   "boundary": "Oregon IOU territories only (PGE, Pacific Power), not the whole region. A projection by the Oregon PUC in a report dated 09/01/2026; the current share is dem-065.",
+   "source": {
+    "title": "POWER Act Biennial Report",
+    "publisher": "Oregon Public Utility Commission",
+    "url": "https://www.oregon.gov/puc/forms/Forms%20and%20Reports/2026%20POWER%20Act%20Legislative%20Report.pdf",
+    "published": "2026-09-01",
+    "kind": "agency"
+   },
+   "quote": "The PUC estimates that data center load comprises roughly 15 percent of the IOUs' current load, and will continue to grow, reaching 25 percent of IOU load by 2030.",
+   "derived": null,
+   "status": "verified",
    "series": null
   }
  ]

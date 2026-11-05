@@ -116,14 +116,14 @@
   },
   {
    "id": "pe-006",
-   "entity": "Grants.gov forecasted notices kept on 10/29/2026",
+   "entity": "Grants.gov forecast records read on 11/05/2026",
    "metric": "forecasted notices for the HUD Indian Community Development Block Grant program",
    "value": 2,
    "low": null,
    "high": null,
    "unit": "notices",
    "year": 2026,
-   "boundary": "Two Grants.gov forecast records, PIH-2600-DC-0023 (posted 10/06/2026) and PIH-2600-DC-0034 (posted 05/18/2026), both titled for the Community Development Block Grant Program for Indian Tribes and Alaska Native Villages and both open to federally recognized Tribal governments. Records read on 11/05/2026; the count kept by the 10/29/2026 scan is claim ef-010. A forecast is not an open application.",
+   "boundary": "Two Grants.gov forecast records, PIH-2600-DC-0023 (posted 10/06/2026) and PIH-2600-DC-0034 (posted 05/18/2026), both titled for the Community Development Block Grant Program for Indian Tribes and Alaska Native Villages and both open to federally recognized Tribal governments. Records read on 11/05/2026. The 10/29/2026 scan kept three forecast records in all (claim ef-010), and these two are among them (energy-funding.json lists PIH-2600-DC-0023 and PIH-2600-DC-0034 under program id hud_icdbg); this count is of the records as read on 11/05/2026, not of the scan. A forecast is not an open application.",
    "source": {
     "title": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages (forecast notices PIH-2600-DC-0023, linked, and PIH-2600-DC-0034)",
     "publisher": "Grants.gov, U.S. Department of Housing and Urban Development",
@@ -137,14 +137,14 @@
   },
   {
    "id": "pe-007",
-   "entity": "Grants.gov forecasted notices kept on 10/29/2026",
+   "entity": "Grants.gov forecast records read on 11/05/2026",
    "metric": "forecasted notices for the HUD Indian Housing Block Grant competitive program",
    "value": 1,
    "low": null,
    "high": null,
    "unit": "notice",
    "year": 2026,
-   "boundary": "One Grants.gov forecast record, PIH-2600-DC-0048 (posted 06/08/2026), open to federally recognized Tribal governments. Record read on 11/05/2026; the count kept by the 10/29/2026 scan is claim ef-010. A forecast is not an open application.",
+   "boundary": "One Grants.gov forecast record, PIH-2600-DC-0048 (posted 06/08/2026), open to federally recognized Tribal governments. Record read on 11/05/2026. The 10/29/2026 scan kept three forecast records in all (claim ef-010), and this is one of them (energy-funding.json lists PIH-2600-DC-0048); this count is of the record as read on 11/05/2026, not of the scan. A forecast is not an open application.",
    "source": {
     "title": "Indian Housing Block Grant Competitive Program (IHBG-COMP) for FY 2026 (PIH-2600-DC-0048)",
     "publisher": "Grants.gov, U.S. Department of Housing and Urban Development",

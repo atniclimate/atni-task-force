@@ -127,7 +127,7 @@
    "high": 1000,
    "unit": "students (nearly)",
    "year": 2025,
-   "boundary": "A randomized field experiment at one large high school in Turkey, fall semester 2023-2024, in mathematics. Stated as nearly 1,000, an approximate count.",
+   "boundary": "A randomized field experiment at one large high school in Turkey, fall semester 2023-2024, in mathematics. Stated as nearly 1,000, an approximate count. The count covers all three randomly assigned arms: a plain GPT-4 chatbot, a GPT-4 tutor with guardrails, and a control arm with course notes and the textbook only (no AI), so it is not the number who used a tutor.",
    "source": {
     "title": "Generative AI without guardrails can harm learning: Evidence from high school mathematics",
     "publisher": "Proceedings of the National Academy of Sciences",
@@ -509,7 +509,7 @@
    "high": null,
    "unit": "students",
    "year": 2025,
-   "boundary": "One course at one university, with a tutor the study team built. Each student took one lesson each way in consecutive weeks; the counts in each analysis differ by lesson.",
+   "boundary": "One course at one university, with a tutor the study team built. The paper says the tutor's prompts were enriched with step-by-step answers and that the activities and solutions were already written for the in-class lesson; it also credits question-specific prompts written by instructors experienced with the content, but does not say the solutions were instructor-written, so the page does not. Each student took one lesson each way in consecutive weeks; the counts in each analysis differ by lesson.",
    "source": {
     "title": "AI tutoring outperforms in-class active learning: an RCT introducing a novel research-based design in an authentic educational setting",
     "publisher": "Scientific Reports",
@@ -551,7 +551,7 @@
    "high": null,
    "unit": "participants",
    "year": 2025,
-   "boundary": "A preprint on arXiv; the arXiv record states no peer review. Essay writing with EEG in three groups. ",
+   "boundary": "A preprint on arXiv; the arXiv record states no peer review, and the PDF's first page reads 'Preprint, under review'. Essay writing with EEG in three groups. The PDF lists the lead author (Kosmyna) and Pattie Maes at MIT Media Lab, Cambridge, MA; other co-authors are listed at MIT, Wellesley College, and MassArt, so the page says 'led from' the Media Lab.",
    "source": {
     "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
     "publisher": "arXiv",
@@ -572,7 +572,7 @@
    "high": null,
    "unit": "participants",
    "year": 2025,
-   "boundary": "A preprint on arXiv; the arXiv record states no peer review. Essay writing with EEG in three groups. ",
+   "boundary": "A preprint on arXiv; the arXiv record states no peer review, and the PDF's first page reads 'Preprint, under review'. Essay writing with EEG in three groups. The PDF lists the lead author (Kosmyna) and Pattie Maes at MIT Media Lab, Cambridge, MA; other co-authors are listed at MIT, Wellesley College, and MassArt, so the page says 'led from' the Media Lab.",
    "source": {
     "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
     "publisher": "arXiv",
@@ -723,7 +723,7 @@
    "high": null,
    "unit": "",
    "year": 2020,
-   "boundary": "The trends are a regression model from Aslan and colleagues (2018) over 2000 to 2015, as the UK DESNZ study describes them. The mobile figure is a separate Finland-based estimate and is not a regression.",
+   "boundary": "The fixed-network trend is a regression model from Aslan and colleagues (2018) over 2000 to 2015, extrapolated by the Carbon Trust to 2020, as the UK DESNZ study describes it. The quote is that fixed-network sentence. For mobile networks, DESNZ says the Carbon Trust used regression analysis on Finnish operator data (Pihkola and colleagues, 2018) to estimate the intensity for 2020, so both network types are 2020 regression estimates. DESNZ then extrapolated both to 2024.",
    "source": {
     "title": "Impact of growth of data centres on energy consumption",
     "publisher": "Europe Economics for UK DESNZ",

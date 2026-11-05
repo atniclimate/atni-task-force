@@ -2860,7 +2860,7 @@
     "kind": "agency"
    },
    "quote": "For uploading and downloading/streaming, the update reflects clearer system boundaries in our AI imputation process, isolating internal processes within data centres and excluding external transmission to avoid double-counting.",
-   "derived": "0.45 = 1.3 Wh/h / 2.88 GB/h = 0.451; 1.15 = 2.3 Wh / 2 GB; 0.171 = 0.0024 kWh / 14 GB; 55 = 0.055 kWh/GB x 1000. Spread: 55 / 0.171 = 322 times; among the three bottom-up readings, 1.15 / 0.171 = 6.7 times; the retired 19.6 against its replacement, 19.6 / 0.171 = 115 times.",
+   "derived": "The quote above explains why the DESNZ reading moved; it holds none of the figures. The four readings sit in other claims, each with its own quote: 0.171 in fp-142, 0.45 in fp-122 and fp-130, 1.15 in sv-048, 55 in ec-024. The arithmetic: 0.45 = 1.3 Wh/h / 2.88 GB/h = 0.451; 1.15 = 2.3 Wh / 2 GB; 0.171 = 0.0024 kWh / 14 GB; 55 = 0.055 kWh/GB x 1000. Spread: 55 / 0.171 = 322 times; among the three bottom-up readings, 1.15 / 0.171 = 6.7 times; the retired 19.6 against its replacement, 19.6 / 0.171 = 115 times.",
    "status": "partly"
   },
   {
