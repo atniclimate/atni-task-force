@@ -1,0 +1,244 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "energy-deadlines-catalog",
+ "page": "energy/funding/index.html",
+ "title": "{c[ef-005][text]} dated deadlines through 08/31/2028, the first on 11/05/2026; {c[ef-006][text]} more programs carry no date in the catalog",
+ "plot": {
+  "type": "instrument",
+  "groups": [
+   {
+    "id": "sum",
+    "label": "In the catalog"
+   },
+   {
+    "id": "dated",
+    "label": "Dated deadlines"
+   },
+   {
+    "id": "undated",
+    "label": "No date in the catalog"
+   }
+  ],
+  "strip": {
+   "from": "2026-10-29",
+   "to": "2028-10-29",
+   "checked": "2026-10-29"
+  }
+ },
+ "default": "dated-count",
+ "rows": [
+  {
+   "id": "dated-count",
+   "label": "Dated deadlines in the catalog",
+   "claim": "ef-005",
+   "group": "sum"
+  },
+  {
+   "id": "no-date-count",
+   "label": "Programs with no date in the catalog",
+   "claim": "ef-006",
+   "group": "sum"
+  },
+  {
+   "id": "bpa-tribal-iq",
+   "label": "BPA Tribal efficiency grants",
+   "claim": "ef-011",
+   "group": "dated",
+   "gap": "11/05/2026",
+   "tag": "Status checked 11/05/2026. Application due date to ensure funding is available; later applications accepted while funds last.",
+   "cols": {
+    "iso": "2026-11-05",
+    "checked": "11/05/2026",
+    "what": "Application due date to ensure funding is available; later applications accepted while funds last",
+    "status": "open",
+    "program": "bpa_tribal_iq"
+   }
+  },
+  {
+   "id": "doe-heehr-tribal",
+   "label": "Tribal HEEHR home rebates (IRA 50122)",
+   "claim": "ef-012",
+   "group": "dated",
+   "gap": "12/11/2026",
+   "tag": "Status checked 11/05/2026. Tribes must apply to DOE for their formula awards by this date (Program Notice 26-3).",
+   "cols": {
+    "iso": "2026-12-11",
+    "checked": "11/05/2026",
+    "what": "Tribes must apply to DOE for their formula awards by this date (Program Notice 26-3)",
+    "status": "open",
+    "program": "doe_heehr_tribal"
+   }
+  },
+  {
+   "id": "doe-40101d",
+   "label": "Grid Resilience formula grants (IIJA 40101(d))",
+   "claim": "ef-013",
+   "group": "dated",
+   "gap": "02/17/2027",
+   "tag": "Status checked 11/05/2026. FY25-FY26 application deadline, 11:59 pm EST.",
+   "cols": {
+    "iso": "2027-02-17",
+    "checked": "11/05/2026",
+    "what": "FY25-FY26 application deadline, 11:59 pm EST",
+    "status": "open",
+    "program": "doe_40101d"
+   }
+  },
+  {
+   "id": "doe-tefp",
+   "label": "DOE Tribal Energy Financing (loans)",
+   "claim": "ef-014",
+   "group": "dated",
+   "gap": "08/31/2028",
+   "tag": "Status checked 11/05/2026. DOE's last submission date, not a competitive round deadline.",
+   "cols": {
+    "iso": "2028-08-31",
+    "checked": "11/05/2026",
+    "what": "DOE's last submission date, not a competitive round deadline",
+    "status": "open",
+    "program": "doe_tefp"
+   }
+  },
+  {
+   "id": "doe-ie-technical-assistance",
+   "label": "DOE Indian Energy technical assistance",
+   "claim": "ef-021",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "doe_ie_technical_assistance",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "doe-wap",
+   "label": "Weatherization Assistance Program",
+   "claim": "ef-022",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "doe_wap",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "hhs-liheap",
+   "label": "LIHEAP",
+   "claim": "ef-023",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "hhs_liheap",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "hud-ihbg",
+   "label": "HUD IHBG",
+   "claim": "ef-024",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "hud_ihbg",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "hud-icdbg",
+   "label": "HUD ICDBG",
+   "claim": "ef-025",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status forecasted, checked 10/29/2026.",
+   "cols": {
+    "program": "hud_icdbg",
+    "checked": "10/29/2026",
+    "status": "forecasted"
+   }
+  },
+  {
+   "id": "fema-hmgp",
+   "label": "FEMA HMGP",
+   "claim": "ef-026",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "fema_hmgp",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "usda-cf",
+   "label": "USDA Community Facilities",
+   "claim": "ef-027",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "usda_cf",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  },
+  {
+   "id": "irs-elective-pay",
+   "label": "IRS elective pay",
+   "claim": "ef-028",
+   "group": "undated",
+   "gap": "No date in the catalog",
+   "tag": "Status open, checked 10/29/2026.",
+   "cols": {
+    "program": "irs_elective_pay",
+    "checked": "10/29/2026",
+    "status": "open"
+   }
+  }
+ ],
+ "reading_group": "{label}: {display}. {c[ef-006][text]} more open or forecasted programs carry no date, and {c[ef-003][text]} closed programs are not shown. The catalog holds {c[ef-001][text]} programs: {c[ef-002][text]} open, {c[ef-003][text]} closed, and {c[ef-004][text]} forecasted.",
+ "foot": [
+  {
+   "text": "Dated programs rechecked 11/05/2026; other statuses checked 10/29/2026. Confirm each with the agency. Program facts, not eligibility determinations. Source:",
+   "href": "../../data/energy-funding.json",
+   "link": "energy-funding.json"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Program",
+    "field": "label"
+   },
+   {
+    "label": "Deadline",
+    "field": "display"
+   },
+   {
+    "label": "Status",
+    "field": "status"
+   },
+   {
+    "label": "Status checked",
+    "field": "checked"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claim",
+    "field": "claims"
+   }
+  ]
+ }
+}

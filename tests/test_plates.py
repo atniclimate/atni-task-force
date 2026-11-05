@@ -105,6 +105,13 @@ def test_our_sentences_take_numbers_through_placeholders(tmp_path, field):
     rejected(tmp_path, "number in its own words", bp.sample_plate(**{field: "It used 42 Wh"}))
 
 
+def test_a_long_title_warns_and_still_builds(tmp_path, capsys):
+    built(tmp_path, bp.sample_plate(title="{a[display]} against {b[display]}"))
+    assert "warning" not in capsys.readouterr().err
+    page, _, _ = built(tmp_path, bp.sample_plate(title="{a[display]} " + "and so on " * 12))
+    assert "past 120" in capsys.readouterr().err and title(parse(page)).startswith("0.24 Wh")
+
+
 def test_placeholders_reach_any_row(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(title="{a[display]} against {b[display]}"))
     assert title(parse(page)) == "0.24 Wh against 12 Wh"
@@ -369,8 +376,9 @@ def test_formula_grammar_stays_small(expr):
 
 
 def test_a_computed_figure_rounds_to_significant_digits():
-    assert bp.rounded(15.0008) == 15 and bp.rounded(14.05) == 14.1 and bp.rounded(1007.4, 2) == 1000 and bp.rounded(0.00008) == 0.00008 and bp.rounded(None) is None
+    assert bp.rounded(15.0008) == 15 and bp.rounded(14.05) == 14 and bp.rounded(9.28008) == 9.3 and bp.rounded(1007.4, 2) == 1000 and bp.rounded(0.00008) == 0.00008 and bp.rounded(None) is None
     assert bp.number(bp.rounded(1007.4)) == "1,010" and bp.number(bp.rounded(236.52, 2)) == "240"
+    assert bp.rounded(99.4) == 99 and bp.rounded(99.5) == 99.5 and bp.rounded(202.5) == 203 and bp.rounded(28740, 4) == 28740, "two figures, three at 99.5 and up, as the Explorer's num; a row's digits overrides"
 
 
 # Instrument -----------------------------------------------------------------------------------------
@@ -402,7 +410,7 @@ def test_an_instrument_builds_its_default_setting_statically(tmp_path):
     assert rows["twh"]["display"] == "0.7 TWh" and rows["share"]["display"] == "40 percent"
     doc = parse(page)
     assert title(doc) == "100 MW is 0.7 TWh, 40 percent of 200", "the title is the finding at the default setting"
-    assert rows["spread"]["display"] == "1.75 to 140 L" and rows["off"]["display"] == "Off for now" and "value" not in rows["off"]
+    assert rows["spread"]["display"] == "1.8 to 140 L" and rows["off"]["display"] == "Off for now" and "value" not in rows["off"]
     assert all(part in doc.one(cls="plate-setting").text() for part in ("MW: 100", "Load factor: 0.8", "Your figure", "Extra: No"))
     assert "aMW = MW x load factor" in doc.one(cls="plate-facts").text(), "the default row's equation prints without scripts"
 
@@ -724,6 +732,85 @@ def test_a_pair_of_marks_by_fiscal_year(tmp_path):
     value = doc.one(cls="ladder-value").text()
     assert numbers(value) == ["2", "60"] and value.endswith("USD billion") and doc.one(cls="ladder-mark is-b")
     assert any("--x2" in node.style() for node in doc.all(style=True))
+
+
+def checked_plate(**extra):
+    claims = [bp.sample_claim("p-23", 110.5, unit="TWh", year=2023), bp.sample_claim("r-23", 100.25, unit="TWh", year=2023), bp.sample_claim("p-19", 94, unit="TWh", year=2019), bp.sample_claim("r-19", 100, unit="TWh", year=2019),
+              bp.sample_claim("g-p", 2.6, low=1.2, high=3.1, unit="percent per year", year=2014), bp.sample_claim("g-o", 0.2, unit="percent per year", year=2014),
+              bp.sample_claim("m-p", 73, unit="TWh", year=2020), bp.sample_claim("m-r", 105, "partly", unit="TWh", year=2020, limit="Read from a chart."), bp.sample_claim("m-d", 32, "partly", unit="TWh", year=2020, limit="Inherits the read."), bp.sample_claim("m-e", 30.5, "partly", unit="percent", year=2020, limit="Inherits the read.")]
+    plate = bp.sample_plate(
+        title="{label}", default="a", by="t", plot={"type": "ladder", "select": "point", "groups": [{"id": "x", "label": "X", "domain": [90, 120]}, {"id": "g", "label": "G", "domain": [-2, 4]}, {"id": "m", "label": "M", "domain": [0, 120]}],
+                                                    "key": [{"shape": "diamond", "label": "Projection"}, {"label": "Words alone"}]},
+        controls=[{"type": "segmented", "name": "t", "label": "Target", "default": "2023", "options": [{"value": "2023", "label": "2023"}, {"value": "2019", "label": "2019"}]}],
+        not_counted="Not in the file", reading_group="{label}: {proj} and {real} {unit}.", reading_for={"Level": "{tag} for {year}: {proj} against {real} {unit}, {diff} {diff_unit}, {error}, ran {ran}.", "Rate": "{label}: {proj} against {real} {unit}, {diff} {diff_unit}, {error}.", "Named": "{proj} against {real}: {diff}, {error}."},
+        table={"pairs": True, "columns": [{"label": "Row", "field": "label"}, {"label": "Earlier", "field": "display"}, {"label": "Later", "field": "later"}, {"label": "Difference", "field": "cell"}, {"label": "Percent", "field": "error"}, {"label": "Claims", "field": "claims"}]},
+        rows=[{"id": "a", "label": "A", "group": "x", "tag": {"2023": "ED13", "2019": "ED09"}, "check": "level", "pair": [{"id": "proj", "name": "Level", "claims": {"2023": "p-23", "2019": "p-19"}, "modeled": True}, {"id": "real", "name": "After", "claims": {"2023": "r-23", "2019": "r-19"}}]},
+              {"id": "b", "label": "B", "group": "x", "tag": {"2023": "ED15"}, "check": "level", "pair": [{"id": "proj", "name": "Level", "claims": {"2023": "p-23", "2019": None}, "modeled": True}, {"id": "real", "name": "After", "claims": {"2023": "r-23", "2019": None}}]},
+              {"id": "c", "label": "C", "group": "g", "check": "growth", "pair": [{"id": "proj", "name": "Rate", "claim": "g-p", "modeled": True}, {"id": "real", "name": "Seen", "claim": "g-o"}]},
+              {"id": "d", "label": "D", "group": "m", "check": {"diff": "m-d", "ape": "m-e"}, "pair": [{"id": "proj", "name": "Named", "claim": "m-p", "modeled": True}, {"id": "real", "name": "Later", "claim": "m-r", "modeled": True}]}], **extra)
+    return plate, claims
+
+
+def test_a_checked_pair_prints_how_far_off_it_ran(tmp_path):
+    page, data, _ = built(tmp_path, *checked_plate())
+    fields = {(r["key"], r.get("when")): r["fields"] for r in data["rows"] if r.get("fields")}
+    assert fields["a", "2023"] == {"diff": "-10.25", "diff_unit": "TWh", "ran": "high", "cell": "-10.25 TWh", "error": "10.22 percent"}, "|100.25 - 110.5| / 100.25"
+    assert fields["a", "2019"]["diff"] == "+6" and fields["a", "2019"]["ran"] == "low" and fields["a", "2019"]["error"] == "6.00 percent"
+    assert fields["c", None] == {"diff": "-2.4", "diff_unit": "percentage points", "ran": "high", "cell": "-2.4 points", "error": "not computed"}, "no percent of a rate near zero"
+    assert fields["d", None]["diff"] == "+32" and fields["d", None]["error"] == "30.5 percent", "both from the claims named"
+    assert data["readings"]["a||2023"] == "ED13 for 2023: 110.5 against 100.25 TWh, -10.25 TWh, 10.22 percent, ran high." and data["readings"]["a||2019"].startswith("ED09 for 2019: 94")
+    assert data["readings"]["c||2023"] == data["readings"]["c||2019"] and "c||" not in data["readings"], "a row every stop counts answers at each stop"
+    assert data["readings"]["d||2023"].startswith("73 against 105: +32, 30.5 percent.") and "Read from a chart." in data["readings"]["d||2023"], "a partly figure keeps its limit"
+    assert {"m-d", "m-e"} <= set(next(r for r in data["rows"] if r["key"] == "d")["cites"]) and {"m-d", "m-e"} <= set(data["receipts"]), "the claims named join the receipts"
+    doc = parse(page)
+    assert doc.one(cls="readout-value").text() == "-10.25", "the readout, with no scripts"
+    assert doc.one(data_row="a").one(cls="ladder-value").text() == "-10.25 TWh", "and the row's end"
+    assert [doc.one(data_row=k).one(cls="ladder-tag").text() for k in "ab"] == ["ED13", "ED15"], "words by stop start at the default"
+
+
+def test_a_pair_is_a_ghost_at_a_stop_it_names_no_claim_for(tmp_path):
+    _, data, _ = built(tmp_path, *checked_plate())
+    assert [(r["when"], r["series"]) for r in data["rows"] if r["key"] == "b"] == [("2023", "Level"), ("2023", "After")]
+    assert all("when" not in r for r in data["rows"] if r["key"] in "cd"), "a pair with one claim stands at every stop"
+    assert all("tag" not in r for r in data["rows"] if r["series"] == "After"), "what came after has no edition"
+
+
+def test_a_table_can_give_one_line_per_pair(tmp_path):
+    page, data, _ = built(tmp_path, *checked_plate())
+    cells = [[cell.text() for cell in row.walk()] for row in parse(page).one("tbody").all("tr")]
+    assert len(cells) == 5 and cells[0] == ["A", "110.5 TWh", "100.25 TWh", "-10.25 TWh", "10.22 percent", "p-23, r-23"]
+    assert cells[3] == ["C", "2.6 (1.2 to 3.1) percent per year", "0.2 percent per year", "-2.4 points", "not computed", "g-p, g-o"]
+    assert cells[4][-1] == "m-p, m-r, m-d, m-e", "every claim behind the line"
+    assert len(data["rows"]) == 10, "the data block keeps both members"
+
+
+def test_a_named_difference_must_be_the_pairs_difference(tmp_path):
+    plate, claims = checked_plate()
+    next(c for c in claims if c["id"] == "m-d")["value"] = 31
+    rejected(tmp_path, "the pair differs by 32", plate, claims)
+
+
+def test_a_check_must_be_a_known_kind(tmp_path):
+    plate, claims = checked_plate()
+    plate["rows"][0]["check"] = "ratio"
+    rejected(tmp_path, "check must be level, growth", plate, claims)
+
+
+def test_a_verified_figure_prints_the_limit_it_carries(tmp_path):
+    plate = bp.sample_plate(title="{label}", default="a", rows=[{"id": "a", "label": "A", "claim": "s-1"}, {"id": "b", "label": "B", "claim": "s-2"}], plot={"type": "ladder"})
+    claims = [bp.sample_claim("s-1", 1, limit="History is revised later."), bp.sample_claim("s-2", 2)]
+    page, data, _ = built(tmp_path, plate, claims)
+    doc = parse(page)
+    assert "Verified against the source. Limit: History is revised later." in receipt(doc, "s-1") and "Limit:" not in receipt(doc, "s-2")
+    assert "limit" not in data["receipts"]["s-1"], "scripts need no copy of it"
+    assert "History is revised later." not in reading(doc), "a verified figure's Reading stays as written"
+
+
+def test_a_plate_can_draw_its_own_key(tmp_path):
+    page, _, _ = built(tmp_path, *checked_plate())
+    doc = parse(page)
+    assert [node.text() for node in doc.one(cls="plate-legend").all("li")] == ["Projection", "Words alone"] and doc.one(cls="plate-square is-diamond")
+    assert "Modeled or estimated" not in doc.one(cls="plate-legend").text(), "the plate's marks do not say modeled against measured"
 
 
 def test_ticks_can_wait_for_a_setting(tmp_path):

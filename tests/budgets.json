@@ -7,7 +7,7 @@
     "site/assets/js/data-centers.js": 14700,
     "site/assets/js/energy-funding.js": 19100,
     "site/assets/js/energy-potential.js": 14800,
-    "site/assets/js/explorer-band.js": 1000,
+    "site/assets/js/explorer-band.js": 5900,
     "site/assets/js/explorer.js": 36800,
     "site/assets/js/library.js": 11100,
     "site/assets/js/plate-svg.js": 10000,
@@ -15,7 +15,7 @@
     "site/assets/js/policy-watch.js": 4300,
     "site/assets/js/resource-model.js": 60500,
     "site/assets/js/theme.js": 2200,
-    "site/assets/js/util.js": 3700
+    "site/assets/js/util.js": 5000
   },
   "pages_gzip_kb": {
     "default": 33,

@@ -4,11 +4,11 @@
  "id": "dc-eia-servers",
  "page": "data-centers/index.html",
  "fit": true,
- "eyebrow": "Federal outlook",
- "title": "EIA's baseline puts data center servers at {c[dem-001][series][2025]:.0f} billion kWh in 2025 and {c[dem-001][series][2030]:.0f} by 2030; its high case reaches {c[dem-004][series][2050]:.0f} by 2050, servers only (AEO2026)",
- "subtitle": "Billion kWh a year, servers only.",
+ "eyebrow": "Federal outlook, AEO2026",
+ "title": "EIA's baseline puts data center servers at {c[dem-001][series][2025]:.0f} billion kWh in 2025 and {c[dem-001][series][2030]:.0f} by 2030",
+ "subtitle": "Billion kWh a year, servers only. The high case reaches {c[dem-004][series][2050]:.0f} by 2050.",
  "text": [
-  "Three public forecasts count different things: EIA counts servers only, LBNL the whole building, and the IEA the world, so each has its own plate. The last plate shows how far earlier editions landed."
+  "Three public forecasts count different things: EIA counts servers only, LBNL the whole building, and the IEA the world, so each has its own plate. The last plate checks past projections against what came after."
  ],
  "boundary": "Servers only; cooling and the rest of the building are not in this series.",
  "plot": {

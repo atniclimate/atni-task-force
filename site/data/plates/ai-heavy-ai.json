@@ -6,8 +6,8 @@
  "fit": true,
  "model": "comparison-model",
  "default": "prompt",
- "eyebrow": "Heavy AI",
- "title": "A text prompt is seconds to minutes of streaming; an AI video clip is minutes to hours; an agent session is hours on every yardstick (modeled, 2025 to 2026)",
+ "eyebrow": "Heavy AI, modeled 2025 to 2026",
+ "title": "A text prompt is seconds to minutes of streaming; an agent session is hours on every yardstick",
  "subtitle": "Watt-hours for one unit of AI work, and the same energy in streaming time.",
  "text": [
   "The same model, three more ways: heavy AI work against a video yardstick, inside the data center per person per day, and all of ChatGPT's text messages against the buildout."
@@ -84,7 +84,7 @@
    "options": [
     {
      "value": "measured_delivery",
-     "label": "Measured delivery"
+     "label": "Measured"
     },
     {
      "value": "desnz_followup",
@@ -92,7 +92,7 @@
     },
     {
      "value": "top_down",
-     "label": "Top-down average"
+     "label": "Top-down"
     }
    ]
   }
@@ -104,7 +104,8 @@
    0.1,
    10000
   ],
-  "axis_label": "Watt-hours, each mark ten times the last; the last column is the same energy in streaming time",
+  "axis_label": "Watt-hours, each mark ten times the last; under each value, the same energy in streaming time",
+  "switch": "yard",
   "units": {
    "Wh/video": "Wh",
    "Wh/image": "Wh",

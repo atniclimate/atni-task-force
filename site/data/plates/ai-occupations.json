@@ -6,7 +6,7 @@
  "fit": true,
  "default": "jb-002",
  "eyebrow": "Occupations",
- "title": "By 2035, BLS projects +{c[jb-002][value]} percent for data scientists and {c[jb-007][value]} for data entry keyers, with electricians at +{c[jb-011][value]} and power-line installers at +{c[jb-013][value]}; all occupations grow {c[jb-010][value]}",
+ "title": "By 2035, BLS projects +{c[jb-002][value]} percent for data scientists and {c[jb-007][value]} for data entry keyers",
  "subtitle": "Projected percent change in employment, 2025 to 2035. BLS says it adjusts for AI conservatively, where there is convincing evidence for a change.",
  "text": [
   "The Bureau of Labor Statistics' ten-year projection by occupation includes the trades that build data centers. The studies that have looked for AI's effect on employment so far disagree, and are shown together."
@@ -34,6 +34,12 @@
   "signed": true,
   "sort": "occ_sort",
   "projected": true,
+  "key": [
+   {
+    "label": "Dashed outline: BLS projection, 2025 to 2035",
+    "shape": "proj"
+   }
+  ],
   "axis_label": "Projected percent change, 2025 to 2035",
   "marks": [
    {

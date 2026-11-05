@@ -20,12 +20,15 @@ function scale(kind, [d0, d1], [r0, r1]) {
 }
 
 const inner = (g, W, H, m) => ({ g, W, H, x0: m.left, x1: W - m.right, y0: H - m.bottom, y1: m.top });
+// The size of a mark: --mark in site.css, in pixels for a drawing.
+const markSize = () => Math.max(16, Math.min(26, innerWidth / 100 + 5));
 function frame(plot, minH = 0) {
   plot.querySelector('.plate-svg')?.remove();
+  plot.style.minHeight = '';
   const W = plot.clientWidth;
   const H = Math.max(plot.clientHeight, minH);
   const svg = add(plot, 'svg', { class: 'plate-svg', viewBox: `0 0 ${W} ${H}`, role: 'none' });
-  if (H > plot.clientHeight) svg.style.height = `${H}px`;
+  if (H > plot.clientHeight) plot.style.minHeight = `${H}px`; // a drawing that needs more than the plate gives grows the plot, in the page's scroll
   return { g: svg, W, H };
 }
 function axes(f, x, y, yTicks, xs) {
@@ -86,14 +89,18 @@ function chart(f, rows, cfg, withLabels) {
   const wanted = (!withLabels ? [] : cfg.endLabels ? names : labelled(names, lead)).filter(last);
   const column = cfg.endLabels || !cfg.panels ? [...wanted].sort((a, b) => y(last(a).value) - y(last(b).value)) : [];
   const tag = (n, more, attrs) => add(f.g, 'text', { class: `m-label${n === lead ? ' is-lead' : ''}${more}`, 'aria-hidden': 'true', text: n, ...attrs }); // the Reading says the same
-  const heights = spread(column.map((n) => y(last(n).value)), cfg.panels ? 14 : 15, f.y1, f.y0);
-  column.forEach((n, i) => tag(n, cfg.panels && n !== lead ? ' m-end' : '', { x: cfg.panels ? f.x1 + 8 : x(last(n).x) + 10, y: heights[i], dy: '.32em' }));
+  const heights = spread(column.map((n) => y(last(n).value)), cfg.panels ? 16 : 18, f.y1, f.y0);
+  const size = markSize();
+  column.forEach((n, i) => tag(n, cfg.panels && n !== lead ? ' m-end' : '', { x: cfg.panels ? f.x1 + 8 : x(last(n).x) + size / 2 + 4, y: heights[i], dy: '.32em' }));
   const placed = [];
   for (const n of wanted.filter((m) => !column.includes(m)).sort((a, b) => (b === lead) - (a === lead))) {
     const v = y(last(n).value);
-    if (placed.every((py) => Math.abs(py - v) >= 15) && placed.push(v)) tag(n, '', { x: x(last(n).x) - 5, y: v - 10, 'text-anchor': 'end' });
+    if (placed.every((py) => Math.abs(py - v) >= 18) && placed.push(v)) tag(n, '', { x: x(last(n).x) - size / 2, y: v - size / 2 - 4, 'text-anchor': 'end' });
   }
-  if (!point) add(f.g, 'line', { class: 'm-needle', x1: 0, x2: 0, y1: f.y1, y2: f.y0 });
+  if (!point) {
+    add(f.g, 'line', { class: 'm-needle', x1: 0, x2: 0, y1: f.y1, y2: f.y0 });
+    add(f.g, 'text', { class: 'm-needle-label', x: 0, y: f.y1 + 12, 'data-end': f.x1, 'aria-hidden': 'true' }); // plate.js names it with the year
+  }
   const keys = keysOf(rows);
   const px = keys.map((k) => x(rows.find((r) => r.key === k).x));
   keys.forEach((key, i) => {
@@ -105,14 +112,19 @@ function chart(f, rows, cfg, withLabels) {
     else add(band, 'rect', { class: 'm-hit', x: left, y: f.y1, width: right - left, height: f.y0 - f.y1 });
     for (const r of at.filter((a) => !blank(a.value))) {
       const solo = cfg.dots || points(r.series).length === 1 ? ' is-solo' : '';
-      add(band, 'rect', { class: `m-dot${solo}${r.hollow ? ' is-hollow' : ''}${r.series === lead ? ' is-lead' : ''}`, x: px[i] - 5, y: y(r.value) - 5, width: 10, height: 10 });
+      const s = !lead || r.series === lead || solo ? size : 8; // with a series selected the others stay at the unit, or seven squares stack and hide the lines they mark
+      add(band, 'rect', { class: `m-dot${solo}${r.hollow ? ' is-hollow' : ''}${r.series === lead ? ' is-lead' : ''}`, x: px[i] - s / 2, y: y(r.value) - s / 2, width: s, height: s });
     }
   });
 }
 function lines(plot, rows, cfg) {
   const f = frame(plot);
   const longest = Math.max(0, ...labelled(seriesOf(rows), cfg.highlight).map((n) => n.length));
-  chart(inner(f.g, f.W, f.H, { top: 12, right: Math.min(f.W * 0.3, longest * 7.5 + 16), bottom: 28, left: 56 }), rows, cfg, true);
+  const area = inner(f.g, f.W, f.H, { top: 20, right: Math.min(f.W * 0.3, longest * 8 + markSize()), bottom: 28, left: 56 });
+  // A needle on the first year would read as the y axis, so the years start 24px in from the ticks. Always, not only on that year: a plot must not jump as the needle reaches it. The first label stays the first year.
+  const [from, to] = cfg.xdomain;
+  const lead = cfg.select === 'point' ? 0 : ((to - from) * 24) / (area.x1 - area.x0 - 24);
+  chart(area, rows, { ...cfg, xdomain: [from - lead, to] }, true);
 }
 function multiples(plot, rows, cfg) {
   const { panels } = cfg;
@@ -129,9 +141,9 @@ function multiples(plot, rows, cfg) {
   const ch = (f.H + gap) / down;
   panels.forEach((panel, i) => {
     const g = add(f.g, 'g', { transform: `translate(${(i % cols) * cw} ${Math.floor(i / cols) * ch})` });
-    add(g, 'text', { class: 'm-title', x: 0, y: 14, 'aria-hidden': 'true', text: panel.title });
+    add(g, 'text', { class: 'm-title', x: 0, y: 22, 'aria-hidden': 'true', text: panel.title }); // 8px of air over a title, so the viewBox's top line never cuts it
     const named = cfg.highlight && seriesOf(rows).length > 1 && cw > 240;
-    chart(inner(g, cw - gap, ch - gap, { top: 28, right: named ? 70 : 8, bottom: 24, left: 48 }), rows.filter((r) => r.panel === panel.id), { ...cfg, ...panel, panels: true, endLabels: named }, !!cfg.highlight);
+    chart(inner(g, cw - gap, ch - gap, { top: 36, right: named ? 76 : 12, bottom: 24, left: 52 }), rows.filter((r) => r.panel === panel.id), { ...cfg, ...panel, panels: true, endLabels: named }, !!cfg.highlight);
   });
 }
 window.plateDraw = { add, frame, inner, scale, axes, chart, lines, multiples, fmt };

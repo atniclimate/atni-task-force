@@ -5,9 +5,9 @@
  "id": "ai-scale",
  "model": "comparison-model",
  "default": "chat",
- "eyebrow": "Scale",
- "title": "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year on a median-prompt floor; the buildout adds hundreds (2025 to 2030)",
- "subtitle": "Terawatt-hours a year. Dashed and hollow rows are projections.",
+ "eyebrow": "Scale, 2025 to 2030",
+ "title": "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year; the buildout adds hundreds",
+ "subtitle": "The ChatGPT figure stands on a median-prompt floor. Terawatt-hours a year. Dashed and hollow rows are projections.",
  "inputs": {
   "now": {
    "model": "computed_defaults.scale"
@@ -55,7 +55,7 @@
    "options": [
     {
      "value": "m",
-     "label": "Measured delivery",
+     "label": "Measured",
      "is": "yt_m"
     },
     {
@@ -65,7 +65,7 @@
     },
     {
      "value": "t",
-     "label": "Top-down average",
+     "label": "Top-down",
      "is": "yt_t"
     }
    ]

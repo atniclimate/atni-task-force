@@ -1,10 +1,9 @@
-// Tribal energy funding, read from data/energy-funding.json: upcoming deadlines (on the energy
-// overview and the funding page), and on energy/funding/ the program catalog, the Grants.gov
-// live layer, and the programs matched to each Tribe's ranked energy types.
+// The deadlines strip (on the energy overview and the funding page), drawn from its plate's own data so each row keeps its claim, and on energy/funding/ the
+// program catalog, the Grants.gov live layer, and the programs matched to each Tribe's ranked energy types, read from data/energy-funding.json.
 
-import { esc, href, day, usDates, plural, getJSON, linkFilters, setFigure, addOptions } from './util.js';
+import { esc, href, day, usDates, plural, getJSON, linkFilters, setFigure, addOptions, closedDetail } from './util.js';
 
-const ORDER = ['open', 'forecasted', 'closed', 'terminated', 'rescinded', 'enjoined', 'unknown'];
+const ORDER =['open', 'forecasted', 'closed', 'terminated', 'rescinded', 'enjoined', 'unknown'];
 const CATALOG = ['type', 'cooling', 'status'];
 const CHECKS = { verified: 'Verified', needs_review: 'Needs review' };
 const APPLIES = { applicable: 'Named by a program document', 'possible, confirm with agency': 'Possible; confirm with the agency' };
@@ -21,16 +20,6 @@ const host = (url) => {
   }
 };
 
-function localISO(date = new Date()) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-function daysFromToday(iso) {
-  const [y, m, d] = iso.split('-').map(Number);
-  const now = new Date();
-  return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
-}
-const when = (n) => (n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : `In ${n} days`);
-
 function pacific(iso) {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat('en-US', {
@@ -42,28 +31,76 @@ function pacific(iso) {
   return `${parts.month}/${parts.day}/${parts.year} at ${parts.hour}:${parts.minute} ${parts.dayPeriod} ${parts.timeZoneName}`;
 }
 
-// Deadlines that have not passed, from program records and live notices; a list on any page.
-function renderDeadlines(data) {
-  const today = localISO();
-  for (const list of document.querySelectorAll('[data-funding-deadlines]')) {
-    const link = list.dataset.programLink || '#prog-';
-    const items = [
-      ...data.programs
-        .filter((p) => p.deadline?.date >= today)
-        .map((p) => ({ date: p.deadline.date, name: p.short_name, url: `${link}${p.id}`, what: p.deadline.what })),
-      ...data.live.opportunities
-        .filter((o) => o.close_date >= today)
-        .map((o) => ({ date: o.close_date, name: o.title, url: o.url, what: `Grants.gov notice ${o.number} closes` })),
-    ].sort((a, b) => a.date.localeCompare(b.date));
-    list.innerHTML = items.length
-      ? items
-          .map((d) => `<li class="deadline"><p class="deadline-date"><time datetime="${esc(d.date)}">${esc(day(d.date))}</time></p>
-<p class="deadline-when">${esc(when(daysFromToday(d.date)))}</p>
-<p class="deadline-what"><a href="${d.url.startsWith('#') || d.url.startsWith('funding/') ? esc(d.url) : href(d.url)}">${esc(d.name)}</a>: ${esc(sentence(usDates(d.what)))}</p></li>`)
-          .join('')
-      : `<li class="deadline"><p class="deadline-what">No upcoming deadline is recorded in the catalog. Statuses were checked ${esc(day(data.source.programs_status_as_of))}.</p></li>`;
+// The plate's static list is what shows without scripts. With them it gives way to the strip: plate.strip turns the list written here into the track, the days until, the
+// lane, and the stale check. Rows hold links, so the plot's list box is hidden, not filled: the links are this plate's keyboard, and the claim link also selects its deadline.
+// A click on a row or a mark selects it through its hidden row, which opens the detail panel. Plate views, receipts, and print stay the kit's.
+function deadlineStrip(figure) {
+  closedDetail(figure);
+  const id = figure.dataset.plate;
+  const data = JSON.parse(document.getElementById(`plate-data-${id}`).textContent);
+  const { from, to, checked } = data.plot.strip;
+  const base = id === 'energy-deadlines-catalog' ? '#prog-' : 'funding/#prog-';
+  const target = (r) => (r.cols.link ? href(r.cols.link) : `${base}${esc(r.cols.program)}`);
+  const word = (claim) => (data.receipts[claim].status === 'verified' ? 'verified' : 'partly verified');
+  const dated = data.rows.filter((r) => r.group === 'dated');
+  const lane = data.rows.filter((r) => r.group === 'undated');
+  const strip = Object.assign(document.createElement('div'), { className: 'strip' });
+  Object.assign(strip.dataset, { from, to, checked });
+  strip.innerHTML = `<ol class="strip-rows">${dated.map((r) => `<li class="strip-row" data-date="${esc(r.cols.iso)}" data-key="${esc(r.key)}"><a class="strip-name" href="${target(r)}">${esc(r.label)}</a><span class="strip-what">${esc(r.display)}: ${esc(r.cols.what.replace(/\.?$/, '.'))} Checked ${esc(r.cols.checked)}; <a class="strip-claim" href="#${esc(id)}-source-${esc(r.claim)}">${esc(r.claim)}</a>, ${word(r.claim)}.</span></li>`).join('')}</ol>
+<div class="strip-lane"><h4 class="strip-lane-title">No date in the catalog</h4><ul class="strip-undated">${lane.map((r) => `<li><a href="${target(r)}">${esc(r.label)}</a>${r.cols.status === 'forecasted' ? ' (forecasted)' : ''}</li>`).join('')}</ul></div>`;
+  const plot = figure.querySelector('.plate-plot');
+  plot.hidden = true;
+  plot.after(strip);
+  // The build's foot says when statuses were checked; the kit adds how long ago, right after that date.
+  const foot = figure.querySelector('.plate-claim .plate-foot');
+  const age = document.createElement('span');
+  age.setAttribute('data-strip-age', '');
+  foot.firstChild.splitText(foot.firstChild.data.indexOf(day(checked)) + day(checked).length).before(age);
+  foot.classList.add('strip-foot');
+  strip.append(foot);
+  window.plate.strip(strip);
+  const rows = strip.querySelectorAll('.strip-rows .strip-row');
+  // The days stand in their own column, so every row's words share an edge too.
+  for (const body of strip.querySelectorAll('.strip-rows .strip-body')) {
+    const when = Object.assign(document.createElement('span'), { className: 'strip-when' });
+    const name = body.querySelector('.strip-name');
+    while (body.firstChild !== name) when.append(body.firstChild);
+    body.prepend(when);
   }
+  // A row's words take what they take at this width, so a stem's drop from the track to its row's top is measured. See energy.css.
+  const track = strip.querySelector('.strip-track');
+  const fit = () => {
+    const { bottom } = track.getBoundingClientRect();
+    for (const row of rows) row.style.setProperty('--drop', `${Math.round(row.getBoundingClientRect().top - bottom)}px`);
+  };
+  fit();
+  new ResizeObserver(fit).observe(strip);
+  document.fonts?.ready.then(fit);
+
+  const further = strip.querySelectorAll('.strip-beyond a').length;
+  const first = rows[0]?.querySelector('.strip-n')?.textContent;
+  const passed = strip.querySelectorAll('.strip-undated li').length - lane.length;
+  const next = first === 'today' ? ', and the first is today' : first === '1' ? ', and the first is tomorrow' : first ? `, the next in ${first} days` : '';
+  figure.querySelector('.plate-title').textContent = `${rows.length + further ? plural(rows.length + further, 'dated deadline') : 'No dated deadline'} in the next 24 months${next}; ${plural(lane.length, 'more program')} ${lane.length === 1 ? 'carries' : 'carry'} no date in the catalog${passed ? `, and ${passed} passed` : ''}`;
+
+  // A row or its mark selects that deadline, on its Reading. Its receipt does too, on the Sources view, and then the link lands on that source. A program's name just goes there.
+  const marks = [...strip.querySelectorAll('.strip-mark')];
+  strip.addEventListener('click', (event) => {
+    const mark = marks.indexOf(event.target);
+    const row = rows[mark] || event.target.closest('.strip-row');
+    if (!row || event.target.closest('.strip-name')) return;
+    figure.querySelector(`.plate-plot [data-row="${row.dataset.key}"]`).click();
+    if (event.target.closest('.strip-claim')) figure.querySelector('.plate-views input[value="sources"]').click();
+  });
+  window.plate.register(id, {
+    render(ctx) {
+      ctx.data.cites = Object.keys(ctx.data.receipts); // whichever deadline is selected, the Sources chips and the receipts line count them all
+      ctx.auto();
+      for (const row of rows) row.classList.toggle('is-on', row.dataset.key === ctx.key);
+    },
+  });
 }
+document.querySelectorAll('[data-plate^="energy-deadlines"]').forEach(deadlineStrip);
 
 function programHTML(p, labels, filter) {
   const types = (ids) => ids.map((id) => labels.type.get(id) || id).join(', ');
@@ -139,8 +176,10 @@ function renderCatalog(data, labels) {
       .filter(([, n]) => n)
       .map(([s, n]) => `${n} ${s}`)
       .join(', ');
+    const checks = programs.map((p) => p.status_checked.date).sort();
+    const latest = checks.filter((d) => d === checks.at(-1)).length;
     status.textContent = shown.length
-      ? `Showing ${shown.length} of ${plural(programs.length, 'program')}${tally ? ` (${tally})` : ''}. Statuses checked ${day(data.source.programs_status_as_of)}.`
+      ? `Showing ${shown.length} of ${plural(programs.length, 'program')}${tally ? ` (${tally})` : ''}. Statuses checked ${day(checks[0])}${checks[0] === checks.at(-1) ? '' : `, with ${latest} rechecked ${day(checks.at(-1))}`}.`
       : 'No program matches. Clear the filters.';
     writeParams();
   };
@@ -167,10 +206,6 @@ function renderLive(data, labels) {
   if (!list) return;
   const { live } = data;
   setFigure('live-retrieved', pacific(live.retrieved));
-  setFigure('live-queries', live.counts.queries);
-  setFigure('live-kept', plural(live.counts.kept, 'notice'));
-  setFigure('live-posted', live.counts.posted);
-  setFigure('live-forecasted', live.counts.forecasted);
   setFigure('live-attribution', live.source.attribution);
   const programs = new Map(data.programs.map((p) => [p.id, p]));
   const money = (n) => (typeof n === 'number' ? `$${n.toLocaleString('en-US')}` : null);
@@ -264,27 +299,29 @@ ${live.length ? `<p class="match-head">Grants.gov notices</p><ul class="match-li
   });
 }
 
-getJSON('data/energy-funding.json')
-  .then((data) => {
-    const stages = ['Goal or interest', 'Assessed or sited', 'Planned or funded', 'Installed or operating'];
-    const labels = {
-      type: new Map(data.vocabulary.energy_types.map((t) => [t.id, t.label])),
-      cooling: new Map(data.vocabulary.cooling_uses.map((c) => [c.id, c.label])),
-      stage: (label) => stages.indexOf(label) + 1,
-    };
-    setFigure('fund-programs', data.programs.length);
-    setFigure('fund-open', data.programs.filter((p) => p.status === 'open').length);
-    setFigure('fund-date', day(data.source.programs_status_as_of));
-    setFigure('fund-tribes', data.tribes.length);
-    setFigure('fund-tribes-with', data.tribes.filter((t) => t.matches.length).length);
-    renderDeadlines(data);
-    const clearCatalog = renderCatalog(data, labels);
-    renderLive(data, labels);
-    renderTribes(data, labels, clearCatalog);
-    const target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-    if (target) target.scrollIntoView();
-  })
-  .catch((error) => {
-    for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;
-    console.warn(error);
-  });
+// The overview's plate holds its own data, so it fetches nothing; the catalog and the home page's figures read the file.
+if (document.querySelector('#catalog-app, [data-figure^="fund-"]')) {
+  getJSON('data/energy-funding.json')
+    .then((data) => {
+      const stages = ['Goal or interest', 'Assessed or sited', 'Planned or funded', 'Installed or operating'];
+      const labels = {
+        type: new Map(data.vocabulary.energy_types.map((t) => [t.id, t.label])),
+        cooling: new Map(data.vocabulary.cooling_uses.map((c) => [c.id, c.label])),
+        stage: (label) => stages.indexOf(label) + 1,
+      };
+      setFigure('fund-programs', data.programs.length);
+      setFigure('fund-open', data.programs.filter((p) => p.status === 'open').length);
+      setFigure('fund-date', day(data.source.programs_status_as_of));
+      setFigure('fund-tribes', data.tribes.length);
+      setFigure('fund-tribes-with', data.tribes.filter((t) => t.matches.length).length);
+      const clearCatalog = renderCatalog(data, labels);
+      renderLive(data, labels);
+      renderTribes(data, labels, clearCatalog);
+      const target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+      if (target) target.scrollIntoView();
+    })
+    .catch((error) => {
+      for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;
+      console.warn(error);
+    });
+}

@@ -6,8 +6,8 @@
  "default": "2025",
  "eyebrow": "Footprint",
  "gap": "none reported",
- "title": "Google's electricity rose {c[rs-003][value]} percent in 2025 to {display}; location-based Scope 2 rose at every company that reports more than one year of it",
- "subtitle": "Company reports, each row on its own boundary. Fiscal years differ: Microsoft July to June, Apple to September, NVIDIA to January.",
+ "title": "Google's electricity rose {c[rs-003][value]} percent in 2025 to {display}",
+ "subtitle": "Location-based Scope 2 rose at every company that reports more than one year of it. Company reports, each row on its own boundary. Fiscal years differ: Microsoft July to June, Apple to September, NVIDIA to January.",
  "controls": [
   {
    "type": "segmented",

@@ -6,7 +6,8 @@
  "fit": true,
  "model": "comparison-model",
  "eyebrow": "Cooling",
- "title": "A {c_mw} MW site at the 2024 national PUE uses about {energy[text]} TWh a year; evaporative cooling at the operators' figures consumes about {spread_low} to {spread_high} million liters on site, and the power plants about {plant[text]} million more",
+ "title": "A {c_mw} MW site's evaporative cooling consumes about {spread_low} to {spread_high} million liters a year on site",
+ "subtitle": "At the 2024 national PUE the site uses about {energy[text]} TWh a year. The cooling range is the operators' figures; the power plants consume about {plant[text]} million liters more.",
  "details": ["The factors are national or fleet averages, so this illustrates a project and describes no stream."],
  "inputs": {
   "ms": {"claim": "tr-028"},

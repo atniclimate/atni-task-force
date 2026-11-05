@@ -5,8 +5,8 @@
  "page": "data-centers/index.html",
  "model": "comparison-model",
  "eyebrow": "Water per kWh",
- "title": "On a consumption basis, operators report {c[tr-028][value]} to {google_wue} liters per kWh; withdrawal figures sit on their own ruler because they count different water",
- "subtitle": "Liters per kWh on two rulers. A filled square is company-reported; a hollow square is modeled.",
+ "title": "On a consumption basis, operators report {c[tr-028][value]} to {google_wue} liters per kWh",
+ "subtitle": "Liters per kWh on two rulers, because withdrawal figures count different water. A filled square is company-reported; a hollow square is modeled.",
  "inputs": {
   "google_wue": {"model": "inputs.water_carbon.google_fleet_wue_l_per_kwh.value"},
   "lbnl_low": {"claim": "tr-009", "field": "low"},

@@ -87,10 +87,13 @@ python scripts\grants_gov_live.py          # about 4 minutes; rewrites work\ener
 python scripts\energy_funding.py           # joins; writes site\data\energy-funding.json and the T1 heat files
 python scripts\energy_funding.py --heat-only   # T1 heat files only; needs no energy potential file
 python scripts\energy_funding.py --self-test   # offline checks
+python scripts\energy_claims.py            # the claims and plates behind the Energy pages' figures; also after scripts\energy_potential.py
+python scripts\build_plates.py --export-claims potential funding
+python scripts\build_plates.py --page energy/index.html   # and energy/potential/index.html, energy/funding/index.html
 python scripts\validate_public.py
 ```
 
-The catalog is edited by hand. To refresh it, reread each program's page, update `status`, `status_note`, `status_checked`, `deadline` and `funding_level`, and keep `cooling_uses` tied to the page that supports each use. Rerun the live layer first when statuses move, because the join reads both.
+The catalog is edited by hand. To refresh it, reread each program's page, update `status`, `status_note`, `status_checked`, `deadline` and `funding_level`, and keep `cooling_uses` tied to the page that supports each use. Rerun the live layer first when statuses move, because the join reads both. A date on the deadlines strip is verified only when its record holds `deadline.checked`: the date read, the page, and the sentence read there. Move `status_checked` only for a page really reread.
 
 ## Releasing the Heat Section
 

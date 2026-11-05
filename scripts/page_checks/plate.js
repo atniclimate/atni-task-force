@@ -39,31 +39,20 @@ const parts = (document, id) => {
   };
 };
 
-// A detail panel that still fits at the narrower width gives its room to the plot; one that would scroll keeps it.
-async function shortDetail() {
-  const { window, document, errors } = await load('', { wide: true });
-  const root = document.querySelector('[data-plate]');
-  const detail = root.querySelector('.plate-detail');
-  const resize = (w) => { window.size = { w, h: 400 }; window.observers.forEach((cb) => cb()); };
-  let need = 100;
-  Object.defineProperty(detail, 'scrollHeight', { get: () => need });
-  resize(800);
-  await frame();
-  await frame();
-  ok(root.classList.contains('is-short'), 'it fits, so it narrows');
-  need = 5000;
-  resize(820);
-  await frame();
-  await frame();
-  ok(!root.classList.contains('is-short'), 'it would scroll, so it keeps its width');
-  need = 100;
-  resize(800);
-  window.innerWidth = 900;
-  resize(780);
-  await frame();
-  await frame();
-  eq(errors.join(), '', 'no script errors');
+// The build copies plot keys through to the data block, so a page gets these exactly as this fixture does.
+function withData(id, change) {
+  const out = html.replace(new RegExp(`(id="plate-data-${id}">)(.*?)(</script>)`, 's'), (m, a, body, c) => {
+    const data = JSON.parse(body);
+    change(data);
+    return a + JSON.stringify(data).replace(/</g, '\\u003c').replace(/--/g, '-\\u002d') + c;
+  });
+  ok(out !== html, `the fixture changed ${id}`);
+  return out;
 }
+const pick = (window, radio) => {
+  radio.checked = true;
+  fire(window, radio, 'input');
+};
 
 async function tabs() {
   const { window, document, errors } = await load();
@@ -72,6 +61,15 @@ async function tabs() {
   const panels = [...document.querySelectorAll('[role="tabpanel"]')];
   ok(list && links.length === 14 && panels.length === 14, 'tab list and panels');
   eq(list.getAttribute('aria-label'), 'Demonstration sections', 'tab list named');
+  // A strip that scrolls says so while more waits past its edge.
+  Object.defineProperty(list, 'scrollWidth', { value: 900 });
+  Object.defineProperty(list, 'clientWidth', { value: 300 });
+  fire(window, list, 'scroll');
+  ok(list.classList.contains('is-cut'), 'the strip fades while cut');
+  list.scrollLeft = 600;
+  fire(window, list, 'scroll');
+  ok(!list.classList.contains('is-cut'), 'and not at its end');
+  list.scrollLeft = 0;
   eq(links[0].getAttribute('aria-selected'), 'true', 'first tab selected');
   eq(links[0].getAttribute('tabindex'), '0', 'roving tabindex on');
   eq(links[1].getAttribute('tabindex'), '-1', 'roving tabindex off');
@@ -337,10 +335,13 @@ async function svgPlots() {
   ok(p.plot.querySelector('.m-label').getAttribute('aria-hidden') === 'true', 'a line name stays out of the list');
   eq(bands.at(-1).getAttribute('aria-selected'), 'true', 'latest year by default');
   ok(p.plot.style.getPropertyValue('--at').endsWith('px'), 'needle in pixels');
+  eq(+bands[0].dataset.nx - +p.plot.querySelector('.m-grid').getAttribute('x1'), 24, 'the first year stands 24px in from the ticks, so a needle there never reads as the y axis');
+  eq([...p.plot.querySelectorAll('.m-tick')].map((n) => n.textContent).filter((t) => /^20\d\d$/.test(t)).sort()[0], bands[0].dataset.row, 'and it stays the first label');
   eq(p.facts.querySelectorAll('li').length, 2, 'every series at that year listed');
   eq(p.facts.querySelector('li').textContent.endsWith('Google'), true, 'series keep the plate order');
   eq(bands.map((b) => b.dataset.row).join(), '2020,2021,2022,2023,2024,2025', 'years in order');
-  ok(p.facts.querySelector('.plate-key') && p.facts.querySelector('strong'), 'value first, keyed by a stroke');
+  ok(p.facts.querySelector('.plate-square') && !p.facts.querySelector('.plate-key') && p.facts.querySelector('strong'), 'value first, keyed by a square, as every figure list is');
+  ok(p.facts.querySelectorAll('.plate-square.is-on').length <= 1, 'orange for the selected series alone');
   ok(p.reading.textContent.includes('Google:') && p.reading.textContent.includes('Microsoft:') && p.reading.textContent.includes('verified against the source.'), 'Reading lists the series and the evidence');
   eq(p.chips().length, 2, 'a chip per claim');
   key(window, p.plot, 'ArrowLeft');
@@ -540,7 +541,7 @@ async function instrument() {
   eq(p.facts.querySelectorAll('.plate-values li').length, 2, 'two figures listed');
   ok(p.facts.textContent.includes('at 500 MW') && row(p.root, 'montana').textContent.includes('at 1,000 MW'), 'each named');
   ok(p.reading.textContent.includes('Limit: A modeled hypothetical'), 'a partly figure keeps its limit');
-  ok(p.root.querySelector('.plate-foot a').getAttribute('href') === '#sessions', 'a foot link');
+  eq(document.querySelector('.plate-note a[href="#sessions"]').closest('figure'), null, 'a foot link reads under the plate');
   key(window, p.plot, 'Home');
   eq(row(p.root, 'amw').getAttribute('aria-selected'), 'true', 'keys move through the rows');
   eq(errors.join(), '', 'no script errors');
@@ -608,17 +609,17 @@ async function countView() {
   };
   const counted = (k) => [...p.plot.querySelectorAll('.count-row')].find((n) => n.dataset.row === k);
   const squares = (k) => (counted(k).querySelector('path')?.getAttribute('d').match(/M/g) || []).length;
-  eq(value('chat'), '15 (9.28 to 24) Wh', 'computed from the model at the default');
+  eq(value('chat'), '15 (9.3 to 24) Wh', 'computed from the model at the default');
   eq(value('household'), '28,740 Wh', 'a model input');
   eq(p.value.textContent, '15', 'readout stands alone');
-  eq(p.unit.textContent, '(9.28 to 24) Wh', 'its range beside it');
+  eq(p.unit.textContent, '(9.3 to 24) Wh', 'its range beside it');
   eq(p.plot.querySelectorAll('.plate-seg, .count-row').length, 0, 'Count waits until asked for');
   eq(p.facts.querySelectorAll('.plate-seg').length, 4, 'a thin segmented bar in the detail');
   ok(p.facts.textContent.includes('Data center, measured') && p.facts.textContent.includes('Router, modeled'), 'each part marked');
   eq(p.chips().length, 2, 'a row that cites two claims shows both');
   ok(p.reading.textContent.includes('or 50 text prompts'), 'a field computed per row');
   const tick = p.plot.querySelector('.ladder-tick');
-  ok(tick.textContent.startsWith('Phone video hour, 14.1 Wh') || tick.textContent.startsWith('Phone video hour, 14 Wh'), 'a labeled yardstick');
+  ok(tick.textContent.startsWith('Phone video hour, 14.1 Wh') || tick.textContent.startsWith('Phone video hour, 14 Wh'), 'a labeled yardstick'); // the frozen fixture's mark holds its built words
   ok(p.root.querySelector('.plate-more input[name="device"]'), 'a control in More assumptions');
   ok(!p.root.querySelector('.plate-setting').textContent.includes('View'), 'the plot view stays out of the setting line');
   view('count');
@@ -642,16 +643,16 @@ async function countView() {
   eq(squares('chat'), 70, 'Count follows the slider');
   view('ruler');
   ok(!p.plot.querySelector('.ladder-groups').hidden && p.plot.querySelector('.count-rows').hidden, 'back to the ruler');
-  eq(value('chat'), '21 (9.28 to 24) Wh', 'the ruler follows the slider');
+  eq(value('chat'), '21 (9.3 to 24) Wh', 'the ruler follows the slider');
   const cell = [...p.views('table').querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|display');
-  eq(cell.textContent, '21 (9.28 to 24) Wh', 'the table follows the slider');
+  eq(cell.textContent, '21 (9.3 to 24) Wh', 'the table follows the slider');
   const fieldCell = [...p.views('table').querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|prompts_equal');
   eq(fieldCell.textContent, '70', 'a computed column follows the slider');
   // Presets.
   fire(window, p.root.querySelector('[data-preset="2.52"]'), 'click');
   eq(num.value, '2.52', 'a preset fills the typed field');
   ok(window.location.search.includes('prompts=2.52'), 'a preset off the step is in the query');
-  eq(value('chat'), '12.8 (9.28 to 24) Wh', 'a preset moves the row');
+  eq(value('chat'), '13 (9.3 to 24) Wh', 'a preset moves the row');
   const again = await load('?prompts=2.52#hour');
   eq(again.document.querySelector('[data-param="prompts"] input[type=number]').value, '2.52', 'a preset survives the address');
   const off = await load('?prompts=2.5#hour');
@@ -821,28 +822,367 @@ async function fit() {
   ok(document.getElementById('matrix').classList.contains('is-entering'), 'a tab change may move once');
 }
 
-// A zone cut by the plate's height says so, and a claim that scrolls can be reached by keyboard.
+// No zone is a scroller: the plate grows with a zone that needs more room, so nothing is cut, and there is nothing to reach by a second tab stop.
 async function zones() {
-  const { window, document } = await load();
+  const { document } = await load();
   const root = document.getElementById('session-energy');
-  const claim = root.querySelector('.plate-claim');
-  const detail = root.querySelector('.plate-detail');
-  let tall = 5000;
-  for (const zone of [claim, detail]) Object.defineProperty(zone, 'scrollHeight', { get: () => tall });
-  claim.dispatchEvent(new window.Event('scroll'));
-  ok(claim.classList.contains('has-more') && detail.classList.contains('has-more'), 'more below shows');
-  eq(claim.getAttribute('tabindex'), '0', 'a claim that scrolls is a keyboard stop');
-  eq(claim.getAttribute('role'), 'group', 'with a role');
-  ok(claim.getAttribute('aria-label').length > 0, 'and a name');
-  eq(detail.getAttribute('tabindex'), '0', 'the detail always is');
-  detail.scrollTop = 900;
-  key(window, root.querySelector('.plate-plot'), 'ArrowDown');
-  eq(detail.scrollTop, 0, 'a new selection brings the changed Reading back into view');
-  tall = 10;
-  claim.dispatchEvent(new window.Event('scroll'));
-  ok(!claim.classList.contains('has-more'), 'nothing below, no fade');
-  eq(claim.getAttribute('tabindex'), null, 'and no extra stop');
-  eq(claim.getAttribute('role'), null, 'or role');
+  for (const zone of [root.querySelector('.plate-claim'), root.querySelector('.plate-detail')]) {
+    eq(zone.getAttribute('tabindex'), null, 'no zone takes a tab stop');
+    ok(!zone.classList.contains('has-more'), 'and none fades');
+  }
+  const css = read('site/assets/css/site.css');
+  ok(css.includes('.plate.is-live { --h: var(--plate-h, max(34rem, 72vh)); min-height: var(--h); }'), 'a live plate has a least height, not a height');
+  ok(!/\.plate[^{}]*\{[^{}]*overflow-y: auto/.test(css), 'and no zone scrolls on its own');
+  ok(!/has-more|is-short/.test(read('site/assets/js/plate.js')), 'nothing is left of the old bargain');
+}
+
+// The Reading view ends at Copy, Reset, and one line of receipts. Chips, the open receipt, and the list live in the Sources view, whose tab carries the count.
+async function detailViews() {
+  const { window, document, errors } = await load();
+  const p = parts(document, 'session-energy');
+  const reading = p.views('reading');
+  const sources = p.views('sources');
+  const chipsBox = p.root.querySelector('.plate-chips');
+  ok(sources.contains(chipsBox) && sources.contains(p.receipt) && sources.querySelector('.plate-sources'), 'chips, receipt, and list are in Sources');
+  ok(!reading.contains(chipsBox) && !reading.contains(p.receipt) && !reading.querySelector('.plate-sources'), 'and none in the Reading');
+  ok(chipsBox.compareDocumentPosition(p.receipt) === 4 && p.receipt.compareDocumentPosition(sources.querySelector('.plate-sources')) === 4, 'the receipt opens right under its chips, above the list');
+  eq(p.root.querySelector('.plate-views input[value="sources"] + span').textContent, 'Sources (5)', 'the tab carries the count of receipts');
+  const tally = reading.querySelector('.plate-tally');
+  eq(tally.previousElementSibling, p.root.querySelector('.plate-actions'), 'the line of receipts follows Copy and Reset');
+  eq(tally.textContent, 'This row: 1 verified; 5 sources on the plate', 'the selection by status, then the count the tab carries');
+  pick(window, p.radio('boundary', 'full'));
+  key(window, p.plot, 'ArrowDown');
+  key(window, p.plot, 'ArrowDown');
+  ok(p.reading.textContent.includes('Limit:'), 'a partly row');
+  eq(tally.textContent, 'This row: 1 partly verified; 5 sources on the plate', 'its line says partly');
+  fire(window, tally, 'click');
+  eq(p.root.dataset.view, 'sources', 'the line opens Sources');
+  ok(!sources.hidden && reading.hidden, 'and only Sources');
+  eq(document.activeElement, p.radio('session-energy-view', 'sources'), 'focus goes to the view switch, since the line left with its view');
+  key(window, p.plot, 'Home');
+  // A chip pressed: focus goes to what opened, and Escape comes back to the chip.
+  const [chip] = p.chips();
+  fire(window, chip, 'click');
+  ok(p.receipt.hidden, 'the first press closes the receipt open since the selection');
+  eq(document.activeElement === p.receipt, false, 'and leaves focus alone');
+  chip.focus();
+  fire(window, chip, 'click');
+  ok(!p.receipt.hidden, 'the next opens it');
+  eq(chip.getAttribute('aria-expanded'), 'true', 'the chip says so');
+  eq(document.activeElement, p.receipt, 'focus moves to the receipt');
+  eq(p.receipt.getAttribute('role'), 'group', 'a group');
+  eq(p.receipt.getAttribute('aria-label'), 'Source', 'named');
+  eq(window.scrolled === undefined, false, 'and it is brought into view');
+  key(window, p.receipt, 'Escape');
+  ok(p.receipt.hidden, 'Escape closes it');
+  eq(document.activeElement, chip, 'and returns to the chip');
+  eq(chip.getAttribute('aria-expanded'), 'false', 'which says so');
+  // A link from another page may open a view; anything else opens the Reading.
+  eq((await load('?session-energy-view=sources')).document.getElementById('session-energy').dataset.view, 'sources', 'the view comes from the address');
+  eq((await load('?session-energy-view=bogus')).document.getElementById('session-energy').dataset.view, 'reading', 'a bad one is the Reading');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// A row this stop does not count stays on the plot, with no mark and no selection.
+async function ghosts() {
+  const { window, document, errors } = await load('#hour');
+  const p = parts(document, 'hour-demo');
+  const charge = row(p.root, 'charge');
+  const selected = () => p.plot.querySelector('[aria-selected="true"]').dataset.row;
+  ok(!charge.classList.contains('is-ghost') && !charge.hasAttribute('aria-disabled'), 'a counted row is no ghost');
+  pick(window, p.radio('edge', 'dc'));
+  ok(charge.classList.contains('is-ghost') && !charge.hidden, 'it stays on the plot');
+  eq(charge.getAttribute('aria-disabled'), 'true', 'disabled, which is why its 40 percent label may be under the contrast floor');
+  ok(charge.querySelector('.ladder-mark').hidden, 'no mark');
+  eq(charge.querySelector('.ladder-value').textContent, 'Not counted at this boundary', 'and the plate\'s own words');
+  eq(p.root.querySelectorAll('.plate-fold').length, 0, 'there is no foot sentence');
+  key(window, p.plot, 'End');
+  eq(selected(), 'video', 'arrows pass over a ghost');
+  fire(window, charge.querySelector('.ladder-label'), 'click');
+  eq(selected(), 'video', 'a press does nothing');
+  window.under = charge;
+  fire(window, p.plot, 'pointermove');
+  await frame();
+  ok(p.reading.textContent.startsWith('Streamed') || row(p.root, 'video').classList.contains('is-on'), 'and neither does a hover');
+  pick(window, p.radio('edge', 'whole'));
+  ok(!charge.classList.contains('is-ghost') && !charge.hasAttribute('aria-disabled'), 'back at a stop that counts it, it is a row again');
+  fire(window, charge.querySelector('.ladder-label'), 'click');
+  eq(selected(), 'charge', 'and takes a selection');
+  pick(window, p.radio('edge', 'dc'));
+  eq(selected(), 'chat', 'a selected row that turns to a ghost gives the selection back to the default');
+  ok(!window.location.search.includes('hour-demo=charge'), 'and the address follows');
+  // Count holds the same row the same way.
+  pick(window, p.radio('hour-demo-plot', 'count'));
+  ok([...p.plot.querySelectorAll('.count-row')].find((n) => n.dataset.row === 'charge').classList.contains('is-ghost'), 'in both views');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// plot.fit "data": whole decades around what this stop counts, and a row named in plot.off_ruler stays off, in words.
+async function fitData() {
+  const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => Object.assign(d.plot, { fit: 'data', off_ruler: ['household'] })) });
+  const p = parts(document, 'hour-demo');
+  const ticks = () => [...p.plot.querySelectorAll('.ladder-axis span')].map((n) => n.textContent).join();
+  const at = (k) => +row(p.root, k).style.getPropertyValue('--x');
+  eq(ticks(), '1,10,100,1,000', 'the whole hour runs 1 to 1,000');
+  eq(p.plot.querySelectorAll('.ladder-grid i:not(.ladder-needle):not(.ladder-tick)').length, 4, 'one grid line per tick');
+  ok(Math.abs(at('chat') - Math.log10(15.0008) / 3) < 1e-3, 'a formula row sits on the new ruler');
+  ok(Math.abs(at('charge') - Math.log10(19) / 3) < 1e-3, 'and so does a claim row');
+  eq(row(p.root, 'charge').querySelector('.ladder-value').textContent, '19 Wh', 'whose words the ruler does not change');
+  eq(row(p.root, 'household').querySelector('.ladder-value').textContent, '28,740 (off this ruler) Wh', 'a day in a household stays off it');
+  eq(row(p.root, 'household').querySelector('.ladder-tag').textContent, '(off this ruler)', 'on the range line');
+  ok(row(p.root, 'household').querySelector('.ladder-mark').hidden && !row(p.root, 'household').classList.contains('is-gap'), 'with no mark, and it is no gap');
+  const tick = p.plot.querySelector('.ladder-tick');
+  ok(Math.abs(+tick.style.getPropertyValue('--x') - Math.log10(14.05) / 3) < 1e-2, 'a tick moves with the ruler');
+  ok(tick.classList.contains('is-right'), 'and its name reads away from a needle at its right');
+  fire(window, row(p.root, 'video').querySelector('.ladder-label'), 'click');
+  ok(!tick.classList.contains('is-right'), 'or at its left');
+  ok(/^Each mark is ten times/.test(p.root.querySelector('.plate-under .caption').textContent), 'its caption is the axis caption');
+  ok(![...p.root.querySelectorAll('.plate-claim > .caption')].some((n) => n.textContent.startsWith('Each mark')), 'and has left the claim');
+  pick(window, p.radio('hour-demo-plot', 'count'));
+  ok(p.root.querySelector('.plate-under .caption').hidden, 'squares have no ruler to caption');
+  pick(window, p.radio('hour-demo-plot', 'ruler'));
+  ok(!p.root.querySelector('.plate-under .caption').hidden, 'the ruler gets it back');
+  pick(window, p.radio('edge', 'dc'));
+  eq(ticks(), '0.01,0.1,1,10,100', 'the next stop gets the decades around its own numbers');
+  ok(Math.abs(at('chat') - (Math.log10(3) + 2) / 4) < 1e-3, 'and its places');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// plot.shared: where the selected row's range overlaps, one band and one sentence. Never a ratio.
+async function sharedGround() {
+  const options = { fit: 'data', off_ruler: ['household'], shared: { word: 'lighter', at: { whole: 'the whole hour' } } };
+  const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => Object.assign(d.plot, options)) });
+  const p = parts(document, 'hour-demo');
+  const band = () => p.plot.querySelector('.ladder-shared');
+  ok(!band().hidden && p.plot.querySelector('.ladder-grid').contains(band()), 'a band under the rows');
+  eq(band().textContent, 'Shared ground, 9.3 to 24 Wh', 'it says what it spans, from the rows\' own figures');
+  ok(Math.abs(+band().style.getPropertyValue('--lo') - Math.log10(9.28008) / 3) < 1e-3 && Math.abs(+band().style.getPropertyValue('--hi') - Math.log10(24.0325) / 3) < 1e-3, 'and spans it');
+  ok(p.reading.textContent.endsWith('At the whole hour, chat and streamed video overlap (9.3 to 24 against 7.2 to 128); neither is clearly lighter.'), `the Reading says so: ${p.reading.textContent}`);
+  ok(!/\btimes\b|ratio/i.test(p.reading.textContent.slice(p.reading.textContent.indexOf('At the whole hour'))), 'with no ratio');
+  // The band's name reads to its right while it fits, and turns back where it would not or past 0.6.
+  const grid = p.plot.querySelector('.ladder-grid');
+  Object.defineProperty(grid, 'clientWidth', { value: 1000, configurable: true });
+  Object.defineProperty(band().firstElementChild, 'offsetWidth', { value: 196 });
+  key(window, p.plot, 'Home');
+  ok(!band().classList.contains('is-flip'), 'beside the band while it fits');
+  Object.defineProperty(grid, 'clientWidth', { value: 300, configurable: true });
+  key(window, p.plot, 'Home');
+  ok(band().classList.contains('is-flip'), 'and back where it would not');
+  Object.defineProperty(grid, 'clientWidth', { value: 1000, configurable: true });
+  key(window, p.plot, 'ArrowDown');
+  ok(p.reading.textContent.endsWith('At the whole hour, streamed video and chat overlap (7.2 to 128 against 9.3 to 24); neither is clearly lighter.'), 'it follows the selection');
+  fire(window, row(p.root, 'charge').querySelector('.ladder-label'), 'click');
+  ok(band().hidden, 'a row with no range shares nothing');
+  ok(!p.reading.textContent.includes('overlap'), 'and says nothing of it');
+  pick(window, p.radio('edge', 'dc'));
+  eq(band().textContent, 'Shared ground, 2.4 to 6 Wh', 'each stop finds its own');
+  ok(+band().style.getPropertyValue('--hi') > 0.6 && band().classList.contains('is-flip'), 'past 0.6 its name turns back, as the needle does');
+  ok(p.reading.textContent.includes('At this setting, chat and streamed video overlap'), 'a stop with no words of its own still reads');
+  // The sentence that carries the readout's figure keeps heading ink; the words stay the same words.
+  const carried = p.reading.querySelectorAll('b');
+  ok(carried.length === 1 && carried[0].textContent.includes(p.value.textContent), 'one sentence is marked, the one with the figure');
+  const box = document.createElement('p');
+  window.plate.readingInto(box, 'In 2015 it was 150. Now about 15 Wh. Limit: 1.5 and 15/2026.', '15');
+  eq(box.querySelector('b').textContent, 'Now about 15 Wh.', 'a figure is matched whole, never inside another number');
+  eq(box.textContent, 'In 2015 it was 150. Now about 15 Wh. Limit: 1.5 and 15/2026.', 'and the words are unchanged');
+  window.plate.readingInto(box, 'No such figure.', '15');
+  eq(box.querySelector('b'), null, 'no figure, no mark');
+  // A wide range can touch two rows that do not touch each other: the ground holds what it can, in row order.
+  const wide = await load('#hour', { source: withData('hour-demo', (d) => {
+    Object.assign(d.plot, options);
+    Object.assign(d.rows.find((r) => r.key === 'charge'), { low: 100, high: 200 });
+  }) });
+  const q = parts(wide.document, 'hour-demo');
+  fire(wide.window, row(q.root, 'video').querySelector('.ladder-label'), 'click');
+  eq(q.plot.querySelector('.ladder-shared').textContent, 'Shared ground, 9.3 to 24 Wh', 'the row that would empty the ground is left out');
+  // A yardstick is context: it neither makes the band nor narrows it.
+  const yard = await load('#hour', { source: withData('hour-demo', (d) => Object.assign(d.plot, options, { yard: ['video', 'charge', 'household'] })) });
+  const y = parts(yard.document, 'hour-demo');
+  ok(!y.plot.querySelector('.ladder-shared') || y.plot.querySelector('.ladder-shared').hidden, 'a yardstick does not count');
+  ok(y.plot.classList.contains('has-yard') && row(y.root, 'video').classList.contains('is-yard') && !row(y.root, 'chat').classList.contains('is-yard'), 'and is marked for its height');
+  // With no plot.shared there is no band: only a plate whose rows measure one thing may claim shared ground.
+  ok(!(await load('#hour')).document.querySelector('#hour-demo .ladder-shared'), 'a plate opts in');
+  eq(errors.join() + wide.errors.join() + yard.errors.join(), '', 'no script errors');
+}
+
+// The needle's name at its top; "your setting" once any setting has moved.
+async function needleLabel() {
+  const { window, document, errors } = await load('#hour');
+  const p = parts(document, 'hour-demo');
+  const label = () => p.plot.querySelector('.ladder-needle .needle-label').textContent;
+  eq(label(), 'Chat, at the prompts set', 'the selected row, at the defaults');
+  fire(window, row(p.root, 'video').querySelector('.ladder-label'), 'click');
+  eq(label(), 'Streamed video, one hour', 'it follows the selection');
+  const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
+  num.value = '30';
+  fire(window, num, 'input');
+  ok(label().endsWith(', your setting'), 'a moved setting says so');
+  fire(window, p.root.querySelector('[data-reset]'), 'click');
+  eq(label(), 'Chat, at the prompts set', 'Reset takes it back');
+  pick(window, p.radio('hour-demo-plot', 'count'));
+  pick(window, p.radio('hour-demo-plot', 'ruler'));
+  eq(label(), 'Chat, at the prompts set', 'a view is not a setting');
+  // A drawn plot names the year.
+  const lines = await load('#electricity');
+  const q = parts(lines.document, 'company-electricity');
+  const text = q.plot.querySelector('.m-needle-label');
+  eq(text.textContent, q.plot.querySelector('[aria-selected="true"]').dataset.row, 'a drawn needle is named with its year');
+  eq(text.getAttribute('aria-hidden'), 'true', 'the band has said it');
+  ok(['start', 'end'].includes(text.getAttribute('text-anchor')), 'and it keeps inside the plot');
+  // An instrument's needle stands at one row's place across every row.
+  const inst = await load('#project', { source: withData('project-demo', (d) => { d.plot.needle = 'amw'; }) });
+  const r = parts(inst.document, 'project-demo');
+  const stand = r.plot.querySelector('.instrument > .needle');
+  ok(stand && !r.plot.classList.contains('no-needle'), 'plot.needle draws one');
+  eq(stand.getAttribute('aria-hidden'), 'true', 'hidden from the list box');
+  eq(r.plot.style.getPropertyValue('--at'), row(r.root, 'amw').style.getPropertyValue('--x'), 'at that row\'s place');
+  fire(inst.window, row(r.root, 'twh').querySelector('.ladder-label'), 'click');
+  eq(r.plot.style.getPropertyValue('--at'), row(r.root, 'amw').style.getPropertyValue('--x'), 'whichever row is selected');
+  const mw = r.root.querySelector('[data-param="mw"] input[type=range]');
+  const before = r.plot.style.getPropertyValue('--at');
+  mw.value = '200';
+  fire(inst.window, mw, 'input');
+  ok(r.plot.style.getPropertyValue('--at') !== before, 'and moves with the reader\'s number');
+  eq(stand.querySelector('.needle-label'), null, 'the row it stands on names it, so the words do not print twice');
+  eq(errors.join() + lines.errors.join() + inst.errors.join(), '', 'no script errors');
+}
+
+// plot.switch: a control that is part of the picture sits over the plot; the key sits under it. Neither is inside the list box.
+async function arranged() {
+  const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => { d.plot.switch = 'edge'; }) });
+  const p = parts(document, 'hour-demo');
+  const box = p.root.querySelector('.plate-switch [data-param="edge"]');
+  ok(box && !p.root.querySelector('.plate-claim [data-param="edge"]'), 'the control left the claim');
+  eq(p.root.querySelector('.plate-switch').nextElementSibling, p.plot, 'for the place above the plot');
+  ok(p.root.classList.contains('has-switch') && p.root.classList.contains('has-under'), 'the plate knows');
+  ok(!p.plot.contains(box), 'outside the list box');
+  pick(window, p.radio('edge', 'dc'));
+  ok(window.location.search.includes('edge=dc') && row(p.root, 'chat').querySelector('.ladder-value').textContent.startsWith('3 '), 'and it still drives the plate');
+  ok(p.root.querySelector('.plate-under .plate-legend') && !p.root.querySelector('.plate-claim .plate-legend'), 'the key reads under the axis');
+  eq(p.root.querySelector('.plate-under').previousElementSibling, p.plot, 'right under it');
+  ok(!p.root.querySelector('.plate-under .caption'), 'a ruler that does not redraw keeps its caption in the claim');
+  ok(!p.plot.querySelector('.plate-under, .plate-switch'), 'nothing but rows in the list box');
+  // data-rows draws part of a plate's rows on another page: the same data, not a second chart.
+  const part = await load('#hour', { source: html.replace('data-plate="hour-demo"', 'data-plate="hour-demo" data-rows="video,charge"') });
+  const q = parts(part.document, 'hour-demo');
+  eq([...q.plot.querySelectorAll('.ladder-row')].map((n) => n.dataset.row).join(), 'video,charge', 'only those rows');
+  eq(q.plot.querySelector('[aria-selected="true"]').dataset.row, 'video', 'the first stands for a default that is not among them');
+  key(part.window, q.plot, 'End');
+  eq(q.plot.querySelector('[aria-selected="true"]').dataset.row, 'charge', 'and the keys know no others');
+  // In a panel the claim zone keeps one paragraph; the rest reads under the plate, every word of it. A foot that is only a link stays.
+  const kept = '<p class="caption">One boundary at a time, on one log ruler.</p>';
+  const prose = html.replace(kept, `${kept}<p>First sentence here. And a second. And a third.</p><p>One sentence alone.</p><p class="caption plate-foot">A foot. Of two sentences. <a href="#x">Its link</a></p><p class="caption plate-foot"> <a href="#y">Only a link</a></p>`);
+  ok(prose !== html, 'the fixture holds the paragraph');
+  const moved = await load('#hour', { source: prose });
+  const m = moved.document.getElementById('hour-demo');
+  const claim = () => [...m.querySelectorAll('.plate-claim > p:not(.eyebrow)')].map((n) => n.textContent.trim());
+  eq(claim().sort().join('|'), 'Each mark is ten times the last.|One boundary at a time, on one log ruler.|Only a link', 'the claim zone keeps the first paragraph, the axis caption, and the bare link');
+  const grid = m.nextElementSibling;
+  ok(grid.matches('.disclosure-grid.plate-notes'), 'the rest stands directly under the plate');
+  eq(grid.querySelector('details > summary').textContent, 'First sentence here.', 'a summary is the paragraph\'s first sentence');
+  eq(grid.querySelector('details > p').textContent, 'And a second. And a third.', 'and the rest of it is behind it');
+  eq([...grid.querySelectorAll(':scope > .plate-note')].map((n) => n.textContent).join('|'), 'One sentence alone.|A foot. Of two sentences. Its link', 'a single sentence and a foot line stand as they are');
+  ok(grid.querySelector('.plate-note a[href="#x"]'), 'with the link');
+  const after = '<!-- /plate:hour-demo -->';
+  const beside = await load('#hour', { source: prose.replace(after, `${after}<div class="disclosure-grid" id="own"><details class="disclosure"><summary>Its own.</summary></details></div>`) });
+  const own = beside.document.getElementById('own');
+  ok(!beside.document.querySelector('#hour .plate-notes'), 'a details grid that follows the plate takes them');
+  eq(own.firstElementChild.querySelector('summary').textContent, 'First sentence here.', 'ahead of its own');
+  eq(own.lastElementChild.querySelector('summary').textContent, 'Its own.', 'which keep their place');
+  const outside = await load('#sessions', { source: html.replace('<section id="hour" class="section panel">', '<section id="hour" class="section">') });
+  ok(outside.document.querySelector('#session-energy .plate-claim > p:not([class])'), 'outside a panel nothing moves');
+  eq(errors.join() + part.errors.join() + moved.errors.join() + beside.errors.join() + outside.errors.join(), '', 'no script errors');
+}
+
+// The readout: the figure, its unit on the baseline, the range under them, in the same words as ever; and a value cell splits the same way.
+async function figures() {
+  const { window, document, errors } = await load('#hour');
+  const p = parts(document, 'hour-demo');
+  eq(p.value.textContent, '15', 'the figure');
+  eq(p.unit.querySelector('.readout-range').textContent, '(9.3 to 24)', 'the range apart');
+  eq(p.unit.querySelector('.readout-u').textContent, 'Wh', 'the unit apart');
+  eq(p.unit.textContent, '(9.3 to 24) Wh', 'in the words a reader and a screen reader get');
+  await frame();
+  eq(p.value.parentElement.style.getPropertyValue('--chars'), '2', 'CSS knows how long the figure is');
+  fire(window, row(p.root, 'charge').querySelector('.ladder-label'), 'click');
+  eq(p.unit.textContent, 'Wh', 'no range, no range line');
+  ok(!p.unit.querySelector('.readout-range'), 'and no empty node');
+  const cell = (k) => row(p.root, k).querySelector('.ladder-value');
+  eq(cell('charge').querySelector('.ladder-num').textContent, '19', 'a plain figure is large');
+  eq(cell('charge').querySelector('.ladder-unit').textContent, 'Wh', 'and its unit small');
+  eq(cell('charge').textContent, '19 Wh', 'the same words');
+  const inst = await load('#project');
+  const site = row(parts(inst.document, 'project-demo').root, 'site').querySelector('.ladder-value');
+  eq(site.querySelector('.ladder-num').textContent, '240 to 320', 'a spread is a figure');
+  eq(site.textContent, '240 to 320 million liters', 'and reads as one');
+  const words = row(parts(inst.document, 'project-demo').root, 'plantwater').querySelector('.ladder-value');
+  ok(!words.querySelector('.ladder-num'), 'words stay words');
+  eq(errors.join() + inst.errors.join(), '', 'no script errors');
+}
+
+// #checklists opens its panel and its first disclosure.
+async function checklists() {
+  const source = html.replace(/(<section id="spending"[^>]*>)/, '$1<div id="checklists"><details id="first"><summary>One</summary></details><details id="second"><summary>Two</summary></details></div>');
+  ok(source !== html, 'the fixture holds the panel');
+  const { window, document } = await load('#checklists', { source });
+  ok(!document.getElementById('spending').hidden, 'its panel shows');
+  ok(document.getElementById('first').open && !document.getElementById('second').open, 'the first disclosure opens, and only that');
+  eq(window.scrolled, 'checklists', 'and it is scrolled to');
+  const other = await load('#history', { source });
+  ok(!other.document.getElementById('first').open, 'another address leaves it closed');
+}
+
+// The strip: built from a list a generator writes, so without scripts it is that list.
+function stripPage(rows, checked = -7) {
+  const day = (offset) => { const n = new Date(); n.setDate(n.getDate() + offset); return [n.getFullYear(), n.getMonth() + 1, n.getDate()].map((v) => String(v).padStart(2, '0')).join('-'); };
+  const items = rows.map(([offset, name]) => `<li class="strip-row" data-date="${day(offset)}"><a class="strip-name" href="#${name}">${name}</a><span class="strip-what">What is due</span></li>`).join('');
+  return { day, html: `<!doctype html><html><body><main><div class="strip" data-strip data-from="${day(-7)}" data-to="${day(723)}" data-checked="${day(checked)}"><ol class="strip-rows">${items}</ol>
+<div class="strip-lane"><h4 class="strip-lane-title">No date in the catalog</h4><ul class="strip-undated"><li><a href="#undated">Undated</a></li></ul></div>
+<p class="caption strip-foot">Statuses checked<span data-strip-age></span>; confirm each with the agency.</p></div></main>
+<script defer src="/site/assets/js/plate-svg.js"></script><script defer src="/site/assets/js/plate.js"></script></body></html>` };
+}
+async function strip() {
+  const us = (iso) => { const [y, m, d] = iso.split('-'); return `${m}/${d}/${y}`; };
+  const page = stripPage([[104, 'later'], [0, 'now'], [36, 'soonish'], [1, 'tomorrow'], [-3, 'gone'], [900, 'far']]);
+  const noJs = new JSDOM(page.html).window.document;
+  eq(noJs.querySelectorAll('.strip-row a').length, 6, 'without scripts every row is in the list');
+  const { window, document, errors } = await open(page.html, 'http://localhost/strip.html');
+  const root = document.querySelector('[data-strip]');
+  ok(root.classList.contains('is-live'), 'a live strip is marked');
+  const rows = [...document.querySelectorAll('.strip-rows .strip-row')];
+  eq(rows.map((n) => n.querySelector('a').textContent).join(), 'now,tomorrow,soonish,later', 'soonest first, whatever the order written');
+  const days = (n) => n.querySelector('.strip-body').textContent;
+  eq(rows[0].querySelector('.strip-n').textContent, 'today', 'zero prints today');
+  ok(!rows[0].querySelector('.strip-unit'), 'with no unit');
+  eq(`${rows[1].querySelector('.strip-n').textContent} ${rows[1].querySelector('.strip-unit').textContent}`, '1 day', 'one day');
+  eq(`${rows[2].querySelector('.strip-n').textContent} ${rows[2].querySelector('.strip-unit').textContent}`, '36 days', 'many');
+  ok(days(rows[2]).includes('What is due'), 'the catalog\'s words stay');
+  const marks = [...document.querySelectorAll('.strip-track .strip-mark')];
+  eq(marks.length, 4, 'one mark for each row on the track');
+  eq(marks.filter((n) => n.classList.contains('is-soon')).length, 2, 'inside 14 days it fills orange, and only then');
+  ok(rows[0].classList.contains('is-soon') && !rows[2].classList.contains('is-soon'), 'the row knows too');
+  const place = (n) => +n.style.getPropertyValue('--t');
+  ok(place(rows[0]) < place(rows[1]) && place(rows[1]) < place(rows[3]) && place(rows[3]) < 1, 'rows sit in date order on the track');
+  eq(place(marks[0]), place(rows[0]), 'mark and row share a place');
+  eq(rows.map((n) => n.style.getPropertyValue('--i')).join(), '3,2,1,0', 'each stem knows how far it runs');
+  eq(document.querySelector('.strip .needle .needle-label').textContent, `today, ${us(page.day(0))}`, 'the needle says today');
+  ok(Math.abs(+document.querySelector('.strip .needle').style.getPropertyValue('--t') - 7 / 730) < 1e-2, 'at its place');
+  eq(document.querySelector('.strip-track').getAttribute('aria-hidden'), 'true', 'the track is drawing; the rows hold the words');
+  const months = [...document.querySelectorAll('.strip-months span')].map((n) => n.textContent);
+  ok(months.length >= 3 && months.every((m) => /^(01|07)\/\d{4}$/.test(m)), `half-year labels: ${months}`);
+  ok(document.querySelectorAll('.strip-track i').length >= 23, 'a tick for every month');
+  const lane = [...document.querySelectorAll('.strip-undated li')].map((n) => n.textContent);
+  ok(lane.includes('Undated'), 'an undated program stays in the lane');
+  ok(lane.includes(`gone passed ${us(page.day(-3))}; confirm with the agency`), `a passed deadline moves there and says what to do: ${lane}`);
+  ok(document.querySelector('.strip-undated a[href="#gone"]'), 'with its link');
+  eq(document.querySelector('.strip-beyond a').getAttribute('href'), '#far', 'past the track, the cell at the end');
+  ok(document.querySelector('.strip-beyond').textContent.startsWith('Beyond two years'), 'says so');
+  eq(document.querySelector('.strip-foot').textContent.trim(), 'Statuses checked, 7 days ago; confirm each with the agency.', 'the foot counts its days');
+  eq(typeof window.plate.strip, 'function', 'a page may build one late');
+  const stale = stripPage([[10, 'x']], -40);
+  const old = await open(stale.html, 'http://localhost/strip.html');
+  ok(old.document.querySelector('.strip-foot').textContent.startsWith('Stale: Statuses checked, 40 days ago'), 'past 30 days the foot says Stale, in words');
+  eq(errors.join() + old.errors.join(), '', 'no script errors');
 }
 
 // Tokens: every Energy orange pairing, in both themes, at the numbers that fail silently.
@@ -881,6 +1221,11 @@ async function contrast() {
   for (const name of ['text', 'mark', 'fill', 'hover', 'wash', 'on-fill']) eq(auto(name), light(name), `auto light repeats --energy-${name}`);
   eq(print('text'), light('text'), 'print text is the light step');
   ok(ratio(print('mark'), light('wash')) >= 3, 'print mark on the wash');
+  // The ATNI Climate voice, on the base ground only, as the direction asks before it ships.
+  ok(ratio(token('program-red-element'), token('core-black-bg')) >= 3, 'the 2px Climate rule on the dark base');
+  ok(ratio(token('program-red-element'), token('core-surface-tint')) >= 3, 'and on the light base');
+  ok(ratio(token('core-red-on-dark'), token('core-black-bg')) >= 4.5, 'a Climate link on the dark base');
+  ok(ratio(token('core-red-alt'), token('core-surface-tint')) >= 4.5, 'and on the light base');
 }
 
 // Rules that only a browser applies, held as text here; scripts/a11y_check.js runs the rest.
@@ -890,7 +1235,28 @@ async function printAndMotion() {
   ok(/\[role="tabpanel"\]\[hidden\]/.test(css) && /\.plate-view\[hidden\] \{ display: grid !important; \}/.test(css), 'print opens every panel and view');
   ok(/details::details-content \{ display: block;/.test(css), 'print opens every disclosure');
   ok(css.includes('@media screen and (min-width: 1100px) {\n  .plate {'), 'the plate grid and its fixed height are for the screen, so print can never clip a zone');
+  ok(/@media print \{\s*\.plate-controls, \.plate-switch,/.test(css), 'a switch stays off paper, as other controls do');
+  ok(/@media print \{[^@]*\.plate \{ padding: 12pt; border: 1px solid var\(--rule\); \}/.test(css), 'a plate keeps a frame on paper');
+  ok(/@keyframes needle-draw/.test(css) && /\.needle, \.ladder-needle, \.ladder-mark, \.ladder-range, \.ladder-shared \{ transition: left 160ms ease-out, width 160ms ease-out; \}/.test(css), 'the one stroke and the 160ms slide');
 }
 
+// The floor and the marks, as text: a size a browser would apply and no check could see. The direction states them; these hold them.
+async function tokens() {
+  const css = read('site/assets/css/site.css');
+  const rule = (selector) => { const at = css.indexOf(`${selector} {`); ok(at >= 0, `${selector} has a rule`); return css.slice(at, css.indexOf('}', at)); };
+  ok(rule('.plate').includes('--row-min: 56px') && rule('.plate').includes('--mark: clamp(16px, 1vw + 5px, 26px)'), 'rows and marks at their stated sizes');
+  ok(!/--row-min: 32px/.test(css), 'and no smaller row for a mouse');
+  ok(css.includes('--poster: clamp(6rem, 2.5rem + 5vw, 8.5rem)') && rule('.readout-value').includes('var(--poster)'), 'the poster readout');
+  ok(rule('.ladder-range').includes('height: 8px') && rule('.ladder-range').includes('opacity: 0.4'), 'the range band');
+  ok(rule('.ladder-mark.is-hollow').includes('border: 2.5px solid'), 'the hollow ring');
+  ok(rule('.plate-title').includes('font-size: 1.5rem') && rule('.ladder-label').includes('font-size: 1.125rem') && rule('.ladder-value').includes('font-size: 1.5rem'), 'the type scale on a plate');
+  ok(!/font-size: 0\.75rem/.test(css), 'nothing at 0.75rem');
+  const small = css.split('\n').filter((line) => /font-size: 0\.8125rem/.test(line));
+  ok(small.length > 0 && small.every((line) => /plate-sources|plate-receipt|plate-quote|plate-table/.test(line)), `0.8125rem survives in Sources and Table alone: ${small.join(' | ')}`);
+  ok(!/text-transform: uppercase/.test(css), 'no tracked capitals');
+  // High Contrast: the rules moved here from the Explorer's sheet, since every page has tabs and options.
+  ok(/@media \(forced-colors: active\) \{[^}]*\.segmented span[^}]*border-bottom-color: Canvas; \}\s*\.segmented input:checked \+ span[^}]*border-bottom-color: Highlight; \}/.test(css), 'High Contrast tells the selected option apart, site-wide');
+  ok(!read('site/assets/css/explorer.css').includes('border-bottom-color: Canvas'), 'and once');
+}
 
-module.exports = { groups: { shortDetail, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, contrast, printAndMotion } };
+module.exports = { groups: { tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens } };

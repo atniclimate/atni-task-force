@@ -1,0 +1,143 @@
+/* The Energy pages: two plates side by side on the overview, the same plates at full content width on What Tribal Plans Say and Funding, and the rest of the overview in a
+   details grid. Sizes and tokens are the kit's (site.css); this holds only what these plates say differently. The kit reads a plate's row height from --row-min. */
+
+/* Energy types by stage: thirteen rows of stacked bars. Thirteen at the kit's 56px would not fit a first screen, so a row is the bar and its 2px gap, and larger on a phone. */
+[data-plate^="energy-types"] { --row-min: 44px; --l: clamp(7rem, 34%, 11rem); --v: 3.5rem; }
+[data-plate^="energy-types"] .ladder { padding-top: 24px; }
+[data-plate^="energy-types"] .ladder-label { font-size: 1.0625rem; }
+[data-plate^="energy-types"] .ladder-value { font-size: 1.25rem; text-align: right; }
+[data-plate^="energy-types"] .ladder-value:has(> .ladder-num) { justify-content: flex-end; }
+[data-plate^="energy-types"] .ladder-unit { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+/* A row with no finding stays on the plot and keeps its 0. It can still be selected, so its label stays legible rather than going to 40 percent. */
+[data-plate^="energy-types"] :is(.ladder-row.is-zero, .ladder-row[style="--x:0.0"]) .ladder-label { color: var(--atni-text-muted); }
+[data-plate^="energy-types"]:not(.is-live) { --v: 6.5rem; } /* the build prints "32 Tribes"; with scripts the unit is for screen readers */
+[data-plate^="energy-types"] .ladder-row.is-on .ladder-label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; text-decoration-color: var(--energy-mark); }
+
+/* With scripts the bar of a row's total gives way to its stages. The needle stands at the selected row's total. */
+.is-live[data-plate^="energy-types"] .ladder-bar { display: none; }
+[data-plate^="energy-types"] .stack-bar { position: absolute; top: 50%; left: 0; right: 0; gap: 0; height: min(24px, 90%); transform: translateY(-50%); z-index: 2; }
+[data-plate^="energy-types"] .stack-bar > i { border-right: 2px solid var(--plot-ground); } /* the gap sits inside each segment, so a bar's end stays on the axis */
+/* The ticks start under the needle's name, in the ladder's top 24px, so the name lies over nothing. */
+[data-plate^="energy-types"] .ladder-grid { top: 24px; }
+.is-live[data-plate^="energy-types"] .ladder-grid .ladder-needle { display: block; top: -24px; left: calc(var(--stack-at, 0) * 100%); }
+.energy-key { width: 12px; height: 12px; background: var(--stage); }
+[data-plate^="energy-types"] .plate-under .legend { gap: 2px 16px; }
+
+/* Its figures, the caveats beside them, and what selecting a row shows. */
+.energy-figure { display: block; font-family: var(--display); font-weight: 600; font-size: 3rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+[data-plate^="energy-types"] .plate-claim > p:not([class]) { font-size: 0.9375rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.energy-states { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.energy-tribes > summary { font-size: 1rem; }
+.energy-tribe-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 12px 32px; margin: 12px 0 0; padding: 0; list-style: none; }
+.energy-tribe-list > li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0; padding-top: 8px; border-top: 1px solid var(--rule); }
+.energy-tribe-list > li > a { flex-basis: 100%; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; }
+.energy-tribe-list .plate-more { flex-basis: 100%; }
+.energy-tribe-list .citation { margin: 8px 0 0; }
+.energy-limits { margin: 0 0 16px; padding: 0; list-style: none; font-size: 0.9375rem; color: var(--atni-text-secondary); }
+.energy-limits li { margin: 0 0 4px; }
+
+/* The detail panel, once scripts have closed it (closedDetail in util.js): one raised line until a reader selects something. Print has no use for the line: the Reading follows it. */
+@media screen { .plate-detail:has(> .energy-detail) { padding: 0 16px; } }
+.energy-detail > summary { min-height: 44px; padding-block: 10px; font-size: 1.0625rem; line-height: 1.35; }
+.energy-detail[open] { padding-bottom: 16px; }
+.energy-detail > .plate-views { margin-bottom: 8px; }
+@media print { .energy-detail > summary { display: none; } }
+
+/* The deadlines plate: no poster, since its picture is the strip, at the plate's full width. */
+[data-plate^="energy-deadlines"] .readout { display: none; }
+[data-plate^="energy-deadlines"] .strip-claim { font-size: 0.875rem; }
+[data-plate^="energy-deadlines"] .strip-what { max-width: var(--measure-wide); }
+:is([data-plate^="energy-deadlines"] .strip-claim, .energy-band .figure-label a) { white-space: nowrap; } /* a claim id stays whole */
+.plate[data-plate^="energy-"] .plate-table td:last-child { white-space: nowrap; } /* a claim id stays whole */
+[data-plate^="energy-deadlines"] .plate-table td { text-align: left; } /* words and dates, not figures to compare */
+/* Tighter than the kit, so the first screen at 1440 by 900 holds the strip, the lane, the foot, and the panel's one line. */
+[data-plate^="energy-deadlines"] .strip { margin-top: 4px; gap: 8px; }
+[data-plate^="energy-deadlines"] .strip-lane { padding-top: 8px; }
+[data-plate^="energy-deadlines"] .strip-lane-title { margin-bottom: 4px; }
+[data-plate^="energy-deadlines"] .strip-foot { font-size: 0.875rem; }
+[data-plate^="energy-deadlines"] .instrument { --l: minmax(0, 1fr); --v: 8rem; grid-auto-rows: auto; }  /* the list without scripts: a program and its words, then the date */
+[data-plate^="energy-deadlines"] .instrument-row { grid-template-columns: minmax(0, 1fr) 0 var(--v); column-gap: 8px; padding-block: 6px; }
+/* Departure from the kit's strip, which staggers each row to its mark. Every row starts at the track's left edge, nearest first, with its days in a column and then its words, under a
+   1px --grid rule across the width. A stem is one 1px L in context ink at 60 percent, a connector over those rules: down from the mark to its row's rule, then along it to the left edge,
+   so the lit length is how far along the track its date falls. A stem passes behind the rows above it, whose ground hides it, so it crosses no word; --drop is its length, measured in
+   energy-funding.js. The needle stops at the first row, since it moves with the days and would otherwise run through the words. On a phone and in print the strip is the kit's list. */
+@media screen and (min-width: 720px) {
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-area { margin-inline: 0 12px; }
+  [data-plate^="energy-deadlines"] .strip.is-live .needle { bottom: auto; height: calc(24px + var(--sq) + 26px); }
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-months { height: 20px; }
+  [data-plate^="energy-deadlines"] .strip-months span { z-index: 1; padding-inline: 4px; background: var(--plot-ground); }
+  [data-plate^="energy-deadlines"] .strip-mark { cursor: pointer; }
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-rows { display: block; margin-right: -12px; } /* out of the area's 12px, so a row's rule meets the lane's right edge; the stem's width takes it back */
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-row { height: auto; cursor: pointer; border-top: 1px solid var(--grid); }
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-row + .strip-row { margin-top: 7px; }
+  /* The L's foot lies on its row's rule: a positioned child starts under the border, so the stem's 1px more reaches back to the track. */
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-row::before { left: 0; bottom: 100%; width: calc(var(--t) * (100% - 12px)); height: calc(var(--drop, 0px) + 1px); background: none; border: solid var(--series-context); border-width: 0 1px 1px 0; opacity: 0.6; }
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-row:is(:hover, .is-on, :has(a:focus-visible))::before { border-color: var(--atni-text-heading); opacity: 1; }
+  [data-plate^="energy-deadlines"] .strip.is-live .strip-row .strip-body { position: relative; z-index: 1; left: auto; right: auto; display: grid; grid-template-columns: 6.25rem minmax(0, 1fr); width: auto; padding: 4px 0 0; text-align: left; background: var(--plot-ground); }
+  [data-plate^="energy-deadlines"] .strip-when { grid-row: 1 / span 2; white-space: nowrap; }
+  [data-plate^="energy-deadlines"] .strip-body > :is(.strip-name, .strip-what) { grid-column: 2; }
+}
+
+/* Read This First: on Funding two columns that each flow on their own, on Potential a caveat in one column, a rule and no box. */
+.energy-flow { min-width: 0; }
+.energy-flow > .rail-details { margin-block: 0; }
+.content > .prose > .energy-caveat { grid-column: 1 / -1; max-width: var(--measure-wide); margin: 0 0 16px; padding-left: 16px; font-size: 1.125rem; line-height: 1.45; color: var(--atni-text-heading); border-left: 2px solid var(--energy-mark); }
+
+@media screen and (min-width: 1100px) {
+  /* Without scripts a plate simply stacks, every view showing. */
+  .plate[data-plate^="energy-"]:not(.is-live) { grid-template-columns: minmax(0, 1fr); }
+  /* With them, both plates drop the kit's three zones: claim and plot on top, the detail under them. On the overview that is half a window each; on a rail page, the content's width. */
+  [data-plate^="energy-types"], [data-plate^="energy-deadlines"], .plate-pair > .plate { gap: 0 24px; align-items: start; }
+  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) { min-height: 0; }
+  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-plot { min-height: 0; }
+  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) .plate-view { position: static; }
+  :is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-detail { grid-column: 1 / -1; margin-top: 12px; }
+  /* The title runs the plate's width; the figures keep the left column beside the plot, with the button under them. */
+  [data-plate^="energy-types"] { --row-min: 26px; }
+  .is-live[data-plate^="energy-types"] { grid-template-columns: minmax(8.5rem, 24fr) minmax(0, 76fr); grid-template-rows: repeat(9, auto) 1fr; }
+  .is-live[data-plate^="energy-types"] > .plate-claim { display: contents; }
+  .is-live[data-plate^="energy-types"] .plate-claim > .plate-title { grid-column: 1 / -1; }
+  .is-live[data-plate^="energy-types"] .plate-claim > p { grid-column: 1; margin-bottom: 8px; }
+  .is-live[data-plate^="energy-types"] .plate-claim > .plate-foot .button { padding: 8px; }
+  .is-live[data-plate^="energy-types"] .plate-claim > p:nth-of-type(5) { grid-column: 1 / -1; grid-row: 12; max-width: none; margin: 4px 0 0; font-size: 0.875rem; } /* the caveats run under the picture, on the first screen */
+  .is-live[data-plate^="energy-types"] > .plate-plot { grid-column: 2; grid-row: 2 / span 9; }
+  .is-live[data-plate^="energy-types"] > .plate-under { grid-column: 1 / -1; grid-row: 11; justify-content: flex-end; padding-top: 0; }
+  .is-live[data-plate^="energy-types"] > .plate-detail { grid-row: 13; }
+  .is-live[data-plate^="energy-types"] .plate-title { margin-bottom: 8px; }
+  [data-plate^="energy-types"] .ladder-rows { margin-bottom: 24px; }
+  .plate-pair > .is-live[data-plate^="energy-types"] .readout { display: none; } /* the Reading says the figure, and at this width the sentence is what fits the first screen */
+  /* A rail page has the width for the Reading beside what selecting a row shows; the list of Tribes takes the panel's width when it opens. */
+  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > * { grid-column: 1; }
+  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-states { grid-column: 2; grid-row: 1 / span 3; align-content: start; border-top: 0; padding-top: 0; }
+  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .plate-foot { grid-column: 2; grid-row: 4; }
+  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-tribes { grid-column: 1 / -1; }
+  .plate[data-plate^="energy-deadlines"] { grid-template-columns: minmax(0, 1fr); }
+  .plate.is-live[data-plate^="energy-deadlines"] > .plate-claim { padding-top: 0; row-gap: 4px; }
+  .plate-pair > .plate { align-self: start; align-content: start; } /* the shorter plate keeps its own rows rather than stretching them to its neighbor's height */
+  /* The band: a title that must not wrap, beside figures that may. */
+  .energy-band { grid-template-columns: minmax(36rem, 1fr) minmax(0, auto); }
+  .energy-band .lead { max-width: none; }
+  .energy-band .page-band-figures { gap: 8px 32px; flex-wrap: nowrap; }
+  .energy-band .page-band-figures li { flex: 0 1 auto; max-width: 16rem; }
+  .energy-band:has(.figure-label a) .page-band-figures li { max-width: 13rem; }
+  .energy-band .figure-num { white-space: nowrap; }
+  /* Below the plates, the page in columns. */
+  .energy-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; align-items: start; }
+  .energy-details > .energy-library { grid-column: 1 / -1; }
+}
+@media screen and (min-width: 1400px) { .energy-details { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.energy-plates { padding-block: 12px 0; }
+.energy-details { padding-block: 24px 48px; border-top: 1px solid var(--grid); }
+.energy-details > section { min-width: 0; }
+.energy-details > section + section { margin-top: 32px; }
+@media screen and (min-width: 1100px) { .energy-details > section + section { margin-top: 0; } }
+.energy-details .prose > p, .energy-details > section > p { max-width: var(--measure-wide); }
+/* Climate voice, place 1: the lockup at the row's left edge, above the marker and the name, so the name keeps its neighbors' indent. */
+.rail-details > .climate-voice > summary > .climate-lockup { grid-column: 1 / -1; grid-row: 1; margin-bottom: 8px; }
+.rail-details > .climate-voice > summary::before { grid-row: 2; }
+
+@media (forced-colors: active) {
+  .stack-bar > i, .energy-key, .strip-track { forced-color-adjust: none; }
+  .stack-bar > i, .energy-key { outline: 1px solid CanvasText; outline-offset: -1px; } /* the ramp's far step is near white or near black, and the canvas may match it */
+}

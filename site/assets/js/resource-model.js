@@ -629,10 +629,7 @@ function Views(D) {
     return id === 'use' ? list.filter((key) => key !== 'use.seat' || V.S.mode === 'office') : [...list, ...(m === 'g' || m === 'ml' ? spec.scenario || [] : [])];
   };
   V.boardScale = (id, m) => (m === 'usd' ? null : scaleOf(Math.max(0, ...V.boardKeys(id, m).map((key) => Math.abs(val(key, m) || 0))), m)); // one unit down a board
-  V.rowCell = (key, m, at) => { // the Catalog carries the price basis as a tag on every row, whatever the measure
-    const f = V.cell(key, m, at);
-    return m !== 'usd' && /^(catalog|hour)\./.test(key) ? { ...f, tag: [f.tag, D.words.price[V.basis(key)]].filter(Boolean).join(' ') } : f;
-  };
+  V.rowTag = (key) => (/^(catalog|hour)\./.test(key) ? D.words.price[V.basis(key)] : ''); // a Catalog row names its price basis under its label; the value cell keeps the figure and its spread
   // A wall's geometry, as fractions of the track: one scale on both sides; the longest row fills 92 percent of its side.
   V.layout = (keys, m, plain, at) => {
     const rows = keys.map((key) => [key, V.parts(key, m)]);
@@ -666,11 +663,10 @@ function Views(D) {
     if (scale) {
       const reach = (1 - wall) / scale;
       const [, div, unit] = at || scaleOf(reach, m);
-      const step = niceStep(reach / 4);
-      const mark = (v, x) => ticks.push({ x, t: grouped(Number((v / div).toPrecision(3))) });
-      for (let k = 1; wall + k * step * scale < 0.97; k += 1) mark(k * step, wall + k * step * scale);
-      const stepLeft = L ? niceStep(wall / scale / 2) : 0;
-      for (let k = 1; L && wall - k * stepLeft * scale > 0.03; k += 1) mark(k * stepLeft, wall - k * stepLeft * scale);
+      const step = niceStep(reach / 4); // one ruler: the same step runs out both ways from the wall, so a left tick is never read against a right one at another pitch
+      const figure = (v) => grouped(Number((v / div).toPrecision(3)));
+      for (let k = 1; wall + k * step * scale < 0.97; k += 1) ticks.push({ x: wall + k * step * scale, t: figure(k * step) });
+      for (let k = 1; L && wall - k * step * scale > 0.03; k += 1) ticks.push({ x: wall - k * step * scale, t: `${figure(k * step)} ${unit.split(' ')[0]}, your side`, left: true }); // the same figure can stand on both sides, so a left tick names itself
       ticks.sort((a, b) => a.x - b.x);
       if (ticks.length) ticks[ticks.length - 1].t += ` ${unit}`; // the wall is the zero; the far tick carries the unit
     }
@@ -783,7 +779,7 @@ function Views(D) {
     const w = V.week();
     const who = V.S.mode === 'office' ? `for ${grouped(V.S.seats)} seats ` : '';
     const largest = w.largest ? `${w.share > 0.5 ? 'most of it' : 'the largest share'} ${D.rows[w.largest].lower}` : 'none of it yet';
-    return `In a week ${who}with ${grouped(V.S.fields.screen)} screen hours, the screen and router are ${plainFig(w.screen, 'wh')} and the activities add ${plainFig(w.added, 'wh')}, ${largest}; modeled, ${D.price_date.slice(0, 2)}/${D.price_date.slice(6)}.`;
+    return `In a week ${who}with ${grouped(V.S.fields.screen)} screen hours: screen and router ${plainFig(w.screen, 'wh')}, activities ${plainFig(w.added, 'wh')}, ${largest}.`;
   };
   V.table = (key) => {
     const r = row(key);

@@ -1,7 +1,10 @@
 /* ATNI Energy Task Forces: site styles.
    Color, type, and space values come from tokens.css, vendored unchanged from the ATNI Climate
    Design System. This file adds the Energy program roles and the site layout: the full window width
-   with tight margins, lists and prose in columns. Dark is the default theme; print is always light. */
+   with tight margins, lists and prose in columns. Dark is the default theme; print is always light.
+   The system is the Instrument at Full Power: the reader's number is the loudest thing on a screen, the one orange line is the
+   needle, marks are grey until selected, and only the detail panel rises off the ground. Nothing on a first screen is under 0.875rem;
+   0.8125rem survives in Sources, Table, and print. */
 
 @font-face { font-family: "League Spartan"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/LeagueSpartan-Medium.woff2") format("woff2"); }
 @font-face { font-family: "League Spartan"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/LeagueSpartan-SemiBold.woff2") format("woff2"); }
@@ -21,13 +24,20 @@
   --control: var(--atni-text-muted);
   --baseline: var(--atni-text-secondary);
   --tag-bg: var(--atni-color-core-grey-overlay);
+  --poster: clamp(6rem, 2.5rem + 5vw, 8.5rem); /* the reader's number: 7rem at 1440, 8.5rem at 1920 */
+  --plot-ground: var(--atni-ground-base); /* a plot sits on the page ground; rings and label grounds wear it */
+  --unit: 8px; /* the square unit: Count at its smallest, the library field, the waffles. Pitch is the unit and --unit-gap */
+  --unit-gap: 2px;
   /* Plan stages, an ordinal one-hue ramp (1 goal or interest to 4 installed or operating). The design
-     system has no ramps yet, so these are the dataviz reference blue steps nearest its chart blue
-     (#2F7FC1), checked with validate_palette.js --ordinal against each theme's raised surface. */
-  --stage-1: #184f95;
-  --stage-2: #2a78d6;
-  --stage-3: #6da7ec;
-  --stage-4: #b7d3f6;
+     system has no ramps yet, so each theme keeps the dataviz reference blue step nearest its ground and the
+     other three are re-stepped at that hue: no four reference steps clear both the 3:1 floor and the
+     validate_palette.js normal-vision floor of 15. Adjacent OKLab distance is 15.9, 15.5, 15.4 on dark and
+     15.5, 15.6, 15.8 on light; --ordinal passes on each theme's base and raised grounds. The step nearest
+     the ground passes 3:1 as a mark: dark 3.68 on the base, 3.41 raised; light 3.39 and 3.64. */
+  --stage-1: #256abf;
+  --stage-2: #619ce7;
+  --stage-3: #a8caf6;
+  --stage-4: #f0f6fe;
 }
 
 /* Energy program roles, in four blocks that mirror the cascade in tokens.css. The design system has no
@@ -73,10 +83,10 @@
   --atni-non-text-button-border: var(--energy-fill);
   --atni-non-text-button-text: var(--energy-on-fill);
   --tag-bg: var(--atni-color-support-tag-neutral-bg);
-  --stage-1: #86b6ef;
-  --stage-2: #3987e5;
-  --stage-3: #256abf;
-  --stage-4: #104281;
+  --stage-1: #3987e5;
+  --stage-2: #1a5aa4;
+  --stage-3: #073261;
+  --stage-4: #000e25;
 }
 @media (prefers-color-scheme: light) {
   [data-theme="auto"] {
@@ -98,14 +108,16 @@
     --atni-non-text-button-border: var(--energy-fill);
     --atni-non-text-button-text: var(--energy-on-fill);
     --tag-bg: var(--atni-color-support-tag-neutral-bg);
-    --stage-1: #86b6ef;
-    --stage-2: #3987e5;
-    --stage-3: #256abf;
-    --stage-4: #104281;
+    --stage-1: #3987e5;
+    --stage-2: #1a5aa4;
+    --stage-3: #073261;
+    --stage-4: #000e25;
   }
 }
 @media print {
   :root, [data-theme] {
+    --poster: 3rem;
+    --plot-ground: #FFFFFF;
     --energy-text: #BC4800;
     --energy-mark: #BC4800;
     --energy-fill: #BC4800;
@@ -124,10 +136,10 @@
     --atni-non-text-button-border: var(--energy-fill);
     --atni-non-text-button-text: var(--energy-on-fill);
     --tag-bg: var(--atni-color-support-tag-neutral-bg);
-    --stage-1: #86b6ef;
-    --stage-2: #3987e5;
-    --stage-3: #256abf;
-    --stage-4: #104281;
+    --stage-1: #3987e5;
+    --stage-2: #1a5aa4;
+    --stage-3: #073261;
+    --stage-4: #000e25;
   }
 }
 
@@ -144,7 +156,7 @@ body {
   font-family: var(--body);
   font-weight: var(--atni-type-body-weight);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.5;
   font-kerning: normal;
   overflow-wrap: break-word;
 }
@@ -159,11 +171,11 @@ h1, h2, h3 {
   text-wrap: balance;
   scroll-margin-top: 56px;
 }
-h1 { font-size: clamp(2.125rem, 1.55rem + 2.4vw, var(--atni-type-title-size)); line-height: var(--atni-type-title-line-height); }
-h2 { font-size: clamp(1.875rem, 1.6rem + 1.2vw, var(--atni-type-heading-1-size)); line-height: var(--atni-type-heading-1-line-height); margin-bottom: 16px; }
+h1 { font-size: 2.25rem; line-height: 1.1; letter-spacing: -0.015em; }
+h2 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 12px; }
 h3 { font-size: 1.17rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading-3); margin-bottom: 8px; }
 h4 { margin: 24px 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-heading-3); text-wrap: balance; }
-p { margin: 0 0 0.75rem; }
+p { margin: 0 0 0.875rem; }
 main p { max-width: var(--measure); }
 ul { padding-left: 1.25rem; list-style: square; }
 ol { padding-left: 1.5rem; }
@@ -180,48 +192,47 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 .wrap { width: var(--page); max-width: 2560px; margin-inline: auto; padding-inline: var(--gutter); }
 .prose > ul, .prose > ol, .prose > figure:not(.plate), .prose > .slot, [data-policy-watch] > ol { max-width: var(--measure); }
 
-/* Type roles. Tracked caps belong to the eyebrow alone. Readout is the one big number on a plate. */
-.kicker, .eyebrow, .day-label {
+/* Type roles, sentence case throughout: tracked capitals were template chrome and the least legible text on the site. The readout is the
+   poster on a plate: its figure shrinks only as far as its own text needs to fit the zone (plate.js sets --chars). */
+.kicker, .eyebrow, .day-label, .label, .toc-title, .key-facts h2, .card-status, .entry-type, .slot-label {
   margin: 0 0 8px;
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--atni-text-red);
-}
-.label, .toc-title, .key-facts h2, .card-status, .entry-type, .slot-label {
   font-family: var(--display);
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1.4;
   letter-spacing: 0;
+  text-transform: none;
+  color: var(--atni-text-secondary);
 }
-.lead, .reading {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: var(--atni-type-lead-size);
-  line-height: var(--atni-type-lead-line-height);
-  color: var(--lead-ink);
-}
-.lead { max-width: var(--measure-wide); }
+.lead, .reading { font-family: var(--display); font-weight: 500; color: var(--lead-ink); }
+.lead { max-width: var(--measure-wide); font-size: 1.125rem; line-height: 1.4; }
+.reading { font-size: 1.125rem; line-height: 1.5; }
 .readout {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
   font-family: var(--display);
   font-weight: 600;
-  font-size: clamp(3.25rem, 2.6rem + 2.6vw, 4.5rem);
-  line-height: 1;
-  letter-spacing: -0.025em;
-  font-variant-numeric: proportional-nums;
   color: var(--atni-text-heading);
 }
-.plate-title { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--atni-text-heading); }
-.caption { font-size: 0.8125rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.readout-value {
+  font-size: min(var(--poster), calc(100cqi / (var(--chars, 4) * 0.6)));
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.readout-unit { font-family: var(--body); font-weight: 500; font-size: 1.25rem; line-height: 1.2; letter-spacing: 0; color: var(--atni-text-body); }
+.readout-unit:has(> .readout-range) { display: contents; } /* the unit stays on the figure's baseline and the range takes its own line */
+.readout-u { color: var(--atni-text-body); }
+.readout-range { order: 1; flex-basis: 100%; font-weight: 400; font-size: 1.125rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.readout.is-long { --poster: clamp(2rem, 1.6rem + 1.4vw, 3rem); }
+.plate-title { margin: 0 0 4px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--atni-text-heading); }
+.caption { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
 .muted { color: var(--atni-text-muted); }
 .nowrap { white-space: nowrap; }
-.fine { font-size: 0.8125rem; color: var(--atni-text-muted); }
+.fine { font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Skip link */
 .skip-link {
@@ -250,7 +261,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 .wordmark { grid-area: brand; justify-self: start; display: inline-flex; align-items: center; min-height: 44px; }
 .site-header .subnav { grid-area: subnav; }
 .header-inner:has(.subnav) { grid-template-areas: "brand toggle" "nav nav" "subnav subnav"; }
-.lockup { display: block; width: auto; height: 36px; }
+.lockup { display: block; width: auto; height: 40px; }
 .lockup-on-light { display: none; }
 [data-theme="light"] .lockup-on-dark { display: none; }
 [data-theme="light"] .lockup-on-light { display: block; }
@@ -267,7 +278,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
   min-height: 44px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--atni-text-secondary);
   text-decoration: none;
   border-bottom: 2px solid transparent;
@@ -276,29 +287,27 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 .site-nav a[aria-current] { color: var(--atni-text-heading); border-bottom-color: var(--energy-mark); }
 .theme-toggle {
   grid-area: toggle;
-  min-height: 44px;
-  padding: 8px 12px;
+  min-height: 40px;
+  padding: 0 0 0 28px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: var(--atni-text-secondary);
-  background: transparent;
-  border: 1px solid var(--control);
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--grid);
   border-radius: 0;
   cursor: pointer;
 }
-.theme-toggle:hover { color: var(--atni-text-heading); background: var(--tag-bg); }
+.theme-toggle:hover { color: var(--atni-text-heading); }
 @media (min-width: 900px) {
   .header-inner { grid-template-columns: auto 1fr auto; grid-template-areas: "brand nav toggle"; gap: 0 32px; min-height: 56px; padding-block: 0; }
   .header-inner:has(.subnav) { grid-template-areas: "brand nav toggle" "brand subnav toggle"; }
   .header-inner:has(.subnav) .site-nav a { min-height: 36px; }
   .site-nav ul, .site-header .subnav ul { justify-content: flex-end; }
-  .lockup { height: 40px; }
+  .site-nav a { min-height: 55px; }
 }
-@media (min-width: 1100px) {
-  .header-inner { min-height: 64px; }
-  .lockup { height: 44px; }
-}
+@media (min-width: 1100px) { .lockup { height: 48px; } }
 
 /* Buttons */
 .actions { display: flex; flex-wrap: wrap; gap: 12px; max-width: none; margin: 24px 0 0; }
@@ -324,9 +333,9 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 .button-secondary { color: var(--atni-text-heading); background: transparent; border-color: var(--control); }
 .button-secondary:hover { color: var(--atni-text-heading); background: var(--tag-bg); border-color: var(--control); }
 
-/* Sections: luminance, not rules, paces the page. */
+/* Sections sit on the one ground, a hairline apart: only the detail panel rises. */
 .section { padding-block: clamp(24px, 2.5vw, 32px); }
-main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
+main > .section + .section { border-top: 1px solid var(--grid); }
 .section-head { max-width: var(--measure-wide); margin-bottom: 24px; }
 .section-head h2 { margin-bottom: 8px; }
 .section-head p { max-width: none; margin: 0; }
@@ -335,34 +344,32 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   .section-head h2 { margin-bottom: 0; }
 }
 
-/* Hero: a compact band on the base ground. */
-.hero, .page-hero { padding-block: 24px; }
-.hero h1, .page-hero h1 { margin-bottom: 8px; font-size: clamp(2.125rem, 1.55rem + 2.4vw, 2.25rem); }
-.hero .lead, .page-hero .lead { margin-bottom: 0; }
+/* The page band: h1 and one line of lead at the left, bare key figures at the right end, no box. A page moves to .page-band and
+   .page-band-figures as its builder reaches it; .page-hero and .key-facts draw the same row until then, and keep it without scripts and in print. */
+.hero, .page-hero { padding-block: 16px; }
+.hero h1, .page-hero h1, .page-band h1 { margin-bottom: 8px; }
+.hero .lead, .page-hero .lead, .page-band .lead { margin-bottom: 0; }
 @media (max-width: 719px) {
-  .hero h1, .page-hero h1 { font-size: 1.75rem; }
+  h1 { font-size: 1.75rem; }
   .section-strip ul { scroll-padding-inline: 24px; }
 }
 .page-hero .lead + .lead { margin-top: 12px; }
 .page-hero .kicker a { color: inherit; }
-.page-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 32px; }
-.key-facts { align-self: start; padding: 16px; background: var(--atni-ground-raised); }
-.key-facts h2 { margin: 0 0 8px; color: var(--atni-text-secondary); }
-.key-facts ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
-  gap: 12px 24px;
-  font-size: 0.875rem;
-  line-height: 1.4;
-}
-.key-facts ul:has(> li:nth-child(5)) { grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 12px 16px; }
-.key-facts li { margin: 0; }
+.page-band, .page-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 48px; }
+.page-band { padding-block: 16px; }
+.page-band-figures, .key-facts ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 48px; }
+.page-band-figures li { display: grid; gap: 2px; align-content: end; margin: 0; max-width: 16rem; }
+.key-facts li { margin: 0; max-width: 16rem; }
+.page-band-figures .figure-num { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.page-band-figures .figure-num a { color: inherit; text-decoration-color: var(--control); }
+.page-band-figures .figure-label { margin: 0; font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.key-facts { align-self: end; }
+.key-facts ul { font-size: 0.875rem; line-height: 1.4; }
 .key-facts strong { display: block; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
+@media screen { .key-facts h2 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; } }
 @media (min-width: 1100px) {
-  .page-hero-grid { grid-template-columns: minmax(0, var(--measure-wide)) minmax(0, 1fr); }
+  .page-band { grid-template-columns: minmax(0, 1fr) auto; align-items: end; min-height: 120px; }
+  .page-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); align-items: end; }
   .hero > .wrap { display: grid; grid-template-columns: minmax(0, var(--measure-wide)) minmax(0, 1fr); column-gap: 48px; align-items: start; }
   .hero > .wrap > * { grid-column: 1; }
   .hero > .wrap > .hero-map { grid-column: 2; grid-row: 1 / span 4; align-self: center; margin: 0; }
@@ -388,18 +395,18 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .slot-label::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--accent); }
 .slot p:last-child { margin-bottom: 0; color: var(--atni-text-secondary); }
 
-/* The governance loop: a one-line diagram of how resolutions become work and return. */
+/* The governance loop: a rail of four steps, each number a 24px square on it, and one line that says it returns. No frame. */
 .loop-diagram { position: relative; margin-top: 32px; }
 .loop { list-style: none; margin: 0; padding: 0; counter-reset: step; }
-.loop-step { position: relative; margin: 0; padding: 0 0 32px 2.75rem; counter-increment: step; }
+.loop-step { position: relative; margin: 0; padding: 0 0 32px 40px; counter-increment: step; }
 .loop-step::before {
   content: counter(step);
   position: absolute;
   left: 0;
   top: 0;
   z-index: 1;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   font-family: var(--display);
@@ -407,57 +414,17 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   font-size: 0.875rem;
   line-height: 1;
   color: var(--energy-on-fill);
-  background: var(--energy-fill);
+  background: var(--series-context);
 }
-.loop-step::after { content: ""; position: absolute; left: calc(0.875rem - 1px); top: 1.75rem; bottom: 0; width: 2px; background: var(--accent); }
-.loop-step h3 { margin-bottom: 4px; padding-top: 0.1rem; }
+.loop-step::after { content: ""; position: absolute; left: 11px; top: 24px; bottom: 0; width: 2px; background: var(--baseline); }
+.loop-step h3 { margin-bottom: 4px; }
 .loop-step p { margin: 0; }
-.loop-return {
-  position: relative;
-  max-width: none;
-  margin: 0;
-  padding-left: 2.75rem;
-  min-height: 1.75rem;
-  font-family: var(--display);
-  font-weight: 500;
-  color: var(--atni-text-heading);
-}
-.loop-return::before {
-  content: "1";
-  content: "1" / "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  display: grid;
-  place-items: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--atni-text-heading);
-  border: 2px solid var(--accent);
-}
+.loop-return { max-width: none; margin: 0; padding-left: 40px; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
 @media (min-width: 1024px) {
-  .loop-diagram { padding: 0 24px 64px; }
   .loop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .loop-step { padding: 48px 24px 0 0; }
-  .loop-step::after { left: 1.75rem; right: 0; top: calc(0.875rem - 1px); bottom: auto; width: auto; height: 2px; }
-  .loop-step:last-child::after { right: -0.75rem; }
-  /* Return path: down the right lane, back along the bottom, up the left lane into step 1. */
-  .loop-diagram::before {
-    content: "";
-    position: absolute;
-    top: calc(0.875rem - 1px);
-    left: calc(0.75rem - 1px);
-    right: calc(0.75rem - 1px);
-    bottom: 1.25rem;
-    border: 2px solid var(--accent);
-    border-top: 0;
-  }
-  .loop-diagram::after { content: ""; position: absolute; top: calc(0.875rem - 1px); left: calc(0.75rem - 1px); width: 0.85rem; height: 2px; background: var(--accent); }
-  /* The label sits on the return line and knocks it out; the loop's section is a raised band. */
-  .loop-return { position: absolute; left: 50%; bottom: 0.25rem; transform: translateX(-50%); padding: 0 16px; background: var(--atni-ground-raised); white-space: nowrap; min-height: 0; }
-  .loop-return::before { content: none; }
+  .loop-step { padding: 40px 24px 16px 0; }
+  .loop-step::after { left: 24px; right: 0; top: 11px; bottom: auto; width: auto; height: 2px; }
+  .loop-return { padding-left: 0; }
 }
 
 /* The ruled row, the one list grammar: no boxes, and lists flow into as many columns as fit. A row is a
@@ -509,7 +476,7 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .card-status { margin: 0 0 4px; color: var(--atni-text-secondary); display: flex; align-items: baseline; gap: 8px; }
 .card-status::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--accent); }
 .card-status.is-open::before { background: transparent; border: 2px solid var(--accent); }
-.card-grounds { margin: auto 0 0; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.card-grounds { margin: auto 0 0; font-size: 0.875rem; color: var(--atni-text-muted); }
 @media (min-width: 900px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1400px) {
   .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -522,16 +489,16 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .resolution h3 { margin-bottom: 4px; }
 .resolution h3 a { color: var(--atni-text-heading); text-decoration-color: var(--accent); }
 .resolution h3 a:hover { color: var(--atni-text-link-hover); }
-.resolution-meta { font-size: 0.8125rem; color: var(--atni-text-muted); margin-bottom: 8px; }
+.resolution-meta { font-size: 0.875rem; color: var(--atni-text-muted); margin-bottom: 8px; }
 .resolution-body p:last-child { margin-bottom: 0; }
-.format { font-family: var(--body); font-weight: 400; font-size: 0.8125rem; color: var(--atni-text-muted); letter-spacing: 0; }
+.format { font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-muted); letter-spacing: 0; }
 
 /* Figures read from the data files: one row across the page. */
 .figure-value { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1; letter-spacing: -0.02em; color: var(--atni-text-heading); }
 .figure-label { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; }
 .figure-label a { color: var(--atni-text-heading); text-decoration-color: var(--accent); }
 .figure-label a:hover { color: var(--atni-text-link-hover); }
-.figure-detail { margin: 0; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.figure-detail { margin: 0; font-size: 0.875rem; color: var(--atni-text-muted); }
 @media (min-width: 640px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
@@ -540,22 +507,22 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .deadline { break-inside: avoid; }
 .deadline p { margin: 0; }
 .deadline-date { font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.2; color: var(--atni-text-heading); }
-.deadline .deadline-when { margin-block: 4px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.deadline .deadline-when { margin-block: 4px; font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Library entries (library page and short feeds) */
 .entry-type { margin: 0 0 4px; color: var(--atni-text-secondary); }
 .entry-title { margin: 0 0 4px; }
 .entry-title a { color: var(--atni-text-heading); text-decoration-color: transparent; }
 .entry-title a:hover, .entry-title a:focus-visible { color: var(--atni-text-link-hover); text-decoration-color: currentColor; }
-.entry-format { font-family: var(--body); font-weight: 400; font-size: 0.8125rem; color: var(--atni-text-muted); letter-spacing: 0; }
-.entry-meta { margin: 0 0 8px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.entry-format { font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-muted); letter-spacing: 0; }
+.entry-meta { margin: 0 0 8px; font-size: 0.875rem; color: var(--atni-text-muted); }
 .entry-summary { margin-bottom: 12px; }
 .entry .entry-summary:last-child { margin-bottom: 0; }
 .entry-summary.is-clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
 .entry-more { justify-self: start; min-height: 32px; margin: -8px 0 8px; padding: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-link); background: none; border: 0; cursor: pointer; }
 .entry-more:hover { color: var(--atni-text-link-hover); text-decoration: underline; }
 .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.tags li { margin: 0; padding: 4px 8px; font-family: var(--display); font-weight: 500; font-size: 0.75rem; line-height: 1.2; color: var(--atni-text-secondary); background: var(--tag-bg); }
+.tags li { margin: 0; padding: 4px 8px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); background: var(--tag-bg); }
 .tags .tag-tribal { display: inline-flex; align-items: center; gap: 8px; color: var(--atni-text-heading); }
 .tags .tag-tribal::before { content: ""; width: 8px; height: 8px; background: var(--energy-text); }
 
@@ -565,8 +532,8 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .record h3 a, .record h4 a { color: var(--atni-text-heading); text-decoration-color: var(--accent); }
 .record h3 a:hover, .record h4 a:hover { color: var(--atni-text-link-hover); }
 .record h4 { margin: 16px 0 4px; }
-.record-kicker { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-secondary); }
-.record-meta { margin: 0 0 12px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.record-kicker { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.record-meta { margin: 0 0 12px; font-size: 0.875rem; color: var(--atni-text-muted); }
 .record-note { font-size: 0.875rem; color: var(--atni-text-secondary); }
 .record-links, .watch-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0 0; }
 .record-deadline { padding: 8px 12px; background: var(--atni-ground-raised); }
@@ -583,7 +550,7 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   padding: 4px 8px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.3;
   color: var(--atni-text-heading);
   background: var(--tag-bg);
@@ -596,14 +563,14 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .stage-3 { --stage: var(--stage-3); }
 .stage-4 { --stage: var(--stage-4); }
 .tag.stage::before { width: 10px; height: 10px; background: var(--stage); border: 0; }
-.status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Ranked energy types for one Tribe */
 .findings { list-style: none; margin: 4px 0 12px; padding: 0; }
 .findings li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 8px; border-top: 1px solid var(--rule); }
 .findings li:last-child { border-bottom: 1px solid var(--rule); }
 .findings li.is-match { background: var(--energy-wash); }
-.finding-rank { flex: none; width: 1.5rem; height: 1.5rem; display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 0.8125rem; color: var(--atni-text-heading); border: 1px solid var(--control); }
+.finding-rank { flex: none; width: 1.5rem; height: 1.5rem; display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 0.875rem; color: var(--atni-text-heading); border: 1px solid var(--control); }
 .finding-type { flex: 1 1 12rem; font-weight: 700; color: var(--atni-text-heading); }
 
 /* Interior page body: a section rail at left, and the rest of the window in columns. Below 1100px the
@@ -624,6 +591,7 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   overflow-x: auto;
   scroll-snap-type: x proximity;
 }
+:is(.toc, .section-strip) ul.is-cut { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent); } /* plate.js sets it while more of the row waits past the edge; 64px, because a 24px fade read as a hard edge at 390 */
 .toc li, .section-strip li { flex: none; margin: 0; }
 :is(.toc, .section-strip) :is(a, [role="tab"]) {
   display: inline-flex;
@@ -644,6 +612,7 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   border-radius: 0;
   cursor: pointer;
 }
+.section-strip :is(a, [role="tab"]) { min-height: 48px; font-size: 1.0625rem; border-bottom-width: 3px; }
 :is(.toc, .section-strip) :is(a, [role="tab"]):hover { color: var(--atni-text-heading); border-bottom-color: var(--control); }
 :is(.toc, .section-strip) :is(a[aria-current], [aria-selected="true"]) { color: var(--atni-text-heading); border-bottom-color: var(--energy-mark); }
 /* These rows scroll, which would clip an outer focus ring, so the ring sits inside the link. */
@@ -656,7 +625,6 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 /* Prose flows into columns as the width allows. Headings span them, so no column runs taller than one
    subsection and a reader never scrolls back up a whole section. Policy watch holds record lists that
    lay out their own columns. */
-.page-body h2 { font-size: 1.5rem; line-height: 1.15; margin-bottom: 12px; }
 .content > .prose { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); column-gap: 48px; align-items: start; }
 .content > .prose > :is(h2, h3, h4, .table-wrap, .plate, .disclosure-grid) { grid-column: 1 / -1; }
 .content > .prose > .notice { margin-block: 0 16px; }
@@ -668,7 +636,8 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .content > .prose:has(> [data-policy-watch]) { display: block; }
 @media (min-width: 960px) { .toc { position: sticky; top: 0; z-index: 2; } }
 @media (min-width: 1100px) {
-  .page-body { grid-template-columns: 14rem minmax(0, 1fr); gap: 32px; }
+  /* The rail stays only where a long reference page keeps its nav; a page that drops the nav gets the column back. */
+  .page-body:has(> .toc) { grid-template-columns: 14rem minmax(0, 1fr); gap: 32px; }
   .page-body > .toc { top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; background: none; border-bottom: 0; }
   .page-body > .toc .toc-title { display: block; }
   .page-body > .toc ul { display: block; margin: 0; overflow: visible; }
@@ -679,6 +648,9 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 
 /* Details in columns (workbench panels): each summary is a full sentence a reader can skim. */
 .disclosure-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 24px; align-items: start; }
+/* What a plate's claim zone does not keep (plate.js moveProse): a single sentence or a foot line is a ruled row beside the disclosures, its first line level with their summaries. */
+.plate-note { margin: 0; padding-block: 18px 10px; max-width: none; border-top: 1px solid var(--rule); }
+.plate-notes { margin-bottom: 24px; }
 /* On a rail page a heading and a full sentence skim as one summary; an open one takes the row, in cells that never split a sentence. */
 .rail-details { gap: 0 24px; margin-block: 4px 16px; }
 .rail-details > .disclosure { margin: 0; border-top: 1px solid var(--rule); }
@@ -694,63 +666,80 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .rail-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); column-gap: 48px; align-items: start; padding-bottom: 16px; }
 .rail-body > :is(h3, h4, .table-wrap, .records, .deadlines, .actions, [data-policy-searches], [data-policy-follow]) { grid-column: 1 / -1; }
 
-/* The plate: claim and controls, plot, and detail panel at 1100px and up; stacked below that, and always in print. Orange
-   keeps one meaning inside a plate (the needle and the selection), so links wear heading ink. With scripts a wide plate
-   has a height: the plot fills it, and the two text zones scroll on their own. plate.js runs the first plate on
-   the screen to the foot of the window through --plate-h. That height is the plate's whole bargain and it is why text
-   meets the bottom edge: a zone longer than the plate is cut there. So a cut zone says so (.has-more fades its foot, and
-   a thin scrollbar shows), and a reader can get in by keyboard (plate.js makes a long claim a stop; the detail always is). */
+/* The plate: claim and controls, plot, and detail panel at 1100px and up; stacked below that, and always in print. No frame: the plot sits on the
+   page ground and only the detail panel rises. Orange keeps one meaning inside a plate (the needle and the selection), so links wear heading ink.
+   With scripts a wide plate runs at least to the foot of the window (plate.js sets --plate-h on the first one). It grows with a zone that needs more
+   room, in the page's own scroll, so no zone is ever cut; the plot keeps its own height, so its axis stays on the first screen, and the view in the
+   detail panel stays beside a tall plot. */
 .plate {
-  --row-min: 44px;
-  --mark: clamp(12px, 0.9vw + 4px, 20px);
+  --row-min: 56px;
+  --mark: clamp(16px, 1vw + 5px, 26px);
   --l: clamp(7rem, 26%, 15rem);
   --v: clamp(8rem, 18%, 13rem);
+  --above: 0px; /* what .plate-switch and .plate-under take from the plot's height */
+  --below: 0px;
   display: grid;
   gap: 24px;
   margin: 0 0 24px;
-  padding: 24px;
-  background: var(--atni-ground-raised);
   align-items: start;
 }
 .plate > * { min-width: 0; }
 .plate a:not(.button) { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.plate-detail { padding: 24px; background: var(--atni-ground-raised); container-type: inline-size; }
+.plate-detail > .plate-views { margin-bottom: 12px; }
+[data-theme="light"] .plate-detail { border: 1px solid var(--rule); }
+@media (prefers-color-scheme: light) { [data-theme="auto"] .plate-detail { border: 1px solid var(--rule); } }
 @media screen and (min-width: 1100px) {
-  .plate { grid-template-columns: minmax(18rem, 22fr) minmax(0, 50fr) minmax(22rem, 28fr); }
-  .plate.is-live { height: var(--plate-h, max(34rem, 72vh)); grid-template-rows: minmax(0, 1fr); align-items: stretch; }
-  .plate-fit.is-live { height: var(--plate-h, max(34rem, calc(100vh - 120px))); }
-  /* The inline padding holds a control's focus ring inside the scroller, which would clip it; scroll-padding keeps a focused control clear of the fade. */
-  .plate.is-live > .plate-claim, .plate.is-live > .plate-detail { overflow-y: auto; overscroll-behavior: contain; margin-inline: -8px; padding-inline: 8px; scroll-padding-block-end: 40px; scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
-  .plate.is-live > .has-more:not(:focus-visible) { -webkit-mask-image: linear-gradient(#000 calc(100% - 40px), transparent); mask-image: linear-gradient(#000 calc(100% - 40px), transparent); }
-  .plate.is-live > :is(.plate-claim, .plate-detail):focus-visible { outline-offset: -3px; }
-  .plate.is-live > .plate-plot { min-height: 0; overflow: auto; }
-  .plate[data-view="table"] { grid-template-columns: minmax(18rem, 20fr) minmax(0, 32fr) minmax(22rem, 48fr); }
-  .plate.is-short:not([data-view="table"]) { grid-template-columns: minmax(18rem, 22fr) minmax(0, 58fr) minmax(18rem, 20fr); }
+  .plate { grid-template-columns: minmax(18rem, 20fr) minmax(0, 52fr) minmax(22rem, 28fr); }
+  .plate.is-live { --h: var(--plate-h, max(34rem, 72vh)); min-height: var(--h); }
+  .plate-fit.is-live { --h: var(--plate-h, max(34rem, calc(100vh - 120px))); }
+  .plate.is-live > .plate-claim { padding-top: 16px; }
+  /* The claim zone reads title, controls, then the one paragraph it keeps. */
+  .plate[data-plate].is-live > .plate-claim > :is(.eyebrow, .plate-title) { order: -2; }
+  .plate[data-plate].is-live > .plate-claim > .plate-controls { order: -1; }
+  .plate.is-live > .plate-plot { min-height: calc(var(--h) - var(--above) - var(--below)); }
+  .plate.is-live > .plate-detail { align-self: stretch; }
+  .plate.is-live .plate-view { position: sticky; top: 64px; }
+  .plate[data-view="table"] { grid-template-columns: minmax(18rem, 20fr) minmax(0, 44fr) minmax(22rem, 36fr); }
+  /* A switch above the plot and a caption under it share the plot's column. A spanning zone that runs long adds to the last row, not to the plot's. */
+  .plate.has-under { grid-template-rows: auto auto 1fr; row-gap: 0; }
+  .plate.has-under > .plate-claim { grid-column: 1; grid-row: 1 / -1; }
+  .plate.has-under > .plate-switch { grid-column: 2; grid-row: 1; }
+  .plate.has-under > .plate-plot { grid-column: 2; grid-row: 2; }
+  .plate.has-under > .plate-under { grid-column: 2; grid-row: 3; }
+  .plate.has-under > .plate-detail { grid-column: 3; grid-row: 1 / -1; }
+  .plate.has-switch { --above: 56px; }
+  .plate:has(> .plate-under) { --below: 40px; }
 }
 @media (min-width: 1600px) { .plate { gap: 32px; } }
-[data-theme="light"] .plate { border: 1px solid var(--rule); }
-@media (prefers-color-scheme: light) { [data-theme="auto"] .plate { border: 1px solid var(--rule); } }
-@media (pointer: fine) {
-  .plate { --row-min: 32px; }
-  .plate .segmented label { min-height: 32px; }
-}
+@media (pointer: fine) { .plate .segmented label { min-height: 32px; } }
 
-/* A workbench panel sits on the base ground, so its plate rises; its h2 is compact, so the plate starts on the first screen. */
-.panel, main > .panel:nth-of-type(n) { padding-block: 8px 24px; background: none; }
-.panel-title { margin: 0 0 12px; font-size: 1.5rem; line-height: 1.15; }
+/* A workbench panel sits on the base ground and its h2 is compact, so the plate starts on the first screen. */
+.panel, main > .panel:nth-of-type(n) { padding-block: 0 24px; background: none; }
+main > .panel + .panel { border-top: 0; }
+/* A deep link lands under the sticky strip, not behind it: 49px is the strip, less the 16px the page already keeps. */
+[role="tabpanel"] { scroll-margin-top: 33px; }
+[role="tabpanel"] [id] { scroll-margin-top: 56px; }
+.panel-title { margin: 16px 0 12px; font-size: 1.5rem; line-height: 1.15; }
 @media screen {
   [role="tabpanel"] .panel-title.is-tab-label { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 }
-.is-entering .plate-plot > * { animation: plate-enter 200ms ease-out; }
+/* Motion: one stroke on load on home, marks and the needle slide when a setting changes, a tab crossfades. Nothing else moves. */
+.needle, .ladder-needle, .ladder-mark, .ladder-range, .ladder-shared { transition: left 160ms ease-out, width 160ms ease-out; }
+.is-entering .plate-plot > * { animation: plate-enter 160ms ease-out; }
 @keyframes plate-enter { from { opacity: 0; } to { opacity: 1; } }
+.home-instrument :is(.needle, .ladder-needle) { animation: needle-draw 240ms ease-out backwards; }
+@keyframes needle-draw { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 
 /* ========== Plate kit: everything site/assets/js/plate.js and scripts/build_plates.py write. ==========
    Zones start at the top. The plot is the one focus stop. A drawn SVG fills its zone absolutely, so it cannot feed
    back into the size it was measured from. */
-.plate .eyebrow { color: var(--atni-text-secondary); }
 .plate li::marker { color: var(--atni-text-muted); }
-.plate-title { margin: 0 0 4px; font-size: clamp(1.125rem, 1rem + 0.35vw, 1.5rem); }
-.plate .reading { font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.25rem); }
-.plate-claim, .plate-detail, .plate-view, .plate-controls { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.plate .reading { color: var(--atni-text-heading); }
+/* In the raised panel a Reading runs to three sentences. The one with the figure, which plate.js marks, keeps the Reading's face and heading ink; the rest is body. On dark, body ink alone is 1.2 to 1 from heading ink, so the face and size make the step. */
+.plate-detail .reading { font-family: var(--body); font-weight: 400; font-size: 1rem; color: var(--atni-text-body); }
+.plate-detail .reading b { font-family: var(--display); font-weight: 500; font-size: 1.125rem; color: var(--atni-text-heading); }
+.plate-claim, .plate-view, .plate-controls { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .plate-claim p, .plate-detail p { margin: 0; }
 .plate-plot {
   position: relative;
@@ -760,8 +749,19 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   touch-action: pan-y;
 }
 .plate-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.no-needle :is(.ladder-needle, .m-needle) { display: none; }
-.plate-svg text { font-family: var(--body); font-size: clamp(0.8125rem, 0.72rem + 0.15vw, 1rem); fill: var(--atni-text-secondary); }
+.no-needle :is(.ladder-needle, .m-needle, .m-needle-label) { display: none; }
+.plate-svg text { font-family: var(--body); font-size: clamp(0.875rem, 0.8rem + 0.15vw, 1rem); fill: var(--atni-text-secondary); }
+/* The boundary switch is part of the picture: its stops run the plot's full width. plate.js moves the control named by plot.switch here. */
+.plate-switch { margin-bottom: 8px; }
+.plate-switch .segmented { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; border-bottom: 1px solid var(--grid); }
+.plate-switch legend { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.plate-switch .segmented label { display: flex; min-height: 44px; }
+.plate-switch .segmented span { width: 100%; padding-block: 12px 9px; }
+.plate-switch .segmented input:focus-visible + span { outline-offset: -3px; }
+/* The axis caption and the key, under the plot. */
+.plate-under { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 24px; padding-top: 8px; }
+.plate-under > .caption { max-width: none; font-size: 0.875rem; }
+.plate-under .legend { margin: 0; gap: 2px 20px; }
 .plate-legend { margin: 0; }
 .plate-key { flex: none; width: 14px; height: 2px; background: var(--series-context); }
 .plate-key.is-on { background: var(--energy-mark); }
@@ -770,9 +770,12 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .plate-square { flex: none; width: 8px; height: 8px; background: var(--series-context); }
 .plate-square.is-hollow { background: none; border: 2px solid var(--series-context); }
 .plate-square.is-b { background: var(--atni-text-heading); }
+.plate-square.is-on { background: var(--energy-mark); }
+.plate-square.is-hollow.is-on { background: none; border-color: var(--energy-mark); }
 .plate-foot { color: var(--atni-text-secondary); }
 .plate-setting { color: var(--atni-text-secondary); }
-.plate-more > summary { min-height: 32px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-heading); cursor: pointer; }
+@media screen { .plate.is-live .plate-setting { display: none; } } /* the controls say it; the line stays for print and for no scripts */
+.plate-more > summary { min-height: 32px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; color: var(--atni-text-heading); cursor: pointer; }
 .plate-more > .plate-controls { padding-top: 12px; }
 .plate-facts .plate-more > p { margin-top: 8px; }
 
@@ -781,7 +784,7 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .segmented legend { padding: 0; margin-bottom: 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .segmented label { position: relative; display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; }
 .segmented input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.segmented span { padding-block: 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); border-bottom: 2px solid transparent; }
+.segmented span { padding-block: 4px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-secondary); border-bottom: 3px solid transparent; }
 .segmented input:hover + span { color: var(--atni-text-heading); }
 .segmented input:checked + span { color: var(--atni-text-heading); border-bottom-color: var(--energy-mark); }
 .segmented input:focus-visible + span { outline: 3px solid var(--atni-text-link); outline-offset: 3px; }
@@ -797,22 +800,21 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .slider input[type="number"] { width: 100%; min-height: 44px; padding: 8px; font-family: var(--body); font-size: 1rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 1px solid var(--control); border-radius: 0; }
 .slider-stops { grid-column: 1; display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
 .slider-presets { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 8px; }
-.slider-presets button { min-height: 32px; padding: 4px 8px; font-family: var(--body); font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 0; border-radius: 0; cursor: pointer; }
+.slider-presets button { min-height: 32px; padding: 4px 8px; font-family: var(--body); font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 0; border-radius: 0; cursor: pointer; }
 .slider.is-typed { grid-template-columns: minmax(0, 9rem); }
 
-/* Detail panel: the readout and the Reading on top, then what the selection says, then its receipt. */
-.plate-views span { font-size: 0.8125rem; }
+/* Detail panel. The Reading view is the readout, the Reading, what the selection says, Copy and Reset, and one line of receipts. Chips, the open
+   receipt, and the source list live in the Sources view, whose tab carries the count. */
 .plate-views:not([hidden]) ~ .plate-view > .label { display: none; }
-.readout-value { display: block; overflow-wrap: anywhere; }
-.readout-unit { display: block; font-family: var(--body); font-weight: 500; font-size: 1rem; line-height: 1.3; letter-spacing: 0; color: var(--atni-text-body); }
-.readout.is-long { font-size: clamp(2rem, 1.6rem + 1.4vw, 3rem); }
 .plate-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .plate-actions .button { padding: 8px 12px; }
 .plate-status { flex-basis: 100%; }
 .plate-status:empty { display: none; }
+.plate-tally { justify-self: start; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; text-align: left; text-wrap: balance; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
+.plate-tally:hover { text-decoration-thickness: 2px; }
 .plate-facts { display: grid; gap: 8px; }
 .plate-facts:empty { display: none; }
-.plate-values { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+.plate-values { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 1rem; }
 .plate-values li { display: grid; grid-template-columns: 14px minmax(0, max-content) minmax(8rem, 1fr); align-items: baseline; column-gap: 8px; margin: 0; font-variant-numeric: tabular-nums; }
 .plate-values strong { color: var(--atni-text-heading); }
 .plate-values strong:has(+ span:empty) { grid-column: 2 / -1; }
@@ -828,8 +830,9 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   padding: 4px 8px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   line-height: 1.2;
+  text-align: left;
   color: var(--atni-text-heading);
   background: var(--tag-bg);
   border: 0;
@@ -837,63 +840,68 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   cursor: pointer;
 }
 .receipt.is-extra { display: none; }
-.plate-chip-more { min-height: 32px; padding: 4px 8px; font-family: var(--display); font-weight: 500; font-size: 0.75rem; line-height: 1.2; color: var(--atni-text-heading); background: none; border: 1px solid var(--control); border-radius: 0; cursor: pointer; }
+.plate-chip-more { min-height: 32px; padding: 4px 8px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-heading); background: none; border: 1px solid var(--control); border-radius: 0; cursor: pointer; }
 .plate-chip-more:hover { background: var(--tag-bg); }
-.receipt-mark { flex: none; width: 6px; height: 6px; background: currentColor; }
-.receipt.is-hollow .receipt-mark { background: none; border: 1px solid currentColor; }
+.receipt-mark { flex: none; width: 8px; height: 8px; background: currentColor; }
+.receipt.is-hollow .receipt-mark { background: none; border: 1.5px solid currentColor; }
 .receipt[aria-expanded="true"] { color: var(--energy-on-fill); background: var(--energy-fill); }
-.plate-receipt { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.plate-receipt { display: grid; gap: 8px; padding-block: 12px; border-block: 1px solid var(--rule); }
+.plate-receipt[tabindex]:focus { outline: none; }
+.plate-receipt[tabindex]:focus-visible { outline: 3px solid var(--atni-text-link); outline-offset: 3px; }
+.plate-view[data-view="sources"] > .plate-chips, .plate-view[data-view="sources"] > .plate-receipt { margin-bottom: 4px; }
 .plate-sources { display: grid; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.plate-sources:focus { outline: none; }
 .plate-sources, .plate-receipt { overflow-wrap: anywhere; } /* a filing's long field name must not widen the zone */
 .plate-sources li { display: grid; gap: 4px; margin: 0; }
-.plate-source-title { font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; }
-.plate-quote { margin: 0; padding-left: 12px; font-size: 0.875rem; line-height: 1.5; color: var(--atni-text-body); border-left: 1px solid var(--rule); }
-.plate-table th, .plate-table td { padding: 4px 8px; }
+.plate-source-title { font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; }
+.plate-sources .caption, .plate-receipt .caption { font-size: 0.8125rem; }
+.plate-quote { margin: 0; padding-left: 12px; font-size: 0.8125rem; line-height: 1.5; color: var(--atni-text-body); border-left: 1px solid var(--rule); }
+table.plate-table :is(th, td) { padding: 4px 8px; font-size: 0.8125rem; }
 .plate-table td:last-child { text-align: left; }
 .plate-also { margin: 12px 0 0; padding: 0; list-style: none; }
 .plate-also li { margin: 0 0 4px; }
 
-/* Ladder: rows whose mark sits on one shared ruler; a plate may hold two, each with its own axis and label. Grid lines
-   and the needle lie under the rows, on the tracks' column. --l is the label column, --v the value column. A row is its
-   own hit target. On light, --energy-mark is 2.97 on the selected wash, so what crosses the wash wears --energy-fill. */
+/* Ladder: rows whose mark sits on one shared ruler; a plate may hold two, each with its own axis and label. Grid lines, the shared band, and the
+   needle lie under the rows, on the tracks' column. --l is the label column, --v the value column. A row is its own hit target. Marks and ranges are
+   grey until selected. A range is a band at 40 percent, under 3:1 by design, because the row prints the same range in words beside it. */
 .ladder-groups { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 .ladder-group { flex: 1 1 0; display: flex; flex-direction: column; }
 .ladder-group-label { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .ladder { position: relative; flex: 1; display: flex; flex-direction: column; }
+.ladder[data-form="square"] { padding-top: 24px; } /* room for the needle's label */
 .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 28px; }
-.ladder-rows { flex: 1; display: grid; grid-auto-rows: minmax(var(--row-min), auto); margin: 0 0 24px; padding: 0; list-style: none; }
+.ladder:is([data-form="square"], :not(.no-needle)).has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 48px; } /* the needle's name on the top line, the tick's on the next */
+.ladder-rows { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(var(--row-min), auto); margin: 0 0 24px; padding: 0; list-style: none; }
 .ladder-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; margin: 0; cursor: pointer; }
-.ladder-label { font-family: var(--display); font-weight: 500; font-size: clamp(0.875rem, 0.8rem + 0.2vw, 1.0625rem); line-height: 1.25; color: var(--atni-text-secondary); }
-.ladder-tag { display: block; font-size: 0.75rem; color: var(--atni-text-muted); }
-.ladder-value { font-size: clamp(0.8125rem, 0.75rem + 0.15vw, 1rem); line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.ladder-label { font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.2; color: var(--atni-text-heading); }
+.ladder-tag { display: block; margin-top: 2px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.ladder-value { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .ladder-value:has(> .ladder-num) { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.25em; }
-.ladder-num, .ladder-unit { white-space: nowrap; }
-.ladder-value > .ladder-tag { order: 1; flex-basis: 100%; font-family: var(--body); font-weight: 400; font-size: 0.8125rem; line-height: 1.3; letter-spacing: 0; color: var(--atni-text-secondary); }
-.plate .ladder-row.is-gap .ladder-value { font-family: var(--body); font-weight: 400; font-size: 0.8125rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.ladder-unit { font-family: var(--body); font-weight: 500; font-size: 1rem; letter-spacing: 0; }
+.ladder-value > .ladder-tag { order: 1; flex-basis: 100%; margin-top: 2px; font-size: 1rem; line-height: 1.3; letter-spacing: 0; }
+.plate .ladder-row:is(.is-gap, .is-ghost) .ladder-value { font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; letter-spacing: 0; color: var(--atni-text-secondary); }
 .ladder-row.is-gap .ladder-label { color: var(--atni-text-muted); }
+/* A row this boundary does not count stays on the plot with no mark, so a reader watches the boundary do the work. */
+.ladder-row.is-ghost { cursor: default; }
+.ladder-row.is-ghost .ladder-label { color: var(--atni-text-heading); opacity: 0.4; }
 .ladder-track { position: relative; align-self: stretch; }
 .ladder-mark {
   position: absolute;
   left: calc(var(--x) * 100%);
   top: 50%;
-  box-sizing: content-box;
+  box-sizing: border-box;
   width: var(--mark);
   height: var(--mark);
   background: var(--series-context);
-  border: 2px solid var(--atni-ground-raised);
+  outline: 2px solid var(--plot-ground);
   transform: translate(-50%, -50%);
-  transition: left 160ms ease-out;
 }
-.ladder-mark.is-hollow { box-sizing: border-box; width: calc(var(--mark) + 4px); height: calc(var(--mark) + 4px); background: var(--atni-ground-raised); border-color: var(--series-context); }
+.ladder-mark.is-hollow { background: var(--plot-ground); border: 2.5px solid var(--series-context); }
 .ladder-mark.is-b { left: calc(var(--x2) * 100%); background: var(--atni-text-heading); }
-.ladder-range { position: absolute; left: calc(var(--lo) * 100%); width: calc((var(--hi) - var(--lo)) * 100%); top: calc(50% - 1px); height: 2px; background: var(--series-context); }
-.ladder-range::before, .ladder-range::after { content: ""; position: absolute; top: -4px; width: 2px; height: 10px; background: var(--series-context); }
-.ladder-range::before { left: 0; }
-.ladder-range::after { right: 0; }
-.ladder-range.is-proj { height: 0; background: none; border-top: 2px dashed var(--series-context); }
-.ladder-range.is-proj::before, .ladder-range.is-proj::after { top: -6px; }
-:is(.ladder-row, .instrument-row).is-on .ladder-range:not(.is-proj), :is(.ladder-row, .instrument-row).is-on .ladder-range::before, :is(.ladder-row, .instrument-row).is-on .ladder-range::after { background: var(--energy-fill); }
-:is(.ladder-row, .instrument-row).is-on .ladder-range.is-proj { border-top-color: var(--energy-fill); }
+.ladder-range { position: absolute; left: calc(var(--lo) * 100%); width: calc((var(--hi) - var(--lo)) * 100%); top: calc(50% - 4px); height: 8px; background: var(--series-context); opacity: 0.4; }
+.ladder-range.is-proj { top: calc(50% - 1px); height: 0; background: none; opacity: 1; border-top: 2px dashed var(--series-context); }
+:is(.ladder-row, .instrument-row).is-on .ladder-range:not(.is-proj) { opacity: 1; background: var(--energy-mark); }
+:is(.ladder-row, .instrument-row).is-on .ladder-range.is-proj { border-top-color: var(--energy-mark); }
 .ladder-bar {
   position: absolute;
   left: calc(min(var(--x), var(--z, 0)) * 100%);
@@ -901,47 +909,133 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
   min-width: 1px;
   top: 50%;
   height: min(24px, 56%);
-  background: var(--atni-color-chart-1);
+  background: var(--series-context);
   transform: translateY(-50%);
   transition: left 160ms ease-out, width 160ms ease-out;
 }
-.ladder-bar.is-hollow { background: color-mix(in srgb, var(--atni-color-chart-1) 18%, transparent); border: 1.5px solid var(--atni-color-chart-1); }
+.ladder-bar.is-hollow { background: color-mix(in srgb, var(--series-context) 18%, transparent); border: 1.5px solid var(--series-context); }
 .ladder-bar.is-proj::after { content: ""; position: absolute; top: -1.5px; bottom: -1.5px; right: -2px; border-right: 2px dashed var(--atni-text-heading); }
-.is-neg .ladder-bar { background: var(--atni-color-chart-2); }
-.is-neg .ladder-bar.is-hollow { background: color-mix(in srgb, var(--atni-color-chart-2) 18%, transparent); border-color: var(--atni-color-chart-2); }
 .is-neg .ladder-bar.is-proj::after { right: auto; left: -2px; }
-.is-pos .ladder-mark:not(.is-hollow) { background: var(--atni-color-chart-1); }
-.is-neg .ladder-mark:not(.is-hollow) { background: var(--atni-color-chart-2); }
-.ladder-row.is-on .ladder-label { color: var(--atni-text-heading); }
-/* The selection washes the row's range and no more, as a flat band (the stops are hard). A row with no range has no --lo, so no wash. */
-:is(.ladder-row, .instrument-row).is-on .ladder-track { background: linear-gradient(to right, transparent calc(var(--lo) * 100%), var(--energy-wash) calc(var(--lo) * 100%), var(--energy-wash) calc(var(--hi) * 100%), transparent calc(var(--hi) * 100%)) center / 100% min(44px, 100%) no-repeat; }
-:is(.ladder-row, .instrument-row).is-on .ladder-mark:not(.is-b) { background: var(--energy-fill); }
-:is(.ladder-row, .instrument-row).is-on .ladder-mark.is-hollow { background: var(--atni-ground-raised); border-color: var(--energy-fill); }
-.ladder-row.is-on .ladder-bar:not(.is-hollow) { background: var(--energy-fill); }
-.ladder-row.is-on .ladder-bar.is-hollow { background: color-mix(in srgb, var(--energy-fill) 18%, transparent); border-color: var(--energy-fill); }
+/* A sign reads from the side of zero and the printed + or -; two greys, since chromatic ink on a plate is the selection's alone. */
+.is-pos :is(.ladder-bar, .ladder-mark):not(.is-hollow) { background: var(--series-context); }
+.is-neg :is(.ladder-bar, .ladder-mark):not(.is-hollow) { background: var(--atni-text-secondary); }
+:is(.ladder-row, .instrument-row).is-on .ladder-mark:not(.is-b, .is-hollow) { background: var(--energy-mark); }
+:is(.ladder-row, .instrument-row).is-on .ladder-mark.is-hollow { border-color: var(--energy-mark); }
+.ladder-row.is-on .ladder-bar:not(.is-hollow) { background: var(--energy-mark); }
+.ladder-row.is-on .ladder-bar.is-hollow { background: color-mix(in srgb, var(--energy-mark) 18%, transparent); border-color: var(--energy-mark); }
+/* The comparison plate: a row named in plot.yard is a yardstick, half the height of a row the reader does. Rows share the plot's height 2 to 1. */
+.has-yard .ladder-rows { display: flex; flex-direction: column; }
+.has-yard .ladder-row { flex: 2 1 96px; }
+.has-yard .ladder-row.is-yard { flex: 1 1 56px; }
+.has-yard .ladder-row.is-yard .ladder-label { white-space: nowrap; }
+.has-yard .ladder-row:not(.is-yard) .ladder-label { font-size: 1.25rem; }
+.has-yard .ladder-row.is-yard + .ladder-row.is-yard, .has-yard .ladder-row:not(.is-yard) + .ladder-row { border-top: 1px solid var(--grid); }
 .ladder-grid, .ladder-axis { position: absolute; left: calc(var(--l) + 12px); right: calc(var(--v) + 12px); }
 .ladder-grid { z-index: 1; top: 0; bottom: 24px; pointer-events: none; }
 .ladder-grid i { position: absolute; top: 0; bottom: 0; left: calc(var(--x) * 100%); width: 1px; background: var(--grid); }
 .ladder-grid i.is-zero { background: var(--baseline); }
-.ladder-grid .ladder-needle { left: calc(var(--at) * 100%); width: 2px; margin-left: -1px; background: var(--energy-fill); transition: left 120ms linear; }
+/* The needle: one 2px line in the mark ink at the reader's setting or at today, the only orange line on a plate, with its name at its top. */
+.needle { position: absolute; width: 2px; background: var(--energy-mark); }
+.ladder-grid .ladder-needle { left: calc(var(--at) * 100%); width: 2px; margin-left: -1px; background: var(--energy-mark); }
+.needle-label { position: absolute; top: 0; left: 8px; padding-inline: 4px; font-family: var(--display); font-weight: 500; font-style: normal; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--energy-text); background: var(--plot-ground); }
+.is-flip > .needle-label { left: auto; right: 8px; }
 .ladder-grid .ladder-tick { background: var(--series-context); }
-.ladder-tick span { position: absolute; top: 0; left: 6px; font-style: normal; font-size: 0.8125rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
+.ladder-tick span { position: absolute; top: 0; left: 6px; padding-inline: 4px; font-style: normal; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); background: var(--plot-ground); }
+.ladder:is([data-form="square"], :not(.no-needle)) .ladder-tick span { top: 24px; }
 .ladder-tick.is-right span { left: auto; right: 6px; }
 .ladder-axis { bottom: 0; height: 24px; }
-.ladder-axis span { position: absolute; left: calc(var(--x) * 100%); top: 4px; font-size: 0.8125rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); transform: translateX(-50%); }
+.ladder-axis span { position: absolute; left: calc(var(--x) * 100%); top: 4px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); transform: translateX(-50%); }
 .ladder-mark, .ladder-range, .ladder-bar { z-index: 2; }
+/* Shared ground: where the selected row's range overlaps the others', one band across those rows, so the eye reads overlap before order. */
+.ladder-shared { position: absolute; left: calc(var(--lo) * 100%); width: calc((var(--hi) - var(--lo)) * 100%); background: var(--grid); }
+.ladder-shared-label { position: absolute; top: 4px; left: 4px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
+.ladder-shared.is-flip > .ladder-shared-label { left: auto; right: 4px; }
+
+/* The square unit, outside a Count view: the library field and the waffles. A field sets --unit-ink on a square for its area. */
+.unit-field { display: flex; flex-wrap: wrap; gap: var(--unit-gap); margin: 0; padding: 0; list-style: none; }
+.unit-field > * { flex: none; width: var(--unit); height: var(--unit); margin: 0; background: var(--unit-ink, var(--series-context)); }
+
+/* A stacked bar on the stage ramp: segments in one row, 2px apart, each --w of the track. For a row of counts by stage. */
+.stack-bar { display: flex; gap: 2px; height: min(24px, 80%); }
+.stack-bar > i { flex: none; width: calc(var(--w) * 100%); background: var(--stage); }
+
+/* Two plates side by side, half a window each: claim and plot in two zones, the detail panel under them. */
+@media screen and (min-width: 1100px) {
+  .plate-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 56px; }
+  .plate-pair > .plate { grid-template-columns: minmax(8rem, 24fr) minmax(0, 76fr); }
+  .plate-pair > .plate > .plate-detail { grid-column: 1 / -1; }
+}
+
+/* The ATNI Climate voice, in the three places the direction names and nowhere else: never on a plate, a tab, or a button. The 2px rule is Red Element on the base ground only;
+   Red Element is never text and never a ground. The lockup is one image per theme, 40px tall: at the direction's 28px the wordmark is about 6px and cannot be read. */
+.climate-voice { padding-left: 16px; border-left: 2px solid var(--atni-color-program-red-element); }
+.climate-voice a { color: var(--atni-color-core-red-on-dark); }
+[data-theme="light"] .climate-voice a { color: var(--atni-color-core-red-alt); }
+.climate-lockup { display: block; width: auto; height: 40px; margin-bottom: 8px; }
+.climate-on-light { display: none; }
+[data-theme="light"] .climate-on-dark { display: none; }
+[data-theme="light"] .climate-on-light { display: block; }
+@media (prefers-color-scheme: light) {
+  [data-theme="auto"] .climate-voice a { color: var(--atni-color-core-red-alt); }
+  [data-theme="auto"] .climate-on-dark { display: none; }
+  [data-theme="auto"] .climate-on-light { display: block; }
+}
+
+/* The strip: dates on one track from a checked date, the needle at today, a row of words under each mark, joined by a stem. Without scripts, and
+   in print or on a phone, it is the list of rows. A deadline inside 14 days fills orange, meaning soon, the one other orange on the strip. */
+.strip { --sq: 24px; --rh: 80px; display: grid; gap: 12px; min-width: 0; }
+@media (min-height: 1000px) { .strip { --rh: 112px; } }
+.strip-area { position: relative; }
+.strip-rows { list-style: none; margin: 0; padding: 0; }
+.strip-row { margin: 0 0 12px; }
+.strip-row > * { display: block; }
+.strip-track, .strip-months, .strip .needle { display: none; }
+.strip-n { font-family: var(--display); font-weight: 600; font-size: 2rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.strip-unit { font-size: 1rem; color: var(--atni-text-secondary); }
+.strip a { color: var(--atni-text-heading); text-decoration-color: var(--control); } /* orange on the strip means soon */
+.strip-name { font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.2; }
+.strip-what { font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.strip-lane { padding-top: 12px; border-top: 1px solid var(--grid); }
+.strip-lane-title, .strip-beyond-title { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.strip-undated { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2px 20px; margin: 0; padding: 0; list-style: none; }
+.strip-undated li { margin: 0; padding-left: 18px; position: relative; font-size: 0.9375rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.strip-undated li::before { content: ""; position: absolute; left: 0; top: 0.3em; width: 10px; height: 10px; border: 2px solid var(--series-context); }
+.strip-beyond { justify-self: end; text-align: right; }
+.strip-beyond > * { display: block; }
+.strip-foot { margin: 0; max-width: none; font-size: 0.875rem; }
+@media screen and (min-width: 720px) {
+  .strip.is-live .strip-area { margin-inline: 16px; padding-top: 24px; }
+  .strip.is-live .needle { display: block; z-index: 3; top: 0; bottom: 0; left: calc(var(--t) * 100%); margin-left: -1px; }
+  .strip.is-live .strip-track { display: block; position: relative; height: var(--sq); }
+  .strip-track::before { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--baseline); }
+  .strip-track i { position: absolute; top: 7px; left: calc(var(--t) * 100%); width: 1px; height: 10px; background: var(--grid); }
+  .strip-mark { position: absolute; z-index: 2; top: 0; left: calc(var(--t) * 100%); width: var(--sq); height: var(--sq); margin-left: calc(var(--sq) / -2); background: var(--series-context); outline: 2px solid var(--plot-ground); }
+  .strip-mark.is-soon { background: var(--energy-mark); }
+  .strip.is-live .strip-months { display: block; position: relative; height: 24px; }
+  .strip-months span { position: absolute; top: 4px; left: calc(var(--t) * 100%); font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); transform: translateX(-50%); }
+  /* Furthest on top, so a stem never crosses a row's words. The list stays soonest first for a screen reader. */
+  .strip.is-live .strip-rows { display: flex; flex-direction: column-reverse; margin-top: 6px; }
+  .strip.is-live .strip-row { position: relative; height: var(--rh); margin: 0; }
+  .strip.is-live .strip-row::before { content: ""; position: absolute; left: calc(var(--t) * 100%); bottom: calc(100% - 22px); height: calc(var(--i) * var(--rh) + 46px); width: 1px; background: var(--series-context); }
+  .strip-row:has(a:focus-visible)::before, .strip-row:hover::before { background: var(--atni-text-heading); }
+  .strip.is-live .strip-body { position: absolute; left: calc(var(--t) * 100%); top: 0; width: min(36rem, calc((1 - var(--t)) * 100%)); padding-left: 12px; }
+  .strip.is-live .strip-row.is-flip .strip-body { left: auto; right: calc((1 - var(--t)) * 100%); width: min(36rem, calc(var(--t) * 80%)); padding: 0 12px 0 0; text-align: right; }
+}
+.strip-body > * { display: inline; }
+.strip-body > .strip-what { display: block; margin-top: 2px; }
 
 /* Count: the second view of a ladder, one square per unit. */
 .count-rows { flex: 1; display: grid; grid-auto-rows: auto; align-content: start; gap: 2px; margin: 0; padding: 0; list-style: none; }
 .count-over { font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
-.plate-fold { flex: none; order: 2; margin: 8px 0 0; max-width: none; }
+.count-row.is-ghost { cursor: default; }
+.count-row.is-ghost .ladder-label { opacity: 0.4; }
 .count-row { display: grid; grid-template-columns: clamp(10rem, 31%, 16rem) minmax(0, 1fr); grid-template-areas: "label cell" "value cell"; grid-template-rows: auto 1fr; column-gap: 12px; align-items: start; margin: 0; padding-block: 4px; border-bottom: 1px solid var(--rule); cursor: pointer; }
 .count-row .ladder-label { grid-area: label; }
 .count-row .ladder-value { grid-area: value; }
 .count-row .ladder-num { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; letter-spacing: -0.015em; }
 .count-row:has(.ladder-tag) .ladder-num { font-size: 1.5rem; }
-.count-row .ladder-unit { font-size: 0.8125rem; font-family: var(--body); font-weight: 400; color: var(--atni-text-secondary); }
-.plate .count-row .ladder-value:not(:has(> .ladder-num)) { font-family: var(--body); font-weight: 400; font-size: 0.8125rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.count-row .ladder-unit { font-size: 0.875rem; font-family: var(--body); font-weight: 400; color: var(--atni-text-secondary); }
+.plate .count-row .ladder-value:not(:has(> .ladder-num)) { font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .count-row.is-on .ladder-label { color: var(--atni-text-heading); }
 .count-cell { grid-area: cell; min-width: 0; }
 .count-marks { display: block; overflow: visible; }
@@ -950,18 +1044,16 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .is-on .m-count { fill: var(--energy-mark); }
 .is-on .m-count.is-hollow { fill: none; stroke: var(--energy-mark); }
 
-/* Instrument: the reader sets a project; each output is a ruled row, a large figure on its own thin ruler. */
-.instrument { flex: 1; display: grid; grid-auto-rows: minmax(56px, 1fr); margin: 0; padding: 0; list-style: none; }
-.instrument-row { display: grid; grid-template-columns: minmax(8rem, 18%) minmax(0, 1fr) minmax(9rem, 20%); column-gap: 16px; align-items: center; margin: 0; border-bottom: 1px solid var(--rule); cursor: pointer; }
-.instrument-row .ladder-value { font-family: var(--display); font-weight: 600; font-size: clamp(1.125rem, 0.9rem + 0.6vw, 1.75rem); line-height: 1.15; }
-.instrument-row.is-fixed .ladder-value { font-family: var(--body); font-weight: 500; font-size: 0.875rem; line-height: 1.35; }
-.instrument-row.is-on .ladder-label { color: var(--atni-text-heading); }
+/* Instrument: the reader sets a project; each output is a ruled row, a large figure on its own ruler, with the ladder's marks and bands. plot.needle
+   names a row whose place stands across them all as the needle, at the reader's own setting. */
+.instrument { --l: clamp(8rem, 18%, 14rem); --v: clamp(9rem, 20%, 16rem); position: relative; flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(var(--row-min), 1fr); margin: 0; padding: 0; list-style: none; }
+.instrument > .needle { z-index: 1; top: 0; bottom: 0; left: calc(var(--l) + 16px + (100% - var(--l) - var(--v) - 32px) * var(--at)); margin: 0 0 0 -1px; list-style: none; pointer-events: none; }
+.no-needle > .instrument > .needle { display: none; }
+.instrument-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 16px; align-items: center; margin: 0; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.instrument-row.is-fixed .ladder-value { font-family: var(--body); font-weight: 500; font-size: 0.875rem; line-height: 1.35; letter-spacing: 0; }
 .instrument-line { display: block; }
 .instrument-ruler::before { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--grid); }
-/* A spread reads as a span on the ruler: a heavier line with end ticks. */
-.instrument-ruler .ladder-range:not(.is-proj) { top: calc(50% - 2px); height: 4px; background: var(--atni-text-heading); }
-.instrument-ruler .ladder-range::before, .instrument-ruler .ladder-range::after { top: -5px; height: 14px; background: var(--atni-text-heading); }
-.instrument-ends { position: absolute; left: 0; right: 0; top: calc(50% + 8px); display: flex; justify-content: space-between; font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.instrument-ends { position: absolute; left: 0; right: 0; top: calc(50% + 12px); display: flex; justify-content: space-between; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
 .instrument-fixed { display: block; }
 .instrument-spark { display: block; align-self: center; }
 .instrument-group { align-self: end; margin: 0; padding: 12px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
@@ -983,16 +1075,18 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .matrix-words { margin: 0; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
 .matrix-bar { display: block; width: calc(var(--x) * 100%); min-width: 2px; height: 6px; margin-top: 4px; background: var(--series-context); }
 .matrix-figure.is-hollow .matrix-bar { background: none; border: 1.5px solid var(--series-context); }
-td.is-on .matrix-bar { background: var(--energy-fill); }
-td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: var(--energy-fill); }
+td.is-on .matrix-bar { background: var(--energy-mark); }
+td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: var(--energy-mark); }
 
 @media (max-width: 599px) { .site-nav ul { gap: 0 14px; } }
 @media (max-width: 719px) {
   .ladder-row, .count-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "track track"; grid-template-rows: auto auto; }
-  .ladder-label { grid-area: label; }
-  .ladder-value { grid-area: value; }
-  .ladder-track, .count-cell { grid-area: track; min-height: 24px; }
+  :not(.instrument-row) > .ladder-label { grid-area: label; }
+  :not(.instrument-row) > .ladder-value { grid-area: value; }
+  :not(.instrument-row) > .ladder-track, .count-cell { grid-area: track; min-height: 24px; }
   .ladder-grid, .ladder-axis { left: 0; right: 0; }
+  .ladder-axis span:last-child { transform: translateX(-100%); }
+  :is(.ladder-tick span, .needle-label, .ladder-shared-label) { max-width: 40vw; white-space: normal; }
   .instrument-row { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding-block: 8px; }
   .instrument-row .ladder-track { min-height: 32px; }
 }
@@ -1003,23 +1097,25 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .plate-svg .m-tick { font-variant-numeric: tabular-nums; }
 .plate-svg .m-title { font-family: var(--display); font-weight: 500; fill: var(--atni-text-heading); }
 .plate-svg .m-label { font-family: var(--display); font-weight: 500; }
-.plate-svg .m-label.is-lead { fill: var(--atni-text-heading); paint-order: stroke; stroke: var(--atni-ground-raised); stroke-width: 4px; stroke-linejoin: round; }
-.plate-svg .m-end { font-size: 0.75rem; fill: var(--series-context); }
+.plate-svg .m-label.is-lead { fill: var(--atni-text-heading); paint-order: stroke; stroke: var(--plot-ground); stroke-width: 4px; stroke-linejoin: round; }
+.plate-svg .m-end { font-size: 0.875rem; fill: var(--series-context); }
 .plate-svg .is-on > .m-label { fill: var(--atni-text-heading); }
-.m-line { fill: none; stroke: var(--series-context); stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: butt; }
-.m-line.is-on { stroke: var(--energy-mark); stroke-width: 2.5; }
-.m-line.is-one { stroke: var(--atni-color-chart-1); stroke-width: 2; }
+.m-line { fill: none; stroke: var(--series-context); stroke-width: 2; stroke-linejoin: miter; stroke-linecap: butt; }
+.m-line.is-on { stroke: var(--energy-mark); }
+.m-line.is-one { stroke: var(--atni-text-secondary); } /* a lone series, nothing selected: grey, a step brighter than context */
 .m-line.is-proj { stroke-dasharray: 6 4; }
 .m-band { fill: var(--series-context); fill-opacity: 0.1; stroke: none; }
 .m-band-edge { fill: none; stroke: var(--series-context); stroke-width: 1; stroke-opacity: 0.6; }
 .m-band-edge.is-proj { stroke-dasharray: 2 4; }
 .m-range { stroke: var(--series-context); stroke-width: 1.5; }
-.m-needle { stroke: var(--energy-mark); stroke-width: 2; pointer-events: none; transform: translateX(var(--at)); transition: transform 120ms linear; }
+.m-needle, .plate-svg .m-needle-label { pointer-events: none; transform: translateX(var(--at)); transition: transform 160ms ease-out; }
+.m-needle { stroke: var(--energy-mark); stroke-width: 2; }
+.plate-svg .m-needle-label { font-family: var(--display); font-weight: 500; font-size: 0.875rem; fill: var(--energy-text); paint-order: stroke; stroke: var(--plot-ground); stroke-width: 4px; stroke-linejoin: round; }
 .m-hit { fill: transparent; pointer-events: all; cursor: pointer; }
-.m-dot { display: none; fill: var(--series-context); stroke: var(--atni-ground-raised); stroke-width: 4; paint-order: stroke; }
+.m-dot { display: none; fill: var(--series-context); stroke: var(--plot-ground); stroke-width: 4; paint-order: stroke; }
 .m-dot.is-solo { display: block; }
 .m-dot.is-lead { fill: var(--energy-mark); }
-.m-dot.is-hollow { fill: var(--atni-ground-raised); stroke: var(--series-context); }
+.m-dot.is-hollow { fill: var(--plot-ground); stroke: var(--series-context); stroke-width: 2.5; paint-order: normal; }
 .m-dot.is-hollow.is-lead { stroke: var(--energy-mark); }
 .is-on > .m-dot { display: block; }
 .is-on > .m-dot.is-solo { stroke: var(--energy-mark); }
@@ -1042,13 +1138,14 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bench-link { margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; }
 
 @media print {
-  .plate-controls, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows { display: none !important; }
+  .plate-controls, .plate-switch, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows { display: none !important; }
   .plate-view[hidden] { display: grid !important; }
   .ladder-groups[hidden] { display: flex !important; }
   .plate-views ~ .plate-view > .label { display: block !important; }
-  .plate.is-live { height: auto; }
-  .plate, .tier-grid, .evidence-key, .tier-stair { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* marks are backgrounds */
-  .plate-plot { min-height: 16rem; overflow: visible; break-inside: avoid; }
+  .plate { padding: 12pt; border: 1px solid var(--rule); }
+  .plate-detail { padding: 0; background: none; border: 0; }
+  .plate, .tier-grid, .evidence-key, .tier-stair, .strip { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* marks are backgrounds */
+  .plate-plot { min-height: 16rem; break-inside: avoid; }
 }
 /* ========== End of the plate kit. ========== */
 
@@ -1061,7 +1158,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   min-height: 32px;
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--atni-text-secondary);
   text-decoration: none;
 }
@@ -1073,21 +1170,19 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .quote { margin: 24px 0; }
 .quote blockquote { margin: 0; font-style: italic; font-weight: 400; font-size: var(--atni-type-quote-size); line-height: var(--atni-type-quote-line-height); color: var(--atni-text-heading); }
 .quote blockquote p { margin: 0; }
-.quote figcaption { margin-top: 12px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.quote figcaption { margin-top: 12px; font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Quoted source text */
 .citation { margin: 12px 0 24px; }
 .citation blockquote { margin: 0; padding: 0 0 0 16px; border-left: 1px solid var(--rule); font-size: 0.875rem; color: var(--atni-text-body); }
 .citation blockquote p { margin: 0; }
-.citation figcaption { margin-top: 8px; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.citation figcaption { margin-top: 8px; font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Library page and filter forms */
 .filters {
   display: grid;
   gap: 16px;
   margin: 0;
-  padding: 16px;
-  background: var(--atni-ground-raised);
 }
 .field label { display: block; margin-bottom: 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .field input, .field select {
@@ -1125,7 +1220,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 
 /* Summit agenda */
 .agenda { display: grid; gap: 24px; margin: 24px 0; }
-.day { padding: 24px 24px 8px; background: var(--atni-ground-raised); }
+.day { padding: 0; }
 .day-label { margin: 0 0 4px; }
 .day h3 { margin-bottom: 16px; }
 .day ol { list-style: none; margin: 0; padding: 0; counter-reset: item; }
@@ -1141,9 +1236,9 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   place-items: center;
   font-family: var(--display);
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--energy-on-fill);
-  background: var(--energy-fill);
+  background: var(--series-context);
 }
 .day li strong { color: var(--atni-text-heading); }
 @media (min-width: 840px) { .agenda { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -1177,10 +1272,10 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 }
 
 /* Chart: Tribes by energy type and stage (horizontal stacked bars) */
-.chart { margin: 24px 0; padding: 24px; background: var(--atni-ground-raised); }
+.chart { margin: 24px 0; }
 .chart h3 { margin: 0 0 4px; }
-.chart-sub { margin: 0 0 16px; font-size: 0.8125rem; color: var(--atni-text-secondary); }
-.legend { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0 0 12px; padding: 0; font-size: 0.8125rem; color: var(--atni-text-secondary); }
+.chart-sub { margin: 0 0 16px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.legend { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0 0 12px; padding: 0; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .legend li { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
 .swatch { flex: none; width: 12px; height: 12px; background: var(--stage); }
 .bars { list-style: none; margin: 0; padding: 0; }
@@ -1205,7 +1300,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bar-label { font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-heading); }
 .bar-track { display: flex; align-items: center; gap: 2px; min-height: 20px; }
 .bar-seg { flex: none; width: calc((100% - 3.5rem) * var(--w)); min-width: 3px; height: 20px; background: var(--stage); }
-.bar-total { margin-left: 8px; font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.bar-total { margin-left: 8px; font-size: 0.875rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .bar-tip {
   position: absolute;
   z-index: 3;
@@ -1214,7 +1309,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   display: none;
   min-width: 15rem;
   padding: 8px 12px;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   color: var(--atni-text-body);
   background: var(--atni-ground-overlay);
@@ -1236,12 +1331,12 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .table-scroll, .table-wrap { max-width: 100%; overflow-x: auto; }
 .table-wrap { margin-block: 16px; }
 .data-table, .table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-.data-table caption { margin-bottom: 8px; text-align: left; font-size: 0.8125rem; color: var(--atni-text-muted); }
+.data-table caption { margin-bottom: 8px; text-align: left; font-size: 0.875rem; color: var(--atni-text-muted); }
 .data-table th, .data-table td, .table-wrap th, .table-wrap td { padding: 8px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
 .data-table thead th, .table-wrap thead th { font-family: var(--display); font-weight: 500; color: var(--atni-text-secondary); background: var(--tag-bg); border-bottom-color: var(--control); }
 .data-table tbody th { font-weight: 400; color: var(--atni-text-heading); }
 .table-wrap tbody td:first-child { color: var(--atni-text-heading); }
-.data-table td { text-align: right; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+.data-table td { text-align: right; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
 
 /* Per-Tribe program matches: one panel for each ranked energy type, in columns. */
 #tribe-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 0 24px; align-items: start; }
@@ -1254,7 +1349,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .match-list li { margin-bottom: 4px; }
 
 /* Evidence strength labels (youth and education) */
-.evidence { display: block; margin-top: 8px; font-size: 0.8125rem; color: var(--atni-text-secondary); }
+.evidence { display: block; margin-top: 8px; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .evidence b { font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
 
 /* Footer */
@@ -1267,17 +1362,29 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .footer-nav a { display: inline-block; padding: 4px 0; }
 @media (min-width: 840px) { .footer-inner { grid-template-columns: 1.2fr 1fr 1.2fr; gap: 48px; } }
 
-/* Motion answers the reader only; reduced motion takes it to zero. */
+/* Motion answers the reader, but for the needle's one stroke on home; reduced motion takes it all to zero. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; scroll-behavior: auto !important; }
+}
+
+/* High Contrast. A transparent border is forced to a visible ink, so every tab and every option looked selected; and a mark drawn as a background vanishes. */
+@media (forced-colors: active) {
+  .segmented span, :is(.toc, .section-strip) :is(a, [role="tab"]), .site-nav a { border-bottom-color: Canvas; }
+  .segmented input:checked + span, :is(.toc, .section-strip) :is(a[aria-current], [aria-selected="true"]), .site-nav a[aria-current] { border-bottom-color: Highlight; }
+  .ladder-mark, .ladder-range, .ladder-bar, .ladder-shared, .ladder-needle, .needle, .plate-seg, .plate-square, .plate-key, .strip-mark, .slider input[type="range"], .lockup { forced-color-adjust: none; }
+  .lockup-on-dark { background: #010B13; } /* a logo drawn for one ground keeps that ground on any other */
+  .lockup-on-light { background: #FFFFFF; }
+  [data-row].is-on { outline: 2px solid Highlight; outline-offset: -2px; }
 }
 
 /* Print: light and linear, every panel and table open, link targets written out. */
 @media print {
   body { background: none; font-size: 11pt; }
-  .skip-link, .site-nav, .theme-toggle, .subnav, .toc, .section-strip, .filters, .receipt, .plate fieldset, .bar-tip, .footer-nav, .loop-diagram::before, .loop-diagram::after { display: none !important; }
-  .lockup-on-dark { display: none; }
-  .lockup-on-light { display: block; }
+  .skip-link, .site-nav, .theme-toggle, .subnav, .toc, .section-strip, .filters, .receipt, .plate fieldset, .bar-tip, .footer-nav { display: none !important; }
+  .lockup, .climate-on-dark { display: none !important; }
+  .wordmark { display: block; width: 160px; height: 76px; background: url("../img/atni-energy-lockup-mono-black.svg") left center / contain no-repeat; -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* the large lockup, in black, heads every printed page */
+  .climate-on-light { display: block; }
+  .climate-voice a { color: var(--atni-color-core-red-alt); }
   [role="tabpanel"][hidden], .plate-table[hidden] { display: block !important; }
   details::details-content { display: block; height: auto; content-visibility: visible; }
   .wrap { max-width: none; padding-inline: 0; }
@@ -1289,7 +1396,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .page-hero-grid { display: block; }
   .cards, .figures, .resolutions, .entries, .records, .deadlines, .agenda { display: block; }
   .key-facts, .day, .card, .figure, .slot, .notice, .quote, .entry, .resolution, .deadline, .plate { break-inside: avoid; }
-  .key-facts, .day, .notice, .chart, .plate, .match, .record-deadline, main > .section:nth-of-type(even) { background: none; }
+  .notice, .match, .record-deadline { background: none; }
   .key-facts { margin-top: 12pt; }
   .day { margin-bottom: 12pt; }
   .table-scroll, .table-wrap { overflow: visible; }

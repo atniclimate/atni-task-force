@@ -1,0 +1,820 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "potential",
+ "claims": [
+  {
+   "id": "ep-001",
+   "entity": "ATNI-listed Tribes",
+   "metric": "Tribes with at least one energy type in their public plans",
+   "value": 44,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: listed Tribes with at least one published finding. Not counted: any Tribe's own assessment, or documents the library does not hold.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with one or more findings. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest."
+  },
+  {
+   "id": "ep-002",
+   "entity": "ATNI-listed Tribes",
+   "metric": "listed Tribes covered",
+   "value": 56,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: every Tribe record in the file, including one with no document in the library.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "ATNI listing comes from a capture of ATNI's directory page and records a listing, not membership certification.",
+   "derived": "Count of Tribe records. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "ATNI listing comes from a capture of ATNI's directory page; it records a listing, not membership certification."
+  },
+  {
+   "id": "ep-003",
+   "entity": "Public planning documents",
+   "metric": "documents awaiting text extraction",
+   "value": 22,
+   "low": null,
+   "high": null,
+   "unit": "documents",
+   "year": 2026,
+   "boundary": "Counted: documents the library holds that were not read for this build, because no text had been extracted.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "Some documents still await text extraction, so a Tribe's entry may change when they are read.",
+   "derived": "The file's own count, equal to the sum across Tribe records. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A Tribe's entry may change when these documents are read."
+  },
+  {
+   "id": "ep-004",
+   "entity": "Public planning documents",
+   "metric": "documents read",
+   "value": 279,
+   "low": null,
+   "high": null,
+   "unit": "documents",
+   "year": 2026,
+   "boundary": "Counted: public planning documents read for this build, by the file's own count.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "Plans may be outdated, and newer plans may exist that the library does not hold.",
+   "derived": "The file's own count. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "The library holds what public discovery found and could download, so a Tribe's newest plan may be missing."
+  },
+  {
+   "id": "ep-005",
+   "entity": "Findings",
+   "metric": "published findings",
+   "value": 139,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: each energy type published for a Tribe, up to five per Tribe.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "second Jev pass per claim over its excerpts with their document, year and page: >= 0.7 verified, 0.3 to 0.7 needs review, below 0.3 dropped and re-checked one stage lower",
+   "derived": "Count of findings across Tribe records. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A second pass checked each finding against its cited excerpts and marked some as needing review; read the cited page before relying on one."
+  },
+  {
+   "id": "ep-006",
+   "entity": "ATNI-listed Tribes",
+   "metric": "Tribes with no finding",
+   "value": 12,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: listed Tribes with no published finding, in any of three states.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with no findings. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "In most cases their documents in the library describe no energy work of their own."
+  },
+  {
+   "id": "ep-007",
+   "entity": "ATNI-listed Tribes",
+   "metric": "no finding after search",
+   "value": 9,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: Tribes whose documents in the library were read, with none still waiting.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with no findings, documents read, and none pending. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "Documents read showed no energy work the Tribe owns, studies, or plans; absence is not evidence of opposition or disinterest."
+  },
+  {
+   "id": "ep-008",
+   "entity": "ATNI-listed Tribes",
+   "metric": "no finding yet, with documents pending",
+   "value": 2,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: Tribes with no finding that still hold documents awaiting text extraction.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with no findings and documents pending. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "Documents still awaiting text extraction may add evidence."
+  },
+  {
+   "id": "ep-009",
+   "entity": "ATNI-listed Tribes",
+   "metric": "no document held",
+   "value": 1,
+   "low": null,
+   "high": null,
+   "unit": "Tribe",
+   "year": 2026,
+   "boundary": "Counted: Tribes with no document attributed to them in the library.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with no documents read. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "The library holds no document attributed to this Tribe yet; public discovery may have missed its plans."
+  },
+  {
+   "id": "ep-010",
+   "entity": "ATNI-listed Tribes",
+   "metric": "Tribes holding documents that await text extraction",
+   "value": 11,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: Tribes with one or more documents pending, with or without a finding.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with documents pending. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A Tribe's entry may change when these documents are read."
+  },
+  {
+   "id": "ep-011",
+   "entity": "Findings",
+   "metric": "findings at installed or operating",
+   "value": 29,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: each published finding once, at its stage.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of findings with stage installed or operating. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A stage describes what the document reports, not what exists today; read the cited page before relying on one."
+  },
+  {
+   "id": "ep-012",
+   "entity": "Findings",
+   "metric": "findings at planned or funded",
+   "value": 65,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: each published finding once, at its stage.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of findings with stage planned or funded. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A stage describes what the document reports, not what exists today; read the cited page before relying on one."
+  },
+  {
+   "id": "ep-013",
+   "entity": "Findings",
+   "metric": "findings at assessed or sited",
+   "value": 19,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: each published finding once, at its stage.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of findings with stage assessed or sited. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A stage describes what the document reports, not what exists today; read the cited page before relying on one."
+  },
+  {
+   "id": "ep-014",
+   "entity": "Findings",
+   "metric": "findings at goal or interest",
+   "value": 26,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: each published finding once, at its stage.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of findings with stage goal or interest. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A stage describes what the document reports, not what exists today; read the cited page before relying on one."
+  },
+  {
+   "id": "ep-015",
+   "entity": "Solar",
+   "metric": "Tribes where this is the first energy type in the entry",
+   "value": 19,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: Tribes whose entry lists this type first, by the most advanced stage found.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records whose first finding is solar. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "Types are ranked within one Tribe's entry; no Tribe is ranked against another."
+  },
+  {
+   "id": "ep-016",
+   "entity": "Efficiency",
+   "metric": "Tribes where this is the first energy type in the entry",
+   "value": 12,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: Tribes whose entry lists this type first, by the most advanced stage found.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records whose first finding is efficiency. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "Types are ranked within one Tribe's entry; no Tribe is ranked against another."
+  },
+  {
+   "id": "ep-017",
+   "entity": "Energy types",
+   "metric": "energy types searched",
+   "value": 13,
+   "low": null,
+   "high": null,
+   "unit": "types",
+   "year": 2026,
+   "boundary": "Counted: the types in the method's list, generation and enabling.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "Each Tribe's public planning documents in the library were searched page by page for 13 energy types.",
+   "derived": "Count of the method's energy types. In energy-potential.json, built 10/29/2026.",
+   "status": "verified"
+  },
+  {
+   "id": "ep-018",
+   "entity": "Findings",
+   "metric": "findings read by hand against their cited pages",
+   "value": 15,
+   "low": null,
+   "high": null,
+   "unit": "findings",
+   "year": 2026,
+   "boundary": "Counted: a spot check of published findings, not all of them.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "15 published claims were checked by hand against their cited pages: 14 agreed with the claimed stage; 1 cited another Tribe's measure in a plan shared by several Tribes and was withheld.",
+   "derived": "The first number in the method's spot check. In energy-potential.json, built 10/29/2026.",
+   "status": "verified"
+  },
+  {
+   "id": "ep-021",
+   "entity": "Solar energy",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 30,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type solar: 12 installed or operating, 11 planned or funded, 4 assessed or sited, 3 goal or interest; 30 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 12,
+    "planned": 11,
+    "assessed": 4,
+    "goal": 3
+   },
+   "type_id": "solar"
+  },
+  {
+   "id": "ep-022",
+   "entity": "Wind energy",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 11,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type wind: 1 installed or operating, 0 planned or funded, 9 assessed or sited, 1 goal or interest; 11 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 1,
+    "planned": 0,
+    "assessed": 9,
+    "goal": 1
+   },
+   "type_id": "wind"
+  },
+  {
+   "id": "ep-023",
+   "entity": "Offshore wind energy",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 0,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type offshore-wind: 0 installed or operating, 0 planned or funded, 0 assessed or sited, 0 goal or interest; 0 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 0,
+    "assessed": 0,
+    "goal": 0
+   },
+   "type_id": "offshore-wind"
+  },
+  {
+   "id": "ep-024",
+   "entity": "Hydropower",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 7,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type hydropower: 3 installed or operating, 0 planned or funded, 2 assessed or sited, 2 goal or interest; 7 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 3,
+    "planned": 0,
+    "assessed": 2,
+    "goal": 2
+   },
+   "type_id": "hydropower"
+  },
+  {
+   "id": "ep-025",
+   "entity": "Marine energy (tidal or wave)",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 0,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type marine: 0 installed or operating, 0 planned or funded, 0 assessed or sited, 0 goal or interest; 0 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 0,
+    "assessed": 0,
+    "goal": 0
+   },
+   "type_id": "marine"
+  },
+  {
+   "id": "ep-026",
+   "entity": "Geothermal energy",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 5,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type geothermal: 2 installed or operating, 1 planned or funded, 0 assessed or sited, 2 goal or interest; 5 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 2,
+    "planned": 1,
+    "assessed": 0,
+    "goal": 2
+   },
+   "type_id": "geothermal"
+  },
+  {
+   "id": "ep-027",
+   "entity": "Biomass energy",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 6,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type biomass: 0 installed or operating, 4 planned or funded, 0 assessed or sited, 2 goal or interest; 6 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 4,
+    "assessed": 0,
+    "goal": 2
+   },
+   "type_id": "biomass"
+  },
+  {
+   "id": "ep-028",
+   "entity": "Biogas and biofuels",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 2,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type bioenergy-fuels: 0 installed or operating, 1 planned or funded, 0 assessed or sited, 1 goal or interest; 2 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 1,
+    "assessed": 0,
+    "goal": 1
+   },
+   "type_id": "bioenergy-fuels"
+  },
+  {
+   "id": "ep-029",
+   "entity": "Hydrogen and fuel cells",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 2,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type hydrogen: 0 installed or operating, 1 planned or funded, 0 assessed or sited, 1 goal or interest; 2 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 1,
+    "assessed": 0,
+    "goal": 1
+   },
+   "type_id": "hydrogen"
+  },
+  {
+   "id": "ep-030",
+   "entity": "Battery and energy storage",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 11,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type storage: 1 installed or operating, 6 planned or funded, 1 assessed or sited, 3 goal or interest; 11 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 1,
+    "planned": 6,
+    "assessed": 1,
+    "goal": 3
+   },
+   "type_id": "storage"
+  },
+  {
+   "id": "ep-031",
+   "entity": "Microgrids",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 8,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type microgrid: 0 installed or operating, 4 planned or funded, 1 assessed or sited, 3 goal or interest; 8 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 0,
+    "planned": 4,
+    "assessed": 1,
+    "goal": 3
+   },
+   "type_id": "microgrid"
+  },
+  {
+   "id": "ep-032",
+   "entity": "Energy efficiency and weatherization",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 32,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type efficiency: 8 installed or operating, 15 planned or funded, 2 assessed or sited, 7 goal or interest; 32 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 8,
+    "planned": 15,
+    "assessed": 2,
+    "goal": 7
+   },
+   "type_id": "efficiency"
+  },
+  {
+   "id": "ep-033",
+   "entity": "Electrification (heat pumps and electric vehicles)",
+   "metric": "Tribes whose public plans show this energy type",
+   "value": 25,
+   "low": null,
+   "high": null,
+   "unit": "Tribes",
+   "year": 2026,
+   "boundary": "Counted: each Tribe once, at the most advanced stage found, from an entry that lists up to five types. Not counted: documents the library does not hold or has not read.",
+   "source": {
+    "title": "What Tribal Plans Say About Energy: public dataset (energy-potential.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/energy-potential.json",
+    "published": "2026-10-29",
+    "kind": "dataset"
+   },
+   "quote": "This is a machine-assisted reading of public planning documents. It is not the Tribe's own assessment, and it is not an endorsement of any project.",
+   "derived": "Count of Tribe records with a finding of type electrification: 2 installed or operating, 22 planned or funded, 0 assessed or sited, 1 goal or interest; 25 in all. In energy-potential.json, built 10/29/2026.",
+   "status": "partly",
+   "limit": "A machine-assisted reading of public plans, not a Tribe's own assessment; a type's absence is not evidence of a Tribe's opposition or disinterest.",
+   "stages": {
+    "installed": 2,
+    "planned": 22,
+    "assessed": 0,
+    "goal": 1
+   },
+   "type_id": "electrification"
+  },
+  {
+   "id": "ep-041",
+   "entity": "Makah Tribe, local solar",
+   "metric": "share of annual energy demand",
+   "value": 24,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2025,
+   "boundary": "Counted: the maximum potential rooftop, ground-mount, and carport solar in Neah Bay, 4.8 MW. Each Tribe's numbers will differ.",
+   "source": {
+    "title": "Makah Strategic Energy Plan (PNNL-38051)",
+    "publisher": "Pacific Northwest National Laboratory",
+    "url": "https://www.pnnl.gov/main/publications/external/technical_reports/PNNL-38051.pdf",
+    "published": "2025-08",
+    "kind": "agency"
+   },
+   "quote": "This 4.8 MW of solar PV could meet roughly 24% of the annual energy demand of the Tribe.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ep-042",
+   "entity": "Makah Tribe, one small wind turbine",
+   "metric": "share of annual energy demand",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2025,
+   "boundary": "Counted: a single small turbine, on average, depending on the model and wind conditions. Each Tribe's numbers will differ.",
+   "source": {
+    "title": "Makah Strategic Energy Plan (PNNL-38051)",
+    "publisher": "Pacific Northwest National Laboratory",
+    "url": "https://www.pnnl.gov/main/publications/external/technical_reports/PNNL-38051.pdf",
+    "published": "2025-08",
+    "kind": "agency"
+   },
+   "quote": "Depending on the turbine model and wind conditions, on average, a single turbine could meet roughly 0.5% of the annual energy demand of the Tribe.",
+   "derived": null,
+   "status": "verified"
+  }
+ ]
+}

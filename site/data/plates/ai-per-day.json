@@ -5,9 +5,9 @@
  "id": "ai-per-day",
  "model": "comparison-model",
  "default": "chat",
- "eyebrow": "Per person per day",
- "title": "An average weekly ChatGPT user's text prompts cost about {now[chat_day]:.0f} Wh a day in the data center, a floor; Meta reports {now[meta_person]:.0f} Wh per daily person for all its products, on another boundary (2024 to 2025)",
- "subtitle": "Watt-hours a day inside the data center. Each group keeps its own boundary and its own ruler.",
+ "eyebrow": "Per person per day, 2024 to 2025",
+ "title": "An average weekly ChatGPT user's text prompts cost about {now[chat_day]:.0f} Wh a day in the data center, a floor",
+ "subtitle": "Meta reports {now[meta_person]:.0f} Wh per daily person for all its products, on another boundary. Watt-hours a day inside the data center. Each group keeps its own boundary and its own ruler.",
  "inputs": {
   "now": {
    "model": "computed_defaults.per_person_day"
@@ -51,7 +51,7 @@
    "options": [
     {
      "value": "measured_delivery",
-     "label": "Measured delivery"
+     "label": "Measured"
     },
     {
      "value": "desnz_followup",
@@ -59,7 +59,7 @@
     },
     {
      "value": "top_down",
-     "label": "Top-down average"
+     "label": "Top-down"
     }
    ]
   },
@@ -122,7 +122,7 @@
     "high": "now.chat_day_high"
    },
    "equation": "Prompts a day x Wh per prompt",
-   "detail": "A median prompt times a mean count over days of non-use, so a floor. At the 0.34 Wh average-class figure the same count gives 1.25 Wh. The high end uses a count of 8, which is unsourced."
+   "detail": "A median prompt times a mean count over days of non-use, so a floor. At the 0.34 Wh average-class figure the same count gives 1.2 Wh. The high end uses a count of 8, which is unsourced."
   },
   {
    "id": "yt",
@@ -145,7 +145,7 @@
     "high": "now.video_day_high"
    },
    "equation": "Minutes / 60 x GB per hour x Wh per GB served",
-   "detail": "0.66 Wh on measured delivery, 0.251 Wh at the DESNZ follow-up's intensity, and 80.7 Wh at a top-down average that spreads all data center energy over all bytes. The allocation is unsettled, so read this as a range."
+   "detail": "0.66 Wh on measured delivery, 0.25 Wh at the DESNZ follow-up's intensity, and 81 Wh at a top-down average that spreads all data center energy over all bytes. The allocation is unsettled, so read this as a range."
   },
   {
    "id": "ig",
@@ -167,13 +167,14 @@
     "high": "now.short_day_high"
    },
    "equation": "Minutes / 60 x GB per hour x Wh per GB served",
-   "detail": "Delivery only: ranking and recommendation compute are unmeasured. 0.111 Wh at the DESNZ follow-up's intensity; the high end is capped at Meta's whole day."
+   "detail": "Delivery only: ranking and recommendation compute are unmeasured. 0.11 Wh at the DESNZ follow-up's intensity; the high end is capped at Meta's whole day."
   },
   {
    "id": "meta",
    "group": "fleet",
    "label": "Meta, per daily active person",
    "unit": "Wh",
+   "digits": 3,
    "modeled": false,
    "cites": [
     "fp-059",

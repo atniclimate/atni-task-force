@@ -65,3 +65,27 @@ export function addOptions(select, options) {
     options.filter(([, , n]) => n).map(([value, label, n]) => `<option value="${esc(value)}">${esc(label)} (${n})</option>`).join(''),
   );
 }
+
+// A plate's detail panel as a <details> (the Energy pages): closed until a reader selects a row or follows a link into it, its summary the Reading up to a second colon or a first
+// period. Without scripts, and in print, the panel shows as the build wrote it. The live region stays outside, so a selection is still spoken.
+export function closedDetail(figure) {
+  const id = figure.dataset.plate;
+  const panel = figure.querySelector('.plate-detail');
+  const reading = panel.querySelector('.reading');
+  const more = Object.assign(document.createElement('details'), { className: 'plate-more energy-detail' });
+  const line = document.createElement('summary');
+  const sync = () => { line.textContent = /^[^:.]*(?::[^:.]*)?/.exec(reading.textContent)[0]; };
+  sync();
+  new MutationObserver(sync).observe(reading, { childList: true, characterData: true, subtree: true });
+  more.append(line, ...[...panel.children].filter((node) => node.tagName !== 'OUTPUT'));
+  panel.prepend(more);
+  const query = new URLSearchParams(window.location.search);
+  const target = document.getElementById(window.location.hash.slice(1));
+  more.open = query.has(id) || query.has(`${id}-view`) || more.contains(target);
+  if (more.contains(target)) {
+    panel.querySelector(`.plate-views input[value="${target.closest('.plate-view').dataset.view}"]`).click();
+    target.scrollIntoView();
+  }
+  figure.addEventListener('click', (event) => { if (event.target.closest('.plate-plot [data-row]')) more.open = true; });
+  figure.querySelector('.plate-plot').addEventListener('keydown', (event) => { if (/^(Arrow|Home$|End$|Enter$| $)/.test(event.key)) more.open = true; });
+}

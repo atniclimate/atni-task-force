@@ -6,9 +6,10 @@
  "fit": true,
  "eyebrow": "Paying for it",
  "gap": "not reported",
- "title": "In the nine months to 09/30/2026, capital spending passed operating cash flow at Amazon, {c[fin-089][value]:.0f} billion dollars against {c[fin-090][value]:.0f}, and at Alphabet, {c[fin-087][value]:.0f} against {c[fin-088][value]:.0f}; the chart shows full fiscal years",
- "subtitle": "Billion dollars, by fiscal year, from SEC filings on a cash basis. Capital spending and operating cash flow share one scale.",
+ "title": "In nine months, capital spending passed operating cash flow at Amazon: {c[fin-089][value]:.0f} billion dollars against {c[fin-090][value]:.0f}",
+ "subtitle": "Nine months to 09/30/2026. Alphabet's capital spending also passed its operating cash flow, {c[fin-087][value]:.0f} against {c[fin-088][value]:.0f}. The chart shows full fiscal years.",
  "text": [
+  "The first panel divides capital spending by operating cash flow, on one scale for all seven. The six under it are billion dollars by fiscal year, from SEC filings on a cash basis; capital spending and operating cash flow share a scale.",
   "Seven large companies sit at the center of the buildout. Their filings show debt rising at Amazon, Alphabet, and Meta, and cash and securities falling at Microsoft and Apple; their own reports show electricity, water, and location-based emissions over the same years. Fiscal years differ (Microsoft June, Apple September, NVIDIA January), and every axis says so."
  ],
  "controls": [
@@ -90,9 +91,9 @@
    }
   ]
  },
- "reading_group": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, cash and securities {cash}, long-term debt {debt}, buybacks {buy}, revenue {rev}, in billion dollars.",
+ "reading_group": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, buybacks {buy}, in billion dollars.",
  "reading_for": {
-  "Amazon": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, cash and securities {cash}, long-term debt {debt}, buybacks {buy}, revenue {rev}, in billion dollars. Amazon's own free cash flow measure is {c[fin-057][value]:.0f} billion dollars for the twelve months to 09/30/2026."
+  "Amazon": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, buybacks {buy}, in billion dollars. Amazon's own free cash flow measure is {c[fin-057][value]:.0f} billion dollars for the twelve months to 09/30/2026."
  },
  "tail": "SEC filings, cash basis.",
  "details": [

@@ -20,7 +20,7 @@ writes nothing, on a local path, an email address, or our own prose out of house
 """
 import argparse
 import ast
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Context, Decimal
 from html import escape
 import json
 import math
@@ -48,6 +48,7 @@ BINARY = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, 
 CALLS = {"min", "max", "ifblank"}
 # Digits our own sentences may type: years, dates, resolution numbers, and names like CO2, GPT-5, or Scope 2. shortcut: a bare
 # quantity shaped like a year ("2000 MW") passes; the house style groups thousands, so it would read "2,000" and fail.
+TITLE_WARN = 120  # one clause and one figure pair; a warning, since a budget should not block
 NAMED_DIGITS = re.compile(r"#\d{4}-\d{3}|\b\d{2}/\d{2}/\d{4}\b|\b\d{2}/\d{4}\b|\b(?:19|20)\d{2}\b|\b[A-Za-z][A-Za-z-]*\d[\w.]*|\bScope \d\b")
 BENCH = re.compile(r"<!-- bench:(?P<id>[a-z0-9-]+) -->")
 POURABLE = re.compile(r'<(?P<tag>[a-z][a-z0-9]*)(?P<attrs>[^<>]*\sdata-pour="(?P<id>[^"]+)"[^<>]*)>[^<]*</(?P=tag)>')
@@ -247,9 +248,9 @@ def calc(plate, where, expr, env):
         raise BuildError(f"plate {plate}: {where}: bad formula {expr!r}: {error!r}") from error
 
 
-def rounded(value, digits=3):
-    """As plate.js rounds a computed figure: significant digits."""
-    return None if value is None else float(f"{value:.{digits}g}")
+def rounded(value, digits=None):
+    """As plate.js rounds a computed figure: two significant figures, three at 99.5 and up, or a row's own digits; an exact tie goes up as toPrecision does, so 202.5 prints 203 with and without scripts."""
+    return None if value is None else float(Context(prec=digits or (3 if abs(value) >= 99.5 else 2), rounding=ROUND_HALF_UP).create_decimal(value))
 
 
 class Fig(float):
@@ -354,6 +355,8 @@ def claim_rows(ctx, spec, stop, claim, key=None):
     unit = claim.get("unit") if claim.get("unit") not in (None, "none") else ""
     unit = (plot.get("units") or {}).get(unit, unit)
     base = compact({"claim": claim["id"], "when": stop, "limit": limit if claim["status"] == "partly" else None, **row_extras(ctx, spec)})
+    if isinstance(base.get("tag"), dict):  # a row's own words can follow the stop, as its claim does
+        base["tag"] = base["tag"].get(stop)
     gap = spec.get("gap") or NO_MEASUREMENT
     projected = bool(spec.get("projected") or plot.get("projected"))
     modeled = spec.get("modeled", claim["source"].get("kind") == "model") or projected
@@ -491,7 +494,7 @@ def computed_rows(ctx, spec, name):
             raise BuildError(f"plate {ctx.plate}: row '{name}' must give a formula for every stop of {ctx.defn.get('by')} (use null for none): {sorted(ctx.stops)}")
         choices = formula
     plus = ctx.plot.get("signed")
-    digits = spec.get("digits", 3)
+    digits = spec.get("digits")
     out, names = [], set()
     for stop, parts in choices.items():
         if not parts:
@@ -503,7 +506,7 @@ def computed_rows(ctx, spec, name):
         value, low, high = values.get("value"), values.get("low"), values.get("high")
         text = value_text(rounded(value, digits), rounded(low, digits), rounded(high, digits), plus)
         unit = own_text(ctx.plate, "unit", spec.get("unit", ""))
-        out.append({"key": key, "label": own_text(ctx.plate, "label", spec["label"]), "f": exprs, "digits": digits if digits != 3 else None, "when": stop, "value": value, "low": low, "high": high,
+        out.append({"key": key, "label": own_text(ctx.plate, "label", spec["label"]), "f": exprs, "digits": digits, "when": stop, "value": value, "low": low, "high": high,
                     "year": None, "text": text, "unit": unit, "display": f"{text} {unit}".strip() if text else spec.get("gap") or ctx.defn.get("not_counted") or NOT_COUNTED,
                     "gap": spec.get("gap"), "hollow": spec.get("modeled", True) or None, "projected": bool(spec.get("projected") or ctx.plot.get("projected")) or None, **row_extras(ctx, spec)})
         if stop is None or stop == default_stop(ctx.defn):
@@ -518,6 +521,27 @@ def computed_rows(ctx, spec, name):
     for r in out:
         r["cites"] = list(dict.fromkeys(cited))
     return out
+
+
+def check_fields(ctx, spec, name, members):
+    """A pair's projection against what came after: the later value minus the projection, and that as a percent of the later value. check is
+    "level" (both from the two numbers), "growth" (no percent, since a rate near zero makes the ratio meaningless), or {"diff": claim, "ape": claim}."""
+    check = spec["check"]
+    before, after = (Decimal(str(row["value"])) for row in members)
+    diff = after - before
+    if isinstance(check, dict):
+        named = Decimal(str(usable(ctx, name, check["diff"])["value"]))
+        if named != diff:
+            raise BuildError(f"plate {ctx.plate}: row '{name}': claim {check['diff']} says {named}, but the pair differs by {diff}")
+        error = f'{number(usable(ctx, name, check["ape"])["value"])} percent'
+    elif check == "level":
+        error = f'{(abs(diff) / after * 100).quantize(Decimal("0.01"), ROUND_HALF_UP)} percent'
+    elif check == "growth":
+        error = "not computed"
+    else:
+        raise BuildError(f"plate {ctx.plate}: row '{name}': check must be level, growth, or a diff and an ape claim")
+    signed, unit = format(diff, "+,f"), "percentage points" if check == "growth" else members[0]["unit"]
+    members[0]["fields"] = {"diff": signed, "diff_unit": unit, "ran": "high" if diff < 0 else "low", "cell": f'{signed} {"points" if check == "growth" else unit}', "error": error}
 
 
 def segment_parts(ctx, spec, name):
@@ -545,10 +569,18 @@ def expand_rows(ctx):
             made = figure_rows(ctx, spec, None, spec["figures"], row_key(ctx, spec, name))
         elif spec.get("pair"):
             made = []
-            for stop in stops_list or [None]:
+            # A pair reads a series at each stop, or names its claims per stop (null: a ghost there), or stands at every stop.
+            follows = any(member.get("points") or "claims" in member for member in spec["pair"])
+            for stop in (stops_list if follows else None) or [None]:
+                members = []
                 for member in spec["pair"]:
-                    claim = usable(ctx, name, member.get("claim"))
-                    made += claim_rows(ctx, {**spec, **member, "series": member["name"], "slug": member.get("id")}, stop, claim, row_key(ctx, spec, name))
+                    claim_id = member["claims"].get(stop) if "claims" in member else member.get("claim")
+                    if claim_id or "claims" not in member:
+                        members += claim_rows(ctx, {**spec, **member, "series": member["name"], "slug": member.get("id")}, stop, usable(ctx, name, claim_id), row_key(ctx, spec, name))
+                if spec.get("check") and len(members) == 2:
+                    check_fields(ctx, spec, name, members)
+                    members[1].pop("tag", None)  # a row's words name the projection; what came after has no edition
+                made += members
         elif spec.get("points") and stops_list and ctx.plot["type"] in RULER_KINDS:
             claim = usable(ctx, name, spec.get("claim"))
             made = [r for stop in stops_list for r in claim_rows(ctx, spec, stop, claim)]
@@ -567,6 +599,8 @@ def expand_rows(ctx):
         extra = [usable(ctx, name, c)["id"] for c in spec.get("cites") or []]
         if spec.get("range_from"):
             extra.append(spec["range_from"])
+        if isinstance(spec.get("check"), dict):
+            extra += spec["check"].values()
         parts = segment_parts(ctx, spec, name)
         for r in made:
             cites = list(dict.fromkeys([*(r.get("cites") or []), *extra]))
@@ -753,7 +787,7 @@ def plot_marks(ctx):
         made.setdefault("low", None)
         made.setdefault("high", None)
         made.setdefault("value", None)
-        digits = mark.get("digits", 3)
+        digits = mark.get("digits")
         low, high = (rounded(made["low"], digits), rounded(made["high"], digits)) if made.get("f") else (made["low"], made["high"])
         shown = rounded(made["value"], digits) if made.get("f") else made["value"]
         made["text"] = value_text(shown, low, high, ctx.plot.get("signed"))
@@ -942,7 +976,7 @@ def row_fields(defn, row, spec_boundary, claims):
     published = us_date(claim["source"].get("published")) if claim else ""
     plain = {k: row.get(k) if row.get(k) is not None else "" for k in ("series", "end", "column", "tag")}
     panel = next((p.get("label") for p in defn["plot"].get("panels") or [] if p.get("id") == row.get("panel")), row.get("panel") or "")
-    figure = lambda v: "" if v is None else Fig(rounded(v, row.get("digits") or 3) if row.get("f") else v)
+    figure = lambda v: "" if v is None else Fig(rounded(v, row.get("digits")) if row.get("f") else v)
     return {
         "label": row["label"], **plain, "panel": panel, "group": row.get("group") or "", "display": row["display"], "text": row["text"] or "",
         "unit": row["unit"], "year": row["year"] if row["year"] is not None else "", "boundary": sentence(boundary), "value": figure(row["value"]), "low": figure(row["low"]), "high": figure(row["high"]),
@@ -958,7 +992,7 @@ def tidy(text):
 def plate_field_values(ctx, row, fields):
     """Fields a plate computes per row, for its sentences and table columns."""
     scope = {**ctx.env, "value": row["value"], "low": row["low"], "high": row["high"]}
-    return {name: number(rounded(result, spec.get("digits", 3))) if (result := calc(ctx.plate, f"field {name}", spec["formula"], scope)) is not None else ""
+    return {name: number(rounded(result, spec.get("digits"))) if (result := calc(ctx.plate, f"field {name}", spec["formula"], scope)) is not None else ""
             for name, spec in fields.items()}
 
 
@@ -1017,6 +1051,9 @@ def setting_line(defn):
 def legend_html(data):
     items = []
     plot = data["plot"]
+    if plot.get("key"):  # a plate whose marks mean their own thing says so; a page's sheet draws each shape
+        shape = lambda k: '<span class="plate-square is-%s"></span>' % escape(k["shape"]) if k.get("shape") else ""
+        return f'<ul class="legend plate-legend">{"".join(f"<li>{shape(k)}{escape(own_text(data['id'], 'key', k['label']))}</li>" for k in plot["key"])}</ul>'
     names = list(dict.fromkeys(r["series"] for r in data["rows"] if r.get("series") and r.get("x") is not None))
     if plot["type"] == "lines" and len(names) >= 2:
         items += [f'<li data-series="{escape(n)}"><span class="plate-key{" is-on" if n == plot.get("highlight") else ""}"></span>{escape(n)}</li>' for n in names]
@@ -1060,7 +1097,7 @@ def ladder_row(data, key, label, rows, axis, tag):
     hollow = " is-hollow" if r and r.get("hollow") else ""
     text = r["display"] if r else data["not_counted"]
     if second:
-        text = f'{r.get("text") or ""} and {second.get("text") or ""} {r.get("unit") or ""}'.strip()
+        text = (r.get("fields") or {}).get("cell") or f'{r.get("text") or ""} and {second.get("text") or ""} {r.get("unit") or ""}'.strip()
     marks = (f'<span class="ladder-bar{hollow}{projected}"{"" if frac is not None else " hidden"}></span>' if bar else "") + (
         f'<span class="ladder-range{projected}"{"" if lo is not None and hi is not None else " hidden"}></span>')
     if not bar:
@@ -1188,11 +1225,11 @@ def trace(points, cls):
     return "".join(out)
 
 
-def line_marks(rows, plot, axis, x0, x1, y0, y1, needle, labels=True, width=10_000):
+def line_marks(rows, plot, axis, x0, x1, y0, y1, needle, labels=True, width=10_000, inset=0):
     """Grid, baseline, ticks, band, and lines for one plot area; static twin of plate.js chart()."""
     lo, hi = axis["domain"]
     xlo, xhi = plot["xdomain"]
-    fx = lambda v: x0 + (v - xlo) / ((xhi - xlo) or 1) * (x1 - x0)
+    fx = lambda v: x0 + inset + (v - xlo) / ((xhi - xlo) or 1) * (x1 - x0 - inset)
     fy = lambda v: y0 + (v - lo) / (hi - lo) * (y1 - y0)
     top = max(abs(lo), abs(hi))
     out = []
@@ -1233,7 +1270,8 @@ def line_marks(rows, plot, axis, x0, x1, y0, y1, needle, labels=True, width=10_0
 
 def lines_svg(data, now):
     needle = None if data["plot"].get("select") == "point" else int(data["default"])
-    return f'{svg_open(data, 800, 450)}{line_marks(now, data["plot"], data["plot"], 72, 660, 422, 12, needle)}</svg>'
+    inset = 24 if needle == data["plot"]["xdomain"][0] else 0  # a needle on the first year stands clear of the ticks, or it reads as the y axis
+    return f'{svg_open(data, 800, 450)}{line_marks(now, data["plot"], data["plot"], 72, 660, 422, 12, needle, inset=inset)}</svg>'
 
 
 def multiples_svg(data, now):
@@ -1248,7 +1286,7 @@ def multiples_svg(data, now):
     for i, panel in enumerate(panels):
         rows = [r for r in now if r.get("panel") == panel["id"]]
         cells.append(f'<g transform="translate({(i % cols) * (cw + gap)} {(i // cols) * (ch + gap)})">'
-                     f'<text class="m-title" x="0" y="14">{escape(panel["title"])}</text>{line_marks(rows, plot, panel, 48, cw - 8, ch - 24, 28, needle, labels=False, width=cw)}</g>')
+                     f'<text class="m-title" x="0" y="22">{escape(panel["title"])}</text>{line_marks(rows, plot, panel, 48, cw - 8, ch - 24, 36, needle, labels=False, width=cw)}</g>')
     return f'{svg_open(data, width, height)}{"".join(cells)}</svg>'
 
 
@@ -1263,7 +1301,7 @@ def cell_text(r, field, data, by_label):
         return " ".join(dict.fromkeys(data["receipts"][c]["boundary"] for c in [r.get("claim"), *(r.get("cites") or [])] if c))
     if field in ("value", "low", "high"):
         value = r.get(field)
-        return number(rounded(value, r.get("digits", 3)) if r.get("f") else value) if value is not None else ""
+        return number(rounded(value, r.get("digits")) if r.get("f") else value) if value is not None else ""
     if field == "panel":
         return next((p["label"] for p in data["plot"].get("panels") or [] if p["id"] == r.get("panel")), r.get("panel") or "")
     if field in (r.get("fields") or {}):
@@ -1290,6 +1328,15 @@ def table_html(defn, data):
         if c.get("name") == defn.get("by"):
             by_label = {o["value"]: o["label"] for o in c["options"]}
     rows = data["rows"]
+    if spec.get("pairs"):  # one line per pair: the first member's row, with the second's figure and claim beside it
+        lines = {}
+        for r in rows:
+            line = lines.get((r["key"], r.get("when")))
+            if line:
+                line.update(later=r["display"], cites=[r["claim"], *(line.get("cites") or [])])
+            else:
+                lines[r["key"], r.get("when")] = dict(r)
+        rows = list(lines.values())
     labels = spec.get("labels") or {}
     if spec.get("across"):
         across, by = spec["across"], spec.get("by") or ["series"]
@@ -1342,7 +1389,8 @@ def sources_html(data):
     items = []
     for claim_id, r in data["receipts"].items():
         year = f" Value year {r['year']}." if r.get("year") else ""
-        status = f"Partly verified. Limit: {escape(r['limit'])}" if r["status"] == "partly" else "Verified against the source."
+        limit = f" Limit: {escape(r['limit'])}" if r.get("limit") else ""  # a verified figure can still carry one
+        status = f"Partly verified.{limit}" if r["status"] == "partly" else f"Verified against the source.{limit}"
         derived = f'<p class="caption">Arithmetic: {escape(r["derived"])}</p>' if r.get("derived") else ""
         items.append(
             f'<li id="{escape(data["id"])}-source-{escape(claim_id)}"><p class="plate-source-title"><a href="{escape(r["url"])}">{verbatim(r["title"])}</a></p>'
@@ -1357,8 +1405,9 @@ def facts_html(rows, data, key):
     parts = []
     if len(rows) > 1:
         lead = data["plot"].get("highlight")
+        several = len({r.get("series") for r in rows}) > 1  # twin of plate.js: orange picks the selected series out of several
         parts.append('<ul class="plate-values">' + "".join(
-            f'<li><span class="plate-key{" is-on" if r.get("series") == lead and lead else ""}"></span><strong>{escape(r["display"])}</strong><span>{escape(r.get("name") or r.get("series") or "")}</span></li>' for r in rows) + "</ul>")
+            f'<li><span class="plate-square{" is-hollow" if r.get("hollow") else ""}{" is-on" if several and lead and r.get("series") == lead else ""}"></span><strong>{escape(r["display"])}</strong><span>{escape(r.get("name") or r.get("series") or "")}</span></li>' for r in rows) + "</ul>")
     for r in rows:
         if r.get("segments"):
             counted = [p for p in r["segments"] if not p.get("at") or r.get("when") in p["at"]]  # twin of plate.js: only what this stop counts
@@ -1508,13 +1557,14 @@ def plate_block(defn, claims, models=None):
         for r in rows:
             groups.setdefault(group_of(r), []).append(r)
         for name, members in groups.items():
-            fields = {**{s: gap for s in slugs}, **row_fields(defn, members[0], None, claims), **{(r.get("slug") or r.get("panel")): r["text"] or gap for r in members}, "c": view}
+            fields = {**{s: gap for s in slugs}, **row_fields(defn, members[0], None, claims), **(members[0].get("fields") or {}), **{(r.get("slug") or r.get("panel")): r["text"] or gap for r in members}, "c": view}
             own = (defn.get("reading_for") or {}).get(members[0].get("series"))  # a sentence only one series can carry
             text = tidy(fill(plate, "reading_group", own or defn["reading_group"], fields))
             for r in members:
                 if r.get("limit") and r["limit"] not in text:
                     text += f" Limit: {r['limit']}"
-            readings[name] = text
+            # A row every stop counts: plate.js asks by the stop it is at.
+            readings.update(dict.fromkeys([f"{name}{each}" for each in sorted(ctx.stops)] if ctx.stops and not members[0].get("when") else [name], text))
         for r in rows:
             r.pop("reading", None)
     for r in rows:
@@ -1531,6 +1581,8 @@ def plate_block(defn, claims, models=None):
     for spec in defn["rows"]:
         also += also_items(ctx, spec.get("also") or [], spec.get("id"))
     title = fill(plate, "title", defn["title"], context)
+    if len(title) > TITLE_WARN:
+        print(f"warning: plate {plate}: the title is {len(title)} characters, past {TITLE_WARN}; at 1440 it runs over four lines in the claim column", file=sys.stderr)
     paragraphs = "".join(f"<p>{escape(fill(plate, 'text', t, context))}</p>" for t in defn.get("text") or [])
     subtitle = f'<p class="caption">{escape(fill(plate, "subtitle", defn["subtitle"], context))}</p>' if defn.get("subtitle") else ""
     foot = foot_html(ctx, context)
@@ -1548,7 +1600,7 @@ def plate_block(defn, claims, models=None):
         return compact({
             "short": f'{series}: {short_name(source["publisher"])}' if series else short_name(source["publisher"]), "title": source["title"], "publisher": source["publisher"], "url": source["url"],
             "published": us_date(source.get("published")), "year": claim.get("year"), "boundary": claim["boundary"], "quote": claim["quote"],
-            "derived": claim.get("derived"), "status": claim["status"], "limit": limit if claim["status"] == "partly" else None, "hollow": hollow,
+            "derived": claim.get("derived"), "status": claim["status"], "limit": limit if claim["status"] == "partly" else claim.get("limit"), "hollow": hollow,
         })
     for r in rows:
         if r.get("claim"):
@@ -1561,7 +1613,7 @@ def plate_block(defn, claims, models=None):
     data = compact({
         "id": plate, "plot": plot, "by": defn.get("by"), "default": default, "not_counted": own_text(plate, "not_counted", defn.get("not_counted") or NOT_COUNTED),
         "tail": tail or None, "rows": block_rows, "receipts": receipts, "env": {k: v for k, v in ctx.env.items() if k in ctx.sources} or None, "sources": ctx.sources or None, "stands": ctx.stands or None,
-        "fields": {name: [spec["formula"], spec.get("digits", 3)] for name, spec in fields_spec.items()} or None, "setting": setting_data(defn) or None, "readings": readings or None,
+        "fields": {name: [spec["formula"], spec.get("digits")] for name, spec in fields_spec.items()} or None, "setting": setting_data(defn) or None, "readings": readings or None,
         "also": also or None, "cites": sorted(ctx.plate_cites) or None, "details": [own_text(plate, "details", t) for t in defn.get("details") or []] or None,
     })
     alt = {**data, "alt": f"{title} The table holds every value.", "stops_now": {c["name"]: control_default(c) for c in defn.get("controls") or []}}
@@ -1580,6 +1632,7 @@ def plate_block(defn, claims, models=None):
     default_rows = [r for r in now_full if r["key"] == default]
     highlight = plot.get("highlight")
     head = next((r for r in default_rows if r.get("series") == highlight), default_rows[0])
+    checked = head.get("fields") or {}  # a checked pair's readout is how far off it ran
     panelled = plot.get("panels") and plot.get("highlight_by")
     focus = [r for r in default_rows if r.get("series") == highlight] if panelled else default_rows
     speak = [r for r in focus if r.get("series") == highlight] if plot.get("highlight_by") else focus
@@ -1596,7 +1649,7 @@ def plate_block(defn, claims, models=None):
     spot = f' style="--at:{frac}"' if frac is not None else ""
     needs_needle = kind == "ladder" and frac is not None or kind in LINE_KINDS and plot.get("select") != "point"
     # The Sources list holds each receipt's words once; scripts read only these.
-    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit")}) for claim_id, r in receipts.items()}
+    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit") if r["status"] == "partly" else None}) for claim_id, r in receipts.items()}
     block = "\n".join([
         f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}" id="{plate}" data-plate="{plate}" data-kind="{kind}" aria-labelledby="{plate}-title">',
         f'<div class="plate-claim">{eyebrow}<h3 class="plate-title" id="{plate}-title">{escape(title)}</h3>'
@@ -1604,7 +1657,7 @@ def plate_block(defn, claims, models=None):
         f'<div class="plate-plot{"" if needs_needle else " no-needle"}"{spot}>{plot_html}</div>',
         '<div class="plate-detail">',
         f'<fieldset class="segmented plate-views" data-js hidden><legend class="sr-only">Detail view</legend>{views}</fieldset>',
-        f'<div class="plate-view" data-view="reading">{readout_html(head)}<p class="reading">{escape(reading)}</p>'
+        f'<div class="plate-view" data-view="reading">{readout_html({**head, "text": checked["diff"], "unit": checked["diff_unit"]} if "diff" in checked else head)}<p class="reading">{escape(reading)}</p>'
         f'<div class="plate-facts">{facts_html(focus, data, default)}</div>'
         '<div class="plate-actions" data-js hidden><button type="button" class="button button-secondary" data-copy>Copy Reading</button>'
         '<button type="button" class="button button-secondary" data-reset>Reset</button><p class="caption plate-status" role="status"></p></div>'
@@ -1638,7 +1691,8 @@ def bench_html(summary, page, target):
 def poured_text(claim, field):
     text = value_text(claim.get("value"), claim.get("low"), claim.get("high")) or ""
     unit = claim.get("unit") or ""
-    return {"text": text, "unit": unit, "year": str(claim.get("year") or ""), "limit": claim.get("limit") or "", "source": short_name(claim["source"]["publisher"]), "display": f"{text} {unit}".strip()}.get(field)
+    return {"text": text, "value": value_text(claim.get("value"), None, None) or "", "unit": unit, "year": str(claim.get("year") or ""), "limit": claim.get("limit") or "", "source": short_name(claim["source"]["publisher"]), "display": f"{text} {unit}".strip(),
+            "status": "partly verified" if claim.get("status") == "partly" else claim.get("status") or ""}.get(field)
 
 
 def pour_figures(page, rel, claims):

@@ -1,31 +1,27 @@
-/* The AI page: its compact band, what the kit leaves to a page on these plates, and the page's own static figures. Loads after site.css.
-   Radius 0, no shadows or gradients. Orange stays the selection inside a plate. Square counts and static figures use text tokens and the
-   existing blue ramp, so both themes and print follow by themselves. */
+/* The AI page: what the kit leaves to a page on these plates, and the page's own static figures. Loads after site.css and says only what the kit does not.
+   Radius 0, no shadows or gradients, and only the detail panel rises. Orange stays the selection inside a plate. Square counts and static figures use text tokens and
+   greys, so both themes and print follow by themselves. */
 
-/* The band: h1 and one line at the left, key facts in a row at the right. */
-.page-hero { padding-block: 14px 12px; }
-.page-hero h1 { margin-bottom: 4px; }
-.page-hero .lead { font-size: 1.125rem; }
-.page-hero .key-facts { padding: 10px 12px; }
-.page-hero .key-facts ul { gap: 8px 20px; font-size: 0.8125rem; line-height: 1.35; }
+/* The band: the lead keeps to one line, the figures to three short columns. */
 @media (min-width: 1100px) {
-  .page-hero-grid { grid-template-columns: minmax(0, 38rem) minmax(0, 1fr); align-items: center; }
+  .page-band .lead { max-width: none; }
+  .page-band-figures { flex-wrap: nowrap; column-gap: 40px; }
+  .page-band-figures li { max-width: 12rem; }
 }
 
-/* Panels: a small h2 where a plate leads with its own title, a larger one where prose leads. */
-.panel-title { margin-bottom: 8px; font-size: 1.125rem; }
-#working-with-ai .panel-title, #youth-education .panel-title, #data-sovereignty .panel-title, #policy-watch .panel-title { margin-bottom: 16px; font-size: 1.75rem; }
+/* Panels */
 .panel .slot { margin: 0 0 12px; }
 .panel .slot p { max-width: none; }
 .ai-subhead { margin: 24px 0 4px; }
 .ai-subnote { max-width: var(--measure-wide); margin: 0 0 8px; color: var(--atni-text-secondary); }
 
 /* The claim zone reads title, controls, key, then the rest, so every main control is on the first screen at 1440 by 900. */
-.plate-claim > p:not(.eyebrow, .caption) { font-size: 0.875rem; line-height: 1.5; color: var(--atni-text-secondary); }
+.plate-claim > p:not(.eyebrow, .caption) { font-size: 0.9375rem; line-height: 1.5; color: var(--atni-text-secondary); }
 .plate-controls { gap: 8px; }
+.plate-controls [data-param$="intensity"] { column-gap: 12px; } /* its three stops fit the 288px claim column on one line */
 .plate .segmented legend { margin-bottom: 0; }
-.plate .slider-presets button { min-height: 28px; padding-block: 2px; }
 @media (pointer: fine) {
+  .plate .slider-presets button { min-height: 28px; padding-block: 2px; }
   .plate .slider input[type="range"], .plate .slider input[type="number"] { height: 32px; min-height: 32px; padding-block: 2px; }
   .plate .slider input[type="range"]::-webkit-slider-thumb { height: 28px; margin-top: -13px; }
   .plate .slider input[type="range"]::-moz-range-thumb { height: 28px; }
@@ -36,48 +32,78 @@
   .plate-claim > .caption:not(.plate-foot) { order: 3; }
   .plate-claim > p:not(.eyebrow, .caption) { order: 4; }
   .plate-claim > .plate-foot { order: 5; }
-  #ai-same-hour .plate-title { font-size: clamp(1rem, 0.85rem + 0.25vw, 1.25rem); }
 }
-#ai-same-hour[data-plotview="count"] .plate-claim > .caption:not(.plate-foot) + .caption:not(.plate-foot) { display: none; }
 
-/* Ruler rows read as an instrument: ruled, with heavier figures and capped ranges. */
-.plate[data-kind="ladder"] .ladder-row, .plate[data-kind="bars"] .ladder-row { border-bottom: 1px solid var(--rule); }
-.plate[data-kind="ladder"] .ladder-value, .plate[data-kind="bars"] .ladder-value { font-family: var(--display); font-weight: 600; font-size: clamp(0.9375rem, 0.82rem + 0.3vw, 1.25rem); line-height: 1.15; }
+/* The detail panel: the range beside the figure when it fits, and a tighter stack, so a Reading of three sentences, its parts, Copy, Reset, and the receipts line fit 1440 by 900. */
+.plate-detail .readout-range { flex-basis: auto; }
+.plate-view { gap: 8px; }
+.plate .reading { line-height: 1.45; }
+@media (pointer: fine) { .plate-actions .button { min-height: 36px; padding-block: 4px; } }
+@media (min-width: 1100px) { .plate-detail { padding-top: 16px; } } /* the view switch on the eyebrow's line, and the receipts line, now two lines, on the first screen */
+.plate-values li { grid-template-columns: 14px minmax(0, max-content) minmax(6.5rem, 1fr); } /* "131.82 billion dollars" keeps one line beside its name */
+.ladder-group-label { max-width: none; }
+.plate:not(#ai-same-hour) .ladder-row { padding-block: 4px; } /* a row of three lines still reads apart from the next; the comparison plate shares out its own height */
 
-#ai-same-hour { --l: clamp(8rem, 24%, 14rem); --v: clamp(7rem, 17%, 11rem); --mark: clamp(16px, 0.6vw + 10px, 26px); }
-#ai-same-hour .ladder-range:not(.is-proj) { top: calc(50% - 1.5px); height: 3px; }
-#ai-same-hour .ladder-range::before, #ai-same-hour .ladder-range::after { top: -6px; height: 15px; }
-/* Three rows have the plot's height: heavier type, and each range a band its mark sits in. The range is a span on a log ruler, not a bar from zero. */
-#ai-same-hour .ladder-rows:has(.is-gap) .ladder-label { font-size: clamp(1rem, 0.85rem + 0.3vw, 1.3125rem); }
-#ai-same-hour .ladder-rows:has(.is-gap) .ladder-num { font-size: clamp(1.25rem, 0.9rem + 0.6vw, 1.75rem); }
-#ai-same-hour .ladder-rows:has(.is-gap) .ladder-row:not(.is-on) .ladder-track { background: linear-gradient(to right, transparent calc(var(--lo) * 100%), var(--grid) calc(var(--lo) * 100%), var(--grid) calc(var(--hi) * 100%), transparent calc(var(--hi) * 100%)) center / 100% 44px no-repeat; }
-/* Whole hour, an even ruler from zero: under each mark a thin bar, the router and device every row shares, then what the activity adds. */
-#ai-same-hour .has-band { min-height: calc(var(--mark) + 36px); }
-#ai-same-hour .has-band .ladder-track::before, #ai-same-hour .has-band .ladder-track::after { content: ""; position: absolute; top: calc(50% + var(--mark) / 2 + 6px); height: 8px; }
-#ai-same-hour .has-band .ladder-track::before { left: 0; width: calc(var(--band) * 100%); background: var(--series-context); opacity: 0.4; }
-#ai-same-hour .has-band .ladder-track::after { left: calc(var(--band) * 100%); width: calc((var(--x) - var(--band)) * 100%); min-width: 2px; background: var(--atni-text-heading); }
-#ai-same-hour .has-band.is-on .ladder-track::after { background: var(--energy-fill); }
-/* The rule's name sits left of it, clear of the needle, which runs on the activity's side. */
-#ai-same-hour .ladder-tick { z-index: 1; }
-#ai-same-hour .ladder-tick span { left: auto; right: 2px; padding-inline: 4px; background: var(--atni-ground-raised); }
+/* Each ruler's columns, from what its rows print at 1440. */
+#ai-same-hour { --l: clamp(9.5rem, 24%, 14rem); --v: clamp(7rem, 17%, 11rem); } /* 9.5rem holds "Television, one hour" on one line at 1280 */
+/* The band's name runs beside it on two lines, clear of the needle, which stands inside the band, and of the plot's end. */
+#ai-same-hour .ladder-shared-label { left: calc(100% + 4px); width: max-content; max-width: 7.5rem; padding-inline: 4px; white-space: normal; background: var(--plot-ground); }
+#ai-same-hour .ladder-shared.is-flip > .ladder-shared-label { left: auto; right: calc(100% + 4px); }
+/* On a phone the ruler runs under the row's words across the full width, so the words stand over the band, and the Reading says what its name says. */
+@media (max-width: 719px) {
+  #ai-same-hour :is(.ladder-label, .ladder-value) { position: relative; z-index: 2; }
+  #ai-same-hour .ladder-shared-label { display: none; }
+  #ai-same-hour :is(.ladder-tick span, .needle-label) { width: max-content; }
+  #ai-same-hour .ladder-tick.is-right span { left: 6px; right: auto; } /* to its left it would run off the page */
+  .plate-switch .segmented { column-gap: 8px; }
+}
 #ai-scale { --l: clamp(9rem, 28%, 16rem); }
-#ai-occupations { --l: clamp(10rem, 32%, 20rem); --v: clamp(7.5rem, 17%, 10rem); }
+#ai-occupations, #ai-jobs-sector { --l: clamp(11rem, 38%, 22rem); --v: clamp(8.5rem, 19%, 10rem); }
 #ai-displacement { --l: clamp(12rem, 38%, 26rem); --v: clamp(7.5rem, 17%, 11rem); }
 #ai-holdings { --l: clamp(10rem, 32%, 20rem); }
-@media (min-width: 1100px) { #ai-holdings.is-live { height: auto; min-height: max(34rem, 72vh); } } /* two rulers: it grows rather than hide rows */
-#ai-guidance-2026 { --v: clamp(8rem, 18%, 11rem); }
+#ai-guidance-2026 { --v: clamp(9.5rem, 22%, 12rem); }
+#ai-capex-cash { --l: clamp(6rem, 14%, 10rem); --v: clamp(12rem, 28%, 15rem); }
 
-/* Heavy AI: a fourth column reads each row in streaming time on the yardstick set. */
-#ai-heavy-ai { --l: clamp(11rem, 30%, 19rem); --v: clamp(7rem, 16%, 10rem); --e: clamp(5.5rem, 11%, 7rem); }
-@media (min-width: 720px) {
-  #ai-heavy-ai .ladder-row { grid-template-columns: var(--l) minmax(0, 1fr) var(--v) var(--e); }
-  #ai-heavy-ai :is(.ladder-grid, .ladder-axis) { right: calc(var(--v) + var(--e) + 24px); }
+/* Heavy AI: the Wh is the answer, and under it the same energy in streaming time, on the yardstick set, is a tag. */
+#ai-heavy-ai { --l: clamp(11rem, 34%, 19rem); --v: clamp(8rem, 18%, 10rem); }
+#ai-heavy-ai .plate-claim > .caption + .caption { display: none; } /* the ruler's own label says it */
+#ai-heavy-ai .ladder-eq { font-size: 0.9375rem; line-height: 1.2; white-space: nowrap; }
+@media (min-width: 1100px) and (max-width: 1319px) { #ai-heavy-ai .plate-switch .segmented { grid-auto-columns: auto; column-gap: 12px; } } /* the long first stop keeps clear of the next */
+/* On a phone the value column keeps its width, or three lines of it squeeze the row's words, and the switch over the plot names the yardstick. */
+@media (max-width: 719px) {
+  #ai-heavy-ai .ladder-row { grid-template-columns: minmax(0, 1fr) var(--v); }
+  #ai-heavy-ai .ladder-tick span { display: none; }
 }
-@media (max-width: 719px) { .ladder-eq { display: none; } }
-.ladder-eq { font-variant-numeric: tabular-nums; font-size: 0.875rem; line-height: 1.2; text-align: right; color: var(--atni-text-body); }
-.ladder-row.is-on .ladder-eq { font-weight: 700; color: var(--atni-text-heading); }
 
-/* Displacement: a stem from zero shows the sign and the disagreement at a glance. Rows of words have no --x, so no stem. */
+/* A long ruler reads its axis at its head: at 56px rows, the foot of twelve or thirteen rows is under the fold at 1440 by 900. */
+:is(#ai-heavy-ai, #ai-occupations) .ladder-axis { z-index: 2; top: 0; bottom: auto; }
+:is(#ai-heavy-ai, #ai-occupations) .ladder-axis span { padding-inline: 4px; background: var(--plot-ground); }
+:is(#ai-heavy-ai, #ai-occupations) .ladder-rows { margin-bottom: 0; }
+:is(#ai-heavy-ai, #ai-occupations) .ladder-grid { bottom: 0; }
+#ai-heavy-ai .needle-label { display: none; } /* twelve rows: the row's own label names the selection, so the ruler and the yardstick's name are the only lines over them */
+#ai-heavy-ai .ladder-tick[data-mark="y-pub"] span { left: auto; right: 6px; z-index: 1; } /* the published hour stands far along the ruler, so its long name reads back into the plot, over the needle */
+#ai-occupations .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 52px; }
+#ai-occupations .ladder-tick span { top: 24px; }
+/* Its key stands under the ruler, on the line of the tick's name, where the first screen reads it: the foot of thirteen rows is under the fold. It shares the plot's grid cell, over the head the rows leave empty. */
+@media screen and (min-width: 1100px) {
+  #ai-occupations.has-under > .plate-under { grid-row: 2; z-index: 3; justify-self: start; margin-top: 46px; padding: 0 8px 0 0; background: var(--plot-ground); }
+}
+@media screen and (min-width: 1100px) and (max-width: 1319px) { /* two lines in the label column, so it stops short of the tick's name */
+  #ai-occupations.has-under > .plate-under { max-width: calc(var(--l) + 12px); }
+  #ai-occupations .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 64px; }
+}
+@media print, (max-width: 1099px) {
+  #ai-occupations > .plate-claim { order: -2; }
+  #ai-occupations > .plate-under { order: -1; }
+}
+
+/* A projected bar is a dashed outline, and its key the same outline on a square. Selected, the dashes turn orange around a 40 percent wash, as the Jobs instrument fills. */
+:is(#ai-occupations, #ai-jobs-sector) .ladder-bar.is-proj { border: 2px dashed var(--series-context); }
+:is(#ai-occupations, #ai-jobs-sector) .ladder-bar.is-proj::after { content: none; }
+:is(#ai-occupations, #ai-jobs-sector) .ladder-row.is-on .ladder-bar.is-proj { background: color-mix(in srgb, var(--energy-mark) 40%, transparent); border-color: var(--energy-mark); }
+.plate-square.is-proj { width: 16px; height: 16px; background: color-mix(in srgb, var(--series-context) 18%, transparent); border: 2px dashed var(--series-context); }
+
+/* Displacement: a stem from zero shows the sign and the disagreement at a glance; two greys, as with the kit's bars. Rows of words have no --x, so no stem. */
 #ai-displacement .ladder-track::before {
   content: "";
   position: absolute;
@@ -87,18 +113,16 @@
   height: 2px;
   background: var(--series-context);
 }
-#ai-displacement .is-pos .ladder-track::before { background: var(--atni-color-chart-1); }
-#ai-displacement .is-neg .ladder-track::before { background: var(--atni-color-chart-2); }
-#ai-displacement .ladder-row.is-on .ladder-track::before { background: var(--energy-fill); }
+#ai-displacement .is-neg .ladder-track::before { background: var(--atni-text-secondary); }
+#ai-displacement .ladder-row.is-on .ladder-track::before { background: var(--energy-mark); }
 
-/* Plates with few rows stay in proportion: a shorter plate, and bars that hold their row. */
+/* Plates with few rows stay in proportion: a shorter plate. */
 @media (min-width: 1100px) {
-  #ai-per-day, #ai-capex-cash, #ai-guidance-2026 { --plate-h: max(32rem, 60vh); }
+  #ai-per-day, #ai-capex-cash, #ai-guidance-2026, #ai-jobs-sector { --plate-h: max(32rem, 60vh); }
 }
-#ai-per-day .ladder-bar, #ai-holdings .ladder-bar { height: min(32px, 56%); }
 
-/* Count: squares sized by the page script to fill the plot, in rows of 25. One ink per part: heading for the data center, context for the
-   network, 40 percent for the router and device, which recede on every row. Fill and outline keep their meaning of measured and modeled. */
+/* Count: squares the kit sizes to fill the plot, in rows of 25. One ink per part: heading for the data center, context for the network, 40 percent for the
+   router and device, which recede on every row. Fill and outline keep their meaning of measured and modeled. */
 #ai-same-hour .m-count { fill: var(--series-context); stroke: none; }
 #ai-same-hour .m-count.seg-band { fill-opacity: 0.4; stroke-opacity: 0.4; }
 #ai-same-hour .m-count.is-hollow { fill: none; stroke: var(--series-context); stroke-width: 1.5; }
@@ -106,7 +130,7 @@
 #ai-same-hour .m-count.seg-dc.is-hollow { fill: none; stroke: var(--atni-text-heading); }
 #ai-same-hour .is-on .m-count:not(.is-hollow, .seg-band) { fill: var(--energy-mark); }
 #ai-same-hour .is-on .m-count.is-hollow:not(.seg-band) { fill: none; stroke: var(--energy-mark); }
-.count-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; padding: 0; list-style: none; font-size: 0.8125rem; color: var(--atni-text-secondary); }
+.count-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; padding: 0; list-style: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .count-key li { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
 .count-key-unit { font-weight: 700; color: var(--atni-text-heading); }
 .count-sample { flex: none; width: 10px; height: 10px; background: var(--series-context); }
@@ -114,97 +138,117 @@
 .count-sample.seg-band { opacity: 0.4; }
 .count-sample.is-hollow { background: none; border: 1.5px solid var(--series-context); }
 
-/* The segmented bar in the detail panel carries four parts, so it is drawn a little heavier than a rule. */
-.plate-detail .plate-segments { height: 16px; }
+/* Small multiples: the first panel's needle says the year and the rest keep the line, since a selected mark can sit on the word. On Paying for it, a name at a line's end picks that company. */
+:is(#ai-company-money, #ai-company-footprint) .plate-svg > g ~ g .m-needle-label { display: none; }
+#ai-company-money .m-label { cursor: pointer; }
+#ai-company-footprint .m-end { display: none; } /* only the selected company is named; the rest are Others in the legend and the Table */
 
 /* Details under the plates: ruled rows of plain sentences, each a full statement a reader can skim. */
 .panel .disclosure-grid { gap: 0 24px; margin-top: 8px; }
 .panel .disclosure-grid > .disclosure { margin: 0; padding-block: 10px; border-top: 1px solid var(--rule); }
-.panel .disclosure > summary { width: auto; font-size: 0.9375rem; line-height: 1.35; color: var(--atni-text-heading); }
+.panel .disclosure > summary { width: auto; font-size: 1rem; line-height: 1.35; color: var(--atni-text-heading); }
 .panel .disclosure > summary::marker { color: var(--energy-mark); }
 .panel .disclosure > summary:hover { color: var(--energy-text); }
 .panel .disclosure :is(p, li) { font-size: 0.9375rem; line-height: 1.55; }
 .panel .disclosure .quote blockquote p { font-size: 1.0625rem; }
 
-/* Prose tabs: a text column beside a figure, the figure the larger of the two. */
-.ai-spread { display: grid; gap: 16px 32px; margin-bottom: 8px; }
+/* Tabs with no plate: two or three sentences in the claim zone, the static figure in the plot zone on the page ground at the plates' type scale, the details grid under them. */
+.ai-spread { display: grid; gap: 16px 32px; margin-bottom: 16px; }
+.ai-lede { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ai-lede > * { margin-block: 0; }
 .ai-lede > p { max-width: var(--measure-wide); }
-@media (min-width: 1100px) { .ai-spread { grid-template-columns: minmax(20rem, 36fr) minmax(0, 64fr); align-items: start; } }
-.ai-side { display: grid; gap: 16px; min-width: 0; }
-.ai-side .ai-subhead { margin: 0; }
-.ai-lede .disclosure-grid { grid-template-columns: minmax(0, 1fr); margin-top: 16px; }
-:is(.tier-grid, .evidence-key, .tier-stair) { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 20px 24px; background: var(--atni-ground-raised); }
-:is(.tier-grid, .evidence-key, .tier-stair) > figcaption { font-family: var(--display); font-weight: 600; font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.375rem); line-height: 1.2; color: var(--atni-text-heading); }
-.tier-t0 { --tier: var(--stage-1); }
-.tier-t1 { --tier: var(--stage-2); }
-.tier-t2 { --tier: var(--stage-3); }
-.tier-t3 { --tier: var(--stage-4); }
-.tier-mark { flex: none; display: inline-block; width: 20px; height: 20px; background: var(--tier); }
+.ai-lede .panel-title, .watch-side .panel-title { margin-block: 16px 0; }
+.ai-lede li::marker { color: var(--atni-text-muted); }
+.ai-lede .quote blockquote { font-size: 1.25rem; line-height: 1.35; }
+@media (min-width: 1100px) { .ai-spread, .watch-spread { grid-template-columns: minmax(18rem, 24fr) minmax(0, 76fr); align-items: start; } }
+:is(.tier-grid, .evidence-key, .tier-stair) { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding-top: 16px; }
+:is(.tier-grid, .evidence-key, .tier-stair) > figcaption { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--atni-text-heading); }
+/* A tier is a category, not a magnitude: grey rules and squares, and the filled or hollow square carries the state, open or not. */
+.tier-mark { flex: none; display: inline-block; width: 24px; height: 24px; border: 2.5px solid var(--series-context); }
+.tier-t0 .tier-mark { background: var(--series-context); }
 
-.two-ways { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); margin-top: 16px; }
-.two-ways h3 { margin: 0 0 6px; font-size: 1.0625rem; line-height: 1.25; }
+.two-ways { display: grid; gap: 12px; }
+.two-ways h3 { margin: 0 0 4px; font-size: 1.125rem; line-height: 1.25; }
 .two-ways ul { margin: 0; padding-left: 1.1rem; font-size: 0.9375rem; line-height: 1.45; }
 .two-ways li { margin: 0 0 4px; }
 
 .tier-grid table { width: 100%; border-collapse: collapse; }
-.tier-grid tbody tr { height: 72px; }
-.tier-grid thead th { padding: 0 12px 8px 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
-.tier-grid tbody :is(th, td) { padding: 12px 12px 12px 0; font-size: 0.9375rem; line-height: 1.4; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--rule); }
-.tier-grid tbody th { padding-left: 12px; font-family: var(--display); font-weight: 600; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.5rem); line-height: 1.15; white-space: nowrap; color: var(--atni-text-heading); border-left: 8px solid var(--tier); }
+.tier-grid tbody tr { height: 88px; }
+@media (min-width: 1100px) { .tier-grid thead th:first-child { width: 13rem; } }
+.tier-grid thead th { padding: 0 16px 8px 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
+.tier-grid tbody :is(th, td) { padding: 12px 16px 12px 0; font-size: 1rem; line-height: 1.4; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--grid); }
+.tier-grid tbody th { padding-left: 16px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.15; white-space: nowrap; color: var(--atni-text-heading); border-left: 4px solid var(--series-context); }
 .tier-grid tbody th > span { display: block; font-weight: 500; font-size: 0.875rem; white-space: normal; color: var(--atni-text-secondary); }
-.tier-grid tbody .tier-verdict { position: relative; padding-left: 32px; font-family: var(--display); font-weight: 600; font-size: clamp(1rem, 0.9rem + 0.3vw, 1.25rem); line-height: 1.2; color: var(--atni-text-heading); }
-.tier-verdict::before { content: ""; position: absolute; left: 0; top: calc(50% - 10px); width: 20px; height: 20px; border: 2px solid var(--atni-text-heading); }
-.tier-verdict.is-yes::before { background: var(--atni-text-heading); }
-.tier-grid .caption { margin: 0; max-width: none; }
+.tier-grid tbody .tier-verdict { position: relative; padding-left: 36px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.15; color: var(--atni-text-heading); }
+.tier-verdict::before { content: ""; position: absolute; left: 0; top: calc(50% - 12px); width: 24px; height: 24px; border: 2.5px solid var(--series-context); }
+.tier-verdict.is-yes::before { background: var(--series-context); }
+.tier-grid .caption { margin: 0; max-width: var(--measure-wide); }
 
-.evidence-rows { flex: 1; display: grid; margin: 0; padding: 0; list-style: none; }
-.evidence-row { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 4px 16px; align-items: start; min-height: 72px; margin: 0; padding-block: 12px; border-top: 1px solid var(--rule); }
-.evidence-meter { display: flex; gap: 3px; padding-top: 2px; }
+.evidence-key > .caption { max-width: none; margin: 0; }
+.evidence-rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.evidence-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 4px 16px; align-items: start; margin: 0; padding-block: 12px; border-top: 1px solid var(--grid); }
+.evidence-meter { display: flex; gap: 2px; padding-top: 2px; }
 .evidence-meter i { display: block; width: 20px; height: 20px; background: var(--atni-text-heading); }
-.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: none; border: 2px solid var(--series-context); }
-.is-other .evidence-meter i { background: none; border: 2px solid var(--series-context); }
-.evidence-name { font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
-.evidence-name strong { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.25rem); color: var(--atni-text-heading); }
-.evidence-finds { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); column-gap: 16px; margin: 4px 0 0; padding: 0; list-style: none; font-size: 0.875rem; line-height: 1.3; }
-.evidence-finds li { margin: 0; padding-block: 6px; border-top: 1px solid var(--rule); }
+.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: none; border: 2.5px solid var(--series-context); }
+.is-other .evidence-meter i { background: none; border: 2.5px solid var(--series-context); }
+.evidence-name { font-size: 1rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.evidence-name strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; color: var(--atni-text-heading); }
+.evidence-finds { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 1rem; line-height: 1.3; }
+.evidence-finds li { margin: 0; padding-block: 4px; }
 .evidence-finds a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 .evidence-finds a:hover { color: var(--atni-text-link-hover); text-decoration-color: currentColor; }
+@media (min-width: 1100px) {
+  .evidence-row { grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; }
+  .evidence-finds { grid-column: 3; margin: 0; }
+}
 
-.stair-body { flex: 1; display: grid; gap: 12px 32px; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.stair-body { display: grid; gap: 12px 32px; grid-template-columns: minmax(0, 1fr); align-content: start; }
 .stair { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
-.stair li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; grid-template-areas: "mark name step" "mark what step"; column-gap: 12px; align-items: center; min-height: 64px; margin: 0; padding: 8px 16px; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); background: var(--tag-bg); }
-.stair strong { grid-area: name; font-family: var(--display); font-weight: 600; font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.25rem); line-height: 1.2; color: var(--atni-text-heading); }
+.stair li { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: "mark name step" "mark what step"; column-gap: 16px; align-items: center; min-height: 72px; margin: 0; padding: 8px 16px; font-size: 1rem; line-height: 1.35; color: var(--atni-text-secondary); background: var(--atni-ground-raised); }
+.stair strong { grid-area: name; font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; color: var(--atni-text-heading); }
 .stair li > span:not(.tier-mark) { grid-area: what; }
 .stair .tier-mark { grid-area: mark; }
 /* The empty end of each step says which way a classification can move from it. The two notes under the stair say it in full. */
-.stair li::after { grid-area: step; font-size: 0.8125rem; line-height: 1.4; text-align: right; white-space: pre-line; color: var(--atni-text-secondary); }
+.stair li::after { grid-area: step; font-size: 0.875rem; line-height: 1.4; text-align: right; white-space: pre-line; color: var(--atni-text-secondary); }
 .stair .tier-t3::after { content: "\2193  people only"; }
 .stair .tier-t2::after, .stair .tier-t1::after { content: "\2193  people only\A\2191  automated systems may"; }
 .stair .tier-t0::after { content: "\2191  automated systems may"; }
 .stair .tier-t3 { width: 64%; }
 .stair .tier-t2 { width: 76%; }
 .stair .tier-t1 { width: 88%; }
-.stair-note { max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.45; }
+.stair-note { max-width: none; margin: 0; font-size: 1rem; line-height: 1.45; }
 .stair-note strong { display: block; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
 @media (min-width: 1100px) { .stair-body { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stair { grid-column: 1 / -1; } }
 @media (max-width: 719px) { .stair li { width: auto !important; } .stair li::after { display: none; } }
 
-.named-risks { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.ai-side { display: grid; gap: 12px; min-width: 0; }
+.ai-side .ai-subhead { margin: 12px 0 0; }
+.named-risks { display: grid; gap: 0 24px; margin: 0; padding: 0; list-style: none; }
 @media (min-width: 720px) { .named-risks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1100px) { .named-risks { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.named-risks li { margin: 0; padding: 12px 16px; font-family: var(--display); font-weight: 500; font-size: 1rem; line-height: 1.25; color: var(--atni-text-heading); background: var(--atni-ground-raised); }
+.named-risks li { margin: 0; padding-block: 12px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); border-top: 1px solid var(--grid); }
 .slot-fold { margin-top: 12px; }
 
-/* Policy Watch: how to use it at the left, the searches and the follow list using the width beside it. */
+/* Policy Watch: how to use it in the claim zone, the searches and the follow list using the width beside it. */
 .watch-spread { display: grid; gap: 24px 32px; }
-.watch-main > h3:first-child, .watch-side > :first-child { margin-top: 0; }
+.watch-side { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.watch-main { padding-top: 16px; }
+.watch-main > h3:first-child { margin-top: 0; }
+.watch-side .climate-voice > p:last-of-type { margin-bottom: 0; }
+.watch-side > h3 { margin-block: 12px 0; }
+.watch-side > ol { margin-block: 0; }
 .watch-side .notice { max-width: none; }
 .watch-side :is(p, li) { font-size: 0.9375rem; line-height: 1.5; }
-@media (min-width: 1100px) { .watch-spread { grid-template-columns: minmax(18rem, 24fr) minmax(0, 76fr); } }
+
+/* High Contrast drops a background, so a filled square would read as an empty one. */
+@media (forced-colors: active) {
+  .evidence-meter i, .tier-mark, .tier-verdict::before, .count-sample { forced-color-adjust: none; }
+}
 
 @media print {
   .count-key { display: none; }
-  :is(.tier-grid, .evidence-key, .tier-stair) { padding: 0; background: none; }
-  .stair li, .named-risks li { background: none; }
+  .stair li { background: none; }
   .ai-spread, .watch-spread { display: block; }
+  #ai-company-money .plate-plot { min-height: 42rem; }
+  #ai-company-footprint .plate-plot { min-height: 28rem; }
 }

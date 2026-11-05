@@ -283,18 +283,25 @@
    ],
    "tribal_eligibility": "An Indian Tribe or a Tribal energy development organization (CRS, citing section 503 of the Energy Policy Act of 2005); the EDF plan describes projects owned and operated by Tribal entities.",
    "status": "open",
-   "status_note": "EDF lists 'Tribal Energy Financing (TEFP) Program Consultations' among its applicant resources. CRS reports the solicitation takes submissions until 2028-08-31, that Public Law 119-21 section 50402 rescinded unobligated Inflation Reduction Act funding and left $10.5 million for the loan subsidy, and that one loan guarantee has been issued ($72.8 million, Viejas Microgrid project) since the first solicitation in 2018.",
+   "status_note": "EDF's pre-application page offers 'Request a Pre-Application Consultation for the TEFP Program.' CRS reports the solicitation takes submissions until 2028-08-31, that Public Law 119-21 section 50402 rescinded unobligated Inflation Reduction Act funding and left $10.5 million for the loan subsidy, and that one loan guarantee has been issued ($72.8 million, Viejas Microgrid project) since the first solicitation in 2018.",
    "status_checked": {
-    "date": "2026-10-29",
-    "url": "https://www.energy.gov/edf/edf-applicant-resources"
+    "date": "2026-11-05",
+    "url": "https://www.energy.gov/edf/pre-application-consultation-request"
    },
    "deadline": {
     "date": "2028-08-31",
-    "what": "Solicitation submission date reported by CRS (not a competitive round deadline)"
+    "what": "DOE's last submission date, not a competitive round deadline",
+    "checked": {
+     "date": "2026-11-05",
+     "url": "https://www.energy.gov/sites/default/files/2022-10/DOE-LPO_TELGP_Supplement-30Sept22-Final.pdf",
+     "quote": "The first page of the Solicitation is amended by amending the date for each of (i) “Last Part I Submission Due Date (TELGP)”, (ii) “Last Part II Submission Due Date (TELGP)”, (iii) “Last Part I Submission Due Date (TELP)” and (iv) “Last Part II Submission Due Date (TELP)” to August 31, 2028."
+    }
    },
    "funding_level": "Loan authority up to $20 billion (EDF strategic plan). Loan subsidy funding of $10.5 million remains after the rescission, and $6.3 million was appropriated for administrative expenses in FY2026 (CRS, 2026-05-22).",
    "url": "https://www.energy.gov/EDF",
    "sources": [
+    "https://www.energy.gov/edf/pre-application-consultation-request",
+    "https://www.energy.gov/sites/default/files/2022-10/DOE-LPO_TELGP_Supplement-30Sept22-Final.pdf",
     "https://www.energy.gov/edf/edf-applicant-resources",
     "https://www.energy.gov/EDF",
     "https://www.energy.gov/documents/doe-edf-2026-2030-strategic-plan",
@@ -351,12 +358,17 @@
    "status": "open",
    "status_note": "Program Notice 26-3 reopened the Tribal application period; the deadline is 2026-12-11. DOE's general Home Energy Rebates page says details on active state, territory or Tribal programs are 'coming soon.' Grantees work with their DOE Project Officer. The ALRD (Version 2, 2024-11-07) and the Program Requirements and Application Instructions (Version 2) remain in effect except where the notice changes them.",
    "status_checked": {
-    "date": "2026-10-29",
+    "date": "2026-11-05",
     "url": "https://www.energy.gov/documents/program-notice-26-3"
    },
    "deadline": {
     "date": "2026-12-11",
-    "what": "Tribes must apply to DOE for their formula awards by this date (Program Notice 26-3)"
+    "what": "Tribes must apply to DOE for their formula awards by this date (Program Notice 26-3)",
+    "checked": {
+     "date": "2026-11-05",
+     "url": "https://www.energy.gov/documents/program-notice-26-3",
+     "quote": "Tribes must apply for their formula awards from the Department by December 11, 2026."
+    }
    },
    "funding_level": "$225 million appropriated for Indian Tribes (42 U.S.C. 18795a); about $218.25 million in formula allocations after the 3 percent administrative and technical assistance set-aside (DOE fact sheet).",
    "url": "https://www.energy.gov/cmei/scep/resources",
@@ -487,12 +499,17 @@
    "status": "open",
    "status_note": "DOE issued Amendment 10 of the ALRD on 2026-10-20, opening a 120-day application period for FY25-FY26 funds (Years 4 and 5 of the 5-year program) for existing grant recipients and new applicants.",
    "status_checked": {
-    "date": "2026-10-29",
+    "date": "2026-11-05",
     "url": "https://www.energy.gov/oe/grid-resilience-state-and-tribal-formula-grants-program"
    },
    "deadline": {
     "date": "2027-02-17",
-    "what": "FY25-FY26 application deadline, 11:59 pm EST"
+    "what": "FY25-FY26 application deadline, 11:59 pm EST",
+    "checked": {
+     "date": "2026-11-05",
+     "url": "https://www.energy.gov/oe/grid-resilience-state-and-tribal-formula-grants-program",
+     "quote": "The FY25-FY26 application deadline will be February 17, 2027 at 11:59pm EST."
+    }
    },
    "funding_level": "FY25 and FY26 allocations combined total $967,104,372 across all eligible applicants; DOE's allocation table lists each Tribe's amount.",
    "url": "https://www.energy.gov/oe/grid-resilience-state-and-tribal-formula-grants-program",
@@ -1363,12 +1380,17 @@
    "status": "open",
    "status_note": "'Grant applications are now being accepted for fiscal year 2027.' Priority application due date 2026-10-01; 'November 5, 2026 and Beyond: Application due date to ensure funding is available, but applications will be accepted throughout the year as funding is available.'",
    "status_checked": {
-    "date": "2026-10-29",
+    "date": "2026-11-05",
     "url": "https://www.bpa.gov/energy-and-services/conservation/energy-efficiency-income-qualified/income-qualified-tribal-resources"
    },
    "deadline": {
     "date": "2026-11-05",
-    "what": "Application due date to ensure funding is available; later applications accepted while funds last"
+    "what": "Application due date to ensure funding is available; later applications accepted while funds last",
+    "checked": {
+     "date": "2026-11-05",
+     "url": "https://www.bpa.gov/energy-and-services/conservation/energy-efficiency-income-qualified/income-qualified-tribal-resources",
+     "quote": "November 5, 2026 and Beyond: Application due date to ensure funding is available, but applications will be accepted throughout the year as funding is available."
+    }
    },
    "funding_level": "About $600,000 per year, negotiated annually.",
    "url": "https://www.bpa.gov/energy-and-services/conservation/energy-efficiency-income-qualified/income-qualified-tribal-resources",

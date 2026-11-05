@@ -24,6 +24,7 @@
   <link rel="preload" href="../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/pages.css">
   <script src="../assets/js/theme.js"></script>
   <script type="module" src="../assets/js/library.js"></script>
 </head>
@@ -48,55 +49,80 @@
   </header>
 
   <main id="main">
-    <header class="page-hero">
-      <div class="wrap">
+    <header class="wrap page-band library-band">
+      <div>
         <h1>Library</h1>
-        <p class="lead">Public resolutions, reports, policies, laws, data, and tools gathered for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI). Every entry is public material, and each summary describes what its source says.</p>
+        <p class="lead">Public resolutions, reports, policies, laws, data, and tools gathered for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI). Every entry is public material, and each summary describes what its source says. <a href="?area=start-here" data-filter="area" data-value="start-here">Start here</a> holds the five resolutions that ground the task forces, and the public sources most useful for getting started in each area.</p>
       </div>
+      <ul class="page-band-figures">
+        <li><span class="figure-num" data-figure="library">576</span><span class="figure-label">public entries</span></li>
+        <li><span class="figure-num" data-figure="library-tribal">173</span><span class="figure-label">Tribal-specific</span></li>
+        <li><span class="figure-num" data-figure="library-grounding">5</span><span class="figure-label">grounding resolutions</span></li>
+      </ul>
     </header>
 
     <div class="wrap library-page">
       <noscript>
-        <p class="notice">The library’s search and filters need JavaScript. The full list of entries is available as <a href="../data/library.json">library data (JSON)</a>.</p>
+        <p class="notice">The library’s list, its search and filters, and the bars below need JavaScript. The full list of entries is available as <a href="../data/library.json">library data (JSON)</a>.</p>
       </noscript>
       <p class="notice" data-library-error hidden>The library list could not load. The full list of entries is available as <a href="../data/library.json">library data (JSON)</a>.</p>
 
+      <section class="comp" aria-labelledby="comp-title">
+        <h2 id="comp-title" class="sr-only">What the Library Holds</h2>
+        <!-- library-composition -->
+        <div class="comp-head">
+          <div class="unit-field comp-field" aria-hidden="true"><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a1"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a2"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a3"></i><i class="a4"></i><i class="a4"></i><i class="a4"></i><i class="a4"></i><i class="a4"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i><i class="a5"></i></div>
+          <p class="caption">One square per entry, inked by the first area it lists.</p>
+        </div>
+        <!-- /library-composition -->
+        <div class="library-controls">
+          <form class="filters" role="search" aria-label="Library">
+            <div class="field field-search">
+              <label for="filter-q">Search titles, publishers, and summaries</label>
+              <input id="filter-q" name="q" type="search" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="filter-area">Area</label>
+              <select id="filter-area" name="area"><option value="">All areas</option></select>
+            </div>
+            <div class="field">
+              <label for="filter-type">Type</label>
+              <select id="filter-type" name="type"><option value="">All types</option></select>
+            </div>
+            <div class="field">
+              <label for="filter-tribal">Tribal focus</label>
+              <select id="filter-tribal" name="tribal">
+                <option value="">All entries</option>
+                <option value="yes">Tribal-specific</option>
+                <option value="no">General</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="filter-year">Year</label>
+              <select id="filter-year" name="year"><option value="">All years</option></select>
+            </div>
+            <button class="button button-secondary" type="button" data-clear>Clear filters</button>
+          </form>
+          <p id="library-status" class="library-status" role="status" aria-live="polite" tabindex="-1"></p>
+        </div>
+        <!-- library-legend -->
+        <a class="skip-link" href="#entries-title">Skip the bars, to the entries</a>
+        <div class="comp-groups">
+          <div class="comp-group"><h3 class="eyebrow">Area</h3><ul class="comp-bars" role="list"><li><a class="comp-row" href="?area=start-here" data-filter="area" data-value="start-here" style="--w:0.0260"><span class="comp-name"><i class="comp-key"></i>Start here</span> <span class="comp-n">15<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row a1" href="?area=energy-feasibility" data-filter="area" data-value="energy-feasibility" style="--w:0.2917"><span class="comp-name"><i class="comp-key"></i>Energy feasibility</span> <span class="comp-n">168<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row a2" href="?area=data-centers" data-filter="area" data-value="data-centers" style="--w:0.3646"><span class="comp-name"><i class="comp-key"></i>Data centers</span> <span class="comp-n">210<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row a3" href="?area=ai" data-filter="area" data-value="ai" style="--w:0.4479"><span class="comp-name"><i class="comp-key"></i>Artificial intelligence</span> <span class="comp-n">258<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row a4" href="?area=summit" data-filter="area" data-value="summit" style="--w:0.0156"><span class="comp-name"><i class="comp-key"></i>Summit</span> <span class="comp-n">9<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row a5" href="?area=cross-cutting" data-filter="area" data-value="cross-cutting" style="--w:0.3368"><span class="comp-name"><i class="comp-key"></i>Cross-cutting</span> <span class="comp-n">194<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li></ul></div>
+          <div class="comp-group comp-group-wide"><h3 class="eyebrow">Type</h3><ul class="comp-bars" role="list"><li><a class="comp-row" href="?type=report" data-filter="type" data-value="report" style="--w:0.3594"><span class="comp-name">Report</span> <span class="comp-n">207<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=news" data-filter="type" data-value="news" style="--w:0.2309"><span class="comp-name">News</span> <span class="comp-n">133<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=article" data-filter="type" data-value="article" style="--w:0.1007"><span class="comp-name">Article</span> <span class="comp-n">58<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=policy" data-filter="type" data-value="policy" style="--w:0.0955"><span class="comp-name">Policy</span> <span class="comp-n">55<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=academic" data-filter="type" data-value="academic" style="--w:0.0677"><span class="comp-name">Academic research</span> <span class="comp-n">39<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=legislation" data-filter="type" data-value="legislation" style="--w:0.0642"><span class="comp-name">Legislation</span> <span class="comp-n">37<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=website" data-filter="type" data-value="website" style="--w:0.0399"><span class="comp-name">Website</span> <span class="comp-n">23<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=resolution" data-filter="type" data-value="resolution" style="--w:0.0208"><span class="comp-name">Resolution</span> <span class="comp-n">12<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=dataset" data-filter="type" data-value="dataset" style="--w:0.0122"><span class="comp-name">Dataset</span> <span class="comp-n">7<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?type=tool" data-filter="type" data-value="tool" style="--w:0.0087"><span class="comp-name">Tool</span> <span class="comp-n">5<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li></ul></div>
+          <div class="comp-group"><h3 class="eyebrow">Year</h3><ul class="comp-bars" role="list"><li><a class="comp-row" href="?year=2027" data-filter="year" data-value="2027" style="--w:0.0017"><span class="comp-name">2027</span> <span class="comp-n">1<span class="sr-only"> entry</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?year=2026" data-filter="year" data-value="2026" style="--w:0.6059"><span class="comp-name">2026</span> <span class="comp-n">349<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?year=2025" data-filter="year" data-value="2025" style="--w:0.2413"><span class="comp-name">2025</span> <span class="comp-n">139<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?year=2024" data-filter="year" data-value="2024" style="--w:0.0712"><span class="comp-name">2024</span> <span class="comp-n">41<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?year=before-2024" data-filter="year" data-value="before-2024" style="--w:0.0799"><span class="comp-name">Before 2024</span> <span class="comp-n">46<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li></ul></div>
+          <div class="comp-group"><h3 class="eyebrow">Tribal focus</h3><ul class="comp-bars" role="list"><li><a class="comp-row" href="?tribal=yes" data-filter="tribal" data-value="yes" style="--w:0.3003"><span class="comp-name">Tribal-specific</span> <span class="comp-n">173<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li><li><a class="comp-row" href="?tribal=no" data-filter="tribal" data-value="no" style="--w:0.6997"><span class="comp-name">General</span> <span class="comp-n">403<span class="sr-only"> entries</span></span> <span class="comp-track"><i></i></span></a></li></ul><p class="caption comp-note">229 entries list more than one area, so area counts add to more than 576. Counted from <a href="../data/library.json">library.json</a>, updated 11/04/2026: what this library holds, not all that is published.</p></div>
+        </div>
+        <!-- /library-legend -->
+      </section>
+
       <section class="start-here" aria-labelledby="start-title" hidden>
         <h2 id="start-title">Start Here</h2>
-        <p class="section-note">The five resolutions that ground the task forces, and the public sources most useful for getting started in each area.</p>
         <div data-library-featured></div>
       </section>
 
       <section id="library-app" aria-labelledby="entries-title" hidden>
         <h2 id="entries-title" class="sr-only">Entries</h2>
-        <form class="filters" role="search" aria-label="Library">
-          <div class="field field-search">
-            <label for="filter-q">Search titles, publishers, and summaries</label>
-            <input id="filter-q" name="q" type="search" autocomplete="off" spellcheck="false">
-          </div>
-          <div class="field">
-            <label for="filter-area">Area</label>
-            <select id="filter-area" name="area"><option value="">All areas</option></select>
-          </div>
-          <div class="field">
-            <label for="filter-type">Type</label>
-            <select id="filter-type" name="type"><option value="">All types</option></select>
-          </div>
-          <div class="field">
-            <label for="filter-tribal">Tribal focus</label>
-            <select id="filter-tribal" name="tribal">
-              <option value="">All entries</option>
-              <option value="yes">Tribal-specific</option>
-              <option value="no">General</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="filter-year">Year</label>
-            <select id="filter-year" name="year"><option value="">All years</option></select>
-          </div>
-          <button class="button button-secondary" type="button" data-clear>Clear filters</button>
-        </form>
-        <p id="library-status" class="library-status" role="status" aria-live="polite"></p>
         <ul id="library-results" class="entries" role="list"></ul>
         <p><button id="library-more" class="button button-secondary" type="button" hidden>Show more</button></p>
       </section>
@@ -129,7 +155,7 @@
       <div>
         <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
         <p>This site publishes public (T0) material only and sets no cookies. <a href="../about/#data-governance">How this site handles data</a>.</p>
-        <p>Updated 10/29/2026.</p>
+        <p>Updated 11/05/2026.</p>
       </div>
     </div>
   </footer>

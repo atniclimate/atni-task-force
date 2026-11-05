@@ -5,8 +5,8 @@
  "id": "ai-guidance-2026",
  "default": "amazon",
  "eyebrow": "What they say comes next",
- "title": "For 2026 the companies guide to {c[fin-044][low]:.0f} to {c[fin-044][high]:.0f} billion dollars (Alphabet), {c[fin-051][low]:.0f} to {c[fin-051][high]:.0f} (Meta), about {c[fin-054][value]:.0f} (Microsoft, calendar year), about {c[fin-056][value]:.0f} (Amazon), and over {c[fin-065][low]:.0f} (Tesla); Apple and NVIDIA give none",
- "subtitle": "Every mark is a projection, on each company's own definition.",
+ "title": "For 2026, Amazon guides to about {c[fin-056][value]:.0f} billion dollars and Alphabet to {c[fin-044][low]:.0f} to {c[fin-044][high]:.0f}; Apple and NVIDIA give none",
+ "subtitle": "Meta guides to {c[fin-051][low]:.0f} to {c[fin-051][high]:.0f} billion dollars, Microsoft to about {c[fin-054][value]:.0f} for the calendar year, and Tesla to over {c[fin-065][low]:.0f}. Every mark is a projection, on each company's own definition.",
  "plot": {
   "type": "ladder",
   "domain": [

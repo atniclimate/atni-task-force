@@ -11,15 +11,22 @@ const lows = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[1
 const highs = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[2]]));
 const spreadAt = (spec, i) => V.run.spread(`pour:${spec}`, (t) => at(t, spec))[i];
 
-const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords() };
+const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tags: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords() };
+// The home ladder: each row at each boundary, from the same layers and spreads the Explorer prints, so the three boundaries cannot drift from it.
+const BOUNDARY = { dc: (l) => l.data_center, adds: (l) => l.data_center + l.network, whole: (l) => l.data_center + l.network + l.router + l.device };
 out.band = Object.fromEntries(['chat_hour', 'video_hour', 'short_hour', 'coding_hour'].map((k) => {
   const { router, device } = V.t.catalog[k].layers;
-  return [k, { ...V.cell(`catalog.${k}`, 'wh'), screen: ex.num(router + device) }];
+  const stops = Object.fromEntries(Object.entries(BOUNDARY).map(([stop, sum]) => {
+    const of = (t) => sum(t.catalog[k].layers);
+    const [lo, hi] = V.run.spread(`band:${k}:${stop}`, of);
+    return [stop, { value: of(V.t), lo, hi, lo_text: ex.num(lo), hi_text: ex.num(hi), ...ex.figure(of(V.t), lo, hi, 'wh') }];
+  }));
+  return [k, { ...V.cell(`catalog.${k}`, 'wh'), screen: ex.num(router + device), fixed: router + device, stops }];
 }));
 for (const [id, spec] of Object.entries(D.boards)) {
   if (spec.kind === 'wall' || spec.kind === 'ruler') {
     const at = V.boardScale(id, 'wh');
-    for (const key of spec.rows) { out.cells[key] = V.rowCell(key, 'wh', at); out.tables[key] = V.table(key); }
+    for (const key of spec.rows) { out.cells[key] = V.cell(key, 'wh', at); out.tags[key] = V.rowTag(key); out.tables[key] = V.table(key); }
     if (spec.kind === 'ruler') out.rulers[id] = V.ruler(spec.rows, 'wh');
     else out.walls[id] = V.layout(V.boardKeys(id, 'wh'), 'wh', spec.plain, at);
   } else if (spec.kind === 'lever') {

@@ -1,6 +1,8 @@
 // The resource use page. It has no tabs and no plate module, so this covers what it does have: deep links into disclosures, the rail, the CSS-only
 // boundary switch, poured figures, bench rows, and the no-script page.
 const { execFileSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 const { JSDOM, ROOT, ok, eq, wait, read, open } = require('./lib');
 
 const REL = 'site/data-centers/resource-use/index.html';
@@ -23,7 +25,7 @@ async function ids() {
   const before = new JSDOM(old).window.document;
   const all = [...document.querySelectorAll('[id]')].map((n) => n.id);
   eq(new Set(all).size, all.length, 'no id is used twice');
-  for (const h of before.querySelectorAll('h2[id]')) ok(document.querySelector(`h2#${h.id}`), `old h2 id ${h.id} is still an h2`);
+  for (const h of before.querySelectorAll('h2[id]:not(#facts-title)')) ok(document.querySelector(`h2#${h.id}`), `old h2 id ${h.id} is still an h2`); // the band's hidden Key Facts heading went with its box; its list names itself
   const moved = { water: 'water-use' };
   const seenWater = [...before.querySelectorAll('h3[id]')];
   for (const h of seenWater) {
@@ -65,7 +67,43 @@ async function content() {
   ok(poured.length > 100, 'figures are poured');
   for (const n of poured) ok(n.textContent.trim() && n.textContent.trim() !== 'x', `filled: ${n.dataset.pour}`);
   for (const a of document.querySelectorAll('a[data-pour]')) ok(a.getAttribute('href').startsWith('https://'), `source link: ${a.dataset.pour}`);
-  eq(document.querySelector('.ru-fact-value').textContent, '485 TWh', 'hero figure');
+  // The band: three bare figures, each poured with its source, and no box.
+  const band = [...document.querySelectorAll('.page-band-figures > li')];
+  eq(band.length, 3, 'three figures in the band');
+  eq(band[0].querySelector('.figure-num').textContent, '485 TWh', 'band figure');
+  for (const li of band) {
+    ok(li.querySelector('.figure-num[data-pour]') && li.querySelector('.figure-label a[data-pour][data-field="source"]').getAttribute('href').startsWith('https://'), `the band's ${li.querySelector('.figure-num').textContent} is poured, with its source`);
+    ok(/modeled/.test(li.querySelector('.figure-label').textContent), 'and says it is modeled');
+  }
+  eq(document.querySelectorAll('.key-facts, .page-hero').length, 0, 'the band has no box');
+  ok(/All modeled, not metered\. Sources checked 10\/29\/2026/.test(words(document)), 'the sources date prints');
+  // The first screen is the streamed-hour figure, at the column's full width, ahead of the section's text.
+  const first = document.querySelector('.ru-section');
+  ok(first.querySelector('.ru-hour') === first.children[1] && first.children[2].matches('.ru-columns'), 'the figure leads the first section, and its text follows in columns');
+  eq(document.querySelector('.ru-split.is-even'), null, 'it no longer shares a row with the text');
+  // The derived figures of the evidence refresh: each is said to be derived, with its arithmetic beside it, and what it rests on is poured or names a claim.
+  const test = [...document.querySelectorAll('.ru-detail > p')].find((p) => /quick test/.test(p.textContent)).textContent.replace(/\s+/g, ' ');
+  for (const s of ['485 over 3, derived', '162 TWh over each, derived', '55 times 2.88, derived', '162 TWh over 158 Wh, derived', '1 trillion hours over 8 billion people over 365 days, derived', '52 to 124 trillion hours']) ok(test.includes(s), `the arithmetic prints: ${s}`);
+  ok(!/3\.9 Wh|41 to 124/.test(test), 'the figure with no claim behind it is gone');
+  const near = (a, b) => Math.abs(a - b) / b < 0.01;
+  ok(near(485 / 3, 162) && near(162e12 / 1.3, 124e12) && near(162e12 / 3.1, 52e12) && near(8e9 * 8760, 70e12) && near(55 * 2.88, 158) && near(162e12 / 158 / 1e12, 1.025) && near(1.025e12 / 8e9 / 365 * 60, 21) && near(57.8 / 485, 0.119), 'and it holds');
+  const claims = {};
+  for (const name of fs.readdirSync(path.join(ROOT, 'site/data/claims'))) for (const c of JSON.parse(read(`site/data/claims/${name}`)).claims || []) claims[c.id] = c;
+  eq(claims['dem-040'].value, 485, 'dem-040 is still 485');
+  eq(claims['fp-122'].value, 1.3, 'fp-122 is still 1.3');
+  eq(claims['fp-141'].high, 3.1, 'fp-141 still tops out at 3.1');
+  eq(claims['fp-130'].value, 2.88, 'fp-130 is still 2.88');
+  ok(/55 x 2\.88 = 158\.4/.test(claims['fp-150'].derived), 'fp-150 holds 158.4 in its arithmetic');
+  ok(/0\.055 kWh per GB = 55 Wh per GB/.test(claims['ec-024'].derived), 'ec-024 holds 55 Wh per GB');
+  const model = JSON.parse(read('site/data/comparison-model.json'));
+  ok(near(model.computed_defaults.scale.youtube_dc_twh_top, 57.8), 'the model still holds 57.8 TWh');
+  eq(model.assumptions.video_dc_intensity.options.top_down, 55, 'and 55 Wh per GB');
+  ok(test.includes(claims['fp-150'].limit), 'and the top-down figure prints its limit');
+  ok(/57\.8 TWh over 485, derived/.test(words(document)), 'the 12 percent shows its arithmetic');
+  // The figure's Reading: the retired 70 Wh made the UK share "about a quarter"; its replacement makes it a sliver.
+  const hourReading = document.querySelector('.ru-hour .ru-reading').textContent.replace(/\s+/g, ' ');
+  ok(/1 of 188 Wh, derived/.test(hourReading) && /0\.6 of 192\.3 Wh, derived/.test(hourReading) && !/quarter/.test(hourReading), 'the streamed hour reads as its figure draws it');
+  ok(Math.abs(100 / 188 - 0.5) < 0.05 && Math.abs(60 / 192.3 - 0.3) < 0.05, 'and the shares hold');
   // Marks: on the ruler, one row each, and each chart row prints its value next to its mark.
   const marks = [...document.querySelectorAll('.ru-track i')];
   ok(marks.length > 20, 'marks drawn');

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Runs the jsdom page checks. No browser and no network.
 //   node scripts/page_check.js --all
-//   node scripts/page_check.js --page ai     (plate, dc, ai, ru, explorer)
+//   node scripts/page_check.js --page ai     (plate, dc, ai, ru, explorer, library)
 // Exit 1 on a failed check and 2 on bad arguments. Budgets in tests/budgets.json only print warnings; they never change the exit code.
 // Needs "npm ci" once. The Explorer page reads 300 oracle cases and takes about three minutes.
 const { spawn } = require('child_process');
@@ -10,7 +10,7 @@ const path = require('path');
 const zlib = require('zlib');
 
 const ROOT = path.resolve(__dirname, '..');
-const PAGES = ['plate', 'dc', 'ai', 'ru', 'explorer'];
+const PAGES = ['plate', 'dc', 'ai', 'ru', 'explorer', 'library', 'energy'];
 const ALIASES = { 'data-centers': 'dc', 'resource-use': 'ru', kit: 'plate' };
 
 function htmlFiles(dir) {
@@ -98,7 +98,7 @@ async function main() {
     return bad.length ? 1 : 0;
   }
   if (!PAGES.includes(name)) {
-    console.log('Usage: node scripts/page_check.js --all, or --page plate|dc|ai|ru|explorer');
+    console.log('Usage: node scripts/page_check.js --all, or --page plate|dc|ai|ru|explorer|library|energy');
     return 2;
   }
   const { failed, checks } = await runPage(name);

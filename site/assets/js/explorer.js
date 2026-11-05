@@ -30,7 +30,10 @@ function seg(node, range) {
 function axisInto(board, ticks) {
   const axis = $('.wall-axis, .ladder-axis', board);
   const place = (n, t) => { n.style.setProperty('--x', t.x.toFixed(4)); return n; };
-  axis.replaceChildren(...ticks.map((t) => place(el('span', '', t.t), t)));
+  const span = (t) => place(el('span', '', t.t), t);
+  const left = $('.wall-axis-left', axis); // as wide as the left side, so a container query can drop its ticks when it is narrow
+  left?.replaceChildren(...ticks.filter((t) => t.left).map(span), $('i', left));
+  axis.replaceChildren(...(left ? [left] : []), ...ticks.filter((t) => !t.left).map(span));
   const grid = $('.ladder-grid', board);
   if (grid) grid.replaceChildren(...ticks.map((t) => place(el('i'), t)));
 }
@@ -80,11 +83,12 @@ function paintWall(id) {
     const needle = $('.wall-needle', n);
     needle.hidden = !item;
     if (item) needle.style.left = pct(item.end);
-    const f = V.rowCell(key, m, at);
+    const f = V.cell(key, m, at);
     const extra = wordsOnly.includes(key) ? 'on another grid, no bar' : beside ? 'inside the seat figure; printed beside, not added' : '';
-    cell($('.ladder-value', n), { ...f, tag: [f.tag, extra, item?.range?.[2] ? D.words.off : ''].filter(Boolean).join(' ') });
+    cell($('.ladder-value', n), { ...f, tag: [f.tag, extra].filter(Boolean).join(' ') });
   }
   axisInto(board, lay.ticks);
+  $('.wall-off', board).hidden = !visible.some((key) => lay.items[key]?.range?.[2]); // the ruler says so once; each row prints its whole spread
   const note = $('.wall-gridnote', board);
   if (note) {
     note.hidden = !wordsOnly.length;
@@ -109,7 +113,7 @@ function paintRuler(id) {
     const hasRange = !blank(item.lo) && !blank(item.hi) && item.hi > item.lo;
     if (hasRange) { n.style.setProperty('--lo', item.lo.toFixed(4)); n.style.setProperty('--hi', item.hi.toFixed(4)); } else { n.style.removeProperty('--lo'); n.style.removeProperty('--hi'); }
     $('.ladder-range', n).hidden = !hasRange;
-    cell($('.ladder-value', n), V.rowCell(key, m, at));
+    cell($('.ladder-value', n), V.cell(key, m, at));
   }
   axisInto(board, lay.ticks);
   return order;
@@ -173,15 +177,18 @@ function paintTables() {
   }
 }
 
-// The detail zone reads the same on every plate: the energy large, then price, carbon, and water with their bases, then the sentence.
+const priceWord = (key) => (blank(V.val(key, 'usd')) ? D.rows[key].pn || D.words.price.none : D.rows[key].pt || D.words.price[V.basis(key)]);
+const basinWord = (tag) => tag.slice(0, tag.lastIndexOf(',')); // the model writes "basin, convention", and a convention has no comma
+
+// The detail zone reads the same on every plate: the energy large, then price, carbon, and water at their bases, then the sentence. How it is modeled folds up; receipts live in Sources.
 function detail(name, key) {
   const plate = plateOf(name);
   const d = (k) => $(`[data-d="${k}"]`, plate);
   const text = (k, v) => { const n = d(k); if (n) n.textContent = v; };
   const noteId = D.rows[key]?.note;
-  const long = () => d('value').parentElement.classList.toggle('is-long', d('value').textContent.length >= 8);
+  const long = () => d('value').parentElement.classList.toggle('is-long', d('value').textContent.length >= 9);
   const big = (node, f) => { node.replaceChildren(el('span', '', f.num), ' ', el('span', 'x-big-unit', f.unit)); return node; };
-  const readout = (r) => { text('value', r.value); text('unit', r.unit); text('qual', r.qual); text('reading', r.reading); };
+  const readout = (r) => { text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), r.reading, r.value); };
   if (key.startsWith('lever.')) {
     const r = V.leverDetail(key, S.m);
     readout(r);
@@ -193,8 +200,9 @@ function detail(name, key) {
   } else {
     const r = V.detailOf(key, S.m);
     readout(r);
-    text('price', r.price); text('price-tag', r.priceTag); big(d('co2'), r.co2); text('co2-tag', r.co2Tag);
-    d('water').replaceChildren(...(r.water.length ? r.water.map((w) => { const s = el('span', 'x-figure'); s.append(big(el('strong', 'x-big'), w), el('span', 'caption', w.tag)); return s; }) : [el('span', 'caption', 'No water figure: the record holds no generation water for this feed.')]));
+    text('price', r.price); text('price-word', priceWord(key)); text('price-tag', r.priceTag); big(d('co2'), r.co2); text('co2-tag', r.co2Tag);
+    d('water').replaceChildren(...(r.water.length ? r.water.map((w) => { const s = el('span', 'x-figure'); s.append(big(el('strong', 'x-big'), w), el('span', 'caption', basinWord(w.tag))); return s; }) : [el('span', 'caption', 'No water figure: the record holds no generation water for this feed.')]));
+    text('water-basis', r.water.map((w) => w.tag).join('; ') || 'no figure');
     d('layers').replaceChildren(...r.layers.map((l) => { const li = el('li'); li.append(el('span', `plate-square w-key-${l.tag}${l.on ? '' : ' is-hollow'}`), el('strong', '', l.text), el('span', '', l.label)); return li; }));
     text('spread', r.spread); text('moves', r.moves);
     const tokens = d('tokens');
@@ -202,15 +210,30 @@ function detail(name, key) {
   }
   long();
   const master = noteId && document.getElementById(noteId);
+  const parts = master ? [...master.cloneNode(true).children] : [];
   const note = d('note');
-  note.replaceChildren(...(master ? [...master.cloneNode(true).children] : []));
+  note.replaceChildren(...parts.filter((n) => !n.matches('.plate-chips')));
   if (Object.keys(D.sel).some((k) => S.settings[k] !== D.sel[k].def)) note.prepend(el('p', 'x-note-title', 'These notes describe the default settings.'));
-  for (const chip of $$('.receipt', note)) { const id = chip.getAttribute('href').slice(5); chip.lastElementChild.textContent = `${id}, ${document.getElementById(`src-${id}`).dataset.short}`; }
+  const chips = parts.find((n) => n.matches('.plate-chips'));
+  d('chips').replaceChildren(...(chips ? chips.children : []));
+  const receipts = $$('.receipt', d('chips'));
+  for (const chip of receipts) { const id = chip.getAttribute('href').slice(5); chip.lastElementChild.textContent = `${id}, ${document.getElementById(`src-${id}`).dataset.short}`; }
+  const partly = receipts.filter((chip) => chip.classList.contains('is-hollow')).length;
+  const verified = receipts.length - partly;
+  const tally = $('[data-tally]', plate);
+  tally.hidden = !receipts.length;
+  tally.textContent = `This row: ${[verified && `${verified} verified`, partly && `${partly} partly verified`].filter(Boolean).join(', ')}; ${plate.dataset.sources} sources on the plate`;
   const receipt = d('receipt');
   receipt.hidden = true;
   receipt.replaceChildren();
   $$('.receipt, a.x-c', plate).forEach((c) => c.setAttribute('aria-expanded', false));
-  d('sources').replaceChildren(...$$('.receipt', note).map((chip) => { const src = document.getElementById(chip.getAttribute('href').slice(1)).cloneNode(true); src.removeAttribute('id'); return src; }));
+}
+// As on every plate of the kit: the Sources view lists the whole plate and its name counts them, and its chips are the selected row's. So the view's count and the line under the Reading count one thing each.
+function listSources(plate) {
+  const ids = new Set($$('.plate-plot [data-row]', plate).flatMap((row) => { const note = document.getElementById(D.rows[row.dataset.row]?.note); return note ? $$('.receipt', note).map((chip) => chip.getAttribute('href').slice(1)) : []; }));
+  plate.dataset.sources = ids.size;
+  $('.plate-views input[value="sources"] + span', plate).textContent = `Sources (${ids.size})`;
+  $('[data-d="sources"]', plate).replaceChildren(...[...ids].map((id) => { const src = document.getElementById(id).cloneNode(true); src.removeAttribute('id'); return src; }));
 }
 function selectRow(name, key) {
   S.sel[name] = key;
@@ -223,7 +246,6 @@ function selectRow(name, key) {
     if (hit) $('.plate-plot', plate).setAttribute('aria-activedescendant', n.id);
   });
   detail(name, key);
-  reachSoon();
 }
 function paintWeek() {
   const w = V.week();
@@ -249,7 +271,7 @@ function refresh(reason) {
   $$('[data-if]').forEach((n) => { const [k, v] = n.dataset.if.split(':'); n.hidden = String(V.p[k]) !== v; });
   $$('[data-reading]').forEach((n) => { n.textContent = V.reading(n.dataset.reading); });
   $$('[data-group]').forEach((n) => { const [k, v] = n.dataset.group.split(':'); n.hidden = S.opts[k] !== v; });
-  for (const [key, n] of rowNodes) if (D.rows[key]) $('.ladder-label', n).textContent = V.label(key);
+  for (const [key, n] of rowNodes) if (D.rows[key]) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : [])); }
   for (const name of Object.keys(painters)) {
     const order = painters[name]();
     shown[name] = order.filter((key) => !rowNodes.get(key).hidden);
@@ -297,11 +319,15 @@ function selfCheck() {
       if (blank(row?.[m]) || Math.abs(row[m] - want[i]) > 0.005 * Math.abs(want[i])) fails.push(`${key} ${m}`);
     });
   }
+  const said = fails.length ? `Warning: this page does not match the model at ${fails.slice(0, 3).join(', ')}${fails.length > 3 ? `, and ${fails.length - 3} more` : ''}. Do not rely on these figures.` : `Builder matches the model: ${grouped(n)} figures within 0.5 percent of the published file.`;
   $$('[data-check]').forEach((box) => {
     box.hidden = false;
     box.classList.toggle('is-warn', fails.length > 0);
-    box.textContent = fails.length ? `Warning: this page does not match the model at ${fails.slice(0, 3).join(', ')}${fails.length > 3 ? `, and ${fails.length - 3} more` : ''}. Do not rely on these figures.` : `Builder matches the model: ${grouped(n)} figures within 0.5 percent of the published file.`;
+    box.textContent = said;
   });
+  const top = $('[data-check-top]'); // the reassurance can wait in the Table view; a warning cannot
+  top.hidden = !fails.length;
+  if (fails.length) top.textContent = said;
 }
 // The drawer starts under the disclaimer band, so the plate compresses beside it and nothing the reader is watching is covered.
 const placeDrawer = () => document.documentElement.style.setProperty('--drawer-top', `${Math.max(0, $('.x-band').getBoundingClientRect().bottom)}px`);
@@ -327,10 +353,15 @@ function project() {
   const box = $('[data-plate-x="project"]');
   const read = (k) => { const n = $(`[data-pf="${k}"]`, box); return n.value === '' || !(+n.value >= 0) ? null : +n.value; };
   const r = projectScale(...['mw', 'lf', 'wue', 'grid', 'load'].map(read));
-  const big = (v, unit) => (blank(v) ? '–' : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
-  const out = { mwh: big(r.mwh, 'MWh'), water: big(r.water, 'liters'), co2: big(r.co2, 'tonnes CO2e'), share: blank(r.share) ? '–' : `${num(r.share * 100)} percent` };
+  const ask = (say) => (blank(r.mwh) ? '–' : say); // once a year prints, an empty row says what it waits for
+  const big = (v, unit, missing) => (blank(v) ? ask(missing) : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
+  const out = { mwh: big(r.mwh, 'MWh'), water: big(r.water, 'liters', 'Enter site water'), co2: big(r.co2, 'tonnes CO2e', 'Choose a feed'), share: blank(r.share) ? ask('Enter a load to compare') : `${num(r.share * 100)} percent` };
   for (const [k, v] of Object.entries(out)) $(`[data-po="${k}"]`, box).textContent = v;
   $('[data-project-hint]', box).hidden = !blank(r.mwh);
+  $('[data-po-poster]', box).textContent = blank(r.mwh) ? '' : grouped(Number(r.mwh.toPrecision(3)));
+  $('[data-po-poster]', box).parentElement.classList.toggle('is-long', !blank(r.mwh) && r.mwh >= 1e7);
+  $('[data-po-unit]', box).textContent = blank(r.mwh) ? '' : 'MWh';
+  $('[data-po-qual]', box).textContent = blank(r.mwh) ? 'Enter megawatts and a load factor.' : 'a year, at the load factor entered';
 }
 function outputsCsv() {
   const rows = [['row', 'measure', 'value', 'low', 'high', 'price_basis', 'settings']];
@@ -346,12 +377,11 @@ function setView(plate, name) {
   plate.dataset.view = name;
   $$('.plate-view', plate).forEach((n) => { n.hidden = n.dataset.view !== name; });
   $$('.plate-views input', plate).forEach((n) => { n.checked = n.value === name; });
-  reachSoon();
 }
 async function copyReading(plate) {
   const reading = $('[data-d="reading"]', plate);
   const status = $('.plate-status', plate);
-  const titles = $$('[data-d="note"] .receipt', plate).map((chip) => $('.plate-source-title', document.getElementById(chip.getAttribute('href').slice(1))).textContent);
+  const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => $('.plate-source-title', document.getElementById(chip.getAttribute('href').slice(1))).textContent);
   try {
     await navigator.clipboard.writeText(`${reading.textContent}\n${location.href}${titles.length ? `\nSources: ${[...new Set(titles)].join('; ')}` : ''}`);
     status.textContent = 'Copied with its link and sources.';
@@ -374,13 +404,13 @@ function openReceipt(chip) {
   const closing = box.dataset.open === id && !box.hidden;
   closeReceipt(box);
   if (closing) return;
-  setView(plate, 'reading'); // a chip in the claim zone may be pressed from another view
+  setView(plate, 'sources'); // a chip in the claim zone may be pressed from another view
   box.hidden = false;
   box.dataset.open = id;
   box.from = chip;
   box.replaceChildren(...document.getElementById(id).cloneNode(true).children);
   chip.setAttribute('aria-expanded', true);
-  box.focus(); // it opens at the foot of the detail, often past the fold: the reader goes to it, and Escape comes back
+  box.focus(); // the reader goes to it, and Escape comes back
 }
 function onInput(e) {
   const t = e.target;
@@ -412,7 +442,6 @@ function choose(plate, key) { // a reader's own selection: the figure they asked
   picked = key;
   setView(plate, 'reading');
   selectRow(plate.dataset.plateX, key);
-  $('.plate-detail', plate).scrollTop = 0;
 }
 function onClick(e) {
   const t = e.target;
@@ -421,9 +450,12 @@ function onClick(e) {
   else if (hit('[data-close-settings]')) closeDrawer();
   else if (hit('.x-plate .receipt, .x-plate a.x-c') && $('[data-d="receipt"]', hit('.x-plate'))) { e.preventDefault(); openReceipt(hit('.x-plate .receipt, .x-plate a.x-c')); }
   else if (hit('.plate-plot [data-row]')) choose(hit('.x-plate'), hit('[data-row]').dataset.row);
+  else if (hit('[data-tally]')) { setView(hit('.x-plate'), 'sources'); $('.plate-views input[value="sources"]', hit('.x-plate')).focus(); } // the button leaves with its view, so focus goes to the view switch
+  else if (hit('[data-about]')) { e.preventDefault(); const about = $(hit('[data-about]').getAttribute('href')); about.open = true; $('summary', about).focus(); } // folded with scripts, and a link to a details does not open it
   else if (hit('[data-copy]')) copyReading(hit('.x-plate'));
-  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); refresh('settings'); $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
+  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
+  else if (hit('[data-example]')) { for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`).value = t.dataset[k]; project(); }
   else if (hit('[data-outputs]')) { const a = el('a'); a.href = URL.createObjectURL(new Blob([outputsCsv()], { type: 'text/csv' })); a.download = 'resource-model-outputs.csv'; a.click(); }
 }
 function wirePlot(plot) {
@@ -432,7 +464,7 @@ function wirePlot(plot) {
   plot.tabIndex = 0;
   plot.setAttribute('role', 'listbox');
   $$('ol, .wall-group', plot).forEach((n) => n.setAttribute('role', 'none'));
-  $$('.wall-key', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the detail's layer list
+  $$('.wall-key, .x-lever-note', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the detail's layer list, and the claim zone says each row has its own ruler
   on(plot, 'keydown', (e) => {
     const keys = shown[name];
     const i = keys.indexOf(S.sel[name]);
@@ -443,28 +475,16 @@ function wirePlot(plot) {
     choose(plate, key);
     rowNodes.get(key).scrollIntoView({ block: 'nearest' }); // the arrows are the keyboard's scroll here, so the row they reach must come into view
   });
-  const holding = () => $$('[data-d="note"], [data-d="receipt"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
+  const holding = () => $$('[data-d="note"], [data-d="chips"], [data-d="receipt"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
   on(plot, 'pointerover', (e) => { const row = e.target.closest('[data-row]'); if (row && !holding()) detail(name, row.dataset.row); });
   on(plot, 'pointerleave', () => { if (!holding()) detail(name, S.sel[name]); });
 }
 function fit() {
   if (innerWidth >= 1100) document.documentElement.style.setProperty('--plate-h', `${Math.round(Math.max(544, innerHeight - $('.x-band').getBoundingClientRect().bottom - scrollY - 24))}px`);
 }
-// The plate fills the window, so a longer zone is cut at its foot. A cut zone fades there, as on every plate (site.css), and takes a tab stop, so its text can be reached without a mouse; one that fits stays out of the tab order.
-const zones = () => $$('.x-plate.is-live > :is(.plate-claim, .plate-detail, .plate-plot)');
-function reachable() {
-  for (const zone of zones()) {
-    if (!zone.clientHeight) continue; // a hidden panel, measured when it shows
-    zone.classList.toggle('has-more', zone.scrollTop + zone.clientHeight < zone.scrollHeight - 1);
-    if (zone.matches('.x-plot')) continue; // the list box is always a stop
-    if (zone.scrollHeight > zone.clientHeight + 1) zone.tabIndex = 0;
-    else zone.removeAttribute('tabindex');
-  }
-}
-let measuring = false;
-const reachSoon = () => { if (!measuring) { measuring = true; requestAnimationFrame(() => { measuring = false; reachable(); }); } };
 
 for (const n of $$('[data-js]')) n.hidden = false;
+for (const n of $$('.x-plate .plate-more[open]')) n.open = false; // open without scripts, so nothing waits on one; one folded line each with them
 // The parts a default row does not show are made here, and each board's group heads, so the page without scripts carries no empty marks.
 for (const n of $$('.wall-row')) {
   const track = $('.wall-track', n);
@@ -484,16 +504,11 @@ document.documentElement.classList.add('x-live');
 $('#settings').hidden = true;
 drawerSaid(false);
 $$('.x-plate.plate-fit').forEach((n) => n.classList.add('is-live'));
-for (const zone of zones()) {
-  if (!zone.matches('.x-plot')) {
-    zone.setAttribute('role', 'group');
-    zone.setAttribute('aria-label', zone.matches('.plate-claim') ? 'Finding and settings' : zone.matches('.plate-detail') ? 'Detail' : 'Plot');
-  }
-  on(zone, 'scroll', reachSoon);
-  if (window.ResizeObserver) new ResizeObserver(reachSoon).observe(zone); // a panel showing, or the window moving
+for (const zone of $$('.x-plate.is-live > :is(.plate-claim, .plate-detail, .plate-plot:not(.x-plot))')) {
+  zone.setAttribute('role', 'group');
+  zone.setAttribute('aria-label', zone.matches('.plate-claim') ? 'Finding and settings' : zone.matches('.plate-detail') ? 'Detail' : 'Plot');
 }
-on(document, 'toggle', reachSoon, true);
-$$('.x-plate').forEach((plate) => { if ($('.plate-views', plate)) setView(plate, 'reading'); });
+$$('.x-plate').forEach((plate) => { if ($('.plate-views', plate)) { setView(plate, 'reading'); listSources(plate); } });
 $$('[data-d="tokens"]').forEach((slot) => slot.append(...$('#x-tokens').cloneNode(true).children));
 readQuery();
 on(document, 'input', onInput);

@@ -1,0 +1,49 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "atni",
+ "claims": [
+  {
+   "id": "at-001",
+   "entity": "Affiliated Tribes of Northwest Indians",
+   "metric": "year formed",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 1953,
+   "boundary": "The year ATNI's own history gives for the gathering in Spokane, Washington, at which it was formed.",
+   "source": {
+    "title": "Our Story",
+    "publisher": "Affiliated Tribes of Northwest Indians",
+    "url": "https://atnitribes.org/about/our-story/",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "This issue spawned significant concern among northwest tribal leaders, who, in the fall of 1953, came together in Spokane, Washington, to discuss the need for a formal northwest Indian organization. It was here that Joseph R. Garry (Coeur D’Alene), Alex Sherwood (Spokane), Frank George (Colville), George Friedlander (Colville), Paschal J. George (Coeur D’Alene), Clair Wynecoop (Spokane), Alex Saluskin (Yakama), and Sebastian Williams (Tulalip), formed the Affiliated Tribes of Northwest Indians.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "at-002",
+   "entity": "ATNI Energy Program",
+   "metric": "year established",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 1995,
+   "boundary": "The year ATNI gives for establishing its Energy Program; the page gives no separate year for the Energy Committee.",
+   "source": {
+    "title": "Energy Committee",
+    "publisher": "Affiliated Tribes of Northwest Indians",
+    "url": "https://atnitribes.org/committees/energy-commi/",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "ATNI established the ATNI Energy Program in 1995 to ensure tribal rights and interests were represented in power and transmission issues at the Bonneville Power Administration.",
+   "derived": null,
+   "status": "verified"
+  }
+ ]
+}

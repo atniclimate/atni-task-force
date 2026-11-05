@@ -7,11 +7,11 @@
  "model": "comparison-model",
  "by": "boundary",
  "default": "chat",
- "eyebrow": "The same hour",
- "title": "On the same phone, ten text prompts add about {now[chat][activity_added]:.0f} Wh in the data center and an hour of video about {now[video][activity_added]:.0f} Wh in the data center and network; the screen and router add {fixed} Wh to either hour (modeled, 11/2026)",
+ "eyebrow": "The same hour, modeled 11/2026",
+ "title": "An hour of chat and an hour of video overlap: about {now[chat][total]:.0f} and {now[video][total]:.0f} Wh, {fixed} Wh of each your own screen and router",
  "subtitle": "Energy for one hour, in watt-hours, one boundary at a time.",
  "text": [
-  "Resolution #2026-039 set up this task force to identify what member Tribes hold in common on AI. The first question most readers bring is whether their own chat use is the problem, so the page starts there: one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled."
+  "The first question most readers bring is whether their own chat use is the problem, so the page starts there. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled. Resolution #2026-039 set up this task force to identify what member Tribes hold in common on AI."
  ],
  "inputs": {
   "now": {
@@ -71,7 +71,7 @@
    "type": "segmented",
    "name": "boundary",
    "label": "Boundary",
-   "default": "adds",
+   "default": "whole",
    "options": [
     {
      "value": "dc",
@@ -210,7 +210,7 @@
    "options": [
     {
      "value": "measured_delivery",
-     "label": "Measured delivery"
+     "label": "Measured"
     },
     {
      "value": "desnz_followup",
@@ -218,7 +218,7 @@
     },
     {
      "value": "top_down",
-     "label": "Top-down average"
+     "label": "Top-down"
     }
    ]
   },
@@ -240,6 +240,25 @@
    0.01,
    100000
   ],
+  "fit": "data",
+  "off_ruler": [
+   "household"
+  ],
+  "switch": "boundary",
+  "yard": [
+   "bulb",
+   "charge",
+   "tv",
+   "household"
+  ],
+  "shared": {
+   "word": "lighter",
+   "at": {
+    "whole": "the whole hour",
+    "adds": "the data center plus the network",
+    "dc": "the data center alone"
+   }
+  },
   "units": {
    "Wh/hour": "Wh",
    "W": "Wh"
@@ -260,8 +279,7 @@
      "boundary": "whole"
     }
    }
-  ],
-  "fold": true
+  ]
  },
  "fields": {
   "fixed": {
@@ -358,7 +376,7 @@
   {
    "id": "video",
    "label": "Streamed video, one hour",
-   "tag": "Adds 2.05 Wh",
+   "tag": "Adds 2.1 Wh",
    "unit": "Wh",
    "cites": [
     "fp-122",
@@ -500,8 +518,8 @@
     }
    ],
    "cols": {
-    "seg_dc": "0.176",
-    "seg_net": "0.624",
+    "seg_dc": "0.18",
+    "seg_net": "0.62",
     "seg_router": "10",
     "seg_device": "2",
     "evidence": "Data center: modeled; Network: modeled; Router: modeled; Device: modeled from video measurements"
@@ -552,7 +570,7 @@
   },
   {
    "id": "household",
-   "label": "US household, one day",
+   "label": "A US home, one day",
    "unit": "Wh",
    "digits": 4,
    "modeled": false,

@@ -156,7 +156,7 @@ commercial. Excluded: STEO series (different horizon); LBNL (whole facility: nev
 Update)". Data: 2024 192 (dem-028), 2028 464 (dem-033), 2030 649 (dem-029), band 521 to 843 (dem-030), sensitivities 578 and 782 as hollow squares (dem-031, dem-032), EPRI 2030 380 to 790 as a labeled range
 mark (dem-051), 2023 to 2024 growth 14 percent (tr-064); 148 GW (dem-034) and 33 percent of load growth (dem-035) in detail. Form: lines, one series, the 2030 range as a context line with the square; dashed
 from 2024. Controls: year needle only. Detail: value, boundary (servers, storage, network, cooling, power), receipts. Reading: "{year}: {value} TWh for all US data centers ({low} to {high} where a range
-exists). LBNL 2025 Update, whole facility, 06/2026." Table: year, TWh, low, high, case, claims. Excluded: dem-036, dem-037 (superseded edition, used only in the misses plate); EIA servers; BNEF and Grid
+exists). LBNL 2025 Update, whole facility, 06/2026." Table: year, TWh, low, high, case, claims. Excluded: dem-036, dem-037 (superseded edition, on no plate); EIA servers; BNEF and Grid
 Strategies GW (capacity, not energy: detail text only). Projection: 2025 on, dashed.
 
 **`dc-iea-world`** (DC Growth). Question: and the world? Title: "The IEA counts 485 TWh for the world's data centers in 2025, up 17 percent, and about 945 by 2030 in its base case". Data: 2024 415 (dem-046, the
@@ -164,14 +164,21 @@ one id for the three records), 2025 485 (dem-040), 2030 945 (dem-048; dem-041's 
 CO2 150 Mt now to 350 Mt by 2035 (tr-035) in detail. Form: lines, one series, dashed from 2025. Controls: year needle. Detail and Reading as `dc-lbnl-us`, source "IEA, global, 04/2026". Excluded: dem-049 (state
 share, partly); tr-033, tr-034 duplicates. Projection: 2026 on, dashed.
 
-**`dc-forecast-misses`** (DC Growth). Question: how far off were earlier forecasts? Title: "Earlier forecasts missed in both directions: LBNL's 2016 outlook saw 73 billion kWh for 2020 and the 2024 report found
-176 TWh by 2023; EIA's May outlook for 2027 commercial growth was 5.3 percent and October's is 2.8". Data: panel LBNL, US TWh: 2016 vintage 2014 70 (dem-038) to 2020 73 forecast (dem-039); 2024 vintage 2023 176
-(dem-036) with 2028 range 325 to 580 (dem-037); 2025 vintage 2024 192 (dem-028), 2028 464 (dem-033). Panel EIA STEO, 2027 commercial growth: 05/2026 5.3 (dem-023), 10/2026 2.8 (dem-022). Panel BNEF, installed
-GW: 12/2025 106 for 2035 (dem-055), 07/2026 118 for 2030 and 194 for 2035 (dem-053, dem-054). Form: multiples, one panel per source with its own axis (units differ, so no ratio axis); earlier vintages hollow
-and labeled "superseded by ...", the current one filled; forecast segments dashed. Controls: none. Detail: both figures, their dates, the boundary, receipts. Reading: "{source}, {vintage}: {value} {unit} for
-{target year}; the {later} edition gives {value2}. Each edition on its own axis." Table: source, vintage date, target year, value, unit, superseded by. Excluded: fp-047 (streaming, not demand); ratios between
-vintages (no derived claim). Projection: the forecast segments, dashed. This is the one plate that charts ids the critic lists as superseded (dem-023, dem-037, dem-055, dem-036, dem-038, dem-039), always as
-earlier vintages; the owner should confirm.
+**`dc-forecast-check`** (DC Growth; replaces `dc-forecast-misses`, retired 11/05/2026 after a method review found none of its 11 claims paired a forecast with a realized value). Question: how far off were
+earlier projections, where the record holds both a projection and what came after? Title: "Whether an outlook ran high or low depends on its target: 15 editions of 18 put 2023 US electricity sales above what
+happened, and 7 editions of 8 put commercial sales below it". Rule: same target year and same boundary on each row. Data: ruler EIA total sales: 2023 realized 3,874.25 (dem-113) against AEO2013 to AEO2021,
+every second edition (dem-119 to dem-123); 2019 realized 3,811.15 (dem-112) against AEO2009 to AEO2017 (dem-114 to dem-118); counts over every edition 15 of 18 and 12 of 14 (dem-133, dem-132). Ruler EIA
+commercial sales: 2023 realized 1,408.11 (dem-125) against AEO2015 to AEO2021 (dem-128 to dem-131); 2019 realized 1,360.88 (dem-124) against AEO2015 and AEO2017 (dem-126, dem-127); count 7 of 8 (dem-134). Ruler
+LBNL, US data centers, 2020: 73 projected (dem-039) against about 105 and about 103, both read from charts (dem-103, dem-104), differences dem-108 to dem-111; context row, the 2014 base 70 (dem-038) restated
+about 60 (dem-105), with growth 4 percent projected and about 75 estimated (dem-106, dem-107). Ruler Northwest utility plans, growth to 2014: five utilities, base forecast against observed (dem-135 to dem-144).
+Form: ladder with four groups, two by two, as rows and not a drawing, so print, no scripts, ghost rows, and keys are the kit's. A hollow diamond is a projection; a filled circle is reported after the target year;
+an open circle is a later estimate, itself modeled; the bar between is the difference. Shape says projection or not, and fill says only reported or modeled, never how new an edition is. No needle: it would stand at a
+projection and read as what happened. Controls: EIA target year 2023 or 2019 (`fc_target`, over the plot). Detail: the difference at poster size, both figures, what was not checked. Reading per row: "EIA's {edition}
+outlook, published {n} years out, projected {value} for {year}. The realized value is {realized}. Realized minus projection is {difference}, or {percent} of the realized value, so this projection ran {high or low}."
+Table: one line per pair, with earlier figure, later figure, later minus earlier, absolute percent error, source, claims. Excluded: dem-022, dem-023, dem-053 to dem-055 (revisions, or targets not yet reached), which
+stand as one sentence under the plate (`#forecast-revisions`); dem-033, dem-037 (LBNL 2028, not reached, and 464 sits inside 325 to 580); dem-028, dem-036 (other target years). The record does not support a claim
+that data center forecasts miss: only the LBNL ruler counts data centers, and it is one pair read from charts. Departures from the evidence spec's `multiples` and SVG marks, title, and default row are recorded in
+`work/site-refresh/review/W2B-HINDCAST.md`.
 
 **`dc-pnw-load`** (DC Overview, signature). Question: what is coming to the Council region? Title: "The Council's workbook puts data center and chip fab load at 2,475 average megawatts in 2030 (1,513 low, 4,989
 high) in a region that uses 22,000 today". Data: panel Tech load input: 2029 mid 2,198 (dem-076), 2030 2,475 with low and high (dem-073), 2046 2,958 with low and high (dem-074), data centers only 2030 2,020
@@ -351,7 +358,7 @@ library pass after A and B list their sources; (3) the integration run; (4) the 
 | `same-hour-sequence/` | `ai-same-hour`: prompts 2.52, 10, 30, 60; boundary data center, adds, whole hour | still sequence (spec section 5) |
 | `same-hour-vertical.mp4` | `ai-same-hour`, built from comparison-model.json: the prompts sweep, then the boundary switch, captions in the Reading's words | HyperFrames clip 1080x1920, off the site |
 | `heavy-ai-1920.png`, `scale-1920.png` | `ai-heavy-ai` at the phone yardstick; `ai-scale` | stills |
-| `pnw-load-1920.png`, `eia-band-1920.png`, `forecast-misses-1920.png` | `dc-pnw-load`, `dc-eia-servers`, `dc-forecast-misses` | stills |
+| `pnw-load-1920.png`, `eia-band-1920.png`, `forecast-check-1920.png` | `dc-pnw-load`, `dc-eia-servers`, `dc-forecast-check` | stills |
 | `tradeoff-matrix-1920.png`, `occupations-1920.png` | `dc-tradeoff-matrix`, `ai-occupations` | stills |
 | `company-money-1920.png`, `capex-cash-1920.png` | `ai-company-money` (Amazon selected), `ai-capex-cash` (latest fiscal year) | stills |
 

@@ -3,16 +3,14 @@
  "tier": "T0",
  "id": "dc-jobs-per-mw",
  "page": "data-centers/index.html",
- "fit": true,
  "eyebrow": "Jobs",
- "title": "A {j_mw} MW data center implies about {build[text]} construction workers at peak and {ops[text]} permanent operating staff on the published ratios; a county study finds about {other[text]} other local jobs per {j_mw} MW over time",
- "text": [
-  "A data center brings many jobs while it is built and few once it runs. The ratios here are modeled and labeled; the state audits show what tax preferences bought in Washington and Georgia.",
-  "What AI itself does to occupations is on the AI page's Work tab."
- ],
+ "title": "A {j_mw} MW site implies about {build[text]} construction workers at peak and {ops[text]} permanent staff",
+ "subtitle": "All three are modeled, each with its own boundary. The fill reaches the low figure and the outline the high one.",
  "boundary": "Each row has its own boundary, on its receipt.",
+ "default": "build",
  "plot": {
   "type": "instrument",
+  "needle": "mw",
   "units": {
    "million USD": "million dollars",
    "million USD per job": "million dollars per job",
@@ -60,6 +58,24 @@
  "reading": "At {j_mw} MW: {build[text]} construction workers at peak, {ops[text]} operating staff, and about {other[text]} other local jobs eventually, on three modeled ratios with different boundaries. Sources checked 11/04/2026.",
  "rows": [
   {
+   "id": "mw",
+   "label": "Project size",
+   "tag": "One ruler for all four rows: a bar past the needle is more than one job per MW",
+   "unit": "MW",
+   "modeled": false,
+   "formula": {
+    "value": "j_mw"
+   },
+   "domain": [
+    0,
+    500
+   ],
+   "cols": {
+    "per_mw": "",
+    "scope": "The reader's setting"
+   }
+  },
+  {
    "id": "build",
    "label": "Construction, at peak",
    "unit": "workers",
@@ -67,6 +83,10 @@
     "low": "j_mw * cl",
     "high": "j_mw * ch"
    },
+   "domain": [
+    0,
+    500
+   ],
    "equation": "Workers = MW x 0.7 to 2.0",
    "detail": "Direct on-site workers on a modeled range; the work lasts as long as the build.",
    "cols": {
@@ -82,6 +102,10 @@
     "low": "j_mw * ol",
     "high": "j_mw * oh"
    },
+   "domain": [
+    0,
+    500
+   ],
    "equation": "FTE = MW x 0.15 to 0.35",
    "detail": "Direct permanent staff only.",
    "cols": {
@@ -96,6 +120,10 @@
    "formula": {
     "value": "j_mw * county"
    },
+   "domain": [
+    0,
+    500
+   ],
    "equation": "Jobs = MW x 2.7",
    "detail": "A county-level association across all local nonconstruction jobs, not data center staff.",
    "cols": {

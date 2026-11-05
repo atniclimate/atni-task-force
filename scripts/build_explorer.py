@@ -12,6 +12,7 @@ from decimal import Decimal
 import hashlib
 from html import escape
 import json
+from math import ceil, floor, log10
 from pathlib import Path
 import re
 import subprocess
@@ -27,7 +28,7 @@ MODEL = vp.SITE / "data" / "resource-model.json"
 LIMITS = bp.EVIDENCE / "claim-limits.json"
 MARKER = re.compile(r"(<!-- explorer:(?P<name>[\w:.-]+) -->)(.*?)(<!-- /explorer:(?P=name) -->)", re.S)
 POUR = re.compile(r'<span data-m="(?P<spec>[^"]+)">[^<]*</span>')
-CLAIM = re.compile(r"\b(?:au|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
+CLAIM = re.compile(r"\b(?:au|dem|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
 MS = ("wh", "usd", "g", "ml")
 
 SAY = {
@@ -81,7 +82,7 @@ INPUT_NAMES = {
     "fed_moved_share": "share of data moving each month", "cloud_admin_h_month": "cloud paid hours a month", "central_admin_h_month": "central copy paid hours a month",
 }
 WORDS = {
-    "price": {"api_list": "API list", "seat_list": "seat list", "self_run": "self-run, at cost", "revenue_standin": "platform revenue; revenue, not a cost", "paid_subscription": "paid plan", "none": "no price here"},
+    "price": {"api_list": "API list", "seat_list": "seat list", "self_run": "self-run, at cost", "revenue_standin": "platform revenue, not a cost", "paid_subscription": "paid plan", "none": "no price here"},
     "priceLong": {"api_list": "at API list", "seat_list": "at seat list", "self_run": "self-run, at cost with no margin", "revenue_standin": "what the platform earns; revenue, not a cost", "paid_subscription": "paid plan; falls with use", "none": "no price in this view"},
     "heads": {"api_list": "API list", "seat_list": "Seat list", "self_run": "Self-run, at cost", "revenue_standin": "Platform revenue: revenue, not a cost", "paid_subscription": "Paid plan", "none": "No price here"},
     "basin": {"dc": "data center basin, not stated", "cloud": "data center basin, not stated", "fixed": "data center basin, not stated", "home": "home basin", "local": "the node's basin", "colo": "the colocation's basin", "hydro": "the node's declared hydro feed"},
@@ -350,6 +351,19 @@ def row_id(key):
     return "row-" + key.replace(".", "-")
 
 
+def label_html(data, key, st):
+    """A row's label, with its tag under it where it has one: a Catalog row's price basis."""
+    tag = st["tags"].get(key)
+    return f'<span class="ladder-label">{escape(label_text(data, key, st))}{f"""<span class="ladder-tag">{escape(tag)}</span>""" if tag else ""}</span>'
+
+
+def axis_html(ticks, plain):
+    """The wall is the zero, and one step runs out both ways. Left ticks stand in a box as wide as the left side, and a container query drops them when it is narrow, with scripts or without; the box's words stand in for them."""
+    span = lambda t: f'<span style="--x:{t["x"]:.4f}">{escape(t["t"])}</span>'
+    left = "".join(span(t) for t in ticks if t.get("left"))
+    return ("" if plain else f'<div class="wall-axis-left">{left}<i>One scale, both ways</i></div>') + "".join(span(t) for t in ticks if not t.get("left"))
+
+
 def segment(tag, item):
     span = item.get(tag) if item else None
     if not span or span[1] <= 0:
@@ -364,11 +378,9 @@ def wall_row(data, key, st, layout, shown):
     if item and item.get("range"):
         a, w, off = item["range"]
         range_html = f'<i class="wall-range{" " + off if off else ""}" style="left:{pct(a)};width:{pct(w)}"></i>'
-        if off:
-            cell = {**cell, "tag": " ".join(x for x in (cell["tag"], WORDS["off"]) if x)}
     needle = f'<i class="wall-needle" style="left:{pct(item["end"])}"></i>' if item else ""
     hidden = "" if shown else " hidden"
-    return (f'<li class="wall-row" id="{row_id(key)}" data-row="{attr(key)}"{hidden}><span class="ladder-label">{escape(label_text(data, key, st))}</span>'
+    return (f'<li class="wall-row" id="{row_id(key)}" data-row="{attr(key)}"{hidden}>{label_html(data, key, st)}'
             f'<span class="wall-track">{"".join(segment(t, item) for t in ("dev", "rou", "net", "dc"))}{range_html}{needle}</span>'
             f'<span class="ladder-value">{value_html(cell)}</span></li>')
 
@@ -381,14 +393,20 @@ def wall_html(data, board, st):
     plain = " is-plain" if spec.get("plain") else ""
     side = ('<p class="wall-head" aria-hidden="true"><span></span><span class="wall-sides"><span>Your side, by time</span><span>Beyond the wall, by count</span></span><span></span></p>'
             if not spec.get("plain") else '<p class="wall-head" aria-hidden="true"><span></span><span class="wall-sides"><span></span><span>One year of holding the data; stored data has no hour</span></span><span></span></p>')
-    ticks = "".join(f'<span style="--x:{t["x"]:.4f}">{escape(t["t"])}</span>' for t in layout["ticks"])
     note = '<p class="caption wall-gridnote" hidden></p>' if board.startswith("arch.") else ""
+    off = any((layout["items"].get(key) or {}).get("range", [0, 0, ""])[2] for key in visible)
+    # The ruler says this once, under its own axis; the row prints the whole spread in words.
+    caption = f'<p class="caption wall-off" aria-hidden="true"{"" if off else " hidden"}>An open end {escape(WORDS["off"])}; the row prints the whole spread.</p>'
     return (f'<div class="wall{plain}" data-board="{attr(board)}" data-measure="wh" style="--wall:{layout["wall"]:.4f}">{side}<ol class="wall-rows">{rows}</ol>'
-            f'<div class="wall-axis" aria-hidden="true">{ticks}</div>{note}{key_html()}</div>')
+            f'<div class="wall-axis" aria-hidden="true">{axis_html(layout["ticks"], spec.get("plain"))}</div>{caption}{note}{key_html()}</div>')
 
 
 def key_html():
-    return ('<ul class="wall-key" aria-label="Key">' + "".join(f'<li><span class="plate-square w-key-{t}"></span>{escape(WORDS["layer"][t])}</li>' for t in ("dev", "rou", "net", "dc")) +
+    """Each side's two layers, 2px apart as on the bar, with a word on the outside of each. The comma is for a screen reader; the swatches show the pair to everyone else."""
+    def pair(a, b):
+        return (f'<li><span>{escape(WORDS["layer"][a])}<span class="sr-only">, </span></span><span class="wall-key-steps"><span class="plate-square w-key-{a}"></span><span class="plate-square w-key-{b}"></span></span>'
+                f'<span>{escape(WORDS["layer"][b])}</span></li>')
+    return (f'<ul class="wall-key" aria-label="Key">{pair("dev", "rou")}{pair("net", "dc")}'
             '<li><span class="wall-key-range"></span>Spread, not a confidence interval</li></ul>')
 
 
@@ -400,7 +418,7 @@ def ruler_html(data, board, st):
         item = lay["items"].get(key, {})
         style = f'--x:{item["x"]:.4f}' + (f';--lo:{item["lo"]:.4f};--hi:{item["hi"]:.4f}' if item.get("lo") is not None and item.get("hi") is not None else "") if item else ""
         has_range = item.get("lo") is not None and item.get("hi") is not None and item["hi"] > item["lo"]
-        rows.append(f'<li class="ladder-row" id="{row_id(key)}" data-row="{attr(key)}" style="{style}"><span class="ladder-label">{escape(label_text(data, key, st))}</span>'
+        rows.append(f'<li class="ladder-row" id="{row_id(key)}" data-row="{attr(key)}" style="{style}">{label_html(data, key, st)}'
                     f'<span class="ladder-track"><span class="ladder-range"{"" if has_range else " hidden"}></span><span class="ladder-mark"></span></span><span class="ladder-value">{value_html(st["cells"][key])}</span></li>')
     grid = "".join(f'<i style="--x:{t["x"]:.4f}"></i>' for t in lay["ticks"])
     axis = "".join(f'<span style="--x:{t["x"]:.4f}">{escape(t["t"])}</span>' for t in lay["ticks"])
@@ -416,7 +434,8 @@ def lever_html(data, st):
         rows.append(f'<li class="ladder-row x-lever" id="{row_id(key)}" data-row="{attr(key)}" style="{style}"><span class="ladder-label">{escape(data["rows"][key]["label"])}</span>'
                     f'<span class="ladder-track"><span class="ladder-mark is-b"></span><span class="ladder-mark"></span></span><span class="ladder-value">{value_html(value)}</span></li>')
     return (f'<div class="ladder x-ruler" data-board="lever" data-measure="wh"><ol class="ladder-rows">{"".join(rows)}</ol></div>'
-            '<ul class="wall-key" aria-label="Key"><li><span class="plate-square is-hollow"></span>Before</li><li><span class="plate-square"></span>After, at the same setting; the line runs left for a saving and right for a cost; each row has its own ruler from zero</li></ul>')
+            '<p class="caption x-lever-note">The line runs left for a saving and right for a cost; each row has its own ruler from zero.</p>'
+            '<ul class="wall-key" aria-label="Key"><li><span class="plate-square is-hollow"></span>Before</li><li><span class="plate-square"></span>After, at the same setting</li></ul>')
 
 
 def cross_html(data, board, st):
@@ -441,6 +460,25 @@ def cross_html(data, board, st):
     grid = "".join(f'<i style="--x:{t["x"]:.4f}"></i>' for t in lay["ticks"])
     axis = "".join(f'<span style="--x:{t["x"]:.4f}">{escape(t["t"])}</span>' for t in lay["ticks"])
     return f'<div class="ladder x-ruler" data-board="{attr(board)}" data-group="crossover:{board.split(".")[1]}"><div class="ladder-grid">{grid}</div><ol class="ladder-rows">{head}{"".join(rows)}</ol><div class="ladder-axis" aria-hidden="true">{axis}</div></div>'
+
+
+def disclaimer_html(words_):
+    """The first sentence in bold, the rest as body, every word verbatim."""
+    first, _, rest = words_.partition(". ")
+    return f'<p class="x-disclaimer"><strong>{escape(first)}.</strong> {escape(rest)}</p>'
+
+
+def project_example(pub, claims, limits):
+    """The one button on a blank panel, and its sentence: the Data Centers plate's defaults, the operator-average preset, and the region's load in the field's own unit. It picks no feed: that is the reader's. All poured."""
+    controls = {c["name"]: c for c in json.loads((vp.SITE / "data" / "plates" / "dc-project.json").read_text(encoding="utf-8"))["controls"]}
+    region = claims["dem-058"]
+    if region["unit"] != "aMW":
+        raise BuildError(f"the example's load is in aMW and dem-058 now reads {region['unit']}: rewrite it")
+    mw, lf, wue, load = controls["p_mw"]["default"], controls["p_lf"]["default"], pub["inputs"]["wue_site"]["value"], region["value"] * 8760
+    button = f'<button type="button" class="button" data-example data-mw="{mw:g}" data-lf="{lf:g}" data-wue="{wue:g}" data-load="{load:.0f}">Try the Data Centers example: {mw:g} MW at {lf:g}</button>'
+    note = (f'<p class="caption x-start" data-js hidden>The example is the project plate on the Data Centers page at its defaults, an illustration and not a proposal: {mw:g} MW at a load factor of {lf:g}. Site water is the operator average (tr-009). '
+            f'The load is the region\'s {region["value"]:,g} aMW, which is {load:,.0f} MWh a year at 8,760 hours. {claim_words(["dem-058"], claims, limits, str)} It picks no feed, so CO2e waits for you to choose one.</p>')
+    return button, note
 
 
 def segmented(name, legend, stops, checked, data_attr, extra=""):
@@ -484,18 +522,32 @@ FIELD_WORDS = {
     "streaming": ("Streaming hours", "Netflix or YouTube at the device's data rate."),
     "gb": ("Gigabytes stored", "Cloud drives only, in three copies, for one week. In Office mode each seat holds this many, and the row prints beside the seats, not added."),
 }
-FIELD_NAMES = {"social": "Instagram or TikTok. ", "streaming": "Netflix or YouTube. "}  # the rows name the unit; the fields name the platforms
+FIELD_NAMES = {"social": "Instagram or TikTok.", "streaming": "Netflix or YouTube."}  # the rows name the unit; the fields name the platforms
+FIRST_FIELDS = ("screen", "chat", "coding", "streaming")  # the four that move the number most; the others wait under More inputs
+
+
+def count_words(n, one, many):
+    return f"{n:,} {one if n == 1 else many}"
 
 
 def fields_html(data):
-    cells = []
-    for key, (label, why) in FIELD_WORDS.items():
-        default = data["fields"][key]
-        cells.append(f'<div class="x-field"><label for="f-{key}">{escape(label)}</label><input id="f-{key}" type="number" min="0" step="any" inputmode="decimal" value="{default}" data-field="{key}" data-why-text="{attr(why)}"><span class="caption">{FIELD_NAMES.get(key, "")}Model default {default:,}</span></div>')
+    f = data["fields"]
+
+    def cell(key):
+        label, why = FIELD_WORDS[key]
+        platform = f'<span class="caption">{escape(FIELD_NAMES[key])}</span>' if key in FIELD_NAMES else ""
+        return f'<div class="x-field"><label for="f-{key}">{escape(label)}</label><input id="f-{key}" type="number" min="0" step="any" inputmode="decimal" value="{f[key]}" data-field="{key}" data-why-text="{attr(why)}">{platform}</div>'
+
     seats = data["scenario"]["office_users"]
-    cells.insert(0, f'<div class="x-field" data-office hidden><label for="f-seats">Staff seats</label><input id="f-seats" type="number" min="1" step="1" inputmode="numeric" value="{seats}" data-field="seats" data-why-text="Office mode multiplies every field by the seats, then adds the seat row at seat list."><span class="caption">Model default {seats:,}</span></div>')
+    first = (f'<div class="x-field" data-office hidden><label for="f-seats">Staff seats</label><input id="f-seats" type="number" min="1" step="1" inputmode="numeric" value="{seats}" data-field="seats" data-why-text="Office mode multiplies every field by the seats, then adds the seat row at seat list."></div>' +
+             "".join(cell(k) for k in FIRST_FIELDS))
+    rest = "".join(cell(k) for k in FIELD_WORDS if k not in FIRST_FIELDS)
+    say_first = ", ".join((count_words(f["screen"], "screen hour", "screen hours"), count_words(f["chat"], "prompt", "prompts"), count_words(f["coding"], "coding hour", "coding hours"), count_words(f["streaming"], "streaming hour", "streaming hours")))
+    say_rest = ", ".join((count_words(f["images"], "image", "images"), count_words(f["clips"], "clip", "clips"), count_words(f["searches"], "search", "searches"), count_words(f["social"], "social video hour", "social video hours"), f'{f["gb"]:,} GB stored'))
     mode = segmented("mode", "Who is counted", [("person", "One person"), ("office", "An office")], "person", 'data-opt="mode"')
-    return f'{mode}<p class="caption x-start">A starting point: one hour of each activity in a week at the model\'s rates. Change any field.</p><div class="x-fields">{"".join(cells)}</div><p class="caption x-why" data-why role="status">Focus a field to see why it starts where it does.</p>'
+    return (f'{mode}<div class="x-fields">{first}</div><p class="caption x-defaults">Defaults: {escape(say_first)}</p><p class="caption x-why" data-why role="status"></p>'
+            f'<details class="plate-more x-more-inputs" open><summary>More inputs</summary><div class="x-fields">{rest}</div><p class="caption x-defaults">Defaults: {escape(say_rest)}</p>'
+            f'<p class="caption x-start">A starting point: one hour of each activity in a week at the model\'s rates. Change any field.</p></details>')
 
 
 def big_html(f):
@@ -505,31 +557,48 @@ def big_html(f):
 def readout_html(value, unit, qual, marks=True):
     """The figure and its unit on one line, what it counts under them; the same on every tab. The waffle's readouts are not live, so they carry no data-d."""
     mark = (lambda name: f' data-d="{name}"') if marks else (lambda name: "")
-    long_value = " is-long" if len(value) >= 8 else ""
-    return (f'<p class="readout{long_value}"><span class="readout-value"{mark("value")}>{escape(value)}</span> <span class="x-unit"{mark("unit")}>{escape(unit)}</span>'
+    long_value = " is-long" if len(value) >= 9 else ""
+    return (f'<p class="readout{long_value}" style="--chars:{max(1, len(value))}"><span class="readout-value"{mark("value")}>{escape(value)}</span> <span class="x-unit"{mark("unit")}>{escape(unit)}</span>'
             f'<span class="readout-unit"{mark("qual")}>{escape(qual)}</span></p>')
 
 
-def detail_html(name, st, data, extra="", kind="row", table="", under_reading=""):
+def price_word(data, key):
+    """The price's basis in few words, beside its figure. The dated long form waits under How this is modeled."""
+    row = data["rows"][key]
+    return row.get("pt") or (WORDS["price"][row["pb"]] if row["pb"] != "none" else row.get("pn") or WORDS["price"]["none"])
+
+
+def basin_word(tag):
+    """A water figure's basin without its convention: the model writes them as "basin, convention", and the convention has no comma."""
+    return tag.rsplit(",", 1)[0]
+
+
+def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled="", table_extra=""):
+    """A plate's first screen is the poster, its companions, the Reading, Copy and Reset, and one line of receipts. How it is modeled folds up, and receipts live in Sources.
+    extra is the custom kinds' readout and Reading; also is a further disclosure after How this is modeled; modeled joins that disclosure; table_extra stands over the table."""
     views = ('<fieldset class="segmented plate-views" data-js hidden><legend class="sr-only">Detail view</legend>' +
              "".join(f'<label><input type="radio" name="view-{name}" value="{v}"{" checked" if v == "reading" else ""}><span>{t}</span></label>' for v, t in (("reading", "Reading"), ("sources", "Sources"), ("table", "Table"))) + "</fieldset>")
     d = st["details"].get(name) if kind == "row" else None
     if kind == "row":
-        water = "".join(f'<span class="x-figure"><strong class="x-big">{big_html(w)}</strong><span class="caption">{escape(w["tag"])}</span></span>' for w in d["water"])
+        key = data["first"][name]
+        water = "".join(f'<span class="x-figure"><strong class="x-big">{big_html(w)}</strong><span class="caption">{escape(basin_word(w["tag"]))}</span></span>' for w in d["water"])
         layers = "".join(f'<li><span class="plate-square w-key-{x["tag"]}{"" if x["on"] else " is-hollow"}"></span><strong>{escape(x["text"])}</strong><span>{escape(x["label"])}</span></li>' for x in d["layers"])
         body = (readout_html(d["value"], d["unit"], d["qual"]) +
-                f'<div class="x-measures"><div class="x-figure"><strong class="x-big" data-d="price">{escape(d["price"])}</strong><span class="caption" data-d="price-tag">{escape(d["priceTag"])}</span></div>'
-                f'<div class="x-figure"><strong class="x-big" data-d="co2">{big_html(d["co2"])}</strong><span class="caption" data-d="co2-tag">{escape(d["co2Tag"])}</span></div>'
+                f'<div class="x-measures"><div class="x-figure"><strong class="x-big" data-d="price">{escape(d["price"])}</strong><span class="caption" data-d="price-word">{escape(price_word(data, key))}</span></div>'
+                f'<div class="x-figure"><strong class="x-big" data-d="co2">{big_html(d["co2"])}</strong><span class="caption">location-based</span></div>'
                 f'<div class="x-water" data-d="water">{water}</div></div>'
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>{under_reading}'
-                f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p><div class="x-tokens" data-d="tokens" hidden></div>')
+                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>')
+        modeled = (f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p>'
+                   f'<p class="caption">Price: <span data-d="price-tag">{escape(d["priceTag"])}</span>. CO2e: <span data-d="co2-tag">{escape(d["co2Tag"])}</span>. Water: <span data-d="water-basis">{escape("; ".join(w["tag"] for w in d["water"]))}</span>.</p>'
+                   f'<div class="x-tokens" data-d="tokens" hidden></div>')
     else:
         body = extra
-    actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
-    after = extra if kind == "row" else ""
-    return (f'{views}<div class="plate-view" data-view="reading">{body}{actions}{after}<div data-d="note" class="x-note-slot" data-js hidden></div><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div></div>'
-            f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
-            f'<div class="plate-view" data-view="table"><p class="label">Table</p><div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>')
+    actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button button-secondary" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
+    tally = '<button type="button" class="plate-tally" data-tally hidden></button>'
+    more = f'<details class="plate-more x-modeled" open><summary>How this is modeled</summary>{modeled}<div data-d="note" class="x-note-slot" data-js hidden></div></details>'
+    return (f'{views}<div class="plate-view" data-view="reading">{body}{more}{also}{actions}{tally}</div>'
+            f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
+            f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>')
 
 
 def rows_table(data, keys, st, caption, group=None, cites=None):
@@ -673,11 +742,9 @@ def waffles_html(claims, limits):
             figure = f"{share} percent"
             line = f'{w["ai"]} of {w["of"]} {w["unit"]}' if w["unit"] == "TWh" else f'{w["ai"]} percent of data center energy'
         limit = limit_of(w["claim"], claims, limits) if claim["status"] == "partly" else ""
-        limit_line = "<span>Limit: " + escape(limit) + "</span>" if limit else ""
         out.append(f'<div class="x-waffle" data-group="waffle:{key}"><figure><div class="x-waffle-art" role="img" aria-label="{attr(w["label"])}: {attr(figure)} AI of one hundred squares">{waffle_svg(filled, hollow)}</div>'
-                   f'<figcaption><strong>{escape(w["label"])}: {escape(figure)}</strong><span>{escape(line)}. {escape(w["def"])}</span>'
-                   f'<span class="x-waffle-rest">The rest: search, video, storage, email, business software: not split in the record.</span>'
-                   f'{limit_line}{chips([w["claim"]], claims)}</figcaption></figure></div>')
+                   f'<figcaption><strong>{escape(w["label"])}: {escape(figure)}</strong><span>{escape(line)}.</span>'
+                   f'<span class="x-waffle-rest">The rest: search, video, storage, email, business software: not split in the record.</span></figcaption></figure></div>')
     return "".join(out)
 
 
@@ -688,14 +755,16 @@ def waffle_detail(claims, limits):
         value = f'{w["low"]} to {w["high"]}' if "low" in w else str(round(100 * w["ai"] / w["of"]))
         limit = limit_of(w["claim"], claims, limits) if claim["status"] == "partly" else ""
         limit_line = '<p class="caption">Limit: ' + escape(limit) + "</p>" if limit else ""
+        status = "1 partly verified" if claim["status"] == "partly" else "1 verified"
         out.append(f'<div data-group="waffle:{key}">{readout_html(value, "percent", w["label"], marks=False)}<p class="reading">{escape(w["def"])}</p>'
-                   f'{limit_line}<p class="caption">{escape(claim["source"]["publisher"])}. {escape(claim["boundary"] or "")}</p>{chips([w["claim"]], claims)}</div>')
+                   f'{limit_line}<p class="x-this-figure"><a href="#about-{key}" data-about>This figure: {status}</a>; <a class="x-c" href="#src-{w["claim"]}">{w["claim"]}</a></p>'
+                   f'<details class="plate-more" id="about-{key}" open><summary>About this figure</summary><p class="caption">{escape(claim["source"]["publisher"])}. {escape(claim["boundary"] or "")}</p></details></div>')
     return "".join(out)
 
 
 def strip_svg(values, per=0.05):
-    """One 20px square per unit, five to a row, so the columns can be counted; the last square is cut to its fraction."""
-    pitch, size, across = 22, 20, 5
+    """One 12px square per unit, five to a row, so the columns can be counted; the last square is cut to its fraction."""
+    pitch, size, across = 14, 12, 5
     n = values / per
     whole = int(n)
     d = "".join(f"M{(i % across) * pitch} {(i // across) * pitch}h{size}v{size}h-{size}z" for i in range(whole))
@@ -707,24 +776,28 @@ def strip_svg(values, per=0.05):
     return f'<svg viewBox="0 0 {across * pitch - 2} {rows * pitch - 2}" width="{across * pitch - 2}" height="{rows * pitch - 2}" aria-hidden="true"><path class="x-w-ai" d="{d}"/></svg>'
 
 
-def place_strip(pub):
+def place_columns(pub):
     """The same short prompt, one square per 0.05 Wh. Three places run the same model; the devices run a small one, added energy only."""
     places = {p["key"]: p for p in pub["places"]}
     tree = {f"where.prompt.{place}.wh": r["energy_wh"]["value"] for place, r in pub["where_it_runs"]["prompt"]["places"].items()}
     tree.update({r["key"] + ".wh": r["energy_wh"]["value"] for r in pub["architectures"]["D"]["options"]})
     pues = lambda p: f'PUE {p["pue"]["value"]}' if p.get("pue") else "PUE not applicable"
     water = lambda p: f'site water {p["site_water"]["value"]} L per kWh'
-    cols = [
+    return [
         ("Hyperscale", tree["where.prompt.hyper.wh"], f'{pues(places["hyper"])}, utilization {places["hyper"]["u"]["value"]}, {water(places["hyper"])}; {places["hyper"]["grid_default"]}.', ""),
         ("Regional colocation", tree["where.prompt.colo.wh"], f'{pues(places["colo"])}, utilization {places["colo"]["u"]["value"]}, {water(places["colo"])}; {places["colo"]["grid_default"]}.', ""),
         ("Community node", tree["where.prompt.node.wh"], f'{pues(places["node"])}, utilization {places["node"]["u"]["value"]}, {water(places["node"])}; the local grid; a low utilization is its idle floor.', ""),
         ("Laptop", tree["arch.D.laptop.wh"] / 1000, "Small model; the reader's grid; no site water.", "device"),
         ("Phone", tree["arch.D.phone.wh"] / 1000, f'Small model; the reader\'s grid; no site water; {num(tree["arch.D.phone_wall.wh"] / 1000)} Wh at the wall.', "device"),
     ]
-    html = []
-    for label, wh, words_, kind in cols:
-        html.append(f'<li class="x-place{" is-device" if kind else ""}"><strong>{escape(label)}</strong><span class="x-place-art">{strip_svg(wh)}</span><span class="x-place-wh">{num(wh)} Wh</span><span class="caption">{escape(words_)}</span></li>')
-    return "".join(html)
+
+
+def place_strip(pub):
+    return "".join(f'<li class="x-place{" is-device" if kind else ""}"><strong>{escape(label)}</strong><span class="x-place-art">{strip_svg(wh)}</span><span class="x-place-wh">{num(wh)} Wh</span></li>' for label, wh, _, kind in place_columns(pub))
+
+
+def place_notes(pub):
+    return "".join(f"<li><strong>{escape(label)}.</strong> {escape(words_)}</li>" for label, _, words_, _ in place_columns(pub))
 
 
 def table_of(head, rows, caption="", first_is_header=True):
@@ -962,15 +1035,23 @@ def build():
     def lever_first():
         key = data["first"]["lever"]
         r = st["levers"][key]
-        lines = "".join(f'<li>{WORDS["measure"][m]}: {escape(r[m]["before_text"])} then {escape(r[m]["after_text"])}{", " + r[m]["ratio_text"] if r[m]["ratio_text"] else ""}</li>' for m in MS)
         return (readout_html(r["wh"]["ratio_text"], "", "after over before, energy") +
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(r["wh"]["before_text"])} before, {escape(r["wh"]["after_text"])} after, at the same setting. Modeled, not measured; a per-unit saving is not a total one.</output><ul class="x-lines" data-d="lines">{lines}</ul>')
+                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(r["wh"]["before_text"])} before, {escape(r["wh"]["after_text"])} after, at the same setting. Modeled, not measured; a per-unit saving is not a total one.</output>')
+
+    def lever_lines():
+        r = st["levers"][data["first"]["lever"]]
+        lines = "".join(f'<li>{WORDS["measure"][m]}: {escape(r[m]["before_text"])} then {escape(r[m]["after_text"])}{", " + r[m]["ratio_text"] if r[m]["ratio_text"] else ""}</li>' for m in MS)
+        return f'<ul class="x-lines" data-d="lines">{lines}</ul>'
 
     def cross_first():
         key = data["first"]["cross"]
         c = st["cross"]["cross.prompts"]["items"][key]
         return (readout_html(c["words"]["num"], c["words"]["unit"], c["words"]["tag"][1:-1]) +
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(c["text"])}. A range from one change at a time, not a forecast.</output><p class="caption" data-d="ends">{escape(c["ends"])}</p>')
+                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(c["text"])}. A range from one change at a time, not a forecast.</output>')
+
+    def cross_ends():
+        c = st["cross"]["cross.prompts"]["items"][data["first"]["cross"]]
+        return f'<p class="caption" data-d="ends">{escape(c["ends"])}</p>'
 
     def workload_controls():
         stops = [(w, s["label"]) for w, s in pub["where_it_runs"].items()]
@@ -985,6 +1066,7 @@ def build():
 
     blocks = {
         "title:use": lambda: escape(st["title"]),
+        "eyebrow:use": lambda: f'Your week, modeled {pub["price_date"][:2]}/{pub["price_date"][6:]}',
         "settings:list": lambda: "".join(f'<li>{escape(SETTING_NAMES[n])}: {escape(data["sel"][n]["say"][data["sel"][n]["def"]])}</li>' for n in data["sel"]),
         "qual:ai": lambda: "".join(f"<li>{escape(x)}</li>" for x in pub["qualitative"]["ai_is_not_data_centers"]),
         "project:formula": lambda: f'<p class="x-formula">{escape(pub["project_scale"]["formula"])}</p>',
@@ -992,12 +1074,13 @@ def build():
         "drawer": lambda: drawer_html(pub, data),
         "controls:use": lambda: measure_html("use") + fields_html(data),
         "plot:use": lambda: wall_html(data, "use", st),
-        "detail:use": lambda: detail_html("use", st, data, extra=week_html(st), table=table_for("use")),
+        "detail:use": lambda: detail_html("use", st, data, table=table_for("use"), table_extra=week_html(st)),
         "notes:use": lambda: notes_for(pub, "use", claims, limits),
         "waffle:plot": lambda: waffles_html(claims, limits),
         "waffle:control": lambda: segmented("waffle", "Which figure", [(k, w["label"]) for k, w in WAFFLES.items()], "iea_2025", 'data-opt="waffle"') + '<p class="sr-only" role="status" data-waffle-status></p>',
         "waffle:detail": lambda: waffle_detail(claims, limits),
         "places": place_strip_block,
+        "places:notes": lambda: place_notes(pub),
         "controls:where": workload_controls,
         "plot:where": lambda: "".join(f'<div data-group="workload:{w}">{wall_html(data, "where." + w, st)}</div>' for w in pub["where_it_runs"]),
         "detail:where": lambda: detail_html("where", st, data, table=table_for("where")),
@@ -1005,15 +1088,15 @@ def build():
         "controls:arch": arch_controls,
         "controls:arch-money": lambda: setting_html(pub, data, "wage", "arch-", why=False) + setting_html(pub, data, "node_already_on", "arch-", why=False),
         "plot:arch": lambda: "".join(f'<div data-group="comparison:{letter}">{wall_html(data, "arch." + letter, st)}</div>' for letter in pub["architectures"]),
-        "detail:arch": lambda: detail_html("arch", st, data, extra=arch_words(pub, data, st), table=table_for("arch"), under_reading=arch_pairs(pub, data)),
+        "detail:arch": lambda: detail_html("arch", st, data, table=table_for("arch"), also=f'<details class="plate-more" open><summary>What wins, what loses, and what reverses it</summary>{arch_words(pub, data, st)}{arch_pairs(pub, data)}</details>'),
         "notes:arch": lambda: notes_for(pub, "arch", claims, limits),
         "controls:lever": lambda: measure_html("lever"),
         "plot:lever": lambda: lever_html(data, st),
-        "detail:lever": lambda: detail_html("lever", st, data, extra=lever_first(), kind="custom", table=table_for("lever")),
+        "detail:lever": lambda: detail_html("lever", st, data, extra=lever_first(), kind="custom", table=table_for("lever"), modeled=lever_lines()),
         "notes:lever": lambda: notes_for(pub, "lever", claims, limits),
         "controls:cross": lambda: segmented("crossover", "Comparison", [("prompts", "Prompts"), ("views", "Views")], "prompts", 'data-opt="crossover"'),
         "plot:cross": lambda: cross_html(data, "cross.prompts", st) + cross_html(data, "cross.views", st),
-        "detail:cross": lambda: detail_html("cross", st, data, extra=cross_first(), kind="custom", table=table_for("cross")),
+        "detail:cross": lambda: detail_html("cross", st, data, extra=cross_first(), kind="custom", table=table_for("cross"), modeled=cross_ends()),
         "notes:cross": lambda: notes_for(pub, "cross", claims, limits),
         "controls:catalog": lambda: segmented("scale", "View", [("hour", "By the hour"), ("unit", "By the unit")], "hour", 'data-opt="scale"') + segmented("sort", "Sort within a ruler", [("value", "By value"), ("tag", "By price basis")], "value", 'data-opt="sort"') + measure_html("catalog"),
         "plot:catalog": lambda: f'<div data-group="scale:hour"><p class="ladder-group-label">By the hour, the whole chain</p>{wall_html(data, "catalog.hour", st)}</div><div data-group="scale:unit"><p class="ladder-group-label">By the unit, data center only</p>{ruler_html(data, "catalog.unit", st)}</div>',
@@ -1022,7 +1105,9 @@ def build():
         "project:cooling": lambda: "".join(f'<button type="button" class="slider-presets-button" data-preset="{v}" data-for="wue">{escape(t)}</button>' for v, t in (
             (pub["inputs"]["wue_local"]["value"], f'Dry, {pub["inputs"]["wue_local"]["value"]:g}'), (pub["inputs"]["wue_site"]["value"], f'Operator average, {pub["inputs"]["wue_site"]["value"]:g}'), (pub["inputs"]["wue_tower"]["value"], f'Cooling tower midpoint, {pub["inputs"]["wue_tower"]["value"]:g}'))),
         "project:grids": lambda: "".join(f'<option value="{v}">{escape(GRID_NAMES.get(o, o))}, {v:g} g per kWh</option>' for o, v in project_grids(pub)),
-        "method:disclaimer": lambda: f'<p class="x-disclaimer">{escape(pub["disclaimer"])}</p>',
+        "project:example": lambda: project_example(pub, claims, limits)[0],
+        "project:example-note": lambda: project_example(pub, claims, limits)[1],
+        "method:disclaimer": lambda: disclaimer_html(pub["disclaimer"]),
         "method:backtest": lambda: backtest_html(pub),
         "method:calibration": lambda: calibration_html(pub),
         "method:regression": lambda: regression_html(pub),
@@ -1064,14 +1149,8 @@ def build():
     final = body + sep + json_block + end + rest
     final = MARKER.sub(lambda m: f"{m[1]}{sources_html(ids, claims, limits)}{m[4]}" if m["name"] == "sources" else m[0], final)
     PAGE.write_bytes(final.encode("utf-8"))
-    home = HOME.read_text(encoding="utf-8")
-    band = band_html(pub, data, st, claims, limits)
-    poured = MARKER.sub(lambda m: f"{m[1]}{band}{m[4]}" if m["name"] == "home:band" else m[0], home)
-    if "<!-- explorer:home:band -->" not in home:
-        raise BuildError("site/index.html lacks the marker explorer:home:band")
-    if poured != home:
-        HOME.write_bytes(poured.encode("utf-8"))
-    return {"page_bytes": len(final.encode("utf-8")), "inline_data_bytes": len(json_block), "claims_on_page": len(ids), "partly": sum(claims[i]["status"] == "partly" for i in ids), "home_band_bytes": len(band.encode("utf-8"))}
+    home_bytes = pour_home(pub, data, st, claims, limits)
+    return {"page_bytes": len(final.encode("utf-8")), "inline_data_bytes": len(json_block), "claims_on_page": len(ids), "partly": sum(claims[i]["status"] == "partly" for i in ids), "home_band_bytes": home_bytes}
 
 
 def project_grids(pub):
@@ -1085,7 +1164,7 @@ def project_grids(pub):
 def week_html(st):
     w = st["weekWords"]
     line = lambda label, key, hidden="": f'<p class="caption x-week-line"{hidden}><span>{label}</span> <strong data-w="{key}">{escape(w[key])}</strong></p>'
-    return ('<div class="x-week" data-d="week"><p class="label">This week, across the rows</p>' +
+    return ('<div class="x-week" data-d="week"><h4 class="x-week-title">This week, across the rows</h4>' +
             line("At API list", "list") + line("What platforms earn in those hours; revenue, not a cost", "earned") + line("Seat and storage list", "seat", " hidden") +
             f'<p class="caption x-week-line"><span>CO2e across layers, <span data-w="grids">{escape(w["grids"])}</span></span> <strong data-w="g">{escape(w["g"])}</strong></p>'
             f'<p class="caption x-week-line"><span data-w="cloud-tag">{escape(w["cloud-tag"])}</span> <strong data-w="cloud">{escape(w["cloud"])}</strong></p>'
@@ -1093,30 +1172,173 @@ def week_html(st):
             '<p class="caption x-check" data-check hidden></p></div>')
 
 
-BAND_STOPS = (("chat_hour", "Chat", "An hour of chat"), ("video_hour", "Streaming video", "An hour of streaming video"), ("short_hour", "Short video", "An hour of short video"), ("coding_hour", "Agentic coding", "An hour of agentic coding"))
+# The home page: the first screen's ladder and its receipts, the Explorer's model at its default settings, poured so the home page loads none of it. --------
+HOME_ROWS = (("chat_hour", "Chat, {prompts} prompts", "An hour of chat"), ("video_hour", "Streaming video", "An hour of streaming video"), ("short_hour", "Short video", "An hour of short video"), ("coding_hour", "Agentic coding", "An hour of agentic coding"))
+HOME_STOPS = {"dc": ("Data center only", "inside the data center alone"), "adds": ("Plus network", "the data center plus the network"), "whole": ("Whole hour", "the whole chain from the data center to your screen")}
+HOME_DEFAULT = "whole"
 
 
-def band_html(pub, data, st, claims, limits):
-    """The home page's Explorer band: the Explorer's model at its default settings, poured here, so the home page loads none of it. The figure is energy, so it carries the energy claims."""
-    rows = {r["key"]: r for r in pub["catalog"]}
+def home_label(data, label):
+    return label.format(prompts=data["sel"]["prompts_per_hour"]["def"])
+
+
+def home_stop(stop, st, data):
+    """One boundary of the ladder: a ruler in whole decades around what it counts, each row's place and words, and the ground a selected row shares, by the kit's rules (fitRuler and sharedOf in plate.js)."""
+    band = st["band"]
+    keys = [key for key, _, _ in HOME_ROWS]
+    cells = {key: band[key]["stops"][stop] for key in keys}
+    ends = [v for f in cells.values() for v in (f["value"], f["lo"], f["hi"])]
+    low = floor(log10(min(ends)))
+    high = max(low + 1, ceil(log10(max(ends))))
+    at = lambda v: round((log10(v) - low) / (high - low), 4)
     say = lambda name: data["sel"][name]["say"][data["sel"][name]["def"]]
-    radios = "".join(f'<label><input type="radio" name="explorer-band" value="{key}"{" checked" if i == 0 else ""}><span>{escape(stop)}</span></label>' for i, (key, stop, _) in enumerate(BAND_STOPS))
-    link = lambda claim_id: f'<a href="explorer/#src-{claim_id}">{claim_id}</a>'
-    stops = []
-    for key, _, lead in BAND_STOPS:
-        f = st["band"][key]
-        ids = [claim_id for claim_id in rows[f"catalog.{key}"]["claims"] if not claim_id.startswith("px-")]
-        verified = [claim_id for claim_id in ids if claims[claim_id]["status"] != "partly"]
-        receipts = ([f'{", ".join(map(link, verified))}: verified against the source.'] if verified else []) + [f'{link(claim_id)}: partly verified. Limit: {escape(limit_of(claim_id, claims, limits))}' for claim_id in ids if claims[claim_id]["status"] == "partly"]
+    rows = {}
+    for i, (key, _, lead) in enumerate(HOME_ROWS):
+        f = cells[key]
         if f["unit"] != "Wh":
-            raise BuildError(f"the home band says watt-hours, and {key} now reads {f['unit']}: rewrite its sentence")
-        reading = f'{lead} on a {say("device").lower()} over {say("connection")}, the whole chain from the data center to your screen: about {f["num"]} watt-hours {f["tag"]}, and {f["screen"]} of them go to your own screen and router.'
-        stops.append(f'<li data-stop="{key}"><p class="readout"><span class="readout-value">{escape(f["num"])}</span> <span class="explorer-band-unit">{escape(f["unit"])}</span></p>'
-                     f'<div class="explorer-band-words"><p class="explorer-band-reading">{escape(reading)}</p><p class="caption">{" ".join(receipts)}</p></div></li>')
-    return (f'<div class="explorer-band-about"><h2 id="explorer-band-title">Resource Use Explorer</h2><p>The energy, carbon, water, and price of AI, video, search, and cloud software, at settings you choose. Nothing you enter leaves your browser.</p>'
+            raise BuildError(f"the home ladder says watt-hours, and {key} at {stop} now reads {f['unit']}: rewrite its sentence")
+        tail = f', and {band[key]["screen"]} of them go to your own screen and router.' if stop == "whole" else "; your own screen and router are not counted here."
+        ground, words, hits = [f["lo"], f["hi"]], [f["lo_text"], f["hi_text"]], [i]
+        for j, other in enumerate(keys):  # in row order, a row that would empty the ground is left out of it
+            g = cells[other]
+            if other != key and max(ground[0], g["lo"]) <= min(ground[1], g["hi"]):
+                if g["lo"] > ground[0]:
+                    ground[0], words[0] = g["lo"], g["lo_text"]
+                if g["hi"] < ground[1]:
+                    ground[1], words[1] = g["hi"], g["hi_text"]
+                hits.append(j)
+        shared = {"lo": at(ground[0]), "hi": at(ground[1]), "from": min(hits), "to": max(hits), "say": f"Shared ground, {words[0]} to {words[1]} Wh", "flip": at(f["value"]) >= at(ground[1]) or at(ground[0]) > 0.6} if len(hits) > 1 else None
+        rows[key] = {"x": at(f["value"]), "lo": at(f["lo"]), "hi": at(f["hi"]), "num": f["num"], "tag": f["tag"], "shared": shared,
+                     "reading": f'{lead} on a {say("device").lower()} over {say("connection")}, {HOME_STOPS[stop][1]}: about {f["num"]} watt-hours {f["tag"]}{tail}'}
+    return {"ticks": [[at(10.0 ** k), f"{10.0 ** k:,g}"] for k in range(low, high + 1)], "fixed": at(band[keys[0]]["fixed"]) if stop == "whole" else None, "rows": rows}
+
+
+def band_html(pub, data, st):
+    """The instrument: the poster at the first row, the Reading, and the ladder at the whole hour, with every boundary in one small block for explorer-band.js. The figure is energy."""
+    band = st["band"]
+    stops = {stop: home_stop(stop, st, data) for stop in HOME_STOPS}
+    whole = stops[HOME_DEFAULT]
+    first_key, first_label, _ = HOME_ROWS[0]
+    first = whole["rows"][first_key]
+    fixed = {band[key]["fixed"] for key, _, _ in HOME_ROWS}
+    if len(fixed) != 1:
+        raise BuildError(f"the home ladder draws one line for the screen and router, and the rows now differ: {sorted(fixed)}")
+    built = pub["built"]
+    rows = "".join(
+        f'<label class="ladder-row{" is-on" if key == first_key else ""}" data-row="{key}" style="--x:{whole["rows"][key]["x"]};--lo:{whole["rows"][key]["lo"]};--hi:{whole["rows"][key]["hi"]}">'
+        f'<input type="radio" name="home-row" value="{key}"{" checked" if key == first_key else ""} hidden><span class="ladder-label">{escape(home_label(data, label))}</span>'
+        f'<span class="ladder-track"><span class="ladder-range"></span><span class="ladder-mark is-hollow"></span></span>'
+        f'<span class="ladder-value"><span class="ladder-num">{escape(whole["rows"][key]["num"])}</span> <span class="ladder-tag">{escape(whole["rows"][key]["tag"])}</span> <span class="ladder-unit">Wh</span></span></label>'
+        for key, label, _ in HOME_ROWS)
+    ticks = "".join(f'<i style="--x:{x}"></i>' for x, _ in whole["ticks"])
+    axis = "".join(f'<span style="--x:{x}">{escape(words)}</span>' for x, words in whole["ticks"])
+    return (f'<div class="home-read"><h2 id="instrument-title">The same hour on the same phone</h2>'
+            f'<div class="home-figure"><p class="readout"><span class="readout-value">{escape(first["num"])}</span> <span class="readout-unit">Wh</span></p>'
+            f'<p class="reading">{escape(first["reading"])}</p><p class="home-modeled">Modeled, {built[5:7]}/{built[:4]}</p></div><p class="sr-only" role="status" data-band-status></p></div>'
+            f'<div class="home-plot"><fieldset class="ladder" data-form="square" style="--at:{first["x"]}"><legend class="sr-only">One hour of</legend>'
+            f'<div class="ladder-grid" aria-hidden="true">{ticks}<span class="ladder-shared" hidden><span class="ladder-shared-label"></span></span>'
+            f'<i class="ladder-tick is-right" style="--x:{whole["fixed"]}"><span>Screen and router, {escape(band[first_key]["screen"])} Wh</span></i>'
+            f'<i class="ladder-needle"><span class="needle-label">{escape(home_label(data, first_label))}</span></i></div>'
+            f'<div class="ladder-rows">{rows}</div><div class="ladder-axis" aria-hidden="true">{axis}</div></fieldset>'
+            f'<p class="caption home-ruler">Watt-hours for one hour. Each mark is ten times the last. A band is a spread, not a confidence interval.</p></div>'
+            f'<script type="application/json" id="home-ladder">{bp.inline_json({"schema": 1, "tier": "T0", "stops": stops})}</script>')
+
+
+def claim_words(ids, claims, limits, link):
+    """What each claim's status is and, for a partly verified one, its limit."""
+    verified = [claim_id for claim_id in ids if claims[claim_id]["status"] != "partly"]
+    return " ".join(([f'{", ".join(map(link, verified))}: verified against the source.'] if verified else []) +
+                    [f'{link(claim_id)}: partly verified. Limit: {escape(limit_of(claim_id, claims, limits))}' for claim_id in ids if claims[claim_id]["status"] == "partly"])
+
+
+def plate_rows(rel, plate):
+    """A plate's rows as its built page carries them, so a figure poured here is the figure the plate prints at its defaults."""
+    found = re.search(rf'<script type="application/json" id="plate-data-{plate}">(.*?)</script>', (vp.SITE / rel).read_text(encoding="utf-8"), re.S)
+    if not found:
+        raise BuildError(f"site/{rel} has no plate {plate}: build it first with scripts/build_plates.py")
+    return {r["key"]: r for r in json.loads(found[1])["rows"]}
+
+
+def home_words(claims, limits, st):
+    """The figures the home page's own words name, each poured into a <span data-m>. A sentence that stops being true stops the build."""
+    chat, video = st["band"]["chat_hour"]["stops"]["whole"], st["band"]["video_hour"]["stops"]["whole"]
+    if max(chat["lo"], video["lo"]) > min(chat["hi"], video["hi"]):
+        raise BuildError("the home question says an hour of chat and an hour of video overlap, and they no longer do: rewrite its answer")
+    project = plate_rows("data-centers/index.html", "dc-project")
+    controls = {c["name"]: c for c in json.loads((vp.SITE / "data" / "plates" / "dc-project.json").read_text(encoding="utf-8"))["controls"]}
+    load = claims["dem-073"]
+    if load["year"] != 2030:
+        raise BuildError(f"the home figure says 2030 and dem-073 now reads {load['year']}: rewrite it")
+    return {"q:chat": chat["num"], "q:video": video["num"], "q:mw": f'{controls["p_mw"]["default"]:g}', "q:lf": f'{controls["p_lf"]["default"]:g}', "q:twh": project["twh"]["text"], "q:share": project["share"]["text"],
+            "fig:value": f'{load["value"]:,g}', "fig:low": f'{load["low"]:,g}', "fig:high": f'{load["high"]:,g}'}
+
+
+HOME_FIGURE_CLAIMS = {"ep-002": "data/energy-potential.json", "ep-001": "data/energy-potential.json", "ef-001": "data/energy-funding.json", "ef-002": "data/energy-funding.json", "dem-073": "data-centers/?dc-pnw-load=2030&amp;dc-pnw-load-view=sources#dc-pnw-load"}
+
+
+def figure_limits_html(claims, limits):
+    """Each figure's claim, what it counts, its status, and its limit. The counts a script writes must be the claims' or the build stops."""
+    figures = home_figures()
+    for claim_id, name in (("ep-002", "fund-tribes"), ("ep-001", "fund-tribes-with"), ("ef-001", "fund-programs"), ("ef-002", "fund-open")):
+        if f'{claims[claim_id]["value"]:,g}' != figures[name]:
+            raise BuildError(f"the home figure {name} reads {figures[name]} and {claim_id} reads {claims[claim_id]['value']}: rebuild the claims, or rewrite the figure")
+    return "".join(f'<p class="caption">{claim_words([claim_id], claims, limits, lambda i: f"""<a href="{HOME_FIGURE_CLAIMS[i]}">{i}</a>""")} Published by {escape(claims[claim_id]["source"]["publisher"])}.</p>' for claim_id in HOME_FIGURE_CLAIMS)
+
+
+def home_figures():
+    """What the data files say, so the page without scripts says it too. library.js, energy-funding.js, and policy-watch.js write the same figures when they run."""
+    read = lambda name: json.loads((vp.SITE / "data" / name).read_text(encoding="utf-8"))
+    library, funding, policy = read("library.json"), read("energy-funding.json"), read("policy-watch.json")
+    day = lambda iso: f"{iso[5:7]}/{iso[8:10]}/{iso[:4]}"
+    forces = policy["task_forces"].values()
+    return {"library": f'{len(library["entries"]):,}', "library-tribal": str(sum(1 for e in library["entries"] if e.get("tribal_specific"))), "library-date": day(library["updated"]),
+            "fund-programs": str(len(funding["programs"])), "fund-open": str(sum(1 for p in funding["programs"] if p["status"] == "open")), "fund-date": day(funding["source"]["programs_status_as_of"]),
+            "fund-tribes": str(len(funding["tribes"])), "fund-tribes-with": str(sum(1 for t in funding["tribes"] if t["matches"])),
+            "policy-follow": str(sum(len(t["follow"]) for t in forces)), "policy-searches": str(sum(len(t["searches"]) for t in forces)), "policy-date": day(policy["generated"])}
+
+
+def receipts_html(pub, data, st, claims, limits, words):
+    """Every figure on the instrument at every boundary, with its claims, their status, and their limits; then the project question's. It opens on interaction, and shows without scripts and in print."""
+    catalog = {r["key"]: r for r in pub["catalog"]}
+    link = lambda claim_id: f'<a href="explorer/#src-{claim_id}">{claim_id}</a>'
+    head = "".join(f'<th scope="col">{escape(words_)}</th>' for words_ in ("One hour of", *(f"{HOME_STOPS[stop][0]}, Wh" for stop in HOME_STOPS), "Claims, status, and limits"))
+    body = []
+    for key, label, _ in HOME_ROWS:
+        ids = [claim_id for claim_id in catalog[f"catalog.{key}"]["claims"] if not claim_id.startswith("px-")]  # the figure is energy, so it carries the energy claims
+        cells = "".join(f'<td>{escape(st["band"][key]["stops"][stop]["num"])} <span class="nowrap">{escape(st["band"][key]["stops"][stop]["tag"])}</span></td>' for stop in HOME_STOPS)
+        body.append(f'<tr data-stop="{key}"><th scope="row">{escape(home_label(data, label))}</th>{cells}<td class="home-claims">{claim_words(ids, claims, limits, link)}</td></tr>')
+    built = pub["built"]
+    project = plate_rows("data-centers/index.html", "dc-project")
+    region = claims["dem-058"]
+    project_claim = claim_words(["dem-058"], claims, limits, lambda claim_id: f'<a href="data-centers/?dc-project-view=sources#dc-project">{claim_id}</a>')
+    return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values and receipts"><table class="data-table"><caption>Every figure on this ladder, at each boundary. Modeled, {built[5:7]}/{built[:4]}.</caption>'
+            f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
             f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: a bottom-up process model, checked against published figures. A range is a spread, not a confidence interval.</p>'
-            f'<p class="explorer-band-link"><a class="button" href="explorer/">Open the Resource Use Explorer</a></p></div>'
-            f'<div class="explorer-band-figure"><fieldset class="segmented" hidden><legend>One hour of</legend>{radios}</fieldset><ul class="explorer-band-stops" role="list">{"".join(stops)}</ul><p class="sr-only" role="status" data-band-status></p></div>')
+            f'<p class="caption">The project question: {escape(words["q:mw"])} MW at a load factor of {escape(words["q:lf"])} is {escape(project["amw"]["text"])} average megawatts, about {escape(words["q:twh"])} TWh a year, {escape(words["q:share"])} percent of the region\'s {region["value"]:,g} aMW. {project_claim} Published by {escape(region["source"]["publisher"])}.</p>'
+            f'<p class="caption">Sources with their quotes: <a href="ai/?ai-same-hour-view=sources#overview">chat and video on the AI page</a>, and <a href="explorer/#all-sources">every row in the Explorer</a>. The Resource Use Explorer runs the energy, carbon, water, and price of AI, video, search, and cloud software at settings you choose. Nothing you enter leaves your browser.</p>')
+
+
+def pour_home(pub, data, st, claims, limits):
+    """Writes the home page's two blocks and the figures in its own words, and returns the band's size. Re-running changes nothing."""
+    home = HOME.read_text(encoding="utf-8")
+    words = home_words(claims, limits, st)
+    poured = {"home:band": band_html(pub, data, st), "home:receipts": receipts_html(pub, data, st, claims, limits, words), "home:figure-limits": figure_limits_html(claims, limits)}
+    missing = [name for name in poured if f"<!-- explorer:{name} -->" not in home]
+    if missing:
+        raise BuildError(f"site/index.html lacks the markers {missing}")
+    filled = MARKER.sub(lambda m: f"{m[1]}{poured[m['name']]}{m[4]}" if m["name"] in poured else m[0], home)
+    unknown = sorted(m["spec"] for m in POUR.finditer(filled) if m["spec"] not in words)
+    if unknown:
+        raise BuildError(f"site/index.html pours figures the build does not know: {unknown}")
+    filled = POUR.sub(lambda m: f'<span data-m="{m["spec"]}">{escape(words[m["spec"]])}</span>', filled)
+    figures = home_figures()
+    named = set(re.findall(r'data-figure="([^"]+)"', filled))
+    if named - set(figures):
+        raise BuildError(f"site/index.html names figures the build does not know: {sorted(named - set(figures))}")
+    filled = re.sub(r'(data-figure="([^"]+)">)[^<]*<', lambda m: f"{m[1]}{figures[m[2]]}<", filled)
+    if filled != home:
+        HOME.write_bytes(filled.encode("utf-8"))
+    return len(poured["home:band"].encode("utf-8"))
 
 
 def local_pour(spec, claims, pub):

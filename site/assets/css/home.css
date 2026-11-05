@@ -1,27 +1,132 @@
-/* The home page only. The Explorer band sits a step up in luminance, between the hero and the raised section under it; the figure is its one loud thing. */
-.explorer-band { padding-block: 16px; background: var(--atni-ground-overlay); border-block: 1px solid var(--rule); }
-.explorer-band a:not(.button) { color: var(--atni-text-heading); text-decoration-color: var(--control); }
-.explorer-band-grid { display: grid; gap: 16px 48px; }
-.explorer-band-about { display: grid; gap: 8px; align-content: start; }
-.explorer-band-about h2 { margin: 0; font-size: 1.5rem; }
-.explorer-band-about p { margin: 0; max-width: var(--measure-wide); }
-.explorer-band-link { margin-top: 4px; }
-.explorer-band-figure { min-width: 0; }
-.explorer-band .segmented { gap: 0 20px; }
-.explorer-band .segmented legend { margin-bottom: 0; }
-.explorer-band-stops { display: grid; gap: 12px; margin: 8px 0 0; padding: 0; list-style: none; }
-.explorer-band-stops li { display: grid; gap: 4px 24px; align-items: start; margin: 0; }
-.explorer-band .readout { display: flex; align-items: baseline; gap: 0.15em; margin: 0; white-space: nowrap; }
-.explorer-band-unit { font-size: 1.75rem; line-height: 1.1; letter-spacing: -0.01em; }
-.explorer-band-words { display: grid; gap: 6px; min-width: 0; }
-.explorer-band-words p { margin: 0; max-width: var(--measure-wide); }
-.explorer-band-reading { font-size: 1.0625rem; line-height: 1.4; color: var(--atni-text-heading); }
-@media (min-width: 1100px) {
-  .explorer-band-grid { grid-template-columns: minmax(20rem, 30fr) minmax(0, 70fr); }
-  .explorer-band-stops li { grid-template-columns: 13rem minmax(0, 1fr); }
+/* The home page only. The first screen is one instrument: the door with three questions, the reader's number and the ladder, a foot line with the boundary switch, and the
+   four workstreams. It runs to the window's foot on a desktop, up to a point, so the marks keep some company. The kit's sizes come from site.css; this sheet says only what they do not. */
+.home-first { display: flex; flex-direction: column; }
+
+/* The door: the name and one sentence, then three questions, ruled above. Hover or focus draws the needle's tick at a question's left edge. */
+.home-door { display: grid; gap: 16px 48px; padding-block: 16px; }
+.home-title h1 { margin-bottom: 8px; }
+.home-title .lead { margin: 0; max-width: 36rem; }
+.home-questions { display: grid; gap: 16px 28px; margin: 0; padding: 0; list-style: none; }
+.home-questions li { position: relative; margin: 0; padding-top: 10px; border-top: 1px solid var(--rule); }
+.home-questions li::before { content: ""; position: absolute; left: -12px; top: -1px; bottom: 0; width: 2px; background: var(--energy-mark); visibility: hidden; }
+.home-questions li:is(:hover, :focus-within)::before { visibility: visible; }
+.home-q { display: block; margin-bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.15; letter-spacing: -0.01em; color: var(--atni-text-heading); text-decoration: none; }
+.home-q:hover { color: var(--atni-text-heading); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.home-questions p { margin: 0; max-width: none; line-height: 1.4; color: var(--atni-text-secondary); }
+.home-questions p a { display: block; width: fit-content; margin-top: 4px; } /* its own line at every width, so the three stubs end the same way */
+.home-questions p a:focus-visible { outline-offset: 1px; } /* so the ring clears the line above */
+
+/* The instrument: the reader's number on the left, the ladder on the right. --plot-top is the room over the first row: the needle's name, then the tick's on a line of its own. */
+.home-instrument { --row-min: 80px; --plot-top: 48px; --mark: clamp(16px, 1vw + 5px, 26px); --l: clamp(8rem, 24%, 13rem); --v: clamp(8rem, 16%, 10rem); display: grid; gap: 16px 48px; padding-block: 8px; }
+.home-read { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding-block: 16px; }
+.home-read h2 { margin: 0; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; letter-spacing: 0; color: var(--atni-text-secondary); }
+.home-figure { display: flex; flex-direction: column; gap: 8px; }
+.home-figure p { margin: 0; }
+.home-figure .readout { margin-bottom: 8px; }
+.home-figure .reading { max-width: 36rem; line-height: 1.4; color: var(--atni-text-heading); }
+.home-modeled { font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.home-plot { display: flex; flex-direction: column; min-width: 0; }
+.home-instrument .ladder { min-width: 0; margin: 0; padding-inline: 0; padding-bottom: 0; border: 0; }
+.home-instrument .ladder[data-form="square"] { padding-top: var(--plot-top); } /* the same at every boundary, so the rows hold still when the tick leaves */
+.home-instrument .ladder-rows { grid-auto-rows: minmax(var(--row-min), 1fr); }
+.home-instrument .ladder-row { position: relative; }
+.home-instrument .ladder-row + .ladder-row { border-top: 1px solid var(--grid); }
+.home-instrument .ladder-row input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.home-instrument .ladder-row:has(input:focus-visible) { outline: 3px solid var(--atni-text-link); outline-offset: -3px; }
+/* The rows are equal, so the band's top and height follow from the row numbers. Its name reads beside it, on the side away from the needle, so the line never crosses the words. */
+.home-instrument .ladder-shared { top: calc(var(--plot-top) + (100% - var(--plot-top)) * var(--from) / var(--rows)); height: calc((100% - var(--plot-top)) * (var(--to) - var(--from) + 1) / var(--rows)); }
+.home-instrument .ladder-shared-label { z-index: 1; left: calc(100% + 6px); padding-inline: 4px; background: var(--plot-ground); }
+.home-instrument .ladder-shared.is-flip > .ladder-shared-label { left: auto; right: calc(100% + 6px); }
+.home-ruler { margin: 4px 0 0; max-width: none; font-size: 0.875rem; }
+
+/* The foot line: what to count, the control, then the ways out, quieter. Receipts is the one in orange. */
+.home-foot { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: space-between; gap: 0 32px; min-height: 48px; border-block: 1px solid var(--grid); }
+.home-foot .segmented label { min-height: 48px; }
+.home-foot .segmented span { padding-block: 12px 9px; }
+.home-foot .segmented input:focus-visible + span { outline-offset: -3px; }
+.home-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 28px; margin: 0 0 0 auto; max-width: none; }
+.home-links :is(a, button) { display: inline-flex; align-items: center; min-height: 44px; padding: 0; font: inherit; color: var(--atni-text-secondary); background: none; border: 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
+.home-links [data-receipts] { color: var(--energy-text); }
+.home-links :is(a, button):is(:hover, :focus-visible) { color: var(--energy-text); text-decoration-thickness: 2px; }
+.home-links [data-receipts]:is(:hover, :focus-visible) { color: var(--energy-hover); }
+
+/* Receipts: the one raised thing, as a plate's detail panel is, and only once asked for. */
+.home-receipts { display: grid; gap: 12px; padding-block: 16px; background: var(--atni-ground-raised); }
+.home-receipts p { margin: 0; max-width: var(--measure-wide); }
+.home-receipts a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.home-receipts .data-table td.home-claims { min-width: 32rem; text-align: left; }
+.home-receipts .data-table th[scope="row"] { white-space: nowrap; }
+[data-theme="light"] .home-receipts { border-block: 1px solid var(--rule); }
+@media (prefers-color-scheme: light) { [data-theme="auto"] .home-receipts { border-block: 1px solid var(--rule); } }
+
+/* The four workstreams, one line each. The section below keeps each one's status and resolutions. */
+.home-streams { display: grid; gap: 12px 28px; margin: 0; padding-block: 12px 16px; list-style: none; }
+.home-streams li { margin: 0; }
+.home-streams a { display: grid; gap: 2px; color: var(--atni-text-secondary); text-decoration: none; }
+.home-streams strong { font-family: var(--display); font-weight: 600; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); }
+.home-streams span { font-size: 0.9375rem; line-height: 1.35; }
+.home-streams a:hover { color: var(--atni-text-secondary); }
+.home-streams a:hover strong { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+
+.home-first + .section { border-top: 1px solid var(--grid); }
+
+/* The work in numbers: each number is the way to what stands behind it. */
+.home-figures { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); column-gap: 28px; margin-bottom: 0; }
+.home-figures .figure { display: flex; flex-direction: column; gap: 8px; padding-block: 12px 0; border-bottom: 0; border-top: 1px solid var(--rule); }
+.figure-go { display: grid; gap: 6px; color: var(--atni-text-heading); text-decoration: none; }
+.figure-go .figure-value { display: block; margin: 0; font-size: 2.25rem; font-variant-numeric: tabular-nums; }
+.figure-go .figure-unit { font-family: var(--body); font-weight: 500; font-size: 1.25rem; letter-spacing: 0; }
+.figure-go .figure-label { display: block; margin: 0; font-size: 1rem; line-height: 1.3; }
+.figure-go:hover { color: var(--atni-text-heading); }
+.figure-go:hover .figure-label { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.home-figures .figure-detail { max-width: none; line-height: 1.4; color: var(--atni-text-secondary); }
+.home-figures .figure-detail a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.home-figures .figure-claims { display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 0; max-width: none; }
+.home-figures .receipt { min-height: 24px; padding: 0 6px; gap: 6px; text-decoration: none; }
+.home-figure-limits { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: 8px 28px; margin-top: 24px; }
+.home-figure-limits p { margin: 0; max-width: none; font-size: 0.875rem; }
+.home-figure-limits a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+
+@media screen and (min-width: 1100px) {
+  .home-first { min-height: min(calc(100vh - 57px), 1200px); }
+  .home-door, .home-instrument { grid-template-columns: minmax(0, 40fr) minmax(0, 60fr); }
+  .home-questions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-instrument { flex: 1; }
+  .home-plot, .home-instrument .ladder { flex: 1; }
+  .home-read { align-self: start; padding-block: var(--plot-top) 0; } /* the eyebrow meets the ladder's first row */
+  .home-streams { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  [data-library-feed] .entries { grid-template-columns: repeat(4, minmax(0, 1fr)); } /* four entries, one row, so the feed never leaves one alone */
+  [data-library-feed] .entry { display: block; }
+  [data-library-feed] .entry-title { font-size: 1.0625rem; }
 }
+@media (min-width: 1600px) { .home-instrument { --row-min: 88px; } }
+@media (min-width: 1100px) and (max-height: 799px) { .home-instrument { --row-min: 56px; } .home-door { padding-block: 12px; } } /* a short laptop still sees the workstreams */
+@media (min-width: 720px) and (max-width: 1099px) {
+  .home-questions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-streams { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* On a phone the grid runs behind the row's words, so the words sit on their own ground, the labels above get room, and the band stays off: the first question says the overlap.
+   A label is absolute in a 1px line, so its width comes from nothing and it falls to one word a line without its own; 31vw keeps the tick's name, which reads left, on the screen. */
+@media (max-width: 719px) {
+  .home-instrument { --plot-top: 64px; }
+  .home-instrument :is(.ladder-tick span, .needle-label) { width: max-content; max-width: 31vw; }
+  .home-instrument .ladder-label, .home-instrument .ladder-value { position: relative; z-index: 2; background: var(--plot-ground); }
+  .home-instrument .ladder-value { justify-content: flex-end; text-align: right; }
+  .home-instrument .ladder-shared { display: none; }
+}
+
 @media print {
-  .explorer-band { padding-block: 16pt; background: none; border: 0; }
-  .explorer-band fieldset, .explorer-band-link { display: none !important; }
-  .explorer-band [data-stop][hidden] { display: grid !important; }
+  .home-first, .home-door, .home-instrument, .home-foot { display: block; min-height: 0; }
+  .home-instrument { --row-min: 44px; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .home-foot { border: 0; }
+  .home-foot fieldset, .home-links button, .home-instrument .ladder-row input, .home-questions li::before { display: none !important; }
+  .home-links { margin: 8pt 0 0; gap: 0 16pt; }
+  .home-links a { min-height: 0; }
+  .home-receipts[hidden] { display: grid !important; }
+  .home-receipts { padding-block: 12pt; background: none; border: 0; }
+  .home-receipts .data-table td.home-claims { min-width: 0; }
+  .home-receipts .data-table { break-inside: avoid; }
+  .home-streams { padding-block: 12pt 0; }
+  .home-figure-limits { display: block; }
+  .home-figure-limits p { margin-bottom: 4pt; }
 }

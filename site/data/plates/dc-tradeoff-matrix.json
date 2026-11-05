@@ -5,11 +5,10 @@
  "page": "data-centers/index.html",
  "fit": true,
  "eyebrow": "Seven tradeoffs",
- "title": "Of seven tradeoffs, power, water, and carbon have agency figures at national scale; land, heat, and materials rest on one or two modeled figures",
- "subtitle": "A filled square is an agency, measured, or company figure. A hollow square is modeled, a preprint, or a vendor's own model. A bar compares two figures in one cell, where they share a unit.",
+ "title": "Power, water, and carbon have agency figures; land, heat, and materials have one or two modeled ones",
+ "subtitle": "The agency figures are at national scale. A filled square is an agency, measured, or company figure. A hollow square is modeled, a preprint, or a vendor's own model. A bar compares two figures in one cell, where they share a unit.",
  "text": [
-  "A data center's tradeoffs are a set, not a list: cooling that saves water uses more power, and more power means more water and carbon at the plant.",
-  "The matrix shows what is known for each of the seven tradeoffs and what remains open. Set a project's size, cooling, and grid below; the instrument reads the water and power that follow."
+  "A data center's tradeoffs are a set, not a list: cooling that saves water uses more power, and more power means more water and carbon at the plant. Set a project's size, cooling, and grid in the instrument below."
  ],
  "default": "water--national",
  "reading": "{label}, {column}: {display}. {evidence}",
@@ -56,11 +55,11 @@
     "national": [
      {
       "claim": "tr-001",
-      "say": "{display} on site, LBNL 2024 Report, {year}"
+      "say": "{display} on site, {year}"
      },
      {
       "claim": "tr-004",
-      "say": "about {display} at power plants, LBNL 2024 Report, {year}"
+      "say": "about {display} at power plants, {year}"
      },
      {
       "claim": "tr-068",
@@ -108,16 +107,16 @@
     "national": [
      {
       "claim": "tr-006",
-      "say": "{display} from electricity, US, LBNL 2024 Report, {year}"
+      "say": "{display}, US electricity, {year}"
      },
      {
       "claim": "tr-070",
-      "say": "about {display} from electricity, US, derived, {year}",
+      "say": "about {display}, US electricity, derived, {year}",
       "modeled": true
      },
      {
       "claim": "tr-035",
-      "say": "{display} now, IEA, world, {year}",
+      "say": "{display}, IEA, world, {year}",
       "range": false
      }
     ],
@@ -154,7 +153,7 @@
      },
      {
       "claim": "tr-044",
-      "say": "over {display} in health burden, modeled, US, {year}",
+      "say": "over {display}, US health burden, modeled, {year}",
       "modeled": true
      }
     ],

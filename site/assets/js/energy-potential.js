@@ -1,11 +1,13 @@
-// What Tribal plans say about energy (energy/potential/): the chart across all Tribes and the
-// Tribe-by-Tribe list, both read from data/energy-potential.json. The page keeps plain links to
-// the JSON and CSV files, so nothing is lost when this script cannot run.
+// Energy types by stage across Tribes (the energy overview and energy/potential/): stacked bars and the alphabetical detail on the plate, then the Tribe-by-Tribe list on the
+// potential page. The plate's static table and the plain links to the JSON and CSV files stay when this script cannot run.
 
-import { esc, href, fold, day, plural, STATES, getJSON, linkFilters, setFigure, addOptions } from './util.js';
+import { esc, href, fold, plural, STATES, getJSON, linkFilters, addOptions, closedDetail } from './util.js';
 
 const FILTERS = ['q', 'state', 'type', 'stage', 'check', 'has'];
 const CHECKS = { verified: 'Verified', needs_review: 'Needs review' };
+const STAGE_KEYS = { installed: 'Installed or operating', planned: 'Planned or funded', assessed: 'Assessed or sited', goal: 'Goal or interest' };
+let dataFile;
+const loadData = () => (dataFile ??= getJSON('data/energy-potential.json'));
 
 // Stage classes run 1 (goal or interest) to 4 (installed or operating); data lists stages most advanced first.
 const stageClass = (stages, label) => {
@@ -30,72 +32,6 @@ function counts(data) {
     }
   }
   return rows;
-}
-
-function renderChart(data, rows, pick) {
-  const host = document.getElementById('potential-chart');
-  if (!host) return;
-  const { energy_types: types, stages } = data.method;
-  const total = (id) => rows.get(id).reduce((a, b) => a + b, 0);
-  const shown = types.filter((t) => total(t.id) > 0).sort((a, b) => total(b.id) - total(a.id));
-  const none = types.filter((t) => total(t.id) === 0);
-  const max = Math.max(1, ...shown.map((t) => total(t.id)));
-  const legend = stages
-    .map((s, i) => `<li><span class="swatch stage-${stages.length - i}" aria-hidden="true"></span>${esc(s.label)}</li>`)
-    .join('');
-  const bars = shown
-    .map((t) => {
-      const row = rows.get(t.id);
-      const n = total(t.id);
-      const end = row.findLastIndex((c) => c > 0);
-      const segs = row
-        .map((c, i) => (c ? `<span class="bar-seg stage-${stages.length - i}${i === end ? ' is-end' : ''}" style="--w:${(c / max).toFixed(4)}"></span>` : ''))
-        .join('');
-      const said = row.map((c, i) => `${c} ${stages[i].label.toLowerCase()}`).join(', ');
-      const tip = row
-        .map((c, i) => `<span class="tip-row"><span class="tip-key stage-${stages.length - i}"></span><strong>${c}</strong> ${esc(stages[i].label)}</span>`)
-        .join('');
-      return `<li><button type="button" class="bar" data-type="${esc(t.id)}">
-<span class="bar-label">${esc(t.label)}</span>
-<span class="bar-track" aria-hidden="true">${segs}<span class="bar-total">${n}</span></span>
-<span class="sr-only">, ${esc(plural(n, 'Tribe'))}: ${esc(said)}.</span>
-<span class="bar-tip" aria-hidden="true"><span class="tip-title">${esc(t.label)}: ${esc(plural(n, 'Tribe'))}</span>${tip}</span>
-</button></li>`;
-    })
-    .join('');
-  const lead = shown.slice(0, 3).map((t) => `${t.label.toLowerCase()} for ${total(t.id)}`);
-  const summary = lead.length
-    ? `The types found most often are ${lead.slice(0, -1).join(', ')}${lead.length > 1 ? ', and ' : ''}${lead[lead.length - 1]} Tribes.`
-    : '';
-  const missing = none.length
-    ? ` No finding concerns ${none.map((t) => t.label.toLowerCase()).join(' or ')}; that reflects the documents in the library, not Tribal positions.`
-    : '';
-  host.innerHTML = `<ul class="legend" role="list" aria-label="Stage">${legend}</ul>
-<ol class="bars" role="list">${bars}</ol>
-<p class="chart-note">${esc(summary + missing)}</p>`;
-  host.closest('figure')?.removeAttribute('hidden');
-
-  for (const bar of host.querySelectorAll('.bar')) {
-    bar.addEventListener('click', () => pick(bar.dataset.type));
-    bar.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') bar.classList.add('tip-off');
-    });
-    const reset = () => bar.classList.remove('tip-off');
-    bar.addEventListener('blur', reset);
-    bar.addEventListener('mouseleave', reset);
-  }
-
-  const table = document.getElementById('potential-table');
-  if (table) {
-    const head = stages.map((s) => `<th scope="col">${esc(s.label)}</th>`).join('');
-    const body = [...shown, ...none]
-      .map((t) => `<tr><th scope="row">${esc(t.label)}</th>${rows.get(t.id).map((c) => `<td>${c}</td>`).join('')}<td>${total(t.id)}</td></tr>`)
-      .join('');
-    table.innerHTML = `<table class="data-table">
-<caption>Tribes whose public plans show each energy type, by the most advanced stage found (${esc(day(data.generated))})</caption>
-<thead><tr><th scope="col">Energy type</th>${head}<th scope="col">Tribes</th></tr></thead>
-<tbody>${body}</tbody></table>`;
-  }
 }
 
 function citationHTML(c) {
@@ -217,19 +153,134 @@ function renderList(data, rows) {
   };
 }
 
-getJSON('data/energy-potential.json')
-  .then((data) => {
-    const rows = counts(data);
-    setFigure('ep-tribes', data.tribes.length);
-    setFigure('ep-with', data.tribes.filter((t) => t.top.length).length);
-    setFigure('ep-docs', data.source.documents_examined.toLocaleString('en-US'));
-    setFigure('ep-pending', data.source.documents_pending_extraction);
-    setFigure('ep-date', day(data.generated));
-    let pick = () => {};
-    renderChart(data, rows, (type) => pick(type));
-    pick = renderList(data, rows) || pick;
-  })
-  .catch((error) => {
-    for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;
-    console.warn(error);
+// One Tribe in a plate's detail: its name links to its existing entry, with its stage, its check, and its cited excerpts. Alphabetical by name, so the list is never a ranking.
+function tribeLine(tribe, finding, stages, entry) {
+  const cites = finding.citations;
+  return `<li><a href="${entry}#${encodeURIComponent(tribe.slug)}">${esc(tribe.name)}</a>
+<span class="tag stage stage-${stageClass(stages, finding.stage_label)}">${esc(finding.stage_label)}</span>
+<span class="tag${finding.status === 'verified' ? '' : ' is-hollow'}">${esc(CHECKS[finding.status] || finding.status)}</span>
+<details class="plate-more"><summary>${esc(plural(cites.length, 'cited excerpt'))}</summary>${cites.map(citationHTML).join('')}</details></li>`;
+}
+
+// The plate is drawn by the build as bars of totals, which is what shows without scripts. The stage ramp, the key, and the list of Tribes are this page's own: see docs/PLATE-KIT.md, "Page script".
+function typesPlate(figure, pick) {
+  const id = figure.dataset.plate;
+  const onThisPage = id === 'energy-types-by-stage-plans';
+  const entry = onThisPage ? '' : 'potential/';
+  let shown = null;
+  let timer;
+  const parts = {};
+
+  const fillTribes = async () => {
+    const key = shown;
+    try {
+      const data = await loadData();
+      if (key !== shown) return;
+      const list = data.tribes
+        .flatMap((t) => t.top.filter((f) => f.type === key).map((f) => [t, f]))
+        .sort(([a], [b]) => a.name.localeCompare(b.name));
+      parts.tribes.innerHTML = list.length
+        ? `<ul class="energy-tribe-list" role="list">${list.map(([t, f]) => tribeLine(t, f, data.method.stages, entry)).join('')}</ul>`
+        : '<p class="caption">No published finding names this type. That reflects the documents in the library, not Tribal positions.</p>';
+    } catch (error) {
+      parts.tribes.innerHTML = `<p class="caption">The list could not load. It is in <a href="${href('data/energy-potential.json')}">energy-potential.json</a>.</p>`;
+      console.warn(error);
+    }
+  };
+
+  const setUp = (ctx) => {
+    const [, top] = ctx.data.plot.domain;
+    for (const row of ctx.data.rows) {
+      const node = ctx.plot.querySelector(`[data-row="${row.key}"]`);
+      const bar = document.createElement('span');
+      bar.className = 'stack-bar';
+      bar.setAttribute('aria-hidden', 'true');
+      Object.keys(STAGE_KEYS).forEach((key, i) => {
+        const n = +row.cols[key];
+        if (!n) return;
+        const part = document.createElement('i');
+        part.className = `stage-${4 - i}`;
+        part.style.setProperty('--w', n / top);
+        bar.append(part);
+      });
+      node.querySelector('.ladder-track').append(bar);
+      node.classList.toggle('is-zero', !row.value);
+    }
+    const key = document.createElement('div');
+    key.className = 'plate-under';
+    key.innerHTML = `<ul class="legend plate-legend" aria-label="Most advanced stage found">${Object.values(STAGE_KEYS).map((label, i) => `<li><i class="plate-square stage-${4 - i} energy-key"></i>${esc(label)}</li>`).join('')}</ul>`;
+    ctx.plot.after(key);
+    // The figures the build wrote as sentences stand large; a sentence stays one sentence aloud.
+    for (const p of figure.querySelectorAll('.plate-claim > p:not([class])')) {
+      const match = /^([\d,]+) (.+)$/.exec(p.textContent);
+      if (!match) continue;
+      const big = document.createElement('span');
+      big.className = 'energy-figure';
+      big.textContent = match[1];
+      p.replaceChildren(big, ` ${match[2]}`);
+    }
+    // What the build leaves in the claim zone for no scripts moves beside the Reading, where selecting a row asks about it. The button stays beside the figures, on the first screen.
+    const reading = figure.querySelector('.plate-view[data-view="reading"]');
+    const actions = reading.querySelector('.plate-actions');
+    const feet = [...figure.querySelectorAll('.plate-claim > .plate-foot')];
+    parts.read = feet.map((p) => p.querySelector('a[href$="#tribes"]')).find(Boolean);
+    parts.read.classList.add('button');
+    const states = document.createElement('div');
+    states.className = 'energy-states';
+    states.append(...feet.filter((p) => !p.querySelector('a')));
+    parts.more = document.createElement('details');
+    parts.more.className = 'plate-more energy-tribes';
+    parts.summary = document.createElement('summary');
+    parts.tribes = document.createElement('div');
+    parts.more.append(parts.summary, parts.tribes);
+    parts.more.addEventListener('toggle', () => { if (parts.more.open) fillTribes(); });
+    reading.insertBefore(states, actions);
+    reading.insertBefore(feet.find((p) => p.querySelector('a[href$=".json"]')), actions);
+    reading.insertBefore(parts.more, actions);
+    if (onThisPage) {
+      parts.read.addEventListener('click', (event) => {
+        event.preventDefault();
+        pick(shown);
+      });
+      // An entry a filter has hidden is not there to land on, so the filter clears first.
+      parts.tribes.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href^="#"]');
+        if (link && !document.getElementById(decodeURIComponent(link.hash.slice(1)))) pick('');
+      });
+    }
+  };
+
+  closedDetail(figure);
+  window.plate.register(id, {
+    render(ctx) {
+      ctx.auto();
+      if (!parts.more) setUp(ctx);
+      const [row] = ctx.rows;
+      const [, top] = ctx.data.plot.domain;
+      const at = row.value / top;
+      ctx.plot.style.setProperty('--stack-at', at);
+      const needle = ctx.plot.querySelector('.ladder-needle');
+      needle.classList.toggle('is-flip', at > 0.6);
+      const label = needle.querySelector('.needle-label') || needle.appendChild(document.createElement('span'));
+      label.className = 'needle-label';
+      label.textContent = `${row.label}, ${plural(row.value, 'Tribe')}`;
+      shown = ctx.key;
+      parts.read.href = onThisPage ? `?type=${encodeURIComponent(shown)}#tribes` : `potential/?type=${encodeURIComponent(shown)}#tribes`;
+      parts.summary.textContent = `${row.label}: the Tribes, alphabetically (${row.value})`;
+      clearTimeout(timer); // a pointer passing over rows previews them; the list waits for it to settle
+      if (parts.more.open) timer = setTimeout(fillTribes, 150);
+    },
   });
+}
+
+const plates = [...document.querySelectorAll('[data-plate^="energy-types"]')];
+let pick = () => {};
+plates.forEach((figure) => typesPlate(figure, (type) => pick(type)));
+if (document.getElementById('potential-app')) {
+  loadData()
+    .then((data) => { pick = renderList(data, counts(data)) || pick; })
+    .catch((error) => {
+      for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;
+      console.warn(error);
+    });
+}

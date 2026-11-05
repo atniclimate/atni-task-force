@@ -1,0 +1,296 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "energy-types-by-stage-plans",
+ "page": "energy/potential/index.html",
+ "title": "Efficiency, solar, and electrification lead {c[ep-001][text]} Tribes' public plans; no finding concerns offshore wind or marine energy",
+ "text": [
+  "{c[ep-001][text]} Tribes with at least one type",
+  "{c[ep-002][text]} ATNI-listed Tribes covered",
+  "{c[ep-003][text]} documents pending text extraction",
+  "Built 10/29/2026",
+  "A machine-assisted reading of public plans, not a Tribe's own assessment. It endorses no project and ranks no Tribe. A type's absence is not evidence of opposition or disinterest."
+ ],
+ "plot": {
+  "type": "bars",
+  "domain": [
+   0,
+   40
+  ]
+ },
+ "default": "efficiency",
+ "rows": [
+  {
+   "id": "efficiency",
+   "label": "Efficiency",
+   "series": "Efficiency",
+   "claim": "ep-032",
+   "cols": {
+    "installed": "8",
+    "planned": "15",
+    "assessed": "2",
+    "goal": "7"
+   }
+  },
+  {
+   "id": "solar",
+   "label": "Solar",
+   "series": "Solar",
+   "claim": "ep-021",
+   "cols": {
+    "installed": "12",
+    "planned": "11",
+    "assessed": "4",
+    "goal": "3"
+   }
+  },
+  {
+   "id": "electrification",
+   "label": "Electrification",
+   "series": "Electrification",
+   "claim": "ep-033",
+   "cols": {
+    "installed": "2",
+    "planned": "22",
+    "assessed": "0",
+    "goal": "1"
+   }
+  },
+  {
+   "id": "wind",
+   "label": "Wind",
+   "series": "Wind",
+   "claim": "ep-022",
+   "cols": {
+    "installed": "1",
+    "planned": "0",
+    "assessed": "9",
+    "goal": "1"
+   }
+  },
+  {
+   "id": "storage",
+   "label": "Battery storage",
+   "series": "Battery storage",
+   "claim": "ep-030",
+   "cols": {
+    "installed": "1",
+    "planned": "6",
+    "assessed": "1",
+    "goal": "3"
+   }
+  },
+  {
+   "id": "microgrid",
+   "label": "Microgrids",
+   "series": "Microgrids",
+   "claim": "ep-031",
+   "cols": {
+    "installed": "0",
+    "planned": "4",
+    "assessed": "1",
+    "goal": "3"
+   }
+  },
+  {
+   "id": "hydropower",
+   "label": "Hydropower",
+   "series": "Hydropower",
+   "claim": "ep-024",
+   "cols": {
+    "installed": "3",
+    "planned": "0",
+    "assessed": "2",
+    "goal": "2"
+   }
+  },
+  {
+   "id": "biomass",
+   "label": "Biomass",
+   "series": "Biomass",
+   "claim": "ep-027",
+   "cols": {
+    "installed": "0",
+    "planned": "4",
+    "assessed": "0",
+    "goal": "2"
+   }
+  },
+  {
+   "id": "geothermal",
+   "label": "Geothermal",
+   "series": "Geothermal",
+   "claim": "ep-026",
+   "cols": {
+    "installed": "2",
+    "planned": "1",
+    "assessed": "0",
+    "goal": "2"
+   }
+  },
+  {
+   "id": "bioenergy-fuels",
+   "label": "Biogas and biofuels",
+   "series": "Biogas and biofuels",
+   "claim": "ep-028",
+   "cols": {
+    "installed": "0",
+    "planned": "1",
+    "assessed": "0",
+    "goal": "1"
+   }
+  },
+  {
+   "id": "hydrogen",
+   "label": "Hydrogen",
+   "series": "Hydrogen",
+   "claim": "ep-029",
+   "cols": {
+    "installed": "0",
+    "planned": "1",
+    "assessed": "0",
+    "goal": "1"
+   }
+  },
+  {
+   "id": "offshore-wind",
+   "label": "Offshore wind",
+   "series": "Offshore wind",
+   "claim": "ep-023",
+   "cols": {
+    "installed": "0",
+    "planned": "0",
+    "assessed": "0",
+    "goal": "0"
+   }
+  },
+  {
+   "id": "marine",
+   "label": "Marine",
+   "series": "Marine",
+   "claim": "ep-025",
+   "cols": {
+    "installed": "0",
+    "planned": "0",
+    "assessed": "0",
+    "goal": "0"
+   }
+  }
+ ],
+ "reading_group": "{label}: {display}.",
+ "reading_for": {
+  "Efficiency": "{c[ep-032][entity]}: {c[ep-032][display]}, by the most advanced stage found: {c[ep-032][stages][installed]} installed or operating, {c[ep-032][stages][planned]} planned or funded, {c[ep-032][stages][assessed]} assessed or sited, {c[ep-032][stages][goal]} goal or interest.",
+  "Solar": "{c[ep-021][entity]}: {c[ep-021][display]}, by the most advanced stage found: {c[ep-021][stages][installed]} installed or operating, {c[ep-021][stages][planned]} planned or funded, {c[ep-021][stages][assessed]} assessed or sited, {c[ep-021][stages][goal]} goal or interest.",
+  "Electrification": "{c[ep-033][entity]}: {c[ep-033][display]}, by the most advanced stage found: {c[ep-033][stages][installed]} installed or operating, {c[ep-033][stages][planned]} planned or funded, {c[ep-033][stages][assessed]} assessed or sited, {c[ep-033][stages][goal]} goal or interest.",
+  "Wind": "{c[ep-022][entity]}: {c[ep-022][display]}, by the most advanced stage found: {c[ep-022][stages][installed]} installed or operating, {c[ep-022][stages][planned]} planned or funded, {c[ep-022][stages][assessed]} assessed or sited, {c[ep-022][stages][goal]} goal or interest.",
+  "Battery storage": "{c[ep-030][entity]}: {c[ep-030][display]}, by the most advanced stage found: {c[ep-030][stages][installed]} installed or operating, {c[ep-030][stages][planned]} planned or funded, {c[ep-030][stages][assessed]} assessed or sited, {c[ep-030][stages][goal]} goal or interest.",
+  "Microgrids": "{c[ep-031][entity]}: {c[ep-031][display]}, by the most advanced stage found: {c[ep-031][stages][installed]} installed or operating, {c[ep-031][stages][planned]} planned or funded, {c[ep-031][stages][assessed]} assessed or sited, {c[ep-031][stages][goal]} goal or interest.",
+  "Hydropower": "{c[ep-024][entity]}: {c[ep-024][display]}, by the most advanced stage found: {c[ep-024][stages][installed]} installed or operating, {c[ep-024][stages][planned]} planned or funded, {c[ep-024][stages][assessed]} assessed or sited, {c[ep-024][stages][goal]} goal or interest.",
+  "Biomass": "{c[ep-027][entity]}: {c[ep-027][display]}, by the most advanced stage found: {c[ep-027][stages][installed]} installed or operating, {c[ep-027][stages][planned]} planned or funded, {c[ep-027][stages][assessed]} assessed or sited, {c[ep-027][stages][goal]} goal or interest.",
+  "Geothermal": "{c[ep-026][entity]}: {c[ep-026][display]}, by the most advanced stage found: {c[ep-026][stages][installed]} installed or operating, {c[ep-026][stages][planned]} planned or funded, {c[ep-026][stages][assessed]} assessed or sited, {c[ep-026][stages][goal]} goal or interest.",
+  "Biogas and biofuels": "{c[ep-028][entity]}: {c[ep-028][display]}, by the most advanced stage found: {c[ep-028][stages][installed]} installed or operating, {c[ep-028][stages][planned]} planned or funded, {c[ep-028][stages][assessed]} assessed or sited, {c[ep-028][stages][goal]} goal or interest.",
+  "Hydrogen": "{c[ep-029][entity]}: {c[ep-029][display]}, by the most advanced stage found: {c[ep-029][stages][installed]} installed or operating, {c[ep-029][stages][planned]} planned or funded, {c[ep-029][stages][assessed]} assessed or sited, {c[ep-029][stages][goal]} goal or interest.",
+  "Offshore wind": "{c[ep-023][entity]}: no finding. That reflects the documents in the library, not Tribal positions.",
+  "Marine": "{c[ep-025][entity]}: no finding. That reflects the documents in the library, not Tribal positions."
+ },
+ "details": [
+  "A Tribe counts once per type, at the most advanced stage found, from an entry that lists up to five types. Types are ranked within one Tribe's entry; no Tribe is ranked against another."
+ ],
+ "also": [
+  {
+   "claim": "ep-004",
+   "label": "Documents read",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-005",
+   "label": "Findings published",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-011",
+   "label": "Findings, installed or operating",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-012",
+   "label": "Findings, planned or funded",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-013",
+   "label": "Findings, assessed or sited",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-014",
+   "label": "Findings, goal or interest",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-015",
+   "label": "First type in the entry, solar",
+   "say": "{display}."
+  },
+  {
+   "claim": "ep-016",
+   "label": "First type in the entry, efficiency",
+   "say": "{display}."
+  }
+ ],
+ "foot": [
+  {
+   "text": "No finding after search: {c[ep-007][display]}. {c[ep-007][limit]}"
+  },
+  {
+   "text": "No finding yet, documents pending: {c[ep-008][display]}. {c[ep-008][limit]}"
+  },
+  {
+   "text": "No document held: {c[ep-009][display]}. {c[ep-009][limit]}"
+  },
+  {
+   "text": "Pending text extraction: {c[ep-003][display]}, held by {c[ep-010][display]}. {c[ep-003][limit]}"
+  },
+  {
+   "href": "#tribes",
+   "link": "Read it Tribe by Tribe"
+  },
+  {
+   "text": "Data:",
+   "href": "../../data/energy-potential.json",
+   "link": "energy-potential.json"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Energy type",
+    "field": "label"
+   },
+   {
+    "label": "Installed or operating",
+    "field": "installed"
+   },
+   {
+    "label": "Planned or funded",
+    "field": "planned"
+   },
+   {
+    "label": "Assessed or sited",
+    "field": "assessed"
+   },
+   {
+    "label": "Goal or interest",
+    "field": "goal"
+   },
+   {
+    "label": "All",
+    "field": "text"
+   },
+   {
+    "label": "Claim",
+    "field": "claims"
+   }
+  ]
+ }
+}

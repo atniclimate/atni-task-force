@@ -5,8 +5,8 @@
  "id": "ai-holdings",
  "default": "apple-cap",
  "eyebrow": "Size and stakes",
- "title": "Market capitalization on 10/30/2026 ran from about {c[fin-100][value]:,.0f} billion dollars (Meta) to {c[fin-101][value]:,.0f} (Apple), about {c[fin-106][value]:.0f} percent of the S&P benchmark's total for the seven; stakes in AI developers are carried at cost or mixed bases and sit on their own ruler",
- "subtitle": "Billion dollars. The three rulers hold different kinds of value, so they do not share an axis.",
+ "title": "Market capitalization on 10/30/2026 ran from about {c[fin-100][value]:,.0f} billion dollars (Meta) to {c[fin-101][value]:,.0f} (Apple)",
+ "subtitle": "Together the seven are about {c[fin-106][value]:.0f} percent of the S&P benchmark's total. Stakes in AI developers are carried at cost or mixed bases and sit on their own ruler. Billion dollars. The three rulers hold different kinds of value, so they do not share an axis.",
  "plot": {
   "type": "ladder",
   "units": {
@@ -58,7 +58,8 @@
    "label": "Apple",
    "tag": "10/30/2026",
    "claim": "fin-101",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "nvidia-cap",
@@ -66,7 +67,8 @@
    "label": "NVIDIA",
    "tag": "10/30/2026",
    "claim": "fin-102",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "microsoft-cap",
@@ -74,7 +76,8 @@
    "label": "Microsoft",
    "tag": "10/30/2026",
    "claim": "fin-097",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "alphabet-cap",
@@ -82,7 +85,8 @@
    "label": "Alphabet",
    "tag": "10/30/2026",
    "claim": "fin-098",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "amazon-cap",
@@ -90,7 +94,8 @@
    "label": "Amazon",
    "tag": "10/30/2026",
    "claim": "fin-099",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "tesla-cap",
@@ -98,7 +103,8 @@
    "label": "Tesla",
    "tag": "10/30/2026",
    "claim": "fin-103",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "meta-cap",
@@ -106,56 +112,64 @@
    "label": "Meta",
    "tag": "10/30/2026",
    "claim": "fin-100",
-   "modeled": true
+   "modeled": true,
+   "boundary": "All classes of common stock at the close, not float-adjusted"
   },
   {
    "id": "nvidia-float",
    "group": "float",
    "label": "NVIDIA",
    "tag": "07/25/2025",
-   "claim": "fin-077"
+   "claim": "fin-077",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "apple-float",
    "group": "float",
    "label": "Apple",
    "tag": "03/27/2026",
-   "claim": "fin-076"
+   "claim": "fin-076",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "microsoft-float",
    "group": "float",
    "label": "Microsoft",
    "tag": "12/31/2025",
-   "claim": "fin-072"
+   "claim": "fin-072",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "amazon-float",
    "group": "float",
    "label": "Amazon",
    "tag": "06/30/2025",
-   "claim": "fin-074"
+   "claim": "fin-074",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "alphabet-float",
    "group": "float",
    "label": "Alphabet",
    "tag": "06/30/2025",
-   "claim": "fin-073"
+   "claim": "fin-073",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "meta-float",
    "group": "float",
    "label": "Meta",
    "tag": "06/30/2025",
-   "claim": "fin-075"
+   "claim": "fin-075",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "tesla-float",
    "group": "float",
    "label": "Tesla",
    "tag": "06/30/2025",
-   "claim": "fin-078"
+   "claim": "fin-078",
+   "boundary": "Shares held by non-affiliates, on the company's own date, so the seven do not sit on one date"
   },
   {
    "id": "nvidia-supply",

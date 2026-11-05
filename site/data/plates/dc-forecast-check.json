@@ -1,0 +1,149 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-forecast-check",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Past projections, checked",
+ "title": "{c[dem-133][value]:.0f} {c[dem-133][unit]} put 2023 US electricity sales high; {c[dem-134][value]:.0f} {c[dem-134][unit]} put commercial sales low",
+ "subtitle": "Whether an outlook ran high or low depends on its target. Each row compares one target year on one boundary. A diamond is a projection, a circle is what came after, and the bar between them is the difference. The two EIA rulers do not start at zero, so errors of a few percent stay visible.",
+ "text": [
+  "Only the LBNL ruler counts data centers, and it holds one pair, read from charts: {c[dem-039][value]:.0f} TWh projected for 2020, about {c[dem-103][value]:.0f} estimated later. That is a fact about one report, not a record of data center forecasts.",
+  "The EIA rulers and the utility plans count whole sales classes. Rows show every second EIA edition; the counts cover them all. For 2019, {c[dem-132][value]:.0f} {c[dem-132][unit]} ran high."
+ ],
+ "by": "fc_target",
+ "controls": [
+  {"type": "segmented", "name": "fc_target", "label": "Target year", "default": "2023", "options": [
+   {"value": "2023", "label": "EIA target year 2023"},
+   {"value": "2019", "label": "EIA target year 2019"}
+  ]}
+ ],
+ "plot": {
+  "type": "ladder",
+  "select": "point",
+  "switch": "fc_target",
+  "units": {"billion kWh": "TWh"},
+  "groups": [
+   {"id": "total", "label": "US electricity sales, EIA (TWh)", "domain": [3600, 4200]},
+   {"id": "commercial", "label": "US commercial-sector sales, EIA (TWh)", "domain": [1300, 1460]},
+   {"id": "lbnl", "label": "US data centers, LBNL, for 2020 (TWh)", "domain": [0, 120]},
+   {"id": "plans", "label": "Northwest utility plans, growth (percent a year)", "domain": [-2, 4]}
+  ],
+  "marks": [
+   {"id": "real-total-2023", "label": "Realized", "claim": "dem-113", "group": "total", "when": {"fc_target": "2023"}},
+   {"id": "real-total-2019", "label": "Realized", "claim": "dem-112", "group": "total", "when": {"fc_target": "2019"}},
+   {"id": "real-commercial-2023", "label": "Realized", "claim": "dem-125", "group": "commercial", "when": {"fc_target": "2023"}},
+   {"id": "real-commercial-2019", "label": "Realized", "claim": "dem-124", "group": "commercial", "when": {"fc_target": "2019"}}
+  ],
+  "key": [
+   {"shape": "diamond", "label": "Projection"},
+   {"shape": "circle", "label": "Reported after the target year"},
+   {"shape": "open", "label": "Later estimate, itself modeled"},
+   {"shape": "tick", "label": "Context"},
+   {"label": "End of a row: realized minus projection, so a minus means the projection ran high"}
+  ]
+ },
+ "default": "t-10",
+ "not_counted": "Not in EIA's open data",
+ "reading_group": "{label}: {proj} and {real} {unit}.",
+ "reading_for": {
+  "Projected total sales": "EIA's {tag} outlook, published {label}, projected {proj} {unit} of US electricity sales for {year}, all customers and not data centers alone. The realized value is {real} {unit}. Realized minus projection is {diff} {unit}, or {error} of the realized value, so this projection ran {ran}.",
+  "Projected commercial sales": "EIA's {tag} outlook, published {label}, projected {proj} {unit} of US commercial-sector electricity sales for {year}, a class that includes data centers and is not a data center series. The realized value is {real} {unit}. Realized minus projection is {diff} {unit}, or {error} of the realized value, so this projection ran {ran}.",
+  "Projection, 2016 report": "LBNL's 2016 report projected {proj} {unit} for {year}. Its {label} later put {year} at about {real} {unit}. That estimate minus the projection is {diff} {unit}, or {error} of the estimate, on one scope and two methods. One pair is a fact about one report, not a record of data center forecasts.",
+  "2014 base, 2016 report": "Context, not part of the error: LBNL's 2016 report put 2014 at {proj} {unit}, and its 2024 Report restates 2014 at about {real} {unit}. Because the base moved, growth compares more cleanly: {c[dem-106][text]} percent projected for 2014 to 2020, against about {c[dem-107][text]} percent estimated. Limit: {c[dem-107][limit]}",
+  "Base plan forecast": "{label}'s oldest plan in the study forecast growth of {proj} {unit} to 2014, with its low and high forecasts in parentheses. Observed growth was {real} {unit}, below even the low forecast. Observed minus base forecast is {diff} percentage points, so this plan ran {ran}. No percent error, because observed growth near zero makes that ratio meaningless.",
+  "Base plan forecast, Montana": "{label}'s oldest plan in the study forecast growth of {proj} {unit} to 2014, with its low and high forecasts in parentheses. Observed growth was {real} {unit}, inside that range. Observed minus base forecast is {diff} percentage points, so this plan ran {ran}. No percent error, because observed growth near zero makes that ratio meaningless. The study does not group this Montana utility with the Pacific Northwest."
+ },
+ "details": [
+  "A projection is a scenario under stated assumptions, not a prediction: EIA's Reference case holds current laws fixed.",
+  "EIA rulers: EIA revises history after each edition's cutoff, so part of an older edition's gap is a later history revision and not a model error.",
+  "EIA rulers: EIA says the commercial sector includes data centers, but neither series is a data center series. How a utility classes a given data center, and why commercial sales beat most editions, were not checked, so no difference here is attributed to data centers.",
+  "LBNL ruler: both reports count servers, storage, network equipment, and infrastructure in US data centers, and LBNL plots the two on one axis in its 2024 Report. The methods differ, and whether the 2016 report counted cryptocurrency mining was not checked.",
+  "Utility plans: growth rates run from each utility's own plan year to 2014, so the periods differ. These are plan forecasts, not outlooks, and none is a data center series."
+ ],
+ "rows": [
+  {"id": "t-10", "label": "10 years out", "group": "total", "tag": {"2023": "AEO2013", "2019": "AEO2009"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected total sales", "claims": {"2023": "dem-119", "2019": "dem-114"}, "modeled": true},
+   {"id": "real", "name": "Realized total sales", "claims": {"2023": "dem-113", "2019": "dem-112"}}
+  ]},
+  {"id": "t-8", "label": "8 years out", "group": "total", "tag": {"2023": "AEO2015", "2019": "AEO2011"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected total sales", "claims": {"2023": "dem-120", "2019": "dem-115"}, "modeled": true},
+   {"id": "real", "name": "Realized total sales", "claims": {"2023": "dem-113", "2019": "dem-112"}}
+  ]},
+  {"id": "t-6", "label": "6 years out", "group": "total", "tag": {"2023": "AEO2017", "2019": "AEO2013"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected total sales", "claims": {"2023": "dem-121", "2019": "dem-116"}, "modeled": true},
+   {"id": "real", "name": "Realized total sales", "claims": {"2023": "dem-113", "2019": "dem-112"}}
+  ]},
+  {"id": "t-4", "label": "4 years out", "group": "total", "tag": {"2023": "AEO2019", "2019": "AEO2015"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected total sales", "claims": {"2023": "dem-122", "2019": "dem-117"}, "modeled": true},
+   {"id": "real", "name": "Realized total sales", "claims": {"2023": "dem-113", "2019": "dem-112"}}
+  ]},
+  {"id": "t-2", "label": "2 years out", "group": "total", "tag": {"2023": "AEO2021", "2019": "AEO2017"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected total sales", "claims": {"2023": "dem-123", "2019": "dem-118"}, "modeled": true},
+   {"id": "real", "name": "Realized total sales", "claims": {"2023": "dem-113", "2019": "dem-112"}}
+  ]},
+  {"id": "c-8", "label": "8 years out", "group": "commercial", "tag": {"2023": "AEO2015"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected commercial sales", "claims": {"2023": "dem-128", "2019": null}, "modeled": true},
+   {"id": "real", "name": "Realized commercial sales", "claims": {"2023": "dem-125", "2019": null}}
+  ]},
+  {"id": "c-6", "label": "6 years out", "group": "commercial", "tag": {"2023": "AEO2017"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected commercial sales", "claims": {"2023": "dem-129", "2019": null}, "modeled": true},
+   {"id": "real", "name": "Realized commercial sales", "claims": {"2023": "dem-125", "2019": null}}
+  ]},
+  {"id": "c-4", "label": "4 years out", "group": "commercial", "tag": {"2023": "AEO2019", "2019": "AEO2015"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected commercial sales", "claims": {"2023": "dem-130", "2019": "dem-126"}, "modeled": true},
+   {"id": "real", "name": "Realized commercial sales", "claims": {"2023": "dem-125", "2019": "dem-124"}}
+  ]},
+  {"id": "c-2", "label": "2 years out", "group": "commercial", "tag": {"2023": "AEO2021", "2019": "AEO2017"}, "check": "level", "pair": [
+   {"id": "proj", "name": "Projected commercial sales", "claims": {"2023": "dem-131", "2019": "dem-127"}, "modeled": true},
+   {"id": "real", "name": "Realized commercial sales", "claims": {"2023": "dem-125", "2019": "dem-124"}}
+  ]},
+  {"id": "l-2024", "label": "2024 Report", "tag": "later estimate", "group": "lbnl", "check": {"diff": "dem-108", "ape": "dem-109"}, "pair": [
+   {"id": "proj", "name": "Projection, 2016 report", "claim": "dem-039", "modeled": true},
+   {"id": "real", "name": "Later estimate, 2024 Report", "claim": "dem-103", "modeled": true}
+  ]},
+  {"id": "l-2025", "label": "2025 Update", "tag": "later estimate", "group": "lbnl", "check": {"diff": "dem-110", "ape": "dem-111"}, "pair": [
+   {"id": "proj", "name": "Projection, 2016 report", "claim": "dem-039", "modeled": true},
+   {"id": "real", "name": "Later estimate, 2025 Update", "claim": "dem-104", "modeled": true}
+  ]},
+  {"id": "l-base", "label": "2014 base", "tag": "not in the error", "group": "lbnl", "pair": [
+   {"id": "proj", "name": "2014 base, 2016 report", "claim": "dem-038", "modeled": true},
+   {"id": "real", "name": "2014 base, restated in the 2024 Report", "claim": "dem-105", "modeled": true}
+  ]},
+  {"id": "n-pge", "label": "Portland General Electric", "group": "plans", "check": "growth", "pair": [
+   {"id": "proj", "name": "Base plan forecast", "claim": "dem-135", "modeled": true},
+   {"id": "real", "name": "Observed growth", "claim": "dem-136"}
+  ]},
+  {"id": "n-pse", "label": "Puget Sound Energy", "group": "plans", "check": "growth", "pair": [
+   {"id": "proj", "name": "Base plan forecast", "claim": "dem-137", "modeled": true},
+   {"id": "real", "name": "Observed growth", "claim": "dem-138"}
+  ]},
+  {"id": "n-avista", "label": "Avista", "group": "plans", "check": "growth", "pair": [
+   {"id": "proj", "name": "Base plan forecast", "claim": "dem-139", "modeled": true},
+   {"id": "real", "name": "Observed growth", "claim": "dem-140"}
+  ]},
+  {"id": "n-seattle", "label": "Seattle City Light", "group": "plans", "check": "growth", "pair": [
+   {"id": "proj", "name": "Base plan forecast", "claim": "dem-141", "modeled": true},
+   {"id": "real", "name": "Observed growth", "claim": "dem-142"}
+  ]},
+  {"id": "n-northwestern", "label": "NorthWestern Energy", "tag": "Montana", "group": "plans", "check": "growth", "pair": [
+   {"id": "proj", "name": "Base plan forecast, Montana", "claim": "dem-143", "modeled": true},
+   {"id": "real", "name": "Observed growth", "claim": "dem-144"}
+  ]}
+ ],
+ "table": {
+  "pairs": true,
+  "columns": [
+   {"label": "Figure", "field": "series"},
+   {"label": "Row", "field": "label"},
+   {"label": "Edition or note", "field": "tag"},
+   {"label": "Target year", "field": "year"},
+   {"label": "Earlier figure", "field": "display"},
+   {"label": "Later figure", "field": "later"},
+   {"label": "Later minus earlier", "field": "cell"},
+   {"label": "Absolute percent error", "field": "error"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

@@ -5,8 +5,8 @@
  "id": "ai-displacement",
  "default": "stanford",
  "eyebrow": "Displacement evidence",
- "title": "Studies disagree: a payroll study finds workers in their early twenties in the most exposed jobs {c[jb-046][value]} percent below trend, a survey-based tracker finds no connection, and a job-ad study finds some entry-level openings up {c[jb-070][value]} percent",
- "subtitle": "Every row measures a different thing, and each label says what its percent is of. They are shown together and never pooled.",
+ "title": "Studies disagree, and every row measures a different thing",
+ "subtitle": "A payroll study finds workers in their early twenties in the most exposed jobs {c[jb-046][value]} percent below trend, a survey-based tracker finds no connection, and a job-ad study finds some entry-level openings up {c[jb-070][value]} percent. Each label says what its percent is of. They are shown together and never pooled.",
  "plot": {
   "type": "ladder",
   "signed": true,

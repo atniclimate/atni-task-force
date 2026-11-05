@@ -35,7 +35,7 @@ tab with `"fit": true`, so the plate reaches the window foot at 1920x1080 (plate
 | 5 | Levers `#levers` | ten rows, before and after as two squares on one linear ruler per row with `after_over_before` printed | measure | term moved, size in record, note; reasoning off tagged "upper bound" |
 | 6 | Crossovers `#crossovers` | log ruler of annual count: central square, low to high range line, "or never" as words at the row end; hydro lines in a separate "Scenario" group; one grid first | comparison (views, prompts) | the one input or setting at each end |
 | 7 | Catalog `#catalog` | two rulers in one plate: By the hour (the Wall, linear) and By the unit (log, squares); the price basis as a tag on every row | sort (value, tag) within a ruler; measure | the table view (Row, Wh, $ with basis, g, mL by basin, claims); price column not sortable |
-| 8 | Project Scale `#project-scale` | instrument rows, no defaults, no example | MW, load factor, site water (three presets named), grid factor, load to compare with | "hosting and serving are separate decisions" |
+| 8 | Project Scale `#project-scale` | instrument rows, blank by default; one button fills the Data Centers plate's example and picks no feed; Reset clears it | MW, load factor, site water (three presets named), grid factor, load to compare with | "hosting and serving are separate decisions" |
 | 9 | Method `#method` | the back-test as a table, held-out rows first, not-held-out rows marked, no line | none | disclaimer, method text, calibration, regression (no t, interval, R2, "elasticity"), sensitivity, field protocol, downloads, version, cite |
 
 The 21 global selectors live in a **Settings drawer**: a 22rem `<aside>` on `#1E242C` (light `#EEF1F6`) that opens from the right under the disclaimer band, the
@@ -92,8 +92,8 @@ streaming hour, 0 GB), labeled "a starting point; change any field". Office mode
 screen-and-router row = screen hours x (device Wh per hour + router Wh per hour at the router rule), drawn once; each activity = count x its per-unit data
 center and network terms from the catalog formulas, never a device or router term, so time is counted once. Price: three lines, never one sum: "at API list"
 (prompts, coding, images, clips, searches), "what platforms earn in those hours, revenue, not a cost" (social, streaming), "seat and storage list" (office).
-CO2e: the sum across layers at the chosen grids, grids named. Water: by basin. The claim-sentence title refills live ("In a week with N screen hours, the screen
-and router are X Wh and the activities add Y Wh, most of it the coding hour; modeled, 11/2026"). On load the page recomputes the model's hour rows from the
+CO2e: the sum across layers at the chosen grids, grids named. Water: by basin. The claim-sentence title refills live ("In a week with N screen hours: screen
+and router X Wh, activities Y Wh, most of it the coding hour"), under the eyebrow "Your week, modeled 11/2026". On load the page recomputes the model's hour rows from the
 inline inputs and compares them with the inline oracle; the detail prints "Matches the model: N rows within 0.5 percent" or a visible warning naming the row.
 
 ## 6. AI Is Not the Building (tab 2) and the named alternatives (tab 4)
@@ -144,7 +144,7 @@ Script and page budgets live in one place, `tests/budgets.json`; `scripts/page_c
   crossovers, the levers), `Run` (spreads and `drivers`: each input at its ends and each setting at its options, the same procedure as Python, so any combination of the 21
   settings and the Your Use counts computes live), `Views` (what the page says at one state, so the build prints the words the page computes), and the number formats.
   Python stays canonical; the JS never introduces a coefficient. `site/assets/js/explorer.js` holds the page around it: painting, selection, the drawer, the address.
-- `scripts/resource_model.py --export` writes `site/data/resource-model.json` for download and the oracle, `work/site-refresh/tmp/explorer-oracle.json`: 300 seeded settings and
+- `scripts/resource_model.py --export` writes `site/data/resource-model.json` for download, and `--oracle` writes the oracle, `work/site-refresh/tmp/explorer-oracle.json`: 300 seeded settings and
   counts (seed 20261104; the first is the default), each with Python's tree, spreads, drivers, crossovers, and Your Use by layer.
 - `scripts/build_explorer.py` slims that file for the inline block (inputs with low and high; assumptions; the boards, words, and default rows; no `selectors` branch), writes it
   as `<script type="application/json">` in `site/explorer/index.html`, and pours the page's words and geometry from `resource-model.js` through `scripts/explorer_static.js`.

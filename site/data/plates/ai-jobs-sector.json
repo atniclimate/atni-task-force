@@ -5,8 +5,8 @@
  "id": "ai-jobs-sector",
  "default": "jb-098",
  "eyebrow": "Jobs by sector",
- "title": "By 2035, BLS projects +{c[jb-098][value]} percent in computing and hosting and +{c[jb-097][value]} in utilities, against {c[jb-101][value]} in office and administrative support; in jobs, that one loss is larger than those two gains together",
- "subtitle": "Projected percent change in employment, 2025 to 2035. Percents hide size: a large group's small fall can outweigh a small group's large rise.",
+ "title": "By 2035, BLS projects +{c[jb-098][value]} percent in computing and hosting and {c[jb-101][value]} in office and administrative support",
+ "subtitle": "Utilities grow +{c[jb-097][value]} percent. In jobs, the loss in office and administrative support is larger than the gains in computing and utilities together. Projected percent change in employment, 2025 to 2035. Percents hide size: a large group's small fall can outweigh a small group's large rise.",
  "controls": [
   {
    "type": "segmented",
@@ -30,6 +30,12 @@
   "signed": true,
   "sort": "sector_sort",
   "projected": true,
+  "key": [
+   {
+    "label": "Dashed outline: BLS projection, 2025 to 2035",
+    "shape": "proj"
+   }
+  ],
   "domain": [
    -10,
    30

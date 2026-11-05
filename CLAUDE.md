@@ -26,7 +26,7 @@ node scripts\page_check.js --all       # jsdom checks of every plate page (npm c
 ```
 
 After changing plates or claims, rebuild with `python scripts\build_plates.py` (`--page PATH` for one page). After changing
-the model, run `python scripts\resource_model.py --self-test`, `--export`, then `python scripts\build_explorer.py`. Pushing
+the model, run `python scripts\resource_model.py --self-test`, `--export`, `--oracle`, then `python scripts\build_explorer.py`. Pushing
 to `main` publishes the site through `pages.yml`, so work on a branch. Never push to `main` or enable Pages without an
 explicit owner command in the session.
 
@@ -39,9 +39,12 @@ explicit owner command in the session.
 | `site/data/energy-funding.json` | `scripts/energy_funding.py` (program catalog, Grants.gov live layer) | T0; heat section T1 until released |
 | `site/data/policy-watch.json` | policy searches aligned to Policy Sentinel sources | T0 |
 | `site/data/claims/*.json` | `scripts/build_plates.py --export-claims` from local evidence files (verified or partly only, with public limits) | T0 |
+| `site/data/claims/anonymized.json` | by hand, never exported: the public wording of `lf-059` under the owner ruling of 11/04/2026, because its local evidence record names the operator and the Nation and `build_plates.py` holds that record back | T0 |
+| `site/data/claims/potential.json`, `funding.json`, `site/data/plates/energy-*.json` | `scripts/energy_claims.py` from the two Energy data files (run it after either changes), then `build_plates.py --export-claims potential funding` and `--page` for the three Energy pages | T0 |
 | `site/data/plates/*.json`, plate blocks in pages | definitions by hand or generator; `scripts/build_plates.py` pours numbers from claims | T0 |
-| `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `explorer.js`) | T0 |
-| `site/explorer/index.html` blocks | `scripts/build_explorer.py` | T0 |
+| `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `site/assets/js/resource-model.js`, the page's pure model, which `explorer.js` draws) | T0 |
+| `site/explorer/index.html` blocks, home band | `scripts/build_explorer.py` (words and geometry from `resource-model.js` through `scripts/explorer_static.js`) | T0 |
+| `site/library/index.html` strip and band | `scripts/build_library_strip.py`, by name after any change to `library.json`; `merge_library.py` does not call it | T0 |
 
 EIA and SEC pulls: `scripts/eia_outlook.py`, `scripts/sec_financials.py` (generic User-Agent, no email).
 

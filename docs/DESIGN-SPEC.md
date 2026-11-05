@@ -50,7 +50,7 @@ workstreams sit in four columns at 1400px and up. Pages that get only shared CSS
 
 **A7. Visual richness.** The brief asks for a highly creative, visual build. Each workbench panel carries at
 least one signature graphic that is more than a bar list (for example the prompt-square Count view, small multiples
-over time, a tradeoff matrix, a scenario band with past forecast misses). Tab change counts as a touch, so a 160 to 240ms plot
+over time, a tradeoff matrix, a scenario band, a check of past projections against what came after). Tab change counts as a touch, so a 160 to 240ms plot
 transition is allowed there; reduced motion stays 0ms. On-page video stayed out of the first build (section B governs now).
 
 **A8. Budget.** Script and page budgets live in one place, `tests/budgets.json`: bytes per script, and one page weight
@@ -88,6 +88,37 @@ page or plate with a one-line reason in the commit. The owner chooses among trea
 - A click-to-play explainer clip may be trialed: a transcript beside it, a poster, no autoplay, `muted`, `playsinline`,
   `preload="none"`. A trial needs video types added to `validate_public.py` with a size cap (2 MB is the starting point
   in section 5) and the owner's approval before anything is published. Until then, clips stay off the site.
+
+## C. Instrument at Full Power, 11/05/2026 (overrides sections 0 to 6)
+
+The art director's decision is `work/site-refresh/design/lift/DIRECTION-FINAL.md` (local). Sections A and B stand, and this is the record of what the
+direction changes in the defaults below them, each with its reason. Hard lines (tier, claim ids, no external loads, no Indigenous motif, the seal) are not defaults and
+do not move. The sizes and tokens as built are in `docs/PLATE-KIT.md`, "The system as built".
+
+| Default | Now | Reason |
+|---|---|---|
+| Plate on raised ground, padded, framed on light (4, A4) | The plot on the page ground, no frame; only `.plate-detail` is raised; print keeps the frame | Box inside a band inside a page was the loudest thing on the screen; luminance now says one thing |
+| Alternating raised sections (2, 6) | One ground with hairlines between sections | Same rule: one raised thing on a screen |
+| Readout 4.5rem, proportional figures (2) | `--poster`, 7rem at 1440 and 8.5rem at 1920, tabular; it shrinks only as its own text needs | The reader's number is meant to be read across a room |
+| Eyebrow uppercase, +0.08em, orange (2, 3) | Sentence case, no tracking, 0.875rem, secondary ink | Tracked capitals are template chrome and the least legible text on the site |
+| Caption and tick 0.8125rem, chip 0.75rem (2, 4) | Floor of 0.875rem on any first screen; 0.8125rem only in Sources, Table, and print | A council room reads from the far end of a table |
+| Marks 8px; ranges a 1.5px line with end ticks (4) | `--mark` 16 to 26px; ranges an 8px band at 40 percent, solid orange when selected | Same; the band is under 3:1 on purpose, because the row prints the range in words beside it |
+| Row 44px, 32px under a mouse (A, 4) | 56px, with no smaller row for a mouse; a comparison plate shares its height 2 to 1 between activity and yardstick rows | Marks need the room. 128 and 64px did not fit 1440 by 900, so these are minimums of 96 and 56 that grow to fill; 48 wrapped a yardstick's label and value |
+| A selected row's wash (4) | No wash: the band and mark turn orange | A wash under a band was two ways to say one thing |
+| Selected series and bars in chart colors, diverging in slots 1 and 2 (4) | Grey until selected; a sign reads from the side of zero, the printed sign, and two greys | Orange is the only chromatic ink on a plate, so it can only mean the selection |
+| Zone scrolls inside a fixed plate, with a fade (W3) | A plate has a least height and grows, in the page's scroll; the plot keeps its own height and the detail's view stays beside a tall plot | A fade still hides text; no scroller means no extra tab stop and nothing cut |
+| Chips and open receipt under the Reading (4) | In the Sources view, with one line "This row: N verified, M partly verified; 46 sources on the plate" as the way there | First screen stays the number and the sentence; the receipt opens under its chip, in view, with focus. The line names both counts, because a bare tally under "Sources (46)" read as a second count of one thing |
+| Claim-sentence title of any length (4) | One clause and one figure pair, at most four lines at 1440; a "(modeled, 11/2026)" tail moves to the eyebrow and what a title drops moves to its subtitle; the build warns past 120 characters | Five to seven lines at 1.5rem in the claim column put 170px of title before any control |
+| A Reading in one ink (4) | In the raised panel the sentence with the readout's figure keeps the Reading's face, size, and heading ink, and the rest is Noto Sans at 1rem in body ink | Three sentences of Display weighed as much as the title. Ink alone did not do it: on dark, body ink is 1.2 to 1 from heading ink |
+| Rows a stop does not count fold into a foot line (kit) | They stay on the plot as ghosts, disabled, with the plate's words | A reader watches the boundary do the work |
+| No load sequence (B3) | One stroke on one element: the needle draws once on home, 240ms | The needle is the signature; everything else stays still |
+| Needle 120ms linear (5) | 160ms ease-out, with the marks | One motion, not two |
+| Header 64px, lockup 44px (A2, 3) | Header 56px, lockup 48px | The plate gets the height; the logo keeps its size |
+| Section rail on every long page (A5) | Only where the nav stays (Resource Use, Potential, Funding); a page that drops the nav gets the column back | Rail pages are reference pages |
+| Climate lockup 28px, 40px on About (the direction) | 40px everywhere, one size | At 28px its cap height is about 6px and it does not read, in either theme |
+| Plate figures to three significant figures (kit) | Two, three at 99.5 and above, a row's `digits` overriding: the Explorer's rule | One row printed 14, 14.1, and 7.2 or 7.18 across home, AI, and the Catalog |
+| A needle may stand on the first year (4) | `lines` starts its years 24px in from the ticks, at every selection | A needle there read as the y axis, and an inset that came and went would make the plot jump |
+| Table view shares the plate 20, 32, and 48 (A4) | 20, 44, and 36; the "or never" word hides there, since the value column and the table print it | The larger label and value columns left a ruler's track 1 to 47px wide at 1280 and 1440; the table scrolls in its own region, and a plot with no track says nothing |
 
 ## 0. The decision
 
@@ -127,16 +158,16 @@ Where this refuse list and section B conflict (stock imagery, video on the page,
 
 | Variable | Dark | Light | Job |
 |---|---|---|---|
-| `--energy-text` | `#FF914C` (8.89 / 8.25 / 7.00) | `#C34B00` (4.52 / 4.85; 4.29 on `#EEF1F6`, so never text on the well) | text, links, ENERGY in the lockup |
-| `--energy-mark` | `#FF914C` | `#F25C00` (3.10 / 3.33; 2.94 on `#EEF1F6`, so never a thin mark on the well) | needle, 2px lines, squares, selected underline |
-| `--energy-fill` | `#FF914C` | `#C34B00` | button and open-chip fill |
-| `--energy-on-fill` | `#010B13` (8.89) | `#FFFFFF` (4.85) | label on the fill |
-| `--energy-hover` | `#FFAB73` (10.70; on-fill label 10.70) | `#A33F00` (6.43; white label 6.43) | hover fill and hover text |
+| `--energy-text` | `#FF914C` (8.89 / 8.25 / 7.00) | `#BC4800` (4.81 / 5.17; 4.56 on `#EEF1F6`, 4.60 on the wash) | text, links |
+| `--energy-mark` | `#FF914C` | `#E85500` (3.41 / 3.66; 3.24 on `#EEF1F6`, 3.26 on the wash) | needle, 2px lines, squares, selected underline |
+| `--energy-fill` | `#FF914C` | `#BC4800` | button and open-chip fill |
+| `--energy-on-fill` | `#010B13` (8.89) | `#FFFFFF` (5.17) | label on the fill |
+| `--energy-hover` | `#FFAB73` (10.70; on-fill label 10.70) | `#A33F00` (6.00 / 6.43; white label 6.43) | hover fill and hover text |
 | `--energy-wash` | `#2C201A` (10% orange over `#141414`) | `#FEEFE6` (10% over white) | selected-row ground; never under text smaller than body |
 | `--lead-ink` | `var(--atni-text-body)` | `var(--atni-text-secondary)` | audit 2.1 lead fix |
 | `--series-context` | `#8A94A6` (6.02 on raised) | `#667085` (4.97 on white) | unselected series, ruler ticks |
-| `--grid` | `#2B323C` (1.42 on raised) | `#E7ECF3` (1.19 on white) | decorative hairlines only |
-| `--baseline` | `var(--atni-text-secondary)` | `var(--atni-text-secondary)` | axis baseline, 1px |
+| `--grid` | `#2B323C` (1.42 on raised) | `#D9E0EA` | hairlines and the shared-ground band |
+| `--baseline` | `var(--atni-text-secondary)` | `#667085` | axis baseline, 1px; the rail on a summit or a strip |
 | `--measure-wide` | `44rem` | same | the only measure besides `--measure` 32rem |
 
 Role remaps in the same four blocks: `--accent: var(--energy-mark)`; `--atni-text-red` and `--atni-text-link:
@@ -180,14 +211,14 @@ inheritance and passes 3:1 on every surface in both themes. The plot's single fo
 
 **Print.** Light set; plates `break-inside: avoid`; controls, chips, strip, toggle, and nav hidden; the plate table
 prints open (`.plate-table[hidden] { display: block !important }` under print outranks `[hidden]`); the source line
-prints its URLs through the existing `a[href^="http"]::after` rule; the needle prints in `#C34B00`.
+prints its URLs through the existing `a[href^="http"]::after` rule; the needle prints in `#BC4800`.
 
 ## 3. Components
 
 **Header.** 64px bar (56 on a phone), base ground, 1px `--rule` below, does not stick. Left: the header lockup from
 `work/site-refresh/logo/` (`atni-energy-header.svg`) at 40px tall (36 phone), linked home with `aria-label="ATNI
 Energy Task Forces, home"`. Inline the SVG when it is under 6 KB after `--outline-text --decimals 1`; ATNI letters
-take `currentColor` (heading ink), ENERGY takes `var(--energy-text)` (`#C34B00` on light, since the word is small
+take `currentColor` (heading ink), ENERGY takes `var(--energy-text)` (`#BC4800` on light, since the word is small
 text), the seal keeps its own colors in both themes. Over 6 KB: two `<img>` in `site/assets/img/`, the
 `-on-dark` file and the light file, one shown per theme by CSS. Clear space equals the seal's radius; never below
 32px tall; never recolored beyond those two words. Right: nav links LS 500 0.875rem, secondary ink, 44px tall,
@@ -327,7 +358,7 @@ and a text alternative beside the element.
 ## 6. Home and Energy with the shared CSS alone
 
 **Home (`site/index.html`).** With no markup change: eyebrow turns orange; the h1 drops from 84px to the title size;
-the lead sits at 44rem in body ink; buttons fill orange with dark ink (light: `#C34B00` with white); the loop's
+the lead sits at 44rem in body ink; buttons fill orange with dark ink (light: `#BC4800` with white); the loop's
 numerals and lines turn orange with on-fill ink; the four workstream boxes become four ruled rows; "The Work in
 Numbers" becomes four ruled rows with the value in the left cell; the resolution rows already fit; even-numbered
 sections sit on raised ground, so the page alternates base, raised, base without a single decorative rule. Page
@@ -342,6 +373,6 @@ inherit orange controls. The existing stacked-bar chart (`.chart`, `.bar`) rises
 square swatches, and a shadow-free tip; its floating tip becomes the fixed Reading when `energy-potential.js` is
 rewritten to `plate.js`, a later task. Nothing on this page needs a plate in this run.
 
-**For the design system's owner:** a `program.energy` group (`#FF914C`, `#C34B00`, `#F25C00`, `#A33F00`) with pair
+**For the design system's owner:** a `program.energy` group (`#FF914C`, `#BC4800`, `#E85500`, `#A33F00`) with pair
 entries for the contrast test, the Readout role, the lead color mismatch, and the `--measure-wide` step.
 **Unverified until build:** League Spartan `tnum`; the lockup's size and weight (the logo is still being drawn).

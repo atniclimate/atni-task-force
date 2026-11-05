@@ -6,8 +6,9 @@ const { m: I, a: A, want, k_r_low, k_r_high, k_h_low, k_h_high, over_lo, over_hi
 const VIDEO_DC = A.video_dc_intensity.options;
 const KIND = A.chat_kind.options;
 const BASE = { prompts_per_hour: A.prompts_per_hour.default, device: 'phone', connection: 'wifi', network_mode: 'average', router_allocation: 'by_time', video_dc_intensity: 'measured_delivery', chat_wh_per_prompt: A.chat_wh_per_prompt.default };
-const figure = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(+Number(v).toPrecision(3));
-const prompts = (N) => `${figure(N)} ${N === 1 ? 'prompt' : 'prompts'}`;
+// As the kit rounds a computed figure: two significant figures, three at 99.5 and up. Three digits keep what the reader set and a division of two filings exact.
+const figure = (v, d) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(+Number(v).toPrecision(d || (Math.abs(v) >= 99.5 ? 3 : 2)));
+const prompts = (N) => `${figure(N, 3)} ${N === 1 ? 'prompt' : 'prompts'}`;
 
 // The equations of compare_model.py, the oracle. which picks value, low, or high of every input.
 function sameHour(s, which = 'value') {
@@ -167,36 +168,6 @@ function partsOf(r, unit, { now }, { boundary }) {
   if (boundary === 'whole') parts.push({ gap: true }, { cls: 'seg-band', hollow: true, n: s.router / unit }, { cls: 'seg-band', hollow: device.hollow, n: s.device / unit });
   return parts;
 }
-// Each boundary gets the ruler that holds its numbers, so none clips: whole decades around them, or at the whole hour an even ruler from
-// zero, because its parts add. A household day stays off that ruler, in words.
-function setRuler(ctx) {
-  const { plot, state: { boundary }, data } = ctx;
-  const whole = boundary === 'whole';
-  const here = data.rows.filter((r) => r.when === boundary && r.key !== 'household');
-  const nums = here.flatMap((r) => [r.value, r.low, r.high]).filter((v) => v > 0);
-  const top = Math.max(...nums);
-  const low = Math.floor(Math.log10(Math.min(...nums)));
-  let ticks = Array.from({ length: Math.ceil(Math.log10(top)) - low + 1 }, (_, i) => 10 ** (low + i));
-  if (whole) {
-    const end = [150, 200, 300, 400, 600, 800, 1000, 1500, 2000].find((n) => n >= top);
-    const steps = end % 3 ? 4 : 3;
-    ticks = Array.from({ length: steps + 1 }, (_, i) => (i * end) / steps);
-  }
-  Object.assign(data.plot, { scale: whole ? 'linear' : 'log', domain: [ticks[0], ticks.at(-1)] });
-  ctx.auto(); // formula rows and marks take their places on it
-  const at = (v) => (v === null || v === undefined ? undefined : ctx.frac(v));
-  for (const r of here) if (!r.f) ctx.setRow(r.key, { frac: at(r.value), lo: at(r.low), hi: at(r.high) });
-  if (whole) ctx.setRow('household', { off: true, text: `${data.rows.find((r) => r.key === 'household').display}, off this ruler` });
-  const placed = (node, t) => {
-    node.style.setProperty('--x', ctx.frac(t));
-    return node;
-  };
-  const grid = plot.querySelector('.ladder-grid');
-  grid.querySelectorAll('i:not(.ladder-needle):not(.ladder-tick)').forEach((node) => node.remove());
-  grid.prepend(...ticks.map((t) => placed(el('i', t ? '' : 'is-zero'), t)));
-  plot.querySelector('.ladder-axis').replaceChildren(...ticks.map((t) => placed(el('span', '', plate.draw.fmt(t, ticks.at(-1))), t)));
-  plot.closest('.plate').querySelector('.plate-claim > .caption + .caption').textContent = whole ? 'An even ruler from zero.' : 'Each mark is ten times the last.';
-}
 function countKey(plot, unit) {
   const key = plot.insertBefore(el('ul', 'count-key'), plot.firstChild);
   key.setAttribute('aria-hidden', 'true'); // the Table holds the same words
@@ -214,20 +185,13 @@ function countKey(plot, unit) {
 }
 function markRows(ctx) {
   const { plot, state, inputs, data } = ctx;
-  const counting = state['ai-same-hour-plot'] === 'count';
-  plot.closest('.plate').dataset.plotview = counting ? 'count' : 'ruler';
   for (const node of plot.querySelectorAll('.ladder-label')) node.firstChild.nodeValue = data.rows.find((x) => x.key === node.parentElement.dataset.row).label;
-  // Whole hour: a thin bar under each mark, the shared router and device, then what the activity adds.
-  const whole = state.boundary === 'whole';
   for (const key of ACTIVITY) {
-    const row = plot.querySelector(`.ladder-row[data-row="${key}"]`);
-    const tag = row.querySelector('.ladder-tag');
+    const tag = plot.querySelector(`.ladder-row[data-row="${key}"] .ladder-tag`);
     tag.textContent = `Adds ${figure(inputs.now[key].activity_added)} Wh`;
     tag.hidden = state.boundary === 'adds'; // the value says it here
-    row.classList.toggle('has-band', whole);
-    if (whole) row.style.setProperty('--band', ctx.frac(inputs.now[key].router + inputs.now[key].device));
   }
-  (plot.querySelector('.count-key') || countKey(plot, inputs.prompt)).hidden = !counting;
+  (plot.querySelector('.count-key') || countKey(plot, inputs.prompt)).hidden = state['ai-same-hour-plot'] !== 'count';
 }
 plate.register('ai-same-hour', {
   countParts: partsOf,
@@ -242,17 +206,17 @@ plate.register('ai-same-hour', {
       ctx.data.cites = settingCites(st);
     }
     ctx.auto();
-    if (ctx.reason !== 'select') setRuler(ctx);
     const [row] = ctx.rows;
     if (row && ACTIVITY.includes(row.key)) {
       const seg = now[row.key];
       const thing = { chat: `a chat of ${prompts(st.prompts)}`, video: 'a streamed video hour', short: 'a short-video feed hour' }[row.key];
-      const say = (parts) => parts.map(([name, part]) => `${name} ${figure(seg[part])}`).join(', ');
-      const left = PARTS.slice(COUNTED[st.boundary]);
-      ctx.reading(`Counting ${COUNTING[st.boundary]} on ${DEVICE[st.device]}, ${thing} uses about ${figure(row.value)} Wh for the hour (${figure(row.low)} to ${figure(row.high)} Wh). Counted: ${say(PARTS.slice(0, COUNTED[st.boundary]))}${left.length ? `; not counted at this boundary: ${say(left)}` : ''}. Modeled from the figures in its receipts, 11/2026.`);
+      const left = PARTS.slice(COUNTED[st.boundary]).map(([name, part]) => `${name} ${figure(seg[part])}`).join(', ');
+      const own = `${figure(seg.router + seg.device)} Wh of that is your own ${seg.router ? 'screen and router' : 'screen'}.`;
+      // The parts print in the list under it, and the kit adds a third sentence where ranges overlap.
+      ctx.reading(`Counting ${COUNTING[st.boundary]} on ${DEVICE[st.device]}, ${thing} uses about ${figure(row.value)} Wh, or ${figure(row.low)} to ${figure(row.high)} Wh (modeled, 11/2026). ${left ? `Not counted at this boundary: ${left}.` : own}`);
       ctx.fact(`What this activity adds, the data center plus the network: ${figure(seg.activity_added)} Wh. The router and device add ${figure(seg.router + seg.device)} Wh to every row.`);
       if (row.key === 'chat') {
-        ctx.fact(`${prompts(st.prompts)} at ${figure(s.chat_wh_per_prompt)} Wh each.`);
+        ctx.fact(`${prompts(st.prompts)} at ${figure(s.chat_wh_per_prompt, 3)} Wh each.`);
         if (!short) ctx.fact('This kind of chat sets its own energy per prompt, so the Wh per short text prompt setting does not move this row.');
         if (st.chat_kind === 'medium_prompt' || st.chat_kind === 'high_reasoning') ctx.fact(`From a preprint that a peer-reviewed paper says overstates production figures ${over_lo} to ${over_hi} times.`);
         if (st.video_dc_intensity !== BASE.video_dc_intensity) ctx.fact(STREAM_ONLY);
@@ -260,7 +224,7 @@ plate.register('ai-same-hour', {
         if (st.prompts !== BASE.prompts_per_hour || !short || st.chat_wh_per_prompt !== BASE.chat_wh_per_prompt) ctx.fact(CHAT_ONLY);
         if (st.video_dc_intensity === 'top_down') ctx.fact(TOP_DOWN);
       }
-    }
+    } else if (row) ctx.reading(row.reading.replace(' for the hour', '')); // a yardstick may be a charge or a day
     if (ctx.reason !== 'select') {
       fillSegmentCells(ctx.plot.closest('.plate'), now);
       markRows(ctx);
@@ -286,9 +250,9 @@ plate.register('ai-heavy-ai', {
     const per = ctx.inputs.yard;
     if (ctx.reason !== 'select') {
       for (const r of ctx.data.rows) {
-        const node = ctx.plot.querySelector(`.ladder-row[data-row="${r.key}"]`);
-        const cell = node.querySelector('.ladder-eq') || node.appendChild(el('span', 'ladder-eq'));
-        cell.textContent = inTime((r.value ?? r.low) / per);
+        const value = ctx.plot.querySelector(`.ladder-row[data-row="${r.key}"] .ladder-value`);
+        if (!value.querySelector('.ladder-eq')) value.append(' ', el('span', 'ladder-tag ladder-eq'));
+        value.querySelector('.ladder-eq').textContent = inTime((r.value ?? r.low) / per);
       }
     }
     const [r] = ctx.rows;
@@ -319,12 +283,90 @@ plate.register('ai-scale', {
   },
 });
 
+// Paying for it: one scale for all seven first, then the six measures. Each share divides two of the plate's own rows, so it carries their two claims; a year with no
+// positive operating cash flow has no share. Without scripts the six panels and the table stand, and the two columns the share divides are side by side in it.
+const shareRows = (rows) => {
+  const flow = new Map(rows.filter((r) => r.panel === 'ocf').map((r) => [`${r.series}|${r.key}`, r.value]));
+  return rows.filter((r) => r.panel === 'capex' && r.value >= 0 && flow.get(`${r.series}|${r.key}`) > 0).map((r) => ({ ...r, panel: 'share', value: (r.value / flow.get(`${r.series}|${r.key}`)) * 100 }));
+};
+function drawMoney({ plot, data: { plot: cfg, rows } }) {
+  if (!plot.clientWidth) return;
+  const { frame, inner, chart, add, scale } = plate.draw;
+  const gap = 24;
+  const cols = plot.clientWidth >= 520 ? 3 : plot.clientWidth >= 420 ? 2 : 1;
+  const down = Math.ceil(cfg.panels.length / cols);
+  const f = frame(plot, 236 + down * (150 + gap));
+  const head = Math.min(340, Math.max(200, Math.round(f.H * 0.34)));
+  const under = head + 20; // a line gives the six their unit
+  const shares = shareRows(rows);
+  const ticks = Array.from({ length: Math.ceil(Math.max(...shares.map((r) => r.value)) / 50) + 1 }, (_, i) => i * 50);
+  const top = add(f.g, 'g', {});
+  add(top, 'text', { class: 'm-title', x: 0, y: 22, 'aria-hidden': 'true', text: 'Capital spending as a share of operating cash flow (percent)' });
+  const box = inner(top, f.W, head, { top: 36, right: 84, bottom: 24, left: 52 });
+  const y = scale('linear', [0, ticks.at(-1)], [box.y0, box.y1]);
+  add(top, 'line', { class: 'm-base', x1: box.x0, x2: box.x1, y1: y(100), y2: y(100) });
+  add(top, 'text', { class: 'm-tick', x: box.x0 + 8, y: y(100) - 6, 'aria-hidden': 'true', text: 'Equal to cash flow' });
+  chart(box, shares, { ...cfg, domain: [0, ticks.at(-1)], ticks, panels: true }, false);
+  // At the right end, only the selected company and the highest and lowest line; the rest are Others in the legend and in the Table.
+  const ends = new Map(shares.map((r) => [r.series, r.value])); // rows run oldest first, so each company keeps its last share
+  const low = [...ends.keys()].sort((a, b) => ends.get(a) - ends.get(b));
+  let at = box.y0 + 18; // from the bottom, so a name moved aside goes up, clear of the axis
+  for (const name of low.filter((n, i) => n === cfg.highlight || !i || i === low.length - 1)) {
+    at = Math.min(y(ends.get(name)), at - 18);
+    add(top, 'text', { class: `m-label${name === cfg.highlight ? ' is-lead' : ' m-end'}`, x: box.x1 + 8, y: at, dy: '.32em', 'aria-hidden': 'true', text: name });
+  }
+  add(f.g, 'text', { class: 'm-tick', x: 0, y: head + 18, 'aria-hidden': 'true', text: 'The six below, in billion dollars by fiscal year' });
+  const cw = (f.W + gap) / cols;
+  const ch = (f.H - under) / down;
+  // Each of the six names only the selected company, on its title's line, where no year's mark can cover the word. Where the longest title leaves no room, the first panel and the orange say it.
+  const named = cw - gap >= (Math.max(...cfg.panels.map((p) => p.label.length)) + cfg.highlight.length) * 7 + 8;
+  cfg.panels.forEach((panel, i) => {
+    const g = add(f.g, 'g', { transform: `translate(${(i % cols) * cw} ${under + Math.floor(i / cols) * ch})` });
+    const own = rows.filter((r) => r.panel === panel.id);
+    add(g, 'text', { class: 'm-title', x: 0, y: 22, 'aria-hidden': 'true', text: panel.label });
+    if (named && own.some((r) => r.series === cfg.highlight && r.value != null)) add(g, 'text', { class: 'm-label is-lead', x: cw - gap, y: 22, 'text-anchor': 'end', 'aria-hidden': 'true', text: cfg.highlight });
+    chart(inner(g, cw - gap, ch - gap, { top: 36, right: 12, bottom: 24, left: 52 }), own, { ...cfg, ...panel, panels: true }, false);
+  });
+}
+const moneyRoot = document.getElementById('ai-company-money');
+// The table's own column for the first panel.
+function shareColumn(rows) {
+  const shares = new Map(shareRows(rows).map((r) => [`${r.series}|${r.key}`, figure(r.value, 3)]));
+  const table = moneyRoot.querySelector('.plate-table');
+  const before = (row, cell) => row.insertBefore(cell, row.lastElementChild);
+  before(table.querySelector('thead tr'), Object.assign(el('th', '', 'Capital spending as a share of operating cash flow, percent'), { scope: 'col' }));
+  for (const row of table.querySelectorAll('tbody tr')) before(row, el('td', '', shares.get(`${row.children[0].textContent}|${row.children[1].textContent}`) ?? ''));
+}
+plate.register('ai-company-money', {
+  render(ctx) {
+    if (ctx.reason === 'init') shareColumn(ctx.data.rows);
+    if (ctx.reason !== 'select') drawMoney(ctx);
+    for (const g of ctx.plot.querySelectorAll('.plate-svg > g')) { // the panels differ in width, so each needle stands at its own panel's year
+      const nx = g.querySelector(`[data-row="${ctx.key}"]`)?.dataset.nx;
+      if (nx) g.style.setProperty('--at', `${nx}px`);
+    }
+    const name = ctx.data.plot.highlight;
+    const amount = (panel) => ctx.rows.find((r) => r.series === name && r.panel === panel)?.value;
+    const [spent, flow] = [amount('capex'), amount('ocf')];
+    if (!(spent >= 0 && flow > 0)) return;
+    const share = figure((spent / flow) * 100, 3);
+    const [first, ...rest] = ctx.data.readings[`${ctx.key}|${name}|`].split(/(?<=dollars\.) /);
+    ctx.readout(share, 'percent');
+    ctx.reading([first, `Capital spending was ${share} percent of operating cash flow.`, ...rest, ctx.data.tail].join(' '));
+    ctx.fact(`${spent} / ${flow} = ${share} percent, capital spending as a share of operating cash flow in that fiscal year.`);
+  },
+});
+moneyRoot.querySelector('.plate-plot').addEventListener('click', (e) => { // a name in any panel picks that company; the Company control is the keyboard's way
+  const name = e.target.closest?.('.m-label')?.textContent;
+  moneyRoot.querySelector(`input[name="company"][value="${name}"]:not(:checked)`)?.click();
+});
+
 // A pair's arithmetic, and a mark for a floor, which the kit's ruler leaves bare.
 plate.register('ai-capex-cash', {
   render(ctx) {
     ctx.auto();
     const [a, b] = ctx.rows;
-    if (a && b && b.value) ctx.fact(`${a.text} / ${b.text} = ${figure(a.value / b.value)}, capital spending as a multiple of cash and securities at that year's end.`);
+    if (a && b && b.value) ctx.fact(`${a.text} / ${b.text} = ${figure(a.value / b.value, 3)}, capital spending as a multiple of cash and securities at that year's end.`);
   },
 });
 plate.register('ai-guidance-2026', {

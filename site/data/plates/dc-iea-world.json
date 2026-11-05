@@ -4,8 +4,8 @@
  "id": "dc-iea-world",
  "page": "data-centers/index.html",
  "eyebrow": "The world",
- "title": "The IEA counts {c[dem-040][value]} TWh for the world's data centers in 2025, up {c[dem-042][value]} percent, and about {c[dem-048][value]} by 2030 in its base case",
- "subtitle": "TWh a year, all data centers worldwide. Dashed is a projection.",
+ "title": "The IEA counts {c[dem-040][value]} TWh for the world's data centers in 2025 and about {c[dem-048][value]} by 2030 in its base case",
+ "subtitle": "TWh a year, all data centers worldwide. 2025 is up {c[dem-042][value]} percent. Dashed is a projection.",
  "boundary": "All data centers worldwide.",
  "plot": {
   "type": "lines",

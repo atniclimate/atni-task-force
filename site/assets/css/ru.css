@@ -1,37 +1,37 @@
-/* What Uses Data Center Energy and Water: a long reference page. The 14rem rail comes from site.css; this file sets text
-   and figures side by side, draws the page's static figures, and borrows the plate kit's marks so they read the same.
-   Orange is the data center itself, or the row in focus. Everything here is CSS: no scripts draw a mark. */
+/* What Uses Data Center Energy and Water: a long reference page. The 14rem rail and the band come from site.css; this file sets text and figures side by side, draws the page's static
+   figures, and borrows the plate kit's marks so they read the same. Figures sit on the page ground with no box. Orange is the data center itself, or the row in focus.
+   Everything here is CSS: no scripts draw a mark. */
 
-/* Hero: one compact band, four figures at the right end, in step with the Data Center page above it. */
-.ru-hero { padding-block: 12px; }
-.ru-hero h1 { margin-bottom: 4px; }
-.ru-hero .lead { font-size: 1.125rem; line-height: 1.3; }
-.ru-hero .key-facts { padding: 12px 16px; }
-@media (min-width: 1100px) {
-  .ru-hero .page-hero-grid { align-items: center; }
-}
-.key-facts .ru-facts { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: 8px 16px; }
-.ru-fact-value { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(1.375rem, 1.1rem + 0.7vw, 1.75rem); line-height: 1.1; letter-spacing: -0.015em; color: var(--atni-text-heading); }
-.ru-fact-label { display: block; margin-top: 2px; font-size: 0.8125rem; line-height: 1.3; color: var(--atni-text-secondary); }
-.ru-facts-note { max-width: none; margin: 8px 0 0; font-size: 0.75rem; line-height: 1.35; }
+/* The band's figures keep to three narrow columns, so the h1 holds one line; the notice is one line under it. */
+.ru-band .page-band-figures { flex-wrap: nowrap; gap: 8px 32px; }
+.ru-band .page-band-figures li { flex: 0 1 12rem; align-content: start; }
+.ru-band .figure-label a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+@media (max-width: 1399px) { .ru-band .page-band-figures li { flex-basis: 10rem; } }
+@media (max-width: 719px) { .ru-band .page-band-figures { flex-wrap: wrap; } }
+.ru-notice-line { max-width: none; margin: 0; font-size: 1rem; line-height: 1.4; color: var(--atni-text-body); border-bottom: 1px solid var(--grid); }
+.ru-notice-line .wrap { display: block; padding-block: 4px 8px; }
+main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 
 /* Rail: the marks used on the page sit under the links, so no figure has to explain them from scratch. */
 .ru-key { display: none; }
 @media (min-width: 1100px) {
   .ru-key { display: block; margin-top: 16px; padding: 12px 0 0 14px; border-top: 1px solid var(--rule); }
-  .ru-key p { display: flex; gap: 8px; margin: 0 0 8px; font-family: var(--body); font-size: 0.75rem; line-height: 1.3; color: var(--atni-text-secondary); }
+  .ru-key p { display: flex; gap: 8px; margin: 0 0 8px; font-family: var(--body); font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
   .ru-key .plate-square { margin-top: 0.2em; }
-  .ru-key .ru-key-title { display: block; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-muted); }
+  .ru-key .ru-key-title { display: block; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-muted); }
 }
 .ru-key-dash { flex: none; width: 8px; height: 0; margin-top: 0.55em; border-top: 2px dashed var(--series-context); }
 .ru-key-on { flex: none; width: 8px; height: 8px; margin-top: 0.2em; background: var(--energy-mark); }
 
-/* Sections: a compact heading, then text beside figures. */
-.content > .ru-section + .ru-section { margin-top: clamp(32px, 3vw, 48px); }
+/* Sections: a compact heading, then text beside figures. The first section is the exception: its figure takes the column, and its text flows in columns under it. */
+.content > .ru-section + .ru-section { margin-top: clamp(32px, 3vw, 48px); padding-top: clamp(24px, 2vw, 32px); border-top: 1px solid var(--grid); }
 .ru-section > h2 { margin-bottom: 12px; font-size: 1.5rem; }
 .ru-split { display: grid; gap: 24px; align-items: start; }
 .ru-split > * { min-width: 0; }
 .ru-text > p { max-width: var(--measure-wide); }
+.ru-columns { columns: 26rem 2; column-gap: 48px; margin-top: 24px; }
+.ru-columns > p { margin-top: 0; break-inside: avoid; }
+.ru-columns > .ru-ways { break-inside: avoid; }
 .ru-intro { max-width: var(--measure-wide); }
 .ru-subhead { margin: 24px 0 8px; }
 .ru-side > .ru-subhead { margin-top: 32px; }
@@ -41,10 +41,6 @@
 .ru-ways a { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; }
 @media (min-width: 1100px) {
   .ru-split { grid-template-columns: minmax(0, min(44rem, 42%)) minmax(0, 1fr); column-gap: clamp(24px, 2.5vw, 48px); }
-  /* The opening figure runs the height of the text beside it, and its bars take up the room. */
-  .ru-split.is-even { align-items: stretch; }
-  .ru-split.is-even > .ru-side { display: flex; flex-direction: column; }
-  .ru-split.is-even > .ru-side > .ru-fig { flex: 1; margin-bottom: 0; }
 }
 
 /* Disclosures: each summary is a plain sentence a reader can skim. A heading in a summary stays visible, so its deep link lands. */
@@ -63,59 +59,58 @@
 .ru-text > .ru-notice { max-width: var(--measure-wide); margin-top: 16px; }
 
 /* How to read: four labels and the units, in rows that use the width. */
-.ru-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 12px 24px; margin: 4px 0 16px; padding: 0; list-style: none; font-size: 0.875rem; line-height: 1.45; }
+.ru-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 12px 24px; margin: 4px 0 16px; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.45; }
 .ru-labels li { margin: 0; padding-top: 8px; border-top: 1px solid var(--rule); }
-.ru-labels strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; color: var(--atni-text-heading); }
-.ru-units { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 12px 16px; margin: 0; font-size: 0.8125rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.ru-labels strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.125rem; color: var(--atni-text-heading); }
+.ru-units { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 12px 16px; margin: 0; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
 .ru-units dt { font-family: var(--display); font-weight: 600; font-size: 1.125rem; line-height: 1.2; color: var(--atni-text-heading); }
 .ru-units dd { margin: 0; }
 
-/* Figures: raised ground, a claim for a title, and the reader's sentence at the foot. */
+/* Figures: on the page ground, a claim for a title, and the reader's sentence at the foot. The marks are the plate's, 16 to 26px. */
 .ru-fig {
-  --mark: clamp(8px, 0.5vw + 2px, 12px);
-  margin: 0 0 16px;
-  padding: clamp(16px, 1.4vw, 24px);
-  background: var(--atni-ground-raised);
+  --mark: clamp(16px, 1vw + 5px, 26px);
+  margin: 0 0 24px;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
 .ru-fig a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 .ru-fig p { max-width: none; }
 .ru-fig figcaption { margin-bottom: 12px; }
-.ru-fig .eyebrow { margin-bottom: 4px; color: var(--atni-text-secondary); }
-.ru-fig .plate-title { margin: 0 0 4px; font-size: clamp(1.125rem, 1rem + 0.35vw, 1.5rem); }
+.ru-fig .eyebrow { margin-bottom: 4px; }
+.ru-fig .plate-title { margin: 0 0 4px; }
 .ru-fig .caption { margin: 0; }
-.ru-reading { margin: 12px 0 0; font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.25rem); }
-.ru-fig .ru-source { margin-top: 8px; }
+.ru-fig .plate-title, .ru-fig .caption { max-width: 60ch; } /* words keep a measure; the bars under them keep the column */
+.ru-reading { margin: 12px 0 0; }
+.ru-fig .ru-source { margin-top: 8px; font-size: 0.875rem; }
 .ru-sub { margin: 16px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .ru-fig .plate-square, .ru-grid .plate-square { display: inline-block; vertical-align: 0.05em; margin-right: 4px; }
 
 /* A stack: one whole, drawn as outlined parts because each is a modeled estimate. The data center's part is the only solid. */
-.ru-hour { display: flex; flex-direction: column; }
+.ru-hour { display: flex; flex-direction: column; margin-bottom: 0; }
 .ru-hour-plot { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
 .ru-hour-row { display: flex; flex-direction: column; margin-bottom: 12px; }
 .ru-hour-plot > .ru-hour-row:not(.is-thin) { flex: 1 1 auto; }
 .ru-hour-row.is-thin { position: relative; margin-bottom: 0; }
-.ru-hour-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; margin: 0 0 2px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
-.ru-hour-head strong { font-weight: 600; font-size: 1rem; color: var(--atni-text-heading); }
-.ru-stack-line { flex: 1; display: flex; font-size: 0.8125rem; }
-.ru-stack-line.has-top { padding-top: 1.35em; }
-.ru-stack-line.has-bottom { padding-bottom: 1.35em; }
-.ru-stack { flex: none; display: flex; gap: 2px; width: calc(var(--total) / var(--max) * 100%); min-height: clamp(44px, 7.5vh, 96px); max-height: 160px; margin: 0; padding: 0; list-style: none; }
+.ru-hour-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px; margin: 0 0 2px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); }
+.ru-hour-head strong { font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.ru-stack-line { flex: 1; display: flex; font-size: 0.875rem; }
+.ru-stack-line.has-top { padding-top: 1.45em; }
+.ru-stack-line.has-bottom { padding-bottom: 1.45em; }
+.ru-stack { flex: none; display: flex; gap: 2px; width: calc(var(--total) / var(--max) * 100%); min-height: clamp(44px, 6vh, 96px); max-height: 160px; margin: 0; padding: 0; list-style: none; }
 .ru-stack.is-thin { min-height: 18px; max-height: 18px; }
 .ru-seg { position: relative; flex: var(--v) 1 0; display: flex; align-items: center; min-width: 3px; margin: 0; border: 1.5px solid var(--series-context); }
-.ru-seg-label { padding: 2px 6px; font-size: 0.8125rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.ru-seg-label { padding: 2px 6px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .ru-seg.is-on { background: var(--energy-fill); border-color: var(--energy-fill); }
 .ru-seg.is-on .ru-seg-label { font-weight: 500; color: var(--energy-on-fill); }
 .ru-seg.is-top .ru-seg-label { position: absolute; left: -1.5px; bottom: 100%; padding: 0 0 2px; white-space: nowrap; font-weight: 500; color: var(--atni-text-heading); }
 .ru-seg.is-bottom .ru-seg-label { position: absolute; left: -1.5px; top: 100%; padding: 2px 0 0; white-space: nowrap; color: var(--atni-text-secondary); }
-.ru-hour-row.is-thin .ru-tip { position: absolute; top: 0; left: calc(var(--at) * 100% + 8px); margin: 0; font-size: 0.8125rem; line-height: 18px; white-space: nowrap; color: var(--atni-text-secondary); }
-.ru-hour-axis { position: relative; height: 18px; border-top: 1px solid var(--baseline); }
-.ru-hour-axis i { position: absolute; left: calc(var(--x) * 100%); top: 2px; font-style: normal; font-size: 0.75rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
+.ru-hour-row.is-thin .ru-tip { position: absolute; top: 0; left: calc(var(--at) * 100% + 8px); margin: 0; font-size: 0.875rem; line-height: 18px; white-space: nowrap; color: var(--atni-text-secondary); }
+.ru-hour-axis { position: relative; height: 20px; border-top: 1px solid var(--baseline); }
+.ru-hour-axis i { position: absolute; left: calc(var(--x) * 100%); top: 2px; font-style: normal; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
 @media (min-width: 1100px) {
-  .ru-hour { min-height: calc(100vh - 345px); }
+  .ru-hour { min-height: calc(100vh - 300px); }
 }
-@media (max-width: 1279px) {
+@media (max-width: 1099px) {
   .ru-hour-row.is-thin .ru-tip { position: static; white-space: normal; line-height: 1.3; }
   .ru-seg.is-bottom:last-child .ru-seg-label { left: auto; right: 0; }
 }
@@ -123,23 +118,26 @@
 /* A table that is the chart: every row is label, marks on a ruler, and the printed value with its source. */
 .ru-chart-wrap { margin-block: 0; }
 .ru-chart { table-layout: fixed; min-width: 28rem; }
-.ru-chart thead th { font-size: 0.8125rem; }
-.ru-chart th:first-child { width: 38%; }
-.ru-chart .ru-col-track { width: 30%; }
+.ru-chart thead th { font-size: 0.875rem; }
+.ru-chart th:first-child { width: 34%; }
+.ru-chart .ru-col-track { width: 28%; }
 .ru-chart.is-wide-value th:first-child { width: 24%; }
 .ru-chart.is-wide-value .ru-col-track { width: 28%; }
-.ru-chart tbody th { line-height: 1.3; }
-.ru-chart td { font-size: 0.875rem; line-height: 1.35; text-align: left; }
-.ru-note { display: block; margin-top: 2px; font-size: 0.75rem; line-height: 1.3; font-weight: 400; color: var(--atni-text-secondary); }
+.ru-chart tbody th { line-height: 1.3; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; }
+.ru-chart td { font-size: 1rem; line-height: 1.35; text-align: left; }
+.ru-chart tbody td:last-child { padding-left: 16px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); } /* a mark at the ruler's end reaches 13px past it */
+.ru-chart.is-wide-value tbody td:last-child { font-family: var(--body); font-weight: 400; font-size: 1rem; line-height: 1.35; letter-spacing: 0; color: var(--atni-text-body); }
+.ru-note { display: block; margin-top: 2px; font-family: var(--body); font-size: 0.875rem; line-height: 1.3; font-weight: 400; letter-spacing: 0; color: var(--atni-text-secondary); }
 .data-table.ru-chart td.ru-track { position: relative; padding: 0; background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px); background-size: calc(100% / var(--n)) 100%; border-right: 1px solid var(--grid); }
 .data-table.ru-chart .ru-group-head th { padding-top: 16px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); border-bottom-color: var(--control); }
 .data-table.ru-chart .ru-group-head td { padding: 0 0 4px; vertical-align: bottom; border-bottom-color: var(--control); }
 .ru-ticks { position: relative; display: block; height: 1.25em; }
-.ru-ticks i { position: absolute; left: calc(var(--x) * 100%); transform: translateX(-50%); font-style: normal; font-size: 0.75rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
+.ru-ticks i { position: absolute; left: calc(var(--x) * 100%); transform: translateX(-50%); font-style: normal; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
 /* A row is its own hit target: it lifts one step, and its mark takes the orange. On the well, orange marks wear the text step. */
 .ru-chart tbody tr:not(.ru-group-head):is(:hover, :focus-within) { background: var(--tag-bg); }
 .ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark:not(.is-hollow), .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar:not(.is-hollow) { background: var(--energy-text); }
 .ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark.is-hollow, .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar.is-hollow { border-color: var(--energy-text); }
+.ru-chart tbody tr:is(:hover, :focus-within) .ladder-range:not(.is-proj) { opacity: 1; background: var(--energy-text); }
 
 /* One boundary at a time, with native radios and no script. A browser without :has shows both, which is still true. */
 .ru-switch { margin-bottom: 8px; }
@@ -151,19 +149,28 @@
 }
 
 /* Grids of words: who holds what. Squares are the evidence; "is-gap" is a cell with nothing to report. */
-.ru-grid { font-size: 0.875rem; }
-.ru-grid td { text-align: left; font-size: 0.875rem; line-height: 1.35; }
+.ru-grid { font-size: 0.9375rem; }
+.ru-grid td { text-align: left; font-size: 0.9375rem; line-height: 1.35; }
 .ru-grid tbody th { line-height: 1.3; }
 .ru-grid .is-gap { color: var(--atni-text-secondary); }
 .ru-grid tbody tr:is(:hover, :focus-within) { background: var(--tag-bg); }
 
-/* Bench rows and pull figures. */
-.ru-bench { margin-bottom: 16px; }
+/* Bench rows: a plate's default figure at 1.5rem, its 16 to 26px mark on a thin ruler, and the way to the plate. */
+.ru-bench { --mark: clamp(16px, 1vw + 5px, 26px); margin-bottom: 16px; }
 .ru-bench .ru-sub { margin-top: 0; }
-.ru-pulls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 16px 24px; padding: clamp(16px, 1.4vw, 24px); background: var(--atni-ground-raised); }
+.ru-bench .bench-figure { padding-bottom: calc(var(--mark) + 8px); }
+.ru-bench .bench-value { font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.ru-bench .bench-unit { font-size: 1rem; }
+.ru-bench .bench-ruler { bottom: 2px; height: var(--mark); border-bottom: 0; }
+.ru-bench .bench-ruler::before { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--grid); }
+.ru-bench .bench-ruler::after { top: 0; bottom: auto; width: var(--mark); height: var(--mark); margin-left: calc(var(--mark) / -2); }
+.ru-bench .bench-link { font-size: 0.9375rem; }
+
+/* Pull figures. */
+.ru-pulls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 16px 24px; }
 .ru-pulls .pull { margin: 0; }
 .ru-pulls.is-stacked { grid-template-columns: minmax(0, 1fr); }
-.ru-pull-source { font-size: 0.8125rem; color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.ru-pull-source { font-size: 0.875rem; color: var(--atni-text-heading); text-decoration-color: var(--control); }
 
 /* Questions: the developer's list takes two columns, the utility and counsel the third. */
 .ru-questions { display: grid; gap: 24px 32px; margin-top: 8px; }
@@ -182,11 +189,13 @@
 /* Print: every part open, both boundaries, no switch. */
 @media print {
   .ru-split, .ru-questions { display: block; }
-  .ru-intro, .ru-question-flow { columns: auto; }
+  .ru-columns, .ru-intro, .ru-question-flow { columns: auto; }
   .ru-switch { display: none; }
   .ru-boundary [data-group="whole"], .ru-boundary [data-group="dc"] { display: revert !important; }
   .ru-detail > summary::before { content: none; }
   .ru-detail > summary { display: block; }
   .ru-fig { break-inside: avoid; min-height: 0 !important; }
   .ru-hour { min-height: 0; }
+  .ru-chart tbody td:last-child { font-size: 12pt; }
+  .ru-notice-line { border: 0; }
 }

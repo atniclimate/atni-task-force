@@ -5,8 +5,8 @@
  "id": "ai-capex-cash",
  "default": "amazon",
  "by": "fy",
- "eyebrow": "Capital spending against cash",
- "title": "In the latest fiscal year, Amazon spent {c[fin-003][series_fiscal_year_ends][7][usd_billion]:.0f} billion dollars on property and equipment against {c[fin-037][series_fiscal_year_ends][7][usd_billion]:.0f} billion of cash and securities; Apple spent {c[fin-005][series_fiscal_year_ends][8][usd_billion]:.0f} against {c[fin-039][series_fiscal_year_ends][8][usd_billion]:.0f}",
+ "eyebrow": "Capital spending against cash, latest fiscal year",
+ "title": "Amazon spent {c[fin-003][series_fiscal_year_ends][7][usd_billion]:.0f} billion dollars against {c[fin-037][series_fiscal_year_ends][7][usd_billion]:.0f} billion of cash and securities; Apple spent {c[fin-005][series_fiscal_year_ends][8][usd_billion]:.0f} against {c[fin-039][series_fiscal_year_ends][8][usd_billion]:.0f}",
  "subtitle": "One fiscal year at a time, on one basis: cash purchases of property and equipment, and cash plus marketable securities at that year's end.",
  "controls": [
   {

@@ -5,11 +5,8 @@
  "page": "data-centers/index.html",
  "fit": true,
  "model": "comparison-model",
- "eyebrow": "A proposal",
- "title": "A {amw[text]} average-megawatt project uses about {twh[text]} TWh a year, {share[text]} percent of the region's {region} aMW, and {site[text]} million liters of site water a year at the operators' own water figures (illustration)",
- "text": [
-  "Enter a proposal's megawatts and load factor; a blank water figure shows the record's spread."
- ],
+ "eyebrow": "A proposal, illustration",
+ "title": "{p_mw} MW at {p_lf} load factor is about {twh[text]} TWh a year, {share[text]} percent of the region",
  "inputs": {
   "region": {
    "claim": "dem-058"
@@ -29,6 +26,7 @@
  },
  "plot": {
   "type": "instrument",
+  "needle": "amw",
   "groups": [
    {
     "id": "ctx",
@@ -80,7 +78,7 @@
    ]
   }
  ],
- "reading": "{p_mw} MW at {p_lf} load factor is {amw[text]} aMW, about {twh[text]} TWh a year and {share[text]} percent of the region's {region} aMW; site water {site[display]} a year. Applicant's liters per kWh: {p_l}; the record's spread is {ms} to {google}. Water at the power plant: {plant[display]}. Modeled from the reader's inputs; sources checked 11/04/2026.",
+ "reading": "{p_mw} MW at {p_lf} load factor is {amw[text]} aMW, about {twh[text]} TWh a year and {share[text]} percent of the region's {region} aMW. Site water is {site[display]} a year (applicant's liters per kWh: {p_l}; the record's spread is {ms} to {google}); water at the power plant: {plant[display]}. Modeled from the reader's inputs; sources checked 11/04/2026.",
  "rows": [
   {
    "id": "amw",
@@ -113,23 +111,9 @@
    },
    "scale": "log",
    "domain": [
-    0.01,
-    20
+    0.00876,
+    17.52
    ]
-  },
-  {
-   "id": "share",
-   "label": "Share of the region, one square per 100 aMW, the project in orange",
-   "unit": "percent",
-   "digits": 2,
-   "formula": {
-    "value": "amw / region * 100"
-   },
-   "equation": "Share = aMW / the region's load today x 100",
-   "detail": "The region is a power region, not a watershed: Oregon, Idaho, Washington, and Western Montana.",
-   "cols": {
-    "factor": "aMW / 22,000 aMW"
-   }
   },
   {
    "id": "site",
@@ -149,8 +133,8 @@
    },
    "scale": "log",
    "domain": [
-    10,
-    25000
+    8.76,
+    17520
    ],
    "tag": "No applicant figure; the record's spread"
   },
@@ -172,9 +156,24 @@
    },
    "scale": "log",
    "domain": [
-    100,
-    80000
+    39.6,
+    79200
    ]
+  },
+  {
+   "id": "share",
+   "label": "Share of the region",
+   "tag": "One square is 100 aMW; the project is in orange",
+   "unit": "percent",
+   "digits": 2,
+   "formula": {
+    "value": "amw / region * 100"
+   },
+   "equation": "Share = aMW / the region's load today x 100",
+   "detail": "The region is a power region, not a watershed: Oregon, Idaho, Washington, and Western Montana.",
+   "cols": {
+    "factor": "aMW / 22,000 aMW"
+   }
   },
   {
    "id": "council",
@@ -230,5 +229,5 @@
    }
   ]
  },
- "subtitle": "Each ruler is logarithmic, so equal steps are equal multiples."
+ "subtitle": "About {site[text]} million liters of site water a year. Logarithmic rulers of one span, so the needle reads across them. A blank water figure shows the record's spread."
 }

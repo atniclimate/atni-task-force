@@ -1,9 +1,12 @@
-// The Data Center page: count squares in the instruments and the Council plate, custom layouts for two plates, and details
-// that open for a deep link. Numbers come from the plates' data blocks; text reaches the page by textContent only.
+// The Data Center page: count squares in the instruments, the Council plate's second view, the jobs ruler, the matrix's one sentence, and the check of past projections.
+// Numbers come from the plates' data blocks; text reaches the page by textContent only.
 (function () {
 const { add, frame, inner, chart, scale } = plate.draw;
 const num = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(v);
 const blank = (v) => v === undefined || v === null;
+
+// With scripts, the jump list and a named photograph slot read in the first plate's claim zone, so the plate starts under the tabs. Without them they stay above it.
+for (const head of document.querySelectorAll('.dc-panel-head')) head.closest('.panel').querySelector('.plate-claim').append(...head.querySelectorAll('.slot-label, .dc-jump'));
 
 // The largest pitch at which n squares fit W by H.
 function fitPitch(n, W, H, max = 24) {
@@ -33,7 +36,7 @@ function fillTrack(node, runs, pitch) {
   const used = (n) => Math.ceil(n - 1e-9); // 0.15 x 100 is 15.000000000000002, and must not skip a cell
   const count = runs.reduce((sum, run) => sum + (blank(run.from) ? used(run.n) : 0), 0);
   const height = Math.ceil(count / per) * pitch;
-  const svg = add(track, 'svg', { class: 'dc-sq', width: Math.min(count, per) * pitch, height, 'aria-hidden': 'true' }); // its wash fits the squares
+  const svg = add(track, 'svg', { class: 'dc-sq', width: Math.min(count, per) * pitch, height, 'aria-hidden': 'true' });
   svg.style.top = `${Math.max(0, (track.clientHeight - height) / 2)}px`;
   let at = 0;
   for (const run of runs) {
@@ -72,22 +75,46 @@ function countRows(ctx, keys, unitFor, say) {
   });
 }
 
-// The fixed record is the context for the ratios, so with scripts it reads under the Reading. Its rows keep their keys and selection.
+// The fixed record is the context for the ratios, so with scripts it becomes the panel's details, under the Reading. Its rows keep their keys and selection.
 function moveRecord(root) {
-  const plot = root.querySelector('.plate-plot');
   const list = Object.assign(document.createElement('ol'), { className: 'dc-fixed', id: `${root.id}-record` });
   list.setAttribute('role', 'none');
-  list.append(...plot.querySelectorAll('.instrument-group, .is-fixed'));
-  root.querySelector('.plate-view[data-view="reading"]').append(list);
-  plot.setAttribute('aria-owns', list.id);
-  list.addEventListener('click', () => { root.querySelector('.plate-detail').scrollTop = 0; }); // the Reading it just changed
+  list.append(...root.querySelectorAll('.plate-plot .instrument-group, .plate-plot .is-fixed'));
+  const more = Object.assign(document.createElement('details'), { className: 'plate-more dc-record' });
+  more.append(Object.assign(document.createElement('summary'), { textContent: 'The record' }), list);
+  root.querySelector('.plate-view[data-view="reading"]').append(more);
+  root.querySelector('.plate-plot').setAttribute('aria-owns', list.id);
+  return more;
 }
-moveRecord(document.getElementById('dc-jobs-per-mw'));
+const record = moveRecord(document.getElementById('dc-jobs-per-mw'));
 
+const stopNeedle = (list, y) => { list.querySelector('.needle').style.bottom = `${list.clientHeight - y}px`; };
+
+// One ruler for the project and its jobs, so lengths compare and a bar past the needle is more than one job per MW. Its top is the next 1, 2, or 5 above the longest bar.
+const niceTop = (v) => {
+  const decade = 10 ** Math.floor(Math.log10(v));
+  return [1, 2, 5, 10].find((n) => n * decade >= v) * decade;
+};
 plate.register('dc-jobs-per-mw', {
   render(ctx) {
-    countRows(ctx, ['build', 'ops', 'other'], (top) => (top <= 400 ? 1 : top <= 4000 ? 10 : 100),
-      (unit) => `One square is ${unit === 1 ? 'one job' : `${unit} jobs`} at this size. The upper part of a range is fainter.`);
+    ctx.auto();
+    if ((ctx.reason === 'select' || ctx.reason === 'init') && ctx.rows[0]?.group === 'ctx') record.open = true; // arrows or a link reached a record row, so it must show
+    if (ctx.reason === 'select') return;
+    const rows = ctx.data.rows.filter((r) => r.f);
+    const top = niceTop(Math.max(...rows.map((r) => r.high ?? r.value)));
+    for (const r of rows) r.axis.domain = [0, top];
+    ctx.auto();
+    const last = rowNode(ctx.plot, 'other');
+    const steps = trackOf(last).clientWidth < 300 ? 1 : 5; // the Table view narrows the plot, and five steps would run together
+    for (const node of [rowNode(ctx.plot, 'mw'), last]) {
+      node.querySelector('.instrument-ends').replaceChildren(...Array.from({ length: steps + 1 }, (_, i) => {
+        const tick = document.createElement('span');
+        tick.style.setProperty('--t', i / steps);
+        tick.textContent = num((top * i) / steps);
+        return tick;
+      }));
+    }
+    stopNeedle(last.parentElement, last.offsetTop + last.offsetHeight / 2 + 14); // at the last bar's foot, clear of the ruler's numbers
   },
 });
 
@@ -105,11 +132,23 @@ plate.register('dc-project', {
     // One water row until the reader counts the plant, set before measuring, so the squares fit the height the rows then have.
     rowNode(ctx.plot, 'plant').hidden = ctx.state.p_plant !== 'on';
     const node = rowNode(ctx.plot, 'share');
-    const field = ctx.inputs.region / 100;
-    const pitch = fitPitch(field, trackOf(node).clientWidth, trackOf(node).clientHeight);
-    fillTrack(node, [{ n: field, cls: 'dc-ctx' }, { n: ctx.inputs.amw / 100, cls: 'dc-lit', from: 0 }], pitch);
+    const region = ctx.inputs.region / 100;
+    const pitch = fitPitch(region, trackOf(node).clientWidth, trackOf(node).clientHeight);
+    fillTrack(node, [{ n: region, cls: 'dc-ctx' }, { n: ctx.inputs.amw / 100, cls: 'dc-lit', from: 0 }], pitch);
+    // The needle reads across the rulers and stops above the squares, where a place on a ruler means nothing.
+    const last = rowNode(ctx.plot, ctx.state.p_plant === 'on' ? 'plant' : 'site');
+    stopNeedle(node.parentElement, last.offsetTop + last.offsetHeight);
     // The site row says whose figure it is.
     rowNode(ctx.plot, 'site').querySelector('.ladder-tag').textContent = blank(ctx.state.p_l) ? "No applicant figure; the record's spread" : "At the applicant's figure";
+  },
+});
+
+// One sentence for a cell, however many figures it holds. plate.js adds a partly figure's limit, and the receipts line under it counts the statuses.
+plate.register('dc-tradeoff-matrix', {
+  render(ctx) {
+    const [first] = ctx.rows;
+    ctx.auto();
+    if (first) ctx.reading(`${first.label}, ${first.column[0].toLowerCase()}${first.column.slice(1)}: ${ctx.rows.map((r) => r.display).join('; ')}.`);
   },
 });
 
@@ -127,64 +166,67 @@ plate.register('dc-eia-servers', {
       if (dot && r) {
         dot.classList.add('is-solo');
         const top = +dot.getAttribute('y') - 6;
+        const x = +dot.getAttribute('x') - 6;
         const near = names.filter((h) => Math.abs(h - top) < 48);
-        add(svg, 'text', { class: 'm-label is-lead', x: +dot.getAttribute('x') - 6, y: year === '2050' && near.length ? Math.min(top, Math.min(...near) - 17) : top, 'text-anchor': 'end', text: `${year}: ${num(r.value)}` });
+        const overAxis = x - 88 < 56; // on a narrow plot the figure runs back over the axis, so it rises clear of the tick there
+        add(svg, 'text', { class: 'm-label is-lead', x, y: year === '2050' && near.length ? Math.min(top, Math.min(...near) - 17) : overAxis ? top - 16 : top, 'text-anchor': 'end', text: `${year}: ${num(r.value)}` });
       }
     }
   },
 });
 
-// The Council plate: the tech load over time, then the same load and the whole region in squares of one size.
+// The Council plate, Lines: the line's name sits over its end, so the years take the plot's width and no margin can cut the name at a narrow window.
+// The default year is the first, so the years start 24px in from the ticks, or the needle would read as the y axis. Both inputs show their marks, grey until selected.
 const LEAD = 'Data centers and chip fabs';
-let field = null;
-function litField(ctx) {
-  const r = ctx.rows.find((x) => x.series === LEAD);
-  if (!field || !r) return;
-  const mid = r.value / 100;
-  field.fill.setAttribute('d', cells(0, mid, field.pitch, field.per));
-  field.range.setAttribute('d', r.high ? cells(Math.ceil(mid), r.high / 100 - Math.ceil(mid), field.pitch, field.per) : '');
-  field.text.textContent = `${LEAD}, ${r.year}: ${num(r.value)} aMW${r.high ? `, up to ${num(r.high)} at the high input` : ''}.`;
+function drawLines(ctx) {
+  const { plot, data } = ctx;
+  const f = frame(plot);
+  const area = inner(f.g, f.W, f.H, { top: 20, right: 14, bottom: 28, left: 56 });
+  const [from, to] = data.plot.xdomain;
+  chart(area, data.rows, { ...data.plot, xdomain: [from - ((to - from) * 24) / (area.x1 - area.x0 - 24), to] }, false);
+  for (const dot of f.g.querySelectorAll('.m-dot')) {
+    dot.classList.remove('is-lead');
+    dot.classList.add('is-solo');
+  }
+  const y = scale('linear', data.plot.domain, [area.y0, area.y1]);
+  add(f.g, 'text', { class: 'm-label is-lead', x: area.x1 - 8, y: y(data.rows.at(-1).value) - 18, 'text-anchor': 'end', 'aria-hidden': 'true', text: LEAD });
 }
-function drawCouncil(ctx) {
+// Its second view: the region today, then each year's load in squares of one size, in rows of 25 as in every count view. A workbook input is hollow, and the squares up to the high input
+// recede. Each year is a stop of the same list as in Lines, so keys and the Reading do not change with the view.
+function drawSquares(ctx) {
   const { plot, data, inputs } = ctx;
   const f = frame(plot);
-  const split = Math.round(f.H * 0.54);
-  const area = inner(f.g, f.W, split, { top: 12, right: 12, bottom: 28, left: 52 });
-  chart(area, data.rows, data.plot, false);
-  const x = scale('linear', data.plot.xdomain, [area.x0, area.x1]);
-  const y = scale('linear', data.plot.domain, [area.y0, area.y1]);
-  const leadEnd = data.rows.filter((r) => r.series === LEAD).at(-1);
-  const other = data.rows.find((r) => r.series !== LEAD);
-  add(f.g, 'text', { class: 'm-label is-lead', x: area.x1, y: y(leadEnd.value) - 10, 'text-anchor': 'end', text: LEAD });
-  add(f.g, 'text', { class: 'm-label', x: x(other.x) + 10, y: y(other.value) + 14, text: other.series });
-
-  const top = Math.max(...data.rows.map((r) => r.high ?? r.value)) / 100;
-  const counts = [inputs.region / 100, top];
-  const line = 20;
-  const room = f.H - split - 8 - counts.length * line;
-  let pitch = 22;
-  const across = () => Math.min(25, Math.floor(f.W / pitch)); // rows of 25, as in every count view
-  let per = across();
-  while (pitch > 5 && counts.reduce((sum, n) => sum + Math.ceil(n / per) * pitch, 0) > room) {
-    pitch -= 1;
-    per = across();
-  }
-  const g = add(f.g, 'g', { 'aria-hidden': 'true', transform: `translate(0 ${split + 8})` });
+  const per = 25;
+  const line = 24;
+  const lines = (n) => Math.ceil(n / per);
+  const years = data.rows.map((r) => ({ r, mid: r.value / 100, top: (r.high ?? r.value) / 100 }));
+  const room = f.H - line * (years.length + 1);
+  const pitch = Math.max(5, Math.min(32, Math.floor(f.W / per), Math.floor(room / years.reduce((sum, y) => sum + lines(y.top), lines(inputs.region / 100)))));
   let at = 0;
-  const stripe = (text, draw, count) => {
-    const label = add(g, 'text', { class: 'dc-label', x: 0, y: at + 14, text });
-    const box = add(g, 'g', { transform: `translate(0 ${at + line})` });
-    at += line + Math.ceil(count / per) * pitch;
-    return [label, box, draw(box)];
+  const stripe = (parent, text, n, draw) => {
+    add(parent, 'text', { class: 'm-label', x: 0, y: at + 16, text });
+    const box = add(parent, 'g', { transform: `translate(0 ${at + line})` });
+    draw(box);
+    at += line + lines(n) * pitch;
   };
-  stripe(`The region today: ${num(inputs.region)} aMW. One square is 100 aMW, here and below.`, (box) => add(box, 'path', { class: 'dc-ctx', d: cells(0, inputs.region / 100, pitch, per) }), counts[0]);
-  const [text, box] = stripe('', () => null, counts[1]);
-  field = { text, pitch, per, fill: add(box, 'path', { class: 'dc-lit' }), range: add(box, 'path', { class: 'dc-lit-range' }) };
+  const region = add(f.g, 'g', { 'aria-hidden': 'true' });
+  stripe(region, `The region today: ${num(inputs.region)} aMW. One square is 100 aMW.`, inputs.region / 100, (box) => add(box, 'path', { class: 'dc-ctx', d: cells(0, inputs.region / 100, pitch, per) }));
+  for (const { r, mid, top } of years) {
+    const band = add(f.g, 'g', { 'data-row': r.key }); // plate.js gives it its role and names it with the Reading
+    add(band, 'rect', { class: 'm-hit', x: 0, y: at, width: f.W, height: line + lines(top) * pitch });
+    stripe(band, `${r.key}: ${num(r.value)} aMW${r.high ? `, fainter to ${num(r.high)} at high input` : ''}`, top, (box) => {
+      add(box, 'path', { class: 'm-count is-hollow', d: cells(0, mid, pitch, per) });
+      if (top > mid) add(box, 'path', { class: 'm-count is-hollow dc-faint', d: cells(Math.ceil(mid), top - Math.ceil(mid), pitch, per) });
+    });
+  }
 }
 plate.register('dc-pnw-load', {
   render(ctx) {
-    if (ctx.reason !== 'select' && ctx.plot.clientWidth) drawCouncil(ctx);
-    litField(ctx);
+    ctx.auto();
+    if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
+    const squares = ctx.state.pnw_view === 'squares';
+    ctx.plot.parentElement.classList.toggle('dc-is-squares', squares);
+    (squares ? drawSquares : drawLines)(ctx);
   },
 });
 
@@ -199,28 +241,20 @@ plate.register('dc-lbnl-us', {
   },
 });
 
-// Past forecasts: the LBNL panel holds the most editions, so it takes the left; each panel keeps its own axis and years.
-const EDITIONS = { lbnl: ['2025 Update', [2014, 2030]], steo: ['10/2026 outlook', [2026.5, 2027.5]], bnef: ['07/2026 outlook', [2029, 2036]] };
-const FORECASTS = new Set(['l16-forecast', 'l25-forecast', 's-may', 's-oct', 'b-dec', 'b-jul-near', 'b-jul-far']);
-plate.register('dc-forecast-misses', {
+// The check of past projections: a row's end and the readout say how far off it ran, and the EIA target year changes each row's edition.
+plate.register('dc-forecast-check', {
   render(ctx) {
-    const { plot, data } = ctx;
-    if (ctx.reason === 'select' || !plot.clientWidth) return;
-    for (const r of data.rows) r.projected = FORECASTS.has(r.key);
-    const f = frame(plot);
-    const gap = 24;
-    const wide = f.W >= 520;
-    const left = wide ? Math.round(f.W * 0.58) : f.W;
-    const spots = wide
-      ? { lbnl: [0, 0, left, f.H], steo: [left + gap, 0, f.W - left - gap, (f.H - gap) / 2], bnef: [left + gap, (f.H + gap) / 2, f.W - left - gap, (f.H - gap) / 2] }
-      : { lbnl: [0, 0, f.W, (f.H - 2 * gap) / 3], steo: [0, (f.H + gap) / 3, f.W, (f.H - 2 * gap) / 3], bnef: [0, (2 * f.H + gap) / 3, f.W, (f.H - 2 * gap) / 3] };
-    for (const panel of data.plot.panels) {
-      const [gx, gy, w, h] = spots[panel.id];
-      const g = add(f.g, 'g', { transform: `translate(${gx} ${gy})` });
-      add(g, 'text', { class: 'm-title', x: 0, y: 14, text: panel.title });
-      const [highlight, xdomain] = EDITIONS[panel.id];
-      chart(inner(g, w, h, { top: 28, right: 8, bottom: 24, left: 44 }), data.rows.filter((r) => r.panel === panel.id), { ...data.plot, ...panel, highlight, xdomain, panels: true }, true);
+    ctx.auto();
+    if (ctx.reason !== 'select') {
+      for (const node of ctx.plot.querySelectorAll('[data-row]')) {
+        const [a, b] = ctx.data.rows.filter((r) => r.key === node.dataset.row && (!r.when || r.when === ctx.state.fc_target));
+        const tag = node.querySelector('.ladder-label .ladder-tag');
+        if (tag) tag.textContent = a?.tag ?? '';
+        if (a?.fields) ctx.setRow(a.key, { frac: a.frac, x2: b.frac, lo: Math.min(a.frac, b.frac), hi: Math.max(a.frac, b.frac), text: a.fields.cell });
+      }
     }
+    const [lead] = ctx.rows;
+    if (lead?.fields) ctx.readout(lead.fields.diff, lead.fields.diff_unit);
   },
 });
 })();
