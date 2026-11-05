@@ -5,13 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ATNI Energy Task Forces</title>
   <meta name="description" content="Public library and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians: Tribal energy feasibility, data centers, artificial intelligence, and the proposed Tribal Energy Summit.">
+  <!-- page-meta -->
+  <link rel="canonical" href="https://atniclimate.github.io/atni-task-force/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ATNI Energy Task Forces">
+  <meta property="og:title" content="ATNI Energy Task Forces">
+  <meta property="og:description" content="Public library and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians: Tribal energy feasibility, data centers, artificial intelligence, and the proposed Tribal Energy Summit.">
+  <meta property="og:url" content="https://atniclimate.github.io/atni-task-force/">
+  <meta property="og:image" content="https://atniclimate.github.io/atni-task-force/assets/img/share-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The ATNI Energy logo, the ATNI seal beside the words ATNI Energy, on a dark ground.">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- /page-meta -->
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#010B13">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/home.css">
   <script src="assets/js/theme.js"></script>
+  <script defer src="assets/js/explorer-band.js"></script>
   <script type="module" src="assets/js/library.js"></script>
   <script type="module" src="assets/js/energy-funding.js"></script>
   <script type="module" src="assets/js/policy-watch.js"></script>
@@ -54,6 +69,8 @@
         </ul>
       </div>
     </section>
+
+    <aside class="explorer-band" aria-labelledby="explorer-band-title"><div class="wrap explorer-band-grid"><!-- explorer:home:band --><div class="explorer-band-about"><h2 id="explorer-band-title">Resource Use Explorer</h2><p>The energy, carbon, water, and price of AI, video, search, and cloud software, at settings you choose. Nothing you enter leaves your browser.</p><p class="caption">Modeled estimates, not measurements, at the Explorer's default settings: a bottom-up process model, checked against published figures. A range is a spread, not a confidence interval.</p><p class="explorer-band-link"><a class="button" href="explorer/">Open the Resource Use Explorer</a></p></div><div class="explorer-band-figure"><fieldset class="segmented" hidden><legend>One hour of</legend><label><input type="radio" name="explorer-band" value="chat_hour" checked><span>Chat</span></label><label><input type="radio" name="explorer-band" value="video_hour"><span>Streaming video</span></label><label><input type="radio" name="explorer-band" value="short_hour"><span>Short video</span></label><label><input type="radio" name="explorer-band" value="coding_hour"><span>Agentic coding</span></label></fieldset><ul class="explorer-band-stops" role="list"><li data-stop="chat_hour"><p class="readout"><span class="readout-value">15</span> <span class="explorer-band-unit">Wh</span></p><div class="explorer-band-words"><p class="explorer-band-reading">An hour of chat on a phone over Wi-Fi, the whole chain from the data center to your screen: about 15 watt-hours (9.3 to 24), and 12 of them go to your own screen and router.</p><p class="caption"><a href="explorer/#src-fp-001">fp-001</a>, <a href="explorer/#src-fp-017">fp-017</a>, <a href="explorer/#src-fp-127">fp-127</a>, <a href="explorer/#src-fp-126">fp-126</a>: verified against the source. <a href="explorer/#src-fp-134">fp-134</a>: partly verified. Limit: A measurement of one app on one phone model; 62 kilobytes is the web-search prompt, the largest case, and the low end follows the post&#x27;s wording of several kilobytes. <a href="explorer/#src-fp-049">fp-049</a>: partly verified. Limit: A research poster whose peer review was not established; it measures the phone only and does not say which streaming service the figure comes from.</p></div></li><li data-stop="video_hour"><p class="readout"><span class="readout-value">14</span> <span class="explorer-band-unit">Wh</span></p><div class="explorer-band-words"><p class="explorer-band-reading">An hour of streaming video on a phone over Wi-Fi, the whole chain from the data center to your screen: about 14 watt-hours (7.2 to 203), and 12 of them go to your own screen and router.</p><p class="caption"><a href="explorer/#src-fp-130">fp-130</a>, <a href="explorer/#src-fp-141">fp-141</a>, <a href="explorer/#src-fp-127">fp-127</a>, <a href="explorer/#src-fp-126">fp-126</a>: verified against the source. <a href="explorer/#src-fp-122">fp-122</a>: partly verified. Limit: Carbon Trust&#x27;s analysis of participants&#x27; own assessments under the DIMPACT method; the assessment year is not stated. <a href="explorer/#src-fp-049">fp-049</a>: partly verified. Limit: A research poster whose peer review was not established; it measures the phone only and does not say which streaming service the figure comes from.</p></div></li><li data-stop="short_hour"><p class="readout"><span class="readout-value">13</span> <span class="explorer-band-unit">Wh</span></p><div class="explorer-band-words"><p class="explorer-band-reading">An hour of short video on a phone over Wi-Fi, the whole chain from the data center to your screen: about 13 watt-hours (7.3 to 45), and 12 of them go to your own screen and router.</p><p class="caption"><a href="explorer/#src-fp-053">fp-053</a>, <a href="explorer/#src-fp-055">fp-055</a>, <a href="explorer/#src-fp-059">fp-059</a>, <a href="explorer/#src-fp-127">fp-127</a>, <a href="explorer/#src-fp-126">fp-126</a>: verified against the source. <a href="explorer/#src-fp-049">fp-049</a>: partly verified. Limit: A research poster whose peer review was not established; it measures the phone only and does not say which streaming service the figure comes from.</p></div></li><li data-stop="coding_hour"><p class="readout"><span class="readout-value">211</span> <span class="explorer-band-unit">Wh</span></p><div class="explorer-band-words"><p class="explorer-band-reading">An hour of agentic coding on a phone over Wi-Fi, the whole chain from the data center to your screen: about 211 watt-hours (54 to 878), and 12 of them go to your own screen and router.</p><p class="caption"><a href="explorer/#src-au-043">au-043</a>: verified against the source. <a href="explorer/#src-fp-132">fp-132</a>: partly verified. Limit: An assumed device power taken from published studies and read from a table, not a measurement of a particular device.</p></div></li></ul><p class="sr-only" role="status" data-band-status></p></div><!-- /explorer:home:band --></div></aside>
 
     <section class="section" aria-labelledby="loop-title">
       <div class="wrap">

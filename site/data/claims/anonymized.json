@@ -1,0 +1,32 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "anonymized",
+ "about": "Claims worded for the public page under an owner ruling of 11/04/2026: anonymized, and attributed to their public source. Written by hand, because the local evidence record of this claim names the operator and the Nation, and scripts/build_plates.py holds that record back.",
+ "claims": [
+  {
+   "id": "lf-059",
+   "entity": "A Tribally owned colocation facility",
+   "metric": "self-reported power usage effectiveness",
+   "value": 1.28,
+   "low": null,
+   "high": null,
+   "unit": "PUE",
+   "year": 2026,
+   "segment": "data center",
+   "basis": "n/a",
+   "boundary": "Self-reported by the operator in its public sustainability report.",
+   "source": {
+    "title": "Sustainability Report 2026",
+    "publisher": "The facility's operator",
+    "url": "https://mke.dataholdings.com/hubfs/Data%20Holdings%20Sustainability%20Report%202026.pdf",
+    "published": "2026-06-04",
+    "kind": "company-report"
+   },
+   "quote": "we're proud to operate with a lower than average PUE of 1.28, reflecting our energy efficient operations.",
+   "derived": null,
+   "status": "partly",
+   "limit": "One operator's own figure, not independently measured; the report publishes no electricity use or total water figure."
+  }
+ ]
+}

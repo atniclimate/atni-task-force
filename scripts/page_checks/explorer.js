@@ -44,18 +44,32 @@ const sameRounded = (shown, want, message) => {
 // Bytes and rules on the shipped files ---------------------------------------------------------------
 function staticRules() {
   const js = read('site/assets/js/explorer.js');
-  ok(!/innerHTML|outerHTML|insertAdjacentHTML|document\.write|\beval\(|new Function|\bfetch\(/.test(js), 'explorer.js writes text only and fetches nothing');
-  ok(!/https?:\/\//.test(js), 'no address in explorer.js');
+  const model = read('site/assets/js/resource-model.js');
+  ok(!/innerHTML|outerHTML|insertAdjacentHTML|document\.write|\beval\(|new Function|\bfetch\(/.test(js + model), 'the scripts write text only and fetch nothing');
+  ok(!/https?:\/\//.test(js + model), 'no address in the scripts');
+  ok(!/XMLHttpRequest|sendBeacon|WebSocket|new Image\b|localStorage|sessionStorage|document\.cookie/.test(js + model), 'nothing a reader enters leaves the browser or stays behind, as the home band says');
+  ok(!/\bdocument\.|\blocation\.|\bhistory\.|\bnavigator\.|\blocalStorage\b|\bsetTimeout\b/.test(model), 'the model uses no page');
+  ok(!/\bcompute\(|\bidleMult\b|\btokensWh\b/.test(js), 'the page holds no model');
+  const pure = require(path.join(ROOT, 'site/assets/js/resource-model.js'));
+  ok(typeof pure.compute === 'function' && typeof pure.Views === 'function' && typeof pure.Run === 'function', 'node loads the model the page loads');
+  const scale = pure.projectScale(100, 1, 0.36, 350, 2000000); // Python's self-test: project_scale
+  near(scale.mwh, 876000, 'project scale, MWh');
+  near(scale.water, 315360000, 'project scale, liters');
+  near(scale.co2, 306600, 'project scale, tonnes');
+  near(scale.share, 0.438, 'project scale, share');
+  eq(pure.projectScale(null, 1, 0.36, 350, 2000000).water, null, 'a blank in leaves its outputs blank');
   ok(!/https?:\/\/[^"']*\.(js|css|woff2?)/.test(html.replace(/<li id="src-[\s\S]*?<\/li>/g, '')), 'no external script, stylesheet, or font');
-  ok(!/<iframe|<script[^>]+src="http|<link[^>]+href="http/.test(html), 'no outside load');
-  ok(!/\u2014| -- /.test(html) && !/\u2014| -- /.test(js), 'no em dash');
+  ok(!/<iframe|<script[^>]+src="http|<link(?![^>]+rel="canonical")[^>]+href="http/.test(html), 'no outside load'); // a canonical link names this page and loads nothing
+  ok(!/\u2014| -- /.test(html) && !/\u2014| -- /.test(js + model), 'no em dash');
   const css = read('site/assets/css/explorer.css');
   ok(/@media print/.test(css) && /\[data-group\]\[hidden\]/.test(css), 'print opens every comparison');
+  ok(/@media print[\s\S]*\.x-backtest table, \.plate-table \{ min-width: 0; \}/.test(css), 'and no table keeps a screen width on paper');
+  ok(/@media \(prefers-reduced-motion: reduce\) \{\s*\.w,/.test(css), 'explorer.css has its own reduced-motion guard');
   ok(/prefers-reduced-motion/.test(read('site/assets/css/site.css')), 'reduced motion takes transitions to zero');
   const site = read('site/assets/css/site.css');
   ok(/\[role="tabpanel"\]\[hidden\]/.test(site), 'print shows every panel');
   const sizes = {};
-  for (const rel of ['site/explorer/index.html', 'site/assets/js/explorer.js', 'site/assets/css/explorer.css']) {
+  for (const rel of ['site/explorer/index.html', 'site/assets/js/explorer.js', 'site/assets/js/resource-model.js', 'site/assets/css/explorer.css']) {
     const raw = fs.readFileSync(path.join(ROOT, rel));
     sizes[rel] = [raw.length, zlib.gzipSync(raw, { level: 9 }).length];
   }
@@ -72,8 +86,21 @@ function noScript() {
     ok(panel && !panel.hidden && !panel.closest('[hidden]'), `panel ${id} shows without scripts`);
     ok(text(panel).length > 200, `panel ${id} has content without scripts`);
   }
+  eq([...document.querySelectorAll('.section-strip a')].map((a) => a.getAttribute('href').slice(1)).join(), panels.join(), 'the tabs follow the spec\'s nine, in order');
+  eq([...document.querySelectorAll('section.panel')].map((n) => n.id).join(), panels.join(), 'and so do the panels');
   ok(/Modeled estimates, not measurements\. Ranges are spreads, not confidence intervals\./.test(text(document.querySelector('.x-band'))), 'disclaimer band');
   ok(/It is not an econometric model/.test(text(document.getElementById('method'))), 'the disclaimer is verbatim');
+  // Owner rulings of 11/04/2026.
+  ok(/bottom-up process model, checked against published figures/.test(text(document.querySelector('.x-band'))) && /bottom-up process model, checked against published figures/.test(text(document.getElementById('method'))), 'the model is named as the owner ruled, on every tab and in Method');
+  for (const r of document.querySelectorAll('.plate-plot [data-row]')) if (/hydro/i.test(text(r.querySelector('.ladder-label')))) ok(/scenario/i.test(text(r.querySelector('.ladder-label'))), `${r.dataset.row} is labeled a scenario`);
+  for (const k of ['arch.A.local_hydro', 'arch.D.node_100k_hydro', 'arch.D.node_1m_hydro']) ok(row(document, k).hidden, `${k} is not in the main comparison`);
+  for (const q of document.querySelectorAll('.x-pairs li > span:first-child')) if (/hydro/.test(text(q))) ok(/scenario/.test(text(q)), `a hydro pair says scenario: ${text(q)}`);
+  ok(/declared clean feed, a scenario/.test(text(document.querySelector('.x-arch-words[data-group="comparison:A"]'))), 'the office row\'s clean feed says scenario');
+  const admin = text(document.querySelector('.x-admin-note'));
+  ok(/2 paid hours a month/.test(admin) && /flips by 14/.test(admin) && /tie at about 3\.1 hours/.test(admin), 'the two admin hours print beside the flip point');
+  ok(!/Potawatomi|Data Holdings/.test(html), 'the facility is anonymized');
+  ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('where-it-runs'))), 'and its figure attributed to its public source');
+  ok(/Partly verified\. Limit: One operator/.test(text(document.getElementById('src-lf-059'))) && /sustainability report/i.test(text(document.getElementById('src-lf-059'))), 'with its receipt, status, and limit');
   ok(document.querySelectorAll('[data-row]').length > 80, 'rows print');
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) ok(text(r.querySelector('.ladder-value')).length > 0, `${r.dataset.row} shows a value without scripts`);
   ok(document.querySelectorAll('.wall-row .w:not([hidden])').length > 40, 'the Wall is drawn without scripts');
@@ -234,6 +261,7 @@ async function behavior() {
   eq(plot.getAttribute('aria-activedescendant'), row(document, 'use.screen').id, 'the selected row is announced');
   key(window, plot, 'ArrowDown');
   ok(row(document, 'use.chat').classList.contains('is-on'), 'arrow selects');
+  eq(window.scrolled, row(document, 'use.chat').id, 'and the row it reaches comes into view');
   key(window, plot, 'ArrowDown');
   ok(row(document, 'use.coding').classList.contains('is-on'), 'and again');
   eq(row(document, 'use.coding').getAttribute('aria-selected'), 'true', 'aria-selected');
@@ -250,7 +278,7 @@ async function behavior() {
   ok(document.querySelector('[data-plate-x="use"] [data-d="tokens"]').hidden, 'the screen row reads no tokens');
   fire(window, row(document, 'use.streaming'), 'click');
   ok(row(document, 'use.streaming').classList.contains('is-on'), 'click selects');
-  ok(/use\.streaming/.test(window.location.search), 'the selection is in the address');
+  eq(window.location.search, '', 'a selection stays off the address');
   fire(window, row(document, 'use.coding'), 'pointerover');
   ok(/coding/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'hover previews');
   fire(window, plot, 'pointerleave');
@@ -299,7 +327,7 @@ async function behavior() {
   // Every option of every setting moves through the page without error, and what it changes reaches a row.
   for (const n of document.querySelectorAll('#settings input[data-setting]')) setRadio(window, n);
   for (const name of Object.keys(ex.data.sel)) setRadio(window, setting(document, name, ex.data.sel[name].def));
-  eq(window.location.search, '?row_use=use.streaming', 'defaults leave the address');
+  eq(window.location.search, '', 'defaults leave the address');
 
   // Your Use: fields, time counted once, three price lines, water by basin.
   const screen = row(document, 'use.screen');
@@ -309,6 +337,7 @@ async function behavior() {
   setField(window, hours, 14);
   ok(/14 hours/.test(text(screen)), 'the screen row counts');
   ok(/14 screen hours/.test(text(document.querySelector('[data-title="use"]'))), 'the claim sentence refills');
+  eq(window.location.search, '', 'a typed number stays off the address');
   setField(window, hours, -3);
   eq(hours.getAttribute('aria-invalid'), 'true', 'a bad field says so');
   ok(/zero/.test(text(document.querySelector('[data-why]'))), 'and how to fix it');
@@ -346,7 +375,7 @@ async function behavior() {
   ok(row(document, 'use.gb').classList.contains('is-beside') && /printed beside, not added/.test(text(row(document, 'use.gb'))), 'storage prints beside the seats, not added: the seat figure holds it');
   const w = ex.view.week();
   near(w.added, ['chat', 'coding', 'images', 'clips', 'searches', 'social', 'streaming', 'seat'].reduce((s, k) => s + ex.view.val(`use.${k}`, 'wh'), 0), 'the activities exclude the storage row in Office');
-  ok(/mode=office/.test(window.location.search), 'Office is in the address');
+  eq(window.location.search, '', 'an office and its size stay off the address');
   setRadio(window, document.querySelector('input[data-opt="mode"][value="person"]'));
   ok(row(document, 'use.seat').hidden, 'One person drops the seat row');
   eq(ex.state.fields.gb, 0, 'and the storage default returns');
@@ -386,6 +415,9 @@ async function behavior() {
   ok(!row(document, 'arch.D.node_1m_hydro').hidden, 'hydro rows sit in it');
   ok(/declared hydro feed/.test(text(row(document, 'arch.D.node_1m_hydro').querySelector('.ladder-label'))), 'and say so');
   ok(+row(document, 'arch.D.node_1m_hydro').style.order > +row(document, 'arch.D.node_100k').style.order, 'under the rule');
+  ok(!ex.data.boards['arch.D'].scenario.includes(ex.state.sel.arch), 'a change of measure never lands the selection in the scenario group');
+  fire(window, row(document, 'arch.D.node_1m_hydro'), 'click');
+  eq(ex.state.sel.arch, 'arch.D.node_1m_hydro', 'a reader\'s own click may');
   setRadio(window, measure(document, 'arch', 'wh'));
   ok(document.querySelector('[data-board="arch.D"] .wall-group[data-scenario]').hidden, 'no scenario group under energy');
   ok(row(document, 'arch.D.hyper_same_grid').hidden, 'energy drops the duplicate row');
@@ -396,12 +428,38 @@ async function behavior() {
   compare('A');
   const alt = text(document.querySelector('.x-alternatives[data-group="comparison:A"]'));
   ok(/ONLYOFFICE/.test(alt) && /Collabora/.test(alt) && /labeled by the vendor as in development/.test(alt) && /No vendor is endorsed/.test(alt), 'alternatives named neutrally');
-  ok(/reverses/.test(text(document.querySelector('.x-arch-words[data-group="comparison:A"]'))), 'each pair prints what reverses it');
+  ok(/reverses/.test(text(document.querySelector('.x-reversals[data-group="comparison:A"]'))), 'each pair prints what reverses it');
+  const pairs = [...document.querySelectorAll('.x-reversals[data-group="comparison:D"] li')];
+  ok(pairs.length > 5 && pairs.some((n) => !n.hidden) && pairs.every((n) => n.hidden === (n.dataset.pairM !== ex.state.m)), 'one measure\'s pairs at a time');
+  setRadio(window, measure(document, 'arch', 'usd'));
+  ok(pairs.every((n) => n.hidden === (n.dataset.pairM !== 'usd')) && pairs.some((n) => !n.hidden), 'and the measure moves them');
+  setRadio(window, measure(document, 'arch', 'wh'));
   setRadio(window, document.querySelector('input[name="arch-wage"][value="25"]'));
   eq(ex.state.settings.wage, '25', 'the wage control sets the setting');
   ok(document.querySelector('#settings input[data-setting="wage"][value="25"]').checked, 'and the drawer agrees');
   ok(/\$25 an hour/.test(text(document.querySelector('[data-setting-line]'))), 'and the setting line');
+  eq(window.location.search, '', 'and the wage stays off the address');
   setRadio(window, setting(document, 'wage', '60'));
+
+  // The two admin hours: a visible input, off the address, with the flip beside it.
+  const adminField = document.getElementById('a-admin');
+  ok(!adminField.closest('[data-js]').hidden, 'the admin hours are a visible input');
+  eq(adminField.value, '2', 'at the model\'s two hours');
+  const tie = ex.view.adminTie();
+  setField(window, adminField, tie);
+  near(ex.view.t.arch.A.cloud.usd, ex.view.t.arch.A.local.usd, 'at the printed tie the two prices meet');
+  setField(window, adminField, 14);
+  ok(ex.view.t.arch.A.cloud.usd > ex.view.t.arch.A.local.usd, 'by the printed flip the local suite is the cheaper');
+  eq(window.location.search, '', 'the typed hours stay off the address');
+  ok(/tie at about 3\.1 hours/.test(text(document.querySelector('.x-admin-note'))), 'the tie does not depend on the hours typed');
+  setRadio(window, document.querySelector('input[name="arch-wage"][value="25"]'));
+  ok(/cheaper at any number of cloud hours/.test(text(document.querySelector('.x-admin-note'))), 'where no tie exists the note says so');
+  setRadio(window, setting(document, 'wage', '60'));
+  setField(window, adminField, -1);
+  eq(adminField.getAttribute('aria-invalid'), 'true', 'a bad admin count says so');
+  near(ex.view.p.cloud_admin_h_month, 14, 'and keeps the last good value');
+  setField(window, adminField, 2);
+  near(ex.view.p.cloud_admin_h_month, 2, 'back to the model');
 
   // Where it runs: a device on the reader's side; the node unpriced.
   setRadio(window, document.querySelector('input[name="workload"][value="clip"]'));
@@ -443,7 +501,7 @@ async function behavior() {
   setRadio(window, document.querySelector('input[name="scale"][value="unit"]'));
   ok(document.querySelector('[data-group="scale:hour"]').hidden && !document.querySelector('[data-group="scale:unit"]').hidden, 'By the unit takes the zone');
   ok(ex.data.boards['catalog.unit'].rows.includes(ex.state.sel.catalog), 'and the selection moves with it');
-  ok(/scale=unit/.test(window.location.search), 'the view is in the address');
+  eq(window.location.search, '', 'a view stays off the address');
   setRadio(window, document.querySelector('input[name="scale"][value="hour"]'));
   fire(window, row(document, 'catalog.chat_hour'), 'click');
   ok(/scenario/i.test(text(document.querySelector('[data-board="cross.prompts"] .wall-group[data-scenario]'))), 'hydro lines in a scenario group');
@@ -474,10 +532,15 @@ async function behavior() {
 
   // Reset, copy, downloads, deep links.
   setRadio(window, setting(document, 'tariff', 'bpa_wholesale'));
+  eq(window.location.search, '', 'the tariff stays off the address');
+  setRadio(window, setting(document, 'device', 'laptop'));
+  setField(window, adminField, 9);
+  eq(window.location.search, '?device=laptop', 'only the selector reaches it');
   fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
   eq(window.location.search, '', 'Reset clears the address');
   eq(ex.state.settings.tariff, ex.data.sel.tariff.def, 'and the settings');
   ok(document.querySelector('#settings input[data-setting="tariff"]:checked').value === ex.data.sel.tariff.def, 'and the radios');
+  eq(adminField.value, '2', 'and the typed admin hours');
   fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click');
   await wait();
   ok(/Modeled, not measured/.test(window.copied) && /Sources: /.test(window.copied) && /localhost/.test(window.copied), 'Copy Reading carries the sentence, the link, and the sources');
@@ -485,18 +548,50 @@ async function behavior() {
   ok(window.lastBlob, 'outputs.csv is built in the browser');
   const csv = await window.lastBlob.text();
   ok(/^row,measure,value,low,high,price_basis,settings/.test(csv) && /catalog\.chat_hour,wh,/.test(csv), 'outputs.csv holds every row');
-  const deep = await load('?device=laptop&grid_dc=nwpp&m=g&comparison=D&f_chat=40&mode=office&seats=12#architectures');
+  const deep = await load('?device=laptop&grid_dc=nwpp#architectures');
   ok(!deep.document.getElementById('architectures').hidden, 'a deep link opens its tab');
   eq(deep.window.explorer.state.settings.device, 'laptop', 'and its settings');
-  eq(deep.window.explorer.state.m, 'g', 'and its measure');
-  eq(deep.window.explorer.state.opts.comparison, 'D', 'and its comparison');
-  eq(deep.window.explorer.state.fields.chat, 40, 'and its fields');
-  eq(deep.window.explorer.state.seats, 12, 'and its seats');
   ok(deep.document.querySelector('#settings input[data-setting="grid_dc"][value="nwpp"]').checked, 'the radios agree');
-  const bad = await load('?device=toaster&m=nope&comparison=Z&f_chat=-4&mode=x');
-  eq(bad.window.explorer.state.settings.device, 'phone', 'a bad value is ignored');
-  eq(bad.window.explorer.state.m, 'wh', 'a bad measure too');
-  eq(bad.window.explorer.state.fields.chat, 10, 'a bad field too');
+  eq(deep.window.location.search, '?device=laptop&grid_dc=nwpp', 'the address round-trips');
+  eq(deep.window.location.hash, '#architectures', 'with its hash');
+  for (const name of Object.keys(deep.window.explorer.data.sel)) {
+    if (name === 'wage' || name === 'tariff') continue;
+    const other = Object.keys(deep.window.explorer.data.sel[name].opts).find((o) => o !== deep.window.explorer.data.sel[name].def);
+    setRadio(deep.window, setting(deep.document, name, other));
+    ok(new URLSearchParams(deep.window.location.search).get(name) === other, `${name} reaches the address`);
+    setRadio(deep.window, setting(deep.document, name, deep.window.explorer.data.sel[name].def));
+    ok(!new URLSearchParams(deep.window.location.search).has(name), `and leaves it at its default`);
+  }
+  // Back within the page: the address holds the truth for the selectors, typed numbers stay as typed, and no hash means the first tab.
+  setField(deep.window, deep.document.querySelector('input[data-field="chat"]'), 33);
+  deep.window.history.replaceState(null, '', '?device=tv&grid_dc=__proto__#architectures');
+  fire(deep.window, deep.window, 'popstate');
+  eq(deep.window.explorer.state.settings.device, 'tv', 'Back re-reads the address');
+  eq(deep.window.explorer.state.settings.grid_dc, deep.window.explorer.data.sel.grid_dc.def, 'a selector it no longer names returns to its default');
+  ok(deep.document.querySelector('#settings input[data-setting="device"][value="tv"]').checked, 'and the radios follow');
+  eq(deep.window.explorer.state.fields.chat, 33, 'a typed number is not in the address, so Back leaves it alone');
+  deep.window.history.replaceState(null, '', '?device=tv#levers');
+  fire(deep.window, deep.window, 'popstate');
+  ok(!deep.document.getElementById('levers').hidden, 'Back moves the tab with the address, and Chrome fires no hashchange when the query differs too');
+  deep.window.location.hash = '';
+  await wait(20);
+  ok(!deep.document.getElementById('your-use').hidden && deep.document.getElementById('architectures').hidden, 'Back to no hash shows the first tab');
+  // A link is untrusted: bad options and prototype names do nothing, and no figure of a Nation's rides in on one, or stays in the address.
+  const bad = await load('?device=toaster&grid_dc=__proto__&connection=constructor&network_mode=toString&wage=25&tariff=bpa_wholesale&f_chat=40&f_screen=-4&mode=office&seats=12&row_use=use.coding&m=g&comparison=D&cloud_admin_h_month=14&nope=1#levers');
+  const badState = bad.window.explorer.state;
+  const defaults = bad.window.explorer.data.sel;
+  for (const name of Object.keys(defaults)) eq(badState.settings[name], defaults[name].def, `a link cannot set ${name} to that`);
+  eq(badState.fields.chat, 10, 'nor a field');
+  eq(badState.fields.screen, 7, 'nor a bad field');
+  eq(badState.mode, 'person', 'nor an office');
+  eq(badState.seats, bad.window.explorer.data.scenario.office_users, 'nor its size');
+  eq(badState.m, 'wh', 'nor a measure');
+  eq(badState.opts.comparison, 'A', 'nor a comparison');
+  eq(badState.sel.use, 'use.screen', 'nor a selection');
+  eq(Object.keys(badState.inputs).length, 0, 'nor a model input');
+  eq(bad.window.location.search, '', 'and the address drops what it did not read');
+  eq(bad.window.location.hash, '#levers', 'keeping the tab');
+  ok(!/\bfunction\b|\bobject\b/.test(text(bad.document.querySelector('[data-setting-line]'))), 'the setting line reads as words');
   const drawerLink = await load('#settings');
   ok(!drawerLink.document.getElementById('settings').hidden, 'a link to Settings opens the drawer');
 
@@ -517,5 +612,52 @@ async function behavior() {
   ok(document.querySelector('.wall-row .w-dc[style]'), 'print has the Wall');
 }
 
+// The home band: the Explorer's model at its defaults, poured, with its one control ----------------------
+async function homeBand() {
+  const home = read('site/index.html');
+  const still = new JSDOM(home).window.document;
+  const band = still.querySelector('.explorer-band');
+  ok(band && band.previousElementSibling.classList.contains('hero'), 'the band stands under the hero');
+  eq(band.querySelector('a.button').getAttribute('href'), 'explorer/', 'with a link in');
+  ok(/bottom-up process model, checked against published figures/.test(text(band)) && /not measurements/.test(text(band)), 'and says what the figure is');
+  ok(!/<script[^>]+resource-model|id="explorer-data"/.test(home), 'the home page loads no model');
+  ok(Buffer.byteLength(home.match(/<!-- explorer:home:band -->[\s\S]*<!-- \/explorer:home:band -->/)[0]) < 8192, 'and the block stays small');
+  const pure = require(path.join(ROOT, 'site/assets/js/resource-model.js'));
+  const D = JSON.parse(html.match(/<script type="application\/json" id="explorer-data">([\s\S]*?)<\/script>/)[1]);
+  const V = pure.Views(D);
+  V.set(V.fresh());
+  const claims = {};
+  for (const name of fs.readdirSync(path.join(ROOT, 'site/data/claims'))) for (const c of JSON.parse(read(`site/data/claims/${name}`)).claims || []) claims[c.id] = c;
+  const stops = [...band.querySelectorAll('[data-stop]')];
+  eq(stops.length, 4, 'four stops');
+  ok(band.querySelector('fieldset').hidden && stops.every((n) => !n.hidden), 'without scripts every stop shows');
+  for (const stop of stops) {
+    const key = `catalog.${stop.dataset.stop}`;
+    const f = V.cell(key, 'wh');
+    eq(text(stop.querySelector('.readout-value')), f.num, `${key}: the figure is the model's`);
+    eq(text(stop.querySelector('.explorer-band-unit')), f.unit, `${key}: and the unit`);
+    const { router, device } = V.t.catalog[stop.dataset.stop].layers;
+    ok(text(stop).includes(`about ${f.num} watt-hours ${f.tag}, and ${pure.num(router + device)} of them go to your own screen and router`), `${key}: the sentence reads the model`);
+    const ids = [...stop.querySelectorAll('a[href^="explorer/#src-"]')].map((a) => a.getAttribute('href').slice('explorer/#src-'.length));
+    ok(ids.length > 1, `${key}: carries its claims`);
+    for (const id of ids) {
+      ok(/^(verified|partly)$/.test(claims[id].status) && html.includes(`id="src-${id}"`), `${key}: ${id} ships and has its receipt`);
+      if (claims[id].status === 'partly') ok(text(stop).includes(`${id}: partly verified. Limit: `), `${key}: ${id} states its limit`);
+    }
+    ok(/verified against the source/.test(text(stop)) || /partly verified/.test(text(stop)), `${key}: states a status`);
+  }
+  const page = await open(home, 'http://localhost/site/index.html');
+  await wait();
+  eq(page.errors.length, 0, `page errors: ${page.errors.slice(0, 3).join(' | ')}`);
+  const live = page.document.querySelector('.explorer-band');
+  const shown = () => [...live.querySelectorAll('[data-stop]')].filter((n) => !n.hidden).map((n) => n.dataset.stop).join();
+  ok(!live.querySelector('fieldset').hidden, 'the control shows with scripts');
+  eq(shown(), 'chat_hour', 'one stop at a time, chat first');
+  const radio = live.querySelector('input[value="coding_hour"]');
+  radio.checked = true;
+  fire(page.window, radio, 'change');
+  eq(shown(), 'coding_hour', 'the control moves the figure');
+  ok(/agentic coding/.test(text(live.querySelector('[data-band-status]'))), 'and the new figure is announced');
+}
 
-module.exports = { groups: { staticRules, noScript, behavior, cases } };
+module.exports = { groups: { staticRules, noScript, homeBand, behavior, cases } };

@@ -1,10 +1,10 @@
-"""Pour the Resource Use Explorer page from site/data/resource-model.json. Run scripts/resource_model.py --export first.
+"""Pour the Resource Use Explorer page, and its band on the home page, from site/data/resource-model.json. Run scripts/resource_model.py --export first.
 
 The prose in site/explorer/index.html is written by hand, with every figure in a <span data-m="..."> this script fills. It writes
 only between <!-- explorer:NAME --> markers and into those spans, so re-running changes nothing. A digit typed into the prose fails
 the build, as does a claim that does not ship or a partly verified claim with no public limit. The rows, their geometry, and their words
-come from the page's own code (site/assets/js/explorer.js, through scripts/explorer_static.js), so the page without scripts and in print
-says what the page with scripts computes at the default settings. Needs node; no packages.
+come from the page's own model (site/assets/js/resource-model.js, through scripts/explorer_static.js), so the page without scripts and in print
+says what the page with scripts computes at the default settings. Needs node; no packages. Page and script budgets live in tests/budgets.json.
 
     python scripts/build_explorer.py
 """
@@ -22,9 +22,9 @@ import build_plates as bp  # noqa: E402
 import validate_public as vp  # noqa: E402
 
 PAGE = vp.SITE / "explorer" / "index.html"
+HOME = vp.SITE / "index.html"
 MODEL = vp.SITE / "data" / "resource-model.json"
 LIMITS = bp.EVIDENCE / "claim-limits.json"
-BUDGET_PAGE = 350 * 1024
 MARKER = re.compile(r"(<!-- explorer:(?P<name>[\w:.-]+) -->)(.*?)(<!-- /explorer:(?P=name) -->)", re.S)
 POUR = re.compile(r'<span data-m="(?P<spec>[^"]+)">[^<]*</span>')
 CLAIM = re.compile(r"\b(?:au|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
@@ -36,7 +36,7 @@ SAY = {
     "network_mode": {"average": "average network accounting", "marginal": "marginal network accounting"},
     "router_allocation": {"by_time": "router by time", "by_data": "router by data", "excluded": "router excluded"},
     "chat_kind": {"short_text": "median text prompt", "medium_prompt": "medium prompt", "reasoning": "long reasoning query", "high_reasoning": "high reasoning query"},
-    "video_dc_intensity": {"measured_delivery": "measured delivery intensity", "desnz_assumed": "DESNZ assumed intensity"},
+    "video_dc_intensity": {"measured_delivery": "measured delivery intensity", "desnz_followup": "DESNZ follow-up intensity", "top_down": "top-down average intensity, an upper bound"},
     "dc_generation_water": {"us": "US generation average", "ercot": "ERCOT generation average"},
     "hydro_convention": {"columbia": "Columbia convention", "excluded": "reservoir evaporation excluded", "primary_purpose": "primary-purpose convention"},
     "hydro_share": {"nwpp": "NWPP hydro share", "bpa": "BPA hydro share"},
@@ -44,7 +44,7 @@ SAY = {
                "us_residential": "US residential tariff", "us_industrial": "US industrial tariff", "bpa_wholesale": "BPA wholesale tariff"},
     "node_already_on": {"no": "node not on", "yes": "node already on"},
 }
-GRID_NAMES = {"us": "US grid", "us_nonbaseload": "US non-baseload", "nwpp": "NWPP", "wa": "Washington in-state", "nw_short_run_margin": "Northwest short-run margin",
+GRID_NAMES = {"us": "US grid", "us_nonbaseload": "US non-baseload", "nwpp": "NWPP", "bpa": "bought from BPA, regulator-assigned factor", "wa": "Washington in-state", "nw_short_run_margin": "Northwest short-run margin",
               "nw_long_run_margin": "Northwest long-run margin", "hydro": "hydro, declared", "wind": "wind, declared", "solar": "solar, declared", "diesel": "diesel"}
 GRID_WHERE = {"grid_dc": "for the data center", "grid_home": "at home", "grid_local": "for a local node", "grid_colo": "for colocation"}
 RATES = {"prompts_per_hour": "prompts an hour", "turns_per_hour": "agent turns an hour", "images_per_hour": "images an hour", "clips_per_hour": "clips an hour", "searches_per_hour": "searches an hour"}
@@ -120,12 +120,12 @@ CROSS = {
     "prompts_carbon_same_grid": ("Node catches the hyperscaler on carbon, one grid", ["au-027", "gf-054", "gf-001"], "On one feed the carbon crossover is the energy crossover, because both sides share one grid factor."),
     "prompts_price_vs_hyper_list": ("Node beats the frontier list price", ["px-059", "sv-042", "px-003", "px-004"], "Hardware over life and paid hours over what each prompt saves at list. A frontier list is not a like-class price for a small model."),
     "prompts_price_vs_open_weight_host": ("Node beats an open-weight host's list", ["px-059", "sv-042", "px-014", "px-015"], "The same, against a host's list for a different model and business."),
-    "prompts_carbon_on_hydro_vs_hyper_us": ("Node on a declared hydro feed, hyperscaler on the US grid", ["gf-035", "gf-007", "au-027"], "A scenario: the node must be physically behind that meter and the other side must not be. Hydro already committed elsewhere is not clean new supply."),
-    "prompts_carbon_on_hydro_with_embodied": ("The same scenario, embodied carbon on both sides", ["gf-035", "gf-007", "sf-023", "au-011"], "A scenario, with the machine's embodied carbon spread over the count and the accelerator's lower-bound share on the other side."),
+    "prompts_carbon_on_hydro_vs_hyper_us": ("Scenario: node on a declared hydro feed, hyperscaler on the US grid", ["gf-035", "gf-007", "au-027"], "A scenario: the node must be physically behind that meter and the other side must not be. Hydro already committed elsewhere is not clean new supply."),
+    "prompts_carbon_on_hydro_with_embodied": ("Scenario: the same, embodied carbon on both sides", ["gf-035", "gf-007", "sf-023", "au-011"], "A scenario, with the machine's embodied carbon spread over the count and the accelerator's lower-bound share on the other side."),
     "views_measured_same_network": ("Local box beats the platform's serving energy, measured intensity, same network", ["sf-042", "lf-033", "fp-122", "fp-130"], "The stream's own watts sit above the measured serving intensity, so at the default it never crosses; one change can make it cross."),
-    "views_desnz_same_network": ("Local box beats the platform's serving energy, DESNZ intensity, same network", ["sf-042", "lf-033", "fp-043"], "An assumed serving intensity about 45 times the measured one."),
+    "views_desnz_same_network": ("Local box beats the platform's serving energy, DESNZ follow-up intensity, same network", ["sf-042", "lf-033", "fp-141", "fp-142"], "The DESNZ follow-up's serving intensity sits below the measured one, so the stream's own watts stay above it. Only the top-down average, an upper bound, would reach them."),
     "views_measured_network_credit": ("Local box with a network credit, measured intensity", ["sf-042", "fp-127", "fp-129"], "A convention: it charges the Nation's own network at marginal cost against the platform's average."),
-    "views_desnz_network_credit": ("Local box with a network credit, DESNZ intensity", ["sf-042", "fp-043", "fp-127", "fp-129"], "The same convention at the assumed intensity."),
+    "views_desnz_network_credit": ("Local box with a network credit, DESNZ follow-up intensity", ["sf-042", "fp-141", "fp-142", "fp-127", "fp-129"], "The same convention at the follow-up's intensity."),
 }
 ARCH = {
     "A": dict(energy=["cloud", "cloud_with_sync", "local", "local_two_boxes"], price=["cloud", "local", "local_two_boxes"], grid=["cloud_same_grid", "local", "local_two_boxes"], scenario=["cloud", "local_hydro"]),
@@ -192,7 +192,7 @@ def short_labels(pub):
     node = (pub["scenario"]["node_prompts_100k"], pub["scenario"]["node_prompts_1m"])
     out = {
         "arch.A.cloud": "Cloud seats", "arch.A.cloud_with_sync": "Cloud seats plus laptop sync draw", "arch.A.cloud_same_grid": "Cloud seats, on the local grid", "arch.A.local": "Local-first suite, one server",
-        "arch.A.local_hydro": "Local-first suite, declared hydro feed", "arch.A.local_two_boxes": "Local-first suite, two servers", "arch.B.platform": "Platform", "arch.B.cache": "Embedded cache at an ISP",
+        "arch.A.local_hydro": "Scenario: local-first suite, declared hydro feed", "arch.A.local_two_boxes": "Local-first suite, two servers", "arch.B.platform": "Platform", "arch.B.cache": "Embedded cache at an ISP",
         "arch.C.ten_copies": "Ten full copies, ten NAS boxes", "arch.C.central_s3": "One central copy, S3", "arch.C.central_s3_with_pulls": "Central copy, each Nation pulls once", "arch.C.central_r2": "One central copy, R2",
         "arch.C.central_b2": "One central copy, B2", "arch.C.federated": "Federated, one copy per Nation", "arch.C.federated_replicas": "Federated, three copies per Nation",
         "arch.D.hyper": "Hyperscaler, median prompt", "arch.D.hyper_same_grid": "Hyperscaler, on the node's grid", "arch.D.colo": "Regional colocation, energy only", "arch.D.laptop": "Laptops, small model",
@@ -202,7 +202,7 @@ def short_labels(pub):
         out[f"arch.B.local_{v}"] = f"Local box, {v:,} views a year"
     for name, n in zip(("node_100k", "node_1m"), node):
         out[f"arch.D.{name}"] = f"Node, {n:,} prompts a year"
-        out[f"arch.D.{name}_hydro"] = f"Node, {n:,}, declared hydro feed"
+        out[f"arch.D.{name}_hydro"] = f"Scenario: node, {n:,}, declared hydro feed"
         out[f"arch.D.{name}_fallback"] = f"Node, {n:,}, with cloud fallback"
     return out
 
@@ -235,7 +235,7 @@ def row_meta(pub):
         for r in spec["options"]:
             add(r, note="note-" + r["key"].replace(".", "-"), **({"ai": True} if letter == "D" else {}))
     for lever in pub["levers"]:
-        upper = " (an upper bound)" if lever["key"] in ("reasoning_off", "cache_title") else ""
+        upper = " (an upper bound)" if lever["key"] in ("reasoning_off", "cache_title") else " (a scenario, a declared feed)" if lever["key"] == "local_clean_power" else ""
         rows["lever." + lever["key"]] = {"label": lever["label"] + upper, "unit": lever.get("reference", ""), "pb": lever["before"]["price_usd"]["basis"], "note": "note-lever-" + lever["key"]}
     for key, (label, _, _) in CROSS.items():
         rows["cross." + key] = {"label": label, "unit": "", "pb": "none", "note": "note-cross-" + key}
@@ -313,7 +313,6 @@ def inline_data(pub):
         "inputs": inputs, "sel": sel, "scenario": pub["scenario"], "from_sel": pub["scenario_from_selectors"], "names": names, "words": WORDS, "line": LINE, "fields": fields,
         "rows": row_meta(pub), "boards": boards(pub), "check": check,
         "first": {"use": "use.screen", "where": "where.prompt.hyper", "arch": "arch.A.cloud", "lever": "lever.route_small", "cross": "cross.prompts_energy_vs_hyper", "catalog": "catalog.chat_hour"},
-        "stops": {"workload": list(pub["where_it_runs"]), "comparison": list(pub["architectures"]), "crossover": ["prompts", "views"], "waffle": list(WAFFLES), "sort": ["value", "tag"], "scale": ["hour", "unit"]},
     }
 
 
@@ -464,13 +463,14 @@ def setting_html(pub, data, name, prefix="", why=True):
         if name in RATES:
             return option
         return text[0].upper() + text[1:]
-    field = segmented(prefix + name, SETTING_NAMES[name], [(o, stop(o)) for o in spec["options"]], spec["default"], f'data-setting="{name}"')
-    return field.replace("</fieldset>", f'<p class="caption x-why-line">{escape(spec["why"])}</p></fieldset>') if why else field
+    why_id = f"why-{prefix}{name}"  # the line shows only while its group has focus, so the group names it for a screen reader too
+    field = segmented(prefix + name, SETTING_NAMES[name], [(o, stop(o)) for o in spec["options"]], spec["default"], f'data-setting="{name}"', f' aria-describedby="{why_id}"' if why else "")
+    return field.replace("</fieldset>", f'<p class="caption x-why-line" id="{why_id}">{escape(spec["why"])}</p></fieldset>') if why else field
 
 
 def drawer_html(pub, data):
     groups = "".join(f'<h3>{escape(title)}</h3>{"".join(setting_html(pub, data, n) for n in names)}' for title, names in DRAWER)
-    return f'<div class="x-drawer-head"><h2 class="label">Settings</h2><button type="button" class="button x-close" data-close-settings data-js hidden>Close</button></div><p class="caption">Each setting reaches every tab and the address bar. Press Escape to close.</p>{groups}'
+    return f'<div class="x-drawer-head"><h2 class="label">Settings</h2><button type="button" class="button x-close" data-close-settings data-js hidden>Close</button></div><p class="caption">Each setting reaches every tab, and all but wage and tariff reach the address bar, so a shared link cannot carry a Nation\'s figures. Press Escape to close.</p>{groups}'
 
 
 FIELD_WORDS = {
@@ -510,7 +510,7 @@ def readout_html(value, unit, qual, marks=True):
             f'<span class="readout-unit"{mark("qual")}>{escape(qual)}</span></p>')
 
 
-def detail_html(name, st, data, extra="", kind="row", table=""):
+def detail_html(name, st, data, extra="", kind="row", table="", under_reading=""):
     views = ('<fieldset class="segmented plate-views" data-js hidden><legend class="sr-only">Detail view</legend>' +
              "".join(f'<label><input type="radio" name="view-{name}" value="{v}"{" checked" if v == "reading" else ""}><span>{t}</span></label>' for v, t in (("reading", "Reading"), ("sources", "Sources"), ("table", "Table"))) + "</fieldset>")
     d = st["details"].get(name) if kind == "row" else None
@@ -521,15 +521,15 @@ def detail_html(name, st, data, extra="", kind="row", table=""):
                 f'<div class="x-measures"><div class="x-figure"><strong class="x-big" data-d="price">{escape(d["price"])}</strong><span class="caption" data-d="price-tag">{escape(d["priceTag"])}</span></div>'
                 f'<div class="x-figure"><strong class="x-big" data-d="co2">{big_html(d["co2"])}</strong><span class="caption" data-d="co2-tag">{escape(d["co2Tag"])}</span></div>'
                 f'<div class="x-water" data-d="water">{water}</div></div>'
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>'
+                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>{under_reading}'
                 f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p><div class="x-tokens" data-d="tokens" hidden></div>')
     else:
         body = extra
     actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
     after = extra if kind == "row" else ""
-    return (f'{views}<div class="plate-view" data-view="reading">{body}{actions}{after}<div data-d="note" class="x-note-slot" data-js hidden></div><div class="plate-receipt" data-d="receipt" hidden></div></div>'
+    return (f'{views}<div class="plate-view" data-view="reading">{body}{actions}{after}<div data-d="note" class="x-note-slot" data-js hidden></div><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div></div>'
             f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
-            f'<div class="plate-view" data-view="table"><p class="label">Table</p><div class="table-scroll">{table}</div></div>')
+            f'<div class="plate-view" data-view="table"><p class="label">Table</p><div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>')
 
 
 def rows_table(data, keys, st, caption, group=None, cites=None):
@@ -601,6 +601,11 @@ def notes_for(pub, tab, claims, limits):
             lines = row_lines(r) + [place_line(places[place])]
             if place == "colo":
                 lines.append("No open-weight host list price in the record for images and clips.")
+            if place == "node":
+                pue = places[place]["pue"]
+                if not pue["low"] <= claims["lf-059"]["value"] <= pue["high"]:
+                    raise BuildError("lf-059 no longer sits inside the node's PUE range: rewrite this sentence")
+                lines.append(f'No general field figure for a local node; among Tribally owned facilities, {facility_words(claims)}, inside this range.')
             ids = r["claims"] + places[place]["evidence"] + CLAIM.findall(" ".join(x or "" for x in lines))
             out.append(note_html(f"note-where-{place}", r["label"], lines, ids, claims, limits))
     elif tab == "arch":
@@ -731,7 +736,7 @@ def table_of(head, rows, caption="", first_is_header=True):
             cells.append(f'<th scope="row">{escape(str(c))}</th>' if i == 0 and first_is_header else f"<td>{escape(str(c))}</td>")
         body.append(f"<tr>{''.join(cells)}</tr>")
     cap = f"<caption>{escape(caption)}</caption>" if caption else ""
-    return f'<div class="table-scroll"><table class="data-table x-text-table">{cap}<thead><tr>{th}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+    return f'<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways"><table class="data-table x-text-table">{cap}<thead><tr>{th}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
 
 
 def backtest_html(pub):
@@ -790,18 +795,67 @@ def stability_words(flips, pub, data):
     return out
 
 
-def arch_words(pub, data, st):
-    """Wins, loses, the readings, and what reverses each pair, one comparison at a time. Words for the default settings."""
+def arch_pairs(pub, data):
+    """What reverses each pair, for the measure shown: one setting at a time, the reversal always visible, the figures in the rows. Words for the default settings."""
     out = []
-    stable = pub["stability"]["comparisons"]
-    for letter, spec in pub["architectures"].items():
+    for letter in pub["architectures"]:
         pairs = []
-        for s in stable:
+        for s in pub["stability"]["comparisons"]:
             if not s["id"].startswith(letter.lower() + "_"):
                 continue
+            label = s["label"] + (" (a scenario)" if "hydro" in s["label"] and "scenario" not in s["label"] else "")
+            measure = "usd" if "price" in label else "ml" if "water" in label else "g" if "carbon" in label else "wh"
             flips = stability_words(s["flips_on_one_input"] + s["flips_on_one_setting"], pub, data)
             chip = f'reverses on: {"; ".join(flips[:4])}' if flips else "holds on every single change"
-            pairs.append(f'<li><span>{escape(s["label"])}</span> <span class="x-chip">{escape(chip)}</span></li>')
+            pairs.append(f'<li data-pair-m="{measure}"><span>{escape(label)}</span> <span class="x-chip">{escape(chip)}</span></li>')
+        out.append(f'<div class="x-reversals" data-group="comparison:{letter}"><p class="label">What reverses each pair, at the default settings</p><ul class="x-pairs">{"".join(pairs)}</ul></div>')
+    return "".join(out)
+
+
+def admin_html(pub, st):
+    """Owner ruling 11/04/2026: the cloud's assumed admin hours stay a visible input, with the point where the price order flips printed beside it."""
+    name = "cloud_admin_h_month"
+    hours = pub["inputs"][name]["value"]
+    pair = next(s for s in pub["stability"]["comparisons"] if s["id"] == "a_price")
+    flip = next((f.split(" at ")[1] for f in pair["flips_on_one_input"] if f.startswith(f"{name} at ")), None)
+    if flip is None:
+        raise BuildError(f"the office price order no longer flips on {name}: rewrite the admin hours note")
+    local = pub["inputs"]["office_admin_h_month"]
+    return (f'<div class="x-admin-row"><div class="x-field" data-js hidden><label for="a-admin">Cloud admin hours a month</label><input id="a-admin" type="number" min="0" step="any" inputmode="decimal" value="{hours:g}" data-input="{name}"></div>'
+            f'<p class="caption"><strong>The price order flips by {flip} hours a month.</strong> <span data-admin-tie>{escape(st["adminWords"])}</span></p></div>'
+            f'<p class="caption" role="status" data-input-why></p>'
+            f'<p class="caption">Cloud seats need an administrator too. With no source for it, this page assumes {hours:g} paid hours a month, against {local["value"]:g} for the local suite ({", ".join(local["claims"])}). By {flip} the local suite is the cheaper.</p>')
+
+
+def facility_words(claims):
+    """Owner ruling 11/04/2026: the Tribally owned facility's PUE, anonymized and attributed to its public source. Every word but the figure is ours."""
+    return f'one self-reports a power usage effectiveness (PUE) of {claims["lf-059"]["value"]:g} in its public sustainability report (lf-059)'
+
+
+def no_number_words(pub, claims):
+    """The model's sentence on Tribally owned facilities, with the one published figure the owner has now worded."""
+    old = "Tribally owned facilities exist, and none"
+    if not any(old in x for x in pub["qualitative"]["what_no_resource_number_captures"]):
+        raise BuildError(f"the model no longer says {old!r}: rewrite the sentence on the Tribally owned facility")
+    return [x.replace(old, f"Tribally owned facilities exist; {facility_words(claims)}, and none") for x in pub["qualitative"]["what_no_resource_number_captures"]]
+
+
+def wins_words(letter, spec, pub):
+    """The office row's clean feed is a scenario and says so; on one grid the local suite carries more carbon."""
+    wins = spec["wins"]
+    if letter != "A":
+        return wins
+    options = {r["key"].split(".")[-1]: r["co2e_g"]["value"] / 1000 for r in spec["options"]}
+    hit = re.search(r"carbon only as a declared clean feed \([^()]*\)", wins)
+    if not hit:
+        raise BuildError("the office wins sentence changed: rewrite its hydro clause as a scenario")
+    return wins.replace(hit[0], f'carbon only as a declared clean feed, a scenario ({num(options["local_hydro"])} kg a year on hydro; on one grid {num(options["local"])} kg against the cloud\'s {num(options["cloud_same_grid"])} kg, gf-035, gf-001)')
+
+
+def arch_words(pub, data, st):
+    """Wins, loses, and the readings, one comparison at a time. Words for the default settings."""
+    out = []
+    for letter, spec in pub["architectures"].items():
         def reading_label(k, r):
             if "." not in k:
                 return r["label"]
@@ -809,8 +863,8 @@ def arch_words(pub, data, st):
             counts = {"node_100k": pub["scenario"]["node_prompts_100k"], "node_1m": pub["scenario"]["node_prompts_1m"]}
             return f'{r["label"]}: {counts[stop] if stop in counts else int(stop):,}'
         readings = "".join(f'<li>{escape(reading_label(k, r))}: <strong data-reading="arch.{letter}.readings.{k}">{escape(st["readings"][f"arch.{letter}.readings.{k}"])}</strong></li>' for k, r in spec["readings"].items())
-        out.append(f'<div class="x-arch-words" data-group="comparison:{letter}"><p class="label">Wins, at the default settings</p><p class="caption">{escape(spec["wins"])}</p><p class="label">Loses, at the default settings</p><p class="caption">{escape(spec["loses"])}</p>'
-                   f'<p class="caption">{escape(spec["note"])}</p><details class="plate-more"><summary>Each pair, and what reverses it, at the defaults</summary><ul class="x-pairs">{"".join(pairs)}</ul></details>'
+        out.append(f'<div class="x-arch-words" data-group="comparison:{letter}"><p class="label">Wins, at the default settings</p><p class="caption">{escape(wins_words(letter, spec, pub))}</p><p class="label">Loses, at the default settings</p><p class="caption">{escape(spec["loses"])}</p>'
+                   f'<p class="caption">{escape(spec["note"])}</p>'
                    f'<details class="plate-more"><summary>Figures beside the rows</summary><ul class="x-readings">{readings}</ul></details></div>')
     return "".join(out)
 
@@ -924,7 +978,7 @@ def build():
 
     def arch_controls():
         stops = [(k, f"{k}. {t}") for k, t in (("A", "Office suite"), ("B", "Video"), ("C", "Shared data"), ("D", "AI compute"))]
-        return segmented("comparison", "Comparison", stops, "A", 'data-opt="comparison"') + measure_html("arch") + setting_html(pub, data, "wage", "arch-", why=False) + setting_html(pub, data, "node_already_on", "arch-", why=False)
+        return segmented("comparison", "Comparison", stops, "A", 'data-opt="comparison"') + measure_html("arch")
 
     def place_strip_block():
         return place_strip(pub)
@@ -941,7 +995,7 @@ def build():
         "detail:use": lambda: detail_html("use", st, data, extra=week_html(st), table=table_for("use")),
         "notes:use": lambda: notes_for(pub, "use", claims, limits),
         "waffle:plot": lambda: waffles_html(claims, limits),
-        "waffle:control": lambda: segmented("waffle", "Which figure", [(k, w["label"]) for k, w in WAFFLES.items()], "iea_2025", 'data-opt="waffle"'),
+        "waffle:control": lambda: segmented("waffle", "Which figure", [(k, w["label"]) for k, w in WAFFLES.items()], "iea_2025", 'data-opt="waffle"') + '<p class="sr-only" role="status" data-waffle-status></p>',
         "waffle:detail": lambda: waffle_detail(claims, limits),
         "places": place_strip_block,
         "controls:where": workload_controls,
@@ -949,8 +1003,9 @@ def build():
         "detail:where": lambda: detail_html("where", st, data, table=table_for("where")),
         "notes:where": lambda: notes_for(pub, "where", claims, limits),
         "controls:arch": arch_controls,
+        "controls:arch-money": lambda: setting_html(pub, data, "wage", "arch-", why=False) + setting_html(pub, data, "node_already_on", "arch-", why=False),
         "plot:arch": lambda: "".join(f'<div data-group="comparison:{letter}">{wall_html(data, "arch." + letter, st)}</div>' for letter in pub["architectures"]),
-        "detail:arch": lambda: detail_html("arch", st, data, extra=arch_words(pub, data, st), table=table_for("arch")),
+        "detail:arch": lambda: detail_html("arch", st, data, extra=arch_words(pub, data, st), table=table_for("arch"), under_reading=arch_pairs(pub, data)),
         "notes:arch": lambda: notes_for(pub, "arch", claims, limits),
         "controls:lever": lambda: measure_html("lever"),
         "plot:lever": lambda: lever_html(data, st),
@@ -965,7 +1020,7 @@ def build():
         "detail:catalog": lambda: detail_html("catalog", st, data, table=table_for("catalog")),
         "notes:catalog": lambda: notes_for(pub, "catalog", claims, limits),
         "project:cooling": lambda: "".join(f'<button type="button" class="slider-presets-button" data-preset="{v}" data-for="wue">{escape(t)}</button>' for v, t in (
-            (pub["inputs"]["wue_local"]["value"], f'Dry, {pub["inputs"]["wue_local"]["value"]:g} L per kWh'), (pub["inputs"]["wue_site"]["value"], f'Operator average, {pub["inputs"]["wue_site"]["value"]:g}'), (pub["inputs"]["wue_tower"]["value"], f'Cooling tower midpoint, {pub["inputs"]["wue_tower"]["value"]:g}'))),
+            (pub["inputs"]["wue_local"]["value"], f'Dry, {pub["inputs"]["wue_local"]["value"]:g}'), (pub["inputs"]["wue_site"]["value"], f'Operator average, {pub["inputs"]["wue_site"]["value"]:g}'), (pub["inputs"]["wue_tower"]["value"], f'Cooling tower midpoint, {pub["inputs"]["wue_tower"]["value"]:g}'))),
         "project:grids": lambda: "".join(f'<option value="{v}">{escape(GRID_NAMES.get(o, o))}, {v:g} g per kWh</option>' for o, v in project_grids(pub)),
         "method:disclaimer": lambda: f'<p class="x-disclaimer">{escape(pub["disclaimer"])}</p>',
         "method:backtest": lambda: backtest_html(pub),
@@ -973,11 +1028,11 @@ def build():
         "method:regression": lambda: regression_html(pub),
         "method:sensitivity": lambda: sensitivity_html(pub),
         "method:version": lambda: f'<p>Model version: schema {pub["schema"]}, built {pub["built"][5:7]}/{pub["built"][8:10]}/{pub["built"][:4]}, prices as of {pub["price_date"]}, inputs hash {data["hash"]}. {len(pub["inputs"])} inputs.</p>',
-        "qual:no-number": lambda: "".join(f"<li>{escape(x)}</li>" for x in pub["qualitative"]["what_no_resource_number_captures"]),
+        "qual:no-number": lambda: "".join(f"<li>{escape(x)}</li>" for x in no_number_words(pub, claims)),
+        "admin:note": lambda: admin_html(pub, st),
         "qual:other-side": lambda: "".join(f"<li>{escape(x)}</li>" for x in pub["qualitative"]["on_the_other_side"]),
         "qual:loses": lambda: "".join(f"<li>{escape(x)}</li>" for x in pub["qualitative"]["where_local_or_federated_systems_lose"]),
         "qual:rebound": lambda: f'<p>{escape(pub["qualitative"]["rebound"])}</p>',
-        "project:note": lambda: f'<p>{escape(pub["project_scale"]["note"])}</p>',
     }
 
     def fill(match):
@@ -1009,10 +1064,14 @@ def build():
     final = body + sep + json_block + end + rest
     final = MARKER.sub(lambda m: f"{m[1]}{sources_html(ids, claims, limits)}{m[4]}" if m["name"] == "sources" else m[0], final)
     PAGE.write_bytes(final.encode("utf-8"))
-    size = len(final.encode("utf-8"))
-    if size > BUDGET_PAGE:
-        print(f"note: page is {size} bytes, over the {BUDGET_PAGE} budget", file=sys.stderr)
-    return {"page_bytes": size, "inline_data_bytes": len(json_block), "claims_on_page": len(ids), "partly": sum(claims[i]["status"] == "partly" for i in ids)}
+    home = HOME.read_text(encoding="utf-8")
+    band = band_html(pub, data, st, claims, limits)
+    poured = MARKER.sub(lambda m: f"{m[1]}{band}{m[4]}" if m["name"] == "home:band" else m[0], home)
+    if "<!-- explorer:home:band -->" not in home:
+        raise BuildError("site/index.html lacks the marker explorer:home:band")
+    if poured != home:
+        HOME.write_bytes(poured.encode("utf-8"))
+    return {"page_bytes": len(final.encode("utf-8")), "inline_data_bytes": len(json_block), "claims_on_page": len(ids), "partly": sum(claims[i]["status"] == "partly" for i in ids), "home_band_bytes": len(band.encode("utf-8"))}
 
 
 def project_grids(pub):
@@ -1032,6 +1091,32 @@ def week_html(st):
             f'<p class="caption x-week-line"><span data-w="cloud-tag">{escape(w["cloud-tag"])}</span> <strong data-w="cloud">{escape(w["cloud"])}</strong></p>'
             f'<p class="caption x-week-line"><span data-w="home-tag">{escape(w["home-tag"])}</span> <strong data-w="home">{escape(w["home"])}</strong></p>'
             '<p class="caption x-check" data-check hidden></p></div>')
+
+
+BAND_STOPS = (("chat_hour", "Chat", "An hour of chat"), ("video_hour", "Streaming video", "An hour of streaming video"), ("short_hour", "Short video", "An hour of short video"), ("coding_hour", "Agentic coding", "An hour of agentic coding"))
+
+
+def band_html(pub, data, st, claims, limits):
+    """The home page's Explorer band: the Explorer's model at its default settings, poured here, so the home page loads none of it. The figure is energy, so it carries the energy claims."""
+    rows = {r["key"]: r for r in pub["catalog"]}
+    say = lambda name: data["sel"][name]["say"][data["sel"][name]["def"]]
+    radios = "".join(f'<label><input type="radio" name="explorer-band" value="{key}"{" checked" if i == 0 else ""}><span>{escape(stop)}</span></label>' for i, (key, stop, _) in enumerate(BAND_STOPS))
+    link = lambda claim_id: f'<a href="explorer/#src-{claim_id}">{claim_id}</a>'
+    stops = []
+    for key, _, lead in BAND_STOPS:
+        f = st["band"][key]
+        ids = [claim_id for claim_id in rows[f"catalog.{key}"]["claims"] if not claim_id.startswith("px-")]
+        verified = [claim_id for claim_id in ids if claims[claim_id]["status"] != "partly"]
+        receipts = ([f'{", ".join(map(link, verified))}: verified against the source.'] if verified else []) + [f'{link(claim_id)}: partly verified. Limit: {escape(limit_of(claim_id, claims, limits))}' for claim_id in ids if claims[claim_id]["status"] == "partly"]
+        if f["unit"] != "Wh":
+            raise BuildError(f"the home band says watt-hours, and {key} now reads {f['unit']}: rewrite its sentence")
+        reading = f'{lead} on a {say("device").lower()} over {say("connection")}, the whole chain from the data center to your screen: about {f["num"]} watt-hours {f["tag"]}, and {f["screen"]} of them go to your own screen and router.'
+        stops.append(f'<li data-stop="{key}"><p class="readout"><span class="readout-value">{escape(f["num"])}</span> <span class="explorer-band-unit">{escape(f["unit"])}</span></p>'
+                     f'<div class="explorer-band-words"><p class="explorer-band-reading">{escape(reading)}</p><p class="caption">{" ".join(receipts)}</p></div></li>')
+    return (f'<div class="explorer-band-about"><h2 id="explorer-band-title">Resource Use Explorer</h2><p>The energy, carbon, water, and price of AI, video, search, and cloud software, at settings you choose. Nothing you enter leaves your browser.</p>'
+            f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: a bottom-up process model, checked against published figures. A range is a spread, not a confidence interval.</p>'
+            f'<p class="explorer-band-link"><a class="button" href="explorer/">Open the Resource Use Explorer</a></p></div>'
+            f'<div class="explorer-band-figure"><fieldset class="segmented" hidden><legend>One hour of</legend>{radios}</fieldset><ul class="explorer-band-stops" role="list">{"".join(stops)}</ul><p class="sr-only" role="status" data-band-status></p></div>')
 
 
 def local_pour(spec, claims, pub):

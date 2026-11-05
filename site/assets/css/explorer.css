@@ -47,7 +47,7 @@ main .x-band a { color: var(--atni-text-heading); }
   .x-plate.is-live > .plate-plot { padding-right: 2px; }
 }
 .x-plate .plate-title { font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.375rem); }
-.x-plate .plate-claim > p:not(.caption, .x-banner) { font-size: 1rem; line-height: 1.45; color: var(--atni-text-body); }
+.x-plate .plate-claim > p:not(.caption, .x-banner) { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
 .x-plate .plate-controls { gap: 6px; }
 /* The readout, the same on every tab: the figure and its unit on one line, what it counts under them. */
 .x-plate .readout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 0.15em; }
@@ -90,12 +90,14 @@ main .disclosure > summary::marker { color: var(--energy-mark); }
 .wall-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; flex: 1 0 var(--row); margin: 0; cursor: pointer; }
 [data-board^="where."] { --row: 56px; --bar: 32px; }
 [data-board="arch.A"], [data-board="arch.B"], [data-board="arch.C"] { --row: 48px; --bar: 32px; }
+[data-board="arch.D"] { --row: 40px; --bar: 20px; } /* eleven rows or more: as many on the first screen as the type allows */
+.x-plate.is-live > .x-plot { scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
 .wall-row .ladder-label { font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-heading); }
 .wall-row .ladder-value { font-family: var(--body); font-size: 0.8125rem; line-height: 1.25; font-variant-numeric: tabular-nums; text-align: right; }
 .wall-row .ladder-value:has(> .ladder-num) { justify-content: flex-end; }
 .wall-row .ladder-num { font-weight: 700; }
 .wall-row .ladder-value > .ladder-tag { font-size: 0.75rem; }
-.wall-track { position: relative; align-self: stretch; min-height: 44px; }
+.wall-track { position: relative; align-self: stretch; min-height: var(--row); }
 .wall-track::before { content: ""; position: absolute; left: calc(var(--wall) * 100% - 1px); top: 0; bottom: 0; width: 2px; background: var(--baseline); }
 .wall.is-plain .wall-track::before { width: 1px; background: var(--baseline); }
 .w { position: absolute; top: calc(50% - var(--bar) / 2); height: var(--bar); min-width: 3px; background-clip: padding-box; border-inline: 1px solid transparent; transition: left 160ms ease-out, width 160ms ease-out; }
@@ -191,6 +193,13 @@ a.x-c { white-space: nowrap; }
 .x-arch-words .label { margin: 4px 0 0; color: var(--atni-text-heading); }
 .x-pairs, .x-readings { display: grid; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.8125rem; line-height: 1.4; }
 .x-pairs li, .x-readings li { margin: 0; }
+.x-reversals { padding-top: 10px; border-top: 1px solid var(--rule); }
+.x-reversals .x-pairs { margin-top: 4px; }
+@media screen { .x-reversals:not(:has(li:not([hidden]))) { display: none; } } /* a measure with no printed pair says nothing */
+.x-admin-note { display: grid; gap: 6px; }
+.x-admin-note strong { font-weight: 700; color: var(--atni-text-heading); }
+.x-admin-row { display: flex; gap: 12px; align-items: flex-end; }
+.x-admin-row > .x-field { flex: 0 0 7rem; }
 .x-chip { display: inline-block; padding: 1px 6px; font-size: 0.75rem; color: var(--atni-text-heading); background: var(--tag-bg); }
 .x-named { display: grid; gap: 6px; margin: 8px 0; padding-left: 1rem; font-size: 0.875rem; line-height: 1.4; }
 .x-named li { margin: 0; }
@@ -239,7 +248,7 @@ a.x-c { white-space: nowrap; }
 .slider-presets-button { min-height: 32px; margin: 4px 4px 0 0; padding: 4px 8px; font-family: var(--body); font-size: 0.8125rem; color: var(--atni-text-heading); background: var(--tag-bg); border: 0; border-radius: 0; cursor: pointer; }
 
 /* Method: two text columns over the back-test, which takes the whole width so its table reads across. */
-.x-method { display: grid; gap: 24px 32px; align-items: start; }
+.x-method { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px 32px; align-items: start; } /* minmax, or the back-test's wide table sets the page's width at 200 percent zoom */
 .x-method-col { display: grid; gap: 10px; min-width: 0; font-size: 0.9375rem; }
 .x-method-col h3 { margin: 12px 0 0; }
 .x-method-col h3:first-child { margin-top: 0; }
@@ -277,7 +286,12 @@ html:not(.x-live) .x-drawer { margin: 24px var(--gutter) 0; }
 [data-theme="light"] .x-drawer { background: #EEF1F6; }
 @media (prefers-color-scheme: light) { [data-theme="auto"] .x-drawer { background: #EEF1F6; } }
 
-@media (forced-colors: active) { .w, .wall-range, .wall-needle, .plate-square, .x-chip, .wall-track::before, .wall-sides::before, .wall-axis::before, .x-ruler .ladder-range, .x-ruler .ladder-mark, .x-lever .ladder-track::after { forced-color-adjust: none; } }
+@media (forced-colors: active) { .w, .wall-range, .wall-needle, .plate-square, .x-chip, .wall-track::before, .wall-sides::before, .wall-axis::before, .x-ruler .ladder-range, .x-ruler .ladder-mark, .x-lever .ladder-track::after { forced-color-adjust: none; } .x-plot [data-row].is-on { outline: 2px solid Highlight; outline-offset: -2px; } } /* the wash that marks the selection under Price is dropped in forced colors */
+/* A transparent border is forced to a visible ink, so every tab and every option looked selected. */
+@media (forced-colors: active) {
+  .segmented span, :is(.toc, .section-strip) :is(a, [role="tab"]) { border-bottom-color: Canvas; }
+  .segmented input:checked + span, :is(.toc, .section-strip) :is(a[aria-current], [aria-selected="true"]) { border-bottom-color: Highlight; }
+}
 .wall[data-measure="usd"] .wall-needle { display: none; }
 @media (max-width: 719px) {
   .wall-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "track track"; }
@@ -287,17 +301,28 @@ html:not(.x-live) .x-drawer { margin: 24px var(--gutter) 0; }
   .wall-head, .wall-axis { display: none; }
 }
 
-/* Reduced motion: site.css takes every transition to zero. Print: every panel, comparison, and view, then the settings shown. */
+/* Reduced motion: the bars jump to their new length, and a tab change does not fade. site.css holds the same rule for the whole site; this keeps the Wall's own transitions honest if that rule moves. */
+@media (prefers-reduced-motion: reduce) {
+  .w, .x-plate .ladder-mark { transition: none; }
+  .is-entering .plate-plot > * { animation: none; }
+}
+
+/* Print: every panel, comparison, and view, then the settings shown. Nothing scrolls on paper, so nothing keeps a screen's minimum width or height. */
 @media print {
   .x-settings-button, .x-drawer, .x-why, .plate-actions { display: none !important; }
   html:not(.x-live) .x-drawer { display: grid !important; }
   .x-live .x-settings-now { display: block; }
   [data-group][hidden] { display: block !important; }
   tbody[data-group][hidden] { display: table-row-group !important; }
+  [data-pair-m][hidden] { display: list-item !important; }
   .x-plot > [data-group="scale:unit"] { margin-top: 18pt; }
-  .x-plate { display: block; height: auto; }
+  .x-plate { display: block; height: auto; break-inside: auto; } /* a plate runs over several pages here; the plot alone stays whole */
   .x-plate.is-live { height: auto; }
+  .plate-setting a { display: none; }
   .plate-detail { margin-top: 12pt; }
+  .x-backtest table, .plate-table { min-width: 0; }
+  .x-plate.is-live > .plate-claim, .x-plate.is-live > .plate-detail, .x-plate.is-live > .plate-plot { overflow: visible; }
+  .wall-row { break-inside: avoid; }
   .x-hero-grid { display: block; }
   .x-note-slot { display: none; }
   .w, .wall-track::before, .wall-range, .x-w-ai { print-color-adjust: exact; -webkit-print-color-adjust: exact; }

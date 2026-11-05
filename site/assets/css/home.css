@@ -1,0 +1,27 @@
+/* The home page only. The Explorer band sits a step up in luminance, between the hero and the raised section under it; the figure is its one loud thing. */
+.explorer-band { padding-block: 16px; background: var(--atni-ground-overlay); border-block: 1px solid var(--rule); }
+.explorer-band a:not(.button) { color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.explorer-band-grid { display: grid; gap: 16px 48px; }
+.explorer-band-about { display: grid; gap: 8px; align-content: start; }
+.explorer-band-about h2 { margin: 0; font-size: 1.5rem; }
+.explorer-band-about p { margin: 0; max-width: var(--measure-wide); }
+.explorer-band-link { margin-top: 4px; }
+.explorer-band-figure { min-width: 0; }
+.explorer-band .segmented { gap: 0 20px; }
+.explorer-band .segmented legend { margin-bottom: 0; }
+.explorer-band-stops { display: grid; gap: 12px; margin: 8px 0 0; padding: 0; list-style: none; }
+.explorer-band-stops li { display: grid; gap: 4px 24px; align-items: start; margin: 0; }
+.explorer-band .readout { display: flex; align-items: baseline; gap: 0.15em; margin: 0; white-space: nowrap; }
+.explorer-band-unit { font-size: 1.75rem; line-height: 1.1; letter-spacing: -0.01em; }
+.explorer-band-words { display: grid; gap: 6px; min-width: 0; }
+.explorer-band-words p { margin: 0; max-width: var(--measure-wide); }
+.explorer-band-reading { font-size: 1.0625rem; line-height: 1.4; color: var(--atni-text-heading); }
+@media (min-width: 1100px) {
+  .explorer-band-grid { grid-template-columns: minmax(20rem, 30fr) minmax(0, 70fr); }
+  .explorer-band-stops li { grid-template-columns: 13rem minmax(0, 1fr); }
+}
+@media print {
+  .explorer-band { padding-block: 16pt; background: none; border: 0; }
+  .explorer-band fieldset, .explorer-band-link { display: none !important; }
+  .explorer-band [data-stop][hidden] { display: grid !important; }
+}

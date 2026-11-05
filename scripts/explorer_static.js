@@ -1,7 +1,7 @@
-// For scripts/build_explorer.py: what the page's own code says at the default settings, so the no-script page and print carry the same words and geometry.
+// For scripts/build_explorer.py: what the page's own model says at the default settings, so the no-script page, print, and the home band carry the same words and geometry.
 // Reads {data, pours} on stdin, writes JSON on stdout. Node only; no packages.
 const path = require('path');
-const ex = require(path.join(__dirname, '..', 'site', 'assets', 'js', 'explorer.js'));
+const ex = require(path.join(__dirname, '..', 'site', 'assets', 'js', 'resource-model.js'));
 
 const { data: D, pours } = JSON.parse(require('fs').readFileSync(0, 'utf8'));
 const V = ex.Views(D);
@@ -11,7 +11,11 @@ const lows = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[1
 const highs = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[2]]));
 const spreadAt = (spec, i) => V.run.spread(`pour:${spec}`, (t) => at(t, spec))[i];
 
-const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line() };
+const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords() };
+out.band = Object.fromEntries(['chat_hour', 'video_hour', 'short_hour', 'coding_hour'].map((k) => {
+  const { router, device } = V.t.catalog[k].layers;
+  return [k, { ...V.cell(`catalog.${k}`, 'wh'), screen: ex.num(router + device) }];
+}));
 for (const [id, spec] of Object.entries(D.boards)) {
   if (spec.kind === 'wall' || spec.kind === 'ruler') {
     const at = V.boardScale(id, 'wh');

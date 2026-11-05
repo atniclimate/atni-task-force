@@ -1,8 +1,8 @@
 # Resource Use Explorer: build spec (11/04/2026)
 
-Local working file. One direction; the builder follows it without asking. Page `site/explorer/`, title "Resource Use Explorer". Inherits DESIGN-SPEC.md
-section A, the Plate kit (PLATE-KIT.md), `tokens.css` and the `--energy-*` variables in `site.css` unchanged. Numbers come from `evidence/resource-model.json`
-poured to `site/data/`; no digit is typed into the page. T0 only. Do not edit any existing page or plate JSON in this run; the nav link is integration work.
+One direction; the builder follows it without asking. Page `site/explorer/`, title "Resource Use Explorer". Inherits DESIGN-SPEC.md section A, the Plate kit
+(PLATE-KIT.md), `tokens.css` and the `--energy-*` variables in `site.css` unchanged. Numbers come from the model's export, `site/data/resource-model.json`; no digit
+is typed into the page. T0 only. The home page carries one band from the same model (section 8).
 
 ## 1. The decision
 
@@ -38,13 +38,18 @@ tab with `"fit": true`, so the plate reaches the window foot at 1920x1080 (plate
 | 8 | Project Scale `#project-scale` | instrument rows, no defaults, no example | MW, load factor, site water (three presets named), grid factor, load to compare with | "hosting and serving are separate decisions" |
 | 9 | Method `#method` | the back-test as a table, held-out rows first, not-held-out rows marked, no line | none | disclaimer, method text, calibration, regression (no t, interval, R2, "elasticity"), sensitivity, field protocol, downloads, version, cite |
 
-The 21 global selectors live in a **Settings drawer**: a 24rem `<aside>` on `#1E242C` (light `#EEF1F6`) that opens from the right over the detail zone, 1px
-`--rule` at its left, opened by the "Change" link in every plate's setting line ("Phone, Wi-Fi, router by time, US grid for the data center, NWPP at home,
-Columbia convention, $60 an hour, node not on. Change") and by a "Settings" button at the right end of the tab strip. Groups, in order: Your side (device,
-connection, network accounting, router rule); Rates (prompts, kind of chat, turns, images, clips, searches, streaming intensity); Grids (data center,
-colocation, node, home, generation water, hydro convention, hydro share); Money (wage, tariff); Node already on. Segmented radios, 44px, the `why` under
-each on focus. Escape closes; focus returns to the link. Settings live in the query string (`?device=laptop&grid_dc=nwpp#your-use`) and reach every tab.
-Print: the drawer prints as a list of the current settings under the first plate.
+The 21 global selectors live in a **Settings drawer**: a 22rem `<aside>` on `#1E242C` (light `#EEF1F6`) that opens from the right under the disclaimer band, the
+plate compressing beside it so the reader sees the Wall move, 1px `--rule` at its left, opened by the "Change" link in every plate's setting line ("Phone, Wi-Fi,
+router by time, US grid for the data center, NWPP at home, Columbia convention, $60 an hour, node not on. Change") and by a "Settings" button at the right end of
+the tab strip. Groups, in order: Your side (device, connection, network accounting, router rule); Rates (prompts, kind of chat, turns, images, clips, searches,
+streaming intensity); Grids (data center, colocation, node, home, generation water, hydro convention, hydro share); Money (wage, tariff); Node already on. Segmented
+radios, 44px, the `why` under each on focus. Escape closes; focus returns to the link. Print: the drawer prints as a list of the current settings under the first plate.
+
+**The address.** Settings reach every tab. The query string carries the global selectors only (`?device=laptop&grid_dc=nwpp#your-use`), and never wage, tariff, office
+size, a project's load, or any typed number, so a shared link cannot carry a Nation's figures. Measures, comparisons, views, and the selected row stay off it too. A link
+is untrusted input: an unknown name or an option a selector does not hold is ignored and dropped from the address on load. Changes replace the current history entry, so
+Back leaves the page rather than walking back through radio clicks; a Back step inside the page re-reads the address, and with no hash the first tab shows. Tabs stay
+deep-linkable by hash.
 
 ## 3. The Wall (the one new plot kind; `plate.register` with a custom draw, `plate.draw` primitives)
 
@@ -108,15 +113,23 @@ and link only until a claim row exists, no maturity word), tradeoffs in words fr
 one link, idle hardware), wins in words. A: LibreOffice, ONLYOFFICE, Collabora, Nextcloud, the ArtCraft apps. B: Jellyfin, PeerTube, embedded caches (placed
 by the platform). C: content-addressed storage, federated query, federated social software. D: small open-weight models; Te Hiku Media named with credit
 only. No endorsement, no ranking, no vendor logo. Carbon rows draw only against `cloud_same_grid` or `hyper_same_grid`; rows whose label says "declared hydro
-feed" or "scenario" sit under a rule in a group headed "Scenario: a declared feed, not the default". Each pair prints its `stability` entry as a chip
-("reverses on: wage 25").
+feed" sit under a rule in a group headed "Scenario: a declared feed, not the default", and their labels open with "Scenario:", because the Table view lists them among
+the others. They are never the main comparison (owner ruling, 11/04/2026). Each pair prints its `stability` entry as a chip ("reverses on: wage 25"), visible beside the
+Reading, one measure's pairs at a time; the figures stay in the rows (the fairness check's reading, one setting at a time with its reversal inputs).
+
+**Cloud admin hours** (owner ruling, 11/04/2026; not settled): comparison A keeps the two assumed hours a month as a visible input, typed over the model and never in the
+address, with the point where the price order flips printed beside it, read from `stability` (the top of the input's spread, 14), and the tie at the settings shown, which
+is lower. **The Tribally owned facility's PUE** (lf-059, owner ruling, 11/04/2026) is anonymized and attributed to its public source: the page names neither the facility
+nor the Nation, and the receipt links the operator's own report. `site/data/claims/anonymized.json` holds that public wording by hand, because the local evidence record
+names both and `scripts/build_plates.py` holds it back.
 
 ## 7. Method (tab 9) and the disclaimer band
 
-Disclaimer band (every tab, 36px, raised ground, 0.875rem NS, body ink): "Modeled estimates, not measurements. Ranges are spreads, not confidence intervals.
-Method." with Method a link to `#method`. The Method panel, in two text columns at 44rem each beside the back-test plate: the full disclaimer (RESOURCE-MODEL.md
-section 14, verbatim), the method sidebar text (COPY-INPUTS section 2) with the plain sentences that it is a bottom-up process model and the idle term is
-untested, calibration, the trend-controlled regression table (four specifications, se only), sensitivity rankings, the field protocol "Measure it yourself"
+Disclaimer band (every tab, 36px, raised ground, 0.875rem NS, body ink): "Modeled estimates, not measurements. Ranges are spreads, not confidence intervals. A
+bottom-up process model, checked against published figures. Method." with Method a link to `#method`. That name stands until the owner has read the research on what an
+econometric model is (owner ruling, 11/04/2026). The Method panel, in two text columns at 44rem each beside the back-test plate: the full disclaimer (RESOURCE-MODEL.md
+section 14, verbatim), the method sidebar text (COPY-INPUTS section 2) with the plain sentences that it is a bottom-up process model, checked against published figures,
+and that the idle term is untested, calibration, the trend-controlled regression table (four specifications, se only), sensitivity rankings, the field protocol "Measure it yourself"
 (COPY-INPUTS section 3, five instruments, what each finding replaces), downloads (`resource-model.json`; `inputs.csv` from the inline inputs; `outputs.csv`
 of every row at the current settings, generated in the browser as a Blob, no fetch), the model version line ("Model version: schema 1, built 11/04/2026,
 prices as of 11/04/2026, inputs hash xxxx" from the build), and "How to cite" with the task force as author and the URL. Sovereignty, consent, resilience, and
@@ -124,22 +137,30 @@ custody stay in words in `qualitative` columns beside the numbers on tabs 3 and 
 
 ## 8. Live computation and files
 
-- `site/assets/js/resource-model.js` (pure functions, no DOM, `module.exports` guard so node can load it; at most 24 KB): `idleMult`, `tokensWh`,
-  `tokensUsd`, `layer`, `four`, `wGenNw`, `selfRunPrice`, `projectScale`, the catalog, hour baseline, places, the four comparisons with crossovers, the levers,
-  and `drivers` (each input at its ends and each setting at its options, the same procedure as Python), all taking `(inputs, settings)` so any combination of
-  the 21 settings and the Your Use counts computes live. Python stays canonical; the JS never introduces a coefficient.
-- `scripts/build_explorer.py`: slims `evidence/resource-model.json` for the inline block (inputs with low, high, unit, basis, claims; assumptions; places;
-  the default catalog, hour baseline, where_it_runs, architectures, levers, crossovers, backtest, calibration, regression, sensitivity, stability, qualitative,
-  disclaimer; `computed_defaults.settings`; no `selectors` branch), writes it as `<script type="application/json">` in `site/explorer/index.html` (target
-  under 120 KB), copies the full file to `site/data/resource-model.json` for download, and writes `tests/fixtures/explorer-oracle.json`: 40 settings
-  combinations drawn with seed 20261104 plus the default, each with Python's catalog, architectures, and crossovers.
-- `tests/test_explorer_port.py`: runs node on `resource-model.js` against the oracle; every value within 0.5 percent, crossover "never" states equal; skips
-  when node or the fixture is absent. `tests/test_plates.py` budgets: `explorer.js` 20,480 bytes, `resource-model.js` 24,576, page 350 KB.
+Script and page budgets live in one place, `tests/budgets.json`; `scripts/page_check.js` and `tests/test_plates.py` read them there, and they warn and never fail.
+
+- `site/assets/js/resource-model.js` (pure, no DOM, a `module.exports` guard so node loads the same file the page loads; the page reads `window.resourceModel`): the equations
+  (`idleMult`, `tokensWh`, `tokensUsd`, `layer`, `four`, `wGenNw`, `selfRun`, `projectScale`), `compute` (the catalog, hour baseline, places, the four comparisons with
+  crossovers, the levers), `Run` (spreads and `drivers`: each input at its ends and each setting at its options, the same procedure as Python, so any combination of the 21
+  settings and the Your Use counts computes live), `Views` (what the page says at one state, so the build prints the words the page computes), and the number formats.
+  Python stays canonical; the JS never introduces a coefficient. `site/assets/js/explorer.js` holds the page around it: painting, selection, the drawer, the address.
+- `scripts/resource_model.py --export` writes `site/data/resource-model.json` for download and the oracle, `work/site-refresh/tmp/explorer-oracle.json`: 300 seeded settings and
+  counts (seed 20261104; the first is the default), each with Python's tree, spreads, drivers, crossovers, and Your Use by layer.
+- `scripts/build_explorer.py` slims that file for the inline block (inputs with low and high; assumptions; the boards, words, and default rows; no `selectors` branch), writes it
+  as `<script type="application/json">` in `site/explorer/index.html`, and pours the page's words and geometry from `resource-model.js` through `scripts/explorer_static.js`.
+- `scripts/page_checks/explorer.js` (`node scripts/page_check.js --page explorer`, jsdom): runs the page's real scripts against every oracle case; every value within 1e-9, far inside
+  the 0.5 percent the page's own check prints, crossover "never" states equal. It skips nothing: a missing oracle is a failure that names the fix.
 - `site/assets/css/explorer.css` after `site.css`: the Wall, the waffles, the place strip, the measures row, the drawer, the disclaimer band. Radius 0, no
   shadows, luminance only, focus ring inherited. Phone: zones stack, the Wall keeps its order with the label above the bar, no extra polish.
+- **The home band** (`site/index.html` between `<!-- explorer:home:band -->` markers, `site/assets/css/home.css`, `site/assets/js/explorer-band.js`): one figure, the whole chain's energy
+  for an hour of chat, streaming, short video, or agentic coding at the default settings, one control over those four stops, a sentence, the claims with status and limit, and a
+  link in. The build pours it from `resource-model.js`, so the home page loads none of the model. Without scripts and in print every stop shows.
+
+**A zone that scrolls is reachable.** The detail zone and every `.table-scroll` take a tab stop, a claim zone takes one when it overflows, and the arrows bring the selected row into view,
+so nothing sits behind an overflow without a way to reach it by keyboard. `prefers-reduced-motion` takes the bars and the tab fade to zero, here and in `site.css`.
 
 ## 9. Checks before handoff
 
-`python scripts/build_explorer.py`; `python scripts/validate_public.py`; `python -m pytest -q tests/test_explorer_port.py tests/test_plates.py`;
-`validate_palette.js` output in `evidence/`; screenshots at 1920x1080 and 1440x900 for all nine tabs, dark and light, and a 390 sanity look; keyboard pass
-(tabs by arrow, fields, the Wall as one stop with arrows, drawer by Escape); print preview showing all nine panels and the settings list.
+`python scripts/build_explorer.py`; `python scripts/validate_public.py`; `node scripts/page_check.js --page explorer`; `python -m pytest -q tests/test_plates.py tests/test_resource_model.py`;
+`validate_palette.js` output in `work/site-refresh/evidence/`; `node scripts/capture.js --pages explorer --tabs` at 1920 and 1440 in both themes and 390 once, with its clipped-text metrics
+read; keyboard pass (tabs by arrow, fields, the Wall as one stop with arrows, drawer by Escape); print preview showing all nine panels, the tables, and the settings list.
