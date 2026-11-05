@@ -69,18 +69,46 @@ page or plate with a one-line reason in the commit. The owner chooses among trea
 - The license terms in the shared asset library's README govern every photograph, including that no full-size originals
   enter the public repository. Only exported, resized files go in `site/`.
 
-**B2. Imagery defaults (may be departed from).**
-- Photographs are captioned evidence: from the licensed library or a Nation's consented photo, webp or jpg, in the claim
-  zone beside the plate it illustrates, or as a band. About 120 KB each, with alt text and a license line always, EXIF and
-  GPS stripped, and one provenance row per image kept outside `site/`.
-- The caption says what is shown, what is not shown, and that it is not any facility in any proposal.
-- Placement waits on counsel's answer about the license for a public Pages site.
-- Other defaults: no text on a photo, no scrim, no people as stand-ins for Tribal workers, no nuclear plant as a
-  clean-energy hero, and no crypto rack on the AI page without its caption.
-- Try a bolder photographic treatment as well, such as a full-width duotone band at low luminance behind no text, and let
-  the owner choose between it and the quiet captioned photograph. Keep the contrast and caption rules either way.
-- Leave a visible, honestly empty slot for photographs from member Tribes' own energy projects, with the sentence that
-  they will appear with each Nation's consent.
+**B2. Photographs, as built (revised 11/05/2026 for owner ruling 9; may be departed from).** The owner: "The images should
+be background images, use of black/transparant gradients for subtlety, the colors of the images were selected for the
+'cool' and dark tones." Places and gradient stops come from the crop and layout review of 11/05/2026, with the departures
+named below and measured. This replaces the old "no text on a photo, no scrim" default and the Quiet or Bold choice.
+- A photograph is a background under the page, in natural color with no grade, faded by gradients that end in the page
+  ground `#010B13`, never `#000000` (black would seam against the ground). CSS backgrounds only, never an `img`, so it is
+  decorative; its credit says what it shows. The rules are one block in `site.css`.
+- Where: Home, the comparison stage, open in its left 40 percent and solid ground by 40 percent, so the whole plot (from
+  about 42 percent) stands on the ground, on windows 800px tall and up (shorter, the reader's column fills the stage and
+  leaves no sky or room for the credit). Its veil is lighter than the review's (.70 to .80 across, .34 at 38 percent down,
+  for the review's .86 to .90 and .42), because the review's stops hid the sky entirely (1.15:1 against the ground). AI
+  and Data Centers: one layer behind the 56px header and the band, a center aperture between near-solid text zones that
+  closes to .90 by 630px from the right edge, so the key figures (about 600px from it at every width) stand on near-solid
+  ground, ending before the section strip. Energy has none. Never under the section strip, a plate, the detail panel, or
+  the Reading, and never on a page the owner has not placed one.
+- When: a dark screen 1100px wide and up, and nowhere else. The light theme, auto under a light system, phones, print,
+  and forced colors match no rule, so they fetch nothing (a hidden image would still be fetched); a switch to dark fetches
+  it then. No dark island on a light page.
+- No added height: the band keeps its height, and its credit takes the band's 16px foot and 4px of its top, so the line
+  clears the lead and the figures. A band shorter than the review's 155px ends the gradient's open hold 84px above its
+  foot, so the ramp keeps its 28px instead of a hard step. The bands measure 120 to 170px, not the review's 155 and 227.
+- Floors: 4.5:1 for text and 3:1 for marks, measured on the final pixels against the brightest backdrop pixel in each
+  run's own rect at 1440 by 900 and 1920 by 1080. A run that fails gets a more opaque overlay under it.
+- Credit: one line per photograph, 0.875rem (the first-screen floor) in muted ink, never the brightest line near it, shown
+  only with its photograph, and on home inside the reader's column, so it wraps before the plot: "Photograph: stock,
+  Envato Elements, by the creator; what it shows, place unknown; not any facility in any proposal." About's Credits name
+  every photograph in every theme and on paper.
+- Edges: none shows. Every layer fades to the ground at its top and foot, and past 2560px, where the home stage stops
+  short of the window, its sky fades in from the stage's left edge.
+- Files: webp in `site/assets/img/bg/`, a default size and a wide one at 1700px and up, about 120 KB for the size a 1440
+  window fetches, metadata holding only the license fields (no GPS, Make, Model, or serial). One provenance row per image
+  in `work/site-refresh/design/photo/IMAGE-LEDGER.md`, outside `site/`. Only cool, dark sources: a page goes without
+  rather than take a warm or place-like one.
+- Web-size copies are on the `site-refresh` branch by the owner's choice of 11/05/2026. Going live waits on the owner, and
+  counsel's question on the Elements license stays open.
+- A captioned photograph beside a plate stays possible, with alt text, a license line, and a caption that says what is
+  shown, what is not, and that it is not any facility in any proposal.
+- Other defaults stand: no people as stand-ins for Tribal workers, no nuclear plant as a clean-energy hero, no crypto rack
+  on the AI page without its caption, and a visible, honestly empty slot for photographs from member Tribes' own energy
+  projects, with the sentence that they will appear with each Nation's consent.
 
 **B3. Motion defaults (may be departed from).**
 - Allowed: 120 to 240ms transitions on touch and tab change, 0ms under reduced motion.

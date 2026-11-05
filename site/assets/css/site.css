@@ -372,6 +372,59 @@ main > .section + .section { border-top: 1px solid var(--grid); }
   .page-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); align-items: end; }
 }
 
+/* Background photographs (owner ruling 9, 11/05/2026; places and gradient stops from that day's crop and layout review). CSS backgrounds only, and
+   only a dark screen 1100px wide and up applies one: a background no rule applies is never fetched, so light, auto under a light system, phones,
+   print, and forced colors fetch nothing, and a switch to dark fetches it then. ::before is the photograph and ::after the gradients over it, which
+   end in the page ground #010B13, never #000000. AI and Data Centers: one layer behind the header and the band, ending before the section strip.
+   Home: the comparison stage, open in its left 40 percent, on windows 800px tall and up; below that the reader's column fills the stage, leaving no
+   sky and no room for the credit. The credit shows with its photograph, in muted ink so it is never the brightest line near it; About's Credits name
+   all three in every theme and on paper. */
+.photo-credit { display: none; font-size: 0.875rem; color: var(--atni-text-muted); }
+@media screen and (min-width: 1100px) and (forced-colors: none) {
+  /* The credit's 1rem line takes the band's 16px foot and 4px of its top, so the band keeps its height and the line clears the lead and the
+     figures; light keeps the same box with the line unseen. */
+  :is(.photo-ai, .photo-dc) { position: relative; grid-template-rows: 1fr auto; row-gap: 0; padding-top: 12px; padding-bottom: 0; }
+  :is(.photo-ai, .photo-dc) > .photo-credit { grid-column: 1 / -1; display: block; visibility: hidden; margin: 4px 0 0; max-width: none; line-height: 1rem; }
+  :root:not([data-theme="light"]) :is(.photo-ai, .photo-dc) > .photo-credit { visibility: visible; }
+  /* 57px reaches up behind the header's 56 and its rule; the header paints over the layer, so its links stay live. */
+  :root:not([data-theme="light"]) :is(.photo-ai, .photo-dc)::before, :root:not([data-theme="light"]) :is(.photo-ai, .photo-dc)::after { content: ""; position: absolute; inset: -57px 0 0; z-index: -1; pointer-events: none; }
+  /* At cover the band's width sets the scale and a horizontal position does nothing, so AI's wall is drawn at 120 percent from its right edge:
+     its first column of rack lights lands near 36 percent, inside the aperture. Data Centers at 44 percent shows two rows of switch ports. */
+  :root:not([data-theme="light"]) .photo-ai::before { background: url("../img/bg/ai-server-wall-1600.webp") 100% 40% / 120% auto no-repeat; }
+  :root:not([data-theme="light"]) .photo-dc::before { background: url("../img/bg/dc-server-cabinet-1600.webp") 50% 44% / cover no-repeat; }
+  /* A center aperture between near-solid text zones. It closes to .90 by 630px from the right edge, before the key figures, which stand about
+     600px from it at every width; the open stop keeps 48px before that, so a 1100px window gets a ramp, not a hard step. The hold ends by 84px
+     above the foot, so a band shorter than the review's 155px keeps its 28px ramp to .88; at 155px and up it is the review's 126px. */
+  :root:not([data-theme="light"]) .photo-ai::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 30%, rgba(1, 11, 19, .58) min(46%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .30) 84px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .88) calc(100% - 56px), #010B13); }
+  :root:not([data-theme="light"]) .photo-dc::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 26%, rgba(1, 11, 19, .54) min(42%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .34) 82px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .90) calc(100% - 56px), #010B13); }
+}
+@media screen and (min-width: 1100px) and (min-height: 800px) and (forced-colors: none) {
+  .home-instrument { position: relative; }
+  /* 1 / 2 makes the reader's column the credit's box (a bare 1 runs it to the stage's right edge), so it wraps before the plot at any width. */
+  .home-instrument > .photo-credit { position: absolute; grid-column: 1 / 2; inset: auto 0 16px; display: block; visibility: hidden; margin: 0; max-width: 36rem; line-height: 1.3; }
+  :root:not([data-theme="light"]) .home-instrument > .photo-credit { visibility: visible; }
+  :root:not([data-theme="light"]) .home-instrument::before, :root:not([data-theme="light"]) .home-instrument::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  :root:not([data-theme="light"]) .home-instrument::before { right: 52%; background: url("../img/bg/home-night-sky-960.webp") 50% 100% / cover no-repeat; }
+  /* Lighter than the review's .86 and .90 (and .42 at 38 percent), which hid the sky; solid by 40 percent, so the plot, from about 42, is on true ground. */
+  :root:not([data-theme="light"]) .home-instrument::after { background: linear-gradient(90deg, rgba(1, 11, 19, .70), rgba(1, 11, 19, .80) 30%, #010B13 40%), linear-gradient(180deg, #010B13, rgba(1, 11, 19, .74) 14%, rgba(1, 11, 19, .34) 38%, rgba(1, 11, 19, .78) 72%, #010B13); }
+}
+@media screen and (min-width: 1700px) and (forced-colors: none) {
+  :root:not([data-theme="light"]) .photo-ai::before { background-image: url("../img/bg/ai-server-wall-2400.webp"); }
+  :root:not([data-theme="light"]) .photo-dc::before { background-image: url("../img/bg/dc-server-cabinet-2400.webp"); }
+}
+@media screen and (min-width: 1700px) and (min-height: 800px) and (forced-colors: none) {
+  :root:not([data-theme="light"]) .home-instrument::before { background-image: url("../img/bg/home-night-sky-1200.webp"); }
+}
+/* Past 2560px the stage stops short of the window's left edge, so the sky fades in there instead of starting at a line. */
+@media screen and (min-width: 2561px) and (min-height: 800px) and (forced-colors: none) {
+  :root:not([data-theme="light"]) .home-instrument::before { mask-image: linear-gradient(90deg, transparent, #000 240px); }
+}
+/* Auto under a light system is the light theme: nothing above may apply, so no photograph is fetched. */
+@media screen and (min-width: 1100px) and (prefers-color-scheme: light) {
+  :root[data-theme="auto"] :is(.photo-ai, .photo-dc, .home-instrument)::before, :root[data-theme="auto"] :is(.photo-ai, .photo-dc, .home-instrument)::after { content: none; background: none; }
+  :root[data-theme="auto"] :is(.photo-ai, .photo-dc, .home-instrument) > .photo-credit { visibility: hidden; }
+}
+
 /* Callouts. A held slot marks unfilled work with a hollow square and never holds a plot. */
 .notice {
   max-width: var(--measure);
