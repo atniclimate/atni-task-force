@@ -25,8 +25,12 @@
     "site/data-centers/index.html": 98,
     "site/explorer/index.html": 140
   },
-  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
+  "files_kb": {
+    "site/briefing/atni-energy-briefing.pdf": 3072
+  },
+  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included; files_kb are other published files in KB of 1024 bytes, read by scripts/build_briefing_pdf.py. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
   "reasons": {
+    "site/briefing/atni-energy-briefing.pdf": "11/05/2026: about 3 MB is the line set for the Briefing's PDF; its default packet weighed 0.7 MB, and every plate and checklist at its defaults weighed 3.1 MB, which is why the default is the lead set.",
     "site/assets/js/plate.js": "11/05/2026: 42,100 predates the kit's ghost rows, shared ground, needle names, strip, and now print, CSV, and SVG; raised to about 10 percent over its 62.7 KB, since the kit is one file by design.",
     "site/briefing/index.html": "11/05/2026: it holds a copy of every council plate's built block, so nothing is fetched; about 20 percent over its 250 KB.",
     "site/assets/js/explorer.js": "11/05/2026: Explorer v2 adds the exit scenario, custody rule, reader's measurements, damage layer, and scenario files; about 10 percent over its 48.4 KB.",

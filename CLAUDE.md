@@ -30,8 +30,8 @@ At an integration checkpoint, in a browser: `node scripts\a11y_check.js --out DI
 
 After changing plates or claims, rebuild in this order, since later steps copy or count earlier ones:
 `build_plates.py --export-claims`, `build_plates.py` (`--page PATH` for one page), `build_explorer.py`, `build_index.py`, `build_whats_new.py`,
-`build_library_strip.py`, `pour_claim_refs.py`, `build_share_cards.py --check` (without the flag if it names a stale card), `build_briefing.py`, `add_page_meta.py`.
-`tests\test_index_briefing.py` fails with the fix if the briefing or the manifest has fallen behind. After changing
+`build_library_strip.py`, `pour_claim_refs.py`, `build_share_cards.py --check` (without the flag if it names a stale card), `build_briefing.py`, `build_briefing_pdf.py --check` (without the flag if it names a stale PDF; that needs Chrome), `add_page_meta.py`.
+`tests\test_index_briefing.py` fails with the fix if the briefing or the manifest has fallen behind, and `tests\test_briefing_pdf.py` if the PDF has. After changing
 the model, run `python scripts\resource_model.py --self-test`, `--export`, `--oracle`, then `python scripts\build_explorer.py`. Pushing
 to `main` publishes the site through `pages.yml`, so work on a branch. Never push to `main` or enable Pages without an
 explicit owner command in the session.
@@ -56,6 +56,7 @@ explicit owner command in the session.
 | `site/data/plates/*.json`, plate blocks in pages | definitions by hand or generator; `scripts/build_plates.py` pours numbers from claims | T0 |
 | `site/data/index.json` | `scripts/build_index.py` (manifest of plates, claims, and data files; `validate_public.py` reads it) | T0 |
 | `site/briefing/index.html` rail and packet | `scripts/build_briefing.py` (copies of built plate blocks and the checklists) | T0 |
+| `site/briefing/atni-energy-briefing.pdf`, and its link beside Print packet | `scripts/build_briefing_pdf.py` (headless Chrome prints the default packet: the first plate each page lists and every checklist; `--check` compares a hash of the packet's HTML and of the stylesheets, scripts, and fonts it is drawn with, and needs no browser; a style change leaves the PDF stale until it is built again) | T0 |
 | `site/assets/img/cards/` | `scripts/build_share_cards.py` (needs VectorCraft; `--check` does not) | T0 |
 | page-meta blocks, `robots.txt`, `sitemap.txt` | `scripts/add_page_meta.py` | T0 |
 | `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `site/assets/js/resource-model.js`, the page's pure model, which `explorer.js` draws) | T0 |

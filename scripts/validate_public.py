@@ -13,7 +13,7 @@ This script checks, and exits non-zero on any problem:
 - data/library.json follows the documented schema (docs/LIBRARY.md): required
   fields and types, enums, real dates, every entry T0, unique ids, https or
   existing local urls (local PDFs under library/);
-- PDFs open, have pages, and carry no local paths;
+- PDFs open, have pages, and carry no local paths or addresses, in their text, metadata, or links;
 - content slot markers are balanced, unique, and listed in docs/CONTENT-SLOTS.md;
 - the data products are light-checked: data/energy-potential.json (T0, known types, stages and
   checks, cited https links that end in #page=N), data/energy-funding.json (T0, no key or string
@@ -46,6 +46,7 @@ PRIVATE_DIRS = {".git", "planning-T1", "files-unsorted", "work", "node_modules",
 
 LOCAL_PATH = re.compile(r"(?i)(?<![a-z0-9])[a-z]:[\\/]|file:/|[\\/]Users[\\/]|AppData[\\/]")
 HTTPS_URL = re.compile(r"https://[^\s\"'<>]+")  # a web address may hold /users/ in its own path
+LOCAL_HOST = re.compile(r"(?i)\b(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0)\b|\[::1\]")  # a link made while a page was served from this machine
 EMAIL = re.compile(r"[\w.%+-]+@[\w-]+\.[A-Za-z]{2,}")
 SECRET = re.compile(
     r"-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}"
@@ -84,6 +85,7 @@ def self_test():
     assert LOCAL_PATH.search(r"C:\Users\someone\file.txt") and LOCAL_PATH.search("I:/climate/x") and LOCAL_PATH.search("file:///x")
     assert not LOCAL_PATH.search("https://atnitribes.org/contact-us/ T1: network")
     assert not LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://agc.org/files/users/u1/a%20(4).pdf")) and LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://x.org C:/Users/me"))
+    assert LOCAL_HOST.search("http://127.0.0.1:52127/data/x.json") and LOCAL_HOST.search("http://localhost/") and not LOCAL_HOST.search("https://atniclimate.github.io/atni-task-force/")
     assert EMAIL.search("write to someone@example.org") and not EMAIL.search("@handle and 3 @ 4.5")
     assert PLATE_BLOCK.findall('<script type="application/json" id="plate-data-a">{"rows":[]}</script>') == [("a", '{"rows":[]}')]
     assert POURED.findall('<span class="x" data-pour="a-1">1</span>') == ["a-1"]
@@ -285,12 +287,18 @@ def check_pdf(path, rel, errors):
                 return
             text = "\n".join(page.get_text() for page in pdf)
             meta = " ".join(str(v) for v in (pdf.metadata or {}).values() if v) + " " + (pdf.get_xml_metadata() or "")
+            links = {str(link.get("uri") or link.get("file") or "") for page in pdf for link in page.get_links()}
     except Exception as error:  # a PDF that will not open must not ship
         errors.append(f"Unreadable PDF {rel}: {error}: replace it with a copy that opens, or delete it")
         return
     check_text(f"PDF text of {rel}", text, errors)
     if LOCAL_PATH.search(meta):
         errors.append(f"Local path in PDF metadata: {rel}: strip the metadata and save the PDF again")
+    if LOCAL_HOST.search(HTTPS_URL.sub(" ", text)):
+        errors.append(f"Local address in PDF text: {rel}: print the PDF again from the public site's own address")
+    for link in sorted(links):  # a PDF printed from a page served on this machine links back to this machine
+        if LOCAL_HOST.search(link) or LOCAL_PATH.search(HTTPS_URL.sub(" ", link)):
+            errors.append(f"Local address in a PDF link: {rel}: {link}: print the PDF again with its links resolved against the public site")
 
 
 def https(url):

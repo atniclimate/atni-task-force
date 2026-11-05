@@ -179,18 +179,23 @@ def fill(page, parts):
     return page
 
 
-def run(site=vp.SITE, check=False):
-    """Writes the page if it is out of date and returns True if it was."""
-    path = Path(site) / "briefing" / "index.html"
-    old = path.read_bytes().decode("utf-8")
+def built(site=vp.SITE):
+    """The page as it is, and as the build makes it, so scripts/build_briefing_pdf.py can read the packet without writing it."""
+    old = (Path(site) / "briefing" / "index.html").read_bytes().decode("utf-8")
     parts, claims = compose(site)
     text, problems = cr.pour(fill(old, parts), claims)
     if problems:
         raise bp.BuildError(f"briefing/index.html: {problems[0]}")
+    return old, text
+
+
+def run(site=vp.SITE, check=False):
+    """Writes the page if it is out of date and returns True if it was."""
+    old, text = built(site)
     if text == old:
         return False
     if not check:
-        path.write_bytes(text.encode("utf-8"))
+        (Path(site) / "briefing" / "index.html").write_bytes(text.encode("utf-8"))
     return True
 
 
