@@ -1,5 +1,6 @@
 https://atniclimate.github.io/atni-task-force/about/
 https://atniclimate.github.io/atni-task-force/ai/
+https://atniclimate.github.io/atni-task-force/briefing/
 https://atniclimate.github.io/atni-task-force/data-centers/
 https://atniclimate.github.io/atni-task-force/data-centers/resource-use/
 https://atniclimate.github.io/atni-task-force/energy/funding/

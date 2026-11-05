@@ -11,7 +11,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = path.join(ROOT, 'site');
 const AXE = path.join(ROOT, 'node_modules/axe-core/axe.min.js');
-const PAGES = ['ai/', 'data-centers/', 'data-centers/resource-use/', 'energy/', 'library/', 'about/', 'summit/'];
+const PAGES = ['ai/', 'data-centers/', 'data-centers/resource-use/', 'energy/', 'library/', 'about/', 'summit/', 'briefing/'];
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.csv': 'text/csv', '.txt': 'text/plain' };
 const BLOCKING = new Set(['serious', 'critical']);
 

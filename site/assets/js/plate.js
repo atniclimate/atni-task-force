@@ -24,6 +24,8 @@ const h = (tag, attrs, ...kids) => {
 const span = (cls, text) => h('span', { class: cls, text });
 const draw = window.plateDraw; // plate-svg.js, loaded first
 const { add, scale } = draw;
+// The briefing keeps nothing in the address: a staff member's typed megawatts are the case the Explorer's link rule protects. <html data-address="none">.
+const NO_ADDRESS = document.documentElement.dataset.address === 'none';
 
 // The first plate on the screen runs to the window's foot; others keep the height CSS gives them.
 function fitFirst() {
@@ -86,6 +88,8 @@ function initTabs(strip) {
 const grouped = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(v);
 // A computed figure: two significant figures, three at 99.5 and up, as the Explorer rounds, so one row prints one number everywhere. A row's digits override.
 const sig = (v, d) => (blank(v) ? v : +Number(v).toPrecision(d || (Math.abs(v) >= 99.5 ? 3 : 2)));
+// The one rule for a figure's words: no trailing zero, 3 (2.4 to 6), never 3.0 (2.4 to 6.0). A template's own {x:.1f} is its author's choice.
+const fig = (v, d) => grouped(sig(v, d));
 
 // A printed formula, as build_plates.py checks it: numbers, names (dots reach into a branch), + - * / ( ), min, max, ifblank. Blank gives blank.
 function evaluate(src, env) {
@@ -137,7 +141,7 @@ const focusOf = (p, rows) => {
 };
 
 function textOf(r, plus) {
-  const n = (v) => `${plus && v > 0 ? '+' : ''}${grouped(sig(v, r.digits))}`;
+  const n = (v) => `${plus && v > 0 ? '+' : ''}${fig(v, r.digits)}`;
   const { value: v, low: a, high: b } = r;
   if (!blank(v)) return !blank(a) && !blank(b) ? `${n(v)} (${n(a)} to ${n(b)})` : n(v);
   if (!blank(a) && !blank(b)) return sig(a, r.digits) === sig(b, r.digits) ? n(a) : `${n(a)} to ${n(b)}`;
@@ -224,7 +228,7 @@ function compute(p) {
       r.fields = {};
       for (const [name, [f, digits]] of Object.entries(data.fields)) {
         const v = evaluate(f, scope);
-        r.fields[name] = blank(v) ? '' : grouped(sig(v, digits));
+        r.fields[name] = blank(v) ? '' : fig(v, digits);
       }
     }
     if (r.t) r.reading = live(p, r, r.t);
@@ -235,13 +239,15 @@ function compute(p) {
 function readState(p) {
   const query = new URLSearchParams(location.search);
   for (const [name, c] of p.params) {
-    p.state[name] = c.parse(query.get(name) ?? '') ?? c.def;
+    // With no address to keep, a link may still name a stop; a typed figure is the reader's to enter here.
+    p.state[name] = c.parse(NO_ADDRESS && !c.stop ? '' : query.get(name) ?? '') ?? c.def;
     c.write(p.state[name]);
   }
   p.selected = p.keys.includes(query.get(p.id)) ? query.get(p.id) : p.data.default;
   p.shown = p.selected;
 }
 function writeQuery(p) {
+  if (NO_ADDRESS) return;
   const query = new URLSearchParams(location.search);
   const put = (name, value, def) => (value === def ? query.delete(name) : query.set(name, value));
   for (const [name, c] of p.params) put(name, p.state[name], c.def);
@@ -263,6 +269,7 @@ function addControl(p, box) {
   const canBlank = has(box.dataset.blank);
   const presets = (box.dataset.presets || '').split(',').filter(Boolean).map(Number);
   const c = {
+    stop: radio,
     def: radio ? (fields.find((f) => f.defaultChecked) || fields[0]).value : fields[0].defaultValue === '' ? null : +fields[0].defaultValue,
     parse(text) {
       if (radio) return fields.some((f) => f.value === text) ? text : undefined;
@@ -325,7 +332,7 @@ function factNodes(p, rows, key) {
     const unit = parted?.unit || '';
     const total = parts.reduce((sum, s) => sum + (s.value || 0), 0) || 1;
     out.push(h('div', { class: 'plate-segments' }, ...parts.map((s) => h('span', { class: `plate-seg${s.hollow ? ' is-hollow' : ''}`, style: `flex-grow:${(s.value || 0) / total}` }))));
-    out.push(list(parts.filter((s) => !blank(s.value)).map((s) => h('li', {}, h('span', { class: `plate-square${s.hollow ? ' is-hollow' : ''}` }), h('strong', { text: `${grouped(sig(s.value))} ${unit}`.trim() }), h('span', { text: `${s.label}, ${s.word || (s.hollow ? 'modeled' : 'measured')}` })))));
+    out.push(list(parts.filter((s) => !blank(s.value)).map((s) => h('li', {}, h('span', { class: `plate-square${s.hollow ? ' is-hollow' : ''}` }), h('strong', { text: `${fig(s.value)} ${unit}`.trim() }), h('span', { text: `${s.label}, ${s.word || (s.hollow ? 'modeled' : 'measured')}` })))));
   }
   const say = (text) => h('p', { class: 'caption', text });
   // How a figure was reached, and the figures beside it, open on request and stay open. They print, and their receipts stay in Sources.
@@ -367,7 +374,7 @@ function sharedOf(p, key) {
   }
   return rows.length > 1 ? { rows, low, high } : null;
 }
-const figureOf = (r, v) => grouped(sig(v, r.digits));
+const figureOf = (r, v) => fig(v, r.digits);
 const shortName = (r) => { const name = r.label.split(',')[0]; return /^[A-Z]{2}/.test(name) ? name : name[0].toLowerCase() + name.slice(1); };
 function sharedSentence(p, key) {
   const s = sharedOf(p, key);
@@ -508,7 +515,11 @@ function paint(p) {
   const total = Object.keys(p.data.receipts).length; // the same count the Sources tab carries
   p.tally.textContent = `${whose}: ${[tally.verified && `${tally.verified} verified`, tally.partly && `${tally.partly} partly verified`].filter(Boolean).join(', ')}; ${total} ${total === 1 ? 'source' : 'sources'} on the plate`;
   if (p.setting) p.setting.textContent = `Setting shown: ${p.data.setting.map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'blank'}`).join('; ')}.`;
+  if (NO_ADDRESS && p.shown === p.selected) p.title.textContent = titleAt(p);
+  if (p.svgOut) p.svgOut.hidden = !p.plot.querySelector('.plate-svg');
 }
+// The title is the finding at the defaults. Moved off them, it is the Reading's first sentence, which the settings have already rewritten. A packet or a printed sheet may not state a figure the plot beside it has left.
+const titleAt = (p) => (changed(p) ? p.reading.textContent.split(/(?<=\.) /)[0].replace(/\.$/, '') : p.title0);
 
 // "15 (9.28 to 24) Wh": figure and unit on one line, the range on the next. "240 to 320 million liters" and "28,740 Wh": the figures large and the unit small, in the same words.
 const FIGURES = /^([+-]?\$?[\d.,]+(?: (?:to|and) [+-]?\$?[\d.,]+)?) (.+)$/;
@@ -632,9 +643,9 @@ function drawCount(p) {
     const cell = node.querySelector('.count-cell');
     const value = node.querySelector('.ladder-value');
     const over = n > cfg.cap;
-    cell.replaceChildren(...(over ? [span('count-over', `Too large to draw: ${grouped(sig(n / cfg.cap))} fields of ${cfg.cap} squares.`)] : []));
+    cell.replaceChildren(...(over ? [span('count-over', `Too large to draw: ${fig(n / cfg.cap)} fields of ${cfg.cap} squares.`)] : []));
     if (blank(n)) value.textContent = r ? r.display : p.data.not_counted;
-    else value.replaceChildren(span('ladder-num', grouped(sig(n))), ' ', span('ladder-unit', Math.round(n) === 1 ? cfg.noun : cfg.nouns));
+    else value.replaceChildren(span('ladder-num', fig(n)), ' ', span('ladder-unit', Math.round(n) === 1 ? cfg.noun : cfg.nouns));
     const parts = blank(n) || over ? [] : p.countParts?.(r, unit, p.env, p.state) ?? [{ cls: '', hollow: r.hollow, n }];
     return { cell, head: node.querySelector('.ladder-label').offsetHeight + value.offsetHeight, squares: squaresOf(parts) };
   });
@@ -676,7 +687,7 @@ function update(p, reason) {
       const [k, when, field] = td.dataset.cell.split('|');
       const r = p.data.rows.find((x) => x.key === k && (x.when || '') === when);
       const v = r?.[field] ?? r?.fields?.[field];
-      td.textContent = typeof v === 'number' ? grouped(sig(v, r.digits)) : v ?? '';
+      td.textContent = typeof v === 'number' ? fig(v, r.digits) : v ?? '';
     }
     for (const item of all(p.root, '.plate-legend [data-series]')) item.firstElementChild.classList.toggle('is-on', item.dataset.series === cfg.highlight);
   }
@@ -708,12 +719,96 @@ async function copyReading(p) {
   const url = new URL(location.href);
   url.hash = p.id;
   try {
-    await navigator.clipboard.writeText(`${p.reading.textContent}\n${url}${titles ? `\nSources: ${titles}` : ''}`);
-    p.status.textContent = 'Copied with its link and sources.';
+    await navigator.clipboard.writeText(`${p.reading.textContent}${NO_ADDRESS ? '' : `\n${url}`}${titles ? `\nSources: ${titles}` : ''}`);
+    p.status.textContent = NO_ADDRESS ? 'Copied with its sources.' : 'Copied with its link and sources.';
   } catch {
     getSelection().selectAllChildren(p.reading);
     p.status.textContent = 'Copy is blocked here. The Reading is selected: press Ctrl+C.';
   }
+}
+
+// What leaves the page leaves from here and nowhere else: the reader's own browser writes the file, and nothing goes to a server.
+function save(name, text, type) {
+  const a = h('a', { download: name, href: URL.createObjectURL(new Blob([text], { type })) });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const fileDate = () => usDay(isoToday()).replaceAll('/', '-');
+const GUARD_FOOT = 'This comparison does not decide a proposal.';
+// A date this page states for its sources: the briefing's section says it per plate, and a page band says it once.
+const checkedOf = (p) => p.root.closest('[data-checked]')?.dataset.checked ?? all(document, '.figure-label').find((n) => n.textContent.trim() === 'Sources checked')?.previousElementSibling.textContent.trim() ?? '';
+const guardLine = (p) => (checkedOf(p) ? `Settings chosen by the reader, sources checked ${checkedOf(p)}.` : 'Settings chosen by the reader.');
+const settingWords = (p) => (p.data.setting || []).map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set'}`).join('; ');
+
+// One line of the Table per claim set: a table with a Claims column says so itself; otherwise a line is a row, or, where a table pairs two rows on a line, every row of that key and stop.
+function lineClaims(p, lines) {
+  const heads = all(p.root, '.plate-table thead th').map((n) => n.textContent.trim());
+  const at = heads.findIndex((t) => /^claims?$/i.test(t));
+  if (at >= 0) return lines.map((tr) => tr.children[at].textContent.split(/,\s*/).filter(Boolean));
+  if (lines.length === p.tableRows.length) return p.tableRows.map((r) => unique(claimsOf([r])));
+  const pairs = new Map();
+  for (const r of p.tableRows) {
+    const key = `${r.key}|${r.when || ''}`;
+    pairs.set(key, [...(pairs.get(key) || []), r]);
+  }
+  return [...pairs.values()].map((rows) => unique(claimsOf(rows)));
+}
+// The Table view at these settings, as it shows, plus each line's claims, statuses, and limits; then what it was set to and when its sources were checked.
+function csvOf(p) {
+  const lines = all(p.root, '.plate-table tbody tr');
+  const claims = lineClaims(p, lines);
+  const of = (ids, part) => unique(ids.map((id) => p.data.receipts[id]?.[part]).filter(Boolean)).join('; ');
+  const cell = (v) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+  const rows = [
+    [...all(p.root, '.plate-table thead th').map((n) => n.textContent.trim()), 'claim_ids', 'status', 'limit'],
+    ...lines.map((tr, i) => [...[...tr.children].map((n) => n.textContent.trim()), (claims[i] || []).join('; '), of(claims[i] || [], 'status'), of(claims[i] || [], 'limit')]),
+    ['settings', settingWords(p) || 'none on this plate'],
+    ['checked', checkedOf(p) || 'not stated on this page'],
+  ];
+  return `﻿${rows.map((row) => row.map(cell).join(',')).join('\r\n')}\r\n`; // the mark tells Excel it is UTF-8
+}
+// The drawn plot as a file that stands alone: each mark keeps the values it has now, in this theme, on this ground.
+const OWN_STYLE = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linejoin', 'stroke-linecap', 'paint-order', 'opacity', 'font-family', 'font-size', 'font-weight'];
+function svgOf(p) {
+  const from = p.plot.querySelector('.plate-svg');
+  const copy = from.cloneNode(true);
+  const originals = [from, ...all(from, '*')];
+  const copies = [copy, ...all(copy, '*')];
+  originals.forEach((node, i) => {
+    const css = getComputedStyle(node);
+    if (css.display === 'none' || node.classList.contains('m-hit')) { copies[i].remove(); return; }
+    copies[i].setAttribute('style', OWN_STYLE.map((name) => `${name}:${css.getPropertyValue(name)}`).join(';'));
+    if (css.transform && css.transform !== 'none') copies[i].setAttribute('transform', css.transform);
+    for (const { name } of [...copies[i].attributes]) if (/^(class|role|id|tabindex|aria-.*|data-.*)$/.test(name)) copies[i].removeAttribute(name);
+  });
+  const [, , W, H] = from.getAttribute('viewBox').split(' ');
+  set(copy, { width: W, height: H });
+  const ground = add(copy, 'rect', { width: W, height: H, fill: getComputedStyle(p.plot).getPropertyValue('--plot-ground').trim() || '#FFFFFF' });
+  const desc = add(copy, 'desc', { text: `${guardLine(p)} ${GUARD_FOOT} Claims: ${Object.keys(p.data.receipts).join(', ')}.` });
+  const title = add(copy, 'title', { text: p.title.textContent });
+  copy.prepend(title, desc, ground);
+  return new XMLSerializer().serializeToString(copy);
+}
+// One plate, one sheet. The attribute and the class last until the print dialog closes, so Ctrl+P on its own still prints the page.
+function printOne(p) {
+  const words = p.title.textContent;
+  if (changed(p)) p.title.textContent = titleAt(p);
+  const from = p.root.closest('[data-from]')?.dataset.from ?? document.querySelector('main h1')?.textContent ?? '';
+  const eyebrow = p.root.querySelector('.eyebrow')?.textContent ?? '';
+  const head = h('div', { class: 'plate-print-head' }, h('p', { text: [from, eyebrow].filter(Boolean).join(': ') }), h('p', { text: guardLine(p) }));
+  const foot = h('p', { class: 'plate-print-foot', text: GUARD_FOOT });
+  p.root.prepend(head);
+  p.root.append(foot);
+  p.root.classList.add('is-print-one');
+  document.documentElement.dataset.printOne = p.id;
+  addEventListener('afterprint', () => {
+    head.remove();
+    foot.remove();
+    p.root.classList.remove('is-print-one');
+    delete document.documentElement.dataset.printOne;
+    p.title.textContent = words;
+  }, { once: true });
+  print();
 }
 
 function wirePlot(p) {
@@ -781,7 +876,13 @@ function arrange(p) {
   set(p.receipt, { tabindex: -1, role: 'group', 'aria-label': 'Source' });
   set(p.list, { tabindex: -1, 'aria-label': 'All sources' });
   p.tally = h('button', { type: 'button', class: 'plate-tally', hidden: '' });
-  root.querySelector('.plate-actions').after(p.tally);
+  const actions = root.querySelector('.plate-actions');
+  actions.after(p.tally);
+  // What leaves the page, in one row of words beside Copy and Reset, since three more boxes would stack the panel's first screen. CSV always; SVG only on a plot that is one.
+  p.svgOut = h('button', { type: 'button', 'data-svg': '', hidden: '', text: 'Download SVG' });
+  actions.insertBefore(h('div', { class: 'plate-out' }, h('button', { type: 'button', 'data-print-plate': '', text: 'Print this plate' }), h('button', { type: 'button', 'data-csv': '', text: 'Download CSV' }), p.svgOut), p.status);
+  // A link carries a plate's settings, here where the home questions rely on it. The briefing keeps no address, so it has no need of the sentence.
+  if (!NO_ADDRESS && [...p.params.values()].some((c) => !c.stop)) p.tally.after(h('p', { class: 'caption plate-link-note', text: "The link in Copy Reading carries these settings. Do not put a Nation's private figures in a shared link." }));
   root.querySelector('.plate-views input[value="sources"] + span').textContent = `Sources (${Object.keys(receipts).length})`;
   // plot.switch: a control that is part of the picture sits above the plot, at its full width.
   const control = cfg.switch && root.querySelector(`.plate-controls [data-param="${cfg.switch}"]`);
@@ -820,6 +921,7 @@ function initPlate(root) {
   const find = (selector) => root.querySelector(selector);
   const data = JSON.parse(document.getElementById(`plate-data-${id}`).textContent);
   delete data.cites;
+  const tableRows = data.rows; // the Table lists them all, whatever the plot draws
   // data-rows draws a plate's rows in part on another page: the same data, not a second chart.
   const only = root.dataset.rows?.split(',');
   if (only) {
@@ -828,8 +930,8 @@ function initPlate(root) {
     if (!only.includes(data.default)) [data.default] = only;
   }
   const p = {
-    id, root, data, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env },
-    plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
+    id, root, data, tableRows, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env },
+    title: find('.plate-title'), title0: find('.plate-title').textContent, plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
     facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'), list: find('.plate-sources'),
     moreChips: find('.plate-chips').appendChild(h('button', { type: 'button', class: 'plate-chip-more', hidden: '' })),
   };
@@ -861,6 +963,9 @@ function initPlate(root) {
       openReceipt(p, p.open === chip.dataset.claim ? null : chip.dataset.claim, chip);
     } else if (e.target.closest('[data-copy]')) copyReading(p);
     else if (e.target.closest('[data-reset]')) reset(p);
+    else if (e.target.closest('[data-print-plate]')) printOne(p);
+    else if (e.target.closest('[data-csv]')) save(`${id}-${fileDate()}.csv`, csvOf(p), 'text/csv;charset=utf-8');
+    else if (e.target.closest('[data-svg]')) save(`${id}-${fileDate()}.svg`, svgOf(p), 'image/svg+xml');
     else if (row && !row.classList.contains('is-ghost')) {
       setView(p, 'reading');
       select(p, row.dataset.row);
@@ -978,5 +1083,11 @@ for (const value of all(document, '.readout-value')) {
   count();
   new MutationObserver(count).observe(value, { childList: true, characterData: true, subtree: true });
 }
-window.plate = { register, draw, strip: initStrip, readingInto };
+// What a page may read of a plate or ask of it, for the briefing: its state as the reader left it, in the words the plate prints.
+function read(id) {
+  const p = plates.get(id);
+  const settings = (p.data.setting || []).map((c) => ({ name: c.name, label: c.label, word: c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set', changed: p.state[c.name] !== p.params.get(c.name).def }));
+  return { id, title: p.title.textContent, state: { ...p.state }, selected: p.selected, changed: changed(p), settings, receipts: p.data.receipts };
+}
+window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save };
 })();

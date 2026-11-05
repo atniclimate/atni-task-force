@@ -1259,4 +1259,138 @@ async function tokens() {
   ok(!read('site/assets/css/explorer.css').includes('border-bottom-color: Canvas'), 'and once');
 }
 
-module.exports = { groups: { tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens } };
+// One rule for a figure's words, in every place the kit prints one.
+async function trailingZero() {
+  const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => Object.assign(d.plot, { shared: { word: 'lighter', at: {} } })) });
+  const p = parts(document, 'hour-demo');
+  pick(window, p.radio('edge', 'dc'));
+  eq(row(p.root, 'chat').querySelector('.ladder-value').textContent, '3 (2.4 to 6) Wh', 'a row: 3, not 3.0, and 6, not 6.0');
+  eq(p.value.textContent, '3', 'the readout');
+  eq(p.plot.querySelector('.ladder-shared').textContent, 'Shared ground, 2.4 to 6 Wh', 'the shared ground');
+  ok(p.reading.textContent.includes('(2.4 to 6 against'), `the Reading: ${p.reading.textContent}`);
+  ok([...p.root.querySelectorAll('[data-cell]')].every((td) => !/\d\.0(?!\d)/.test(td.textContent)), 'the Table');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// What leaves the page: a file the reader's own browser writes, from the plate's own data. Nothing is sent anywhere.
+function catchFiles(window) {
+  window.files = [];
+  window.URL.createObjectURL = (blob) => { window.files.push({ blob }); return 'blob:file'; };
+  window.URL.revokeObjectURL = () => {};
+  window.HTMLAnchorElement.prototype.click = function () { window.files.at(-1).name = this.download; };
+}
+const fileText = (window, { blob }) => new Promise((resolve) => {
+  const reader = new window.FileReader();
+  reader.onload = () => resolve(reader.result);
+  reader.readAsText(blob);
+});
+
+async function downloads() {
+  const { window, document, errors } = await load('#hour');
+  catchFiles(window);
+  const p = parts(document, 'hour-demo');
+  const actions = p.root.querySelector('.plate-actions');
+  ok(actions.contains(p.root.querySelector('[data-csv]')) && actions.contains(p.root.querySelector('[data-print-plate]')) && actions.contains(p.root.querySelector('[data-copy]')), 'beside Copy Reading');
+  ok(p.root.querySelector('[data-svg]').hidden, 'no SVG for a plot that is not one');
+  const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
+  num.value = '30';
+  fire(window, num, 'input');
+  fire(window, p.root.querySelector('[data-csv]'), 'click');
+  const [csv] = window.files;
+  ok(/^hour-demo-\d{2}-\d{2}-\d{4}\.csv$/.test(csv.name), `named for the plate and the day: ${csv.name}`);
+  const text = await fileText(window, csv);
+  const lines = text.replace(/^﻿/, '').trim().split(/\r\n/);
+  const heads = [...p.root.querySelectorAll('.plate-table thead th')].map((n) => n.textContent.trim());
+  eq(lines[0], [...heads, 'claim_ids', 'status', 'limit'].map((h) => (h.includes(',') ? `"${h}"` : h)).join(','), 'a header first, the view\'s columns and the three of the record');
+  eq(lines.length, p.root.querySelectorAll('.plate-table tbody tr').length + 3, 'a line per row, and the two at the foot');
+  ok(lines.some((l) => l.includes('21 (9.3 to 24) Wh')), 'at the settings the reader set');
+  ok(lines.some((l) => l.includes('"Chat, at the prompts set"') || l.includes('"Chat,')), 'a comma is quoted');
+  ok(lines.at(-2).startsWith('settings,') && lines.at(-2).includes('30'), `what it was set to: ${lines.at(-2)}`);
+  ok(lines.at(-1).startsWith('checked,'), 'and when its sources were checked');
+  const chart = await load('#electricity');
+  catchFiles(chart.window);
+  const q = parts(chart.document, 'company-electricity');
+  const svgOut = q.root.querySelector('[data-svg]');
+  ok(!svgOut.hidden, 'a drawn plot can be downloaded as a drawing');
+  fire(chart.window, svgOut, 'click');
+  ok(/^company-electricity-\d{2}-\d{2}-\d{4}\.svg$/.test(chart.window.files[0].name), 'named for the plate and the day');
+  const svgText = await fileText(chart.window, chart.window.files[0]);
+  const root = new chart.window.DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
+  eq(root.namespaceURI, 'http://www.w3.org/2000/svg', 'a file that stands alone');
+  eq(root.querySelector('title').textContent, q.root.querySelector('.plate-title').textContent, 'titled with the claim sentence');
+  ok(root.querySelector('desc').textContent.startsWith('Settings chosen by the reader') && root.querySelector('desc').textContent.includes('does not decide') && root.querySelector('desc').textContent.includes(Object.keys(JSON.parse(chart.document.getElementById('plate-data-company-electricity').textContent).receipts)[0]), 'with the guard lines and the claim ids');
+  eq(root.children[2].tagName, 'rect', 'on its own ground');
+  ok(root.getAttribute('width') && root.getAttribute('height'), 'at its size');
+  ok(!/\s(aria-[a-z]+|role|data-[a-z-]+|tabindex|class)="/.test(svgText), 'with none of the page\'s roles, names, or classes');
+  ok(root.querySelector('.m-hit') === null && !svgText.includes('fill:transparent;'), 'and none of its hit targets');
+  ok(/style="[^"]*stroke/.test(svgText), 'each mark keeps its computed style');
+  eq(errors.join() + chart.errors.join(), '', 'no script errors');
+}
+
+// One plate, one sheet, and Ctrl+P on its own still prints the page.
+async function printOne() {
+  const { window, document, errors } = await load('#hour');
+  const p = parts(document, 'hour-demo');
+  const html = document.documentElement;
+  const title = p.root.querySelector('.plate-title');
+  const before = title.textContent;
+  const seen = [];
+  window.print = () => seen.push({ attr: html.dataset.printOne, on: p.root.classList.contains('is-print-one'), head: p.root.querySelector('.plate-print-head')?.textContent, foot: p.root.querySelector('.plate-print-foot')?.textContent, title: title.textContent });
+  ok(!html.dataset.printOne, 'nothing is marked before the press');
+  const press = p.root.querySelector('[data-print-plate]');
+  fire(window, press, 'click');
+  eq(seen[0].attr, 'hour-demo', 'the press names the plate on the root');
+  ok(seen[0].on, 'and marks it');
+  ok(seen[0].head.includes('Settings chosen by the reader') && seen[0].foot === 'This comparison does not decide a proposal.', 'it carries the guard lines');
+  eq(seen[0].title, before, 'at the defaults the title is the finding');
+  window.dispatchEvent(new window.Event('afterprint'));
+  ok(!html.dataset.printOne && !p.root.classList.contains('is-print-one') && !p.root.querySelector('.plate-print-head, .plate-print-foot'), 'and all of it goes when the dialog closes');
+  const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
+  num.value = '30';
+  fire(window, num, 'input');
+  fire(window, press, 'click');
+  ok(seen[1].title !== before && p.reading.textContent.startsWith(seen[1].title), `moved off the defaults, the title is the Reading's first sentence: ${seen[1].title}`);
+  window.dispatchEvent(new window.Event('afterprint'));
+  eq(title.textContent, before, 'and the page gets its own back');
+  const css = read('site/assets/css/site.css');
+  ok(css.includes('html[data-print-one] main *:not(:has(.is-print-one), .is-print-one, .is-print-one *)'), 'print shows that plate and nothing else in the page');
+  ok(/\.is-print-one \.plate-sources li > p:nth-of-type[^}]*\.plate-quote[^}]*display: none/.test(css), 'its Sources drop the quotes, which stay on the site');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// A plate page keeps its settings in the address and says so; the briefing keeps nothing there.
+async function address() {
+  const typed = (doc) => doc.querySelector('#session-energy input[type=number]');
+  const plain = await load('#hour');
+  ok(plain.document.querySelector('#session-energy .plate-link-note').textContent.includes('private figures'), 'a plate with a typed control says what its link carries');
+  ok(!plain.document.querySelector('#company-electricity .plate-link-note'), 'one with none has nothing to say');
+  const source = html.replace(/<html\b/, '<html data-address="none"');
+  ok(source !== html, 'the fixture takes the flag');
+  const { window, document, errors } = await load('?boundary=full&use=5&session-energy=video', { source });
+  const p = parts(document, 'session-energy');
+  eq(p.radio('boundary', 'full').checked, true, 'a link may still name a stop');
+  eq(typed(document).value, '1', 'but not a typed figure');
+  eq(row(p.root, 'video').getAttribute('aria-selected'), 'true', 'and may name a row');
+  const before = window.location.href;
+  key(window, p.plot, 'ArrowDown');
+  const range = p.root.querySelector('input[type=range]');
+  range.value = '20';
+  fire(window, range, 'input');
+  eq(window.location.href, before, 'nothing the reader sets reaches the address');
+  ok(p.reading.textContent.startsWith(p.root.querySelector('.plate-title').textContent), 'the title follows the settings, since this page is the document');
+  ok(!document.querySelector('.plate-link-note'), 'and no sentence warns of a link there is not');
+  const r = window.plate.read('session-energy');
+  eq(r.state.use, 20, 'a page can read a plate\'s state');
+  ok(r.changed && r.settings.some((s) => s.name === 'use' && s.word === 20 && s.changed), 'and which settings moved');
+  ok(p.root.querySelector('.plate-title').textContent === r.title, 'the title it reads is the one printed');
+  fire(window, p.root.querySelector('[data-copy]'), 'click');
+  await wait(20);
+  ok(!/https?:|localhost/.test(window.clip), `Copy Reading carries no link: ${window.clip.slice(0, 80)}`);
+  eq(p.status.textContent, 'Copied with its sources.', 'and says so');
+  window.plate.reset('session-energy');
+  ok(!window.plate.read('session-energy').changed, 'a page can put a plate back');
+  eq(window.location.href, before, 'still with nothing in the address');
+  eq(errors.join() + plain.errors.join(), '', 'no script errors');
+}
+
+module.exports = { groups: { tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address } };

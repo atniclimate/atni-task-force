@@ -1,0 +1,119 @@
+/* The Council Briefing: a rail of ticks at left and, at right, the packet, which is the printed document itself. Sizes, inks, and marks are the foundation's.
+   A section not chosen is not laid out, so its plate draws when it is ticked. Without scripts every section shows and the rail is a jump list. */
+.has-js .packet-page:not(.is-chosen) { display: none; }
+
+.briefing { display: grid; gap: 24px; padding-block: 8px 48px; align-items: start; }
+.briefing > * { min-width: 0; }
+@media (min-width: 1100px) {
+  .briefing { grid-template-columns: minmax(20rem, 24%) minmax(0, 1fr); }
+  /* The header does not stick, so the rail runs from 16px under the window's top, not from under a 56px bar. Packet stays at its foot, whichever list is scrolled. */
+  .briefing-rail { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; }
+  .rail-packet { position: sticky; bottom: 0; background: var(--atni-ground-base); }
+}
+@media (min-width: 1600px) { .briefing { gap: 32px; } }
+
+/* Rail */
+.briefing-rail form { display: grid; gap: 16px; }
+.rail-group { min-width: 0; margin: 0; padding: 0; border: 0; }
+.rail-group legend, .rail-heading { margin: 0 0 4px; padding: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.rail-items { list-style: none; margin: 0; padding: 0; }
+.rail-item { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; align-items: center; min-height: 32px; margin: 0; padding-block: 2px; }
+.rail-item > :is(a, label) { grid-column: 2; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); text-decoration-color: var(--control); cursor: pointer; }
+.rail-item > a { grid-column: 1 / -1; }
+.rail-from, .rail-asks { grid-column: 2; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
+/* The square: unticked, a 2px outline in the control ink, since --rule is 1.2 to 1 on this ground and a control's edge needs 3 to 1. Ticked, the fill with a check in its ink. */
+.rail-item input { -webkit-appearance: none; appearance: none; position: relative; width: 24px; height: 24px; margin: 0; background: var(--atni-ground-base); border: 2px solid var(--control); border-radius: 0; cursor: pointer; }
+.rail-item input:checked { background: var(--energy-fill); border-color: var(--energy-fill); }
+.rail-item input:checked::before { content: ""; position: absolute; left: 6px; top: 1px; width: 8px; height: 14px; border: solid var(--energy-on-fill); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+@media (pointer: coarse) { .rail-item { min-height: 44px; } }
+@media (forced-colors: active) {
+  .rail-item input:checked { forced-color-adjust: none; background: Highlight; border-color: Highlight; }
+  .rail-item input:checked::before { border-color: Canvas; }
+}
+.rail-packet { display: grid; gap: 8px; padding-block: 12px; border-top: 1px solid var(--rule); }
+.rail-packet p { margin: 0; max-width: none; }
+.rail-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.rail-buttons .button { padding: 8px 12px; font-size: 0.9375rem; }
+.rail-buttons .button:first-child { flex-basis: 100%; }
+
+/* Packet: sections in reading order, a hairline apart, with the plate's zones read top to bottom. */
+.packet-page + .packet-page { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.packet-page:first-child { padding-top: 12px; }
+.packet-guard, .packet-foot { margin: 0; max-width: none; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.packet-guard { margin-bottom: 12px; }
+.packet-foot { margin-top: 12px; }
+.packet-eyebrow { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.4; letter-spacing: 0; color: var(--atni-text-secondary); }
+.packet-settings { max-width: none; margin: 0 0 12px; }
+.packet-receipts { margin: 0; }
+.packet-h { margin: 0 0 12px; font-size: 1.5rem; }
+.packet-title { display: none; font-size: 2.25rem; }
+.packet-assembled { margin: 0 0 16px; }
+.packet-empty { margin: 16px 0; color: var(--atni-text-body); }
+.packet-rows { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0 0 24px; }
+.packet-rows dt { padding-top: 12px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); border-top: 1px solid var(--rule); }
+.packet-rows dd { margin: 0; padding-block: 4px 12px; }
+.packet-rows dd:last-child { padding-bottom: 0; }
+@media (min-width: 720px) {
+  .packet-rows { grid-template-columns: 14rem minmax(0, 1fr); column-gap: 24px; }
+  .packet-rows dd { padding-block: 12px; border-top: 1px solid var(--rule); }
+}
+.packet-chosen { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.packet-chosen li { margin: 0; }
+.packet-chosen b { font-weight: 500; color: var(--atni-text-heading); }
+.packet-contents { margin: 0 0 8px; font-size: 1.125rem; font-weight: 500; }
+.packet-toc { margin: 0; padding-left: 1.5rem; columns: 32rem 2; column-gap: 32px; }
+.packet-toc li { margin: 0 0 6px; break-inside: avoid; }
+.packet-toc li::marker { color: var(--atni-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* Sources: one ruled row a claim. The quotes stay on the site under the claim id. */
+.packet-source-list { list-style: none; margin: 0; padding: 0; overflow-wrap: anywhere; }
+.packet-source { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); column-gap: 12px; margin: 0; padding-block: 8px; font-size: 0.875rem; line-height: 1.4; border-top: 1px solid var(--rule); }
+.packet-claim { font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
+.packet-status { color: var(--atni-text-secondary); }
+.packet-also { color: var(--atni-text-secondary); }
+
+/* Checklists: a numbered list, since a council works through them in order. */
+.packet-provenance { max-width: var(--measure-wide); margin: 0 0 12px; }
+.packet-list { display: grid; gap: 8px; max-width: var(--measure-wide); margin: 0; padding-left: 1.5rem; }
+.packet-list li { margin: 0; }
+.packet-list li::marker { color: var(--atni-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* The plate in a packet is read top to bottom: at this column's width three zones leave the plot too narrow, so claim and plot share a row and the detail runs under them, as .plate-pair does. No least height: a packet of twenty-four plates at a window each is a scroll of a hundred screens. */
+.briefing-packet .plate { margin-bottom: 12px; }
+@media screen and (min-width: 1100px) {
+  .briefing-packet .plate.is-live { --h: 30rem; min-height: 0; }
+  .briefing-packet .plate, .briefing-packet .plate[data-view="table"] { grid-template-columns: minmax(16rem, 28fr) minmax(0, 72fr); }
+  .briefing-packet .plate > .plate-detail, .briefing-packet .plate.has-under > .plate-detail { grid-column: 1 / -1; grid-row: auto; }
+  .briefing-packet .plate.is-live .plate-view { position: static; }
+  .briefing-packet #dc-jobs-per-mw > .plate-detail { grid-row: 2; } /* dc.css lays this plate on one row for its own page */
+}
+.briefing-packet .plate-claim > .eyebrow { display: none; } /* the section's own line says it, with the page's name */
+/* The two Energy plates come without that page's own script and sheet: the bars the build draws, and the list of deadlines, as a reader without scripts gets them. */
+.briefing-packet #energy-deadlines .instrument { --v: 8rem; grid-auto-rows: auto; }
+.briefing-packet #energy-deadlines .instrument-row { grid-template-columns: minmax(0, 1fr) 0 var(--v); column-gap: 8px; padding-block: 8px; }
+/* A claim a checklist cites prints with that checklist, so the list the page keeps at its foot for readers without scripts has nothing to add here. */
+.has-js .claims-cited { display: none; }
+
+/* The link that brings a plate here says nothing once the plate is here. */
+.plate-foot:has(a[href^="../briefing/?add"]) { display: none; }
+/* A section's frame is a real table only on paper, where its head and foot repeat. */
+@media screen { .packet-sheet, .packet-sheet > *, .packet-sheet > * > tr, .packet-sheet > * > tr > td { display: block; } }
+
+@media print {
+  .briefing-rail, .page-band, .site-footer, .skip-link { display: none !important; }
+  .briefing { display: block; padding: 0; }
+  .packet-page, .packet-page + .packet-page { margin: 0; padding: 0; border: 0; break-before: page; }
+  .packet-cover { break-before: auto; }
+  .packet-sheet { width: 100%; table-layout: fixed; border-collapse: collapse; }
+  .packet-sheet > * > tr > td { padding: 0; }
+  .packet-guard { margin: 0 0 8pt; font-size: 0.875rem; }
+  .packet-foot { margin: 8pt 0 0; font-size: 0.875rem; }
+  .packet-title { display: block; margin: 0 0 8pt; }
+  .briefing-packet .plate { padding: 0; border: 0; break-inside: auto; }
+  .briefing-packet :is(.plate-setting, .plate-tally, .plate-view[data-view="sources"]) { display: none !important; }
+  .packet-source { break-inside: avoid; padding-block: 4pt; font-size: 0.8125rem; }
+  .claims-cited { display: none; }
+  .packet-toc { columns: 2; }
+  html[data-print-one] .packet-page { break-before: auto; }
+  html[data-print-one] .packet-sheet { display: block; }
+}

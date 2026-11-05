@@ -4,6 +4,7 @@
   "warn_at": 0.9,
   "scripts": {
     "site/assets/js/ai.js": 25600,
+    "site/assets/js/briefing.js": 10000,
     "site/assets/js/data-centers.js": 14700,
     "site/assets/js/energy-funding.js": 19100,
     "site/assets/js/energy-potential.js": 14800,
@@ -11,7 +12,7 @@
     "site/assets/js/explorer.js": 36800,
     "site/assets/js/library.js": 11100,
     "site/assets/js/plate-svg.js": 10000,
-    "site/assets/js/plate.js": 42100,
+    "site/assets/js/plate.js": 69000,
     "site/assets/js/policy-watch.js": 4300,
     "site/assets/js/resource-model.js": 60500,
     "site/assets/js/theme.js": 2200,
@@ -20,8 +21,13 @@
   "pages_gzip_kb": {
     "default": 33,
     "site/ai/index.html": 154,
+    "site/briefing/index.html": 300,
     "site/data-centers/index.html": 98,
     "site/explorer/index.html": 127
   },
-  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code."
+  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
+  "reasons": {
+    "site/assets/js/plate.js": "11/05/2026: 42,100 predates the kit's ghost rows, shared ground, needle names, strip, and now print, CSV, and SVG; raised to about 10 percent over its 62.7 KB, since the kit is one file by design.",
+    "site/briefing/index.html": "11/05/2026: it holds a copy of every council plate's built block, so nothing is fetched; about 20 percent over its 250 KB."
+  }
 }

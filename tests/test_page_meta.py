@@ -28,6 +28,15 @@ def test_a_page_gets_its_tags_once_and_keeps_its_line_endings():
     assert meta.apply_meta(crlf, "index.html") == crlf
 
 
+def test_a_page_with_a_lead_plate_takes_its_card_and_its_sentence_as_alt():
+    cards = {"ai-same-hour": {"file": "assets/img/cards/ai-same-hour.png", "alt": 'An hour of "chat" & video'}}
+    once = meta.apply_meta(PAGE, "ai/index.html", cards)
+    assert f'og:image" content="{meta.SITE_URL}assets/img/cards/ai-same-hour.png"' in once and 'og:image:alt" content="An hour of &quot;chat&quot; &amp; video"' in once
+    other = meta.apply_meta(PAGE, "about/index.html", cards)
+    assert f'og:image" content="{meta.SITE_URL}{meta.CARD_PATH}"' in other and meta.CARD_ALT in other, "a page with no lead plate keeps the default"
+    assert meta.PAGE_CARDS["index.html"] == "ai-same-hour", "home leads with the same plate as the AI page"
+
+
 def test_a_changed_title_replaces_the_old_tags():
     once = meta.apply_meta(PAGE, "index.html")
     again = meta.apply_meta(once.replace("<title>About | ATNI</title>", "<title>New</title>"), "index.html")

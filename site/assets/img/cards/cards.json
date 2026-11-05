@@ -1,0 +1,150 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cards": {
+  "ai-same-hour": {
+   "file": "assets/img/cards/ai-same-hour.png",
+   "alt": "An hour of chat and an hour of video overlap: about 15 and 14 Wh, 12 Wh of each your own screen and router",
+   "foot": "Modeled, 11/2026; sources checked 11/04/2026. Source: ATNI Energy Task Forces model\n46 claims, 29 verified, 17 partly verified: fp-001, fp-017, fp-012, fp-021 and more",
+   "lead": [
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-021"
+   ],
+   "claims": [
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-021",
+    "fp-015",
+    "fp-134",
+    "fp-127",
+    "fp-126",
+    "fp-133",
+    "fp-049",
+    "fp-161",
+    "fp-162",
+    "fp-122",
+    "fp-130",
+    "fp-037",
+    "fp-088",
+    "fp-053",
+    "fp-054",
+    "fp-055",
+    "fp-059",
+    "fp-097",
+    "fp-135",
+    "fp-073",
+    "fp-008",
+    "fp-143",
+    "fp-075",
+    "ec-024",
+    "fp-019",
+    "fp-020",
+    "fp-025",
+    "fp-086",
+    "fp-090",
+    "fp-095",
+    "fp-124",
+    "fp-125",
+    "fp-128",
+    "fp-129",
+    "fp-132",
+    "fp-141",
+    "fp-142",
+    "fp-144",
+    "fp-147",
+    "fp-149",
+    "fp-150",
+    "fp-151",
+    "fp-154"
+   ]
+  },
+  "dc-pnw-load": {
+   "file": "assets/img/cards/dc-pnw-load.png",
+   "alt": "The Council puts data centers and chip fabs at 2,475 aMW in 2030, in a region using 22,000 today",
+   "foot": "Sources checked 11/04/2026. Source: Northwest Power and Conservation Council\ndem-073 verified, dem-058 verified",
+   "lead": [
+    "dem-073",
+    "dem-058"
+   ],
+   "claims": [
+    "dem-073",
+    "dem-074",
+    "dem-058",
+    "dem-059",
+    "dem-061",
+    "dem-062",
+    "dem-063",
+    "dem-068",
+    "dem-069",
+    "dem-070",
+    "dem-071",
+    "dem-075",
+    "dem-076",
+    "dem-092",
+    "dem-093",
+    "dem-097",
+    "dem-098"
+   ]
+  },
+  "energy-types-by-stage": {
+   "file": "assets/img/cards/energy-types-by-stage.png",
+   "alt": "Efficiency, solar, and electrification lead 44 Tribes' public plans; no finding concerns offshore wind or marine energy",
+   "foot": "Sources checked 10/29/2026. Source: ATNI Energy Task Forces\nep-001 partly verified\nA machine-assisted reading of public plans, not a Tribe's own assessment",
+   "lead": [
+    "ep-001"
+   ],
+   "claims": [
+    "ep-032",
+    "ep-021",
+    "ep-033",
+    "ep-022",
+    "ep-030",
+    "ep-031",
+    "ep-024",
+    "ep-027",
+    "ep-026",
+    "ep-028",
+    "ep-029",
+    "ep-023",
+    "ep-025",
+    "ep-001",
+    "ep-002",
+    "ep-003",
+    "ep-004",
+    "ep-005",
+    "ep-007",
+    "ep-008",
+    "ep-009",
+    "ep-010",
+    "ep-011",
+    "ep-012",
+    "ep-013",
+    "ep-014",
+    "ep-015",
+    "ep-016"
+   ]
+  },
+  "explorer": {
+   "file": "assets/img/cards/explorer.png",
+   "alt": "A streamed hour on a phone: about 14 Wh (7.2 to 203), 12 Wh of it your own screen and router",
+   "foot": "Modeled, 11/2026; model built 11/04/2026. Source: ATNI Energy Task Forces model\n6 claims, 4 verified, 2 partly verified: fp-122, fp-130, fp-141, fp-127 and more",
+   "lead": [
+    "fp-122",
+    "fp-130",
+    "fp-141",
+    "fp-127"
+   ],
+   "claims": [
+    "fp-122",
+    "fp-130",
+    "fp-141",
+    "fp-127",
+    "fp-126",
+    "fp-049"
+   ]
+  }
+ }
+}

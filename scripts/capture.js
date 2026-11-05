@@ -11,7 +11,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 // CAPTURE_SITE points at a scratch copy of site/, for design comps.
 const SITE = process.env.CAPTURE_SITE ? path.resolve(process.env.CAPTURE_SITE) : path.join(ROOT, 'site');
-const PAGES = { home: '', ai: 'ai/', 'data-centers': 'data-centers/', 'resource-use': 'data-centers/resource-use/', energy: 'energy/', potential: 'energy/potential/', funding: 'energy/funding/', library: 'library/', summit: 'summit/', about: 'about/', explorer: 'explorer/' };
+const PAGES = { home: '', ai: 'ai/', 'data-centers': 'data-centers/', 'resource-use': 'data-centers/resource-use/', energy: 'energy/', potential: 'energy/potential/', funding: 'energy/funding/', library: 'library/', summit: 'summit/', about: 'about/', explorer: 'explorer/', briefing: 'briefing/' };
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.csv': 'text/csv', '.txt': 'text/plain' };
 
 function loadPlaywright() {
