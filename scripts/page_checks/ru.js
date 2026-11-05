@@ -102,8 +102,9 @@ async function content() {
   ok(/57\.8 TWh over 485, derived/.test(words(document)), 'the 12 percent shows its arithmetic');
   // The figure's Reading: the retired 70 Wh made the UK share "about a quarter"; its replacement makes it a sliver.
   const hourReading = document.querySelector('.ru-hour .ru-reading').textContent.replace(/\s+/g, ' ');
-  ok(/1 of 188 Wh, derived/.test(hourReading) && /0\.6 of 192\.3 Wh, derived/.test(hourReading) && !/quarter/.test(hourReading), 'the streamed hour reads as its figure draws it');
-  ok(Math.abs(100 / 188 - 0.5) < 0.05 && Math.abs(60 / 192.3 - 0.3) < 0.05, 'and the shares hold');
+  // 1 over 188 is finer than Carbon Trust's own rounding, so the page prints its own "roughly 1 percent" (ru-003) beside the figure's two numbers.
+  ok(/about 1 percent on Carbon Trust's own reading \(1 of 188 Wh\)/.test(hourReading) && /about 0\.3 percent on the UK follow-up \(0\.6 of 192\.3 Wh, derived\)/.test(hourReading) && !/quarter/.test(hourReading), 'the streamed hour reads as its figure draws it');
+  ok(claims['ru-003'].value === 1 && claims['ru-004'].value === 0.3 && Math.abs(60 / 192.3 - 0.3) < 0.05, 'and the shares hold');
   // Marks: on the ruler, one row each, and each chart row prints its value next to its mark.
   const marks = [...document.querySelectorAll('.ru-track i')];
   ok(marks.length > 20, 'marks drawn');

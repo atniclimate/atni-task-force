@@ -626,6 +626,11 @@
    "text": "What a building would run is a question for the project view.",
    "href": "../data-centers/#dc-project",
    "link": "Open the project view"
+  },
+  {
+   "text": "To take this comparison to a meeting, print it with its sources.",
+   "href": "../briefing/?add=ai-same-hour",
+   "link": "Add it to a Council Briefing"
   }
  ],
  "table": {

@@ -22,7 +22,8 @@ This script checks, and exits non-zero on any problem:
 - shipped claims (data/claims/) each have a unique id, an https source, a quote, a status of verified
   or partly, and no email; every plate data block in a page names claims that ship, holds only their
   numbers (or a model's, or a formula's over those), and states the limit of a partly claim; every plate
-  definition (data/plates/) is T0 and built; a figure poured into a page (data-pour) names a claim that ships.
+  definition (data/plates/) is T0 and built; a figure poured into a page (data-pour) names a claim that ships;
+  a claim reference in prose (.cr) passes scripts/pour_claim_refs.py.
 
 Standard library plus PyMuPDF (imported as fitz, only when PDFs are read, so scripts/build_plates.py can
 reuse these rules with the standard library alone). Run: python scripts/validate_public.py
@@ -663,8 +664,30 @@ def check_plate_files(errors):
     return len(paths)
 
 
+def check_manifest(errors):
+    """data/index.json, from scripts/build_index.py: every path it lists is there and T0, and it lists every plate. Returns the plates it lists."""
+    rel = "data/index.json"
+    data = load_data(rel, errors)
+    if not isinstance(data, dict):
+        return 0
+    check_header(data, rel, errors)
+    listed = {item.get("path") for part in ("plates", "claims", "data") for item in data.get(part) or []}
+    for path in sorted(listed, key=str):
+        if not (SITE / str(path)).is_file():
+            errors.append(f"{rel} lists {path}, which is not in site/: rerun python scripts/build_index.py")
+        elif str(path).endswith(".json") and path != "data/library.json":  # check_library holds that file's entries to T0 one by one
+            body = load_data(path, errors)
+            if not isinstance(body, dict) or body.get("tier") != "T0":
+                errors.append(f"{rel} lists {path}, which does not say tier T0: set it there, or move the file out of site/")
+    for path in sorted((SITE / "data" / "plates").glob("*.json")):
+        if path.relative_to(SITE).as_posix() not in listed:
+            errors.append(f"{rel} does not list {path.name}: rerun python scripts/build_index.py")
+    return len(data.get("plates") or [])
+
+
 def main():
     import fitz
+    import pour_claim_refs
 
     self_test()
     fitz.TOOLS.mupdf_display_errors(False)
@@ -695,6 +718,7 @@ def main():
                 plate_blocks += check_plate_blocks(rel, body, claims, errors)
                 check_plate_scripts(rel, body, errors)
                 check_poured(rel, body, claims, errors)
+                errors.extend(pour_claim_refs.check_page(rel, body, claims))
         elif path.suffix == ".pdf":
             check_pdf(path, rel, errors)
     if not (SITE / ".nojekyll").is_file():
@@ -706,6 +730,7 @@ def main():
     programs = check_energy_funding(errors)
     searches, follows = check_policy_watch(errors)
     plates = check_plate_files(errors)
+    check_manifest(errors)
     check_resource_model(claims, errors)
     documented =SLOTS_DOC.read_text(encoding="utf-8") if SLOTS_DOC.is_file() else ""
     for slot, rel in slots.items():

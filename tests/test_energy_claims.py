@@ -131,7 +131,7 @@ def test_a_type_read_twice_is_refused():
 
 
 # Names a page may type with digits: dates, years, resolution and report numbers, a bill, a public law, a form, a license, a time of day, a program notice.
-ALLOWED = re.compile(r"\d{2}/\d{2}/\d{4}|\b(?:19|20)\d{2}\b|#\d{4}-\d+|\b[A-Za-z][A-Za-z-]*\d[\w.()-]*|H\.R\. \d+|\d+th Congress|Public Law \d+-\d+|Publication \d+-[A-Z]|Noncommercial \d\.\d\.\d|\b\d{1,2}:\d{2}\b|Notice \d+-\d+")
+ALLOWED = re.compile(r"\d{2}/\d{2}/\d{4}|\b(?:19|20)\d{2}\b|#\d{4}-\d+|\b[A-Za-z][A-Za-z-]*\d[\w.()-]*|H\.R\. ?\d+|H\. Con\. Res\. \d+|\d+th Congress|Public Law \d+-\d+|Publication \d+-[A-Z]|Noncommercial \d\.\d\.\d|\b\d{1,2}:\d{2}\b|Notice \d+-\d+")
 
 
 @pytest.mark.parametrize("page", ["energy/index.html", "energy/potential/index.html", "energy/funding/index.html"])
@@ -143,8 +143,8 @@ def test_every_figure_in_a_pages_own_words_is_poured(page):
         for child in node.children:
             if isinstance(child, str):
                 yield child
-            elif child.tag in ("script", "style", "figure") or "data-pour" in child.attrs:
-                continue  # a plate holds its own checks, and a poured figure is held to its claim by test_plates
+            elif child.tag in ("script", "style", "figure") or "data-pour" in child.attrs or "cr" in (child.attrs.get("class") or "").split():
+                continue  # a plate holds its own checks, a poured figure is held to its claim by test_plates, and a claim mark by pour_claim_refs.check_page
             else:
                 yield from words(child)
 

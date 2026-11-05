@@ -194,7 +194,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 
 /* Type roles, sentence case throughout: tracked capitals were template chrome and the least legible text on the site. The readout is the
    poster on a plate: its figure shrinks only as far as its own text needs to fit the zone (plate.js sets --chars). */
-.kicker, .eyebrow, .day-label, .label, .toc-title, .key-facts h2, .card-status, .entry-type, .slot-label {
+.kicker, .eyebrow, .label, .toc-title, .key-facts h2, .card-status, .entry-type, .slot-label {
   margin: 0 0 8px;
   font-family: var(--display);
   font-weight: 500;
@@ -346,9 +346,9 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 
 /* The page band: h1 and one line of lead at the left, bare key figures at the right end, no box. A page moves to .page-band and
    .page-band-figures as its builder reaches it; .page-hero and .key-facts draw the same row until then, and keep it without scripts and in print. */
-.hero, .page-hero { padding-block: 16px; }
-.hero h1, .page-hero h1, .page-band h1 { margin-bottom: 8px; }
-.hero .lead, .page-hero .lead, .page-band .lead { margin-bottom: 0; }
+.page-hero { padding-block: 16px; }
+.page-hero h1, .page-band h1 { margin-bottom: 8px; }
+.page-hero .lead, .page-band .lead { margin-bottom: 0; }
 @media (max-width: 719px) {
   h1 { font-size: 1.75rem; }
   .section-strip ul { scroll-padding-inline: 24px; }
@@ -370,17 +370,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 @media (min-width: 1100px) {
   .page-band { grid-template-columns: minmax(0, 1fr) auto; align-items: end; min-height: 120px; }
   .page-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); align-items: end; }
-  .hero > .wrap { display: grid; grid-template-columns: minmax(0, var(--measure-wide)) minmax(0, 1fr); column-gap: 48px; align-items: start; }
-  .hero > .wrap > * { grid-column: 1; }
-  .hero > .wrap > .hero-map { grid-column: 2; grid-row: 1 / span 4; align-self: center; margin: 0; }
 }
-.hero .actions { margin-top: 16px; }
-.hero-map { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); column-gap: 24px; margin: 16px 0 0; padding: 0; list-style: none; }
-.hero-map li { margin: 0; border-top: 1px solid var(--rule); }
-.hero-map a { display: block; padding-block: 10px 12px; color: var(--atni-text-body); text-decoration: none; }
-.hero-map strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
-.hero-map span { display: block; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
-.hero-map a:hover strong { text-decoration: underline; text-decoration-color: var(--energy-mark); text-underline-offset: 0.2em; }
 
 /* Callouts. A held slot marks unfilled work with a hollow square and never holds a plot. */
 .notice {
@@ -812,6 +802,12 @@ main > .panel + .panel { border-top: 0; }
 .plate-status:empty { display: none; }
 .plate-tally { justify-self: start; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; text-align: left; text-wrap: balance; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
 .plate-tally:hover { text-decoration-thickness: 2px; }
+.plate-out { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 0 16px; }
+.plate-out button { min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
+.plate-out button:hover { text-decoration-thickness: 2px; }
+@media (pointer: coarse) { .plate-out button { min-height: 44px; } }
+.plate-link-note { max-width: none; }
+.plate-print-head, .plate-print-foot { display: none; }
 .plate-facts { display: grid; gap: 8px; }
 .plate-facts:empty { display: none; }
 .plate-values { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 1rem; }
@@ -860,6 +856,17 @@ table.plate-table :is(th, td) { padding: 4px 8px; font-size: 0.8125rem; }
 .plate-table td:last-child { text-align: left; }
 .plate-also { margin: 12px 0 0; padding: 0; list-style: none; }
 .plate-also li { margin: 0 0 4px; }
+/* A claim reference in prose (scripts/pour_claim_refs.py): a page may hold over a hundred, so a thin dotted underline in the sentence's own ink, and the id and status on hover or focus. */
+a.cr { position: relative; color: inherit; text-decoration: underline dotted 1px; text-underline-offset: 0.2em; }
+a.cr:hover { color: var(--energy-text); text-decoration: underline solid 1px; }
+a.cr:is(:hover, :focus-visible)::after { content: attr(data-claim) ", " attr(data-status); position: absolute; top: 100%; left: 0; z-index: 3; padding: 2px 8px; font-size: 0.875rem; font-weight: 400; white-space: nowrap; color: var(--atni-text-heading); background: var(--atni-ground-raised); outline: 1px solid var(--rule); }
+.claims-cited .plate-sources { grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); gap: 16px 24px; margin-top: 16px; }
+.claims-cited li { padding-left: 10px; scroll-margin-top: 56px; }
+.claims-cited li:target { padding-left: 8px; border-left: 2px solid var(--energy-mark); }
+@media print {
+  a.cr { text-decoration: none; }
+  a.cr::after { content: " [" attr(data-claim) "]"; font-size: 0.75em; color: inherit; }
+}
 
 /* Ladder: rows whose mark sits on one shared ruler; a plate may hold two, each with its own axis and label. Grid lines, the shared band, and the
    needle lie under the rows, on the tracks' column. --l is the label column, --v the value column. A row is its own hit target. Marks and ranges are
@@ -1079,7 +1086,7 @@ td.is-on .matrix-bar { background: var(--energy-mark); }
 td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: var(--energy-mark); }
 
 @media (max-width: 599px) { .site-nav ul { gap: 0 14px; } }
-@media (max-width: 719px) {
+@media screen and (max-width: 719px) { /* screen: a Letter sheet with wide margins is narrower than this, and a plate's rows should still read across it */
   .ladder-row, .count-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "track track"; grid-template-rows: auto auto; }
   :not(.instrument-row) > .ladder-label { grid-area: label; }
   :not(.instrument-row) > .ladder-value { grid-area: value; }
@@ -1146,6 +1153,28 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .plate-detail { padding: 0; background: none; border: 0; }
   .plate, .tier-grid, .evidence-key, .tier-stair, .strip { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* marks are backgrounds */
   .plate-plot { min-height: 16rem; break-inside: avoid; }
+  /* A drawing keeps its own proportions at the sheet's full width, so no letterbox opens above it. */
+  .plate-svg { position: static; width: 100%; height: auto; }
+  .plate-plot:has(.plate-svg) { min-height: 0 !important; }
+  .plate-link-note { display: none; }
+  :focus-visible { outline: none; } /* a deep link leaves focus on its panel, whose ring would frame every sheet */
+  /* One plate, one sheet: everything but that plate leaves the paper, its Sources lose their quotes and boundaries (they stay on the site under the claim id), and the Table comes before them.
+     As a table, its head and foot lines repeat on every sheet it runs to. */
+  html[data-print-one] main *:not(:has(.is-print-one), .is-print-one, .is-print-one *), html[data-print-one] :is(.site-footer, .site-nav) { display: none !important; }
+  html[data-print-one] main { padding: 0; }
+  html[data-print-one] .is-print-one { display: table; width: 100%; table-layout: fixed; margin: 0; padding: 0; border: 0; break-inside: auto; }
+  .is-print-one > .plate-print-head { display: table-header-group; font-size: 0.875rem; color: var(--atni-text-secondary); }
+  .is-print-one > .plate-print-foot { display: table-footer-group; font-size: 0.875rem; color: var(--atni-text-secondary); }
+  .is-print-one > .plate-print-head p { margin: 0 0 2pt; max-width: none; }
+  .is-print-one > .plate-claim, .is-print-one > .plate-plot, .is-print-one > .plate-under { margin-bottom: 8pt; }
+  .is-print-one > .plate-detail { display: flex; flex-direction: column; gap: 8pt; }
+  .is-print-one .plate-view[data-view="table"] { order: 1; }
+  .is-print-one .plate-view > .label, .is-print-one .plate-table caption { break-after: avoid; }
+  .is-print-one .plate-view[data-view="sources"] { order: 2; }
+  .is-print-one .plate-sources { display: block; columns: 2; column-gap: 16pt; }
+  .is-print-one .plate-sources li { display: block; margin-bottom: 4pt; break-inside: avoid; }
+  .is-print-one .plate-sources li > p:nth-of-type(n+3):not(:nth-of-type(4)), .is-print-one .plate-quote, .is-print-one > .plate-claim > :is(.eyebrow, p:not(.plate-foot, [class*="legend"])), .is-print-one .plate-facts .plate-more, .is-print-one .plate-tally { display: none; }
+  .is-print-one .plate-sources .plate-source-title { font-size: 0.8125rem; }
 }
 /* ========== End of the plate kit. ========== */
 
@@ -1217,31 +1246,6 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .filters.filters-auto .button { width: 100%; }
 @media (min-width: 1100px) { .filters.filters-auto .field-search { grid-column: span 2; } }
 .section-note { max-width: var(--measure-wide); color: var(--atni-text-secondary); }
-
-/* Summit agenda */
-.agenda { display: grid; gap: 24px; margin: 24px 0; }
-.day { padding: 0; }
-.day-label { margin: 0 0 4px; }
-.day h3 { margin-bottom: 16px; }
-.day ol { list-style: none; margin: 0; padding: 0; counter-reset: item; }
-.day li { position: relative; margin: 0 0 16px; padding-left: 2.5rem; counter-increment: item; }
-.day li::before {
-  content: counter(item);
-  position: absolute;
-  left: 0;
-  top: 0.1rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: grid;
-  place-items: center;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--energy-on-fill);
-  background: var(--series-context);
-}
-.day li strong { color: var(--atni-text-heading); }
-@media (min-width: 840px) { .agenda { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 .lead-ins { padding-left: 1.25rem; }
 .lead-ins li { margin-bottom: 12px; }
@@ -1392,13 +1396,12 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .page-body { display: block; padding-block: 12pt; }
   .content > .prose, .rail-body { display: block; }
   .content > .prose > * { columns: auto; }
-  .page-hero, .hero, .section { padding-block: 16pt; }
+  .page-hero, .section { padding-block: 16pt; }
   .page-hero-grid { display: block; }
-  .cards, .figures, .resolutions, .entries, .records, .deadlines, .agenda { display: block; }
-  .key-facts, .day, .card, .figure, .slot, .notice, .quote, .entry, .resolution, .deadline, .plate { break-inside: avoid; }
+  .cards, .figures, .resolutions, .entries, .records, .deadlines { display: block; }
+  .key-facts, .card, .figure, .slot, .notice, .quote, .entry, .resolution, .deadline, .plate { break-inside: avoid; }
   .notice, .match, .record-deadline { background: none; }
   .key-facts { margin-top: 12pt; }
-  .day { margin-bottom: 12pt; }
   .table-scroll, .table-wrap { overflow: visible; }
   h2, h3 { break-after: avoid; }
   .button { min-height: 0; padding: 0; border: 0; background: none; color: var(--atni-text-link); text-decoration: underline; }

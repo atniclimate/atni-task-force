@@ -818,7 +818,7 @@ async function homeBand() {
   ok(/Modeled, \d{2}\/\d{4}/.test(text(band.querySelector('.home-read'))), 'the figure says it is modeled, and when');
   ok(!/<script[^>]+(resource-model|plate\.js)|id="explorer-data"/.test(home), 'the home page loads no model and no kit');
   for (const name of ['band', 'receipts']) ok(Buffer.byteLength(home.match(new RegExp(`<!-- explorer:home:${name} -->[\\s\\S]*<!-- /explorer:home:${name} -->`))[0]) < 8192, `and the ${name} block stays small`);
-  ok(/<!-- SLOT:home:whats-new -->\s*<!-- \/SLOT -->/.test(home), 'the What\'s New band has its marked place, empty');
+  ok(/<!-- SLOT:home:whats-new -->[\s\S]*?whats-new-rows[\s\S]*?<!-- \/SLOT -->/.test(home), 'the What\'s New band holds its rows in its marked place');
   ok(/<!-- SLOT:home:photo-band -->\s*<!-- \/SLOT -->/.test(home), 'the photograph band has its marked place, empty');
   ok(!still.querySelector('main img') && still.querySelector('.wordmark img[src$="atni-energy-header-on-dark.svg"]') && still.querySelector('.wordmark img[src$="atni-energy-header.svg"]'), 'the logo is the header\'s, per theme; the large lockup belongs to About and print');
 
@@ -913,7 +913,8 @@ async function homeBand() {
   ok(exits.every((a) => !a.className && !a.children.length) && !still.querySelector('.home-door .receipt'), 'plain link text: the door holds no box');
   ok(still.querySelector('.home-links').firstElementChild.matches('[data-receipts]'), 'Receipts is the first way out on the foot line');
   const checklists = [...dcPage.matchAll(/<details class="disclosure" id="q-([a-z]+)"/g)].map((m) => m[1]);
-  ok(text(questions[2]).includes(`Eight checklists: ${checklists.slice(0, -1).join(', ')}, ${checklists.at(-1)}.`) && checklists.length === 8, 'the third answer names the checklists the page holds');
+  ok(text(questions[2]).includes(`${claims['lc-061'].value} checklists: ${checklists.slice(0, -1).join(', ')}, ${checklists.at(-1)}.`) && checklists.length === claims['lc-061'].value, 'the third answer names the checklists the page holds, and its count is the claim');
+  ok(text(questions[1].querySelector('p')).startsWith('Example, at settings you can change:'), 'the second answer reads as an example');
 
   // Without scripts every figure is on the page and no control pretends to work.
   ok(still.querySelector('.home-foot fieldset').hidden && [...band.querySelectorAll('[data-row] input')].every((n) => n.hidden) && still.querySelector('[data-receipts]').hidden, 'without scripts the controls wait');
@@ -1055,7 +1056,7 @@ async function homeBand() {
   // Each figure that has a claim carries it, with its status and its limit; the counts are the claims'.
   const limitsNow = still.getElementById('home-figure-limits');
   const chips = [...still.querySelectorAll('.home-figures .figure-claims .receipt')];
-  eq(chips.map(text).join(), 'ep-002,ep-001,ef-001,ef-002,dem-073', 'the figures name their claims');
+  eq(chips.map(text).join(), 'ep-002,ep-001,ef-001,ef-002,lc-051,lc-052,lc-001,lc-002,dem-073', 'the figures name their claims');
   for (const c of chips) {
     const id = text(c);
     eq(c.getAttribute('href'), '#home-figure-limits', `${id}: its chip goes to the limits`);
@@ -1069,8 +1070,11 @@ async function homeBand() {
   eq(held('fund-tribes-with'), String(claims['ep-001'].value), 'and those with a finding');
   eq(held('fund-programs'), String(claims['ef-001'].value), 'and the programs');
   eq(held('fund-open'), String(claims['ef-002'].value), 'and those open');
-  const unclaimed = [...still.querySelectorAll('.home-figures .figure')].filter((n) => !n.querySelector('.figure-claims'));
-  eq(unclaimed.map((n) => n.querySelector('.figure-detail a[href^="data/"]')?.getAttribute('href')).join(), 'data/policy-watch.json,data/library.json', 'the two counts with no claim yet name the file they count');
+  eq(held('policy-follow'), String(claims['lc-051'].value), 'and the policy items');
+  eq(held('policy-searches'), String(claims['lc-052'].value), 'and the saved searches');
+  eq(held('library'), claims['lc-001'].value.toLocaleString('en-US'), 'and the library entries');
+  eq(held('library-tribal'), String(claims['lc-002'].value), 'and those that are Tribal-specific');
+  eq([...still.querySelectorAll('.home-figures .figure')].filter((n) => !n.querySelector('.figure-claims')).length, 0, 'every figure carries a claim');
 }
 
 module.exports = { groups: { staticRules, noScript, homeBand, behavior, cases } };

@@ -56,7 +56,7 @@
 /* Library: the page's picture, then the filters with their count at the row's right end, then the bars, then entries in three columns. */
 .library-band .lead { max-width: 60rem; } /* longer than the kit's measure: three lines, not four, since the entries are the page */
 .library-page { padding-block: 0 48px; }
-.comp { padding-block: 16px 20px; border-top: 1px solid var(--grid); }
+.comp { padding-block: 16px 20px; } /* What's New above it already closes with a rule */
 .comp-head { display: grid; gap: 8px 32px; margin-bottom: 16px; }
 .comp-field { max-width: calc(100 * (var(--unit) + var(--unit-gap)) - var(--unit-gap)); }
 .comp-head > p { max-width: var(--measure-wide); margin: 0; font-size: 0.875rem; }
@@ -70,14 +70,15 @@
 .comp-groups { display: grid; gap: 16px 24px; }
 .comp-group h3 { margin-bottom: 4px; }
 .comp-bars { display: grid; margin: 0; padding: 0; list-style: none; }
-.comp-bars li { margin: 0; }
+.comp-bars li { position: relative; margin: 0; }
 .comp-group-wide .comp-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: 24px; }
 .comp-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: baseline; min-height: 32px; padding-top: 4px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.2; color: var(--atni-text-secondary); text-decoration: none; }
 .comp-row:hover, .comp-row[aria-current] { color: var(--atni-text-heading); }
 .comp-row:focus-visible { outline-offset: 0; }
-.comp-name { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.comp-name { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding-right: 5ch; } /* room for the count, its own link at the row's right end */
 .comp-key { flex: none; width: var(--unit); height: var(--unit); background: var(--unit-ink); }
-.comp-n { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+a.comp-n { position: absolute; top: 4px; right: 0; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+a.comp-n:is(:hover, :focus-visible)::after { left: auto; right: 0; } /* its label opens leftward, into the column */
 .comp-track { grid-column: 1 / -1; display: block; height: 7px; margin-top: 2px; border-bottom: 1px solid var(--grid); } /* the hairline is the whole library, on every bar; a bar sits on the page ground, where every ink clears 3:1 */
 .comp-track > i { display: block; width: calc(var(--w) * 100%); min-width: 2px; height: 100%; background: var(--unit-ink, var(--series-context)); }
 .comp-row[aria-current] .comp-track > i { background: var(--unit-ink, var(--energy-mark)); }
@@ -152,6 +153,7 @@
 /* Print: linear, with the marks kept. The large lockup prints once, as the page header site.css writes. */
 @media print {
   .band-lockup { display: none !important; }
+  a.comp-n { position: static; display: block; } /* on paper it carries its claim id, too long to sit beside a name */
   .comp, .flow-stops li { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .about-grid, .about-col, .about-license, .summit-work, .details-grid { display: block; }
   .about-grid > *, .about-col > * { margin-bottom: 16pt; }

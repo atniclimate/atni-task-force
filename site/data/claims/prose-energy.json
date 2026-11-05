@@ -1,0 +1,160 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "prose-energy",
+ "claims": [
+  {
+   "id": "pe-001",
+   "entity": "ATNI Energy Program",
+   "metric": "year established",
+   "value": 1995,
+   "low": null,
+   "high": null,
+   "unit": "year",
+   "year": 1995,
+   "boundary": "The year ATNI gives for establishing its Energy Program, which it says was set up so that Tribal rights and interests were represented in power and transmission issues at the Bonneville Power Administration. The page gives no separate year for the Energy Committee.",
+   "source": {
+    "title": "Energy Committee",
+    "publisher": "Affiliated Tribes of Northwest Indians",
+    "url": "https://atnitribes.org/committees/energy-commi/",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "ATNI established the ATNI Energy Program in 1995 to ensure tribal rights and interests were represented in power and transmission issues at the Bonneville Power Administration.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "pe-002",
+   "entity": "ATNI Resolution #2024-23",
+   "metric": "month and year the resolution was adopted",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2024,
+   "boundary": "The 2024 Midyear Convention ran May 19 to May 23, 2024, and the resolution says it was adopted there. The year comes from the resolution's heading, 2024 Midyear Convention. This is the date of adoption, not of any later action by the task force.",
+   "source": {
+    "title": "Resolution #2024-23: Establishing an ATNI Task Force on Offshore Wind Projects",
+    "publisher": "Affiliated Tribes of Northwest Indians",
+    "url": "https://atnitribes.org/wp-content/uploads/2024/06/Res-24-23-1.pdf",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "The foregoing resolution was adopted at the 2024 Midyear Convention of the Affiliated Tribes of Northwest Indians, held at the Seven Feathers Casino in Canyonville, OR, May 19 – May 23, with a quorum present.",
+   "derived": "Month and year only: May 2024, within the convention dates of 05/19/2024 to 05/23/2024.",
+   "status": "verified",
+   "date": "2024-05",
+   "date_us": "05/2024"
+  },
+  {
+   "id": "pe-003",
+   "entity": "Public Law 119-21 (H.R. 1)",
+   "metric": "date enacted",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2025,
+   "boundary": "The date the bill became law, as Congress.gov records it. The claim is the date only; it does not describe what the law changed.",
+   "source": {
+    "title": "H.R.1 - 119th Congress (2025-2026): An act to provide for reconciliation pursuant to title II of H. Con. Res. 14",
+    "publisher": "Congress.gov, Library of Congress",
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+    "published": "2025-07-04",
+    "kind": "agency"
+   },
+   "quote": "Latest Action: 07/04/2025 Became Public Law No: 119-21.",
+   "derived": null,
+   "status": "verified",
+   "date": "2025-07-04",
+   "date_us": "07/04/2025"
+  },
+  {
+   "id": "pe-004",
+   "entity": "Annual Technology Baseline 2025, electricity",
+   "metric": "dollar year of the monetary values",
+   "value": 2023,
+   "low": null,
+   "high": null,
+   "unit": "dollar year (USD)",
+   "year": 2025,
+   "boundary": "The dollar year of the NREL Annual Technology Baseline 2025 cost figures. It says nothing about the dollar year of the EIA capital cost study, which is a separate source.",
+   "source": {
+    "title": "2025 Electricity ATB Technologies and Data Overview",
+    "publisher": "Annual Technology Baseline (atb.nlr.gov, site of the National Laboratory of the Rockies)",
+    "url": "https://atb.nlr.gov/electricity/2025/index",
+    "published": null,
+    "kind": "agency"
+   },
+   "quote": "Monetary values are in 2023 USD.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "pe-005",
+   "entity": "ATNI-GeoBase public source repository",
+   "metric": "date the source snapshot was prepared",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": 2026,
+   "boundary": "The preparation date the repository's README gives for its source snapshot. The latest commit that published it is dated 09/09/2026 (UTC), a day later.",
+   "source": {
+    "title": "GeoBase README",
+    "publisher": "Affiliated Tribes of Northwest Indians, Tribal Climate Resilience",
+    "url": "https://github.com/atniclimate/GeoBase",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "This source snapshot, prepared on 2026-09-08, includes the local desktop, resource-layer screening, project-custody and exploratory interpolation implementation.",
+   "derived": null,
+   "status": "verified",
+   "date": "2026-09-08",
+   "date_us": "09/08/2026"
+  },
+  {
+   "id": "pe-006",
+   "entity": "Grants.gov forecasted notices kept on 10/29/2026",
+   "metric": "forecasted notices for the HUD Indian Community Development Block Grant program",
+   "value": 2,
+   "low": null,
+   "high": null,
+   "unit": "notices",
+   "year": 2026,
+   "boundary": "Two Grants.gov forecast records, PIH-2600-DC-0023 (posted 10/06/2026) and PIH-2600-DC-0034 (posted 05/18/2026), both titled for the Community Development Block Grant Program for Indian Tribes and Alaska Native Villages and both open to federally recognized Tribal governments. Records read on 11/05/2026; the count kept by the 10/29/2026 scan is claim ef-010. A forecast is not an open application.",
+   "source": {
+    "title": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages (forecast notices PIH-2600-DC-0023, linked, and PIH-2600-DC-0034)",
+    "publisher": "Grants.gov, U.S. Department of Housing and Urban Development",
+    "url": "https://simpler.grants.gov/opportunity/7ac1671e-c51b-4985-a308-704e8a4ef08d",
+    "published": "2026-10-06",
+    "kind": "agency"
+   },
+   "quote": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages",
+   "derived": "Count of 2: PIH-2600-DC-0023 and PIH-2600-DC-0034 carry the same title.",
+   "status": "verified"
+  },
+  {
+   "id": "pe-007",
+   "entity": "Grants.gov forecasted notices kept on 10/29/2026",
+   "metric": "forecasted notices for the HUD Indian Housing Block Grant competitive program",
+   "value": 1,
+   "low": null,
+   "high": null,
+   "unit": "notice",
+   "year": 2026,
+   "boundary": "One Grants.gov forecast record, PIH-2600-DC-0048 (posted 06/08/2026), open to federally recognized Tribal governments. Record read on 11/05/2026; the count kept by the 10/29/2026 scan is claim ef-010. A forecast is not an open application.",
+   "source": {
+    "title": "Indian Housing Block Grant Competitive Program (IHBG-COMP) for FY 2026 (PIH-2600-DC-0048)",
+    "publisher": "Grants.gov, U.S. Department of Housing and Urban Development",
+    "url": "https://simpler.grants.gov/opportunity/b90a0ff5-43a7-4cc6-91a7-06111b728403",
+    "published": "2026-06-08",
+    "kind": "agency"
+   },
+   "quote": "Indian Housing Block Grant Competitive Program (IHBG-COMP) for FY 2026",
+   "derived": "Count of 1: PIH-2600-DC-0048.",
+   "status": "verified"
+  }
+ ]
+}

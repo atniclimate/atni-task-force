@@ -13,7 +13,8 @@
 .home-q { display: block; margin-bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.15; letter-spacing: -0.01em; color: var(--atni-text-heading); text-decoration: none; }
 .home-q:hover { color: var(--atni-text-heading); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 .home-questions p { margin: 0; max-width: none; line-height: 1.4; color: var(--atni-text-secondary); }
-.home-questions p a { display: block; width: fit-content; margin-top: 4px; } /* its own line at every width, so the three stubs end the same way */
+.home-questions p a:not(.cr) { display: block; width: fit-content; margin-top: 4px; } /* its own line at every width, so the three stubs end the same way; a figure's claim mark stays in its sentence */
+.home-questions p a.home-also { display: inline; margin-top: 0; } /* the briefing link stays in the sentence, so the stub's last line is still the way to the checklists */
 .home-questions p a:focus-visible { outline-offset: 1px; } /* so the ring clears the line above */
 
 /* The instrument: the reader's number on the left, the ladder on the right. --plot-top is the room over the first row: the needle's name, then the tick's on a line of its own. */
@@ -87,7 +88,31 @@
 .home-figure-limits p { margin: 0; max-width: none; font-size: 0.875rem; }
 .home-figure-limits a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 
+/* What's New: ruled rows of date, kind, title, and area, on this page and, in a disclosure, on the Library page, which loads this sheet for these rules. A row's kind is a word, never a color. */
+.whats-new-grid { display: grid; gap: 16px 48px; }
+.whats-new-head h2 { margin: 0 0 8px; }
+.whats-new-head p { margin: 0 0 8px; max-width: 36rem; color: var(--atni-text-secondary); }
+p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); }
+.whats-new-rows { margin: 0; padding: 0; list-style: none; }
+.whats-new-rows li { position: relative; display: grid; grid-template-columns: 6rem 3.5rem minmax(0, 1fr) 10.5rem; gap: 2px 16px; align-items: baseline; margin: 0; padding-block: 11px; border-top: 1px solid var(--grid); }
+.whats-new-rows li:first-child { border-top-color: var(--rule); }
+.whats-new-rows li::before { content: ""; position: absolute; left: -12px; top: -1px; bottom: 0; width: 2px; background: var(--energy-mark); visibility: hidden; }
+.whats-new-rows li:is(:hover, :focus-within)::before { visibility: visible; }
+.whats-new-rows time { font-size: 0.9375rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.whats-new-kind { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.whats-new-rows a { display: block; margin-block: -11px; padding-block: 11px; line-height: 1.35; color: var(--atni-text-heading); text-decoration-color: var(--control); overflow-wrap: anywhere; } /* the row's height is the link's target */
+.whats-new-area { font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.whats-new-all { margin-bottom: 16px; border-block: 1px solid var(--grid); }
+.whats-new-all summary { display: flex; align-items: center; min-height: 44px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; color: var(--atni-text-heading); cursor: pointer; }
+.whats-new-all summary::before { content: "+"; width: 1.25rem; color: var(--energy-text); }
+.whats-new-all[open] summary::before { content: "\2212"; }
+.whats-new-all .caption { margin: 8px 0 16px; max-width: none; }
+
 @media screen and (min-width: 1100px) {
+  .whats-new-grid { grid-template-columns: minmax(0, 40fr) minmax(0, 60fr); }
+  .whats-new-all .whats-new-rows { columns: 2; column-gap: 28px; } /* down and then across, so the dates still run in order */
+  .whats-new-all .whats-new-rows li { break-inside: avoid; grid-template-columns: 6rem 3.5rem minmax(0, 1fr); }
+  .whats-new-all .whats-new-area { grid-column: 3; }
   .home-first { min-height: min(calc(100vh - 57px), 1200px); }
   .home-door, .home-instrument { grid-template-columns: minmax(0, 40fr) minmax(0, 60fr); }
   .home-questions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -108,6 +133,8 @@
 /* On a phone the grid runs behind the row's words, so the words sit on their own ground, the labels above get room, and the band stays off: the first question says the overlap.
    A label is absolute in a 1px line, so its width comes from nothing and it falls to one word a line without its own; 31vw keeps the tick's name, which reads left, on the screen. */
 @media (max-width: 719px) {
+  .whats-new-rows li { grid-template-columns: auto minmax(0, 1fr); }
+  .whats-new-rows li :is(a, .whats-new-area) { grid-column: 1 / -1; }
   .home-instrument { --plot-top: 64px; }
   .home-instrument :is(.ladder-tick span, .needle-label) { width: max-content; max-width: 31vw; }
   .home-instrument .ladder-label, .home-instrument .ladder-value { position: relative; z-index: 2; background: var(--plot-ground); }
@@ -116,6 +143,9 @@
 }
 
 @media print {
+  .whats-new-grid { display: block; }
+  .whats-new-rows li { break-inside: avoid; padding-block: 4pt; }
+  .whats-new-rows li::before, .whats-new-all summary::before { display: none; }
   .home-first, .home-door, .home-instrument, .home-foot { display: block; min-height: 0; }
   .home-instrument { --row-min: 44px; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .home-foot { border: 0; }

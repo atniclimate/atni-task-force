@@ -1273,13 +1273,13 @@ def home_words(claims, limits, st):
             "fig:value": f'{load["value"]:,g}', "fig:low": f'{load["low"]:,g}', "fig:high": f'{load["high"]:,g}'}
 
 
-HOME_FIGURE_CLAIMS = {"ep-002": "data/energy-potential.json", "ep-001": "data/energy-potential.json", "ef-001": "data/energy-funding.json", "ef-002": "data/energy-funding.json", "dem-073": "data-centers/?dc-pnw-load=2030&amp;dc-pnw-load-view=sources#dc-pnw-load"}
+HOME_FIGURE_CLAIMS = {"ep-002": "data/energy-potential.json", "ep-001": "data/energy-potential.json", "ef-001": "data/energy-funding.json", "ef-002": "data/energy-funding.json", "lc-051": "data/policy-watch.json", "lc-052": "data/policy-watch.json", "lc-001": "data/library.json", "lc-002": "data/library.json", "dem-073": "data-centers/?dc-pnw-load=2030&amp;dc-pnw-load-view=sources#dc-pnw-load"}
 
 
 def figure_limits_html(claims, limits):
     """Each figure's claim, what it counts, its status, and its limit. The counts a script writes must be the claims' or the build stops."""
     figures = home_figures()
-    for claim_id, name in (("ep-002", "fund-tribes"), ("ep-001", "fund-tribes-with"), ("ef-001", "fund-programs"), ("ef-002", "fund-open")):
+    for claim_id, name in (("ep-002", "fund-tribes"), ("ep-001", "fund-tribes-with"), ("ef-001", "fund-programs"), ("ef-002", "fund-open"), ("lc-051", "policy-follow"), ("lc-052", "policy-searches"), ("lc-001", "library"), ("lc-002", "library-tribal")):
         if f'{claims[claim_id]["value"]:,g}' != figures[name]:
             raise BuildError(f"the home figure {name} reads {figures[name]} and {claim_id} reads {claims[claim_id]['value']}: rebuild the claims, or rewrite the figure")
     return "".join(f'<p class="caption">{claim_words([claim_id], claims, limits, lambda i: f"""<a href="{HOME_FIGURE_CLAIMS[i]}">{i}</a>""")} Published by {escape(claims[claim_id]["source"]["publisher"])}.</p>' for claim_id in HOME_FIGURE_CLAIMS)
@@ -1314,7 +1314,7 @@ def receipts_html(pub, data, st, claims, limits, words):
     return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values and receipts"><table class="data-table"><caption>Every figure on this ladder, at each boundary. Modeled, {built[5:7]}/{built[:4]}.</caption>'
             f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
             f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: a bottom-up process model, checked against published figures. A range is a spread, not a confidence interval.</p>'
-            f'<p class="caption">The project question: {escape(words["q:mw"])} MW at a load factor of {escape(words["q:lf"])} is {escape(project["amw"]["text"])} average megawatts, about {escape(words["q:twh"])} TWh a year, {escape(words["q:share"])} percent of the region\'s {region["value"]:,g} aMW. {project_claim} Published by {escape(region["source"]["publisher"])}.</p>'
+            f'<p class="caption">The project question, at example settings a reader can change: {escape(words["q:mw"])} MW at a load factor of {escape(words["q:lf"])} is {escape(project["amw"]["text"])} average megawatts, about {escape(words["q:twh"])} TWh a year, {escape(words["q:share"])} percent of the region\'s {region["value"]:,g} aMW. {project_claim} Published by {escape(region["source"]["publisher"])}.</p>'
             f'<p class="caption">Sources with their quotes: <a href="ai/?ai-same-hour-view=sources#overview">chat and video on the AI page</a>, and <a href="explorer/#all-sources">every row in the Explorer</a>. The Resource Use Explorer runs the energy, carbon, water, and price of AI, video, search, and cloud software at settings you choose. Nothing you enter leaves your browser.</p>')
 
 

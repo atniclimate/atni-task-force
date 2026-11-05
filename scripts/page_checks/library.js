@@ -19,7 +19,7 @@ async function load(query = '', source = html) {
   const { document } = page;
   return { ...page, status: document.getElementById('library-status'), bars: [...document.querySelectorAll('.comp-row')], form: document.querySelector('.filters') };
 }
-const printed = (bar) => bar.querySelector('.comp-n').textContent.split(/\s/)[0].replace(/,/g, '');
+const printed = (bar) => bar.parentElement.querySelector('.comp-n').textContent.split(/\s/)[0].replace(/,/g, '');
 const out = (document) => document.querySelectorAll('.comp-field > .is-out').length;
 
 const groups = {

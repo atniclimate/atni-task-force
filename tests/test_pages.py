@@ -58,13 +58,15 @@ def test_a_square_for_every_entry_in_its_first_area_ink():
 
 
 def test_every_bar_states_what_its_filter_returns_and_its_share():
-    bars = parse(source("library")).all("a", "comp-row")
+    doc = parse(source("library"))
+    bars, printed = doc.all("a", "comp-row"), doc.all("a", "comp-n")  # the count is its own link, beside the filter's, to its claim
+    assert len(bars) == len(printed)
     assert {bar.attrs["data-filter"] for bar in bars} == {"area", "type", "year", "tribal"}
     assert sum(bar.attrs["data-filter"] == "tribal" for bar in bars) == 2 and sum(bar.attrs["data-filter"] == "area" for bar in bars) == 6
-    for bar in bars:
+    for bar, shown in zip(bars, printed):
         name, value = bar.attrs["data-filter"], bar.attrs["data-value"]
         count = len(selected_by(name, value))
-        assert bar.one("span", "comp-n").text().split()[0] == f"{count:,}", (name, value)
+        assert shown.text().split()[0] == f"{count:,}", (name, value)
         assert bar.attrs["href"] == f"?{name}={value}"
         assert float(bar.style()["--w"]) == pytest.approx(count / len(ENTRIES), abs=0.0001), (name, value)
 
@@ -91,7 +93,7 @@ def test_the_band_and_the_note_state_the_file_not_a_typed_number():
     several = sum(len(e["areas"]) > 1 for e in ENTRIES)
     updated = f"{DATA['updated'][5:7]}/{DATA['updated'][8:10]}/{DATA['updated'][:4]}"
     assert numbers(note.text())[:2] == [f"{several:,}", f"{len(ENTRIES):,}"] and updated in note.text()
-    assert note.one("a").attrs["href"] == "../data/library.json"
+    assert note.all("a")[-1].attrs["href"] == "../data/library.json"
 
 
 def test_the_strip_builder_is_idempotent_and_needs_its_markers():
