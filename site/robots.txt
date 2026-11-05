@@ -1,0 +1,4 @@
+# GitHub Pages serves this site under a path, and crawlers read robots.txt only at a host's root, so this file is a record of intent.
+User-agent: *
+Allow: /
+Sitemap: https://atniclimate.github.io/atni-task-force/sitemap.txt

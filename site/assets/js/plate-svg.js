@@ -85,7 +85,7 @@ function chart(f, rows, cfg, withLabels) {
   const last = (n) => points(n).at(-1);
   const wanted = (!withLabels ? [] : cfg.endLabels ? names : labelled(names, lead)).filter(last);
   const column = cfg.endLabels || !cfg.panels ? [...wanted].sort((a, b) => y(last(a).value) - y(last(b).value)) : [];
-  const tag = (n, more, attrs) => add(f.g, 'text', { class: `m-label${n === lead ? ' is-lead' : ''}${more}`, text: n, ...attrs });
+  const tag = (n, more, attrs) => add(f.g, 'text', { class: `m-label${n === lead ? ' is-lead' : ''}${more}`, 'aria-hidden': 'true', text: n, ...attrs }); // the Reading says the same
   const heights = spread(column.map((n) => y(last(n).value)), cfg.panels ? 14 : 15, f.y1, f.y0);
   column.forEach((n, i) => tag(n, cfg.panels && n !== lead ? ' m-end' : '', { x: cfg.panels ? f.x1 + 8 : x(last(n).x) + 10, y: heights[i], dy: '.32em' }));
   const placed = [];
@@ -100,7 +100,7 @@ function chart(f, rows, cfg, withLabels) {
     const at = rows.filter((r) => r.key === key);
     const left = i ? (px[i - 1] + px[i]) / 2 : f.x0;
     const right = i < keys.length - 1 ? (px[i] + px[i + 1]) / 2 : f.x1;
-    const band = add(f.g, 'g', { 'data-row': key, 'data-nx': px[i].toFixed(1), 'aria-label': at.map((r) => r.reading || r.display).join(' ') });
+    const band = add(f.g, 'g', { 'data-row': key, 'data-nx': px[i].toFixed(1) }); // plate.js gives it its role and names it with the Reading
     if (point) add(band, 'rect', { class: 'm-hit', x: px[i] - 22, y: y(at[0].value ?? at[0].high) - 22, width: 44, height: 44 });
     else add(band, 'rect', { class: 'm-hit', x: left, y: f.y1, width: right - left, height: f.y0 - f.y1 });
     for (const r of at.filter((a) => !blank(a.value))) {
@@ -129,7 +129,7 @@ function multiples(plot, rows, cfg) {
   const ch = (f.H + gap) / down;
   panels.forEach((panel, i) => {
     const g = add(f.g, 'g', { transform: `translate(${(i % cols) * cw} ${Math.floor(i / cols) * ch})` });
-    add(g, 'text', { class: 'm-title', x: 0, y: 14, text: panel.title });
+    add(g, 'text', { class: 'm-title', x: 0, y: 14, 'aria-hidden': 'true', text: panel.title });
     const named = cfg.highlight && seriesOf(rows).length > 1 && cw > 240;
     chart(inner(g, cw - gap, ch - gap, { top: 28, right: named ? 70 : 8, bottom: 24, left: 48 }), rows.filter((r) => r.panel === panel.id), { ...cfg, ...panel, panels: true, endLabels: named }, !!cfg.highlight);
   });

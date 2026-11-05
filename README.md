@@ -80,4 +80,4 @@ The site loads no analytics, trackers, outside scripts, or outside fonts, and it
 
 ## License
 
-The content license is to be decided by ATNI. The fonts in `site/assets/fonts/` are under the SIL Open Font License 1.1; their license texts travel with them.
+Site prose and datasets are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/). ATNI resolutions keep ATNI's terms, and upstream sources and quoted text keep their own. The fonts in `site/assets/fonts/` are under the SIL Open Font License 1.1; their license texts travel with them. A license for the code has not yet been set.

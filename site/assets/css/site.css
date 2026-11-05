@@ -32,8 +32,10 @@
 
 /* Energy program roles, in four blocks that mirror the cascade in tokens.css. The design system has no
    orange token yet; these are proposed to its owner as a program.energy group. Orange #FF914C fails
-   contrast on light grounds, so light has its own steps. On light, --energy-text is 4.29 on --tag-bg,
-   so it is never text on the well; --energy-mark is 2.94 there, so it is never a thin mark on the well. */
+   contrast on light grounds, so light has its own steps, chosen to pass on every ground that carries them.
+   Light --energy-text is 4.56 on --tag-bg (#EEF1F6), its lowest, 4.60 on --energy-wash, 4.81 on the base, 5.17 on
+   white, and white on --energy-fill is 5.17. Light --energy-mark is 3.24 on --tag-bg, 3.26 on the wash. Dark is
+   7.00 or more on every ground. scripts/page_checks/plate.js holds these to 4.5 and 3. */
 :root, [data-theme="dark"] {
   --energy-text: #FF914C;
   --energy-mark: #FF914C;
@@ -53,9 +55,9 @@
   --atni-non-text-button-text: var(--energy-on-fill);
 }
 [data-theme="light"] {
-  --energy-text: #C34B00;
-  --energy-mark: #F25C00;
-  --energy-fill: #C34B00;
+  --energy-text: #BC4800;
+  --energy-mark: #E85500;
+  --energy-fill: #BC4800;
   --energy-on-fill: #FFFFFF;
   --energy-hover: #A33F00;
   --energy-wash: #FEEFE6;
@@ -78,9 +80,9 @@
 }
 @media (prefers-color-scheme: light) {
   [data-theme="auto"] {
-    --energy-text: #C34B00;
-    --energy-mark: #F25C00;
-    --energy-fill: #C34B00;
+    --energy-text: #BC4800;
+    --energy-mark: #E85500;
+    --energy-fill: #BC4800;
     --energy-on-fill: #FFFFFF;
     --energy-hover: #A33F00;
     --energy-wash: #FEEFE6;
@@ -104,9 +106,9 @@
 }
 @media print {
   :root, [data-theme] {
-    --energy-text: #C34B00;
-    --energy-mark: #C34B00;
-    --energy-fill: #C34B00;
+    --energy-text: #BC4800;
+    --energy-mark: #BC4800;
+    --energy-fill: #BC4800;
     --energy-on-fill: #FFFFFF;
     --energy-hover: #A33F00;
     --energy-wash: #FEEFE6;
@@ -692,10 +694,12 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 .rail-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); column-gap: 48px; align-items: start; padding-bottom: 16px; }
 .rail-body > :is(h3, h4, .table-wrap, .records, .deadlines, .actions, [data-policy-searches], [data-policy-follow]) { grid-column: 1 / -1; }
 
-/* The plate: claim and controls, plot, and detail panel at 1100px and up; stacked below that. Orange keeps
-   one meaning inside a plate (the needle and the selection), so links wear heading ink. With scripts a wide plate
+/* The plate: claim and controls, plot, and detail panel at 1100px and up; stacked below that, and always in print. Orange
+   keeps one meaning inside a plate (the needle and the selection), so links wear heading ink. With scripts a wide plate
    has a height: the plot fills it, and the two text zones scroll on their own. plate.js runs the first plate on
-   the screen to the foot of the window through --plate-h. */
+   the screen to the foot of the window through --plate-h. That height is the plate's whole bargain and it is why text
+   meets the bottom edge: a zone longer than the plate is cut there. So a cut zone says so (.has-more fades its foot, and
+   a thin scrollbar shows), and a reader can get in by keyboard (plate.js makes a long claim a stop; the detail always is). */
 .plate {
   --row-min: 44px;
   --mark: clamp(12px, 0.9vw + 4px, 20px);
@@ -710,11 +714,14 @@ main > .section:nth-of-type(even) { background: var(--atni-ground-raised); }
 }
 .plate > * { min-width: 0; }
 .plate a:not(.button) { color: var(--atni-text-heading); text-decoration-color: var(--control); }
-@media (min-width: 1100px) {
+@media screen and (min-width: 1100px) {
   .plate { grid-template-columns: minmax(18rem, 22fr) minmax(0, 50fr) minmax(22rem, 28fr); }
   .plate.is-live { height: var(--plate-h, max(34rem, 72vh)); grid-template-rows: minmax(0, 1fr); align-items: stretch; }
   .plate-fit.is-live { height: var(--plate-h, max(34rem, calc(100vh - 120px))); }
-  .plate.is-live > .plate-claim, .plate.is-live > .plate-detail { overflow-y: auto; overscroll-behavior: contain; margin-inline: -4px; padding-inline: 4px; }
+  /* The inline padding holds a control's focus ring inside the scroller, which would clip it; scroll-padding keeps a focused control clear of the fade. */
+  .plate.is-live > .plate-claim, .plate.is-live > .plate-detail { overflow-y: auto; overscroll-behavior: contain; margin-inline: -8px; padding-inline: 8px; scroll-padding-block-end: 40px; scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
+  .plate.is-live > .has-more:not(:focus-visible) { -webkit-mask-image: linear-gradient(#000 calc(100% - 40px), transparent); mask-image: linear-gradient(#000 calc(100% - 40px), transparent); }
+  .plate.is-live > :is(.plate-claim, .plate-detail):focus-visible { outline-offset: -3px; }
   .plate.is-live > .plate-plot { min-height: 0; overflow: auto; }
   .plate[data-view="table"] { grid-template-columns: minmax(18rem, 20fr) minmax(0, 32fr) minmax(22rem, 48fr); }
   .plate.is-short:not([data-view="table"]) { grid-template-columns: minmax(18rem, 22fr) minmax(0, 58fr) minmax(18rem, 20fr); }

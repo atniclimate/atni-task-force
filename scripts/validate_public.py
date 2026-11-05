@@ -53,6 +53,7 @@ SECRET = re.compile(
 FORBIDDEN = re.compile(r"(?i)planning-T1|files-unsorted|docs\.google\.com|drive\.google\.com|[a-z0-9._%+-]+@atnitribes\.org|mailto:")
 EM_DASH = re.compile("\u2014| -- ")
 EXTERNAL_LOAD_TAGS = {"script", "link", "img", "iframe", "source", "audio", "video", "embed", "object", "track"}
+OWN_ORIGIN = "https://atniclimate.github.io/atni-task-force/"
 CSS_EXTERNAL = re.compile(r"(?i)@import|url\(\s*['\"]?(?:https?:)?//")
 JS_EXTERNAL = re.compile(r"(?i)(?:\bfrom\s*|\bimport\s*\(\s*|\bfetch\s*\(\s*)['\"`](?:https?:)?//")
 SLOT = re.compile(r"<!--\s*(/?)SLOT(?::([a-z0-9-]+):([a-z0-9-]+))?\s*-->")
@@ -109,6 +110,8 @@ class Page(HTMLParser):
         attrs = dict(attrs)
         if attrs.get("id"):
             self.ids.add(attrs["id"])
+        if tag == "link" and attrs.get("rel") == "canonical" and (attrs.get("href") or "").startswith(OWN_ORIGIN):
+            return  # it names this page's public address and loads nothing; scripts/add_page_meta.py writes it
         for key in ("href", "src"):
             if attrs.get(key):
                 self.refs.append((tag, attrs[key]))

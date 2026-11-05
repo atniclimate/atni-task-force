@@ -72,8 +72,9 @@ function initTabs(strip) {
   });
   on(strip, 'keydown', (e) => {
     const i = tabs.indexOf(e.target);
+    // Space on a link does nothing natively, so this is its one action; Enter arrives as the link's click. Alt+Left stays the browser's Back.
     const n = { ArrowRight: (i + 1) % tabs.length, ArrowLeft: (i || tabs.length) - 1, Home: 0, End: tabs.length - 1, ' ': i }[e.key];
-    if (i < 0 || !has(n)) return;
+    if (i < 0 || !has(n) || e.altKey || e.ctrlKey || e.metaKey) return;
     go(n, e);
     tabs[n].focus();
   });
@@ -227,7 +228,9 @@ function writeQuery(p) {
 }
 function announce(p) {
   clearTimeout(p.liveTimer);
-  p.liveTimer = setTimeout(() => { p.live.textContent = p.reading.textContent; }, 500);
+  // A drawn plot's selected band is named with the Reading, so with focus on it the sentence has already been spoken.
+  const spoken = () => document.activeElement === p.plot && document.getElementById(p.plot.getAttribute('aria-activedescendant'))?.ownerSVGElement;
+  p.liveTimer = setTimeout(() => { if (!spoken()) p.live.textContent = p.reading.textContent; }, 500);
 }
 function addControl(p, box) {
   const name = box.dataset.param;
@@ -278,6 +281,7 @@ function openReceipt(p, claim) {
   p.receipt.hidden = !claim;
   p.receipt.replaceChildren(...(claim ? document.getElementById(`${p.id}-source-${claim}`).cloneNode(true).children : []));
   for (const chip of all(p.root, '.receipt')) chip.setAttribute('aria-expanded', chip.dataset.claim === claim);
+  fitZones(p);
 }
 const firstClaim = (p) => claimsOf(focusOf(p, rowsAt(p, p.selected)))[0] ?? null;
 function factNodes(p, rows, key) {
@@ -315,25 +319,45 @@ const readoutOf = (r) => {
   const i = r.text.indexOf(' (');
   return i < 0 ? [r.text, r.unit] : [r.text.slice(0, i), `${r.text.slice(i + 1)} ${r.unit || ''}`.trim()];
 };
+// The Reading for one key: a page script's own sentence, or the plate's. A partly number keeps its limit either way.
+function readingAt(p, key, own) {
+  const cfg = p.data.plot;
+  const hl = cfg.highlight;
+  const rows = focusOf(p, rowsAt(p, key));
+  const speak = cfg.highlight_by ? rows.filter((r) => r.series === hl) : rows;
+  const lead = rows.find((r) => r.series === hl) || rows[0];
+  const label = cfg.panels && cfg.highlight_by ? hl : p.data.rows.find((r) => r.key === key).label;
+  const group = p.data.readings?.[[key, cfg.panels ? hl : '', p.state[p.data.by] || ''].join('|')];
+  const said = (group ? [group] : speak.map((r) => r.reading)).filter(Boolean);
+  let text = own || (said.length ? [...said, p.data.tail].filter(Boolean).join(' ') : `${label}: ${lead ? lead.display : p.data.not_counted}.`);
+  for (const r of speak) if (r.limit && !text.includes(r.limit)) text += ` Limit: ${r.limit}`;
+  return text;
+}
 function paint(p) {
   const key = p.shown;
   const cfg = p.data.plot;
   const hl = cfg.highlight;
   const at = rowsAt(p, key);
   const rows = focusOf(p, at);
-  const speak = cfg.highlight_by ? rows.filter((r) => r.series === hl) : rows;
   const seen = new Set();
   const inView = (n) => { const off = n.closest('[hidden]'); return !off || !p.plot.contains(off); };
   const nodes = all(p.root, '[data-row]').filter(inView); // rows may sit under the Reading
+  const text = readingAt(p, key, p.override.reading);
   for (const node of nodes) {
     const k = node.dataset.row;
     node.classList.toggle('is-on', k === key);
-    set(node, { role: seen.has(k) ? 'none' : cfg.type === 'matrix' ? 'gridcell' : 'option' });
-    if (!seen.has(k)) {
-      set(node, { id: node.id || `${p.id}-row-${k}`, 'aria-selected': k === p.selected });
-      if (k === p.selected) p.plot.setAttribute('aria-activedescendant', node.id);
+    if (seen.has(k)) { // small multiples draw a key once per cell; one option stands for them all
+      node.setAttribute('aria-hidden', 'true');
+      continue;
     }
     seen.add(k);
+    set(node, { role: cfg.type === 'matrix' ? 'gridcell' : 'option', id: node.id || `${p.id}-row-${k}`, 'aria-selected': k === p.selected });
+    if (k === p.selected) p.plot.setAttribute('aria-activedescendant', node.id);
+    if (node.ownerSVGElement) {
+      node.setAttribute('aria-label', k === key ? text : readingAt(p, k)); // a drawn band holds no words of its own
+      // Chrome turns an option under a plain SVG group into a group, and its selection goes silent. This covers a page script's drawing too.
+      for (let g = node.parentElement; g.tagName === 'g'; g = g.parentElement) g.setAttribute('role', 'none');
+    }
   }
   const spot = nodes.find((node) => node.dataset.row === key);
   const needle = spot?.closest('.ladder')?.dataset.form === 'bar' || cfg.type === 'instrument' || cfg.select === 'point' ? null : spot?.dataset.nx ? `${spot.dataset.nx}px` : spot?.style.getPropertyValue('--x');
@@ -344,12 +368,6 @@ function paint(p) {
   const gapText = lead ? lead.display : p.data.not_counted;
   [p.value.textContent, p.unit.textContent] = p.override.readout || (lead?.text ? readoutOf(lead) : ['', gapText]);
   p.value.parentElement.classList.toggle('is-long', p.value.textContent.length >= 9);
-  const label = cfg.panels && cfg.highlight_by ? hl : p.data.rows.find((r) => r.key === key).label;
-  const group = p.data.readings?.[[key, cfg.panels ? hl : '', p.state[p.data.by] || ''].join('|')];
-  const said = (group ? [group] : speak.map((r) => r.reading)).filter(Boolean);
-  let text = p.override.reading || (said.length ? [...said, p.data.tail].filter(Boolean).join(' ') : `${label}: ${gapText}.`);
-  // A partly number keeps its limit, even in a page script's sentence.
-  for (const r of speak) if (r.limit && !text.includes(r.limit)) text += ` Limit: ${r.limit}`;
   p.reading.textContent = text;
   p.facts.replaceChildren(...factNodes(p, rows, key));
   const claims = new Set([...claimsOf(focusOf(p, rowsAt(p, p.selected))), ...(p.data.also || []).filter((a) => !a.at || a.at === p.selected).map((a) => a.claim), ...(p.data.cites || [])]);
@@ -503,7 +521,7 @@ function foldRows(p) {
   if (!p.data.plot.fold) return;
   const off = p.keys.filter((k) => !rowsAt(p, k).length);
   for (const node of all(p.plot, '[data-row]')) node.hidden = off.includes(node.dataset.row);
-  p.fold = p.fold || p.plot.appendChild(h('p', { class: 'caption plate-fold', 'aria-hidden': 'true' })); // the Table holds the same rows
+  p.fold = p.fold || p.plot.appendChild(h('p', { class: 'caption plate-fold' }));
   p.fold.hidden = !off.length;
   p.fold.textContent = `${p.data.not_counted}: ${off.map((k) => p.data.rows.find((r) => r.key === k).label).join('; ')}.`;
 }
@@ -515,6 +533,15 @@ function fitDetail(p) {
   p.root.classList.add('is-short');
   p.root.classList.toggle('is-short', p.detail.scrollHeight <= p.detail.clientHeight);
   p.receipt.hidden = hidden;
+}
+// A zone with more below fades at its foot, so a cut line reads as "scroll". A claim that scrolls is also a keyboard stop, because Tab through its controls cannot reach the text after them.
+function fitZones(p) {
+  for (const zone of [p.claim, p.detail]) zone.classList.toggle('has-more', zone.scrollTop + zone.clientHeight < zone.scrollHeight - 1);
+  const tall = p.claim.scrollHeight > p.claim.clientHeight + 1;
+  for (const [name, value] of Object.entries({ tabindex: 0, role: 'group', 'aria-label': 'Finding and settings' })) {
+    if (tall) p.claim.setAttribute(name, value);
+    else p.claim.removeAttribute(name);
+  }
 }
 function update(p, reason) {
   p.override = {};
@@ -555,6 +582,7 @@ function update(p, reason) {
   paint(p);
   if (reason === 'state' && p.open) openReceipt(p, firstClaim(p)); // a setting can change whose figure this is
   if (reason === 'init' || reason === 'size') fitDetail(p);
+  fitZones(p);
 }
 function preview(p, key) {
   p.shown = key;
@@ -566,6 +594,7 @@ function select(p, key, openIt = true) {
   writeQuery(p);
   announce(p);
   openReceipt(p, openIt ? firstClaim(p) : null); // the source, its date, boundary, and quote fill the panel
+  p.detail.scrollTop = 0; // the Reading that just changed
 }
 function reset(p) {
   for (const [name, c] of p.params) {
@@ -593,23 +622,38 @@ function wirePlot(p) {
   const { plot } = p;
   const matrix = p.data.plot.type === 'matrix';
   const across = matrix ? p.data.plot.columns.length : 1;
+  // The pattern and its reason are in docs/PLATE-KIT.md: a list box of rows or years, or a grid for a matrix, one Tab stop, the selection named by aria-activedescendant.
   set(plot, { tabindex: 0, role: matrix ? 'grid' : 'listbox', 'aria-labelledby': `${p.id}-title` });
+  if (/^(lines|multiples)$/.test(p.data.plot.type)) plot.setAttribute('aria-orientation', 'horizontal'); // years run across
   for (const list of all(plot, '.ladder-rows, .instrument')) list.setAttribute('role', 'none');
+  all(plot, '.ladder-group').forEach((group, i) => { // two rulers: the name of the ruler is said on the way into its rows
+    const label = group.querySelector('.ladder-group-label');
+    if (label) set(group, { role: 'group', 'aria-labelledby': set(label, { id: `${p.id}-ruler-${i}` }).id });
+  });
   if (matrix) { // the plot is the grid; the table inside it keeps the same rows and cells
     plot.querySelector('table').setAttribute('role', 'none');
     for (const part of all(plot, 'thead, tbody')) part.setAttribute('role', 'rowgroup');
     for (const row of all(plot, 'tr')) row.setAttribute('role', 'row');
-    for (const cell of all(plot, 'thead th, thead td')) cell.setAttribute('role', 'columnheader');
+    for (const cell of all(plot, 'thead th, thead td')) cell.setAttribute('role', cell.textContent.trim() ? 'columnheader' : 'gridcell'); // the empty corner heads nothing
     for (const cell of all(plot, 'tbody th')) cell.setAttribute('role', 'rowheader');
   }
   on(plot, 'keydown', (e) => {
+    const cornerKey = matrix && e.ctrlKey && (e.key === 'Home' || e.key === 'End');
+    if (e.altKey || e.metaKey || (e.ctrlKey && !cornerKey)) return; // the browser's own shortcuts
     const keys = p.keys.filter((k) => !p.rowNodes.get(k)?.hidden); // a row turned off is no stop
     const i = keys.indexOf(p.selected);
-    const n = { ArrowRight: i + 1, ArrowDown: i + across, ArrowLeft: i - 1, ArrowUp: i - across, Home: 0, End: keys.length - 1, Enter: i, ' ': i }[e.key];
+    const col = i % across;
+    const stay = (n) => (has(keys[n]) ? n : i);
+    const moves = matrix // a grid stops at its edges; a list stops at its ends, and either axis steps it
+      ? { ArrowRight: col < across - 1 ? i + 1 : i, ArrowLeft: col ? i - 1 : i, ArrowDown: stay(i + across), ArrowUp: stay(i - across), Home: cornerKey ? 0 : i - col, End: cornerKey ? keys.length - 1 : i - col + across - 1 }
+      : { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: keys.length - 1 };
+    const press = e.key === 'Enter' || e.key === ' ';
+    const n = press ? i : moves[e.key];
     if (!has(n)) return;
     e.preventDefault();
-    if (n === i) setView(p, 'reading');
+    if (press) setView(p, 'reading');
     select(p, keys[Math.max(0, Math.min(n, keys.length - 1))]);
+    document.getElementById(plot.getAttribute('aria-activedescendant'))?.scrollIntoView?.({ block: 'nearest' }); // focus stays on the plot, so nothing else brings the row into view
   });
   // elementFromPoint follows a sideways touch drag.
   let last = null;
@@ -639,7 +683,7 @@ function initPlate(root) {
   const p = {
     id, root, data, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env },
     plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
-    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'), detail: find('.plate-detail'),
+    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'), detail: find('.plate-detail'), claim: find('.plate-claim'),
     moreChips: find('.plate-chips').appendChild(h('button', { type: 'button', class: 'plate-chip-more', hidden: '' })),
   };
   p.rowNodes = new Map(all(p.plot, '.ladder-row, .instrument-row').map((node) => [node.dataset.row, node]));
@@ -649,6 +693,10 @@ function initPlate(root) {
   root.classList.add('is-live');
   for (const part of all(root, '[data-js]')) part.hidden = false;
   set(p.detail, { tabindex: 0, role: 'group', 'aria-label': 'Detail' }); // it scrolls on its own at full width
+  for (const zone of [p.claim, p.detail]) zone.addEventListener('scroll', () => fitZones(p), { passive: true });
+  root.addEventListener('toggle', () => fitZones(p), true); // More assumptions opens in the claim; toggle does not bubble
+  // Each plate's table region is a landmark, so each needs its own name.
+  for (const region of all(root, '.table-scroll[role="region"]')) region.setAttribute('aria-label', `Table of values: ${find('.plate-title')?.textContent ?? id}`);
   setView(p, 'reading');
   on(root, 'change', (e) => { if (e.target.closest('.plate-views')) setView(p, e.target.value); });
   on(root, 'click', (e) => {

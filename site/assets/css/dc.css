@@ -92,7 +92,7 @@ a.dc-fact { color: var(--atni-text-link); }
 #dc-tradeoff-matrix .matrix tbody :is(td, th) { padding-block: 4px; }
 #dc-tradeoff-matrix .matrix thead :is(th, td):last-child { width: 20%; }
 /* Seven rows of words: the plate grows to hold them rather than hide the last rows behind a scroll. */
-@media (min-width: 1100px) { #dc-tradeoff-matrix.is-live { height: auto; min-height: var(--plate-h, 34rem); } }
+@media screen and (min-width: 1100px) { #dc-tradeoff-matrix.is-live { height: auto; min-height: var(--plate-h, 34rem); } }
 #dc-tradeoff-matrix .matrix-figures { gap: 2px; }
 #dc-tradeoff-matrix .matrix-figure { grid-template-columns: 10px minmax(0, 1fr); font-size: 0.8125rem; line-height: 1.3; }
 #dc-tradeoff-matrix .matrix-figure strong { font-size: clamp(0.875rem, 0.8rem + 0.2vw, 1.0625rem); }

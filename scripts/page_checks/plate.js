@@ -89,6 +89,14 @@ async function tabs() {
   eq(links[13].getAttribute('aria-selected'), 'true', 'wraps to last');
   key(window, links[13], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'home');
+  // Space is the one action on a link's own keydown, and takes the page scroll with it; Alt+Left stays the browser's Back.
+  const hash = window.location.hash;
+  ok(key(window, links[0], ' ').defaultPrevented, 'Space does not scroll the page');
+  eq(document.getElementById(hash.slice(1) || 'sessions').hidden, false, 'Space keeps the panel');
+  eq(links[0].getAttribute('aria-selected'), 'true', 'Space keeps the tab');
+  ok(!fire(window, links[0], 'keydown', { key: 'ArrowLeft', altKey: true }).defaultPrevented, 'Alt+Left is not a tab key');
+  eq(links[0].getAttribute('aria-selected'), 'true', 'and moves nothing');
+  ok(links.every((a, i) => a.getAttribute('aria-controls') === panels[i].id && panels[i].getAttribute('aria-labelledby') === a.id), 'tabs and panels name each other');
   window.location.hash = '#spending';
   await wait(20);
   ok(!panels[2].hidden, 'hashchange follows');
@@ -322,6 +330,11 @@ async function svgPlots() {
   const bands = [...p.plot.querySelectorAll('[data-row]')];
   eq(bands.length, 6, 'one band per year');
   ok(bands[1].getAttribute('aria-label').length > 0, 'band named');
+  eq(bands.at(-1).getAttribute('role'), 'option', 'a band is an option, so its name is spoken');
+  eq(bands.at(-1).getAttribute('aria-label'), p.reading.textContent, 'the selected band is named with the Reading');
+  ok(bands[1].getAttribute('aria-label').includes('2021'), 'and each other band with its own');
+  eq(p.plot.getAttribute('aria-orientation'), 'horizontal', 'years run across');
+  ok(p.plot.querySelector('.m-label').getAttribute('aria-hidden') === 'true', 'a line name stays out of the list');
   eq(bands.at(-1).getAttribute('aria-selected'), 'true', 'latest year by default');
   ok(p.plot.style.getPropertyValue('--at').endsWith('px'), 'needle in pixels');
   eq(p.facts.querySelectorAll('li').length, 2, 'every series at that year listed');
@@ -372,6 +385,8 @@ async function svgPlots() {
   const y2024 = [...many.plot.querySelectorAll('[data-row="2024"]')];
   eq(y2024.length, 4, 'the year in every cell');
   eq(y2024.filter((n) => n.getAttribute('role') === 'option').length, 1, 'one option per year');
+  ok(y2024.slice(1).every((n) => n.getAttribute('aria-hidden') === 'true' && !n.hasAttribute('aria-label') && !n.hasAttribute('role')), 'the rest stand behind it, with no name to conflict');
+  eq(y2024[0].parentElement.getAttribute('role'), 'none', 'a cell group between the svg and its option gets out of the way, or Chrome hides the option');
   eq(new Set([...many.plot.querySelectorAll('[role="option"]')].map((n) => n.id)).size, many.plot.querySelectorAll('[role="option"]').length, 'option ids are unique');
   ok(y2024.every((n) => n.classList.contains('is-on')), 'the selection marks every cell');
   ok(many.plot.querySelectorAll('.is-on > .m-dot').length === 4, 'a square per cell');
@@ -555,6 +570,25 @@ async function matrix() {
   ok(!cell('power--unit').classList.contains('matrix-figure') && !p.receipt.hidden, 'one figure opens its receipt');
   key(window, p.plot, 'ArrowUp');
   eq(cell('water--unit').getAttribute('aria-selected'), 'true', 'up moves a row');
+  key(window, p.plot, 'ArrowUp');
+  eq(cell('water--unit').getAttribute('aria-selected'), 'true', 'a grid stops at its top edge');
+  key(window, p.plot, 'Home');
+  eq(cell('water--national').getAttribute('aria-selected'), 'true', 'Home goes to the start of the row');
+  key(window, p.plot, 'ArrowLeft');
+  eq(cell('water--national').getAttribute('aria-selected'), 'true', 'a grid stops at its left edge');
+  key(window, p.plot, 'End');
+  eq(cell('water--open').getAttribute('aria-selected'), 'true', 'End goes to the end of the row');
+  key(window, p.plot, 'ArrowRight');
+  eq(cell('water--open').getAttribute('aria-selected'), 'true', 'and Right does not wrap to the next row');
+  fire(window, p.plot, 'keydown', { key: 'End', ctrlKey: true });
+  const lastCell = [...p.plot.querySelectorAll('td[data-row]')].at(-1);
+  eq(lastCell.getAttribute('aria-selected'), 'true', 'Ctrl+End goes to the last cell');
+  key(window, p.plot, 'ArrowDown');
+  eq(lastCell.getAttribute('aria-selected'), 'true', 'a grid stops at its foot, in its own column');
+  fire(window, p.plot, 'keydown', { key: 'Home', ctrlKey: true });
+  eq(cell('water--national').getAttribute('aria-selected'), 'true', 'Ctrl+Home goes to the first cell');
+  ok(!fire(window, p.plot, 'keydown', { key: 'ArrowRight', altKey: true }).defaultPrevented, 'browser shortcuts pass through');
+  eq(p.plot.querySelectorAll('[role="columnheader"]').length, [...p.plot.querySelectorAll('thead :is(th, td)')].filter((n) => n.textContent.trim()).length, 'an empty corner is no column header');
   fire(window, cell('water--open').querySelector('p'), 'click');
   ok(p.reading.textContent.startsWith('Water, Open question: Watershed and season.'), 'a word cell has a Reading');
   eq(p.chips().length, 0, 'and no receipt');
@@ -787,5 +821,76 @@ async function fit() {
   ok(document.getElementById('matrix').classList.contains('is-entering'), 'a tab change may move once');
 }
 
+// A zone cut by the plate's height says so, and a claim that scrolls can be reached by keyboard.
+async function zones() {
+  const { window, document } = await load();
+  const root = document.getElementById('session-energy');
+  const claim = root.querySelector('.plate-claim');
+  const detail = root.querySelector('.plate-detail');
+  let tall = 5000;
+  for (const zone of [claim, detail]) Object.defineProperty(zone, 'scrollHeight', { get: () => tall });
+  claim.dispatchEvent(new window.Event('scroll'));
+  ok(claim.classList.contains('has-more') && detail.classList.contains('has-more'), 'more below shows');
+  eq(claim.getAttribute('tabindex'), '0', 'a claim that scrolls is a keyboard stop');
+  eq(claim.getAttribute('role'), 'group', 'with a role');
+  ok(claim.getAttribute('aria-label').length > 0, 'and a name');
+  eq(detail.getAttribute('tabindex'), '0', 'the detail always is');
+  detail.scrollTop = 900;
+  key(window, root.querySelector('.plate-plot'), 'ArrowDown');
+  eq(detail.scrollTop, 0, 'a new selection brings the changed Reading back into view');
+  tall = 10;
+  claim.dispatchEvent(new window.Event('scroll'));
+  ok(!claim.classList.contains('has-more'), 'nothing below, no fade');
+  eq(claim.getAttribute('tabindex'), null, 'and no extra stop');
+  eq(claim.getAttribute('role'), null, 'or role');
+}
 
-module.exports = { groups: { shortDetail, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit } };
+// Tokens: every Energy orange pairing, in both themes, at the numbers that fail silently.
+async function contrast() {
+  const lum = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
+  const css = read('site/assets/css/site.css');
+  const tokens = read('site/assets/css/tokens.css');
+  const token = (name) => new RegExp(`--atni-color-${name}: (#[0-9A-Fa-f]{6})`).exec(tokens)[1];
+  const block = (head) => {
+    const body = css.slice(css.indexOf(head));
+    return (name) => new RegExp(`--energy-${name}: (#[0-9A-Fa-f]{6})`).exec(body)[1];
+  };
+  const dark = block(':root, [data-theme="dark"] {');
+  const light = block('[data-theme="light"] {');
+  const auto = block('[data-theme="auto"] {');
+  const print = block('@media print {\n  :root, [data-theme] {');
+  const grounds = {
+    dark: [token('core-black-bg'), token('core-grey-element'), token('core-grey-overlay'), dark('wash')],
+    light: [token('core-surface'), token('core-surface-tint'), token('support-tag-neutral-bg'), light('wash')],
+  };
+  for (const theme of ['dark', 'light']) {
+    const t = theme === 'dark' ? dark : light;
+    for (const ground of grounds[theme]) {
+      ok(ratio(t('text'), ground) >= 4.5, `${theme} --energy-text on ${ground}`);
+      ok(ratio(t('hover'), ground) >= 4.5, `${theme} --energy-hover on ${ground}`);
+      ok(ratio(t('mark'), ground) >= 3, `${theme} --energy-mark on ${ground}`);
+      ok(ratio(t('fill'), ground) >= 3, `${theme} --energy-fill on ${ground}`);
+    }
+    ok(ratio(t('on-fill'), t('fill')) >= 4.5, `${theme} ink on the fill`);
+    ok(ratio(t('on-fill'), t('hover')) >= 4.5, `${theme} ink on the hover`);
+  }
+  for (const name of ['text', 'mark', 'fill', 'hover', 'wash', 'on-fill']) eq(auto(name), light(name), `auto light repeats --energy-${name}`);
+  eq(print('text'), light('text'), 'print text is the light step');
+  ok(ratio(print('mark'), light('wash')) >= 3, 'print mark on the wash');
+}
+
+// Rules that only a browser applies, held as text here; scripts/a11y_check.js runs the rest.
+async function printAndMotion() {
+  const css = read('site/assets/css/site.css');
+  ok(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{ transition-duration: 0ms !important; animation-duration: 0ms !important;/.test(css), 'reduced motion zeroes every transition and animation');
+  ok(/\[role="tabpanel"\]\[hidden\]/.test(css) && /\.plate-view\[hidden\] \{ display: grid !important; \}/.test(css), 'print opens every panel and view');
+  ok(/details::details-content \{ display: block;/.test(css), 'print opens every disclosure');
+  ok(css.includes('@media screen and (min-width: 1100px) {\n  .plate {'), 'the plate grid and its fixed height are for the screen, so print can never clip a zone');
+}
+
+
+module.exports = { groups: { shortDetail, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, contrast, printAndMotion } };
