@@ -1,0 +1,41 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-lbnl-us",
+ "page": "data-centers/index.html",
+ "eyebrow": "The whole building",
+ "title": "LBNL counts {c[dem-028][value]} TWh for US data centers in 2024 and {c[dem-029][value]} by 2030 in its reference case, within {c[dem-030][low]} to {c[dem-030][high]} (2025 Update)",
+ "subtitle": "TWh a year: servers, storage, network, cooling, and power. Dashed is a projection, and never on the same axis as EIA's servers-only series.",
+ "boundary": "Whole facility: servers, storage, network, cooling, and power.",
+ "plot": {
+  "type": "lines",
+  "projected_from": 2025,
+  "highlight": "Reference Case"
+ },
+ "reading": "{year}, {series}: {display}.",
+ "tail": "LBNL 2025 Update, whole facility, 06/2026; EPRI's own scenarios where named.",
+ "rows": [
+  {"series": "Reference Case", "claim": "dem-028"},
+  {"series": "Reference Case", "claim": "dem-033"},
+  {"series": "Reference Case", "claim": "dem-029", "range_from": "dem-030"},
+  {"series": "Consolidated Deployment", "claim": "dem-031", "modeled": true},
+  {"series": "High Inference Energy", "claim": "dem-032", "modeled": true},
+  {"series": "EPRI scenarios", "claim": "dem-051", "dx": -14}
+ ],
+ "also": [
+  {"claim": "tr-064", "label": "Growth from 2023 to 2024, on revised history"},
+  {"claim": "dem-034", "label": "Interconnection capacity needed by 2030 (capacity, not energy)"},
+  {"claim": "dem-035", "label": "Share of US load growth, 2024 to 2030"},
+  {"claim": "dem-053", "label": "BNEF installed capacity, 2030 (capacity, not energy)"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Year", "field": "year"},
+   {"label": "Case", "field": "series"},
+   {"label": "TWh", "field": "value"},
+   {"label": "Low", "field": "low"},
+   {"label": "High", "field": "high"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

@@ -1,0 +1,1471 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "econ",
+ "claims": [
+  {
+   "id": "ec-001",
+   "entity": "Software Carbon Intensity (SCI) specification, adopted as ISO/IEC 21031:2024",
+   "metric": "rate formula for software carbon: SCI = (O + M) per R, with O = E x I",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per functional unit R",
+   "year": 2024,
+   "boundary": "Reporter-chosen software boundary: compute, storage, networking, memory, idle machines, backup, redundancy, and end-user, IoT and edge devices. Carbon only: no water, no price.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "average or marginal (reporter's choice), location-based only",
+   "source": {
+    "title": "sci/SPEC.md, Software Carbon Intensity (SCI) Specification, version 1.1.0",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "SCI = (O + M) per R",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-002",
+   "entity": "SCI specification v1.1.0",
+   "metric": "functional unit R is the reporter's choice; a different R must be converted and the factor disclosed",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2024,
+   "boundary": "Suggested R list: API call/request, benchmark, user, machine, minute/time unit, device, physical site, data volume, batch job, transaction, database read/write. A token and a prompt are not on the list.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "sci/SPEC.md, Software Carbon Intensity (SCI) Specification, version 1.1.0",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "If the functional unit of a software component is not the same as the aggregate functional unit, then the component SCI score needs to be converted to match that of the aggregate SCI functional unit.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-003",
+   "entity": "SCI specification v1.1.0",
+   "metric": "grid intensity rule: location-based; short-run marginal, long-run marginal, or average; market-based excluded",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per kWh",
+   "year": 2024,
+   "boundary": "Operational emissions O = E x I, electricity at the point of use.",
+   "segments": [
+    "data center",
+    "network",
+    "device"
+   ],
+   "basis": "average or marginal, both allowed",
+   "source": {
+    "title": "sci/SPEC.md, Software Carbon Intensity (SCI) Specification, version 1.1.0",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "If the electricity consumption is connected to a grid, the short run marginal, long run marginal, or average emissions grid intensity of that grid shall be used, which excludes any [market-based measures](#market-based-measures).",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-004",
+   "entity": "SCI specification v1.1.0",
+   "metric": "energy boundary counts reserved or provisioned hardware, not only the share used",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "kWh",
+   "year": 2024,
+   "boundary": "Hardware reserved or provisioned for the software, including idle capacity.",
+   "segments": [
+    "data center",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "sci/SPEC.md, Software Carbon Intensity (SCI) Specification, version 1.1.0",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "The energy consumption should include all energy consumed by hardware reserved or provisioned, not just the hardware actually used to meet the software needs.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-005",
+   "entity": "SCI specification v1.1.0",
+   "metric": "a comparison to a baseline must hold method, models, assumptions and functional units fixed",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2024,
+   "boundary": "Method consistency rule.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "sci/SPEC.md, Software Carbon Intensity (SCI) Specification, version 1.1.0",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci/blob/main/SPEC.md",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "The measurements, assumptions, models, functional units, etc. shall remain the same between the baseline and proposed SCI.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-006",
+   "entity": "SCI for AI (Green Software Foundation)",
+   "metric": "scope of the AI extension of SCI: data preparation, training, deployment and inference",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per functional unit (unit chosen per AI system type)",
+   "year": 2025,
+   "boundary": "AI lifecycle; carbon only. No water, no price, no numeric coefficients on the page read.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "SCI for AI",
+    "publisher": "Green Software Foundation",
+    "url": "https://greensoftware.foundation/standards/sci-ai/",
+    "published": null,
+    "kind": "standard"
+   },
+   "quote": "It provides a standardized methodology for calculating carbon emissions rates across the entire AI lifecycle, from data preparation and model training to deployment and inference.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-007",
+   "entity": "ITU-T L.1801 (02/2026)",
+   "metric": "functional unit rule for AI systems: a function and a quantifiable unit measuring its performance",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "LCA of an AI system; applies to products, not to organizations.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Recommendation ITU-T L.1801 (02/2026), Guidelines for assessing the environmental impact of artificial intelligence systems",
+    "publisher": "International Telecommunication Union",
+    "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-L.1801-202602-I!!PDF-E&type=items",
+    "published": "2026-02-17",
+    "kind": "standard"
+   },
+   "quote": "The functional unit shall be chosen in accordance with the goal and scope of the study. The functional unit defines the performance characteristics delivered by the AI system being studied.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-008",
+   "entity": "ITU-T L.1801 (02/2026)",
+   "metric": "LCA stage mapping: initial training in the production stage, inference in the use stage, reported separately",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "AI system life cycle against the four L.1410 LCA stages.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Recommendation ITU-T L.1801 (02/2026)",
+    "publisher": "International Telecommunication Union",
+    "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-L.1801-202602-I!!PDF-E&type=items",
+    "published": "2026-02-17",
+    "kind": "standard"
+   },
+   "quote": "From the main AI system processes, initial training shall be calculated as part of the LCA production stage.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-009",
+   "entity": "ITU-T L.1801 (02/2026)",
+   "metric": "allocation rule for shared infrastructure: by usage",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Shared data centers and cloud resources.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average (allocation by usage)",
+   "source": {
+    "title": "Recommendation ITU-T L.1801 (02/2026)",
+    "publisher": "International Telecommunication Union",
+    "url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-L.1801-202602-I!!PDF-E&lang=e&type=items",
+    "published": "2026-02-17",
+    "kind": "standard"
+   },
+   "quote": "In shared infrastructure use, full life cycle impact of the infrastructure shall be allocated to the users according to their usage.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-010",
+   "entity": "ITU-T L.1410 (11/2024) and ETSI ES 203 199",
+   "metric": "allocation hierarchy: avoid allocation, then physical relationship, then other relationships (economic value is the example given)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2024,
+   "boundary": "Co-products and shared ICT resources in an LCA.",
+   "segments": [
+    "data center",
+    "network",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Recommendation ITU-T L.1410 (11/2024), Methodology for environmental life cycle assessments of ICT goods, networks and services",
+    "publisher": "International Telecommunication Union",
+    "url": "https://www.itu.int/epublications/en/publication/itu-t-l-1410-2024-11-methodology-for-environmental-life-cycle-assessments-of-information-and-communication-technology-goods-networks-and-services",
+    "published": "2024-11-05",
+    "kind": "standard"
+   },
+   "quote": "Step 2: Where allocation cannot be avoided, the inputs and outputs of the system should be partitioned based on the underlying physical relationships between them (e.g., mass).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-011",
+   "entity": "ISO/IEC 30134-2:2026",
+   "metric": "Power Usage Effectiveness (PUE), edition 2",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "ratio",
+   "year": 2026,
+   "boundary": "Data center facility energy over IT equipment energy; mPUE variant for mixed-use buildings.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "ISO/IEC 30134-2:2026 Information technology, Data centres key performance indicators, Part 2: Power usage effectiveness (PUE)",
+    "publisher": "ISO/IEC",
+    "url": "https://www.iso.org/standard/30134-2",
+    "published": "2026-01-16",
+    "kind": "standard"
+   },
+   "quote": "ISO/IEC 30134-2:2026 defines Power Usage Effectiveness (PUE), the globally recognized key performance indicator (KPI) for quantifying how efficiently a data centre uses energy.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-012",
+   "entity": "Commission Delegated Regulation (EU) 2024/1364, data centre rating scheme",
+   "metric": "WUE as reported to the EU database: total water input per IT energy",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "m3 per MWh (equals L per kWh)",
+   "year": 2024,
+   "boundary": "Water measured as total water input (W IN, cubic metres) under EN 50600-4-9, over IT energy. An input measure, not consumption.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Commission Delegated Regulation (EU) 2024/1364 of 14 March 2024 on the first phase of the establishment of a common Union rating scheme for data centres",
+    "publisher": "European Commission",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF?uri=OJ%3AL_202401364",
+    "published": "2024-05-14",
+    "kind": "agency"
+   },
+   "quote": "the CEN/CENELEC EN 50600-4-9 standard WUE Category 2, or if not possible, the methodology set out in Category 1, or equivalent standard.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-013",
+   "entity": "AWARE (WULCA) with ISO 14046:2014",
+   "metric": "water scarcity weighting of a water-use volume in LCA",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "m3 world-eq (relative factor, 1 = world average)",
+   "year": 2020,
+   "boundary": "Consumption volume weighted by Available WAter REmaining in the watershed.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "What is AWARE (Available WAter REmaining)?",
+    "publisher": "WULCA (UNEP-SETAC Life Cycle Initiative)",
+    "url": "https://wulca-waterlca.org/what-is-aware",
+    "published": "2020-12-05",
+    "kind": "standard"
+   },
+   "quote": "It assesses the potential of water deprivation, to either humans or ecosystems, building on the assumption that the less water remaining available per area, the more likely another user will be deprived.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-014",
+   "entity": "GHG Protocol Scope 2 Guidance",
+   "metric": "location-based and market-based methods defined",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "tCO2e",
+   "year": 2015,
+   "boundary": "Purchased electricity, heat, steam and cooling for a reporting organization.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "location-based = grid average; market-based = purchase choices",
+   "source": {
+    "title": "Scope 2 Public Consultation Summary of Feedback, Executive Summary",
+    "publisher": "GHG Protocol",
+    "url": "https://ghgprotocol.org/sites/default/files/2026-07/S2-ExecutiveSummary-PublicConsultation%20ummaryofFeedback-2026.07.29.pdf",
+    "published": "2026-07-28",
+    "kind": "standard"
+   },
+   "quote": "The location-based method assigns emissions based on the average emission intensity of the grid(s) in which an organization operates, while the market-based method allocates emissions based on the specific electricity purchase decisions an organization makes.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-015",
+   "entity": "AI Energy Score (Hugging Face, Salesforce and partners)",
+   "metric": "primary metric: GPU energy in watt-hours per 1,000 queries, on standardized H100 hardware",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "Wh per 1,000 queries (GPU only)",
+   "year": 2025,
+   "boundary": "GPU energy only, NVIDIA H100, 1,000 queries per task run ten times, preprocess, prefill and decode summed. Host CPU, memory, idle capacity, PUE and embodied are outside.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average of measured runs",
+   "source": {
+    "title": "AI Energy Score",
+    "publisher": "Hugging Face",
+    "url": "https://huggingface.github.io/AIEnergyScore",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "The primary metric for evaluation is GPU energy consumption, measured in watt-hours per 1,000 queries.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-016",
+   "entity": "ML.ENERGY Benchmark v3.0, Text Conversation task (reasoning off), all models on B200 at minimum-energy settings",
+   "metric": "energy per response, mean",
+   "value": 184,
+   "low": null,
+   "high": null,
+   "unit": "J per response",
+   "year": 2025,
+   "boundary": "Benchmark of open models on NVIDIA H100 and B200 GPUs; the post analyzes GPU energy. Host, PUE, idle and embodied are not stated as included.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average of benchmark runs",
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY (University of Michigan)",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Since energy per response is energy per token multiplied by the number of output tokens , these two factors multiply, resulting in Problem Solving consuming on average 25x more energy per response than Text Conversation (mean 4,625 J vs. 184 J).",
+   "derived": "184 J / 3600 = 0.0511 Wh per response; mean output 717 tokens, so 184 / 717 = 0.257 J per output token = 0.0713 Wh per 1,000 output tokens; Problem Solving 4,625 / 6,988 = 0.662 J per token",
+   "status": "partly"
+  },
+  {
+   "limit": "A benchmark ratio on open models, not a production figure, and a reasoning answer is not the same answer.",
+   "id": "ec-017",
+   "entity": "ML.ENERGY Benchmark v3.0, Problem Solving (reasoning on) against Text Conversation",
+   "metric": "energy per response ratio from output length and lower batch size",
+   "value": 25,
+   "low": null,
+   "high": null,
+   "unit": "x (ratio)",
+   "year": 2025,
+   "boundary": "Same as the row above.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average of benchmark runs",
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY (University of Michigan)",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Notably, Problem Solving (reasoning) uses on average 25x more energy per response than Text Conversation.",
+   "derived": "6,988 / 717 = 9.7x more output tokens; 25 / 9.7 = 2.6x more energy per token from memory pressure limiting batch size",
+   "status": "partly"
+  },
+  {
+   "limit": "A company preprint that masks its absolute energy scale; the ratio varies widely with how many requests run at once.",
+   "id": "ec-018",
+   "entity": "Greenpixie AI token methodology (company preprint)",
+   "metric": "decode energy per token against prefill energy per token",
+   "value": 10,
+   "low": null,
+   "high": null,
+   "unit": "x (ratio, roughly)",
+   "year": 2026,
+   "boundary": "Measured GPU energy on open-weight models, non-GPU server energy estimated from wall time, Monte Carlo over size buckets for closed models; usage and embodied CO2e and water per token are modeled.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Greenpixie's AI Token Methodology: Assessing the Energy, Water and CO2-eq Impact of AI Tokens for Open and Closed Weight Models",
+    "publisher": "Greenpixie Ltd. (arXiv 2609.33965, v2)",
+    "url": "https://arxiv.org/html/2609.33965v2",
+    "published": "2026-09-29",
+    "kind": "preprint"
+   },
+   "quote": "Notably, the per-token decode energy and wall clock time is found to be roughly an order of magnitude larger than prefill.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-019",
+   "entity": "EcoLogits (open-source estimator)",
+   "metric": "request impact = usage + embodied, by ISO 14044 LCA, on the ML.ENERGY benchmark",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "per request (energy, GWP, primary energy, water)",
+   "year": 2025,
+   "boundary": "Server GPUs plus PUE for usage; hardware manufacturing share by time for embodied; end of life excluded.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Introduction, EcoLogits methodology",
+    "publisher": "EcoLogits (GenAI Impact)",
+    "url": "https://ecologits.ai/latest/methodology",
+    "published": "2025-11-13",
+    "kind": "model"
+   },
+   "quote": "EcoLogits employs the Life Cycle Assessment (LCA) methodology , as defined by ISO 14044, to estimate the environmental impacts of requests made to generative AI inference services.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-020",
+   "entity": "Cloud Carbon Footprint (open source), AWS average vCPU",
+   "metric": "server power per vCPU, minimum and maximum, with utilization-linear energy",
+   "value": 0.74,
+   "low": 0.74,
+   "high": 3.5,
+   "unit": "W per vCPU (min at 0 percent, max at 100 percent utilization)",
+   "year": 2020,
+   "boundary": "Compute only, per vCPU-hour, before PUE. Embodied emissions are included for compute only. Default utilization 50 percent for hyperscale.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Methodology, Cloud Carbon Footprint",
+    "publisher": "Cloud Carbon Footprint (Thoughtworks open source project)",
+    "url": "https://www.cloudcarbonfootprint.org/docs/methodology",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Average Minimum Watts (0% CPU Utilization): 0.74",
+   "derived": "Average Watts = Min Watts + Avg vCPU Utilization * (Max Watts - Min Watts); at 50 percent: 0.74 + 0.5 x (3.5 - 0.74) = 2.12 W per vCPU",
+   "status": "verified"
+  },
+  {
+   "id": "ec-021",
+   "entity": "Cloud Carbon Footprint (open source)",
+   "metric": "storage energy per terabyte-hour, HDD",
+   "value": 0.65,
+   "low": 0.65,
+   "high": 1.2,
+   "unit": "Wh per TB-hour (HDD 0.65, SSD 1.2)",
+   "year": 2020,
+   "boundary": "Allocated (not used) bytes, before PUE; replication factors applied separately; embodied for storage not included.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Methodology, Cloud Carbon Footprint",
+    "publisher": "Cloud Carbon Footprint (Thoughtworks open source project)",
+    "url": "https://www.cloudcarbonfootprint.org/docs/methodology",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "6.5 W / 10 TB = 0.65 Watt-Hours per Terabyte-Hour for HDD",
+   "derived": "0.65 Wh x 8,760 h = 5.69 kWh per TB-year at the device; x PUE 1.135 = 6.46 kWh; x 370 g per kWh (tr-066) = 2.4 kg CO2e per TB-year before replication",
+   "status": "verified"
+  },
+  {
+   "id": "ec-022",
+   "entity": "Cloud Carbon Footprint (open source)",
+   "metric": "network energy coefficient for data exchanged between data centers",
+   "value": 0.001,
+   "low": null,
+   "high": null,
+   "unit": "kWh per GB (appendix)",
+   "year": 2020,
+   "boundary": "Data center to data center traffic only. End-user traffic is excluded by design.",
+   "segments": [
+    "network"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Methodology, Cloud Carbon Footprint",
+    "publisher": "Cloud Carbon Footprint (Thoughtworks open source project)",
+    "url": "https://www.cloudcarbonfootprint.org/docs/methodology",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Networking Kilowatt Hours / Gigabyte: 0.001",
+   "derived": "0.001 kWh per GB = 1 Wh per GB, inside the 0.13 to 6.5 Wh per GB range already in the record (fp-124, fp-127, fp-129)",
+   "status": "partly"
+  },
+  {
+   "id": "ec-023",
+   "entity": "Cloud Carbon Footprint (open source)",
+   "metric": "PUE by provider",
+   "value": 1.135,
+   "low": 1.1,
+   "high": 1.185,
+   "unit": "ratio (AWS 1.135, GCP 1.1, Azure text 1.185 or appendix 1.125)",
+   "year": 2020,
+   "boundary": "Fleet averages from public statements; AWS a conservative guess.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Methodology, Cloud Carbon Footprint",
+    "publisher": "Cloud Carbon Footprint (Thoughtworks open source project)",
+    "url": "https://www.cloudcarbonfootprint.org/docs/methodology",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Average PUE: 1.135",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-024",
+   "entity": "Sustainable Web Design Model version 4 (CO2.js default)",
+   "metric": "operational energy intensity of data centers, top-down average",
+   "value": 0.055,
+   "low": null,
+   "high": null,
+   "unit": "kWh per GB",
+   "year": 2022,
+   "boundary": "Total data center energy (290 TWh, IEA 2022) over total internet data transfer (5.29 ZB, ITU 2023). Networks 0.059 and user devices 0.080 kWh per GB on the same method; embodied added separately.",
+   "segments": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "average (whole-system energy over traffic)",
+   "source": {
+    "title": "Estimating Digital Emissions, Sustainable Web Design",
+    "publisher": "Sustainable Web Design (Green Web Foundation, Mightybytes, Wholegrain Digital)",
+    "url": "https://sustainablewebdesign.org/estimating-digital-emissions",
+    "published": "2021-10-07",
+    "kind": "model"
+   },
+   "quote": "Operational energy intensity data centers = (290 × 10 ⁹  (kWh)) / (5.29 × 10 ¹²  (GB)) = 0.055 kWh/GB",
+   "derived": "0.055 kWh per GB = 55 Wh per GB, which is 122 times the 0.45 Wh per GB measured-delivery default and 2.8 times the DESNZ 19.6 Wh per GB used in the same-hour model; network 59 Wh per GB against 1.6 (fixed) and 25 (mobile)",
+   "status": "verified"
+  },
+  {
+   "id": "ec-025",
+   "entity": "German Environment Agency (UBA) Green Cloud Computing method, one HD video stream",
+   "metric": "data center carbon of one hour of HD video (2 GB)",
+   "value": 1.46,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per hour of streaming (about 2.3 W per stream)",
+   "year": 2021,
+   "boundary": "Data center only. 'Not counting power consumption for data transmission and local IT.'",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average (project measurements)",
+   "source": {
+    "title": "Digital services / Cloud computing",
+    "publisher": "Umweltbundesamt (German Environment Agency)",
+    "url": "https://www.umweltbundesamt.de/en/topics/digitalisation/green-it/digital-services-cloud-computing",
+    "published": "2022-01-10",
+    "kind": "agency"
+   },
+   "quote": "One hour of video streaming in high-definition (HD) quality (two gigabytes of video material) at the data centre had a carbon footprint of 1.46 grams of CO ₂ equivalents.",
+   "derived": "2.3 W x 1 h / 2 GB = 1.15 Wh per GB; 1.46 g / 2.3 Wh = 635 g per kWh implied",
+   "status": "partly"
+  },
+  {
+   "id": "ec-026",
+   "entity": "German Environment Agency (UBA) Green Cloud Computing method, online storage",
+   "metric": "global warming potential of online storage in four data centres",
+   "value": null,
+   "low": 166,
+   "high": 280,
+   "unit": "kgCO2e per TB stored per year",
+   "year": 2021,
+   "boundary": "Four data centres studied; boundary stated only as global warming potential of the service; life-cycle terms are likely but not confirmed from the page.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Digital services / Cloud computing",
+    "publisher": "Umweltbundesamt (German Environment Agency)",
+    "url": "https://www.umweltbundesamt.de/en/topics/digitalisation/green-it/digital-services-cloud-computing",
+    "published": "2022-01-10",
+    "kind": "agency"
+   },
+   "quote": "The global warming potential (GWP) of online (cloud) storage of the four data centres investigated ranges between 166 and 280 kilogrammes of CO ₂ equivalents per terabyte of stored data per year.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-027",
+   "entity": "Microsoft 365 (Exchange Online, SharePoint, OneDrive, Teams, Word, Excel, PowerPoint, Outlook)",
+   "metric": "datacenter-driven emissions per active user, one month",
+   "value": 210,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per active user per month (all three scopes); under 10 g for Scopes 1 and 2",
+   "year": 2022,
+   "boundary": "Microsoft's datacenter emissions for commercial customer usage; excludes the user's device and network.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "company-reported, market-based Scope 2 likely for the under-10 g figure",
+   "source": {
+    "title": "Microsoft 365 Sustainability Whitepaper",
+    "publisher": "Microsoft",
+    "url": "https://download.microsoft.com/download/d/c/1/dc1c940e-30f3-4388-a4aa-676493d5ece3/Microsoft365_Sustainability_Whitepaper.pdf",
+    "published": "2022-10-07",
+    "kind": "company-report"
+   },
+   "quote": "For the month of July 2022, we estimate that the volume of datacenter-driven emissions from providing Microsoft 365 services amounted to approximately 210 grams of carbon dioxide equivalent (CO2e) per active user",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-028",
+   "entity": "US data centers by space type (LBNL model)",
+   "metric": "average server utilization, conventional servers, 2027 projection",
+   "value": 20,
+   "low": 11,
+   "high": 50,
+   "unit": "percent (internal and small 20 in 2027, from 11 in 2014)",
+   "year": 2027,
+   "boundary": "Server operational time by space type: internal and small 11 to 20, colocation 21 to 35, hyperscale 45 to 50 percent (2014 to 2027).",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average (modeled assumption)",
+   "source": {
+    "title": "2024 United States Data Center Energy Usage Report",
+    "publisher": "Lawrence Berkeley National Laboratory (US DOE)",
+    "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf",
+    "published": "2024-12-19",
+    "kind": "agency"
+   },
+   "quote": "Servers in internal and small data centers average 11% utilization in 2014, rising linearly to 20% in 2027. Colocation data centers average 21% utilization in 2014, rising to 35% in 2027. Hyperscale data centers average 45% in 2014, rising to 50% in 2027.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-029",
+   "entity": "Cubbit distributed cloud storage (ARM single-board devices) against centralized cloud",
+   "metric": "modeled carbon footprint reduction, storage and transfer",
+   "value": 77,
+   "low": 50,
+   "high": 77,
+   "unit": "percent lower (storage 77, transfers 50)",
+   "year": 2018,
+   "boundary": "Model of a peer-to-peer storage network on home devices against a centralized cloud; replication factors 1.1 and 1.5 for erasure-coded networks against an assumed 2 for mirroring.",
+   "segments": [
+    "data center",
+    "network",
+    "device"
+   ],
+   "basis": "average (model)",
+   "source": {
+    "title": "The carbon footprint of distributed cloud storage",
+    "publisher": "Cubbit-affiliated authors (arXiv 1803.06973, v3)",
+    "url": "https://arxiv.org/abs/1803.06973",
+    "published": "2018-03-19",
+    "kind": "preprint"
+   },
+   "quote": "We demonstrate that, compared to the centralized cloud, the distributed architecture of Cubbit has a carbon footprint reduced of a 77% factor for data storage and of a 50% factor for data transfers.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "Only the abstract-level statements of this study were read; it describes a few cloud regions over six months.",
+   "id": "ec-030",
+   "entity": "Cloud storage across AWS, Azure and GCP regions (HotCarbon 2026 empirical study)",
+   "metric": "what drives stored-data emissions",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Scope 2 location-based emissions of 1 TB held June to November 2025 in several regions.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average, location-based",
+   "source": {
+    "title": "Carbon Emissions from Cloud Storage: An Empirical Analysis toward Actionable User Practices for Sustainable Storage",
+    "publisher": "HotCarbon 2026 (paper 75)",
+    "url": "https://hotcarbon.org/assets/2026/paper-75.pdf",
+    "published": "2026-07-01",
+    "kind": "peer-reviewed"
+   },
+   "quote": "replication strategies, and background management tasks, with read/write activity itself contributing minimally (§ 2).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-031",
+   "entity": "NVIDIA HGX H100 GPU baseboard (8 GPUs)",
+   "metric": "cradle-to-gate carbon footprint of one baseboard",
+   "value": 1312,
+   "low": null,
+   "high": null,
+   "unit": "kgCO2e per baseboard",
+   "year": 2026,
+   "boundary": "Manufacturing through factory gate; no use phase, no end of life.",
+   "segments": [
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Climate Change Mitigation (white paper)",
+    "publisher": "Global Electronics Council (citing NVIDIA product carbon footprint)",
+    "url": "https://globalelectronicscouncil.org/wp-content/uploads/GEC_Whitepaper_Climate-2026.pdf",
+    "published": "2026-08-26",
+    "kind": "company-report"
+   },
+   "quote": "The product carbon footprint analysis of NVIDIA HGX H100 determined that the carbon footprint from cradle-to-gate for one HGX H100 GPU baseboard is 1,312 kg CO2e.",
+   "derived": "1,312 / 8 = 164 kgCO2e per GPU, the value one cloud-carbon tool (Tailpipe) applies per H100",
+   "status": "partly"
+  },
+  {
+   "id": "ec-032",
+   "entity": "Anthropic inference (analyst estimate)",
+   "metric": "inference gross margin, blended",
+   "value": 65,
+   "low": null,
+   "high": null,
+   "unit": "percent (mid 60s; 38 in 2025, minus 94 in 2024)",
+   "year": 2026,
+   "boundary": "Gross margin on inference compute against revenue; analyst belief, not a filing.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Anthropic Growth and Bedrock Mix Drive AWS Margins Higher While Peers Lag",
+    "publisher": "SemiAnalysis (newsletter)",
+    "url": "https://newsletter.semianalysis.com/p/anthropic-growth-and-bedrock-mix",
+    "published": "2026-05-27",
+    "kind": "blog"
+   },
+   "quote": "We believe inference gross margins are now in the mid 60s, up from 38% in 2025 and -94% in 2024.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-034",
+   "entity": "Claude Haiku 5.5 (Claude API, global, standard, context at or under 100K)",
+   "metric": "list price per 1M output tokens (input in the note)",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "API list price; not cost, not energy. Promotional pricing is outside a list price.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Anthropic List Prices, effective 2026-10-07",
+    "publisher": "Anthropic",
+    "url": "https://assets.claude.com/1ef7a4a8e373004bc89d710b0a6f3f219323344f.pdf",
+    "published": "2026-10-06",
+    "kind": "company-report"
+   },
+   "quote": "Standard Global ≤100K $0.10 $0.50 $0.125 $0.20 $0.01",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-035",
+   "entity": "Claude Sonnet 5.5 (Claude API, global, standard)",
+   "metric": "list price per 1M output tokens (input in the note)",
+   "value": 10.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "API list price.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Anthropic List Prices, effective 2026-10-07",
+    "publisher": "Anthropic",
+    "url": "https://assets.claude.com/1ef7a4a8e373004bc89d710b0a6f3f219323344f.pdf",
+    "published": "2026-10-06",
+    "kind": "company-report"
+   },
+   "quote": "Standard Global All $2.00 $10.00 $2.50 $4.00 $0.10",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-036",
+   "entity": "Claude Opus 5.5 (Claude API, global, standard)",
+   "metric": "list price per 1M output tokens (input in the note)",
+   "value": 20.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "API list price.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Anthropic List Prices, effective 2026-10-07",
+    "publisher": "Anthropic",
+    "url": "https://assets.claude.com/1ef7a4a8e373004bc89d710b0a6f3f219323344f.pdf",
+    "published": "2026-10-06",
+    "kind": "company-report"
+   },
+   "quote": "Standard Global All $4.00 $20.00 $5.00 $8.00 $0.20",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-037",
+   "entity": "OpenAI gpt-6-luna (standard, short context)",
+   "metric": "list price per 1M output tokens (input in the note)",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "API list price; page undated, read 11/04/2026.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing, OpenAI API (standard pricing data, short context)",
+    "publisher": "OpenAI",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "| gpt-6-luna | $0.10 | $0.50 | $0.01 | $0.125 | $0.25 | $0.20 | $0.75 | $0.02 | $0.25 | $0.50 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-038",
+   "entity": "OpenAI gpt-6.1-sol (standard, short context)",
+   "metric": "list price per 1M output tokens (input in the note)",
+   "value": 10.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "API list price; page undated, read 11/04/2026.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing, OpenAI API (standard pricing data, short context)",
+    "publisher": "OpenAI",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "| gpt-6.1-sol | $2.00 | $10.00 | $0.10 | $2.50 | $5.00 | $4.00 | $15.00 | $0.20 | $5.00 | $10.00 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-039",
+   "entity": "Gemini 4 Argon (Gemini API, paid tier, standard)",
+   "metric": "list price per 1M output tokens including thinking tokens, before and after a scheduled increase",
+   "value": 10.0,
+   "low": 10.0,
+   "high": 20.0,
+   "unit": "USD per 1M output tokens ($10 through 11/30/2026, $20 from 12/01/2026)",
+   "year": 2026,
+   "boundary": "API list price; the page schedules the rise.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Gemini Developer API pricing",
+    "publisher": "Google",
+    "url": "https://ai.google.dev/gemini-api/docs/pricing",
+    "published": "2026-10-30",
+    "kind": "company-report"
+   },
+   "quote": "|Output price (including thinking tokens) |Not available |$10.00 through November 30, 2026. $20.00 starting December 1, 2026. |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-040",
+   "entity": "OpenRouter paid models (426 models)",
+   "metric": "median API price per 1M output tokens (input $0.50)",
+   "value": 2.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "Median of listed prices across models; a market-wide anchor, not weighted by usage.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "What a token costs to produce (CUDO AI Observatory)",
+    "publisher": "CUDO Compute",
+    "url": "https://observatory.cudocompute.com/inference",
+    "published": "2026-11-01",
+    "kind": "company-report"
+   },
+   "quote": "Across 426 paid models on OpenRouter, the median price is $0.50 per million input tokens and $2.00 per million output tokens.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-041",
+   "entity": "LLM inference price for a fixed level of capability",
+   "metric": "decline per year, five benchmarks",
+   "value": 13,
+   "low": 4.7,
+   "high": 75,
+   "unit": "x per year (47 percent per quarter; 75x at first debut, 4.7x two years later)",
+   "year": 2026,
+   "boundary": "Price of the cheapest model reaching a performance level; benchmark-defined, not task cost.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "The plunging price of thought",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/publications/the-plunging-price-of-thought",
+    "published": "2026-09-22",
+    "kind": "model"
+   },
+   "quote": "The cost of achieving a given level of AI performance has fallen about 47% per quarter since 2023, or 13× per year.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-042",
+   "entity": "State-of-the-art LLMs of 2023 (OpenRouter and Azure API data)",
+   "metric": "price decline for the same models, and average price paid per token",
+   "value": 1000,
+   "low": null,
+   "high": null,
+   "unit": "x decline (approximately)",
+   "year": 2025,
+   "boundary": "API prices from two marketplaces; excludes consumer subscriptions.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "The Emerging Market for Intelligence: Pricing, Supply, and Demand for LLMs",
+    "publisher": "National Bureau of Economic Research (working paper 34608)",
+    "url": "https://www.nber.org/system/files/working_papers/w34608/w34608.pdf",
+    "published": "2025-12-12",
+    "kind": "preprint"
+   },
+   "quote": "Models that were state-of-the-art in 2023 have experienced a price decline of approximately 1000 times, with similarly pronounced deflationary trends at other intelligence levels. The average price paid per token has remained relatively constant, consistent with demand for superior intelligence.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-043",
+   "entity": "Open-weight against closed models (OpenRouter and Azure data)",
+   "metric": "price gap at equal intelligence",
+   "value": 90,
+   "low": null,
+   "high": null,
+   "unit": "percent cheaper",
+   "year": 2025,
+   "boundary": "API prices.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "The Emerging Market for Intelligence: Pricing, Supply, and Demand for LLMs",
+    "publisher": "National Bureau of Economic Research (working paper 34608)",
+    "url": "https://www.nber.org/system/files/working_papers/w34608/w34608.pdf",
+    "published": "2025-12-12",
+    "kind": "preprint"
+   },
+   "quote": "with open-source models being 90% cheaper than comparable closed-source models of the same intelligence.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A short-run figure for buyers switching between providers of the same model, not an elasticity of total AI use.",
+   "id": "ec-044",
+   "entity": "LLM tokens by model and provider (OpenRouter and Azure data)",
+   "metric": "short-run price elasticity of token demand",
+   "value": 1.0,
+   "low": null,
+   "high": null,
+   "unit": "elasticity (reported only as just above one)",
+   "year": 2025,
+   "boundary": "Within a model, across providers, day-to-day price variation. Not an elasticity of total AI use.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "The Emerging Market for Intelligence: Pricing, Supply, and Demand for LLMs",
+    "publisher": "National Bureau of Economic Research (working paper 34608)",
+    "url": "https://www.nber.org/system/files/working_papers/w34608/w34608.pdf",
+    "published": "2025-12-12",
+    "kind": "preprint"
+   },
+   "quote": "In our preferred estimates, we find price elasticities just above one for model–provider combinations, suggesting that short-run Jevons’ Paradox is unlikely to operate at the market level.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-045",
+   "entity": "Vertically integrated AI companies (firm-level filings)",
+   "metric": "electricity cost as a share of total expenses",
+   "value": 1.6,
+   "low": 0.8,
+   "high": 1.6,
+   "unit": "percent of total expenses (0.8 in 2019, 1.6 in 2023)",
+   "year": 2023,
+   "boundary": "Company-wide expenses of integrated AI firms, not the cost of a served token.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Power Hungry: How AI Will Drive Energy Demand (WP/25/81)",
+    "publisher": "International Monetary Fund",
+    "url": "https://www.imf.org/-/media/files/publications/wp/2025/english/wpiea2025081-print-pdf.pdf",
+    "published": "2025-04-15",
+    "kind": "agency"
+   },
+   "quote": "Third, firm-level evidence demonstrates that electricity costs as a share of total expenses for vertically integrated AI companies doubled between 2019 and 2023, rising from 0.8% to 1.6% on average, reflecting the rapid expansion of energy-intensive data center operations.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-046",
+   "entity": "Pure data center companies (firm-level filings)",
+   "metric": "electricity cost as a share of total costs",
+   "value": 14,
+   "low": 13,
+   "high": 15,
+   "unit": "percent of total costs",
+   "year": 2023,
+   "boundary": "Operators of data centers, whose costs are mostly facility and power.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Power Hungry: How AI Will Drive Energy Demand (WP/25/81)",
+    "publisher": "International Monetary Fund",
+    "url": "https://www.imf.org/-/media/files/publications/wp/2025/english/wpiea2025081-print-pdf.pdf",
+    "published": "2025-04-15",
+    "kind": "agency"
+   },
+   "quote": "Notably, pure data center companies maintain a substantially higher electricity cost share of 13-15%",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-047",
+   "entity": "Typical 1 GW US hyperscaler AI data center (stylized model)",
+   "metric": "annualized total cost of ownership and the server share",
+   "value": 8.5,
+   "low": null,
+   "high": null,
+   "unit": "USD billion per year ($38B capex, $0.9B opex)",
+   "year": 2026,
+   "boundary": "Capex annualized over 5 years for IT equipment and 14 for the facility; stylized, not a facility.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Servers account for 60% of the total cost of ownership of a one-gigawatt AI data center",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/data-insights/ai-datacenter-cost-breakdown",
+    "published": "2026-05-14",
+    "kind": "model"
+   },
+   "quote": "A typical one-gigawatt AI data center requires $38 billion in up-front capital expenditure (CapEx) and $0.9 billion in annual operating expenses (OpEx). If CapEx is annualized over each asset’s lifespan, the total cost of ownership equates to $8.5 billion per year. Servers dominate this cost at $5 billion per year, or 60% of the total.",
+   "derived": "$8.5B per year per 1,000 MW = $8.5M per MW-year",
+   "status": "verified"
+  },
+  {
+   "id": "ec-048",
+   "entity": "Typical 1 GW US hyperscaler AI data center (stylized model)",
+   "metric": "energy cost per year, largest opex line",
+   "value": 0.6,
+   "low": null,
+   "high": null,
+   "unit": "USD billion per year",
+   "year": 2026,
+   "boundary": "Electricity purchased for the facility at the model's price and load.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Servers account for 60% of the total cost of ownership of a one-gigawatt AI data center",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/data-insights/ai-datacenter-cost-breakdown",
+    "published": "2026-05-14",
+    "kind": "model"
+   },
+   "quote": "Operating costs are small by comparison: even energy, the largest OpEx category, costs only $0.6 billion per year.",
+   "derived": "0.6 / 8.5 = 7.06 percent of annualized TCO; 0.6 / 0.9 = 66.7 percent of opex; at a 3-year IT life (TCO $12B) 5.0 percent, at 7 years ($7B) 8.6 percent",
+   "status": "verified"
+  },
+  {
+   "id": "ec-049",
+   "entity": "Self-hosted 8-GPU H100 system (colocation, medium company)",
+   "metric": "electricity cost per server hour against total run cost",
+   "value": 11.7,
+   "low": null,
+   "high": null,
+   "unit": "percent of run cost; $1.78 of $15.26 per 8-GPU server hour",
+   "year": 2026,
+   "boundary": "Per 8-GPU server, not per GPU. Four-year life, 10 to 20 percent salvage, 20 percent cost of capital, PUE 1.3, 13.41 cents per kWh (EIA US commercial, 11/2025), 100 percent utilization.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "The True Cost of GPU Ownership for Self-Hosted AI",
+    "publisher": "CloudRift",
+    "url": "https://www.cloudrift.ai/blog/the-true-cost-of-gpu-ownership",
+    "published": "2026-01-21",
+    "kind": "company-report"
+   },
+   "quote": "|Electricity |$1.19 |$1.78 |$1.78 |$2.49 |",
+   "derived": "1.78 / 15.26 = 11.7 percent; $15.26 / 8 = $1.91 per GPU hour of which $0.22 is electricity; 10.2 kW x 1.3 x $0.1341 = $1.78",
+   "status": "partly"
+  },
+  {
+   "id": "ec-050",
+   "entity": "US average retail electricity price, industrial sector",
+   "metric": "price per kWh",
+   "value": 8.51,
+   "low": null,
+   "high": null,
+   "unit": "cents per kWh",
+   "year": 2025,
+   "boundary": "Delivered average price to industrial customers, annual, all utilities.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity Data Browser, retail sales of electricity (API v2), average price by sector",
+    "publisher": "U.S. Energy Information Administration",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": null,
+    "kind": "agency"
+   },
+   "quote": "2025 industrial 8.51 cents per kilowatt-hour",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-051",
+   "entity": "US average retail electricity price, commercial sector",
+   "metric": "price per kWh",
+   "value": 13.37,
+   "low": null,
+   "high": null,
+   "unit": "cents per kWh",
+   "year": 2025,
+   "boundary": "Delivered average price to commercial customers, annual.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity Data Browser, retail sales of electricity (API v2), average price by sector",
+    "publisher": "U.S. Energy Information Administration",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": null,
+    "kind": "agency"
+   },
+   "quote": "2025 commercial 13.37 cents per kilowatt-hour",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-052",
+   "entity": "Washington, Oregon, Idaho and Montana industrial retail electricity price",
+   "metric": "price per kWh, lowest to highest of the four states",
+   "value": null,
+   "low": 7.0,
+   "high": 8.2,
+   "unit": "cents per kWh (WA 7.00, MT 7.03, ID 7.88, OR 8.20)",
+   "year": 2025,
+   "boundary": "Annual average price to industrial customers by state; not a data center rate class and not a marginal or contract price.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity Data Browser, retail sales of electricity (API v2), average price by sector",
+    "publisher": "U.S. Energy Information Administration",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": null,
+    "kind": "agency"
+   },
+   "quote": "WA 2025 industrial 7 cents per kilowatt-hour",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-053",
+   "entity": "US supply chain GHG emission factors v1.4.0, NAICS 518210 Data Processing, Hosting, and Related Services",
+   "metric": "kg CO2e per dollar of purchase, all GHGs",
+   "value": 0.089,
+   "low": null,
+   "high": null,
+   "unit": "kg CO2e per 2024 USD, purchaser price",
+   "year": 2024,
+   "boundary": "Supply-chain emissions of the industry per dollar sold, with margins already at purchaser price (margin term 0). The row most AI API and cloud spend maps to.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average (input-output model)",
+   "source": {
+    "title": "Supply Chain Greenhouse Gas Emission Factors for U.S. Commodities (v1.4.0), workbook SupplyChainGHGEmissionFactorsv1.4.0.xlsx",
+    "publisher": "U.S. EPA (Zenodo record 17202747)",
+    "url": "https://zenodo.org/records/17202747",
+    "published": "2025-10-14",
+    "kind": "agency"
+   },
+   "quote": "518210 | Data Processing, Hosting, and Related Services | All GHGs | kg CO2e/2024 USD, purchaser price | 0.089 | 0 | 0.089 | 518200",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A student capstone on one university's account, not peer reviewed.",
+   "id": "ec-054",
+   "entity": "MIT cloud computing Scope 3 (one AWS account, FY2022 to FY2025 invoices)",
+   "metric": "spend-based estimate against AWS usage-based reporting",
+   "value": 5,
+   "low": 5,
+   "high": 9,
+   "unit": "x overestimate (about 5x against location-based, 9x against market-based)",
+   "year": 2026,
+   "boundary": "One university's AWS account; spend factor against AWS's customer carbon footprint tool.",
+   "segments": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Enhancing Scope 3 Emissions Estimations for Cloud Computing (capstone)",
+    "publisher": "MIT Center for Transportation and Logistics",
+    "url": "https://ctl.mit.edu/sites/default/files/documents/enhancing-scope-3-emissions-estimations-for-cloud-computing-capstone.pdf",
+    "published": "2026-05-09",
+    "kind": "preprint"
+   },
+   "quote": "The results paint a clear picture: The spend-based approach overestimates AWS's self- reported usage-based Scope 3 emissions by approximately 5x vs. LBM and 9x vs. MBM.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-057",
+   "entity": "IEA, efficiency of AI per task",
+   "metric": "annual improvement in energy use per AI task",
+   "value": 10,
+   "low": null,
+   "high": null,
+   "unit": "x per year (at least)",
+   "year": 2026,
+   "boundary": "Per task, 'in recent years'; not a total.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Key Questions on Energy and AI",
+    "publisher": "International Energy Agency",
+    "url": "https://iea.blob.core.windows.net/assets/3575ae9f-50bc-4cbb-9ca9-4b9b7f063e91/KeyQuestionsonEnergyandAI.pdf",
+    "published": "2026-04-16",
+    "kind": "agency"
+   },
+   "quote": "Software and hardware advances have resulted in the energy use per AI task dropping by at least an order of magnitude annually in recent years.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-058",
+   "entity": "IEA, rebound from efficiency",
+   "metric": "efficiency gains and uptake of AI services",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Qualitative, global.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Key Questions on Energy and AI",
+    "publisher": "International Energy Agency",
+    "url": "https://iea.blob.core.windows.net/assets/3575ae9f-50bc-4cbb-9ca9-4b9b7f063e91/KeyQuestionsonEnergyandAI.pdf",
+    "published": "2026-04-16",
+    "kind": "agency"
+   },
+   "quote": "By lowering costs and making AI tools more capable and accessible, efficiency gains are also fuelling broader adoption of AI services",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ec-059",
+   "entity": "US wholesale electricity markets with data center load (Dallas Fed)",
+   "metric": "effect of existing data centers on wholesale prices",
+   "value": null,
+   "low": 2,
+   "high": 6,
+   "unit": "percent higher (nationwide average; much larger in data center corridors)",
+   "year": 2025,
+   "boundary": "Dispatch-level model of 3,368 thermal units; retrospective, then scenarios to 2028 (20 percent moderate, 50 percent high utilization).",
+   "segments": [
+    "data center"
+   ],
+   "basis": "marginal (dispatch shifts to higher-cost, often higher-emission units)",
+   "source": {
+    "title": "Processing Power: The Effect of Data Centers on Wholesale Electricity Markets (Working Paper 2606)",
+    "publisher": "Federal Reserve Bank of Dallas",
+    "url": "https://www.dallasfed.org/~/media/documents/research/papers/2026/wp2606.pdf",
+    "published": "2026-03-17",
+    "kind": "agency"
+   },
+   "quote": "We find that existing data centers have already increased wholesale prices by 2 to 6% on average nationwide, with substantially larger effects in regions hosting major data center corridors.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "ec-060",
+   "entity": "AI-driven productivity in a global general equilibrium model (npj Climate Action)",
+   "metric": "net annual CO2 change under parallel adoption scenarios",
+   "value": null,
+   "low": 0.47,
+   "high": 1.8,
+   "unit": "GtCO2 per year (1.2 to 4.8 percent of 2024 energy-related CO2)",
+   "year": 2026,
+   "boundary": "Economy-wide second-order and higher-order effects, not data center operations.",
+   "segments": [
+    "data center"
+   ],
+   "basis": "marginal (system response)",
+   "source": {
+    "title": "AI-driven productivity gains enable more CO2 emissions than they avoid in a global energy-economy model",
+    "publisher": "npj Climate Action (Nature Portfolio)",
+    "url": "https://www.nature.com/articles/s44168-026-00411-0",
+    "published": "2026-08-04",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Under parallel adoption scenarios, net annual CO₂ emissions increase by 0.47–1.8 gigatonnes (1.2–4.8% of 2024 global energy-related CO₂ emissions).",
+   "derived": null,
+   "status": "partly"
+  }
+ ]
+}

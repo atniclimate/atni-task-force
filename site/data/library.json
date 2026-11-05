@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-29",
+  "updated": "2026-11-04",
   "entries": [
     {
       "id": "atni-res-2026-051-youth-ai-chatbots-in-schools",
@@ -7294,6 +7294,2760 @@
       "added": "2026-10-29",
       "featured": false,
       "link_status": "ok"
+    },
+    {
+      "id": "ai-and-the-power-grid-where-the-rubber-meets-the-road",
+      "title": "AI and the Power Grid: Where the Rubber Meets the Road",
+      "url": "https://about.bnef.com/insights/clean-energy/ai-and-the-power-grid-where-the-rubber-meets-the-road",
+      "publisher": "BloombergNEF",
+      "date": "2025-12-01",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A BloombergNEF analysis of how AI-driven demand is straining power grids, with a December 2025 forecast of US data-center power demand reaching 106 gigawatts by 2035 (since superseded by a newer outlook).",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "six-things-to-know-about-bnef-s-new-us-data-center-capacity",
+      "title": "Six Things to Know About BNEF's New US Data Center Capacity Outlook",
+      "url": "https://about.bnef.com/insights/data-centers/six-things-to-know-about-bnefs-new-us-data-center-capacity-outlook",
+      "publisher": "BloombergNEF",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A BloombergNEF note on its July 2026 US data center capacity outlook, which raises forecast installed capacity to 118 gigawatts in 2030 and 194 gigawatts in 2035.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "eia-api-v2-annual-energy-outlook-2026-data-route",
+      "title": "EIA API v2, Annual Energy Outlook 2026 data route",
+      "url": "https://api.eia.gov/v2/aeo/2026/data/?facets[tableId][]=5&facets[seriesId][]=cnsm_NA_comm_NA_prc_datactrserv_usa_qbtu&facets[scenario][]=cb2026&frequency=annual&data[0]=value",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-04-08",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's open data interface for Annual Energy Outlook 2026, queried here for electricity purchased by commercial data center servers in the Counterfactual Baseline case.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "eia-api-v2-annual-energy-outlook-2026-data-route-2",
+      "title": "EIA API v2, Annual Energy Outlook 2026 data route",
+      "url": "https://api.eia.gov/v2/aeo/2026/data/?facets[tableId][]=5&facets[seriesId][]=cnsm_NA_comm_NA_prc_datactrserv_usa_qbtu&facets[scenario][]=higheldmd&frequency=annual&data[0]=value",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-04-08",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's open data interface for Annual Energy Outlook 2026, queried here for data center server electricity use in the High Electricity Demand case.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "eia-api-v2-annual-energy-outlook-2026-data-route-3",
+      "title": "EIA API v2, Annual Energy Outlook 2026 data route",
+      "url": "https://api.eia.gov/v2/aeo/2026/data/?facets[tableId][]=5&facets[seriesId][]=cnsm_NA_comm_NA_prc_datactrserv_usa_qbtu&facets[scenario][]=hm2026&frequency=annual&data[0]=value",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-04-08",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's open data interface for Annual Energy Outlook 2026, queried here for data center server electricity use in the High Economic Growth case.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "eia-api-v2-annual-energy-outlook-2026-data-route-4",
+      "title": "EIA API v2, Annual Energy Outlook 2026 data route",
+      "url": "https://api.eia.gov/v2/aeo/2026/data/?facets[tableId][]=5&facets[seriesId][]=cnsm_NA_comm_NA_prc_datactrserv_usa_qbtu&facets[scenario][]=lm2026&frequency=annual&data[0]=value",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-04-08",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's open data interface for Annual Energy Outlook 2026, queried here for data center server electricity use in the Low Economic Growth case.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "summer-preparedness-and-long-term-resource-adequacy-meeting",
+      "title": "Summer Preparedness and Long-Term Resource Adequacy Meeting Summary 2026 (Docket UE-210096)",
+      "url": "https://app.leg.wa.gov/ReportsToTheLegislature/Home/GetPDF?fileName=UE-210096%20-%20Summer%20Preparedness%20and%20Long-Term%20Resource%20Adequacy%20Meeting%20Summary%202026_dcae36a8-93f4-4655-8626-d6dbed2964dc.pdf",
+      "publisher": "Washington Utilities and Transportation Commission and Department of Commerce",
+      "date": "2026-09-01",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Washington utilities regulator and Commerce Department meeting summary on summer preparedness and long-term resource adequacy, including a consultant study that finds a possible Pacific Northwest adequacy gap of up to 9 gigawatts by 2030 without new resources.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "health-informed-computing-estimating-and-addressing-the-publ",
+      "title": "Health-Informed Computing: Estimating and Addressing the Public Health Impact of Data Centers (arXiv 2412.06288 v4, formerly 'The Unpaid Toll')",
+      "url": "https://arxiv.org/abs/2412.06288",
+      "publisher": "Caltech and UC Riverside authors (preprint)",
+      "date": "2026-06-08",
+      "type": "academic",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A preprint from Caltech and UC Riverside authors that estimates the public health cost of air pollution from US data centers and AI computing, projecting a burden above 20 billion US dollars per year.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-data-heat-island-effect-quantifying-the-impact-of-ai-dat",
+      "title": "The data heat island effect: quantifying the impact of AI data centers in a warming world (arXiv 2603.20897 v3)",
+      "url": "https://arxiv.org/abs/2603.20897",
+      "publisher": "Marinoni et al. (preprint, not peer reviewed)",
+      "date": "2026-03-21",
+      "type": "academic",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A preprint, not yet peer reviewed, that uses satellite data to estimate how much the land surface warms around AI data centers after they begin operating, finding an average increase of about 2 degrees Celsius.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "assessing-the-carbon-emissions-and-energy-consumption-of-u-s",
+      "title": "Assessing the Carbon Emissions and Energy Consumption of U.S. Hyperscale Data Centers",
+      "url": "https://arxiv.org/abs/2606.05420",
+      "publisher": "arXiv 2606.05420 (preprint, not peer reviewed)",
+      "date": "2026-06-03",
+      "type": "academic",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A preprint, not yet peer reviewed, that estimates carbon emissions and energy use at 403 US hyperscale data centers and compares their grid carbon intensity with the national average.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "measuring-the-environmental-impact-of-delivering-ai-at-googl-2",
+      "title": "Measuring the environmental impact of delivering AI at Google Scale",
+      "url": "https://arxiv.org/pdf/2508.15734",
+      "publisher": "Google (Elsworth et al.)",
+      "date": "2025-08-21",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Google technical paper that measures the energy, emissions, and water of a median Gemini text prompt using a comprehensive method, reporting 0.24 watt-hours per prompt against a narrower method that gives 0.10.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "microsoft-2026-environmental-sustainability-report-fy2025",
+      "title": "Microsoft 2026 Environmental Sustainability Report (FY2025)",
+      "url": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/2026-Microsoft-Environmental-Sustainability-Report-PDF.pdf",
+      "publisher": "Microsoft",
+      "date": "2026-07-03",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Microsoft's annual sustainability report for fiscal year 2025, which reports company-wide water, energy, and emissions figures including a global average water use effectiveness of 0.27 liters per kilowatt-hour for its owned datacenters.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "united-states-data-center-energy-usage-report-lbnl-1005775",
+      "title": "United States Data Center Energy Usage Report (LBNL-1005775)",
+      "url": "https://datacenters.lbl.gov/publications/united-states-data-center-energy",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "date": "2016-06-01",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The 2016 Lawrence Berkeley National Laboratory report that estimated US data center electricity use at 70 billion kilowatt-hours in 2014 and projected 73 billion for 2020, now superseded by later editions.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "making-ai-less-thirsty",
+      "title": "Making AI Less 'Thirsty'",
+      "url": "https://dl.acm.org/doi/10.1145/3724499",
+      "publisher": "Communications of the ACM 68(7) (Li, Yang, Islam, Ren)",
+      "date": "2025-07-01",
+      "type": "academic",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A peer-reviewed article that estimates the water consumed to train and run large language models such as GPT-3, including how many responses use 500 milliliters of water.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "shelby-county-health-department-response-to-comments-selc-le",
+      "title": "Shelby County Health Department response to comments (SELC letter and draft permit), Air Permit 01156-01PC",
+      "url": "https://downloads.regulations.gov/EPA-HQ-OAR-2025-1212-0253/attachment_19.pdf",
+      "publisher": "Shelby County Health Department, via EPA docket EPA-HQ-OAR-2025-1212",
+      "date": "2025-07-02",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Shelby County Health Department response to public comments on the air permit for xAI's Colossus 1 data center in Memphis, which sets out the permitted natural gas turbines and their nitrogen oxide limits.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "understanding-oregon-s-data-center-industry-an-evidence-base",
+      "title": "Understanding Oregon's Data Center Industry: An Evidence Based Assessment (full report)",
+      "url": "https://econw.com/wp-content/uploads/ECOnorthwest_Understanding-Oregons-Data-Center-Industry_Full-Report.pdf",
+      "publisher": "ECOnorthwest (prepared for the Lemelson Foundation; draft presented to the Oregon Department of Energy 07/31/2026)",
+      "date": "2026-10-05",
+      "type": "tool",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A full report from ECOnorthwest, prepared for a foundation, that assesses the Oregon data center industry using public and industry data, including statewide and Eastern Oregon operating employment.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "united-states-data-center-energy-usage-report-2025-update-ab",
+      "title": "United States Data Center Energy Usage Report: 2025 Update (abstract)",
+      "url": "https://energyanalysis.lbl.gov/publications/united-states-data-center-energy-2025",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "date": "2026-06-01",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The abstract of the Lawrence Berkeley National Laboratory's 2025 update to its US data center energy report, which projects US data center electricity use in 2030 under a consolidated scenario.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2024-united-states-data-center-energy-usage-report-3",
+      "title": "2024 United States Data Center Energy Usage Report",
+      "url": "https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf",
+      "publisher": "Lawrence Berkeley National Laboratory (LBNL-2001637)",
+      "date": "2024-12-19",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The 2024 Lawrence Berkeley National Laboratory report on US data center energy use, which includes estimates of direct on-site water consumption and scenarios for hyperscale facilities.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tsmc-2025-sustainability-report",
+      "title": "TSMC 2025 Sustainability Report",
+      "url": "https://esg.tsmc.com/file/public/e-APractitionerofGreenPower_2.pdf",
+      "publisher": "TSMC",
+      "date": "2026-08-19",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Taiwan Semiconductor Manufacturing Company's 2025 sustainability report, which gives water use for chip manufacturing, including liters consumed per 12-inch equivalent wafer mask layer.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2024-united-states-data-center-energy-usage-report-4",
+      "title": "2024 United States Data Center Energy Usage Report",
+      "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "date": "2024-12-19",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The 2024 Lawrence Berkeley National Laboratory report that estimated US data center electricity use at 176 terawatt-hours in 2023 and projected a range for 2028, since updated by the 2025 edition.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "employment-for-data-processing-hosting-and-related-services",
+      "title": "Employment for Data Processing, Hosting, and Related Services (NAICS 518210), IPUJN518210W200000000",
+      "url": "https://fred.stlouisfed.org/series/IPUJN518210W200000000",
+      "publisher": "FRED, from BLS Industry Productivity",
+      "date": "2026-06-03",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Federal Reserve Bank of St. Louis data series, drawn from Bureau of Labor Statistics productivity data, tracking employment in data processing, hosting, and related services (NAICS 518210).",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "key-questions-on-energy-and-ai",
+      "title": "Key Questions on Energy and AI",
+      "url": "https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf",
+      "publisher": "International Energy Agency",
+      "date": "2026-04-16",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "An International Energy Agency question-and-answer resource on energy and AI that gives global data center electricity use for 2025 and a projection for 2030.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "powering-artificial-intelligence",
+      "title": "Powering Artificial Intelligence",
+      "url": "https://iea.blob.core.windows.net/assets/cd360a30-aaef-43cd-84e6-a125c3a0bc67/PoweringArtificialIntelligence.pdf",
+      "publisher": "International Energy Agency",
+      "date": "2026-10-14",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "An International Energy Agency analysis of how AI is powered, including the share of data center water use that comes from electricity supply and the share of AI-dedicated capacity in water-stressed areas.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "energy-and-ai",
+      "title": "Energy and AI",
+      "url": "https://iea.blob.core.windows.net/assets/de9dea13-b07d-42c5-a398-d1b3ae17d866/EnergyandAI.pdf",
+      "publisher": "International Energy Agency",
+      "date": "2025-04-09",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The International Energy Agency's 2025 analysis of energy demand from AI, which estimates global data center electricity use in 2024 and the United States share of it.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-centers-in-virginia-jlarc-briefing",
+      "title": "Data Centers in Virginia (JLARC briefing)",
+      "url": "https://jlarc.virginia.gov/pdfs/presentations/Rpt598Pres-1.pdf",
+      "publisher": "Joint Legislative Audit and Review Commission, Commonwealth of Virginia",
+      "date": "2024-12-09",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Virginia legislative audit commission briefing on data centers in the state, covering backup generator emissions and the local tax revenue that data centers produce in Loudoun County.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2026-tax-preference-review-data-centers-in-urban-counties-pr",
+      "title": "2026 tax preference review: Data Centers in Urban Counties (preliminary report, July 2026)",
+      "url": "https://leg.wa.gov/jlarc/taxReports/2026/data/1/report.html",
+      "publisher": "Washington Joint Legislative Audit and Review Committee (JLARC)",
+      "date": "2026-06-25",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A preliminary 2026 Washington legislative audit review of the sales and use tax exemption for data centers in urban counties, reporting the permanent and temporary jobs that beneficiaries claim.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-center-land-use-legislative-science-note",
+      "title": "Data Center Land Use (Legislative Science Note)",
+      "url": "https://mostpolicyinitiative.org/wp-content/uploads/2026/07/Data-Center-Land-Use.pdf",
+      "publisher": "MOST Policy Initiative",
+      "date": "2026-08-04",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Legislative Science Note from a policy initiative on how much land data centers occupy, including the growth in average facility size and the gap between site area and building area.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "9th-plan-data-center-forecast-final-03-16-2025-xlsx-tech-dat",
+      "title": "9th Plan data center forecast final 03.16.2025.xlsx (Tech-Data Center Loads folder, Ninth Plan Demand Forecast Public Workbooks)",
+      "url": "https://nwcouncil.box.com/v/ninthplandemndfcastworkbooks",
+      "publisher": "Northwest Power and Conservation Council",
+      "date": "2025-03-16",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Northwest Power and Conservation Council workbook of data center and chip fabrication load inputs for its Ninth Power Plan demand forecast, with low, medium, and high values through 2046.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-much-water-do-data-centers-use-and-why-does-it-matter",
+      "title": "How Much Water Do Data Centers Use? And Why Does It Matter?",
+      "url": "https://pacinst.org/publication/how-much-water-do-data-centers-use-and-why-does-it-matter/",
+      "publisher": "Pacific Institute (Cooley and Shimabuku)",
+      "date": "2026-09-01",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Pacific Institute article on how much water data centers use and why it matters, including the range of daily withdrawals across a worldwide sample of facilities.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-much-water-do-data-centers-use-issue-brief",
+      "title": "How Much Water Do Data Centers Use? Issue Brief",
+      "url": "https://pacinst.org/wp-content/uploads/2026/09/Issue-Brief_AI-Data-Centers-2026_Final.pdf",
+      "publisher": "Pacific Institute",
+      "date": "2026-09-01",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Pacific Institute issue brief that summarizes research on data center water use, including the median share of withdrawn water that is consumed and the size of indirect water use.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "powering-intelligence-updated-u-s-data-center-scenarios",
+      "title": "Powering Intelligence: Updated U.S. Data Center Scenarios",
+      "url": "https://restservice.epri.com/publicattachment/97025",
+      "publisher": "Electric Power Research Institute",
+      "date": "2026-03-02",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "An Electric Power Research Institute report that updates its US data center scenarios, giving the range of electricity use and share of US electricity in 2030.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2025-amazon-sustainability-report",
+      "title": "2025 Amazon Sustainability Report",
+      "url": "https://sustainability.aboutamazon.com/2025-amazon-sustainability-report.pdf",
+      "publisher": "Amazon",
+      "date": "2026-07-14",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Amazon's 2025 sustainability report, which reports the company's total carbon footprint across Scopes 1, 2, and 3 and the direct emissions from its own operations.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "we-studied-1-584-data-centers-and-found-the-buildings-full-o",
+      "title": "We studied 1,584 data centers and found the buildings full of machines are tied to modest local job growth",
+      "url": "https://theconversation.com/we-studied-1-584-data-centers-and-found-the-buildings-full-of-machines-are-tied-to-modest-local-job-growth-293872",
+      "publisher": "The Conversation",
+      "date": "2026-10-27",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Conversation article summarizing a study of 1,584 data centers that finds modest local job growth in counties after a data center opens.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-big-is-the-ai-waste-wave-the-coming-ai-waste-wave-part-1",
+      "title": "How Big is the AI Waste Wave? (The Coming AI Waste Wave, Part 1)",
+      "url": "https://wiki.ban.org/images/1/16/AI_Waste_Wave_Part_1.pdf",
+      "publisher": "Basel Action Network",
+      "date": "2026-09-16",
+      "type": "tool",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Basel Action Network white paper that estimates how much electronic waste AI-driven equipment will retire each year, the first part of a series on an AI waste wave.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2026-workforce-survey-analysis",
+      "title": "2026 Workforce Survey Analysis",
+      "url": "https://www.agc.org/sites/default/files/users/user21902/2026%20Workforce%20Survey%20Analysis%20(4).pdf",
+      "publisher": "Associated General Contractors of America",
+      "date": "2026-09-03",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A 2026 workforce survey of construction contractors by the Associated General Contractors of America, including how many data center contractors report competition for skilled workers.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "tax-incentive-evaluation-georgia-high-tech-data-center-equip",
+      "title": "Tax Incentive Evaluation: Georgia High-Tech Data Center Equipment Exemption",
+      "url": "https://www.audits.ga.gov/ReportSearch/download/33298",
+      "publisher": "Georgia Department of Audits and Accounts",
+      "date": "2025-12-18",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Georgia Department of Audits and Accounts evaluation of the state sales tax exemption for high-tech data center equipment, covering how much construction it caused and its net fiscal impact.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "potential-economic-impact-of-a-hyperscale-data-center-in-mon",
+      "title": "Potential Economic Impact of a Hyperscale Data Center in Montana",
+      "url": "https://www.bber.umt.edu/pubs/econ/Data%20Center%20Economic%20Impact.pdf",
+      "publisher": "University of Montana Bureau of Business and Economic Research",
+      "date": "2026-10-29",
+      "type": "tool",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A University of Montana Bureau of Business and Economic Research study of the potential economic impact of a hyperscale data center in Montana, with direct construction and operating job estimates.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "new-evidence-on-data-center-employment-effects-bahar-and-wri",
+      "title": "New evidence on data center employment effects (Bahar and Wright)",
+      "url": "https://www.brookings.edu/articles/new-evidence-on-data-center-employment-effects/",
+      "publisher": "Brookings",
+      "date": "2026-08-10",
+      "type": "article",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Brookings article on research by Bahar and Wright that tracks how local employment changes in counties that receive a first large data center.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "value-of-private-construction-put-in-place-seasonally-adjust",
+      "title": "Value of Private Construction Put in Place, Seasonally Adjusted Annual Rate",
+      "url": "https://www.census.gov/construction/c30/pdf/privsa.pdf",
+      "publisher": "U.S. Census Bureau",
+      "date": "2026-10-01",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Census Bureau data release of monthly private construction spending, used here for the seasonally adjusted annual rate of US private data center construction.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "annual-energy-outlook-2026-narrative",
+      "title": "Annual Energy Outlook 2026, Narrative",
+      "url": "https://www.eia.gov/outlooks/aeo/pdf/AEO_Narrative.pdf",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-04-08",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The narrative for the Energy Information Administration's Annual Energy Outlook 2026, which describes recent and projected US electricity demand growth.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "short-term-energy-outlook-may-2026",
+      "title": "Short-Term Energy Outlook, May 2026",
+      "url": "https://www.eia.gov/outlooks/steo/archives/may26.pdf",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-05-11",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's May 2026 Short-Term Energy Outlook, which forecast growth in US commercial sector and total electricity use for 2027 (since superseded by the October edition).",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "short-term-energy-outlook-october-2026-electricity-coal-and",
+      "title": "Short-Term Energy Outlook, October 2026, Electricity, Coal, and Renewables",
+      "url": "https://www.eia.gov/outlooks/steo/report/electricity.php",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-10-06",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Energy Information Administration's October 2026 Short-Term Energy Outlook chapter on electricity, coal, and renewables, which gives the current forecast of commercial sector electricity growth for 2027.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-center-server-energy-use-grows-across-the-commercial-bu",
+      "title": "Data center server energy use grows across the commercial building stock (Today in Energy)",
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=67704",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-05-19",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "An Energy Information Administration Today in Energy article showing that data center servers account for a growing share of commercial building electricity use through 2050.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "megawatts-but-few-permanent-jobs-an-agent-assisted-evidence",
+      "title": "Megawatts, but few permanent jobs? An agent-assisted evidence review of the data-centre construction cliff",
+      "url": "https://www.emerald.com/sasbe/article/doi/10.1108/SASBE-07-2026-0710/1394603/Megawatts-but-few-permanent-jobs-An-agent-assisted",
+      "publisher": "Smart and Sustainable Built Environment (Emerald)",
+      "date": "2026-09-02",
+      "type": "academic",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A peer-reviewed evidence review that compares the construction workforce at data centers with the much smaller number of permanent operating jobs per megawatt.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "critical-minerals-use-in-data-centers-supply-chain-lifecycle",
+      "title": "Critical Minerals Use in Data Centers: Supply Chain, Lifecycle, and Circularity Implications for U.S. AI Infrastructure",
+      "url": "https://www.nlr.gov/docs/fy26osti/100370.pdf",
+      "publisher": "National Laboratory of the Rockies (formerly NREL)",
+      "date": "2026-09-29",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A National Laboratory of the Rockies (formerly NREL) report on critical minerals used in data centers, including projected copper demand through 2028 based on Lawrence Berkeley National Laboratory scenarios.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2026-northwest-regional-forecast-of-power-loads-and-resource",
+      "title": "2026 Northwest Regional Forecast of Power Loads and Resources",
+      "url": "https://www.pnucc.org/wp-content/uploads/2026-PNUCC-Northwest-Regional-Forecast-4-21-26-final.pdf",
+      "publisher": "Pacific Northwest Utilities Conference Committee",
+      "date": "2026-04-22",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Pacific Northwest Utilities Conference Committee's 2026 regional forecast of power loads and resources, which projects growth in annual electricity demand over ten years.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "alphabet-2026-q3-earnings-call-transcript",
+      "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+      "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+      "publisher": "Alphabet Investor Relations",
+      "date": "2026-10-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The transcript of Alphabet's third quarter 2026 earnings call, which reports capital expenditure of 51.4 billion US dollars and negative free cash flow of 9.1 billion.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "electricity-retail-sales-residential-u-s-total-annual-eia-ap",
+      "title": "Electricity retail sales, residential, U.S. total, annual (EIA API v2)",
+      "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+      "publisher": "US EIA (Forms EIA-826, EIA-861, EIA-861M)",
+      "date": "2026-11-04",
+      "type": "dataset",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Energy Information Administration data on US residential electricity sales and customers, used to calculate average household electricity use per year.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "how-hungry-is-ai-benchmarking-energy-water-and-carbon-footpr",
+      "title": "How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference",
+      "url": "https://arxiv.org/abs/2505.09598",
+      "publisher": "Jegham et al., University of Rhode Island and others (arXiv v6)",
+      "date": "2025-11-24",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A benchmarking study that measures the energy, water, and carbon footprint of large language model inference across many commercial models, by prompt length.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "lights-camera-carbon-architectural-scaling-laws-for-video-ge",
+      "title": "Lights, Camera, Carbon: Architectural Scaling Laws for Video Generation Energy Consumption",
+      "url": "https://arxiv.org/html/2607.04553v1",
+      "publisher": "Jegham, Gamazaychikov, Luccioni (arXiv)",
+      "date": "2026-07-05",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A preprint that measures the energy used to generate short AI videos and derives scaling laws for video models, with estimates for commercial systems such as Veo 3 and Sora 2.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "wildchat-1m-chatgpt-interaction-logs-in-the-wild",
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "url": "https://arxiv.org/pdf/2405.01470",
+      "publisher": "Zhao et al., Allen Institute for AI and University of Washington (ICLR 2024)",
+      "date": "2024-05-03",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A research paper and dataset of one million real ChatGPT conversations, used here for the average number of user and chatbot turns per conversation.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "video-killed-the-energy-budget-characterizing-the-latency-an",
+      "title": "Video Killed the Energy Budget: Characterizing the Latency and Power Regimes of Open Text-to-Video Models",
+      "url": "https://arxiv.org/pdf/2509.19222",
+      "publisher": "Hugging Face (Delavande, Pierrard, Luccioni)",
+      "date": "2025-09-23",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Hugging Face study of the latency and power draw of open text-to-video models, including server energy per generated video and its equivalent in text prompts.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "impact-of-growth-of-data-centres-on-energy-consumption",
+      "title": "Impact of growth of data centres on energy consumption",
+      "url": "https://assets.publishing.service.gov.uk/media/689d9dc487bf475940723f6c/impact-of-growth-of-data-centres.pdf",
+      "publisher": "Europe Economics for UK DESNZ",
+      "date": "2025-08-13",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A report by Europe Economics for the UK Department for Energy Security and Net Zero on data center growth, including energy per hour of video streaming for the data center and the whole delivery chain.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-is-the-environmental-impact-of-local-ai-on-our-smartpho",
+      "title": "What is the environmental impact of local AI on our smartphones?",
+      "url": "https://blog.greenspector.com/en/artificial-intelligence-smartphone-autonomy",
+      "publisher": "Greenspector",
+      "date": "2025-02-17",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Greenspector article that measures the battery and environmental cost of running AI locally on smartphones, compared with video playback and other apps.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-is-the-environmental-footprint-of-social-networking-app",
+      "title": "What is the environmental footprint of social networking applications? 2023 Edition",
+      "url": "https://blog.greenspector.com/en/what-is-the-environmental-footprint-of-social-networking-applications-2023",
+      "publisher": "Greenspector",
+      "date": "2023-06-21",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Greenspector measurement of the carbon footprint of social networking apps in 2023, including grams of CO2e per minute of Instagram feed scrolling.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-is-the-environmental-impact-of-llm-use-on-the-customer",
+      "title": "What is the environmental impact of LLM use on the customer's side? Battle ChatGPT VS DeepSeek",
+      "url": "https://blog.greenspector.com/en/what-is-the-environmental-impact-of-llm-use-on-the-customers-side-battle-chatgpt-vs-deepseek",
+      "publisher": "Greenspector",
+      "date": "2025-03-24",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Greenspector comparison of the client-side footprint of ChatGPT and DeepSeek chats, measuring carbon on the phone and network side and the data exchanged per prompt.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-gentle-singularity",
+      "title": "The Gentle Singularity",
+      "url": "https://blog.samaltman.com/the-gentle-singularity",
+      "publisher": "Sam Altman (personal blog)",
+      "date": "2025",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A personal blog essay by Sam Altman that states OpenAI's own figures for energy and water per average ChatGPT query; the figures are a company statement without a published method.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "tracking-the-impact-of-ai-on-the-labor-market",
+      "title": "Tracking the Impact of AI on the Labor Market",
+      "url": "https://budgetlab.yale.edu/research/tracking-impact-ai-labor-market",
+      "publisher": "The Budget Lab at Yale",
+      "date": "2026-10-14",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Yale Budget Lab tracker that monitors whether the mix of US occupations and unemployment are changing in ways linked to AI exposure.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-people-use-chatgpt",
+      "title": "How People Use ChatGPT",
+      "url": "https://cdn.openai.com/pdf/a253471f-8260-40c6-a2cc-aa93fe9f142e/economic-research-chatgpt-usage-paper.pdf",
+      "publisher": "OpenAI, Duke University and Harvard University (Chatterji et al.; NBER Working Paper 34255, OpenAI-hosted copy)",
+      "date": "2025-09-15",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A study by OpenAI, Duke University, and Harvard University of how people use ChatGPT, including the total number of messages sent per day.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "apple-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Apple XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-cashandcashequivalentsatcarryingv",
+      "title": "Apple XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-longtermdebt",
+      "title": "Apple XBRL company concept LongTermDebt",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/LongTermDebt.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported long-term debt, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-netcashprovidedbyusedinoperatinga",
+      "title": "Apple XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-paymentsforrepurchaseofcommonstoc",
+      "title": "Apple XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-paymentstoacquirepropertyplantand",
+      "title": "Apple XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported cash paid for property and equipment (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "apple-xbrl-company-concept-revenuefromcontractwithcustomerex",
+      "title": "Apple XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-11-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Apple's reported revenue from contracts with customers, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Microsoft XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-cashandcashequivalentsatcarry",
+      "title": "Microsoft XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-longtermdebt",
+      "title": "Microsoft XBRL company concept LongTermDebt",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/LongTermDebt.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported long-term debt, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-netcashprovidedbyusedinoperat",
+      "title": "Microsoft XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-paymentsforrepurchaseofcommon",
+      "title": "Microsoft XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-paymentstoacquirepropertyplan",
+      "title": "Microsoft XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported cash paid for property and equipment (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-xbrl-company-concept-revenuefromcontractwithcustom",
+      "title": "Microsoft XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-07-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Microsoft's reported revenue from contracts with customers, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Amazon XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-06",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-cashandcashequivalentsatcarrying",
+      "title": "Amazon XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-30",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-longtermdebt",
+      "title": "Amazon XBRL company concept LongTermDebt",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/LongTermDebt.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-30",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported long-term debt, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-netcashprovidedbyusedinoperating",
+      "title": "Amazon XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-06",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-paymentsforrepurchaseofcommonsto",
+      "title": "Amazon XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2025-02-07",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-paymentstoacquireproductiveasset",
+      "title": "Amazon XBRL company concept PaymentsToAcquireProductiveAssets",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/PaymentsToAcquireProductiveAssets.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-06",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported cash paid to acquire productive assets (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "amazon-xbrl-company-concept-revenuefromcontractwithcustomere",
+      "title": "Amazon XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-06",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Amazon's reported revenue from contracts with customers, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "NVIDIA XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-25",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-cashandcashequivalentsatcarrying",
+      "title": "NVIDIA XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-08-26",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-longtermdebt",
+      "title": "NVIDIA XBRL company concept LongTermDebt",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/LongTermDebt.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-08-26",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported long-term debt, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-netcashprovidedbyusedinoperating",
+      "title": "NVIDIA XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-25",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-paymentsforrepurchaseofcommonsto",
+      "title": "NVIDIA XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-25",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-paymentstoacquireproductiveasset",
+      "title": "NVIDIA XBRL company concept PaymentsToAcquireProductiveAssets",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/PaymentsToAcquireProductiveAssets.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-25",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported cash paid to acquire productive assets (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-xbrl-company-concept-revenues",
+      "title": "NVIDIA XBRL company concept Revenues",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/Revenues.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-25",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for NVIDIA's reported revenue, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Tesla XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-cashandcashequivalentsatcarryingv",
+      "title": "Tesla XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-longtermdebt",
+      "title": "Tesla XBRL company concept LongTermDebt",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/LongTermDebt.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported long-term debt, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-netcashprovidedbyusedinoperatinga",
+      "title": "Tesla XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-paymentstoacquirepropertyplantand",
+      "title": "Tesla XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported cash paid for property and equipment (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-xbrl-company-concept-revenuefromcontractwithcustomerex",
+      "title": "Tesla XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Tesla's reported revenue from contracts with customers, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Meta XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-cashandcashequivalentsatcarryingva",
+      "title": "Meta XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-longtermdebtnoncurrent",
+      "title": "Meta XBRL company concept LongTermDebtNoncurrent",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/LongTermDebtNoncurrent.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported long-term debt, noncurrent, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-netcashprovidedbyusedinoperatingac",
+      "title": "Meta XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-paymentsforrepurchaseofcommonstock",
+      "title": "Meta XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-paymentstoacquirepropertyplantande",
+      "title": "Meta XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported cash paid for property and equipment (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-xbrl-company-concept-revenuefromcontractwithcustomerexc",
+      "title": "Meta XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Meta's reported revenue from contracts with customers, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-dei-entitypublicfloat",
+      "title": "Alphabet XBRL company concept dei/EntityPublicFloat",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/dei/EntityPublicFloat.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported aggregate market value of its common equity held by non-affiliates (public float), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-cashandcashequivalentsatcarryi",
+      "title": "Alphabet XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported cash and cash equivalents, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-longtermdebtnoncurrent",
+      "title": "Alphabet XBRL company concept LongTermDebtNoncurrent",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/LongTermDebtNoncurrent.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-10-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported long-term debt, noncurrent, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-netcashprovidedbyusedinoperati",
+      "title": "Alphabet XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported net cash from operating activities, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-paymentsforrepurchaseofcommons",
+      "title": "Alphabet XBRL company concept PaymentsForRepurchaseOfCommonStock",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported cash paid to repurchase common stock, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-paymentstoacquirepropertyplant",
+      "title": "Alphabet XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported cash paid for property and equipment (capital expenditure), drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-xbrl-company-concept-revenues",
+      "title": "Alphabet XBRL company concept Revenues",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/Revenues.json",
+      "publisher": "SEC EDGAR (data.sec.gov)",
+      "date": "2026-02-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Securities and Exchange Commission's structured filing data for Alphabet's reported revenue, drawn from its annual and quarterly reports.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "digital-2027-global-overview-report",
+      "title": "Digital 2027 Global Overview Report",
+      "url": "https://datareportal.com/reports/digital-2027-global-overview-report",
+      "publisher": "DataReportal (Kepios, using Similarweb data)",
+      "date": "2026-10-21",
+      "type": "news",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "DataReportal's 2027 global digital overview, drawing on Similarweb data, including average daily time on TikTok and weekly time on social and video platforms.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "canaries-in-the-coal-mine-six-facts-about-the-recent-employm-2",
+      "title": "Canaries in the Coal Mine? Six Facts About the Recent Employment Effects of Artificial Intelligence (August 2026 revision, PDF)",
+      "url": "https://digitaleconomy.stanford.edu/app/uploads/2026/08/Canaries_August2026.pdf",
+      "publisher": "Stanford Digital Economy Lab",
+      "date": "2026-08-12",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Stanford Digital Economy Lab paper that sets out six facts on early employment effects of AI, including a decline in employment among workers ages 22 to 25 in the most AI-exposed occupations.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-dimpact-methodology-version-1-0",
+      "title": "The DIMPACT Methodology, Version 1.0",
+      "url": "https://dimpact.org/downloadResourceFile?resource=2",
+      "publisher": "DIMPACT",
+      "date": "2022-10-21",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The DIMPACT methodology, version 1.0, for estimating the carbon footprint of digital media services, which gives energy per hour of video streaming for data centers and devices.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "evaluating-sustainable-interaction-design-of-digital-service",
+      "title": "Evaluating Sustainable Interaction Design of Digital Services: The Case of YouTube",
+      "url": "https://dl.acm.org/doi/fullHtml/10.1145/3290605.3300627",
+      "publisher": "ACM CHI 2019 (Preist, Shabajee, Schien)",
+      "date": "2019-05-04",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A 2019 ACM CHI paper that estimates the life-cycle emissions and electricity use of YouTube based on 2016 usage, including electricity per viewing hour.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "whp-424-revisiting-the-energy-footprint-of-broadcast-and-str",
+      "title": "WHP 424: Revisiting the Energy Footprint of Broadcast and Streaming",
+      "url": "https://downloads.bbc.co.uk/rd/pubs/whp/whp-pdf-files/WHP424.pdf",
+      "publisher": "BBC Research and Development",
+      "date": "2025",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A BBC Research and Development white paper that revisits the energy footprint of broadcast and streaming, giving energy and carbon per hour of BBC iPlayer viewing in the UK.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-you-need-to-know-about-ai-energy-use",
+      "title": "What you need to know about AI energy use",
+      "url": "https://epoch.ai/publications/ai-energy",
+      "publisher": "Epoch AI",
+      "date": "2026-07-14",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An Epoch AI explainer on AI energy use, with an estimate of energy per chatbot message and how many daily messages it would take to add 1 percent to a US household's electricity use.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-iceberg-index-measuring-skills-centered-exposure-in-the",
+      "title": "The Iceberg Index: Measuring Skills-centered Exposure in the AI Economy",
+      "url": "https://iceberg.mit.edu/report.pdf",
+      "publisher": "MIT and Oak Ridge National Laboratory",
+      "date": "2025-12-01",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A paper from MIT and Oak Ridge National Laboratory that defines the Iceberg Index, a measure of the share of US wage value in occupations whose skills AI can technically perform.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "nvidia-sustainability-report-fiscal-year-2026",
+      "title": "NVIDIA Sustainability Report Fiscal Year 2026",
+      "url": "https://images.nvidia.com/aem-dam/Solutions/documents/NVIDIA-Sustainability-Report-Fiscal-Year-2026.pdf",
+      "publisher": "NVIDIA",
+      "date": "2026-06-09",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "NVIDIA's sustainability report for fiscal year 2026, which reports the company's Scope 1 and Scope 2 greenhouse gas emissions.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "businesses-are-using-ai-to-transform-work-not-cut-jobs",
+      "title": "Businesses Are Using AI to Transform Work, Not Cut Jobs",
+      "url": "https://libertystreeteconomics.newyorkfed.org/2026/09/businesses-are-using-ai-to-transform-work-not-cut-jobs",
+      "publisher": "Federal Reserve Bank of New York, Liberty Street Economics",
+      "date": "2026-09-01",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Federal Reserve Bank of New York survey brief on how regional service firms use AI, including the share using it in business processes and the share laying off workers because of it.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "our-contribution-to-a-global-environmental-standard-for-ai",
+      "title": "Our contribution to a global environmental standard for AI",
+      "url": "https://mistral.ai/news/our-contribution-to-a-global-environmental-standard-for-ai",
+      "publisher": "Mistral AI",
+      "date": "2025-07-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Mistral AI report on its contribution to a global environmental standard for AI, with a life-cycle estimate of water and carbon for one response from its Le Chat assistant.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "quantifying-the-life-cycle-environmental-impacts-of-video-on",
+      "title": "Quantifying the Life Cycle Environmental Impacts of Video-on-Demand Streaming (poster)",
+      "url": "https://publications.tno.nl/publication/34644568/eWbi42md/soltani-nezhad-2025-quantifying.pdf",
+      "publisher": "TNO and Radboud University (Soltani Nezhad)",
+      "date": "2025-06-30",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A poster from TNO and Radboud University on the life-cycle environmental impacts of video-on-demand streaming, including device energy per hour of playback on a phone.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "nvidia-corp-nvda-q2-2027-earnings-call-corrected-transcript",
+      "title": "NVIDIA Corp. (NVDA) Q2 2027 Earnings Call, corrected transcript, 08/26/2026",
+      "url": "https://s201.q4cdn.com/141608511/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
+      "publisher": "NVIDIA Investor Relations (CallStreet transcript)",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The corrected transcript of NVIDIA's second quarter fiscal 2027 earnings call on 08/26/2026, including management's remarks on capital spending by the largest hyperscalers.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-real-story-on-ai-water-usage-at-data-centers",
+      "title": "The Real Story on AI Water Usage at Data Centers",
+      "url": "https://spectrum.ieee.org/ai-water-usage",
+      "publisher": "IEEE Spectrum (Ren and Luers)",
+      "date": "2025-09-10",
+      "type": "news",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An IEEE Spectrum article by Ren and Luers on AI water use at data centers, including the estimated water per medium-length GPT-3 response.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "apple-q4-2026-earnings-call-transcript",
+      "title": "Apple Q4 2026 Earnings Call Transcript",
+      "url": "https://stockanalysis.com/stocks/aapl/transcripts/702819-q4-2026",
+      "publisher": "StockAnalysis.com (third-party transcript of the Apple call)",
+      "date": "2026-11-02",
+      "type": "news",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A third-party transcript of Apple's fiscal fourth quarter 2026 earnings call, used for management's capital expenditure guidance.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "independent-accountants-review-report-appendix-a-schedule-of",
+      "title": "Independent Accountants' Review Report, Appendix A: Schedule of Select Sustainability Indicators (year ended 12/31/2025)",
+      "url": "https://sustainability.aboutamazon.com/2025-ghg-assurance-scope-1-2.pdf",
+      "publisher": "Amazon (Ernst & Young LLP review report)",
+      "date": "2026-05-21",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An independent accountants' review report with a schedule of select sustainability indicators for Amazon, including its company-wide location-based Scope 2 emissions.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "electricity-consumption-of-videos-viewed-on-meta-s-platforms",
+      "title": "Electricity consumption of videos viewed on Meta's platforms",
+      "url": "https://sustainability.atmeta.com/wp-content/uploads/2025/07/Electricity-consumption-of-videos-viewed-on-Metas-platforms.pdf",
+      "publisher": "ENGIE Impact, commissioned by Meta",
+      "date": "2025-07-30",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An ENGIE Impact study, commissioned by Meta, of the electricity used to deliver videos viewed on Instagram and Facebook in Europe, in total and per view.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "we-did-the-math-on-ai-s-energy-footprint-repackaged-feature",
+      "title": "We did the math on AI's energy footprint (repackaged feature, October 2025 PDF)",
+      "url": "https://wp.technologyreview.com/wp-content/uploads/2025/10/Re-packaged-Content_October-2025_final_v2-1.pdf",
+      "publisher": "MIT Technology Review",
+      "date": "2025-05-20",
+      "type": "news",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A MIT Technology Review feature on the energy footprint of AI, reproduced as a PDF, with GPU energy per generated image and per generated video for open models.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "canaries-dashboard-employment-in-ai-exposed-occupations-shra",
+      "title": "Canaries Dashboard: Employment in AI-exposed occupations shrank in September",
+      "url": "https://www.adpresearch.com/research/canaries-dashboard-employment-in-ai-exposed-occupations-shrank-in-september",
+      "publisher": "ADP Research",
+      "date": "2026-10-21",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An ADP Research dashboard that tracks employment in AI-exposed occupations, showing a year-over-year decline for high-exposure occupations in September 2026.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "labor-market-impacts-of-ai-a-new-measure-and-early-evidence",
+      "title": "Labor market impacts of AI: A new measure and early evidence",
+      "url": "https://www.anthropic.com/research/labor-market-impacts",
+      "publisher": "Anthropic",
+      "date": "2026-03-05",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An Anthropic report that proposes a measure of AI exposure by occupation and examines early evidence on unemployment among workers in highly exposed occupations.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "apple-2026-environmental-progress-report-fiscal-year-2025",
+      "title": "Apple 2026 Environmental Progress Report (fiscal year 2025)",
+      "url": "https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2026.pdf",
+      "publisher": "Apple",
+      "date": "2026-08-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Apple's 2026 environmental progress report for fiscal year 2025, which reports corporate facilities electricity use and Scope 1 emissions.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "bis-bulletin-no-140-building-ai-on-credit-structures-and-spi",
+      "title": "BIS Bulletin No 140: Building AI on credit: structures and spillovers",
+      "url": "https://www.bis.org/publications/bulletin-140-building-ai-credit-structures-and-spillovers.pdf",
+      "publisher": "Bank for International Settlements",
+      "date": "2026-10-26",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bank for International Settlements bulletin on how the largest US hyperscalers finance AI infrastructure, including bond issuance and data-center lease commitments.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "artificial-intelligence-ai-impacts-on-employment-projections",
+      "title": "Artificial Intelligence (AI) impacts on employment projections",
+      "url": "https://www.bls.gov/emp/factsheets/ai-impacts.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics page that explains how AI is treated in its employment projections.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "artificial-intelligence-ai-exposure-categories",
+      "title": "Artificial Intelligence (AI) exposure categories",
+      "url": "https://www.bls.gov/emp/publications/ai-exposure-categories.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics page that defines the AI exposure categories used in its occupational analysis.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "occupational-projections-and-worker-characteristics-employme",
+      "title": "Occupational projections and worker characteristics (Employment Projections, 2025-35)",
+      "url": "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Bureau of Labor Statistics occupational projections table for 2025 to 2035, used here for the projected change in software developer employment.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "occupations-with-the-largest-job-declines-employment-project",
+      "title": "Occupations with the largest job declines (Employment Projections, 2025-35)",
+      "url": "https://www.bls.gov/emp/tables/occupations-largest-job-declines.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Bureau of Labor Statistics list of occupations with the largest projected job declines for 2025 to 2035, including customer service representatives.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "accountants-and-auditors-occupational-outlook-handbook",
+      "title": "Accountants and Auditors (Occupational Outlook Handbook)",
+      "url": "https://www.bls.gov/ooh/business-and-financial/accountants-and-auditors.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics Occupational Outlook Handbook entry on accountants and auditors, with projected employment change for 2025 to 2035.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "computer-programmers-occupational-outlook-handbook",
+      "title": "Computer Programmers (Occupational Outlook Handbook)",
+      "url": "https://www.bls.gov/ooh/computer-and-information-technology/computer-programmers.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics Occupational Outlook Handbook entry on computer programmers, with projected employment change for 2025 to 2035.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "electricians-occupational-outlook-handbook",
+      "title": "Electricians (Occupational Outlook Handbook)",
+      "url": "https://www.bls.gov/ooh/construction-and-extraction/electricians.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics Occupational Outlook Handbook entry on electricians, with projected employment growth and average annual openings for 2025 to 2035.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "electrical-power-line-installers-and-repairers-occupational",
+      "title": "Electrical Power-Line Installers and Repairers (Occupational Outlook Handbook)",
+      "url": "https://www.bls.gov/ooh/installation-maintenance-and-repair/line-installers-and-repairers.htm",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "date": "2026-08-27",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Bureau of Labor Statistics Occupational Outlook Handbook entry on electrical power-line installers and repairers, with projected employment change for 2025 to 2035.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "still-waters-rapid-currents-early-labor-market-transformatio",
+      "title": "Still waters, rapid currents: Early labor market transformation under generative AI",
+      "url": "https://www.brookings.edu/articles/still-waters-rapid-currents-early-labor-market-transformation-under-generative-ai/",
+      "publisher": "Brookings (Humlum and Vestergaard)",
+      "date": "2026-10-06",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Brookings article on a study of Danish workers in AI-exposed occupations, finding at most small effects of chatbots on earnings and hours.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "carbon-impact-of-video-streaming-2",
+      "title": "Carbon impact of video streaming",
+      "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
+      "publisher": "Carbon Trust (with DIMPACT)",
+      "date": "2021",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Carbon Trust report, developed with DIMPACT, that estimates energy and carbon per hour of video-on-demand streaming in Europe.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "energy-use-of-ai-inference-efficiency-pathways-and-test-time-2",
+      "title": "Energy use of AI inference, efficiency pathways, and test-time scaling",
+      "url": "https://www.cell.com/joule/fulltext/S2542-4351(26)00114-5",
+      "publisher": "Joule (Cell Press); authors at Microsoft",
+      "date": "2026-04-22",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Joule paper by authors at Microsoft that estimates energy per query for large language model inference and how efficiency measures and test-time scaling change it.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "job-cuts-fall-in-september-hiring-plans-up-3-over-2025",
+      "title": "Job Cuts Fall in September; Hiring Plans Up 3% Over 2025",
+      "url": "https://www.challengergray.com/blog/job-cuts-fall-in-september-hiring-plans-up-3-over-2025-on-weak-early-seasonal-hiring",
+      "publisher": "Challenger, Gray and Christmas",
+      "date": "2026-10-01",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Challenger, Gray and Christmas report on announced US job cuts through September 2026, including cuts that cite AI.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "challenger-report-december-2025",
+      "title": "Challenger Report, December 2025",
+      "url": "https://www.challengergray.com/wp-content/uploads/2026/01/Challenger-Report-December-2025.pdf",
+      "publisher": "Challenger, Gray and Christmas",
+      "date": "2026-01-07",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The December 2025 Challenger, Gray and Christmas report on announced US job cuts, including the full-year count of cuts that cite AI.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-is-labor-demand-changing-as-ai-improves-new-global-evide",
+      "title": "How is Labor Demand Changing as AI Improves? New Global Evidence (IMF Working Paper 2026/220)",
+      "url": "https://www.elibrary.imf.org/view/journals/001/2026/220/001.2026.issue-220-en.xml",
+      "publisher": "International Monetary Fund (Ando, Kirti, Lin, Ilman)",
+      "date": "2026-10-14",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An International Monetary Fund working paper that uses job posting data from 110 economies to measure how labor demand changes in occupations more exposed to AI.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "purchasing-energy-efficient-light-bulbs-femp-acquisition-gui",
+      "title": "Purchasing Energy-Efficient Light Bulbs (FEMP acquisition guidance)",
+      "url": "https://www.energy.gov/femp/purchasing-energy-efficient-light-bulbs",
+      "publisher": "US Department of Energy, Federal Energy Management Program",
+      "date": "2013-10-07",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Department of Energy guide for federal buyers on purchasing energy-efficient light bulbs, including the power an LED needs to replace a 60-watt incandescent lamp.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "greenhouse-gases-equivalencies-calculator-calculations-and-r",
+      "title": "Greenhouse Gases Equivalencies Calculator: Calculations and References",
+      "url": "https://www.epa.gov/energy/greenhouse-gases-equivalencies-calculator-calculations-and-references",
+      "publisher": "US EPA",
+      "date": "2026-08-04",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The EPA's equivalencies calculator reference, used here for the energy in one smartphone charge.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "is-ai-impacting-global-labor-markets",
+      "title": "Is AI Impacting Global Labor Markets?",
+      "url": "https://www.goldmansachs.com/insights/articles/is-ai-impacting-global-labor-markets",
+      "publisher": "Goldman Sachs Research",
+      "date": "2026-09-03",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A Goldman Sachs Research note on whether AI is affecting labor markets, estimating the drag on headcount growth from occupational AI exposure in France, Canada, and the United States.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "generative-ai-and-jobs-a-2025-update-ilo-working-paper-140",
+      "title": "Generative AI and jobs: A 2025 update (ILO Working Paper 140)",
+      "url": "https://www.ilo.org/sites/default/files/2025-05/WP140_web.pdf",
+      "publisher": "International Labour Organization",
+      "date": "2025-05-19",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An International Labour Organization working paper that updates its global estimate of exposure to generative AI, including the share of employment in the highest exposure category.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "gen-ai-occupational-segregation-and-gender-equality-in-the-w",
+      "title": "Gen AI, occupational segregation and gender equality in the world of work (Research Brief)",
+      "url": "https://www.ilo.org/sites/default/files/2026-03/Research%20Brief%20GenAI_final0403.pdf",
+      "publisher": "International Labour Organization",
+      "date": "2026-03-04",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An International Labour Organization research brief on how generative AI exposure differs by gender, including the share of jobs exposed in female-dominated occupations.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "microsoft-fy27-first-quarter-earnings-conference-call-transc",
+      "title": "Microsoft FY27 First Quarter Earnings Conference Call (transcript)",
+      "url": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
+      "publisher": "Microsoft Investor Relations",
+      "date": "2026-10-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The transcript of Microsoft's fiscal 2027 first quarter earnings call, which reports capital expenditure including finance leases and gives spending guidance.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "ai-reshapes-global-labour-market-into-two-distinct-paths-rew",
+      "title": "AI reshapes global labour market into two distinct paths, rewarding human skills: PwC 2026 Global AI Jobs Barometer",
+      "url": "https://www.pwc.com/gx/en/news-room/press-releases/2026/pwc-2026-ai-jobs-barometer.html",
+      "publisher": "PwC",
+      "date": "2026-06-15",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A PwC 2026 Global AI Jobs Barometer release that compares headcount growth in more and less AI-exposed companies and the wage premium for AI skills.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "amazon-com-form-10-q-for-the-quarter-ended-09-30-2026",
+      "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+      "publisher": "SEC EDGAR",
+      "date": "2026-10-30",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Amazon's Form 10-Q for the quarter ended 09/30/2026, used for cash capital expenditures in the quarter and the company's full-year 2026 guidance.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "nvidia-form-10-q-for-the-quarter-ended-07-26-2026",
+      "title": "NVIDIA Form 10-Q for the quarter ended 07/26/2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+      "publisher": "SEC EDGAR",
+      "date": "2026-08-26",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "NVIDIA's Form 10-Q for the quarter ended 07/26/2026, used for its supply and capacity commitments and its equity investments in AI model makers and other companies.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-form-10-q-for-the-quarter-ended-09-30-2026",
+      "title": "Tesla Form 10-Q for the quarter ended 09/30/2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm",
+      "publisher": "SEC EDGAR",
+      "date": "2026-10-22",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Tesla's Form 10-Q for the quarter ended 09/30/2026, used for its stated capital expenditure expectation for 2026.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-reports-fourth-quarter-and-full-year-2024-results-exhib",
+      "title": "Meta Reports Fourth Quarter and Full Year 2024 Results (Exhibit 99.1)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000132680125000014/meta-12312024xexhibit991.htm",
+      "publisher": "Meta Platforms (SEC filing)",
+      "date": "2025-01-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Meta's fourth quarter and full year 2024 results release, filed with the Securities and Exchange Commission, which reports daily active people across its Family of Apps.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "meta-reports-third-quarter-2026-results-exhibit-99-1",
+      "title": "Meta Reports Third Quarter 2026 Results (Exhibit 99.1)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-09302026xexhibit991.htm",
+      "publisher": "SEC EDGAR (Meta Platforms)",
+      "date": "2026-10-21",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Meta's third quarter 2026 results release, filed with the Securities and Exchange Commission, which reports capital expenditure including finance-lease principal and full-year guidance.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "alphabet-form-10-q-for-the-quarter-ended-09-30-2026",
+      "title": "Alphabet Form 10-Q for the quarter ended 09/30/2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm",
+      "publisher": "SEC EDGAR",
+      "date": "2026-10-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Alphabet's Form 10-Q for the quarter ended 09/30/2026, used for the senior notes and the common and preferred stock it issued to fund AI capital spending.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "microsoft-form-10-q-for-the-quarter-ended-09-30-2026-note-4",
+      "title": "Microsoft Form 10-Q for the quarter ended 09/30/2026, Note 4 Investments",
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/msft-20260930.htm",
+      "publisher": "SEC EDGAR",
+      "date": "2026-10-28",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Microsoft's Form 10-Q for the quarter ended 09/30/2026, Note 4 on investments, which reports equity-method investments including its funded amount in OpenAI.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "tesla-impact-report-2025-extended-version-appendix",
+      "title": "Tesla Impact Report 2025 (Extended Version), Appendix",
+      "url": "https://www.tesla.com/ns_videos/2025-extended-version-tesla-impact-report.pdf",
+      "publisher": "Tesla",
+      "date": "2026-07-10",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The appendix to Tesla's extended Impact Report 2025, which reports total Scope 1 and location-based Scope 2 greenhouse gas emissions.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "the-real-energy-use-of-agentic-ai",
+      "title": "The real energy use of agentic AI",
+      "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+      "publisher": "Zeke Hausfather, The Climate Brink",
+      "date": "2026-08-05",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An article by Zeke Hausfather that estimates the data center electricity used by agentic AI, using heavy Claude Code use per typed prompt and per median session.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "united-states-data-center-energy-usage-report-2025-update-2",
+      "title": "United States Data Center Energy Usage Report: 2025 Update",
+      "url": "https://www.energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
+      "publisher": "Lawrence Berkeley National Laboratory (via U.S. Department of Energy)",
+      "date": "2026-06-16",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The Department of Energy copy of the June 2026 Lawrence Berkeley National Laboratory update to its national estimate of data center electricity use and scenarios.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-people-use-chatgpt-nber-working-paper-34255",
+      "title": "How People Use ChatGPT (NBER Working Paper 34255)",
+      "url": "https://www.nber.org/papers/w34255",
+      "publisher": "National Bureau of Economic Research",
+      "date": "2025-09-15",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A working paper by Chatterji and coauthors that documents the growth of ChatGPT's consumer product through July 2025 and what people use it for.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "how-adaptable-are-american-workers-to-ai-induced-job-displac",
+      "title": "How Adaptable Are American Workers to AI-Induced Job Displacement? (NBER Working Paper 34705)",
+      "url": "https://www.nber.org/papers/w34705",
+      "publisher": "National Bureau of Economic Research",
+      "date": "2026-01-19",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A working paper that builds an adaptive capacity index for 356 occupations and finds that many AI-exposed occupations hold workers with relatively strong means to manage a job transition.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "modern-datacenter-heat-energy-reuse-azure-infographic",
+      "title": "Modern Datacenter Heat Energy Reuse (Azure infographic)",
+      "url": "https://datacenters.microsoft.com/wp-content/uploads/2026/03/FINAL_Azure_HeatReUse_Infographic.pdf",
+      "publisher": "Microsoft",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "A Microsoft infographic describing its plan to divert heat from datacenters to local district energy providers for heating homes, greenhouses, and fish farms.",
+      "tier": "T0",
+      "added": "2026-11-04",
+      "featured": false,
+      "link_status": "unverified"
     }
   ]
 }

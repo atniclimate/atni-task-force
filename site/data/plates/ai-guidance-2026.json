@@ -1,0 +1,123 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-guidance-2026",
+ "default": "amazon",
+ "eyebrow": "What they say comes next",
+ "title": "For 2026 the companies guide to {c[fin-044][low]:.0f} to {c[fin-044][high]:.0f} billion dollars (Alphabet), {c[fin-051][low]:.0f} to {c[fin-051][high]:.0f} (Meta), about {c[fin-054][value]:.0f} (Microsoft, calendar year), about {c[fin-056][value]:.0f} (Amazon), and over {c[fin-065][low]:.0f} (Tesla); Apple and NVIDIA give none",
+ "subtitle": "Every mark is a projection, on each company's own definition.",
+ "plot": {
+  "type": "ladder",
+  "domain": [
+   0,
+   250
+  ],
+  "projected": true,
+  "units": {
+   "USD billion": "billion dollars"
+  },
+  "axis_label": "Company-defined capital spending, including finance leases where the company counts them; not the SEC cash basis of the plates above"
+ },
+ "reading": "{label}, 2026 guidance: {display}. {boundary} Company statement, {published}.",
+ "also": [
+  {
+   "claim": "fin-083",
+   "label": "Top five hyperscalers, 2026, per NVIDIA's chief financial officer",
+   "say": "nearly {display}"
+  },
+  {
+   "claim": "fin-084",
+   "label": "Top five hyperscalers, 2027, per the same statement",
+   "say": "{display}"
+  }
+ ],
+ "rows": [
+  {
+   "id": "amazon",
+   "label": "Amazon",
+   "claim": "fin-056",
+   "cites": [
+    "fin-055"
+   ],
+   "detail": "Latest quarter on Amazon's own basis: 75.9 billion dollars, the quarter ended 09/30/2026."
+  },
+  {
+   "id": "alphabet",
+   "label": "Alphabet",
+   "claim": "fin-044",
+   "cites": [
+    "fin-042",
+    "fin-048",
+    "fin-049"
+   ],
+   "detail": "Latest quarter: 51.4 billion dollars. In 2026 Alphabet also issued 80.8 billion of notes and raised 49.6 billion from stock sales."
+  },
+  {
+   "id": "microsoft",
+   "label": "Microsoft",
+   "claim": "fin-054",
+   "cites": [
+    "fin-053"
+   ],
+   "detail": "Latest quarter, counting finance leases: 45.2 billion dollars."
+  },
+  {
+   "id": "meta",
+   "label": "Meta",
+   "claim": "fin-051",
+   "cites": [
+    "fin-050",
+    "fin-052",
+    "fin-068"
+   ],
+   "detail": "Latest quarter, with finance-lease principal: 34.91 billion dollars. Meta issued 24.91 billion of long-term debt in 2026, and a venture it does not consolidate placed 27.3 billion of bonds backed by its leases."
+  },
+  {
+   "id": "tesla",
+   "label": "Tesla",
+   "claim": "fin-065",
+   "detail": "In excess of this figure; the filing names compute infrastructure and data centers among the drivers."
+  },
+  {
+   "id": "apple",
+   "label": "Apple",
+   "claim": "fin-081",
+   "gap": "No public guidance"
+  },
+  {
+   "id": "nvidia",
+   "label": "NVIDIA",
+   "claim": "fin-082",
+   "gap": "No public guidance"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Company",
+    "field": "label"
+   },
+   {
+    "label": "Guidance",
+    "field": "display"
+   },
+   {
+    "label": "Low",
+    "field": "low"
+   },
+   {
+    "label": "High",
+    "field": "high"
+   },
+   {
+    "label": "Basis",
+    "field": "boundary"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

@@ -1,0 +1,5572 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "finance",
+ "claims": [
+  {
+   "id": "fin-001",
+   "entity": "Microsoft",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 115.95,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
+   "source": {
+    "title": "Microsoft XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-07-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-06-30\",\"val\":115948000000",
+   "derived": "raw value 115948000000 USD / 1e9 = 115.95",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-07-01",
+     "end": "2018-06-30",
+     "usd_billion": 11.63,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2018-07-01",
+     "end": "2019-06-30",
+     "usd_billion": 13.93,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2019-07-01",
+     "end": "2020-06-30",
+     "usd_billion": 15.44,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2020-07-01",
+     "end": "2021-06-30",
+     "usd_billion": 20.62,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2021-07-01",
+     "end": "2022-06-30",
+     "usd_billion": 23.89,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2022-07-01",
+     "end": "2023-06-30",
+     "usd_billion": 28.11,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2023-07-01",
+     "end": "2024-06-30",
+     "usd_billion": 44.48,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2024-07-01",
+     "end": "2025-06-30",
+     "usd_billion": 64.55,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2025-07-01",
+     "end": "2026-06-30",
+     "usd_billion": 115.95,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 39.37,
+     "period": "quarter",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-06-30"
+  },
+  {
+   "id": "fin-002",
+   "entity": "Alphabet",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 91.45,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
+   "source": {
+    "title": "Alphabet XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-02-05",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":91447000000",
+   "derived": "raw value 91447000000 USD / 1e9 = 91.45",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 25.14,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 23.55,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 22.28,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 24.64,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 31.48,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 32.25,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 52.53,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 91.45,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 35.67,
+     "period": "quarter",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 80.6,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 131.95,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-003",
+   "entity": "Amazon",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 131.82,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquireProductiveAssets. ",
+   "source": {
+    "title": "Amazon XBRL company concept PaymentsToAcquireProductiveAssets",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/PaymentsToAcquireProductiveAssets.json",
+    "published": "2026-02-06",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":131819000000",
+   "derived": "raw value 131819000000 USD / 1e9 = 131.82",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 13.43,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 16.86,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 40.14,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 61.05,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 63.65,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 52.73,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 83.0,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 131.82,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 44.2,
+     "period": "quarter",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 98.41,
+     "period": "ytd",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 54.21,
+     "period": "quarter",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 175.67,
+     "period": "ytd",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 77.26,
+     "period": "quarter",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquireProductiveAssets"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-004",
+   "entity": "Meta",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 69.69,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
+   "source": {
+    "title": "Meta XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":69691000000",
+   "derived": "raw value 69691000000 USD / 1e9 = 69.69",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 13.91,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 15.1,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 15.16,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 18.69,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 31.19,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 27.05,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 37.26,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 69.69,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 19.0,
+     "period": "quarter",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 49.11,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 83.06,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-005",
+   "entity": "Apple",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 9.04,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
+   "source": {
+    "title": "Apple XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":9041000000",
+   "derived": "raw value 9041000000 USD / 1e9 = 9.04",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-10-01",
+     "end": "2018-09-29",
+     "usd_billion": 13.31,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2018-09-30",
+     "end": "2019-09-28",
+     "usd_billion": 10.49,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2019-09-29",
+     "end": "2020-09-26",
+     "usd_billion": 7.31,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2020-09-27",
+     "end": "2021-09-25",
+     "usd_billion": 11.09,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2021-09-26",
+     "end": "2022-09-24",
+     "usd_billion": 10.71,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2022-09-25",
+     "end": "2023-09-30",
+     "usd_billion": 10.96,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2023-10-01",
+     "end": "2024-09-28",
+     "usd_billion": 9.45,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2024-09-29",
+     "end": "2025-09-27",
+     "usd_billion": 12.71,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2025-09-28",
+     "end": "2026-09-26",
+     "usd_billion": 9.04,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-09-26"
+  },
+  {
+   "id": "fin-006",
+   "entity": "NVIDIA",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 6.04,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag PaymentsToAcquireProductiveAssets. Series mixes tags PaymentsToAcquireProductiveAssets, PaymentsToAcquirePropertyPlantAndEquipment over time; check the tag on each row.",
+   "source": {
+    "title": "NVIDIA XBRL company concept PaymentsToAcquireProductiveAssets",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/PaymentsToAcquireProductiveAssets.json",
+    "published": "2026-02-25",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-01-25\",\"val\":6042000000",
+   "derived": "raw value 6042000000 USD / 1e9 = 6.04",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2021-02-01",
+     "end": "2022-01-30",
+     "usd_billion": 0.98,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2022-01-31",
+     "end": "2023-01-29",
+     "usd_billion": 1.83,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2023-01-30",
+     "end": "2024-01-28",
+     "usd_billion": 1.07,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2024-01-29",
+     "end": "2025-01-26",
+     "usd_billion": 3.24,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2025-01-27",
+     "end": "2026-01-25",
+     "usd_billion": 6.04,
+     "period": "annual",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-26",
+     "end": "2026-04-26",
+     "usd_billion": 1.76,
+     "period": "quarter",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    },
+    {
+     "start": "2026-01-26",
+     "end": "2026-07-26",
+     "usd_billion": 4.43,
+     "period": "ytd",
+     "tag": "PaymentsToAcquireProductiveAssets"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquireProductiveAssets",
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2026-01-25"
+  },
+  {
+   "id": "fin-007",
+   "entity": "Tesla",
+   "metric": "capital expenditure, annual cash purchases of property and equipment",
+   "value": 8.53,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid for property and equipment (cash flow statement). Excludes assets acquired through finance leases and any capital leases, which most companies guide separately. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsToAcquirePropertyPlantAndEquipment. ",
+   "source": {
+    "title": "Tesla XBRL company concept PaymentsToAcquirePropertyPlantAndEquipment",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":8527000000",
+   "derived": "raw value 8527000000 USD / 1e9 = 8.53",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 2.1,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 1.33,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 3.16,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 6.48,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 7.16,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 8.9,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 11.34,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 8.53,
+     "period": "annual",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 2.49,
+     "period": "quarter",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 8.28,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 13.01,
+     "period": "ytd",
+     "tag": "PaymentsToAcquirePropertyPlantAndEquipment"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsToAcquirePropertyPlantAndEquipment"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-008",
+   "entity": "Microsoft",
+   "metric": "operating cash flow, annual",
+   "value": 182.94,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Microsoft XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-07-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-06-30\",\"val\":182935000000",
+   "derived": "raw value 182935000000 USD / 1e9 = 182.94",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-07-01",
+     "end": "2018-06-30",
+     "usd_billion": 43.88,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2018-07-01",
+     "end": "2019-06-30",
+     "usd_billion": 52.19,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-07-01",
+     "end": "2020-06-30",
+     "usd_billion": 60.67,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-07-01",
+     "end": "2021-06-30",
+     "usd_billion": 76.74,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-07-01",
+     "end": "2022-06-30",
+     "usd_billion": 89.03,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-07-01",
+     "end": "2023-06-30",
+     "usd_billion": 87.58,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-07-01",
+     "end": "2024-06-30",
+     "usd_billion": 118.55,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-07-01",
+     "end": "2025-06-30",
+     "usd_billion": 136.16,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-07-01",
+     "end": "2026-06-30",
+     "usd_billion": 182.94,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 58.0,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-06-30"
+  },
+  {
+   "id": "fin-009",
+   "entity": "Alphabet",
+   "metric": "operating cash flow, annual",
+   "value": 164.71,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Alphabet XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-02-05",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":164713000000",
+   "derived": "raw value 164713000000 USD / 1e9 = 164.71",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 47.97,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 54.52,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 65.12,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 91.65,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 91.5,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 101.75,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 125.3,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 164.71,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 45.79,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 84.86,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 127.15,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-010",
+   "entity": "Amazon",
+   "metric": "operating cash flow, annual",
+   "value": 139.51,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Amazon XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-02-06",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":139514000000",
+   "derived": "raw value 139514000000 USD / 1e9 = 139.51",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 30.72,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 38.51,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 66.06,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 46.33,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 46.75,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 84.95,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 115.88,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 139.51,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 26.03,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 71.42,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 45.39,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 113.84,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 42.42,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-011",
+   "entity": "Meta",
+   "metric": "operating cash flow, annual",
+   "value": 115.8,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Meta XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":115800000000",
+   "derived": "raw value 115800000000 USD / 1e9 = 115.80",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 29.27,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 36.31,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 38.75,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 57.68,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 50.48,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 71.11,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 91.33,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 115.8,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 32.23,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 64.09,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 96.87,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-012",
+   "entity": "Apple",
+   "metric": "operating cash flow, annual",
+   "value": 145.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Apple XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":145097000000",
+   "derived": "raw value 145097000000 USD / 1e9 = 145.10",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-10-01",
+     "end": "2018-09-29",
+     "usd_billion": 77.43,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2018-09-30",
+     "end": "2019-09-28",
+     "usd_billion": 69.39,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-09-29",
+     "end": "2020-09-26",
+     "usd_billion": 80.67,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-09-27",
+     "end": "2021-09-25",
+     "usd_billion": 104.04,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-09-26",
+     "end": "2022-09-24",
+     "usd_billion": 122.15,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-09-25",
+     "end": "2023-09-30",
+     "usd_billion": 110.54,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-10-01",
+     "end": "2024-09-28",
+     "usd_billion": 118.25,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-09-29",
+     "end": "2025-09-27",
+     "usd_billion": 111.48,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-09-28",
+     "end": "2026-09-26",
+     "usd_billion": 145.1,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-09-26"
+  },
+  {
+   "id": "fin-013",
+   "entity": "NVIDIA",
+   "metric": "operating cash flow, annual",
+   "value": 102.72,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "NVIDIA XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-02-25",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-01-25\",\"val\":102718000000",
+   "derived": "raw value 102718000000 USD / 1e9 = 102.72",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-01-30",
+     "end": "2018-01-28",
+     "usd_billion": 3.5,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2018-01-29",
+     "end": "2019-01-27",
+     "usd_billion": 3.74,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-01-28",
+     "end": "2020-01-26",
+     "usd_billion": 4.76,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-01-27",
+     "end": "2021-01-31",
+     "usd_billion": 5.82,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-02-01",
+     "end": "2022-01-30",
+     "usd_billion": 9.11,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-01-31",
+     "end": "2023-01-29",
+     "usd_billion": 5.64,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-01-30",
+     "end": "2024-01-28",
+     "usd_billion": 28.09,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-01-29",
+     "end": "2025-01-26",
+     "usd_billion": 64.09,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-01-27",
+     "end": "2026-01-25",
+     "usd_billion": 102.72,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-26",
+     "end": "2026-04-26",
+     "usd_billion": 50.34,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-26",
+     "end": "2026-07-26",
+     "usd_billion": 74.42,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2026-01-25"
+  },
+  {
+   "id": "fin-014",
+   "entity": "Tesla",
+   "metric": "operating cash flow, annual",
+   "value": 14.75,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Net cash provided by operating activities, GAAP. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag NetCashProvidedByUsedInOperatingActivities. ",
+   "source": {
+    "title": "Tesla XBRL company concept NetCashProvidedByUsedInOperatingActivities",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/NetCashProvidedByUsedInOperatingActivities.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":14747000000",
+   "derived": "raw value 14747000000 USD / 1e9 = 14.75",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 2.1,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 2.4,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 5.94,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 11.5,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 14.72,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 13.26,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 14.92,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 14.75,
+     "period": "annual",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 3.94,
+     "period": "quarter",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 8.63,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 14.9,
+     "period": "ytd",
+     "tag": "NetCashProvidedByUsedInOperatingActivities"
+    }
+   ],
+   "xbrl_tags": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-015",
+   "entity": "Microsoft",
+   "metric": "long-term debt, balance sheet",
+   "value": 35.48,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends June 30. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
+   "source": {
+    "title": "Microsoft XBRL company concept LongTermDebt",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/LongTermDebt.json",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":35481000000",
+   "derived": "raw value 35481000000 USD / 1e9 = 35.48",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-06-30",
+     "usd_billion": 76.2,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2019-06-30",
+     "usd_billion": 72.18,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2020-06-30",
+     "usd_billion": 63.33,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2021-06-30",
+     "usd_billion": 58.15,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-06-30",
+     "usd_billion": 49.78,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-06-30",
+     "usd_billion": 47.24,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-06-30",
+     "usd_billion": 44.94,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-06-30",
+     "usd_billion": 43.15,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-06-30",
+     "usd_billion": 40.29,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-09-30",
+     "usd_billion": 35.48,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-016",
+   "entity": "Alphabet",
+   "metric": "long-term debt, balance sheet",
+   "value": 125.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebtNoncurrent. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
+   "source": {
+    "title": "Alphabet XBRL company concept LongTermDebtNoncurrent",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/LongTermDebtNoncurrent.json",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":125102000000",
+   "derived": "raw value 125102000000 USD / 1e9 = 125.10",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-12-31",
+     "usd_billion": 4.06,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2019-12-31",
+     "usd_billion": 4.68,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2020-12-31",
+     "usd_billion": 15.32,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2021-12-31",
+     "usd_billion": 15.44,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-12-31",
+     "usd_billion": 15.31,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-12-31",
+     "usd_billion": 13.0,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-12-31",
+     "usd_billion": 12.0,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-12-31",
+     "usd_billion": 49.09,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-03-31",
+     "usd_billion": 77.5,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2026-06-30",
+     "usd_billion": 98.17,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2026-09-30",
+     "usd_billion": 125.1,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt",
+    "LongTermDebtNoncurrent"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-017",
+   "entity": "Amazon",
+   "metric": "long-term debt, balance sheet",
+   "value": 180.89,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
+   "source": {
+    "title": "Amazon XBRL company concept LongTermDebt",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/LongTermDebt.json",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":180887000000",
+   "derived": "raw value 180887000000 USD / 1e9 = 180.89",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-12-31",
+     "usd_billion": 24.96,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2019-12-31",
+     "usd_billion": 24.82,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2020-12-31",
+     "usd_billion": 33.17,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2021-12-31",
+     "usd_billion": 50.55,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-12-31",
+     "usd_billion": 70.54,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-12-31",
+     "usd_billion": 67.18,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-12-31",
+     "usd_billion": 58.0,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-12-31",
+     "usd_billion": 68.84,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-03-31",
+     "usd_billion": 122.63,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-06-30",
+     "usd_billion": 133.0,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-09-30",
+     "usd_billion": 180.89,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-018",
+   "entity": "Meta",
+   "metric": "long-term debt, balance sheet",
+   "value": 80.92,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebtNoncurrent. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
+   "source": {
+    "title": "Meta XBRL company concept LongTermDebtNoncurrent",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/LongTermDebtNoncurrent.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":80922000000",
+   "derived": "raw value 80922000000 USD / 1e9 = 80.92",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2021-12-31",
+     "usd_billion": 0.0,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2022-12-31",
+     "usd_billion": 9.92,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-12-31",
+     "usd_billion": 18.39,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-12-31",
+     "usd_billion": 28.83,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-12-31",
+     "usd_billion": 58.74,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-03-31",
+     "usd_billion": 58.75,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2026-06-30",
+     "usd_billion": 83.66,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-09-30",
+     "usd_billion": 80.92,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt",
+    "LongTermDebtNoncurrent"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-019",
+   "entity": "Apple",
+   "metric": "long-term debt, balance sheet",
+   "value": 78.11,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends last Saturday of September. Headline value is the balance at ending 2026-09-26. XBRL tag LongTermDebt. Series mixes tags LongTermDebt, LongTermDebtNoncurrent over time; check the tag on each row.",
+   "source": {
+    "title": "Apple XBRL company concept LongTermDebt",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/LongTermDebt.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":78114000000",
+   "derived": "raw value 78114000000 USD / 1e9 = 78.11",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-09-29",
+     "usd_billion": 93.73,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2019-09-28",
+     "usd_billion": 91.81,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2020-09-26",
+     "usd_billion": 98.67,
+     "period": "instant",
+     "tag": "LongTermDebtNoncurrent"
+    },
+    {
+     "start": null,
+     "end": "2021-09-25",
+     "usd_billion": 118.7,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-09-24",
+     "usd_billion": 110.09,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-09-30",
+     "usd_billion": 105.1,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-09-28",
+     "usd_billion": 96.66,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-09-27",
+     "usd_billion": 90.68,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-09-26",
+     "usd_billion": 78.11,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "LongTermDebt",
+    "LongTermDebtNoncurrent"
+   ],
+   "as_of": "2026-09-26"
+  },
+  {
+   "id": "fin-020",
+   "entity": "NVIDIA",
+   "metric": "long-term debt, balance sheet",
+   "value": 33.37,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the balance at ending 2026-07-26. XBRL tag LongTermDebt. ",
+   "source": {
+    "title": "NVIDIA XBRL company concept LongTermDebt",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/LongTermDebt.json",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-07-26\",\"val\":33366000000",
+   "derived": "raw value 33366000000 USD / 1e9 = 33.37",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-01-28",
+     "usd_billion": 1.99,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2019-01-27",
+     "usd_billion": 1.99,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2020-01-26",
+     "usd_billion": 1.99,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2021-01-31",
+     "usd_billion": 6.96,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-01-30",
+     "usd_billion": 10.95,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-01-29",
+     "usd_billion": 10.95,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-01-28",
+     "usd_billion": 9.71,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-01-26",
+     "usd_billion": 8.46,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-01-25",
+     "usd_billion": 8.47,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-04-26",
+     "usd_billion": 8.47,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-07-26",
+     "usd_billion": 33.37,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt"
+   ],
+   "as_of": "2026-07-26"
+  },
+  {
+   "id": "fin-021",
+   "entity": "Tesla",
+   "metric": "long-term debt, balance sheet",
+   "value": 7.96,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Long-term debt including current portion where the tag LongTermDebt is used; LongTermDebtNoncurrent excludes the current portion. Excludes operating-lease liabilities and unconsolidated vehicles. Fiscal year ends December 31. Headline value is the balance at ending 2026-09-30. XBRL tag LongTermDebt. ",
+   "source": {
+    "title": "Tesla XBRL company concept LongTermDebt",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/LongTermDebt.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":7956000000",
+   "derived": "raw value 7956000000 USD / 1e9 = 7.96",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": null,
+     "end": "2018-12-31",
+     "usd_billion": 8.41,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2019-12-31",
+     "usd_billion": 10.4,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2020-12-31",
+     "usd_billion": 8.46,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2021-12-31",
+     "usd_billion": 4.25,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2022-12-31",
+     "usd_billion": 1.03,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2023-12-31",
+     "usd_billion": 2.68,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2024-12-31",
+     "usd_billion": 5.54,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2025-12-31",
+     "usd_billion": 6.58,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": null,
+     "end": "2026-03-31",
+     "usd_billion": 7.64,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-06-30",
+     "usd_billion": 7.72,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    },
+    {
+     "start": null,
+     "end": "2026-09-30",
+     "usd_billion": 7.96,
+     "period": "instant",
+     "tag": "LongTermDebt"
+    }
+   ],
+   "xbrl_tags": [
+    "LongTermDebt"
+   ],
+   "as_of": "2026-09-30"
+  },
+  {
+   "id": "fin-022",
+   "entity": "Microsoft",
+   "metric": "share repurchases, annual cash paid",
+   "value": 22.27,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "Microsoft XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2026-07-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-06-30\",\"val\":22271000000",
+   "derived": "raw value 22271000000 USD / 1e9 = 22.27",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-07-01",
+     "end": "2018-06-30",
+     "usd_billion": 10.72,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2018-07-01",
+     "end": "2019-06-30",
+     "usd_billion": 19.54,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2019-07-01",
+     "end": "2020-06-30",
+     "usd_billion": 22.97,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2020-07-01",
+     "end": "2021-06-30",
+     "usd_billion": 27.39,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-07-01",
+     "end": "2022-06-30",
+     "usd_billion": 32.7,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-07-01",
+     "end": "2023-06-30",
+     "usd_billion": 22.25,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-07-01",
+     "end": "2024-06-30",
+     "usd_billion": 17.25,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-07-01",
+     "end": "2025-06-30",
+     "usd_billion": 18.42,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2025-07-01",
+     "end": "2026-06-30",
+     "usd_billion": 22.27,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 4.38,
+     "period": "quarter",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2026-06-30"
+  },
+  {
+   "id": "fin-023",
+   "entity": "Alphabet",
+   "metric": "share repurchases, annual cash paid",
+   "value": 45.71,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "Alphabet XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2026-02-05",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":45709000000",
+   "derived": "raw value 45709000000 USD / 1e9 = 45.71",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 9.07,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 18.4,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 31.15,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 50.27,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 59.3,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 61.5,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 62.22,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 45.71,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 0.0,
+     "period": "quarter",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 0.0,
+     "period": "ytd",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 0.0,
+     "period": "ytd",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-024",
+   "entity": "Amazon",
+   "metric": "share repurchases, annual cash paid",
+   "value": 0.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2024,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2024-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "Amazon XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2025-02-07",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2024-12-31\",\"val\":0",
+   "derived": "raw value 0 USD / 1e9 = 0.00",
+   "status": "partly",
+   "limit": "Amazon dropped this line from its cash flow statement after fiscal 2024, so the zero is for 2024, an older year than the other companies; its latest quarterly filing reports no repurchases in the first nine months of 2025 or 2026.",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 6.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2024-12-31"
+  },
+  {
+   "id": "fin-025",
+   "entity": "Meta",
+   "metric": "share repurchases, annual cash paid",
+   "value": 26.25,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "Meta XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":26248000000",
+   "derived": "raw value 26248000000 USD / 1e9 = 26.25",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 12.88,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 4.2,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 6.27,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 44.54,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 27.96,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 19.77,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 30.12,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 26.25,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 0.0,
+     "period": "quarter",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 0.0,
+     "period": "ytd",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 0.0,
+     "period": "ytd",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-026",
+   "entity": "Apple",
+   "metric": "share repurchases, annual cash paid",
+   "value": 86.39,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "Apple XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":86390000000",
+   "derived": "raw value 86390000000 USD / 1e9 = 86.39",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-10-01",
+     "end": "2018-09-29",
+     "usd_billion": 72.74,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2018-09-30",
+     "end": "2019-09-28",
+     "usd_billion": 66.9,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2019-09-29",
+     "end": "2020-09-26",
+     "usd_billion": 72.36,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2020-09-27",
+     "end": "2021-09-25",
+     "usd_billion": 85.97,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-09-26",
+     "end": "2022-09-24",
+     "usd_billion": 89.4,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-09-25",
+     "end": "2023-09-30",
+     "usd_billion": 77.55,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-10-01",
+     "end": "2024-09-28",
+     "usd_billion": 94.95,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-09-29",
+     "end": "2025-09-27",
+     "usd_billion": 90.71,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2025-09-28",
+     "end": "2026-09-26",
+     "usd_billion": 86.39,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2026-09-26"
+  },
+  {
+   "id": "fin-027",
+   "entity": "NVIDIA",
+   "metric": "share repurchases, annual cash paid",
+   "value": 40.09,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash paid to repurchase common stock (financing activities); excludes taxes paid on net share settlement. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag PaymentsForRepurchaseOfCommonStock. ",
+   "source": {
+    "title": "NVIDIA XBRL company concept PaymentsForRepurchaseOfCommonStock",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/PaymentsForRepurchaseOfCommonStock.json",
+    "published": "2026-02-25",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-01-25\",\"val\":40086000000",
+   "derived": "raw value 40086000000 USD / 1e9 = 40.09",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-01-30",
+     "end": "2018-01-28",
+     "usd_billion": 0.91,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2018-01-29",
+     "end": "2019-01-27",
+     "usd_billion": 1.58,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2019-01-28",
+     "end": "2020-01-26",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2020-01-27",
+     "end": "2021-01-31",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2021-02-01",
+     "end": "2022-01-30",
+     "usd_billion": 0.0,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2022-01-31",
+     "end": "2023-01-29",
+     "usd_billion": 10.04,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2023-01-30",
+     "end": "2024-01-28",
+     "usd_billion": 9.53,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2024-01-29",
+     "end": "2025-01-26",
+     "usd_billion": 33.71,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2025-01-27",
+     "end": "2026-01-25",
+     "usd_billion": 40.09,
+     "period": "annual",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-26",
+     "end": "2026-04-26",
+     "usd_billion": 19.31,
+     "period": "quarter",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    },
+    {
+     "start": "2026-01-26",
+     "end": "2026-07-26",
+     "usd_billion": 39.04,
+     "period": "ytd",
+     "tag": "PaymentsForRepurchaseOfCommonStock"
+    }
+   ],
+   "xbrl_tags": [
+    "PaymentsForRepurchaseOfCommonStock"
+   ],
+   "as_of": "2026-01-25"
+  },
+  {
+   "id": "fin-028",
+   "entity": "Microsoft",
+   "metric": "revenue, annual",
+   "value": 331.84,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends June 30. Headline value is the full fiscal year ending 2026-06-30. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
+   "source": {
+    "title": "Microsoft XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+    "published": "2026-07-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-06-30\",\"val\":331839000000",
+   "derived": "raw value 331839000000 USD / 1e9 = 331.84",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-07-01",
+     "end": "2018-06-30",
+     "usd_billion": 110.36,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2018-07-01",
+     "end": "2019-06-30",
+     "usd_billion": 125.84,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-07-01",
+     "end": "2020-06-30",
+     "usd_billion": 143.01,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-07-01",
+     "end": "2021-06-30",
+     "usd_billion": 168.09,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-07-01",
+     "end": "2022-06-30",
+     "usd_billion": 198.27,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-07-01",
+     "end": "2023-06-30",
+     "usd_billion": 211.91,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-07-01",
+     "end": "2024-06-30",
+     "usd_billion": 245.12,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-07-01",
+     "end": "2025-06-30",
+     "usd_billion": 281.72,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-07-01",
+     "end": "2026-06-30",
+     "usd_billion": 331.84,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 92.28,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax"
+   ],
+   "as_of": "2026-06-30"
+  },
+  {
+   "id": "fin-029",
+   "entity": "Alphabet",
+   "metric": "revenue, annual",
+   "value": 402.84,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag Revenues. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
+   "source": {
+    "title": "Alphabet XBRL company concept Revenues",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/Revenues.json",
+    "published": "2026-02-05",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":402836000000",
+   "derived": "raw value 402836000000 USD / 1e9 = 402.84",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 136.82,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 161.86,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 182.53,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 257.64,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 282.84,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 307.39,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 350.02,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 402.84,
+     "period": "annual",
+     "tag": "Revenues"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 109.9,
+     "period": "quarter",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 229.69,
+     "period": "ytd",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 119.8,
+     "period": "quarter",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 357.27,
+     "period": "ytd",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 127.58,
+     "period": "quarter",
+     "tag": "Revenues"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-030",
+   "entity": "Amazon",
+   "metric": "revenue, annual",
+   "value": 716.92,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
+   "source": {
+    "title": "Amazon XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+    "published": "2026-02-06",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":716924000000",
+   "derived": "raw value 716924000000 USD / 1e9 = 716.92",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 232.89,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 280.52,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 386.06,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 469.82,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 513.98,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 574.78,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 637.96,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 716.92,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 181.52,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 382.12,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 200.61,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 584.07,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 201.94,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-031",
+   "entity": "Meta",
+   "metric": "revenue, annual",
+   "value": 200.97,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
+   "source": {
+    "title": "Meta XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":200966000000",
+   "derived": "raw value 200966000000 USD / 1e9 = 200.97",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 55.84,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 70.7,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 85.97,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 117.93,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 116.61,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 134.9,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 164.5,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 200.97,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 56.31,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 117.11,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 60.8,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 181.71,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 64.6,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-032",
+   "entity": "Apple",
+   "metric": "revenue, annual",
+   "value": 478.83,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends last Saturday of September. Headline value is the full fiscal year ending 2026-09-26. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. ",
+   "source": {
+    "title": "Apple XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":478834000000",
+   "derived": "raw value 478834000000 USD / 1e9 = 478.83",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-10-01",
+     "end": "2018-09-29",
+     "usd_billion": 265.6,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2018-09-30",
+     "end": "2019-09-28",
+     "usd_billion": 260.17,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-09-29",
+     "end": "2020-09-26",
+     "usd_billion": 274.51,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-09-27",
+     "end": "2021-09-25",
+     "usd_billion": 365.82,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-09-26",
+     "end": "2022-09-24",
+     "usd_billion": 394.33,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-09-25",
+     "end": "2023-09-30",
+     "usd_billion": 383.29,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-10-01",
+     "end": "2024-09-28",
+     "usd_billion": 391.04,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-09-29",
+     "end": "2025-09-27",
+     "usd_billion": 416.16,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-09-28",
+     "end": "2026-09-26",
+     "usd_billion": 478.83,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax"
+   ],
+   "as_of": "2026-09-26"
+  },
+  {
+   "id": "fin-033",
+   "entity": "NVIDIA",
+   "metric": "revenue, annual",
+   "value": 215.94,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). Headline value is the full fiscal year ending 2026-01-25. XBRL tag Revenues. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
+   "source": {
+    "title": "NVIDIA XBRL company concept Revenues",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/Revenues.json",
+    "published": "2026-02-25",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-01-25\",\"val\":215938000000",
+   "derived": "raw value 215938000000 USD / 1e9 = 215.94",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2017-01-30",
+     "end": "2018-01-28",
+     "usd_billion": 9.71,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2018-01-29",
+     "end": "2019-01-27",
+     "usd_billion": 11.72,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-01-28",
+     "end": "2020-01-26",
+     "usd_billion": 10.92,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2020-01-27",
+     "end": "2021-01-31",
+     "usd_billion": 16.68,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2021-02-01",
+     "end": "2022-01-30",
+     "usd_billion": 26.91,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-01-31",
+     "end": "2023-01-29",
+     "usd_billion": 26.97,
+     "period": "annual",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2023-01-30",
+     "end": "2024-01-28",
+     "usd_billion": 60.92,
+     "period": "annual",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2024-01-29",
+     "end": "2025-01-26",
+     "usd_billion": 130.5,
+     "period": "annual",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2025-01-27",
+     "end": "2026-01-25",
+     "usd_billion": 215.94,
+     "period": "annual",
+     "tag": "Revenues"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-26",
+     "end": "2026-04-26",
+     "usd_billion": 81.61,
+     "period": "quarter",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-01-26",
+     "end": "2026-07-26",
+     "usd_billion": 177.84,
+     "period": "ytd",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2026-04-27",
+     "end": "2026-07-26",
+     "usd_billion": 96.22,
+     "period": "quarter",
+     "tag": "Revenues"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues"
+   ],
+   "as_of": "2026-01-25"
+  },
+  {
+   "id": "fin-034",
+   "entity": "Tesla",
+   "metric": "revenue, annual",
+   "value": 94.83,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Total revenue as tagged; tags differ by year, see xbrl_tags. Fiscal year ends December 31. Headline value is the full fiscal year ending 2025-12-31. XBRL tag RevenueFromContractWithCustomerExcludingAssessedTax. Series mixes tags RevenueFromContractWithCustomerExcludingAssessedTax, Revenues over time; check the tag on each row.",
+   "source": {
+    "title": "Tesla XBRL company concept RevenueFromContractWithCustomerExcludingAssessedTax",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":94827000000",
+   "derived": "raw value 94827000000 USD / 1e9 = 94.83",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "start": "2018-01-01",
+     "end": "2018-12-31",
+     "usd_billion": 21.46,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2019-01-01",
+     "end": "2019-12-31",
+     "usd_billion": 24.58,
+     "period": "annual",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2020-01-01",
+     "end": "2020-12-31",
+     "usd_billion": 31.54,
+     "period": "annual",
+     "tag": "Revenues"
+    },
+    {
+     "start": "2021-01-01",
+     "end": "2021-12-31",
+     "usd_billion": 53.82,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2022-01-01",
+     "end": "2022-12-31",
+     "usd_billion": 81.46,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2023-01-01",
+     "end": "2023-12-31",
+     "usd_billion": 96.77,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2024-01-01",
+     "end": "2024-12-31",
+     "usd_billion": 97.69,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "usd_billion": 94.83,
+     "period": "annual",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "start": "2026-01-01",
+     "end": "2026-03-31",
+     "usd_billion": 22.39,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-06-30",
+     "usd_billion": 50.62,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-04-01",
+     "end": "2026-06-30",
+     "usd_billion": 28.24,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-09-30",
+     "usd_billion": 78.67,
+     "period": "ytd",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    {
+     "start": "2026-07-01",
+     "end": "2026-09-30",
+     "usd_billion": 28.05,
+     "period": "quarter",
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    }
+   ],
+   "xbrl_tags": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues"
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-035",
+   "entity": "Microsoft",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 64.51,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends June 30. As of 2026-09-30. Excludes restricted cash.",
+   "source": {
+    "title": "Microsoft XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":20281000000",
+   "derived": "cash 20.28 + securities 44.23 = 64.51 (USD billion); securities tag ShortTermInvestments at https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/us-gaap/ShortTermInvestments.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2018-06-30",
+     "usd_billion": 133.77
+    },
+    {
+     "end": "2019-06-30",
+     "usd_billion": 133.82
+    },
+    {
+     "end": "2020-06-30",
+     "usd_billion": 136.53
+    },
+    {
+     "end": "2021-06-30",
+     "usd_billion": 130.33
+    },
+    {
+     "end": "2022-06-30",
+     "usd_billion": 104.76
+    },
+    {
+     "end": "2023-06-30",
+     "usd_billion": 111.26
+    },
+    {
+     "end": "2024-06-30",
+     "usd_billion": 75.54
+    },
+    {
+     "end": "2025-06-30",
+     "usd_billion": 94.56
+    },
+    {
+     "end": "2026-06-30",
+     "usd_billion": 76.84
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-09-30",
+     "usd_billion": 64.51
+    }
+   ],
+   "as_of": "2026-09-30",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "ShortTermInvestments"
+   ]
+  },
+  {
+   "id": "fin-036",
+   "entity": "Alphabet",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 265.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
+   "source": {
+    "title": "Alphabet XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":56334000000",
+   "derived": "cash 56.33 + securities 208.76 = 265.10 (USD billion); securities tag MarketableSecuritiesCurrent at https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/us-gaap/MarketableSecuritiesCurrent.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2018-12-31",
+     "usd_billion": 109.14
+    },
+    {
+     "end": "2019-12-31",
+     "usd_billion": 119.67
+    },
+    {
+     "end": "2020-12-31",
+     "usd_billion": 136.69
+    },
+    {
+     "end": "2021-12-31",
+     "usd_billion": 139.65
+    },
+    {
+     "end": "2022-12-31",
+     "usd_billion": 113.76
+    },
+    {
+     "end": "2023-12-31",
+     "usd_billion": 110.92
+    },
+    {
+     "end": "2024-12-31",
+     "usd_billion": 95.66
+    },
+    {
+     "end": "2025-12-31",
+     "usd_billion": 126.84
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-03-31",
+     "usd_billion": 126.84
+    },
+    {
+     "end": "2026-06-30",
+     "usd_billion": 242.47
+    },
+    {
+     "end": "2026-09-30",
+     "usd_billion": 265.1
+    }
+   ],
+   "as_of": "2026-09-30",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "MarketableSecuritiesCurrent"
+   ]
+  },
+  {
+   "id": "fin-037",
+   "entity": "Amazon",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 114.23,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
+   "source": {
+    "title": "Amazon XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":55783000000",
+   "derived": "cash 55.78 + securities 58.44 = 114.23 (USD billion); securities tag MarketableSecuritiesCurrent at https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/us-gaap/MarketableSecuritiesCurrent.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2018-12-31",
+     "usd_billion": 41.25
+    },
+    {
+     "end": "2019-12-31",
+     "usd_billion": 55.02
+    },
+    {
+     "end": "2020-12-31",
+     "usd_billion": 84.4
+    },
+    {
+     "end": "2021-12-31",
+     "usd_billion": 96.05
+    },
+    {
+     "end": "2022-12-31",
+     "usd_billion": 70.03
+    },
+    {
+     "end": "2023-12-31",
+     "usd_billion": 86.78
+    },
+    {
+     "end": "2024-12-31",
+     "usd_billion": 101.2
+    },
+    {
+     "end": "2025-12-31",
+     "usd_billion": 123.03
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-03-31",
+     "usd_billion": 143.09
+    },
+    {
+     "end": "2026-06-30",
+     "usd_billion": 122.99
+    },
+    {
+     "end": "2026-09-30",
+     "usd_billion": 114.23
+    }
+   ],
+   "as_of": "2026-09-30",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "MarketableSecuritiesCurrent"
+   ]
+  },
+  {
+   "id": "fin-038",
+   "entity": "Meta",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 82.45,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
+   "source": {
+    "title": "Meta XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":11222000000",
+   "derived": "cash 11.22 + securities 71.23 = 82.45 (USD billion); securities tag MarketableSecuritiesCurrent at https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/us-gaap/MarketableSecuritiesCurrent.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2021-12-31",
+     "usd_billion": 48.0
+    },
+    {
+     "end": "2022-12-31",
+     "usd_billion": 40.74
+    },
+    {
+     "end": "2023-12-31",
+     "usd_billion": 65.4
+    },
+    {
+     "end": "2024-12-31",
+     "usd_billion": 77.81
+    },
+    {
+     "end": "2025-12-31",
+     "usd_billion": 81.59
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-03-31",
+     "usd_billion": 81.18
+    },
+    {
+     "end": "2026-06-30",
+     "usd_billion": 90.26
+    },
+    {
+     "end": "2026-09-30",
+     "usd_billion": 82.45
+    }
+   ],
+   "as_of": "2026-09-30",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "MarketableSecuritiesCurrent"
+   ]
+  },
+  {
+   "id": "fin-039",
+   "entity": "Apple",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 136.94,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities plus noncurrent marketable securities. Fiscal year ends last Saturday of September. As of 2026-09-26. Excludes restricted cash.",
+   "source": {
+    "title": "Apple XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-26\",\"val\":36305000000",
+   "derived": "cash 36.30 + securities 20.42 + noncurrent 80.21 = 136.94 (USD billion); securities tag MarketableSecuritiesCurrent at https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/us-gaap/MarketableSecuritiesCurrent.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2018-09-29",
+     "usd_billion": 237.1
+    },
+    {
+     "end": "2019-09-28",
+     "usd_billion": 205.9
+    },
+    {
+     "end": "2020-09-26",
+     "usd_billion": 191.83
+    },
+    {
+     "end": "2021-09-25",
+     "usd_billion": 190.52
+    },
+    {
+     "end": "2022-09-24",
+     "usd_billion": 169.11
+    },
+    {
+     "end": "2023-09-30",
+     "usd_billion": 162.1
+    },
+    {
+     "end": "2024-09-28",
+     "usd_billion": 156.65
+    },
+    {
+     "end": "2025-09-27",
+     "usd_billion": 132.42
+    },
+    {
+     "end": "2026-09-26",
+     "usd_billion": 136.94
+    }
+   ],
+   "series_after_last_fiscal_year": [],
+   "as_of": "2026-09-26",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "MarketableSecuritiesCurrent",
+    "MarketableSecuritiesNoncurrent"
+   ]
+  },
+  {
+   "id": "fin-040",
+   "entity": "NVIDIA",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 56.59,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends last Sunday of January (fiscal 2026 ended 01/25/2026, mostly calendar 2025). As of 2026-07-26. Excludes restricted cash.",
+   "source": {
+    "title": "NVIDIA XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-07-26\",\"val\":22443000000",
+   "derived": "cash 22.44 + securities 34.14 = 56.59 (USD billion); securities tag DebtSecuritiesCurrent at https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/us-gaap/DebtSecuritiesCurrent.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2018-01-28",
+     "usd_billion": 7.11
+    },
+    {
+     "end": "2019-01-27",
+     "usd_billion": 7.42
+    },
+    {
+     "end": "2020-01-26",
+     "usd_billion": 10.9
+    },
+    {
+     "end": "2021-01-31",
+     "usd_billion": 11.56
+    },
+    {
+     "end": "2022-01-30",
+     "usd_billion": 21.21
+    },
+    {
+     "end": "2023-01-29",
+     "usd_billion": 13.3
+    },
+    {
+     "end": "2024-01-28",
+     "usd_billion": 25.98
+    },
+    {
+     "end": "2025-01-26",
+     "usd_billion": 43.21
+    },
+    {
+     "end": "2026-01-25",
+     "usd_billion": 49.67
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-04-26",
+     "usd_billion": 50.34
+    },
+    {
+     "end": "2026-07-26",
+     "usd_billion": 56.59
+    }
+   ],
+   "as_of": "2026-07-26",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "DebtSecuritiesCurrent"
+   ]
+  },
+  {
+   "id": "fin-041",
+   "entity": "Tesla",
+   "metric": "cash plus marketable securities, balance sheet",
+   "value": 45.45,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash and cash equivalents plus current marketable securities. Fiscal year ends December 31. As of 2026-09-30. Excludes restricted cash.",
+   "source": {
+    "title": "Tesla XBRL company concept CashAndCashEquivalentsAtCarryingValue",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/CashAndCashEquivalentsAtCarryingValue.json",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-09-30\",\"val\":17853000000",
+   "derived": "cash 17.85 + securities 27.59 = 45.45 (USD billion); securities tag ShortTermInvestments at https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/us-gaap/ShortTermInvestments.json",
+   "status": "verified",
+   "series_fiscal_year_ends": [
+    {
+     "end": "2021-12-31",
+     "usd_billion": 17.71
+    },
+    {
+     "end": "2022-12-31",
+     "usd_billion": 22.18
+    },
+    {
+     "end": "2023-12-31",
+     "usd_billion": 29.09
+    },
+    {
+     "end": "2024-12-31",
+     "usd_billion": 36.56
+    },
+    {
+     "end": "2025-12-31",
+     "usd_billion": 44.06
+    }
+   ],
+   "series_after_last_fiscal_year": [
+    {
+     "end": "2026-03-31",
+     "usd_billion": 44.74
+    },
+    {
+     "end": "2026-06-30",
+     "usd_billion": 43.52
+    },
+    {
+     "end": "2026-09-30",
+     "usd_billion": 45.45
+    }
+   ],
+   "as_of": "2026-09-30",
+   "xbrl_tags": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "ShortTermInvestments"
+   ]
+  },
+  {
+   "id": "fin-042",
+   "entity": "Alphabet",
+   "metric": "capital expenditure, Q3 2026",
+   "value": 51.4,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Quarter ended 09/30/2026; as the company defines CapEx; about 65% servers and networking, 35% data centers and other. Cash basis not stated on the call; the 10-Q cash PP&E for nine months is 131.95 less 80.60 for the first half = 51.35.",
+   "source": {
+    "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+    "publisher": "Alphabet Investor Relations",
+    "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "CapEx was $51.4 billion in the third quarter with the vast majority of the spend in technical infrastructure to support our investments in AI.",
+   "derived": "XBRL nine-month purchases of property and equipment 131.953 - six-month 80.6 = 51.35",
+   "status": "verified"
+  },
+  {
+   "id": "fin-043",
+   "entity": "Alphabet",
+   "metric": "free cash flow, Q3 2026",
+   "value": -9.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Quarter ended 09/30/2026; company-defined free cash flow; includes a $5.2B cash payment of a 2018 European Commission fine and TPU system inventory build.",
+   "source": {
+    "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+    "publisher": "Alphabet Investor Relations",
+    "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "We had negative free cash flow of $9.1 billion in the third quarter, driven by our investments in CapEx.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-044",
+   "entity": "Alphabet",
+   "metric": "capital expenditure guidance, full year 2026",
+   "value": null,
+   "low": 195,
+   "high": 205,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Guidance range; the company's CapEx measure.",
+   "source": {
+    "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+    "publisher": "Alphabet Investor Relations",
+    "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "Moving to investments, our full‑year 2026 CapEx guidance range of $195‑$205 billion remain unchanged. We continue to expect our CapEx to increase significantly in 2027, and we'll provide further details on our Q4 call.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-045",
+   "entity": "Alphabet",
+   "metric": "capital expenditure outlook, 2027",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2027,
+   "boundary": "Qualitative only. No dollar figure appears in the transcript.",
+   "source": {
+    "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+    "publisher": "Alphabet Investor Relations",
+    "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "We continue to expect our CapEx to increase significantly in 2027, and we'll provide further details on our Q4 call.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-047",
+   "entity": "Alphabet",
+   "metric": "cash and marketable securities, 09/30/2026",
+   "value": 265.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Includes $90.4B of marketable equity securities (stock holdings in other companies), so the liquid-cash portion is lower.",
+   "source": {
+    "title": "Alphabet 2026 Q3 Earnings Call (transcript)",
+    "publisher": "Alphabet Investor Relations",
+    "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "We ended the quarter with $265.1 billion in cash and marketable securities, which includes $90.4 billion of marketable equity securities. Long‑term debt was $125.1 billion.",
+   "derived": "265.1 - 90.4 = 174.7 excluding marketable equity securities",
+   "status": "verified"
+  },
+  {
+   "id": "fin-048",
+   "entity": "Alphabet",
+   "metric": "senior unsecured notes issued, nine months 2026",
+   "value": 80.8,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "US dollar notes plus foreign-currency notes (sterling, Swiss franc, euro, Canadian dollar, yen, Australian dollar); principal, not net proceeds. The 10-Q wording is 'During 2026'; the nine-month period to 09/30/2026 is assumed because the same paragraph then details Q3 issuance.",
+   "source": {
+    "title": "Alphabet Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "During 2026, we issued $45.0 billion of US dollar-denominated senior unsecured notes and $35.8 billion of foreign currency-denominated senior unsecured notes for general corporate purposes.",
+   "derived": "45.0 + 35.8 = 80.8",
+   "status": "verified"
+  },
+  {
+   "id": "fin-049",
+   "entity": "Alphabet",
+   "metric": "common and preferred stock issued in June 2026 for AI capex (net proceeds)",
+   "value": 49.6,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Net proceeds of the June 2026 public offering of Class A and Class C stock ($20.5B), the concurrent private placement to an affiliate of Berkshire Hathaway ($10.0B), and the mandatory convertible preferred ($19.0B); the company states an aggregate of $49.6B, 'to be used for general corporate purposes, including capital expenditures to scale AI infrastructure and global compute'. Excludes the at-the-market (ATM) sales ($4.3B Class A plus $8.1B Class C = $12.4B in Q3), whose proceeds the 10-Q says are 'primarily intended to be used to meet tax obligations associated with employee equity grants'.",
+   "source": {
+    "title": "Alphabet Form 10-Q for the quarter ended 06/30/2026 and 09/30/2026 (equity issuance, ATM program)",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm",
+    "published": "2026-10-29",
+    "kind": "filing"
+   },
+   "quote": "In June 2026, we issued a combination of Class A stock and Class C stock and mandatory convertible preferred stock for aggregate net proceeds of $49.6 billion, to be used for general corporate purposes, including capital expenditures to scale AI infrastructure and global compute. The proceeds of the ATM Program are primarily intended to be used to meet tax obligations associated with employee equity grants.",
+   "derived": "Components 20.5 + 10.0 + 19.0 = 49.5 (rounded parts; company aggregate 49.6). Total equity net proceeds including ATM: 49.6 + 12.4 = 62.0 (the earlier 61.9 summed rounded parts).",
+   "status": "verified"
+  },
+  {
+   "id": "fin-050",
+   "entity": "Meta",
+   "metric": "capital expenditure including finance-lease principal, Q3 2026",
+   "value": 34.91,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Quarter ended 09/30/2026; purchases of property and equipment plus principal payments on finance leases. Cash purchases alone were $33.94B.",
+   "source": {
+    "title": "Meta Reports Third Quarter 2026 Results (Exhibit 99.1)",
+    "publisher": "SEC EDGAR (Meta Platforms)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-09302026xexhibit991.htm",
+    "published": "2026-10-21",
+    "kind": "filing"
+   },
+   "quote": "Capital expenditures, including principal payments on finance leases, were $34.91 billion.",
+   "derived": "33.942 purchases + 0.964 finance-lease principal = 34.906",
+   "status": "verified"
+  },
+  {
+   "id": "fin-051",
+   "entity": "Meta",
+   "metric": "capital expenditure guidance, full year 2026",
+   "value": null,
+   "low": 135,
+   "high": 145,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Including principal payments on finance leases.",
+   "source": {
+    "title": "Meta Reports Third Quarter 2026 Results (Exhibit 99.1)",
+    "publisher": "SEC EDGAR (Meta Platforms)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-09302026xexhibit991.htm",
+    "published": "2026-10-21",
+    "kind": "filing"
+   },
+   "quote": "We anticipate 2026 capital expenditures, including principal payments on finance leases, to be in the range of $135-145 billion, narrowed from our prior outlook of $130-145 billion.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-052",
+   "entity": "Meta",
+   "metric": "long-term debt issued, nine months 2026",
+   "value": 24.91,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Net proceeds from issuance of long-term debt, nine months ended 09/30/2026; none in Q3.",
+   "source": {
+    "title": "Meta Reports Third Quarter 2026 Results (Exhibit 99.1)",
+    "publisher": "SEC EDGAR (Meta Platforms)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-09302026xexhibit991.htm",
+    "published": "2026-10-21",
+    "kind": "filing"
+   },
+   "quote": "| Proceeds from issuance of long-term debt, net | — | — | 24,910 | — |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-053",
+   "entity": "Microsoft",
+   "metric": "capital expenditure including finance leases, Q1 FY2027",
+   "value": 45.2,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Quarter ended 09/30/2026; Microsoft counts the full principal of finance leases at commencement ($7.4B this quarter). Cash paid for PP&E was $39.4B.",
+   "source": {
+    "title": "Microsoft FY27 First Quarter Earnings Conference Call (transcript)",
+    "publisher": "Microsoft Investor Relations",
+    "url": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "Capital expenditures were $45.2 billion, as some third-party capacity deliveries we expected in Q1 were delayed.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-054",
+   "entity": "Microsoft",
+   "metric": "capital expenditure guidance, calendar year (labelled 2026 by inference)",
+   "value": 170,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Approximate, includes finance leases; Q2 FY27 (Oct-Dec 2026) expected over $50B.",
+   "source": {
+    "title": "Microsoft FY27 First Quarter Earnings Conference Call (transcript)",
+    "publisher": "Microsoft Investor Relations",
+    "url": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
+    "published": "2026-10-28",
+    "kind": "company-report"
+   },
+   "quote": "In Q2, we expect CapEx spend will be over $50 billion. Therefore, for the calendar year, spend should be approximately $170 billion due to the 3P capacity delays noted earlier.",
+   "derived": null,
+   "status": "partly",
+   "limit": "Microsoft's chief financial officer said \"the calendar year\" without naming it; the page reads it as calendar 2026 from the date of the call and the quarterly figures, and the amount is approximate and includes finance leases."
+  },
+  {
+   "id": "fin-055",
+   "entity": "Amazon",
+   "metric": "cash capital expenditures, Q3 2026",
+   "value": 75.9,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Company 'cash capital expenditures' (net of vendor incentives and asset sales); technology infrastructure mostly AWS plus fulfillment network.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "Cash capital expenditures were $34.2 billion and $75.9 billion during Q3 2025 and Q3 2026, and $89.9 billion and $172.2 billion for the nine months ended September 30, 2025 and 2026",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-056",
+   "entity": "Amazon",
+   "metric": "cash capital expenditures guidance, full year 2026",
+   "value": 220,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Approximately; 'cash capital expenditures' as defined by Amazon.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "We continue to expect 2026 cash capital expenditures to be approximately $220 billion.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-057",
+   "entity": "Amazon",
+   "metric": "free cash flow, trailing twelve months to 09/30/2026",
+   "value": -42.357,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Operating cash flow less purchases of property and equipment net of proceeds and incentives; Amazon's own definition.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "| Free cash flow | $14,788 | $(42,357) |",
+   "derived": "168,300 - 210,657 = -42,357 (USD million)",
+   "status": "verified"
+  },
+  {
+   "id": "fin-058",
+   "entity": "Amazon",
+   "metric": "leases not yet commenced, undiscounted commitment",
+   "value": 164.922,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Total contractual commitment at 09/30/2026 for leases signed but not yet started; not on the balance sheet. $114.8B falls after 2030.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "| Leases not yet commenced | 2,590 | 12,448 | 11,477 | 12,193 | 11,385 | 114,829 | | 164,922 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-059",
+   "entity": "Amazon",
+   "metric": "Anthropic holdings, mixed basis (preferred at carrying value plus convertible notes at estimated fair value)",
+   "value": 238.7,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Convertible notes at estimated fair value plus nonvoting preferred stock at carrying value; Level 3 estimates, not cash, with a 12% cap on ownership.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "As of December 31, 2025 and September 30, 2026, the amounts recorded on our consolidated balance sheets for nonvoting preferred stock were approximately $14.8 billion and $92.5 billion. As of September 30, 2026, we held 164 million shares of Anthropic nonvoting preferred stock. As of December 31, 2025 and September 30, 2026, the estimated fair value of our convertible notes recorded on our consolidated balance sheets was approximately $45.8 billion and $146.2 billion",
+   "derived": "92.5 preferred + 146.2 notes = 238.7",
+   "status": "partly",
+   "limit": "The figure adds Anthropic preferred stock at carrying value to convertible notes at estimated fair value, so it is a sum of two measurement bases, not a market value or a cash amount; a 12 percent ownership cap applies."
+  },
+  {
+   "id": "fin-060",
+   "entity": "Amazon",
+   "metric": "OpenAI Series C preferred stock investment",
+   "value": 50.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Amount invested by Amazon through Q3 2026, carried as a private-company equity investment.",
+   "source": {
+    "title": "Amazon.com Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000040/amzn-20260930.htm",
+    "published": "2026-10-30",
+    "kind": "filing"
+   },
+   "quote": "We account for our $50.0 billion investment in Series C Preferred Stock recorded on our consolidated balance sheet as of September 30, 2026",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-061",
+   "entity": "NVIDIA",
+   "metric": "supply and capacity commitments",
+   "value": 279,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Commitments for data-center systems, mainly memory and manufacturing capacity, as of 07/26/2026.",
+   "source": {
+    "title": "NVIDIA Form 10-Q for the quarter ended 07/26/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "increasing supply commitments from $119 billion last quarter to $279 billion as of July 26, 2026.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-062",
+   "entity": "NVIDIA",
+   "metric": "equity investments in AI model makers, financiers, and others",
+   "value": 99,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Equity investments held at 07/26/2026; a further $25B of equity investment commitments is outstanding.",
+   "source": {
+    "title": "NVIDIA Form 10-Q for the quarter ended 07/26/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "These include equity investments of $99 billion and equity investment commitments of $25 billion as of July 26, 2026.",
+   "derived": null,
+   "status": "partly",
+   "limit": "NVIDIA states this as equity investments held at 07/26/2026; it does not reconcile to the balance-sheet series in the same filing, so read it as the company's stated figure and not a balance-sheet total."
+  },
+  {
+   "id": "fin-063",
+   "entity": "NVIDIA",
+   "metric": "credit-support guarantees for a customer's data-center buildout (SB Energy site)",
+   "value": 105,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cap on guarantees of lease and power payments (not the full site cost), tied to roughly 4.25 GW for an OpenAI affiliate, signed 08/2026; the site hosts NVIDIA systems exclusively.",
+   "source": {
+    "title": "NVIDIA Form 10-Q for the quarter ended 07/26/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+    "published": "2026-08-26",
+    "kind": "filing"
+   },
+   "quote": "In August 2026, we entered into guarantees, capped at a total of $105 billion, to provide credit support on a land, power, and shell buildout with affiliates of SB Energy Corp. (SB Energy) on behalf of a customer, an affiliate of OpenAI Group PBC (OpenAI), related to leases for approximately 4.25 gigawatts of IT load in the aggregate at SB Energy’s PORTS Technology Campus in Pike County, Ohio.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-064",
+   "entity": "Apple",
+   "metric": "cash and marketable securities, 09/26/2026",
+   "value": 137,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash, cash equivalents, and current plus noncurrent marketable securities; total debt $80B.",
+   "source": {
+    "title": "Apple Q4 2026 Earnings Call Transcript",
+    "publisher": "The Motley Fool (transcript of Apple's 11/02/2026 call)",
+    "url": "https://www.fool.com/earnings/call-transcripts/2026/11/02/apple-aapl-q4-2026-earnings-call-transcript/",
+    "published": "2026-11-02",
+    "kind": "press"
+   },
+   "quote": "We ended the quarter with $137 billion in cash and marketable securities and $80 billion in total debt.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-065",
+   "entity": "Tesla",
+   "metric": "capital expenditure expectation, 2026",
+   "value": null,
+   "low": 20,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "'In excess of' $20B; drivers include compute infrastructure and data centers.",
+   "source": {
+    "title": "Tesla Form 10-Q for the quarter ended 09/30/2026",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm",
+    "published": "2026-10-22",
+    "kind": "filing"
+   },
+   "quote": "We currently expect our capital expenditures to be in excess of $20 billion in 2026, driven by our SI initiatives, including investments in compute infrastructure and data centers",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-066",
+   "entity": "Five largest US hyperscalers",
+   "metric": "gross bond issuance, 2026 to September",
+   "value": 222,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Gross bonds issued by the five largest US hyperscalers; excludes off-balance-sheet vehicles. The Graph note in the same bulletin lists the sample as Alphabet, Amazon, Meta, Microsoft and Oracle, which I take to be the five (inference). Apple, NVIDIA and Tesla are not in it, and Oracle is not one of the seven.",
+   "source": {
+    "title": "BIS Bulletin No 140: Building AI on credit: structures and spillovers",
+    "publisher": "Bank for International Settlements",
+    "url": "https://www.bis.org/publications/bulletin-140-building-ai-credit-structures-and-spillovers.pdf",
+    "published": "2026-10-26",
+    "kind": "agency"
+   },
+   "quote": "Gross bond issuance this year by the five largest hyperscalers reached $222 billion by September 2026 (Graph 1.B).",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-067",
+   "entity": "Largest hyperscalers",
+   "metric": "data-center lease commitments, mid-2026",
+   "value": 1200,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Moody's estimate cited by BIS; about $820B relates to leases that have not yet started.",
+   "source": {
+    "title": "BIS Bulletin No 140: Building AI on credit: structures and spillovers",
+    "publisher": "Bank for International Settlements",
+    "url": "https://www.bis.org/publications/bulletin-140-building-ai-credit-structures-and-spillovers.pdf",
+    "published": "2026-10-26",
+    "kind": "agency"
+   },
+   "quote": "Moody’s Ratings (2026), for example, puts the largest hyperscalers’ data centre lease commitments at $1.2 trillion by mid-2026, of which around $820 billion relate to leases that have not yet started.",
+   "derived": null,
+   "status": "partly",
+   "limit": "The figure is an estimate by Moody's Ratings as quoted by the Bank for International Settlements; the Moody's report itself was not checked."
+  },
+  {
+   "id": "fin-068",
+   "entity": "Meta (Hyperion data center joint venture)",
+   "metric": "privately placed senior secured bonds backed by Meta lease commitments",
+   "value": 27.3,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "A+ rated bonds of a venture with Blue Owl managed funds; Meta does not consolidate the venture, so the debt is not on Meta's balance sheet.",
+   "source": {
+    "title": "BIS Bulletin No 140: Building AI on credit: structures and spillovers",
+    "publisher": "Bank for International Settlements",
+    "url": "https://www.bis.org/publications/bulletin-140-building-ai-credit-structures-and-spillovers.pdf",
+    "published": "2026-10-26",
+    "kind": "agency"
+   },
+   "quote": "The project was financed in part through $27.3 billion of privately placed, A+ rated senior secured bonds, supported by Meta’s lease commitments, which begin in 2029, initially run for four years and include the option to renew for a total lease term of up to 20 years with limited residual-value protection for the first 16 years of operation. Meta does not consolidate the venture.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-069",
+   "entity": "US Treasury market (10-year term premium)",
+   "metric": "10-year term premium response on AI-financing news days, 2026",
+   "value": 1.5,
+   "low": null,
+   "high": null,
+   "unit": "basis points",
+   "year": 2026,
+   "boundary": "Average rise on 18 AI-financing news days after controls; the response faded within two trading days.",
+   "source": {
+    "title": "BIS Bulletin No 140: Building AI on credit: structures and spillovers",
+    "publisher": "Bank for International Settlements",
+    "url": "https://www.bis.org/publications/bulletin-140-building-ai-credit-structures-and-spillovers.pdf",
+    "published": "2026-10-26",
+    "kind": "agency"
+   },
+   "quote": "On AI-financing-related news days in 2026, spillovers to US Treasury and investment-grade bond markets were small and short-lived, but sustained issuance at the current pace could change this._ ... These AI investments are increasingly built on credit. Gross bond issuance this year by the five largest hyperscalers reached $222 billion by September 2026 (Graph 1.B). Most of this debt was issued at long maturities, amounting to more than 10% of long-term US Treasury issuance this year. In addition, debt is raised through off-balance sheet vehicles. ² According to market sources, $75 to $100 billion of bonds and asset-backed securities linked to these vehicles have been placed so far this year. And the commitments behind these structures are also large. Moody’s Ratings (2026), for example, puts the largest hyperscalers’ data centre lease commitments at $1.2 trillion by mid-2026, of which around $820 billion relate to leases that have not yet started. ... 2 Aldasoro et al (2026) document the shift in AI financing from cash flows to debt and the growing role of private credit as investors. Eren et al (2026) document the increased role of off-balance sheet structures through which the borrowing is raised. ... Off-balance sheet vehicles can draw institutional capital into the build-out by combining asset backing with lease commitments, guarantees and vendor backstops. But the structures obscure the final allocation of risks, and ultimate exposures are concentrated in a few large firms – more than what their balance sheets suggest. The second question involves broader spillovers from the borrowing. Much of the new debt is long- dated and placed with non-bank financial institutions (NBFIs) that also hold long-dated government and investment-grade corporate bonds. A growing supply could therefore affect the compensation these investors require for bearing duration risk, with consequences for benchmark yields and borrowing costs beyond the AI sector. This Bulletin finds that so far, such spillovers have been limited. On AI-financing- related news days in 2026, movements in Treasury term premia and investment-grade corporate spreads were small and short-lived. But sustained issuance at the current pace could make them larger and more persistent.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-070",
+   "entity": "Oracle (comparator)",
+   "metric": "consolidated indebtedness, 08/31/2026",
+   "value": 236.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Aggregate principal of consolidated debt outstanding at fiscal Q1 end; Oracle is a comparator, not one of the seven.",
+   "source": {
+    "title": "Oracle prospectus supplement (424B5), common stock offering",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526442729/d181425d424b5.htm",
+    "published": "2026-11-02",
+    "kind": "filing"
+   },
+   "quote": "As of August 31, 2026, excluding intercompany indebtedness, we had approximately $236.1 billion in aggregate principal amount of consolidated indebtedness outstanding",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-071",
+   "entity": "Magnificent Seven (Apple, Microsoft, NVIDIA, Alphabet, Amazon, Meta, Tesla)",
+   "metric": "share of SPY (S&P 500 ETF) holdings, 10/29/2026",
+   "value": 33.2,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2026,
+   "boundary": "Weight in the SPY ETF, both Alphabet share classes counted; an ETF proxy for index market-cap share, not the index itself.",
+   "source": {
+    "title": "Magnificent 7 stocks in 2026, returns and S&P 500 weight",
+    "publisher": "Opening Bell Daily",
+    "url": "https://www.openingbelldailynews.com/p/magnificent-7-stocks",
+    "published": "2026-10-25",
+    "kind": "press"
+   },
+   "quote": "As of October 29, 2026, the seven companies made up 33.2% of SPY, counting both Alphabet share classes.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "fin-072",
+   "entity": "Microsoft",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 3600.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-12-31, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-07-29. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Microsoft XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000789019/dei/EntityPublicFloat.json",
+    "published": "2026-07-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-12-31\",\"val\":3600000000000,\"accn\":\"0001193125-26-323660\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-07-29\"",
+   "derived": "raw value 3600000000000 USD / 1e9 = 3600.00",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2009-12-31",
+     "usd_billion": 235.24,
+     "form": "10-K",
+     "filed": "2010-07-30"
+    },
+    {
+     "end": "2010-12-31",
+     "usd_billion": 208.37,
+     "form": "10-K",
+     "filed": "2011-07-28"
+    },
+    {
+     "end": "2011-12-31",
+     "usd_billion": 195.33,
+     "form": "10-K",
+     "filed": "2012-07-26"
+    },
+    {
+     "end": "2012-12-31",
+     "usd_billion": 202.95,
+     "form": "10-K",
+     "filed": "2013-07-30"
+    },
+    {
+     "end": "2013-12-31",
+     "usd_billion": 284.54,
+     "form": "10-K",
+     "filed": "2014-07-31"
+    },
+    {
+     "end": "2014-12-31",
+     "usd_billion": 365.31,
+     "form": "10-K",
+     "filed": "2015-07-31"
+    },
+    {
+     "end": "2015-12-31",
+     "usd_billion": 424.5,
+     "form": "10-K",
+     "filed": "2016-07-28"
+    },
+    {
+     "end": "2016-12-31",
+     "usd_billion": 466.5,
+     "form": "10-K",
+     "filed": "2017-08-02"
+    },
+    {
+     "end": "2017-12-31",
+     "usd_billion": 650.1,
+     "form": "10-K",
+     "filed": "2018-08-03"
+    },
+    {
+     "end": "2018-12-31",
+     "usd_billion": 769.6,
+     "form": "10-K",
+     "filed": "2019-08-01"
+    },
+    {
+     "end": "2019-12-31",
+     "usd_billion": 1200.0,
+     "form": "10-K",
+     "filed": "2020-07-30"
+    },
+    {
+     "end": "2020-12-31",
+     "usd_billion": 1700.0,
+     "form": "10-K",
+     "filed": "2021-07-29"
+    },
+    {
+     "end": "2021-12-31",
+     "usd_billion": 2500.0,
+     "form": "10-K",
+     "filed": "2022-07-28"
+    },
+    {
+     "end": "2022-12-31",
+     "usd_billion": 1800.0,
+     "form": "10-K",
+     "filed": "2023-07-27"
+    },
+    {
+     "end": "2023-12-31",
+     "usd_billion": 2800.0,
+     "form": "10-K",
+     "filed": "2024-07-30"
+    },
+    {
+     "end": "2024-12-31",
+     "usd_billion": 3100.0,
+     "form": "10-K",
+     "filed": "2025-07-30"
+    },
+    {
+     "end": "2025-12-31",
+     "usd_billion": 3600.0,
+     "form": "10-K",
+     "filed": "2026-07-29"
+    }
+   ],
+   "as_of": "2025-12-31"
+  },
+  {
+   "id": "fin-073",
+   "entity": "Alphabet",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 1900.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-06-30, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-02-05. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Alphabet XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001652044/dei/EntityPublicFloat.json",
+    "published": "2026-02-05",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-06-30\",\"val\":1900000000000,\"accn\":\"0001652044-26-000018\",\"fy\":2025,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-02-05\"",
+   "derived": "raw value 1900000000000 USD / 1e9 = 1900.00",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2015-06-30",
+     "usd_billion": 0.0,
+     "form": "10-K",
+     "filed": "2016-02-11"
+    },
+    {
+     "end": "2016-06-30",
+     "usd_billion": 413.8,
+     "form": "10-K",
+     "filed": "2017-02-03"
+    },
+    {
+     "end": "2017-06-30",
+     "usd_billion": 554.3,
+     "form": "10-K",
+     "filed": "2018-02-06"
+    },
+    {
+     "end": "2018-06-29",
+     "usd_billion": 680.0,
+     "form": "10-K",
+     "filed": "2019-02-05"
+    },
+    {
+     "end": "2019-06-28",
+     "usd_billion": 663.0,
+     "form": "10-K",
+     "filed": "2020-02-04"
+    },
+    {
+     "end": "2020-06-30",
+     "usd_billion": 849.7,
+     "form": "10-K",
+     "filed": "2021-02-03"
+    },
+    {
+     "end": "2021-06-30",
+     "usd_billion": 1451.1,
+     "form": "10-K",
+     "filed": "2022-02-02"
+    },
+    {
+     "end": "2022-06-30",
+     "usd_billion": 1256.1,
+     "form": "10-K",
+     "filed": "2023-02-03"
+    },
+    {
+     "end": "2023-06-30",
+     "usd_billion": 1331.2,
+     "form": "10-K",
+     "filed": "2024-01-31"
+    },
+    {
+     "end": "2024-06-28",
+     "usd_billion": 2000.0,
+     "form": "10-K",
+     "filed": "2025-02-05"
+    },
+    {
+     "end": "2025-06-30",
+     "usd_billion": 1900.0,
+     "form": "10-K",
+     "filed": "2026-02-05"
+    }
+   ],
+   "as_of": "2025-06-30"
+  },
+  {
+   "id": "fin-074",
+   "entity": "Amazon",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 2118.06,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-06-30, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-02-06. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Amazon XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001018724/dei/EntityPublicFloat.json",
+    "published": "2026-02-06",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-06-30\",\"val\":2118061430046,\"accn\":\"0001018724-26-000004\",\"fy\":2025,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-02-06\"",
+   "derived": "raw value 2118061430046 USD / 1e9 = 2118.06",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2008-06-30",
+     "usd_billion": 23.85,
+     "form": "10-Q",
+     "filed": "2009-07-24"
+    },
+    {
+     "end": "2009-06-30",
+     "usd_billion": 27.77,
+     "form": "10-K",
+     "filed": "2010-01-29"
+    },
+    {
+     "end": "2010-06-30",
+     "usd_billion": 39.01,
+     "form": "10-K",
+     "filed": "2011-01-28"
+    },
+    {
+     "end": "2011-06-30",
+     "usd_billion": 74.66,
+     "form": "10-K",
+     "filed": "2012-02-01"
+    },
+    {
+     "end": "2012-06-30",
+     "usd_billion": 83.0,
+     "form": "10-K",
+     "filed": "2013-01-30"
+    },
+    {
+     "end": "2013-06-30",
+     "usd_billion": 102.55,
+     "form": "10-K",
+     "filed": "2014-01-31"
+    },
+    {
+     "end": "2014-06-30",
+     "usd_billion": 122.61,
+     "form": "10-K",
+     "filed": "2015-01-30"
+    },
+    {
+     "end": "2015-06-30",
+     "usd_billion": 166.38,
+     "form": "10-K",
+     "filed": "2016-01-29"
+    },
+    {
+     "end": "2016-06-30",
+     "usd_billion": 280.13,
+     "form": "10-K",
+     "filed": "2017-02-10"
+    },
+    {
+     "end": "2017-06-30",
+     "usd_billion": 387.33,
+     "form": "10-K",
+     "filed": "2018-02-02"
+    },
+    {
+     "end": "2018-06-30",
+     "usd_billion": 693.89,
+     "form": "10-K",
+     "filed": "2019-02-01"
+    },
+    {
+     "end": "2019-06-30",
+     "usd_billion": 786.28,
+     "form": "10-K",
+     "filed": "2020-01-31"
+    },
+    {
+     "end": "2020-06-30",
+     "usd_billion": 1174.37,
+     "form": "10-K",
+     "filed": "2021-02-03"
+    },
+    {
+     "end": "2021-06-30",
+     "usd_billion": 1507.36,
+     "form": "10-K",
+     "filed": "2022-02-04"
+    },
+    {
+     "end": "2022-06-30",
+     "usd_billion": 944.74,
+     "form": "10-K",
+     "filed": "2023-02-03"
+    },
+    {
+     "end": "2023-06-30",
+     "usd_billion": 1183.68,
+     "form": "10-K",
+     "filed": "2024-02-02"
+    },
+    {
+     "end": "2024-06-30",
+     "usd_billion": 1815.01,
+     "form": "10-K",
+     "filed": "2025-02-07"
+    },
+    {
+     "end": "2025-06-30",
+     "usd_billion": 2118.06,
+     "form": "10-K",
+     "filed": "2026-02-06"
+    }
+   ],
+   "as_of": "2025-06-30"
+  },
+  {
+   "id": "fin-075",
+   "entity": "Meta",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 1600.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-06-30, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-01-29. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Meta XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001326801/dei/EntityPublicFloat.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-06-30\",\"val\":1600000000000,\"accn\":\"0001628280-26-003942\",\"fy\":2025,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-01-29\"",
+   "derived": "raw value 1600000000000 USD / 1e9 = 1600.00",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2012-06-29",
+     "usd_billion": 47.21,
+     "form": "10-K",
+     "filed": "2013-02-01"
+    },
+    {
+     "end": "2013-06-28",
+     "usd_billion": 49.07,
+     "form": "10-K",
+     "filed": "2014-01-31"
+    },
+    {
+     "end": "2014-06-30",
+     "usd_billion": 143.59,
+     "form": "10-K",
+     "filed": "2015-01-29"
+    },
+    {
+     "end": "2015-06-30",
+     "usd_billion": 198.0,
+     "form": "10-K",
+     "filed": "2016-01-28"
+    },
+    {
+     "end": "2016-06-30",
+     "usd_billion": 274.0,
+     "form": "10-K",
+     "filed": "2017-02-03"
+    },
+    {
+     "end": "2017-06-30",
+     "usd_billion": 372.0,
+     "form": "10-K",
+     "filed": "2018-02-01"
+    },
+    {
+     "end": "2018-06-29",
+     "usd_billion": 486.0,
+     "form": "10-K",
+     "filed": "2019-01-31"
+    },
+    {
+     "end": "2019-06-28",
+     "usd_billion": 478.0,
+     "form": "10-K",
+     "filed": "2020-01-30"
+    },
+    {
+     "end": "2020-06-30",
+     "usd_billion": 563.0,
+     "form": "10-K",
+     "filed": "2021-01-28"
+    },
+    {
+     "end": "2021-06-30",
+     "usd_billion": 857.0,
+     "form": "10-K",
+     "filed": "2022-02-03"
+    },
+    {
+     "end": "2022-06-30",
+     "usd_billion": 378.0,
+     "form": "10-K",
+     "filed": "2023-02-02"
+    },
+    {
+     "end": "2023-06-30",
+     "usd_billion": 637.0,
+     "form": "10-K",
+     "filed": "2024-02-02"
+    },
+    {
+     "end": "2024-06-30",
+     "usd_billion": 1103.0,
+     "form": "10-K",
+     "filed": "2025-01-30"
+    },
+    {
+     "end": "2025-06-30",
+     "usd_billion": 1600.0,
+     "form": "10-K",
+     "filed": "2026-01-29"
+    }
+   ],
+   "as_of": "2025-06-30"
+  },
+  {
+   "id": "fin-076",
+   "entity": "Apple",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 3647.1,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2026-03-27, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-11-03. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Apple XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0000320193/dei/EntityPublicFloat.json",
+    "published": "2026-11-03",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2026-03-27\",\"val\":3647099000000,\"accn\":\"0000320193-26-000026\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-11-03\"",
+   "derived": "raw value 3647099000000 USD / 1e9 = 3647.10",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2009-03-28",
+     "usd_billion": 94.59,
+     "form": "10-K",
+     "filed": "2009-10-27"
+    },
+    {
+     "end": "2010-03-27",
+     "usd_billion": 208.56,
+     "form": "10-K",
+     "filed": "2010-10-27"
+    },
+    {
+     "end": "2011-03-25",
+     "usd_billion": 322.92,
+     "form": "10-K",
+     "filed": "2011-10-26"
+    },
+    {
+     "end": "2012-03-30",
+     "usd_billion": 560.36,
+     "form": "10-K",
+     "filed": "2012-10-31"
+    },
+    {
+     "end": "2013-03-29",
+     "usd_billion": 416.0,
+     "form": "10-K",
+     "filed": "2013-10-30"
+    },
+    {
+     "end": "2014-03-28",
+     "usd_billion": 462.52,
+     "form": "10-K",
+     "filed": "2014-10-27"
+    },
+    {
+     "end": "2015-03-27",
+     "usd_billion": 709.92,
+     "form": "10-K",
+     "filed": "2015-10-28"
+    },
+    {
+     "end": "2016-03-25",
+     "usd_billion": 578.81,
+     "form": "10-K",
+     "filed": "2016-10-26"
+    },
+    {
+     "end": "2017-03-31",
+     "usd_billion": 747.51,
+     "form": "10-K",
+     "filed": "2017-11-03"
+    },
+    {
+     "end": "2018-03-30",
+     "usd_billion": 828.88,
+     "form": "10-K",
+     "filed": "2018-11-05"
+    },
+    {
+     "end": "2019-03-29",
+     "usd_billion": 874.7,
+     "form": "10-K",
+     "filed": "2019-10-31"
+    },
+    {
+     "end": "2020-03-27",
+     "usd_billion": 1070.63,
+     "form": "10-K",
+     "filed": "2020-10-30"
+    },
+    {
+     "end": "2021-03-26",
+     "usd_billion": 2021.36,
+     "form": "10-K",
+     "filed": "2021-10-29"
+    },
+    {
+     "end": "2022-03-25",
+     "usd_billion": 2830.07,
+     "form": "10-K",
+     "filed": "2022-10-28"
+    },
+    {
+     "end": "2023-03-31",
+     "usd_billion": 2591.16,
+     "form": "10-K",
+     "filed": "2023-11-03"
+    },
+    {
+     "end": "2024-03-29",
+     "usd_billion": 2628.55,
+     "form": "10-K",
+     "filed": "2024-11-01"
+    },
+    {
+     "end": "2025-03-28",
+     "usd_billion": 3253.43,
+     "form": "10-K",
+     "filed": "2025-10-31"
+    },
+    {
+     "end": "2026-03-27",
+     "usd_billion": 3647.1,
+     "form": "10-K",
+     "filed": "2026-11-03"
+    }
+   ],
+   "as_of": "2026-03-27"
+  },
+  {
+   "id": "fin-077",
+   "entity": "NVIDIA",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 4000.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-07-25, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-02-25. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "NVIDIA XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001045810/dei/EntityPublicFloat.json",
+    "published": "2026-02-25",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-07-25\",\"val\":4000000000000,\"accn\":\"0001045810-26-000021\",\"fy\":2026,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-02-25\"",
+   "derived": "raw value 4000000000000 USD / 1e9 = 4000.00",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2008-07-27",
+     "usd_billion": 6.1,
+     "form": "10-Q",
+     "filed": "2009-08-20"
+    },
+    {
+     "end": "2009-07-26",
+     "usd_billion": 6.7,
+     "form": "10-K",
+     "filed": "2010-03-18"
+    },
+    {
+     "end": "2010-08-01",
+     "usd_billion": 5.0,
+     "form": "10-K",
+     "filed": "2011-03-16"
+    },
+    {
+     "end": "2011-07-31",
+     "usd_billion": 7.98,
+     "form": "10-K",
+     "filed": "2012-03-13"
+    },
+    {
+     "end": "2011-08-01",
+     "usd_billion": 5.03,
+     "form": "10-Q",
+     "filed": "2011-05-27"
+    },
+    {
+     "end": "2012-07-29",
+     "usd_billion": 7.98,
+     "form": "10-K",
+     "filed": "2013-03-12"
+    },
+    {
+     "end": "2013-07-28",
+     "usd_billion": 7.82,
+     "form": "10-K",
+     "filed": "2014-03-13"
+    },
+    {
+     "end": "2014-07-27",
+     "usd_billion": 9.38,
+     "form": "10-K",
+     "filed": "2015-03-12"
+    },
+    {
+     "end": "2015-07-24",
+     "usd_billion": 9.92,
+     "form": "10-K",
+     "filed": "2016-03-17"
+    },
+    {
+     "end": "2016-07-29",
+     "usd_billion": 28.98,
+     "form": "10-K",
+     "filed": "2017-03-01"
+    },
+    {
+     "end": "2017-07-28",
+     "usd_billion": 94.31,
+     "form": "10-K",
+     "filed": "2018-02-28"
+    },
+    {
+     "end": "2018-07-27",
+     "usd_billion": 146.66,
+     "form": "10-K",
+     "filed": "2019-02-21"
+    },
+    {
+     "end": "2019-07-26",
+     "usd_billion": 102.15,
+     "form": "10-K",
+     "filed": "2020-02-20"
+    },
+    {
+     "end": "2020-07-24",
+     "usd_billion": 241.21,
+     "form": "10-K",
+     "filed": "2021-02-26"
+    },
+    {
+     "end": "2021-07-30",
+     "usd_billion": 467.25,
+     "form": "10-K",
+     "filed": "2022-03-18"
+    },
+    {
+     "end": "2022-07-29",
+     "usd_billion": 434.37,
+     "form": "10-K",
+     "filed": "2023-02-24"
+    },
+    {
+     "end": "2023-07-28",
+     "usd_billion": 1100.0,
+     "form": "10-K",
+     "filed": "2024-02-21"
+    },
+    {
+     "end": "2024-07-26",
+     "usd_billion": 2700.0,
+     "form": "10-K",
+     "filed": "2025-02-26"
+    },
+    {
+     "end": "2025-07-25",
+     "usd_billion": 4000.0,
+     "form": "10-K",
+     "filed": "2026-02-25"
+    }
+   ],
+   "as_of": "2025-07-25"
+  },
+  {
+   "id": "fin-078",
+   "entity": "Tesla",
+   "metric": "aggregate market value of voting and non-voting common equity held by non-affiliates (dei:EntityPublicFloat)",
+   "value": 892.93,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2025,
+   "boundary": "Market value of shares held by non-affiliates (officers, directors, and large holders excluded), measured on 2025-06-30, the last business day of the company's second fiscal quarter, as reported on the cover of the 10-K filed 2026-01-29. It understates total market capitalization and is dated differently for each company, so the seven values do not sit on one date. Some companies report it rounded to a tenth of a trillion.",
+   "source": {
+    "title": "Tesla XBRL company concept dei/EntityPublicFloat",
+    "publisher": "SEC EDGAR (data.sec.gov)",
+    "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001318605/dei/EntityPublicFloat.json",
+    "published": "2026-01-29",
+    "kind": "filing"
+   },
+   "quote": "\"end\":\"2025-06-30\",\"val\":892930000000,\"accn\":\"0001628280-26-003952\",\"fy\":2025,\"fp\":\"FY\",\"form\":\"10-K\",\"filed\":\"2026-01-29\"",
+   "derived": "raw value 892930000000 USD / 1e9 = 892.93",
+   "status": "verified",
+   "series_annual": [
+    {
+     "end": "2011-06-30",
+     "usd_billion": 1.85,
+     "form": "10-K",
+     "filed": "2012-02-27"
+    },
+    {
+     "end": "2012-06-30",
+     "usd_billion": 1.99,
+     "form": "10-K",
+     "filed": "2013-03-07"
+    },
+    {
+     "end": "2013-06-30",
+     "usd_billion": 9.91,
+     "form": "10-K",
+     "filed": "2014-02-26"
+    },
+    {
+     "end": "2014-06-30",
+     "usd_billion": 22.97,
+     "form": "10-K",
+     "filed": "2015-02-26"
+    },
+    {
+     "end": "2015-06-30",
+     "usd_billion": 26.34,
+     "form": "10-K",
+     "filed": "2016-02-24"
+    },
+    {
+     "end": "2016-06-30",
+     "usd_billion": 24.66,
+     "form": "10-K",
+     "filed": "2017-03-01"
+    },
+    {
+     "end": "2017-06-30",
+     "usd_billion": 47.83,
+     "form": "10-K",
+     "filed": "2018-02-23"
+    },
+    {
+     "end": "2018-06-30",
+     "usd_billion": 46.57,
+     "form": "10-K",
+     "filed": "2019-02-19"
+    },
+    {
+     "end": "2019-06-30",
+     "usd_billion": 31.54,
+     "form": "10-K",
+     "filed": "2020-02-13"
+    },
+    {
+     "end": "2020-06-30",
+     "usd_billion": 160.57,
+     "form": "10-K",
+     "filed": "2021-02-08"
+    },
+    {
+     "end": "2021-06-30",
+     "usd_billion": 541.28,
+     "form": "10-K",
+     "filed": "2022-02-07"
+    },
+    {
+     "end": "2022-06-30",
+     "usd_billion": 580.48,
+     "form": "10-K",
+     "filed": "2023-01-31"
+    },
+    {
+     "end": "2023-06-30",
+     "usd_billion": 722.52,
+     "form": "10-K",
+     "filed": "2024-01-29"
+    },
+    {
+     "end": "2024-06-28",
+     "usd_billion": 550.17,
+     "form": "10-K",
+     "filed": "2025-01-30"
+    },
+    {
+     "end": "2025-06-30",
+     "usd_billion": 892.93,
+     "form": "10-K",
+     "filed": "2026-01-29"
+    }
+   ],
+   "as_of": "2025-06-30"
+  },
+  {
+   "id": "fin-079",
+   "entity": "Microsoft",
+   "metric": "equity-method investments, all investees (includes OpenAI), carrying value",
+   "value": 12.4,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "All equity-method investments at 09/30/2026 ($12.0 billion at 06/30/2026), part of the Equity and other investments line ($37.8 billion at 09/30/2026). Microsoft does not state the OpenAI carrying value separately; OpenAI is one of the investees in this total, so this is an upper bound for the stake, not the stake.",
+   "source": {
+    "title": "Microsoft Form 10-Q for the quarter ended 09/30/2026, Note 4 Investments",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/msft-20260930.htm",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "As of September 30, 2026 and June 30, 2026, equity investments measured using the equity method were $12.4 billion and $12.0 billion, respectively.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "fin-080",
+   "entity": "Microsoft",
+   "metric": "OpenAI investment, funded amount of total funding commitments",
+   "value": 12.0,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Cash funded toward a $13.0 billion total commitment as of 09/30/2026 (10-K: $11.9 billion funded as of 06/30/2026). Ownership is about 24% on an as-converted basis at 09/30/2026 (about 25% at 06/30/2026, reduced by the OpenAI Recapitalization). Equity-method accounting, so the carrying value differs from funded cost and from market value; not a valuation of the stake.",
+   "source": {
+    "title": "Microsoft Form 10-Q for the quarter ended 09/30/2026, Note 4 Investments",
+    "publisher": "SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/msft-20260930.htm",
+    "published": "2026-10-28",
+    "kind": "filing"
+   },
+   "quote": "We have made total funding commitments of $13.0 billion related to our investment, of which $12.0 billion has been funded as of September 30, 2026. We have an investment accounted for under the equity method that represents an approximate 24% interest on an as-converted basis.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-081",
+   "entity": "Apple",
+   "metric": "capital expenditure guidance, fiscal 2027 or December quarter 2026",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Absence. In the full Q4 fiscal 2026 call transcript (11/02/2026), the words capex, capital expenditure, and capital spending do not appear. The CFO gave December-quarter guidance for revenue, gross margin, operating expenses, other income and expense, and tax rate only.",
+   "source": {
+    "title": "Apple Q4 2026 Earnings Call Transcript",
+    "publisher": "StockAnalysis.com (third-party transcript of the Apple call)",
+    "url": "https://stockanalysis.com/stocks/aapl/transcripts/702819-q4-2026",
+    "published": "2026-11-02",
+    "kind": "press"
+   },
+   "quote": "We expect operating expenses to be between $20.4 billion and $20.8 billion.",
+   "derived": null,
+   "status": "partly",
+   "limit": "Apple gave no capital spending guidance on its 11/02/2026 earnings call; this rests on one third-party transcript read in full, because Apple publishes no official transcript."
+  },
+  {
+   "id": "fin-082",
+   "entity": "NVIDIA",
+   "metric": "capital expenditure guidance, fiscal 2027 or 2028 (own capex)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "Absence. In the full Q2 fiscal 2027 call transcript (08/26/2026), no capex or capital expenditure guidance for NVIDIA itself appears (searched for capex, capital expenditure, capital spend). The CFO guided operating expenses, revenue growth (about 70% in fiscal 2028), margins, and shareholder returns.",
+   "source": {
+    "title": "NVIDIA Corp. (NVDA) Q2 2027 Earnings Call, corrected transcript, 08/26/2026",
+    "publisher": "NVIDIA Investor Relations (CallStreet transcript)",
+    "url": "https://s201.q4cdn.com/141608511/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
+    "published": "2026-08-27",
+    "kind": "company-report"
+   },
+   "quote": "For the full year, we now expect OpEx to grow in the low-50s",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "fin-083",
+   "entity": "Top five hyperscalers (per NVIDIA)",
+   "metric": "capital expenditure expected, 2026",
+   "value": 800,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2026,
+   "boundary": "NVIDIA's CFO states the figure for its largest customers; the five companies are not named and the basis (cash capex versus capex including finance leases) is not given. 'Nearly $800 billion' is recorded as 800 and '$1.3 trillion' as 1300. A customer-vendor projection, not a company guide.",
+   "source": {
+    "title": "NVIDIA Corp. (NVDA) Q2 2027 Earnings Call, corrected transcript, 08/26/2026",
+    "publisher": "NVIDIA Investor Relations (CallStreet transcript)",
+    "url": "https://s201.q4cdn.com/141608511/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
+    "published": "2026-08-27",
+    "kind": "company-report"
+   },
+   "quote": "With cloud industry backlog now greater than $2 trillion, CapEx by the top-five hyperscalers is expected to reach nearly $800 billion in 2026 and $1.3 trillion in 2027.",
+   "derived": null,
+   "status": "partly",
+   "limit": "NVIDIA's chief financial officer states this for its five largest customers without naming them or saying whether finance leases are counted; it is a vendor's projection, not a company guide."
+  },
+  {
+   "id": "fin-084",
+   "entity": "Top five hyperscalers (per NVIDIA)",
+   "metric": "capital expenditure expected, 2027",
+   "value": 1300,
+   "low": null,
+   "high": null,
+   "unit": "USD billion",
+   "year": 2027,
+   "boundary": "NVIDIA's CFO states the figure for its largest customers; the five companies are not named and the basis (cash capex versus capex including finance leases) is not given. 'Nearly $800 billion' is recorded as 800 and '$1.3 trillion' as 1300. A customer-vendor projection, not a company guide.",
+   "source": {
+    "title": "NVIDIA Corp. (NVDA) Q2 2027 Earnings Call, corrected transcript, 08/26/2026",
+    "publisher": "NVIDIA Investor Relations (CallStreet transcript)",
+    "url": "https://s201.q4cdn.com/141608511/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
+    "published": "2026-08-27",
+    "kind": "company-report"
+   },
+   "quote": "With cloud industry backlog now greater than $2 trillion, CapEx by the top-five hyperscalers is expected to reach nearly $800 billion in 2026 and $1.3 trillion in 2027.",
+   "derived": null,
+   "status": "partly",
+   "limit": "NVIDIA's chief financial officer states this for its five largest customers without naming them or saying whether finance leases are counted; it is a vendor's projection, not a company guide."
+  }
+ ]
+}

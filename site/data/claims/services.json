@@ -1,0 +1,1488 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "services",
+ "claims": [
+  {
+   "entity": "Software Carbon Intensity (ISO/IEC 21031:2024)",
+   "metric": "standard formula for software carbon per functional unit",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "gCO2e per functional unit (R)",
+   "year": 2024,
+   "boundary": "Carbon only, operational plus allocated embodied emissions, per a functional unit the user chooses. Not energy, water, or price.",
+   "layers": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "either (user states)",
+   "source": {
+    "title": "Software Carbon Intensity for AI Specification (SPEC.md)",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci-ai/blob/main/SPEC.md",
+    "published": "2025-12-17",
+    "kind": "model"
+   },
+   "quote": "Per ISO/IEC 21031:2024, an SCI score is calculated as SCI = (O + M) per R, where O is operational emissions, M is allocated embodied emissions, and R is the functional unit.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-001"
+  },
+  {
+   "entity": "Software Carbon Intensity (learn.greensoftware.foundation)",
+   "metric": "does the standard fix the functional unit",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "The SCI formula leaves R to the user, so two SCI scores with different R cannot be compared.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Measurement (Learn Green Software)",
+    "publisher": "Green Software Foundation",
+    "url": "https://learn.greensoftware.foundation/measurement",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "The specification currently doesn't prescribe the functional unit and you are free to pick whichever best describes how your application scales.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-002"
+  },
+  {
+   "entity": "SCI for AI, consumer functional unit for large language models",
+   "metric": "suggested functional unit",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "per token (LLM); per image; per second (video); per workflow execution (agent)",
+   "year": 2025,
+   "boundary": "Ratified 12/17/2025 as a consensus specification extending ISO/IEC 21031:2024. Table 1 lists examples as indicative, not exhaustive.",
+   "layers": [
+    "data center",
+    "network",
+    "device",
+    "embodied"
+   ],
+   "basis": "either (user states)",
+   "source": {
+    "title": "Software Carbon Intensity for AI Specification (SPEC.md)",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci-ai/blob/main/SPEC.md",
+    "published": "2025-12-17",
+    "kind": "model"
+   },
+   "quote": "| Large Language Models (LLMs) | Per Token |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-003"
+  },
+  {
+   "entity": "AI Energy Score (Hugging Face)",
+   "metric": "primary scored metric",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "Wh of GPU energy per 1,000 queries",
+   "year": 2025,
+   "boundary": "GPU energy only, on an NVIDIA H100 80GB, 1,000 queries per task, ten runs. CPU and RAM are measured but not scored. No facility overhead, no network, no device, no embodied.",
+   "layers": [
+    "data center (GPU only)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "AI Energy Score",
+    "publisher": "Hugging Face",
+    "url": "https://huggingface.github.io/AIEnergyScore",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "The primary metric for evaluation is GPU energy consumption, measured in watt-hours per 1,000 queries.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-004"
+  },
+  {
+   "entity": "Open LLMs on B200 GPUs, Text Conversation task (ML.ENERGY v3.0)",
+   "metric": "mean energy per response",
+   "value": 184,
+   "low": null,
+   "high": null,
+   "unit": "J per response",
+   "year": 2025,
+   "boundary": "Measured by the benchmark on B200 GPUs at each model's minimum-energy configuration. The post does not state facility overhead, so treat as GPU-side energy only.",
+   "layers": [
+    "data center (GPU)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY Initiative",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30",
+    "published": null,
+    "kind": "preprint"
+   },
+   "quote": "Problem Solving consuming on average 25x more energy per response than Text Conversation (mean 4,625 J vs. 184 J).",
+   "derived": "184 J / 3,600 = 0.051 Wh per response",
+   "status": "partly",
+   "id": "sv-005"
+  },
+  {
+   "entity": "Open LLMs on B200 GPUs, Problem Solving task (ML.ENERGY v3.0)",
+   "metric": "mean energy per response",
+   "value": 4625,
+   "low": null,
+   "high": null,
+   "unit": "J per response",
+   "year": 2025,
+   "boundary": "Same as the Text Conversation row; the task produces about ten times more output tokens (6,988 against 717 on average).",
+   "layers": [
+    "data center (GPU)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY Initiative",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30",
+    "published": null,
+    "kind": "preprint"
+   },
+   "quote": "Problem Solving generates on average 10x more output tokens than Text Conversation (mean 6,988 vs. 717).",
+   "derived": "4,625 J / 3,600 = 1.28 Wh per response; 4,625 / 184 = 25.1",
+   "status": "partly",
+   "id": "sv-006"
+  },
+  {
+   "entity": "LLM serving on H200 (Llama-3.2-1B, batch 16, context 4K); the study also measured H100",
+   "metric": "energy per generated token against energy per request",
+   "value": 0.72,
+   "low": 0.72,
+   "high": 7.46,
+   "unit": "J per token",
+   "year": 2026,
+   "boundary": "GPU energy read from the NVML counter over the inference window. Token energy falls as output length grows because fixed energy is spread, while total energy rises.",
+   "layers": [
+    "data center (GPU)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Characterization of Request and Token Energy Costs for LLM Inference Workloads on GPU Platforms",
+    "publisher": "arXiv 2608.28044",
+    "url": "https://arxiv.org/html/2608.28044v1",
+    "published": "2026-08-28",
+    "kind": "preprint"
+   },
+   "quote": "increasing output length from 10 to 512 tokens reduces token energy from 7.46 to 0.72 J/token while total batched inference-window energy increases from 1.19 to 5.93 kJ.",
+   "derived": "7.46 / 0.72 = 10.4; 5.93 / 1.19 = 5.0",
+   "status": "verified",
+   "id": "sv-007"
+  },
+  {
+   "entity": "LLM inference energy accounting",
+   "metric": "unit mismatch between billing and hardware",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Concerns how any per-token figure is derived from GPU energy over an inference window.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Characterization of Request and Token Energy Costs for LLM Inference Workloads on GPU Platforms",
+    "publisher": "arXiv 2608.28044",
+    "url": "https://arxiv.org/html/2608.28044v1",
+    "published": "2026-08-28",
+    "kind": "preprint"
+   },
+   "quote": "Therefore, there is an accounting mismatch: the service-visible unit is the token generated, but the hardware-visible unit for energy is the inference window.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-008"
+  },
+  {
+   "entity": "Software energy measurement (Blue Angel eco-label revision)",
+   "metric": "existence of a standard measurement procedure for software energy",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2025,
+   "boundary": "German federal environment agency background report for the eco-label DE-UZ 215 (resource and energy-efficient software products).",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Hintergrundbericht Blauer Engel Software (Texte 157/2025)",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/11850/publikationen/157_2025_texte.pdf",
+    "published": "2025-12-10",
+    "kind": "agency"
+   },
+   "quote": "Zum jetzigen Zeitpunkt existieren noch keine standardisierten oder normierten Verfahren zur messtechnischen Erfassung der Energie- und Ressourceneffizienz von Softwareprodukten. [English: At present, there are no standardised or normalised procedures for measuring the energy and resource efficiency of software products. The English is the recorder's translation of this German sentence.]",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-009"
+  },
+  {
+   "entity": "English text tokenization (OpenAI)",
+   "metric": "words per token",
+   "value": 0.75,
+   "low": null,
+   "high": null,
+   "unit": "words per token (about 4 characters)",
+   "year": 2026,
+   "boundary": "Rule of thumb for English; other languages and code differ and the count depends on the model's tokenizer.",
+   "layers": [],
+   "basis": "average",
+   "source": {
+    "title": "Key concepts",
+    "publisher": "OpenAI API documentation",
+    "url": "https://developers.openai.com/api/docs/concepts",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "As a rough rule of thumb, 1 token is approximately 4 characters or 0.75 words for English text.",
+   "derived": "1,000,000 tokens x 0.75 = about 750,000 words",
+   "status": "verified",
+   "id": "sv-010"
+  },
+  {
+   "entity": "OpenAI gpt-6-luna",
+   "metric": "list price per 1M output tokens, short context, standard",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "List price at the vendor's standard tier; input is $0.10 per 1M tokens. Price, not cost or energy.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing (standard pricing data)",
+    "publisher": "OpenAI API documentation",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Standard pricing data columns: Model | Short context input | Short context output | Short context cached input | ... Row: | gpt-6-luna | $0.10 | $0.50 | $0.01 | $0.125 | $0.25 | $0.20 | $0.75 | $0.02 | $0.25 | $0.50 |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-011"
+  },
+  {
+   "entity": "OpenAI gpt-6-astra",
+   "metric": "list price per 1M output tokens, short context, standard",
+   "value": 50.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "List price at the vendor's standard tier; input is $10.00 per 1M tokens. Price, not cost or energy.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing (standard pricing data)",
+    "publisher": "OpenAI API documentation",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Standard pricing data columns: Model | Short context input | Short context output | ... Row: | gpt-6-astra | $10.00 | $50.00 | $1.00 | $12.50 | $25.00 | $20.00 | $75.00 | $2.00 | $25.00 | $50.00 |",
+   "derived": "50.00 / 0.50 = 100",
+   "status": "verified",
+   "id": "sv-012"
+  },
+  {
+   "entity": "Claude Haiku 5.5",
+   "metric": "list price per 1M output tokens, prompts up to 100,000 tokens",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "Base price; input is $0.10 per 1M. Prompts over 100,000 tokens are priced at $0.50 input and $2.50 output. Price, not cost or energy.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing",
+    "publisher": "Claude Platform documentation (Anthropic)",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Columns: Model | Base input tokens | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens. Row: | Claude Haiku 5.5 (for prompts up to 100,000 tokens) | $0.10 / MTok | $0.125 / MTok | $0.20 / MTok | $0.01 / MTok | $0.50 / MTok |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-013"
+  },
+  {
+   "entity": "Claude Fable 5.1",
+   "metric": "list price per 1M output tokens",
+   "value": 50.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per 1M output tokens",
+   "year": 2026,
+   "boundary": "Base price; input is $10 per 1M. Price, not cost or energy.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Pricing",
+    "publisher": "Claude Platform documentation (Anthropic)",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Columns: Model | Base input tokens | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens. Row: | Claude Fable 5.1 | $10 / MTok | $12.50 / MTok | $20 / MTok | $0.25 / MTok | $50 / MTok |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-014"
+  },
+  {
+   "entity": "Gemini 4 Argon",
+   "metric": "list price per 1M output tokens, standard",
+   "value": 10.0,
+   "low": 10.0,
+   "high": 20.0,
+   "unit": "USD per 1M output tokens (through 11/30/2026), then 20.00",
+   "year": 2026,
+   "boundary": "Introductory price through 11/30/2026; input $2.00 then $4.00. Price, not cost or energy.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Gemini Developer API pricing",
+    "publisher": "Google AI for Developers",
+    "url": "https://ai.google.dev/gemini-api/docs/pricing",
+    "published": "2026-10-30",
+    "kind": "company-report"
+   },
+   "quote": "| Output price (including thinking tokens) | Not available | $10.00 through November 30, 2026. $20.00 starting December 1, 2026. |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-015"
+  },
+  {
+   "entity": "Claude API discounts",
+   "metric": "batch discount and cache-read price",
+   "value": 50,
+   "low": null,
+   "high": null,
+   "unit": "percent off for batch requests",
+   "year": 2026,
+   "boundary": "Applies to the Claude models named on the page. Price levers, not energy levers: whether batching lowers energy is shown by the serving studies, not by the price.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Claude Opus 5.5 model overview",
+    "publisher": "Claude Platform documentation (Anthropic)",
+    "url": "https://platform.claude.com/docs/en/models/opus-5-5/overview",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Batch API requests are 50% off; prompt caching reads cost 10% of the base input price (2.5% on Claude Fable 5.1 and Claude Mythos 5.1, 5% on Claude Opus 5.5 and Claude Sonnet 5.5).",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-016"
+  },
+  {
+   "entity": "Microsoft 365 Business Standard",
+   "metric": "list price per user per month, paid yearly",
+   "value": 14.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per user per month",
+   "year": 2026,
+   "boundary": "Annual subscription; $16.80 per user on a monthly subscription. Price of a bundled suite, not a per-use charge.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Microsoft 365 Business Standard",
+    "publisher": "Microsoft",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-standard",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "$14.00 user/month, paid yearly (Annual subscription, auto renews). [Or buy for $16.80 user/month with a monthly subscription]",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-017"
+  },
+  {
+   "limit": "The same page shows two Copilot bundle prices, and this is the higher.",
+   "entity": "Microsoft 365 Copilot Business (added to Business Standard)",
+   "metric": "list price per user per month, paid yearly",
+   "value": 23.5,
+   "low": 20.3,
+   "high": 23.5,
+   "unit": "USD per user per month",
+   "year": 2026,
+   "boundary": "Bundle price with Copilot included, against $14.00 for Business Standard alone. The same page shows two different 'Copilot Business included' prices, $23.50 and $20.30 per user per month paid yearly, in two offer panels, and does not explain the difference (possibly a promotion or a plan variant).",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Microsoft 365 Business Standard",
+    "publisher": "Microsoft",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-standard",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Get Microsoft 365 Copilot Business included for $23.50 user/month, paid yearly. [A second panel on the same page: Get Microsoft 365 Copilot Business included for $20.30 user/month, paid yearly.]",
+   "derived": "23.50 - 14.00 = 9.50; 20.30 - 14.00 = 6.30",
+   "status": "partly",
+   "id": "sv-018"
+  },
+  {
+   "entity": "Google Workspace Business Starter",
+   "metric": "list price per user per month, annual plan",
+   "value": 7,
+   "low": null,
+   "high": null,
+   "unit": "USD per user per month",
+   "year": 2026,
+   "boundary": "Annual or fixed-term plan; $8.40 on the flexible plan; 30 GB pooled storage per user. Business Standard is $14 with 2 TB.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Business editions overview",
+    "publisher": "Google Workspace Help",
+    "url": "https://knowledge.workspace.google.com/admin/getting-started/editions/business-editions",
+    "published": "2026-10-26",
+    "kind": "company-report"
+   },
+   "quote": "| | Business Starter | Business Standard | Business Plus | ... | **Annual/Fixed-Term Plan (price per user per month)** | **$7 USD** * | **$14 USD** * | **$22 USD** * |",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-019"
+  },
+  {
+   "entity": "Cloudflare R2 Standard storage",
+   "metric": "list price of object storage",
+   "value": 0.015,
+   "low": null,
+   "high": null,
+   "unit": "USD per GB-month, egress free",
+   "year": 2026,
+   "boundary": "Standard storage; operations are billed separately; egress to the Internet is free.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "R2 pricing",
+    "publisher": "Cloudflare",
+    "url": "https://developers.cloudflare.com/r2/pricing/",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "| | Standard storage | Infrequent Access storage | ... | Storage | $0.015 / GB-month | $0.01 / GB-month | ... | Egress (data transfer to Internet) | Free | Free |",
+   "derived": "0.015 x 1,000 GB = $15 per TB-month",
+   "status": "verified",
+   "id": "sv-020"
+  },
+  {
+   "entity": "Backblaze B2 Cloud Storage",
+   "metric": "egress allowance",
+   "value": 3,
+   "low": null,
+   "high": null,
+   "unit": "times average monthly stored data, free egress",
+   "year": 2026,
+   "boundary": "Egress above that allowance is $0.01 per GB; many CDN and compute partners waive it.",
+   "layers": [
+    "price"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "B2 Cloud Storage Pricing",
+    "publisher": "Backblaze",
+    "url": "https://www.backblaze.com/cloud-storage/pricing",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Up to 3x of average monthly data stored, then $0.01/GB for additional egress",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-021"
+  },
+  {
+   "entity": "US residential electricity",
+   "metric": "average retail price",
+   "value": 17.23,
+   "low": null,
+   "high": null,
+   "unit": "cents per kWh",
+   "year": 2025,
+   "boundary": "Average retail price to residential customers, US total, annual, preliminary for 2025.",
+   "layers": [
+    "price"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity retail sales, price, annual (EIA API v2)",
+    "publisher": "US EIA",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": "2026-11-04",
+    "kind": "agency"
+   },
+   "quote": "{\"period\": \"2025\", \"stateid\": \"US\", \"stateDescription\": \"U.S. Total\", \"sectorid\": \"RES\", \"sectorName\": \"residential\", \"price\": \"17.23\", \"price-units\": \"cents per kilowatt-hour\"}",
+   "derived": "1 kWh costs $0.1723",
+   "status": "verified",
+   "id": "sv-022"
+  },
+  {
+   "entity": "Washington commercial electricity",
+   "metric": "average retail price",
+   "value": 10.97,
+   "low": null,
+   "high": null,
+   "unit": "cents per kWh",
+   "year": 2025,
+   "boundary": "Average retail price to commercial customers in Washington, annual, preliminary for 2025.",
+   "layers": [
+    "price"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity retail sales, price, annual (EIA API v2)",
+    "publisher": "US EIA",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": "2026-11-04",
+    "kind": "agency"
+   },
+   "quote": "{\"period\": \"2025\", \"stateid\": \"WA\", \"stateDescription\": \"Washington\", \"sectorid\": \"COM\", \"sectorName\": \"commercial\", \"price\": \"10.97\", \"price-units\": \"cents per kilowatt-hour\"}",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-023"
+  },
+  {
+   "entity": "Oregon commercial electricity",
+   "metric": "average retail price",
+   "value": 9.8,
+   "low": null,
+   "high": null,
+   "unit": "cents per kWh",
+   "year": 2025,
+   "boundary": "Average retail price to commercial customers in Oregon, annual, preliminary for 2025.",
+   "layers": [
+    "price"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Electricity retail sales, price, annual (EIA API v2)",
+    "publisher": "US EIA",
+    "url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+    "published": "2026-11-04",
+    "kind": "agency"
+   },
+   "quote": "{\"period\": \"2025\", \"stateid\": \"OR\", \"stateDescription\": \"Oregon\", \"sectorid\": \"COM\", \"sectorName\": \"commercial\", \"price\": \"9.8\", \"price-units\": \"cents per kilowatt-hour\"}",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-024"
+  },
+  {
+   "entity": "Large production LLMs at scale (Microsoft Joule study)",
+   "metric": "electricity to serve one billion conversational queries, baseline",
+   "value": 0.7,
+   "low": null,
+   "high": null,
+   "unit": "GWh per billion queries",
+   "year": 2026,
+   "boundary": "Modeled serving energy for conversational queries of a few hundred tokens; optimized figure is 0.3 GWh. Microsoft-authored; not Copilot-specific.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Scaling AI with 8 to 20x energy efficiency",
+    "publisher": "Microsoft Cloud Blog (summarizing Joule 2026)",
+    "url": "https://www.microsoft.com/en-us/microsoft-cloud/blog/2026/06/15/scaling-ai-with-8-to-20x-energy-efficiency/",
+    "published": "2026-06-15",
+    "kind": "company-report"
+   },
+   "quote": "The analysis in the study shows that serving one billion queries, assuming those are conversational queries with a few hundred tokens per interaction, takes about 0.7 gigawatt-hours (GWh) of electricity at baseline, roughly comparable to about 0.4% of the energy US households use watching TV each day.",
+   "derived": "0.7 GWh / 1e9 queries = 0.7 Wh per query; 0.3 GWh = 0.3 Wh",
+   "status": "partly",
+   "id": "sv-025"
+  },
+  {
+   "entity": "Large production LLMs at scale (Microsoft Joule study)",
+   "metric": "cooling water consumed per typical query",
+   "value": null,
+   "low": 0.0,
+   "high": 0.067,
+   "unit": "mL per query",
+   "year": 2026,
+   "boundary": "Cooling water only, conservative assumptions, Microsoft-authored; excludes water at the power plant and in manufacturing.",
+   "layers": [
+    "data center (on-site cooling)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Scaling AI with 8 to 20x energy efficiency",
+    "publisher": "Microsoft Cloud Blog (summarizing Joule 2026)",
+    "url": "https://www.microsoft.com/en-us/microsoft-cloud/blog/2026/06/15/scaling-ai-with-8-to-20x-energy-efficiency/",
+    "published": "2026-06-15",
+    "kind": "company-report"
+   },
+   "quote": "For large production models under conservative assumptions, we estimate that a typical query uses in the range of 0.0 to 0.067 mL of water, with a median water use equivalent to about one-hundredth of a teaspoon or less than a single drop.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-026"
+  },
+  {
+   "entity": "Summarizing a 3,000-word report to 200 words by hand (Microsoft experiment, five professionals)",
+   "metric": "laptop energy for the task",
+   "value": 13.7,
+   "low": null,
+   "high": null,
+   "unit": "Wh per task",
+   "year": 2026,
+   "boundary": "Estimated laptop energy over a median of 41 minutes; five participants. Includes the person's screen time, not the person.",
+   "layers": [
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2026 Environmental Sustainability Report: Responsibly building the AI future",
+    "publisher": "Microsoft",
+    "url": "https://aka.ms/SustainabilityReport2026",
+    "published": "2026-07-03",
+    "kind": "company-report"
+   },
+   "quote": "In one Microsoft experiment, five professionals were asked to summarize a 3,000-word technical report into 200 words, which took a median of 41 minutes and consumed an estimated 13.7 watt-hours of laptop energy.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-027"
+  },
+  {
+   "limit": "One vendor's figure for one task; the report does not say whether the user's device is counted, and results vary by task.",
+   "entity": "Microsoft Copilot, same summarization task, one prompt",
+   "metric": "data center energy for the task",
+   "value": 0.29,
+   "low": null,
+   "high": null,
+   "unit": "Wh per task",
+   "year": 2026,
+   "boundary": "Datacenter energy for one prompt, as stated. The report does not say whether the user's device energy while prompting and reading is counted, and model development is not mentioned.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2026 Environmental Sustainability Report: Responsibly building the AI future",
+    "publisher": "Microsoft",
+    "url": "https://aka.ms/SustainabilityReport2026",
+    "published": "2026-07-03",
+    "kind": "company-report"
+   },
+   "quote": "Using a single prompt, Copilot completed the same task in under a minute using 0.29 watt-hours of datacenter energy—roughly 55 times faster and 47 times more energy efficient.",
+   "derived": "13.7 / 0.29 = 47.2",
+   "status": "partly",
+   "id": "sv-028"
+  },
+  {
+   "entity": "NVIDIA H100 serving DeepSeek-R1-Distill-Qwen-14B (benchmark)",
+   "metric": "tokens per kWh",
+   "value": 15400000.0,
+   "low": null,
+   "high": null,
+   "unit": "tokens per kWh",
+   "year": 2025,
+   "boundary": "Measured benchmark throughput per kWh of GPU energy at the study's settings; excludes cooling, host, network, and embodied.",
+   "layers": [
+    "data center (GPU)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Idle Consumer GPUs as a Complement to Enterprise Hardware for LLM Inference: Performance, Cost and Carbon Analysis",
+    "publisher": "ACM (AIBC 2025 proceedings)",
+    "url": "https://dl.acm.org/doi/full/10.1145/3775043.3775047",
+    "published": "2026-02-04",
+    "kind": "peer-reviewed"
+   },
+   "quote": "In our DeepSeek-R1-Distill-Qwen-14B benchmark, the H100 was approximately 3.1× more energy-efficient per token, processing ≈15.4 million tokens per kilowatt-hour (kWh), while two RTX 4090s processed ≈5.0 million.",
+   "derived": "1e6 tokens / 15.4e6 tokens per kWh = 65 Wh per million tokens",
+   "status": "partly",
+   "id": "sv-029"
+  },
+  {
+   "entity": "Two NVIDIA RTX 4090 consumer GPUs serving the same model",
+   "metric": "tokens per kWh",
+   "value": 5000000.0,
+   "low": null,
+   "high": null,
+   "unit": "tokens per kWh",
+   "year": 2025,
+   "boundary": "Same benchmark; consumer cards, GPU energy; no cooling, host, or embodied.",
+   "layers": [
+    "data center-class use at home (GPU)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Idle Consumer GPUs as a Complement to Enterprise Hardware for LLM Inference: Performance, Cost and Carbon Analysis",
+    "publisher": "ACM (AIBC 2025 proceedings)",
+    "url": "https://dl.acm.org/doi/full/10.1145/3775043.3775047",
+    "published": "2026-02-04",
+    "kind": "peer-reviewed"
+   },
+   "quote": "In our DeepSeek-R1-Distill-Qwen-14B benchmark, the H100 was approximately 3.1× more energy-efficient per token, processing ≈15.4 million tokens per kilowatt-hour (kWh), while two RTX 4090s processed ≈5.0 million.",
+   "derived": "1e6 tokens / 5.0e6 tokens per kWh = 200 Wh per million tokens",
+   "status": "partly",
+   "id": "sv-030"
+  },
+  {
+   "entity": "Small open models on one consumer GPU (RTX 4060 Ti 16GB, Ollama)",
+   "metric": "energy per output token, most efficient models",
+   "value": 0.2747,
+   "low": null,
+   "high": 2.36,
+   "unit": "J per output token (GPU draw only)",
+   "year": 2026,
+   "boundary": "GPU power sampled at 2 Hz through nvidia-smi on one card; excludes the rest of the PC, so it is below wall power.",
+   "layers": [
+    "device (GPU only)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Energy Efficiency of Locally Deployed LLMs: A Preliminary Quantitative GPU Power Benchmark on Consumer Hardware",
+    "publisher": "arXiv 2608.00008",
+    "url": "https://arxiv.org/abs/2608.00008",
+    "published": "2026-06-12",
+    "kind": "preprint"
+   },
+   "quote": "Specifically, qwen2.5:0.5b and tinyllama:1.1b achieve the lowest energy cost (0.2747 J/tok and 0.3234 J/tok) and the highest throughput (>325 tok/s). In contrast, the 7B-Mistral model consumes up to 8.6x more energy per token than the most efficient model.",
+   "derived": "0.2747 J x 1e6 = 274.7 kJ = 76.3 Wh per million tokens; x 8.6 = 2.36 J per token",
+   "status": "partly",
+   "id": "sv-031"
+  },
+  {
+   "entity": "Apple M4 Pro running 3B to 9B open models (GreenBench)",
+   "metric": "system-level energy per token",
+   "value": null,
+   "low": 0.09,
+   "high": 0.25,
+   "unit": "J per token (system power estimated at 10 W)",
+   "year": 2026,
+   "boundary": "Package power (0.47 W, excluding DRAM) was measured with powermetrics; the 10 W system figure is the authors' estimate. Single user, no batching.",
+   "layers": [
+    "device (system, estimated)"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "GreenBench: Benchmarking Energy Efficiency and Carbon Footprint of Open-Source LLM Inference on Apple Silicon",
+    "publisher": "arXiv 2608.28667",
+    "url": "https://arxiv.org/html/2608.28667v1",
+    "published": null,
+    "kind": "preprint"
+   },
+   "quote": "The M4 Pro’s system-level energy cost ranges from 0.09 to 0.25 J/tok",
+   "derived": "0.09 to 0.25 J x 1e6 = 25 to 69 Wh per million tokens",
+   "status": "partly",
+   "id": "sv-032"
+  },
+  {
+   "entity": "Client device, on-device against remote LLM content",
+   "metric": "ratio of client energy, on-device to remote fetch",
+   "value": null,
+   "low": 3.5,
+   "high": 8.9,
+   "unit": "times",
+   "year": 2025,
+   "boundary": "Client-device energy only. The data center's energy for the remote case is outside the boundary.",
+   "layers": [
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "On-Device or Remote? On the Energy Efficiency of Fetching LLM-Generated Content",
+    "publisher": "Universitat Politecnica de Catalunya",
+    "url": "https://upcommons.upc.edu/bitstreams/157d4c23-8a11-46af-879d-86ca96ddcbc1/download",
+    "published": "2025-12-10",
+    "kind": "preprint"
+   },
+   "quote": "Fetching LLM-generated content from a remote server uses 3.5 to 8.9 times less energy compared to the on-device method, with a large effect size.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-034"
+  },
+  {
+   "entity": "Federated learning against centralized training",
+   "metric": "carbon of federated learning relative to centralized training",
+   "value": null,
+   "low": null,
+   "high": 100,
+   "unit": "up to about 100 times",
+   "year": 2023,
+   "boundary": "Model training experiments with measured power and a communication model; training, not inference or chat.",
+   "layers": [
+    "data center",
+    "network",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "A First Look into the Carbon Footprint of Federated Learning",
+    "publisher": "Journal of Machine Learning Research 24(129)",
+    "url": "https://jmlr.org/papers/v24/21-0445.html",
+    "published": "2023-05-25",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Our findings show that, depending on the configuration, FL can emit up to two orders of magnitude more carbon than centralized training.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-035"
+  },
+  {
+   "limit": "A life-cycle total for one configuration with a use phase inside, standing in for a small box.",
+   "entity": "Apple Mac mini (M6, 16GB memory, 256GB storage)",
+   "metric": "gross product carbon footprint, life cycle",
+   "value": 30,
+   "low": null,
+   "high": null,
+   "unit": "kg CO2e per device",
+   "year": 2026,
+   "boundary": "Apple's life cycle assessment at launch, listed as gross GHG emissions (CO2e) for the configuration, before any offsets. The report says it was current as of product launch on 08/25/2026.",
+   "layers": [
+    "embodied"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Mac mini Product Environmental Report",
+    "publisher": "Apple",
+    "url": "https://www.apple.com/environment/pdf/products/desktops/Mac_mini_PER_Aug2026.pdf",
+    "published": "2026-08-25",
+    "kind": "company-report"
+   },
+   "quote": "M6 with 16GB memory, 256GB storage 30 kg",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-036"
+  },
+  {
+   "entity": "Global data centers, 2010 to 2018",
+   "metric": "energy growth against compute growth",
+   "value": 6,
+   "low": null,
+   "high": 550,
+   "unit": "percent energy increase while compute instances rose 550 percent",
+   "year": 2018,
+   "boundary": "Bottom-up model of global data center energy; 205 TWh in 2018. The 20 percent per year fall in energy per compute instance is the authors' derived intensity.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Recalibrating global data center energy-use estimates",
+    "publisher": "Science (Masanet et al.)",
+    "url": "https://datacenters.lbl.gov/sites/default/files/Masanet_et_al_Science_2020.full_.pdf",
+    "published": "2020-02-26",
+    "kind": "peer-reviewed"
+   },
+   "quote": "This represents a 6% increase com- pared with 2010, whereas global data center compute instances increased by 550% over the same time period.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-037"
+  },
+  {
+   "limit": "Model inputs for the US fleet, from the 2024 edition, not measurements of any site.",
+   "entity": "US servers by data center type (LBNL model assumption)",
+   "metric": "average server utilization in small data centers against hyperscale",
+   "value": 11,
+   "low": 11,
+   "high": 50,
+   "unit": "percent utilization, small data centers in 2014 (20 in 2027)",
+   "year": 2014,
+   "boundary": "Model inputs for the US fleet, not measurements of any site. Colocation 21 to 35 percent; hyperscale 45 to 50 percent.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2024 United States Data Center Energy Usage Report",
+    "publisher": "Lawrence Berkeley National Laboratory",
+    "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report.pdf",
+    "published": "2024-12-19",
+    "kind": "agency"
+   },
+   "quote": "Servers in internal and small data centers average 11% utilization in 2014, rising linearly to 20% in 2027. Colocation data centers average 21% utilization in 2014, rising to 35% in 2027. Hyperscale data centers average 45% in 2014, rising to 50% in 2027.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-038"
+  },
+  {
+   "limit": "A model input for conventional servers across the US fleet; a given box differs.",
+   "entity": "Conventional servers (LBNL model assumption)",
+   "metric": "idle power as a share of maximum power",
+   "value": 36,
+   "low": null,
+   "high": null,
+   "unit": "percent of maximum power at idle, 2023",
+   "year": 2023,
+   "boundary": "Model input: 51 percent in 2014, 36 percent in 2023, 27 percent in 2028. Applies to the US fleet; a given box differs.",
+   "layers": [
+    "data center",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2024 United States Data Center Energy Usage Report",
+    "publisher": "Lawrence Berkeley National Laboratory",
+    "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report.pdf",
+    "published": "2024-12-19",
+    "kind": "agency"
+   },
+   "quote": "As shown in Figure 3.5, we assume that conventional servers idle at 51% of their maximum power in 2014, dropping to 36% in 2023 and 27% in 2028.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-039"
+  },
+  {
+   "entity": "Cloud migration of email, CRM, and bundled productivity software (US workers, modeled)",
+   "metric": "IT energy saved by moving from local systems to central cloud services",
+   "value": 87,
+   "low": null,
+   "high": 87,
+   "unit": "percent, up to",
+   "year": 2013,
+   "boundary": "Modeled scenario for 86 million US workers; IT energy only; 2013 hardware and utilization; study funded by Google.",
+   "layers": [
+    "data center",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Berkeley Lab Study Finds Moving Select Computer Services to the Cloud Promises Significant Energy Savings",
+    "publisher": "Lawrence Berkeley National Laboratory",
+    "url": "https://newscenter.lbl.gov/2013/06/11/berkeley-lab-study-finds-moving-select-computer-services-to-the-cloud-promises-significant-energy-savings",
+    "published": "2013-06-11",
+    "kind": "agency"
+   },
+   "quote": "Moving these software applications from local computer systems to centralized cloud services could cut information technology energy consumption by up to 87 percent — about 23 billion kilowatt-hours.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-040"
+  },
+  {
+   "entity": "Raspberry Pi 5 (4 or 8 GB) as an always-on home server",
+   "metric": "idle power",
+   "value": 3.0,
+   "low": 2.7,
+   "high": 3.0,
+   "unit": "W",
+   "year": 2026,
+   "boundary": "Wall power at idle, headless; excludes drives and router. A hobbyist measurement.",
+   "layers": [
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Raspberry Pi Power Consumption (Update 2026): All Models Compared",
+    "publisher": "raspberry.tips",
+    "url": "https://raspberry.tips/en/faq/raspberry-pi-power-consumption-update-2026-all-models-compared-2",
+    "published": null,
+    "kind": "blog"
+   },
+   "quote": "* **Pi 5 (4/8GB):** ~2.7–3.0 W Idle → approx. **$7–8/year**",
+   "derived": "3.0 W x 8,760 h = 26.3 kWh a year; at 17.23 cents per kWh (EIA US residential) = $4.53. The blog's own $7 to $8 a year uses $0.30 per kWh.",
+   "status": "partly",
+   "id": "sv-041"
+  },
+  {
+   "limit": "Written by a managed-hosting vendor, so read it as an upper-leaning estimate; it excludes setup.",
+   "entity": "Nextcloud single server (self-hosted), small team",
+   "metric": "administration time",
+   "value": 3.5,
+   "low": 3,
+   "high": 4,
+   "unit": "hours per month (3 to 4)",
+   "year": 2026,
+   "boundary": "Patching, log review, backup checks and restore tests for a stable single server; upgrade every six months about half a day extra. Excludes setup. Written by a managed-hosting vendor.",
+   "layers": [
+    "labor"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Managed Nextcloud Hosting vs Self-Hosting Cost per User",
+    "publisher": "MassiveGRID",
+    "url": "https://massivegrid.com/blog/managed-nextcloud-hosting-vs-self-hosting-cost-per-user/",
+    "published": "2026-10-15",
+    "kind": "blog"
+   },
+   "quote": "A stable single-server Nextcloud takes 3 to 4 hours a month of patching, log review, backup checks and the occasional restore test, plus a major upgrade every six months that costs half a day.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-042"
+  },
+  {
+   "entity": "ArtCraft WordCraft (open-source word processor)",
+   "metric": "development status as stated by the project",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Project's own page; maturity is the project's statement, not an assessment. The apps overview lists several of the sixteen apps as 'Early alpha' or 'In development'.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "WordCraft",
+    "publisher": "ArtCraft",
+    "url": "https://getartcraft.com/apps/wordcraft",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Word processing · In development",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-043"
+  },
+  {
+   "entity": "LibreOffice",
+   "metric": "what the project says it is",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Project's homepage; version 26.8 announced 08/26/2026.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Free and private office suite, no forced AI",
+    "publisher": "The Document Foundation (LibreOffice)",
+    "url": "https://www.libreoffice.org/",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "LibreOffice is an open source office suite created by you, for you.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-044"
+  },
+  {
+   "entity": "Nextcloud Hub",
+   "metric": "what the project says it combines",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Project's homepage claim; the 'tens of millions of users' wording is the project's own.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "Nextcloud - Open source content collaboration platform",
+    "publisher": "Nextcloud",
+    "url": "https://nextcloud.com/",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Nextcloud Hub combines the key Nextcloud products Files, Talk, Groupware, Office, Assistant and Flow, into a single platform, optimizing the flow of collaboration.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-045"
+  },
+  {
+   "entity": "Jellyfin",
+   "metric": "what the project says it does",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Project's homepage. The project states that it does not run servers for users, so hosting, storage, and bandwidth stay with the operator.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "The Free Software Media System",
+    "publisher": "Jellyfin",
+    "url": "https://jellyfin.org/",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Stream to any device from your own server, with no strings attached.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-046"
+  },
+  {
+   "entity": "Hoopa Valley Tribe network operations center (opened 07/17/2026)",
+   "metric": "scale and purpose as described by the Tribal utility's general manager",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Press report by the Institute for Local Self-Reliance; no energy, water, or capacity figure is given. Reported, not measured.",
+   "layers": [],
+   "basis": "n/a",
+   "source": {
+    "title": "'Not Living in the Cloud': Hoopa Valley Tribe Builds Digital Sovereignty With New Network Hub",
+    "publisher": "Institute for Local Self-Reliance (Community Networks)",
+    "url": "https://communitynetworks.org/content/not-living-cloud-hoopa-valley-tribe-builds-digital-sovereignty-new-network-hub",
+    "published": "2026-08-25",
+    "kind": "press"
+   },
+   "quote": "We’re talking about servers and rack space for (Tribal) government operations and records, not a demand on our water resources — completely different from a large AI data center.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-047"
+  },
+  {
+   "limit": "One government-commissioned measurement at one operator; the page does not restate the life-cycle scope.",
+   "entity": "HD video stream at a measured data centre (Green Cloud Computing case study)",
+   "metric": "data centre power per HD stream",
+   "value": 2.3,
+   "low": null,
+   "high": null,
+   "unit": "W per stream (about Wh per hour), about 2 GB of video",
+   "year": 2021,
+   "boundary": "Data centre only, per the Green Cloud Computing (GCC) method, which allocates IT production and operation to the service; excludes data transmission and local IT. The web page does not restate the life-cycle scope for this figure or name a grid mix. Measured at a real operator.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Digital services / Cloud computing",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/en/topics/digitalisation/green-it/digital-services-cloud-computing",
+    "published": "2021-03-09",
+    "kind": "agency"
+   },
+   "quote": "This corresponds to electrical power consumption of around 2.3 watts per video stream, not counting power consumption for data transmission and local IT.",
+   "derived": "2.3 Wh / 2 GB = 1.15 Wh per GB. The page gives 1.46 g CO2e for the hour, so 1.46 g / 2.3 Wh = 635 g per kWh, which is not the 454 g per kWh implied by the videoconference figures (sv-049), so the two figures do not share one grid factor.",
+   "status": "partly",
+   "id": "sv-048"
+  },
+  {
+   "entity": "Videoconference at a measured data centre (Green Cloud Computing case study)",
+   "metric": "data centre power per participant",
+   "value": 5,
+   "low": null,
+   "high": null,
+   "unit": "W per participant (about Wh per hour)",
+   "year": 2021,
+   "boundary": "Data centre only; one provider; excludes transmission, local infrastructure, and the end device.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Digital services / Cloud computing",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/en/topics/digitalisation/green-it/digital-services-cloud-computing",
+    "published": "2021-03-09",
+    "kind": "agency"
+   },
+   "quote": "which corresponds to electrical power consumption of about five watts per person.",
+   "derived": "2.27 g CO2e for the hour of videoconferencing and about 5 W per person (rounded) imply about 454 g per kWh; the rounding of the 5 W limits this.",
+   "status": "verified",
+   "id": "sv-049"
+  },
+  {
+   "entity": "Online (cloud) storage at four German data centres",
+   "metric": "carbon per TB stored per year",
+   "value": null,
+   "low": 166,
+   "high": 280,
+   "unit": "kg CO2e per TB-year",
+   "year": 2021,
+   "boundary": "Life cycle of storage, servers, network, and infrastructure at the data centre, allocated to stored data; excludes the user's devices and network.",
+   "layers": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Green Cloud Computing: life-cycle based data collection on environmental impacts of cloud computing (Texte 94/2021)",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/5750/publikationen/2021-06-17_texte_94-2021_green-cloud-computing.pdf",
+    "published": "2021-06-17",
+    "kind": "agency"
+   },
+   "quote": "GCC Online-StorageGWP (Aufwand / Nutzen) kg CO2 eq./TB 280 166 181 211 [RZ01 to RZ04]",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-050"
+  },
+  {
+   "entity": "One hour of streaming or videoconferencing (Purdue, Yale, MIT study of popular apps)",
+   "metric": "water footprint per hour",
+   "value": null,
+   "low": 2,
+   "high": 12,
+   "unit": "liters per hour",
+   "year": 2021,
+   "boundary": "Whole-chain estimate that includes electricity generation, by service and country; published 2021.",
+   "layers": [
+    "data center",
+    "network",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "How to reduce the environmental impact of your next virtual meeting",
+    "publisher": "MIT News (reporting Obringer et al., Resources, Conservation and Recycling 2021)",
+    "url": "https://news.mit.edu/2021/how-to-reduce-environmental-impact-next-virtual-meeting-0304",
+    "published": "2021-03-04",
+    "kind": "press"
+   },
+   "quote": "That hour also requires 2-12 liters of water and a land area about the size of an iPad Mini.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-051"
+  },
+  {
+   "limit": "A stale single month, July 2022, across all scopes; about 95 percent is embodied and supply-chain carbon.",
+   "entity": "Microsoft 365 (Exchange, SharePoint, OneDrive, Teams, Word, Excel, PowerPoint)",
+   "metric": "data center emissions per active user, one month",
+   "value": 210,
+   "low": null,
+   "high": null,
+   "unit": "g CO2e per active user (July 2022)",
+   "year": 2022,
+   "boundary": "Microsoft 365 data center emissions across all three scopes (including manufacturing of hardware) divided by unique active commercial users for July 2022; global average; excludes the user's device and network.",
+   "layers": [
+    "data center",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Microsoft 365 Sustainability Whitepaper",
+    "publisher": "Microsoft",
+    "url": "https://download.microsoft.com/download/d/c/1/dc1c940e-30f3-4388-a4aa-676493d5ece3/Microsoft365_Sustainability_Whitepaper.pdf",
+    "published": "2022-10-07",
+    "kind": "company-report"
+   },
+   "quote": "approximately 210 grams of carbon dioxide equivalent (CO2e) per active user",
+   "derived": "Under 10 g of 210 g is under 5 percent",
+   "status": "partly",
+   "id": "sv-052"
+  },
+  {
+   "entity": "Microsoft 365 (same boundary), scopes 1 and 2 only",
+   "metric": "data center emissions per active user, one month",
+   "value": 10,
+   "low": null,
+   "high": null,
+   "unit": "g CO2e per active user (less than, July 2022)",
+   "year": 2022,
+   "boundary": "Scope 1 and 2 emissions only, as the whitepaper defines them; same population and month.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Microsoft 365 Sustainability Whitepaper",
+    "publisher": "Microsoft",
+    "url": "https://download.microsoft.com/download/d/c/1/dc1c940e-30f3-4388-a4aa-676493d5ece3/Microsoft365_Sustainability_Whitepaper.pdf",
+    "published": "2022-10-07",
+    "kind": "company-report"
+   },
+   "quote": "When limited to Scope 1 and Scope 2 emissions only, however, the average carbon intensity per Microsoft 365 user in July 2022 drops from approximately 210 grams to less than 10 grams",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-053"
+  },
+  {
+   "entity": "Google Workspace carbon footprint report",
+   "metric": "public per-user figure for Gmail, Drive, Docs, Meet",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "none published; per-organization admin report only",
+   "year": 2026,
+   "boundary": "Admin-console report by app (Drive, Docs, Gmail, Chat, Meet, Calendar, Admin services) for the customer organization.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "View your organization's carbon footprint report",
+    "publisher": "Google Workspace Help",
+    "url": "https://knowledge.workspace.google.com/admin/reports/view-your-organizations-carbon-footprint-report",
+    "published": "2026-10-26",
+    "kind": "company-report"
+   },
+   "quote": "The report was released in August 2023 and incorporates data from May 2023 onward.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-054"
+  },
+  {
+   "entity": "Google searches with an AI Overview (US desktop, Comscore)",
+   "metric": "share of searches",
+   "value": 39.4,
+   "low": null,
+   "high": null,
+   "unit": "percent of US desktop searches, June 2026",
+   "year": 2026,
+   "boundary": "Presence of an AI experience on a results page, not clicks, not energy; US desktop panel only; mobile and non-US not seen.",
+   "layers": [],
+   "basis": "average",
+   "source": {
+    "title": "Google AI Overviews now appear in 39% of U.S. desktop searches",
+    "publisher": "Search Engine Land (citing Comscore Q2 2026 AI Intelligence Report)",
+    "url": "https://searchengineland.com/google-ai-overviews-share-us-comscore-490381",
+    "published": "2026-09-22",
+    "kind": "press"
+   },
+   "quote": "Google searches with an AI Overview reached 39.4% in June, up from 25.8% in July 2025, according to Comscore’s U.S. desktop data.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-055"
+  },
+  {
+   "entity": "Conventional web search, Google (2009 disclosure) as discussed by the Joule authors",
+   "metric": "availability of newer per-search energy disclosures",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Concerns the 0.3 Wh per search figure already in the record (fp-071).",
+   "layers": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Energy use of AI inference, efficiency pathways, and test-time scaling",
+    "publisher": "Joule",
+    "url": "https://www.sciencedirect.com/science/article/pii/S2542435126001145",
+    "published": "2026-08-19",
+    "kind": "peer-reviewed"
+   },
+   "quote": "We emphasize that this search figure is dated and likely overestimates present-day web search energy; to our knowledge, no newer public web search disclosures are available.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-056"
+  },
+  {
+   "entity": "Programmatic display ads (Good-Loop benchmark, marketers' campaigns)",
+   "metric": "carbon per thousand impressions, median",
+   "value": 0.53,
+   "low": 0.19,
+   "high": 0.87,
+   "unit": "kg CO2e per 1,000 impressions (0.19 to 0.87)",
+   "year": 2025,
+   "boundary": "Global Media Sustainability Framework (GMSF v1) model of ad serving, auctions, and delivery; one quarter, Q1 2025, one vendor's clients.",
+   "layers": [
+    "data center",
+    "network",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Programmatic Transparency Benchmark Q1 2025",
+    "publisher": "Good-Loop",
+    "url": "https://d3q27bh1u24u2o.cloudfront.net/upload/2025-05/Benchmark-Q1-2025-FINAL-_5.14.2025._kr-9PKW.pdf",
+    "published": "2025-05-14",
+    "kind": "company-report"
+   },
+   "quote": "First greenhouse gas emission data correlated to programmatic impressions using the GMSF model, showing a median 0.53 kg",
+   "derived": "0.53 kg / 1,000 = 0.53 g per impression",
+   "status": "partly",
+   "id": "sv-057"
+  },
+  {
+   "entity": "Caches in the access and metro network for video-on-demand (simulation study)",
+   "metric": "network energy effect of deploying caches",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2018,
+   "boundary": "Simulated network model of video-on-demand delivery; counts caching energy plus transport energy; not a measured deployment.",
+   "layers": [
+    "network"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Energy-Efficient Video-on-Demand Content Caching and Distribution in Metro Area Networks",
+    "publisher": "Politecnico di Milano (Ayoub, Musumeci, Tornatore, Pattavina; author manuscript)",
+    "url": "https://re.public.polimi.it/bitstream/11311/1079600/1/TGCN%20v3.pdf",
+    "published": "2018-06-06",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Our results show how deploying caches in the access and metro network segments can reduce the overall energy consumption of the network.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-058"
+  },
+  {
+   "entity": "Content delivery networks, caching models",
+   "metric": "does adding cache servers lower total energy",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2017,
+   "boundary": "Model with synchronization energy between the origin and cache servers; verified by simulation.",
+   "layers": [
+    "network",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "On the energy consumption computation in Content Delivery Networks",
+    "publisher": "Sustainable Computing: Informatics and Systems 16 (2017), doi 10.1016/j.suscom.2017.08.008",
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S2210537916301196",
+    "published": "2017-12-01",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Results reveal that increasing the number of surrogate servers reduces the transmission delay. However, this does not necessarily lead to a reduction of the total energy consumption.",
+   "derived": null,
+   "status": "verified",
+   "id": "sv-059"
+  },
+  {
+   "limit": "A hosting vendor's engineering blog; qualitative, with no energy measurement.",
+   "entity": "Mastodon (federated social software), self-hosting",
+   "metric": "what sets the server's workload",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "text",
+   "year": 2026,
+   "boundary": "Hosting vendor's engineering blog; qualitative, no energy measurement.",
+   "layers": [
+    "data center"
+   ],
+   "basis": "n/a",
+   "source": {
+    "title": "Self-Host Mastodon on Ubuntu",
+    "publisher": "MassiveGRID",
+    "url": "https://massivegrid.com/blog/self-host-mastodon-ubuntu-vps/",
+    "published": "2026-08-19",
+    "kind": "blog"
+   },
+   "quote": "A single-user instance that federates with the wider network processes activity from every account anyone on it follows, so the workload is set by who you follow rather than by how many people use your server.",
+   "derived": null,
+   "status": "partly",
+   "id": "sv-060"
+  }
+ ]
+}

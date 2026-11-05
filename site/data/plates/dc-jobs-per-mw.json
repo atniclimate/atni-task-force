@@ -1,0 +1,164 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-jobs-per-mw",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Jobs",
+ "title": "A {j_mw} MW data center implies about {build[text]} construction workers at peak and {ops[text]} permanent operating staff on the published ratios; a county study finds about {other[text]} other local jobs per {j_mw} MW over time",
+ "text": [
+  "A data center brings many jobs while it is built and few once it runs. The ratios here are modeled and labeled; the state audits show what tax preferences bought in Washington and Georgia.",
+  "What AI itself does to occupations is on the AI page's Work tab."
+ ],
+ "boundary": "Each row has its own boundary, on its receipt.",
+ "plot": {
+  "type": "instrument",
+  "units": {"million USD": "million dollars", "million USD per job": "million dollars per job"},
+  "groups": [{"id": "ctx", "label": "What the record shows, fixed"}]
+ },
+ "inputs": {
+  "cl": {"claim": "jb-023", "field": "low"},
+  "ch": {"claim": "jb-023", "field": "high"},
+  "ol": {"claim": "jb-024", "field": "low"},
+  "oh": {"claim": "jb-024", "field": "high"},
+  "county": {"claim": "jb-035"}
+ },
+ "controls": [
+  {"type": "range", "name": "j_mw", "label": "Project size, MW", "min": 10, "max": 2000, "step": 10, "default": 100}
+ ],
+ "reading": "At {j_mw} MW: {build[text]} construction workers at peak, {ops[text]} operating staff, and about {other[text]} other local jobs eventually, on three modeled ratios with different boundaries. Sources checked 11/04/2026.",
+ "rows": [
+  {
+   "id": "build",
+   "label": "Construction, at peak",
+   "unit": "workers",
+   "formula": {"low": "j_mw * cl", "high": "j_mw * ch"},
+   "equation": "Workers = MW x 0.7 to 2.0",
+   "detail": "Direct on-site workers on a modeled range; the work lasts as long as the build.",
+   "cols": {"per_mw": "0.7 to 2.0", "scope": "Direct, on site, modeled"}
+  },
+  {
+   "id": "ops",
+   "label": "Operating staff, permanent",
+   "unit": "FTE",
+   "formula": {"low": "j_mw * ol", "high": "j_mw * oh"},
+   "equation": "FTE = MW x 0.15 to 0.35",
+   "detail": "Direct permanent staff only.",
+   "cols": {"per_mw": "0.15 to 0.35", "scope": "Direct, permanent, modeled"}
+  },
+  {
+   "id": "other",
+   "label": "Other local jobs, eventually",
+   "unit": "jobs",
+   "formula": {"value": "j_mw * county"},
+   "equation": "Jobs = MW x 2.7",
+   "detail": "A county-level association across all local nonconstruction jobs, not data center staff.",
+   "cols": {"per_mw": "2.7", "scope": "County, all nonconstruction, an association"}
+  },
+  {
+   "id": "montana",
+   "group": "ctx",
+   "label": "Montana, a modeled campus, direct",
+   "figures": [
+    {"claim": "jb-028", "name": "at 500 MW"},
+    {"claim": "jb-029", "name": "at 1,000 MW"}
+   ],
+   "cols": {"scope": "Hypothetical campus, modeled"}
+  },
+  {
+   "id": "oregon-run",
+   "group": "ctx",
+   "label": "Oregon, direct operations",
+   "figures": [
+    {"claim": "jb-081", "name": "statewide"},
+    {"claim": "jb-082", "name": "in Eastern Oregon"}
+   ],
+   "cols": {"scope": "A consultant's estimate"}
+  },
+  {
+   "id": "oregon-build",
+   "group": "ctx",
+   "label": "Oregon, construction and total",
+   "figures": [
+    {"claim": "jb-085", "name": "direct construction"},
+    {"claim": "jb-084", "name": "total supported, modeled"}
+   ],
+   "cols": {"scope": "Modeled, temporary jobs in the first figure"}
+  },
+  {
+   "id": "wa-jobs",
+   "group": "ctx",
+   "label": "Washington urban exemption, jobs",
+   "figures": [
+    {"claim": "jb-073", "name": "permanent, reported"},
+    {"claim": "jb-074", "name": "temporary, reported"}
+   ],
+   "cols": {"scope": "Self-reported by beneficiaries, state audit"}
+  },
+  {
+   "id": "wa-cost",
+   "group": "ctx",
+   "label": "Washington urban exemption, cost",
+   "figures": [
+    {"claim": "jb-075", "name": "of savings"},
+    {"claim": "jb-080", "name": "per reported permanent job"},
+    {"claim": "jb-076", "name": "new urban"}
+   ],
+   "cols": {"scope": "State audit"}
+  },
+  {
+   "id": "georgia",
+   "group": "ctx",
+   "label": "Georgia exemption audit",
+   "figures": [
+    {"claim": "jb-036", "name": "of construction attributed to it"},
+    {"claim": "jb-037", "name": "net to the state in 2030"}
+   ],
+   "cols": {"scope": "State audit"}
+  },
+  {
+   "id": "naics",
+   "group": "ctx",
+   "label": "US industry employment, NAICS 518210",
+   "spark": ["jb-041", "jb-042", "jb-043", "jb-044", "jb-045"],
+   "cols": {"scope": "A federal count of the whole industry"}
+  },
+  {
+   "id": "county",
+   "group": "ctx",
+   "label": "Brookings, counties with a first large data center",
+   "figures": [
+    {"claim": "jb-031", "name": "data processing employment, first decade"},
+    {"claim": "jb-032", "name": "local jobs implied"}
+   ],
+   "cols": {"scope": "One study of counties"}
+  },
+  {
+   "id": "census",
+   "group": "ctx",
+   "label": "US data center construction spending, annual rate, 09/2026",
+   "claim": "jb-071",
+   "cols": {"scope": "A federal survey, preliminary"}
+  },
+  {
+   "id": "contractors",
+   "group": "ctx",
+   "label": "Contractors reporting more competition for skilled workers",
+   "claim": "jb-040",
+   "cols": {"scope": "A trade survey, self-reported"}
+  }
+ ],
+ "foot": [
+  {"text": "Written hiring and audit terms are in the checklists.", "href": "#q-jobs", "link": "Jobs checklist"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Row", "field": "label"},
+   {"label": "Part", "field": "series"},
+   {"label": "Per MW", "field": "per_mw"},
+   {"label": "Value", "field": "display"},
+   {"label": "Boundary", "field": "scope"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

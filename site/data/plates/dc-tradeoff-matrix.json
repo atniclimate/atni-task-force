@@ -1,0 +1,126 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-tradeoff-matrix",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Seven tradeoffs",
+ "title": "Of seven tradeoffs, power, water, and carbon have agency figures at national scale; land, heat, and materials rest on one or two modeled figures",
+ "subtitle": "A filled square is an agency, measured, or company figure. A hollow square is modeled, a preprint, or a vendor's own model. A bar compares two figures in one cell, where they share a unit.",
+ "text": [
+  "A data center's tradeoffs are a set, not a list: cooling that saves water uses more power, and more power means more water and carbon at the plant.",
+  "The matrix shows what is known for each of the seven tradeoffs and what remains open. Set a project's size, cooling, and grid below; the instrument reads the water and power that follow."
+ ],
+ "default": "water--national",
+ "reading": "{label}, {column}: {display}, {year}. {evidence}",
+ "plot": {
+  "type": "matrix",
+  "columns": [
+   {"id": "national", "label": "At national scale"},
+   {"id": "unit", "label": "Per unit, or one site"},
+   {"id": "open", "label": "Open question"}
+  ],
+  "units": {
+   "billion liters (nearly)": "billion liters",
+   "L/kWh": "L per kWh",
+   "PUE (ratio)": "",
+   "billion kg CO2e (61 Mt)": "Mt CO2e",
+   "million tonnes CO2 (now, to 2035 central)": "Mt CO2",
+   "gCO2/kWh (value); million metric tons CO2 (low to high)": "g CO2 per kWh",
+   "gCO2/kWh": "g CO2 per kWh",
+   "tons per year NOx": "tons of NOx a year",
+   "percent (less than) of regional NOx; 0.1% of CO and particulate matter": "percent of regional NOx",
+   "billion US dollars per year (more than)": "billion dollars a year",
+   "square feet (low = 2016, value = 2025)": "square feet",
+   "acres (site; low = 57 acres of building floor area per the source)": "acres",
+   "degrees C (average)": "degrees C",
+   "MWh heat per MWh electricity": "MWh of heat per MWh",
+   "million tonnes per year": "million tonnes a year"
+  }
+ },
+ "rows": [
+  {
+   "id": "water",
+   "label": "Water",
+   "cells": {
+    "national": [
+     {"claim": "tr-001", "say": "{display} on site"},
+     {"claim": "tr-004", "say": "about {display} at power plants"}
+    ],
+    "unit": [
+     {"claim": "tr-009", "say": "{display} on site", "range": false},
+     {"claim": "tr-005", "say": "{display} at the plant"}
+    ],
+    "open": "Watershed and season"
+   }
+  },
+  {
+   "id": "power",
+   "label": "Power",
+   "cells": {
+    "national": [{"claim": "dem-028", "say": "{display} in 2024"}],
+    "unit": [{"claim": "tr-065", "say": "PUE {display}, all facilities"}],
+    "open": "Workload split: no operator discloses it"
+   }
+  },
+  {
+   "id": "emissions",
+   "label": "Emissions",
+   "cells": {
+    "national": [
+     {"claim": "tr-006", "say": "{display} from electricity, US"},
+     {"claim": "tr-035", "say": "{display} now, IEA, world", "range": false}
+    ],
+    "unit": [
+     {"claim": "tr-038", "say": "{display} at hyperscale sites, preprint", "range": false, "modeled": true},
+     {"claim": "tr-066", "say": "against {display} national, same preprint", "modeled": true}
+    ],
+    "open": "Embodied carbon per rack"
+   }
+  },
+  {
+   "id": "air",
+   "label": "Air",
+   "cells": {
+    "national": [
+     {"claim": "tr-051", "say": "under {display}, Virginia backup generators"}
+    ],
+    "unit": [
+     {"claim": "tr-047", "say": "{display}, Memphis permit"},
+     {"claim": "tr-044", "say": "over {display} in health burden, modeled, US", "modeled": true}
+    ],
+    "open": "Regional monitoring"
+   }
+  },
+  {
+   "id": "land",
+   "label": "Land",
+   "cells": {
+    "national": [{"claim": "tr-054", "say": "new builds average {display} of floor", "range": false, "modeled": true}],
+    "unit": [{"claim": "tr-055", "say": "{display}, one campus", "range": false, "modeled": true}],
+    "open": "Land per MW"
+   }
+  },
+  {
+   "id": "heat",
+   "label": "Heat",
+   "cells": {
+    "national": [{"claim": "tr-053", "say": "+{display} land surface around AI sites, preprint", "modeled": true}],
+    "unit": [{"claim": "tr-061", "say": "reuse potential {display}, vendor model", "modeled": true}],
+    "open": "Air temperature"
+   }
+  },
+  {
+   "id": "materials",
+   "label": "Materials",
+   "cells": {
+    "national": [{"claim": "tr-056", "say": "{display} of copper by 2028", "modeled": true}],
+    "unit": [
+     {"claim": "tr-032", "say": "{display} per wafer layer, TSMC"},
+     {"claim": "tr-057", "say": "{display} of e-waste by 2030"}
+    ],
+    "open": "Embodied impacts upstream"
+   }
+  }
+ ]
+}

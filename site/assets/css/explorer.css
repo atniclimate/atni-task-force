@@ -1,0 +1,306 @@
+/* Resource Use Explorer: the Wall, the waffles, the place strip, the measures row, the Settings drawer, and the disclaimer band. Loads after site.css.
+   Radius 0, no shadows, luminance only; the focus ring is inherited. One blue family right of the wall, greys left of it, orange only on the selected row.
+   Inks were run through validate_palette.js --ordinal on both raised surfaces (work/site-refresh/evidence/palette-explorer.txt). */
+:root, [data-theme="dark"] { --w-dc: var(--atni-color-chart-1); --w-net: var(--stage-1); --w-rou: var(--series-context); --w-dev: #4F545D; }
+[data-theme="light"] { --w-dev: #AEB4BE; }
+@media (prefers-color-scheme: light) { [data-theme="auto"] { --w-dev: #AEB4BE; } }
+@media print { :root, [data-theme] { --w-dev: #AEB4BE; } }
+
+/* The band: the h1 over one line of lead, and three figures, in a strip about as tall as the type allows. */
+.x-hero { padding-block: 12px; }
+.x-hero h1 { margin: 0; white-space: nowrap; }
+.x-hero .lead { margin: 0; max-width: none; font-size: 1.25rem; line-height: 1.3; }
+.x-hero-grid { display: grid; gap: 2px 24px; align-items: center; }
+.x-facts ul { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+.x-facts li { display: grid; gap: 0; margin: 0; }
+.x-facts strong { font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.1; color: var(--atni-text-heading); white-space: nowrap; }
+.x-fact-unit { font-size: 0.875rem; }
+.x-facts li > span { max-width: 10.5rem; font-size: 0.75rem; line-height: 1.25; color: var(--atni-text-secondary); }
+@media (min-width: 1100px) {
+  .x-hero-grid { grid-template-columns: minmax(0, 1fr) auto; }
+  .x-hero h1, .x-hero .lead { grid-column: 1; }
+  .x-facts { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+/* The disclaimer band: on every tab, never dismissed. */
+.x-settings-button { flex: none; min-height: 44px; padding: 8px 16px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; color: var(--atni-text-heading); background: none; border: 1px solid var(--control); border-radius: 0; cursor: pointer; }
+.x-settings-button:hover { background: var(--tag-bg); }
+/* A phone gets its first screen back and no more work than that. */
+@media (max-width: 699px) {
+  .x-facts ul { flex-wrap: nowrap; gap: 12px; }
+  .x-facts li { flex: 1 1 0; min-width: 0; }
+  .x-facts strong { font-size: 1rem; }
+  .x-fact-unit { font-size: 0.75rem; }
+  .section-strip > .wrap { flex-wrap: nowrap; align-items: center; gap: 8px; }
+  .x-settings-button { min-height: 32px; padding: 4px 8px; font-size: 0.8125rem; }
+}
+.x-band { display: block; max-width: none; margin: 0; background: var(--atni-ground-raised); border-bottom: 1px solid var(--rule); font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-body); }
+.x-band .wrap { display: block; padding-block: 9px; }
+main .x-band a { color: var(--atni-text-heading); }
+.x-hero + .section-strip { border-top: 1px solid var(--rule); }
+
+/* The plate: the plot takes what the claim and the detail leave. */
+.x-plate { --l: clamp(9rem, 24%, 14rem); --v: clamp(7rem, 19%, 10.5rem); }
+@media (min-width: 1100px) {
+  .x-plate { grid-template-columns: minmax(17rem, 19fr) minmax(0, 54fr) minmax(22rem, 27fr); }
+  .x-plate[data-view="table"] { grid-template-columns: minmax(17rem, 18fr) minmax(0, 30fr) minmax(24rem, 52fr); }
+  .x-plate.is-live > .plate-plot { padding-right: 2px; }
+}
+.x-plate .plate-title { font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.375rem); }
+.x-plate .plate-claim > p:not(.caption, .x-banner) { font-size: 1rem; line-height: 1.45; color: var(--atni-text-body); }
+.x-plate .plate-controls { gap: 6px; }
+/* The readout, the same on every tab: the figure and its unit on one line, what it counts under them. */
+.x-plate .readout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 0.15em; }
+.x-plate .readout-value { display: inline; }
+.x-unit { font-size: 1.75rem; line-height: 1.1; letter-spacing: -0.01em; }
+.x-unit:empty { display: none; }
+.x-plate .readout-unit { flex-basis: 100%; }
+/* The disclosures under a plate: heading ink, so the only orange is the marker and the plot's selection. */
+main .disclosure-grid { gap: 12px 32px; }
+main .disclosure-grid > .disclosure { margin: 0; }
+main .disclosure > summary { font-size: 0.9375rem; color: var(--atni-text-heading); }
+main .disclosure > summary:hover { color: var(--atni-text-link-hover); }
+main .disclosure > summary::marker { color: var(--energy-mark); }
+.x-plate .segmented legend { margin-bottom: 0; }
+.x-banner { padding: 6px 10px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-heading); background: var(--tag-bg); }
+
+/* Fields: forty-four tall, in two columns inside the claim zone. */
+.x-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: 8px 12px; }
+.x-field { display: grid; gap: 2px; align-content: start; }
+.x-field label { font-family: var(--display); font-weight: 500; font-size: 0.8125rem; line-height: 1.2; color: var(--atni-text-secondary); }
+.x-field input, .x-field select { width: 100%; min-height: 44px; padding: 8px; font-family: var(--body); font-size: 1rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 1px solid var(--control); border-radius: 0; }
+.x-field input[aria-invalid="true"] { border-color: var(--energy-mark); border-width: 2px; }
+.x-field .caption { font-size: 0.75rem; color: var(--atni-text-muted); }
+.x-why, .x-start { margin: 0; }
+.x-why { min-height: 3.2em; color: var(--atni-text-body); }
+
+/* The Wall: one track per row, a 2px rule at --wall, the reader's side left of it, beyond it right. Rows share the zone's height, so the rule runs unbroken from the head to the axis. */
+.wall { --row: 44px; --bar: 24px; container-type: inline-size; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.wall-head { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; max-width: none; margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; line-height: 1.2; color: var(--atni-text-secondary); }
+.wall-sides { position: relative; display: block; min-height: 1.9em; }
+.wall-sides::before { content: ""; position: absolute; left: calc(var(--wall) * 100% - 1px); top: 0; bottom: 0; width: 2px; background: var(--baseline); }
+.wall.is-plain .wall-sides::before { width: 1px; }
+/* The two words hang off the rule on one line; a narrow left side runs over the head's empty label cell rather than wrapping. */
+.wall-sides > span { position: absolute; bottom: 4px; white-space: nowrap; }
+.wall-sides > span:first-child { right: calc((1 - var(--wall)) * 100% + 8px); text-align: right; }
+.wall-sides > span:last-child { left: calc(var(--wall) * 100% + 8px); }
+.wall.is-plain .wall-sides { min-height: 2.9em; }
+.wall.is-plain .wall-sides > span { max-width: calc(100% - 8px); white-space: normal; }
+.wall-rows { flex: 1 1 auto; display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.wall-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; flex: 1 0 var(--row); margin: 0; cursor: pointer; }
+[data-board^="where."] { --row: 56px; --bar: 32px; }
+[data-board="arch.A"], [data-board="arch.B"], [data-board="arch.C"] { --row: 48px; --bar: 32px; }
+.wall-row .ladder-label { font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-heading); }
+.wall-row .ladder-value { font-family: var(--body); font-size: 0.8125rem; line-height: 1.25; font-variant-numeric: tabular-nums; text-align: right; }
+.wall-row .ladder-value:has(> .ladder-num) { justify-content: flex-end; }
+.wall-row .ladder-num { font-weight: 700; }
+.wall-row .ladder-value > .ladder-tag { font-size: 0.75rem; }
+.wall-track { position: relative; align-self: stretch; min-height: 44px; }
+.wall-track::before { content: ""; position: absolute; left: calc(var(--wall) * 100% - 1px); top: 0; bottom: 0; width: 2px; background: var(--baseline); }
+.wall.is-plain .wall-track::before { width: 1px; background: var(--baseline); }
+.w { position: absolute; top: calc(50% - var(--bar) / 2); height: var(--bar); min-width: 3px; background-clip: padding-box; border-inline: 1px solid transparent; transition: left 160ms ease-out, width 160ms ease-out; }
+.w-dev, .w-key-dev { background-color: var(--w-dev); }
+.w-rou, .w-key-rou { background-color: var(--w-rou); }
+.w-net, .w-key-net { background-color: var(--w-net); }
+.w-dc, .w-key-dc { background-color: var(--w-dc); }
+.plate-square.w-key-dev, .plate-square.w-key-rou, .plate-square.w-key-net, .plate-square.w-key-dc { box-sizing: border-box; width: 12px; height: 12px; }
+.plate-square.w-key-dev { border: 1px solid var(--series-context); }
+.plate-square.is-hollow { background: none; border: 1.5px solid var(--series-context); }
+.is-beside .w { background: none; border: 1.5px solid var(--w-dc); }
+.wall-range { position: absolute; top: calc(50% + var(--bar) / 2 + 1px); height: 6px; border-inline: 1.5px solid var(--series-context); background: linear-gradient(var(--series-context), var(--series-context)) center / 100% 1.5px no-repeat; }
+.wall-range.is-off { border-right: 0; }
+.wall-range.is-off-left { border-left: 0; }
+.wall-needle { display: none; position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--energy-mark); pointer-events: none; }
+.wall-row.is-on .wall-needle { display: block; }
+/* The selection washes behind the range line, 8px tall and no more; a taller wash would read as a bar. */
+.wall-row.is-on .wall-range { top: calc(50% + var(--bar) / 2); height: 8px; border-color: var(--energy-fill); background-color: var(--energy-wash); background-image: linear-gradient(var(--energy-fill), var(--energy-fill)); }
+.wall[data-measure="usd"] { --v: min(60%, 28rem); } /* no bars to draw, so the bases get the room */
+.wall[data-measure="usd"] .wall-row.is-on { background: var(--energy-wash); }
+.wall-row.is-beside .ladder-value > .ladder-tag { color: var(--atni-text-body); }
+.wall[data-measure="usd"] .wall-track::before, .wall[data-measure="usd"] .wall-sides::before { opacity: 0.25; }
+.wall[data-measure="usd"] .wall-axis { display: none; }
+.wall-group, .x-ruler .wall-group { grid-column: 1 / -1; align-self: end; margin: 8px 0 0; padding: 4px 0; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); list-style: none; }
+.wall-rows > .wall-group { align-self: stretch; }
+.wall-axis { position: relative; flex: none; height: 22px; margin-inline: calc(var(--l) + 12px) calc(var(--v) + 12px); font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.wall-axis::before { content: ""; position: absolute; left: calc(var(--wall) * 100% - 1px); top: 0; height: 8px; width: 2px; background: var(--baseline); } /* the wall is the zero; the same scale runs out both ways */
+.wall.is-plain .wall-axis::before { width: 1px; }
+.wall-axis span { position: absolute; left: calc(var(--x) * 100%); top: 4px; transform: translateX(-50%); white-space: nowrap; }
+@container (max-width: 34rem) { .wall-axis span:not(:last-child) { display: none; } } /* beside a table or the drawer, the far tick alone: ticks would run together */
+.wall-gridnote { margin: 6px 0 0; max-width: none; color: var(--atni-text-body); }
+.wall-key { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 0.8125rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.wall-key li { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.wall-key-range { position: relative; width: 16px; height: 1.5px; background: var(--series-context); }
+.wall-key-range::before, .wall-key-range::after { content: ""; position: absolute; top: -2.25px; width: 1.5px; height: 6px; background: var(--series-context); }
+.wall-key-range::before { left: 0; }
+.wall-key-range::after { right: 0; }
+.x-plot > [data-group] { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.x-plot .ladder-group-label { margin: 0 0 4px; }
+html:not(.x-live) .x-plot > [data-group="scale:unit"] { margin-top: 24px; } /* one view at a time with scripts, the two stacked without */
+.x-ruler { flex: 1 1 auto; }
+.x-ruler .ladder-rows { grid-auto-rows: minmax(44px, auto); margin-bottom: 24px; }
+.x-ruler .ladder-axis span { white-space: nowrap; }
+.x-plate[data-plate-x="cross"] .ladder-rows { grid-auto-rows: minmax(48px, auto); }
+.x-ruler[data-measure="usd"] .ladder-axis, .x-ruler[data-measure="usd"] .ladder-grid { display: none; }
+.x-ruler[data-board="lever"] .ladder-rows { margin-bottom: 0; }
+[data-board="lever"], [data-board^="cross."] { --v: clamp(10rem, 27%, 14rem); } /* a count or a ratio with its words: two lines a row, not four */
+/* A ruler's selection washes its range line, as the Wall's does. */
+.x-ruler .ladder-row.is-on .ladder-track { background-size: 100% 8px; }
+/* Levers: from the hollow square before to the filled square after, so the line runs left for a saving and right for a cost. */
+.x-lever .ladder-mark.is-b { box-sizing: border-box; width: calc(var(--mark) + 4px); height: calc(var(--mark) + 4px); background: var(--atni-ground-raised); border-color: var(--series-context); }
+.x-lever.is-on .ladder-mark.is-b { border-color: var(--energy-fill); }
+.x-lever .ladder-track::before { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 0.5px); height: 1px; background: var(--grid); }
+.x-lever .ladder-track::after { content: ""; position: absolute; left: calc(min(var(--x), var(--x2)) * 100%); width: calc((max(var(--x), var(--x2)) - min(var(--x), var(--x2))) * 100%); top: calc(50% - 1px); height: 2px; background: var(--series-context); }
+.x-lever.is-on .ladder-track::after { background: var(--energy-fill); }
+/* A crossover that may never come: the high end stays open, the line fades, and the words stand where the end tick would. */
+.x-ruler .ladder-row.is-or-never .ladder-range { background: linear-gradient(to right, var(--series-context) 60%, transparent); }
+.x-ruler .ladder-row.is-or-never.is-on .ladder-range { background: linear-gradient(to right, var(--energy-fill) 60%, transparent); }
+.x-ruler .ladder-row.is-or-never .ladder-range::after { display: none; }
+.x-or-never { position: absolute; z-index: 2; left: min(calc(var(--hi, var(--x)) * 100% + 6px), calc(100% - 3.25rem)); top: 50%; transform: translateY(-50%); font-style: normal; font-size: 0.8125rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-body); }
+.x-ruler .ladder-value { font-size: 0.8125rem; }
+.x-ruler .ladder-num { font-family: var(--display); font-weight: 600; font-size: 1rem; }
+.x-ruler .ladder-row .ladder-label { font-size: 0.8125rem; color: var(--atni-text-secondary); }
+.x-ruler .ladder-row.is-on .ladder-label { color: var(--atni-text-heading); }
+
+/* The detail zone: the energy large, then three figures, each with its basis under it. */
+.x-measures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; align-items: start; }
+.x-figure { display: grid; gap: 2px; align-content: start; }
+.x-big { font-family: var(--display); font-weight: 600; font-size: clamp(1.25rem, 0.6rem + 0.9vw, 1.75rem); line-height: 1.05; letter-spacing: -0.015em; color: var(--atni-text-heading); overflow-wrap: anywhere; }
+.x-big > span { white-space: nowrap; }
+.x-big-unit { font-size: 0.875rem; letter-spacing: 0; }
+.x-water { display: grid; gap: 8px; }
+.x-layers li { grid-template-columns: 14px minmax(4.5rem, max-content) minmax(0, 1fr); }
+.x-tokens { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.x-lines { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+.x-lines li { margin: 0; }
+.x-week { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.x-week-line { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; max-width: none; }
+.x-week-line strong { flex: none; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; color: var(--atni-text-heading); font-variant-numeric: tabular-nums; }
+.x-check { color: var(--atni-text-secondary); }
+.x-check.is-warn { padding: 8px; font-weight: 700; color: var(--energy-on-fill); background: var(--energy-fill); }
+.x-note-slot, .x-note { display: grid; gap: 6px; font-size: 0.8125rem; line-height: 1.45; color: var(--atni-text-secondary); }
+.x-note-slot p, .x-note p { margin: 0; max-width: none; }
+.x-note-title { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-heading); }
+.disclosure:has(> .x-notes)[open] { grid-column: 1 / -1; }
+.disclosure > .x-notes { max-width: none; }
+.x-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 16px 24px; }
+.x-notes > .x-note { padding-top: 8px; border-top: 1px solid var(--rule); }
+a.receipt { text-decoration: none; }
+.plate a.receipt:not(.button) { color: var(--atni-text-heading); }
+a.x-c { white-space: nowrap; }
+.x-arch-words { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.x-arch-words .label { margin: 4px 0 0; color: var(--atni-text-heading); }
+.x-pairs, .x-readings { display: grid; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.8125rem; line-height: 1.4; }
+.x-pairs li, .x-readings li { margin: 0; }
+.x-chip { display: inline-block; padding: 1px 6px; font-size: 0.75rem; color: var(--atni-text-heading); background: var(--tag-bg); }
+.x-named { display: grid; gap: 6px; margin: 8px 0; padding-left: 1rem; font-size: 0.875rem; line-height: 1.4; }
+.x-named li { margin: 0; }
+.x-text-table td { text-align: left; }
+.plate-table { min-width: 34rem; }
+.plate-table td { text-align: left; }
+.x-disclaimer { padding: 12px; color: var(--atni-text-heading); background: var(--atni-ground-raised); }
+
+/* AI Is Not the Building: two pictures side by side. */
+.x-pictures { display: grid; gap: 24px; align-content: start; }
+.x-picture h4 { margin: 0 0 8px; }
+.x-picture > .caption { max-width: none; }
+.x-waffle figure { display: grid; gap: 12px; margin: 0; }
+.x-waffle-art svg { display: block; width: var(--waffle); max-width: 100%; height: auto; }
+.x-w-ai { fill: var(--w-dc); }
+.x-d-ai, .x-d-rest, .x-d-range { fill: none; stroke-width: 12; stroke-dasharray: 12 2; }
+.x-d-ai { stroke: var(--w-dc); }
+.x-d-rest { stroke: var(--series-context); stroke-opacity: 0.55; }
+.x-d-range { stroke: var(--w-dc); stroke-opacity: 0.45; }
+.x-waffle figcaption { display: grid; gap: 4px; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.x-waffle figcaption strong { font-family: var(--display); font-weight: 600; font-size: 1.125rem; color: var(--atni-text-heading); }
+.x-places { display: grid; grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr)); gap: 12px; margin: 8px 0; padding: 0; list-style: none; }
+.x-place { display: grid; grid-template-rows: 2.4em auto auto 1fr; gap: 6px; align-content: start; margin: 0; font-size: 0.8125rem; line-height: 1.35; }
+.x-place strong { font-family: var(--display); font-weight: 500; line-height: 1.2; color: var(--atni-text-heading); }
+.x-place-art { display: flex; align-items: flex-start; min-height: 64px; }
+.x-place-art svg { max-width: 100%; height: auto; }
+.x-place-wh { font-family: var(--display); font-weight: 600; font-size: 1.125rem; color: var(--atni-text-heading); }
+.x-place.is-device .x-w-ai { fill: var(--w-rou); }
+.x-building { --waffle: min(32vh, 360px); }
+.x-building .plate-detail > [data-group] { display: grid; gap: 12px; }
+@media (min-width: 1100px) {
+  .x-pictures { grid-template-columns: var(--waffle) minmax(0, 1fr); }
+  .x-plate.x-building { grid-template-columns: minmax(14rem, 15fr) minmax(0, 66fr) minmax(16rem, 19fr); }
+  .x-plate.x-building.is-live { height: auto; } /* two pictures with no rows to stretch: the plate ends with them, and the open disclosure rises under it */
+}
+
+/* Project Scale */
+.x-project-plot { justify-content: start; gap: 12px; }
+.x-project-plot p { max-width: var(--measure-wide); margin: 0; }
+.x-project-hint { color: var(--atni-text-body); }
+.x-formula { font-size: 0.875rem; line-height: 1.45; color: var(--atni-text-secondary); }
+.x-project-form { gap: 10px; }
+.x-outputs { flex: none; grid-auto-rows: minmax(64px, auto); margin: 0; }
+.x-outputs .instrument-row { grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); cursor: default; }
+.x-outputs .ladder-value { font-family: var(--display); font-weight: 600; font-size: clamp(1.25rem, 1rem + 0.8vw, 2rem); }
+.slider-presets-button { min-height: 32px; margin: 4px 4px 0 0; padding: 4px 8px; font-family: var(--body); font-size: 0.8125rem; color: var(--atni-text-heading); background: var(--tag-bg); border: 0; border-radius: 0; cursor: pointer; }
+
+/* Method: two text columns over the back-test, which takes the whole width so its table reads across. */
+.x-method { display: grid; gap: 24px 32px; align-items: start; }
+.x-method-col { display: grid; gap: 10px; min-width: 0; font-size: 0.9375rem; }
+.x-method-col h3 { margin: 12px 0 0; }
+.x-method-col h3:first-child { margin-top: 0; }
+.x-method-col ul { margin: 0; }
+.x-method-col p { margin: 0; }
+.x-method-col > :is(p, ul) { max-width: 44rem; }
+.x-backtest { display: block; grid-column: 1 / -1; margin: 0; }
+.x-backtest .plate-title { margin-bottom: 12px; }
+.x-backtest table { min-width: 60rem; }
+@media (min-width: 1100px) { .x-method { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.x-sources { margin-top: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 16px 24px; }
+.x-sources li, .plate-sources li { display: grid; gap: 2px; }
+.x-all-sources > :not(summary) { max-width: none; }
+q.plate-quote { display: block; quotes: none; }
+.x-settings-now { display: none; columns: 2; margin: 0 0 12px; font-size: 0.8125rem; }
+html:not(.x-live) .x-settings-now { display: block; }
+
+/* The Settings drawer: beside the plate, under the band, with the plate compressed rather than covered, so a reader sees the Wall and the readout move. */
+.x-drawer { display: grid; gap: 10px; padding: 16px; background: var(--atni-ground-overlay); align-content: start; }
+.x-drawer h3 { margin: 10px 0 0; font-size: 1rem; }
+.x-drawer-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.x-drawer-head .label { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.x-drawer .segmented { gap: 0 12px; }
+.x-drawer .segmented label { min-height: 44px; }
+.x-drawer .segmented legend { color: var(--atni-text-heading); }
+.x-why-line { flex-basis: 100%; margin: 2px 0 6px; }
+.x-live .x-drawer fieldset:not(:focus-within) .x-why-line { display: none; }
+html:not(.x-live) .x-drawer { margin: 24px var(--gutter) 0; }
+.x-live .x-drawer { position: fixed; z-index: 5; top: 0; right: 0; bottom: 0; width: min(22rem, 100vw); overflow-y: auto; overscroll-behavior: contain; border-left: 1px solid var(--rule); }
+@media screen and (min-width: 1100px) {
+  .x-live .x-drawer { top: var(--drawer-top, 64px); }
+  .has-drawer main > .panel > .wrap { padding-right: calc(22rem + 16px); }
+  .has-drawer .x-plate.plate-fit, .has-drawer .x-plate.plate-fit[data-view="table"] { --l: clamp(6.5rem, 22%, 14rem); --v: clamp(6rem, 19%, 10.5rem); grid-template-columns: minmax(15rem, 19fr) minmax(0, 54fr) minmax(16rem, 20fr); }
+}
+[data-theme="light"] .x-drawer { background: #EEF1F6; }
+@media (prefers-color-scheme: light) { [data-theme="auto"] .x-drawer { background: #EEF1F6; } }
+
+@media (forced-colors: active) { .w, .wall-range, .wall-needle, .plate-square, .x-chip, .wall-track::before, .wall-sides::before, .wall-axis::before, .x-ruler .ladder-range, .x-ruler .ladder-mark, .x-lever .ladder-track::after { forced-color-adjust: none; } }
+.wall[data-measure="usd"] .wall-needle { display: none; }
+@media (max-width: 719px) {
+  .wall-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "track track"; }
+  .wall-row .ladder-label { grid-area: label; }
+  .wall-row .ladder-value { grid-area: value; text-align: right; }
+  .wall-track { grid-area: track; }
+  .wall-head, .wall-axis { display: none; }
+}
+
+/* Reduced motion: site.css takes every transition to zero. Print: every panel, comparison, and view, then the settings shown. */
+@media print {
+  .x-settings-button, .x-drawer, .x-why, .plate-actions { display: none !important; }
+  html:not(.x-live) .x-drawer { display: grid !important; }
+  .x-live .x-settings-now { display: block; }
+  [data-group][hidden] { display: block !important; }
+  tbody[data-group][hidden] { display: table-row-group !important; }
+  .x-plot > [data-group="scale:unit"] { margin-top: 18pt; }
+  .x-plate { display: block; height: auto; }
+  .x-plate.is-live { height: auto; }
+  .plate-detail { margin-top: 12pt; }
+  .x-hero-grid { display: block; }
+  .x-note-slot { display: none; }
+  .w, .wall-track::before, .wall-range, .x-w-ai { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .x-notes .plate-chips { display: flex !important; }
+  .x-notes .receipt { display: inline-flex !important; }
+}

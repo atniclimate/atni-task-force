@@ -1,0 +1,79 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-pnw-load",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "The Council region",
+ "title": "The Council's workbook puts data center and chip fab load at {c[dem-073][value]:,.0f} average megawatts in 2030 ({c[dem-073][low]:,.0f} low, {c[dem-073][high]:,.0f} high) in a region that uses {c[dem-058][value]:,.0f} today",
+ "subtitle": "Average megawatts (aMW). Hollow marks a workbook input, not a measurement.",
+ "text": [
+  "The Data Center Task Force exists because the largest new electricity load in a generation is arriving in the Council's four-state region, and member Tribes are being asked to host it, supply it, or live beside it.",
+  "ATNI takes no position for or against. This page gathers what is measured, what is modeled, and the questions a Tribal government can put to a developer."
+ ],
+ "inputs": {
+  "region": {"claim": "dem-058"}
+ },
+ "fields": {
+  "share": {"formula": "value / region * 100", "digits": 2}
+ },
+ "plot": {
+  "type": "lines",
+  "projected_from": 2026,
+  "highlight": "Data centers and chip fabs",
+  "band": {"across": "range"},
+  "band_label": "Low to high input"
+ },
+ "default": "2030",
+ "boundary": "A power region, not a watershed: Oregon, Idaho, Washington, and Western Montana.",
+ "reading": "{year}: the Council's {series} input is {display}, about {share} percent of today's {region} aMW.",
+ "tail": "Northwest Power and Conservation Council, Ninth Plan tech load workbook, 03/2025.",
+ "rows": [
+  {"series": "Data centers and chip fabs", "claim": "dem-076"},
+  {
+   "id": "2030",
+   "series": "Data centers and chip fabs",
+   "claim": "dem-073",
+   "also": [
+    {"claim": "dem-075", "label": "Data centers only, 2030, low to high"},
+    {"claim": "dem-070", "label": "E3 adequacy gap by 2030, without any new resource additions"}
+   ]
+  },
+  {
+   "id": "2046",
+   "series": "Data centers and chip fabs",
+   "claim": "dem-074",
+   "also": [
+    {"claim": "dem-092", "label": "The whole region in 2046, if the Council's growth range is added"},
+    {"claim": "dem-062", "label": "All-sector growth in the Mixed Bag future, 2025 to 2046"},
+    {"claim": "dem-063", "label": "Share of that growth from data centers"},
+    {"claim": "dem-068", "label": "PNUCC ten-year growth, all loads, to 2036"},
+    {"claim": "dem-069", "label": "BPA regional energy position, 2036"},
+    {"claim": "dem-059", "label": "The Council's spring 2025 initial forecast for 2046"},
+    {"claim": "dem-061", "label": "The Council's caveat on that forecast", "say": "it shows more use than will actually occur"}
+   ]
+  },
+  {"series": "Data centers only", "claim": "dem-075", "range": false}
+ ],
+ "also": [
+  {"claim": "dem-058", "label": "The region today"},
+  {"claim": "dem-071", "label": "All-sector growth across the Council's futures, 2025 to 2046"}
+ ],
+ "details": [
+  "The workbook's appendix calls this input incremental, but its 2024 row is not zero, so whether the series is a level or an increment is not stated. The values are read as printed."
+ ],
+ "foot": [
+  {"text": "This plate does not decide a proposal.", "href": "#questions", "link": "Questions for Tribal leaders"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Series", "field": "series"},
+   {"label": "Year", "field": "year"},
+   {"label": "Mid", "field": "value"},
+   {"label": "Low", "field": "low"},
+   {"label": "High", "field": "high"},
+   {"label": "Share of today's region, percent", "field": "share"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

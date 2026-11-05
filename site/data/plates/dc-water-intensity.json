@@ -1,0 +1,57 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-water-intensity",
+ "page": "data-centers/index.html",
+ "model": "comparison-model",
+ "eyebrow": "Water per kWh",
+ "title": "On a consumption basis, operators report {c[tr-028][value]} to {google_wue} liters per kWh; withdrawal figures sit on their own ruler because they count different water",
+ "subtitle": "Liters per kWh on two rulers. A filled square is company-reported; a hollow square is modeled.",
+ "inputs": {
+  "google_wue": {"model": "inputs.water_carbon.google_fleet_wue_l_per_kwh.value"},
+  "lbnl_low": {"claim": "tr-009", "field": "low"},
+  "lbnl_high": {"claim": "tr-009", "field": "high"}
+ },
+ "plot": {
+  "type": "ladder",
+  "units": {"L/kWh (withdrawal basis)": "L per kWh", "L/kWh": "L per kWh"},
+  "groups": [
+   {"id": "use", "label": "Consumption basis: water used up, per kWh", "domain": [0, 1.5]},
+   {"id": "draw", "label": "Withdrawal basis: water drawn, per IT kWh", "domain": [0, 1.5]}
+  ]
+ },
+ "default": "microsoft",
+ "reading": "{label}: {display}. {evidence} {year}.",
+ "rows": [
+  {"id": "microsoft", "group": "use", "label": "Microsoft, owned datacenters, cooling and humidification", "claim": "tr-028"},
+  {"id": "lbnl-plateau", "group": "use", "label": "LBNL, all US data centers, 2014 to 2023 plateau", "claim": "tr-009", "range": false, "modeled": true},
+  {"id": "lbnl-after", "group": "use", "label": "LBNL, all US data centers, after 2023", "unit": "L per kWh", "digits": 2, "formula": {"low": "lbnl_low", "high": "lbnl_high"}, "modeled": true},
+  {"id": "google", "group": "use", "label": "Google, fleet figure for 2023 and 2024", "unit": "L per kWh", "digits": 3, "formula": {"value": "google_wue"}, "cites": ["fp-006"], "modeled": false},
+  {"id": "meta", "group": "draw", "label": "Meta, data centers", "claim": "tr-025"},
+  {"id": "amazon", "group": "draw", "label": "Amazon, data centers", "claim": "rs-052"}
+ ],
+ "also": [
+  {"claim": "tr-011", "label": "Daily withdrawal across a worldwide sample of facilities"},
+  {"claim": "tr-014", "label": "Median large facility, daily"},
+  {"claim": "tr-012", "label": "Share of withdrawn water consumed, median"},
+  {"claim": "tr-015", "label": "Potable share of withdrawn water"},
+  {"claim": "tr-013", "label": "Indirect water against direct use"},
+  {"claim": "tr-020", "label": "IEA: share of data center water from electricity supply"},
+  {"claim": "tr-021", "label": "IEA: AI capacity in high water stress areas"}
+ ],
+ "details": [
+  "A fleet average cannot describe a stream in a low-flow August."
+ ],
+ "foot": [
+  {"text": "The questions that a fleet average cannot answer are on the Questions tab.", "href": "#q-water", "link": "Water checklist"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Row", "field": "label"},
+   {"label": "L per kWh", "field": "display"},
+   {"label": "Year", "field": "year"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

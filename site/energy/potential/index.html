@@ -7,7 +7,7 @@
   <meta name="description" content="A machine-assisted reading of the public planning documents of ATNI-listed Tribes: which energy types each Tribe's own plans show, at what stage, with quoted source text and page links. Each Tribe is the authority on its own plans.">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#010B13">
-  <link rel="icon" href="data:,">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/site.css">
@@ -18,15 +18,23 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="wordmark" href="../../"><span class="wordmark-org">ATNI</span><span class="wordmark-name">Energy Task Forces</span></a>
+      <a class="wordmark" href="../../" aria-label="ATNI Energy Task Forces, home"><img class="lockup lockup-on-dark" src="../../assets/img/atni-energy-header-on-dark.svg" alt=""><img class="lockup lockup-on-light" src="../../assets/img/atni-energy-header.svg" alt=""></a>
       <nav class="site-nav" aria-label="Main">
         <ul>
           <li><a href="../../energy/" aria-current="true">Energy</a></li>
           <li><a href="../../data-centers/">Data Centers</a></li>
           <li><a href="../../ai/">AI</a></li>
+          <li><a href="../../explorer/">Explorer</a></li>
           <li><a href="../../summit/">Summit</a></li>
           <li><a href="../../library/">Library</a></li>
           <li><a href="../../about/">About</a></li>
+        </ul>
+      </nav>
+      <nav class="subnav" aria-label="Tribal Energy Feasibility pages">
+        <ul>
+          <li><a href="../">Overview</a></li>
+          <li><a href="./" aria-current="page">What Tribal Plans Say</a></li>
+          <li><a href="../funding/">Funding</a></li>
         </ul>
       </nav>
       <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
@@ -34,16 +42,6 @@
   </header>
 
   <main id="main">
-    <nav class="subnav" aria-label="Tribal Energy Feasibility pages">
-      <div class="wrap">
-        <ul>
-          <li><a href="../">Overview</a></li>
-          <li><a href="./" aria-current="page">What Tribal Plans Say</a></li>
-          <li><a href="../funding/">Funding</a></li>
-        </ul>
-      </div>
-    </nav>
-
     <header class="page-hero">
       <div class="wrap page-hero-grid">
         <div>
@@ -79,18 +77,36 @@
         <section class="prose" aria-labelledby="read-first">
           <h2 id="read-first">Read This First</h2>
           <p class="notice"><strong>This is a machine-assisted reading of public plans.</strong> It is not a Tribe’s own assessment, it endorses no project, and it ranks no Tribe against another. Each Tribe is the authority on its own plans and can ask ATNI to correct or remove its entry.</p>
-          <h3>How It Was Made</h3>
+          <div class="disclosure-grid rail-details">
+          <details class="disclosure">
+            <summary><h3>How It Was Made</h3><span>The public planning documents in ATNI’s plan library were searched page by page for 13 energy types, and the passages were read by a typed-judgment model.</span></summary>
+            <div class="rail-body">
           <p>For each listed Tribe, the public planning documents in ATNI’s plan library were searched page by page for 13 energy types, from solar, wind, hydropower, geothermal, and biomass to battery storage, microgrids, efficiency, and electrification. Passages around each match were read by a typed-judgment model (TypeSafe Jev), which answered three questions: does the passage describe the Tribe’s own energy work, how far has that work progressed, and was the option found unsuitable. Code ranked the types by the most advanced stage found, a second pass checked each ranked finding against its cited excerpts, and 15 findings were read by hand against their cited pages. The full method, with every threshold and the checks that changed the design, is published in the <a href="https://github.com/atniclimate/atni-task-force/blob/main/docs/ENERGY-POTENTIAL.md">method note</a>.</p>
-          <h3>How to Read It</h3>
+            </div>
+          </details>
+          <details class="disclosure">
+            <summary><h3>How to Read It</h3><span>Each Tribe’s entry lists up to five energy types, each with a stage, the documents that support it, and short verbatim excerpts with page links.</span></summary>
+            <div class="rail-body">
           <p>Each Tribe’s entry lists up to five energy types, each with a stage (installed or operating, planned or funded, assessed or sited, or goal or interest), the documents that support it, and short verbatim excerpts with page links. Open the cited page before relying on a finding. A stage describes what the document reports, not what exists today.</p>
           <ul class="lead-ins">
             <li><strong>Verified:</strong> the second pass found that the cited excerpts show the stage claimed.</li>
             <li><strong>Needs review:</strong> the second pass was uncertain. Read the cited page; the stage may be overstated.</li>
           </ul>
-          <h3>What It Is Not</h3>
+            </div>
+          </details>
+          <details class="disclosure">
+            <summary><h3>What It Is Not</h3><span>It is not a Tribe’s own assessment, it endorses no project, and it ranks no Tribe against another.</span></summary>
+            <div class="rail-body">
           <p>This is a machine-assisted reading of public documents. It is not a Tribe’s own assessment, it endorses no project, and it ranks no Tribe against another. Fossil fuel backup and transmission are not ranked. Offshore wind and marine energy appear in the search but had no ranked finding at the 10/29/2026 build; that reflects the documents in the library, not Tribal positions.</p>
-          <h3>Limits</h3>
+            </div>
+          </details>
+          <details class="disclosure">
+            <summary><h3>Limits</h3><span>The library holds what public discovery found and could download, so a Tribe’s newest plan may be missing.</span></summary>
+            <div class="rail-body">
           <p>The library holds what public discovery found and could download, so a Tribe’s newest plan may be missing, and some documents still await text extraction. Attribution of a shared plan to one Tribe can be wrong; one finding was withheld for that reason. Old plans are read as written, so the year matters. Twelve listed Tribes have no finding, in most cases because their documents in the library describe no energy work of their own. ATNI listing comes from a capture of ATNI’s directory page; it records a listing, not membership certification.</p>
+            </div>
+          </details>
+          </div>
         </section>
 
         <section class="prose" aria-labelledby="corrections">

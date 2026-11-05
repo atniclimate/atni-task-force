@@ -1,0 +1,36 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-iea-world",
+ "page": "data-centers/index.html",
+ "eyebrow": "The world",
+ "title": "The IEA counts {c[dem-040][value]} TWh for the world's data centers in 2025, up {c[dem-042][value]} percent, and about {c[dem-048][value]} by 2030 in its base case",
+ "subtitle": "TWh a year, all data centers worldwide. Dashed is a projection.",
+ "boundary": "All data centers worldwide.",
+ "plot": {
+  "type": "lines",
+  "projected_from": 2026
+ },
+ "default": "2025",
+ "reading": "{year}: {display} for the world's data centers.",
+ "tail": "IEA, global, 04/2026.",
+ "rows": [
+  {"series": "IEA", "claim": "dem-046"},
+  {"series": "IEA", "claim": "dem-040"},
+  {"series": "IEA", "claim": "dem-048"}
+ ],
+ "also": [
+  {"claim": "dem-041", "label": "The IEA's 2026 text for 2030"},
+  {"claim": "dem-043", "label": "Growth at AI-focused data centers, 2025"},
+  {"claim": "dem-047", "label": "United States share of the world's data center electricity, 2024"},
+  {"claim": "tr-035", "label": "CO2 from that electricity now; the IEA's central scenario reaches about 350 by 2035"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Year", "field": "year"},
+   {"label": "TWh", "field": "value"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

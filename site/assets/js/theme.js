@@ -14,6 +14,18 @@
   var saved = read();
   if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
 
+  // A deep link into a closed disclosure opens it, and every disclosure around it.
+  function reveal() {
+    var target = document.getElementById(location.hash.slice(1));
+    var opened = false;
+    for (var box = target && target.closest('details'); box; box = box.parentElement.closest('details')) {
+      if (!box.open) { box.open = true; opened = true; }
+    }
+    if (opened) target.scrollIntoView();
+  }
+  window.addEventListener('hashchange', reveal);
+  document.addEventListener('DOMContentLoaded', reveal);
+
   document.addEventListener('DOMContentLoaded', function () {
     var button = document.querySelector('[data-theme-toggle]');
     if (!button) return;

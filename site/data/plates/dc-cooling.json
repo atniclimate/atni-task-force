@@ -1,0 +1,119 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-cooling",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "model": "comparison-model",
+ "eyebrow": "Cooling",
+ "title": "A {c_mw} MW site at the 2024 national PUE uses about {energy[text]} TWh a year; evaporative cooling at the operators' figures consumes about {spread_low} to {spread_high} million liters on site, and the power plants about {plant[text]} million more",
+ "details": ["The factors are national or fleet averages, so this illustrates a project and describes no stream."],
+ "inputs": {
+  "ms": {"claim": "tr-028"},
+  "lbnl": {"claim": "tr-009"},
+  "google": {"model": "inputs.water_carbon.google_fleet_wue_l_per_kwh.value"},
+  "gen": {"claim": "tr-005"},
+  "g_nat": {"claim": "tr-066"},
+  "g_hyp": {"claim": "tr-038"},
+  "kg_lbnl": {"claim": "tr-067"}
+ },
+ "plot": {
+  "type": "instrument"
+ },
+ "controls": [
+  {"type": "range", "name": "c_mw", "label": "IT load, MW", "min": 10, "max": 2000, "step": 5, "default": 100},
+  {"type": "range", "name": "c_lf", "label": "Load factor", "min": 0.5, "max": 1, "step": 0.05, "default": 0.8},
+  {"type": "range", "name": "c_pue", "label": "PUE, LBNL 2024: 1.45 all facilities, 1.145 AI-serving", "min": 1, "max": 2, "step": 0.005, "default": 1.45, "presets": [1.145, 1.45]},
+  {
+   "type": "segmented",
+   "name": "c_cool",
+   "label": "Cooling",
+   "default": "ms",
+   "options": [
+    {"value": "ms", "label": "Evaporative at Microsoft", "is": "ms"},
+    {"value": "lbnl", "label": "At LBNL", "is": "lbnl"},
+    {"value": "google", "label": "At Google", "is": "google"},
+    {"value": "dry", "label": "Closed loop or dry"}
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "c_grid",
+   "label": "Grid carbon",
+   "default": "national",
+   "options": [
+    {"value": "national", "label": "National average", "is": "g_nat"},
+    {"value": "hyperscale", "label": "Hyperscale-weighted", "is": "g_hyp"},
+    {"value": "lbnl", "label": "LBNL data center mix"},
+    {"value": "own", "label": "Reader's own", "is": "c_own"}
+   ]
+  },
+  {"type": "range", "name": "c_own", "label": "Reader's own grid, g CO2 per kWh", "min": 0, "max": 1000, "step": 10, "default": 370, "more": true}
+ ],
+ "more": "Reader's own grid",
+ "fields": {
+  "spread_low": {"formula": "c_mw * c_lf * 8.76 * ms", "digits": 2},
+  "spread_high": {"formula": "c_mw * c_lf * 8.76 * google", "digits": 2}
+ },
+ "reading": "{c_mw} MW at PUE {c_pue} and {c_lf} load factor: about {energy[text]} TWh a year; on-site water {site[display]} ({c_cool}); water at the power plants about {plant[display]} (2023 national grid); CO2 about {co2[display]} at {c_grid}. Modeled from the reader's inputs; sources checked 11/04/2026.",
+ "rows": [
+  {
+   "id": "energy",
+   "label": "Electricity",
+   "unit": "TWh a year",
+   "digits": 2,
+   "formula": {"value": "c_mw * c_lf * c_pue * 8.76 / 1000"},
+   "cites": ["tr-065"],
+   "equation": "TWh = MW x load factor x PUE x 8.76 / 1000",
+   "cols": {"factor": "MW x load factor x PUE x 8.76 / 1000"}
+  },
+  {
+   "id": "site",
+   "label": "Water here, on site",
+   "unit": "million liters",
+   "digits": 2,
+   "gap": "None on site; the energy penalty is not in the public record",
+   "formula": {"value": "c_mw * c_lf * 8.76 * c_cool"},
+   "cites": ["fp-006"],
+   "equation": "Site water = MW x load factor x 8.76 x L per kWh. The factor is per kWh of IT energy, so PUE does not multiply it.",
+   "detail": "Air-cooled chillers use no water; they use more energy. No source read here states that penalty as a number, so the closed-loop stop prints none and the electricity row does not move.",
+   "cols": {"factor": "IT energy x L per kWh: Microsoft 0.27, LBNL 0.36, Google 1.15"},
+   "segments": [
+    {"label": "Water here", "value": "c_mw * c_lf * 8.76 * ifblank(c_cool, 0)"},
+    {"label": "Water at the plant", "value": "energy * gen * 1000", "modeled": true}
+   ]
+  },
+  {
+   "id": "plant",
+   "label": "Water at the power plants",
+   "unit": "million liters",
+   "digits": 2,
+   "formula": {"value": "energy * gen * 1000"},
+   "equation": "Plant water = TWh x 4.52 L per kWh x 1000",
+   "detail": "A 2023 national average for the grid mix serving data centers; no Pacific Northwest factor is in the record.",
+   "cols": {"factor": "TWh x 4.52 L per kWh, 2023 national grid"},
+   "segments": [
+    {"label": "Water here", "value": "c_mw * c_lf * 8.76 * ifblank(c_cool, 0)"},
+    {"label": "Water at the plant", "value": "energy * gen * 1000", "modeled": true}
+   ]
+  },
+  {
+   "id": "co2",
+   "label": "CO2 from that electricity",
+   "unit": "Mt a year",
+   "digits": 2,
+   "formula": {"value": "energy * ifblank(c_grid / 1000, kg_lbnl)"},
+   "equation": "Mt = TWh x g per kWh / 1000, or TWh x kg per kWh",
+   "cols": {"factor": "TWh x the grid stop"}
+  }
+ ],
+ "cites": ["tr-010", "tr-019"],
+ "table": {
+  "columns": [
+   {"label": "Output", "field": "label"},
+   {"label": "Value", "field": "display"},
+   {"label": "Factor", "field": "factor"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

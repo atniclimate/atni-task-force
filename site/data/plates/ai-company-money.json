@@ -1,0 +1,365 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-company-money",
+ "fit": true,
+ "eyebrow": "Paying for it",
+ "gap": "not reported",
+ "title": "Capital spending has nearly caught operating cash flow at Amazon: {c[fin-003][series_fiscal_year_ends][7][usd_billion]:.0f} billion dollars against {c[fin-010][series_fiscal_year_ends][7][usd_billion]:.0f} in fiscal 2025",
+ "subtitle": "Billion dollars, by fiscal year, from SEC filings on a cash basis. Capital spending and operating cash flow share one scale.",
+ "text": [
+  "Seven large companies sit at the center of the buildout. Their filings show debt rising at Amazon, Alphabet, and Meta, and cash and securities falling at Microsoft and Apple; their own reports show electricity, water, and location-based emissions over the same years. Fiscal years differ (Microsoft June, Apple September, NVIDIA January), and every axis says so."
+ ],
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "company",
+   "label": "Company",
+   "default": "Amazon",
+   "options": [
+    {
+     "value": "Microsoft",
+     "label": "Microsoft"
+    },
+    {
+     "value": "Alphabet",
+     "label": "Alphabet"
+    },
+    {
+     "value": "Amazon",
+     "label": "Amazon"
+    },
+    {
+     "value": "Meta",
+     "label": "Meta"
+    },
+    {
+     "value": "Apple",
+     "label": "Apple"
+    },
+    {
+     "value": "NVIDIA",
+     "label": "NVIDIA"
+    },
+    {
+     "value": "Tesla",
+     "label": "Tesla"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "multiples",
+  "highlight_by": "company",
+  "units": {
+   "USD billion": "billion dollars"
+  },
+  "panels": [
+   {
+    "id": "capex",
+    "label": "Capital spending",
+    "domain": [
+     0,
+     200
+    ]
+   },
+   {
+    "id": "ocf",
+    "label": "Operating cash flow",
+    "domain": [
+     0,
+     200
+    ]
+   },
+   {
+    "id": "debt",
+    "label": "Long-term debt"
+   },
+   {
+    "id": "buy",
+    "label": "Buybacks"
+   },
+   {
+    "id": "rev",
+    "label": "Revenue"
+   },
+   {
+    "id": "cash",
+    "label": "Cash and securities"
+   }
+  ]
+ },
+ "reading_group": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, cash and securities {cash}, long-term debt {debt}, buybacks {buy}, revenue {rev}, in billion dollars.",
+ "reading_for": {
+  "Amazon": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, cash and securities {cash}, long-term debt {debt}, buybacks {buy}, revenue {rev}, in billion dollars. Amazon's own free cash flow measure is {c[fin-057][value]:.0f} billion dollars for the twelve months to 09/30/2026."
+ },
+ "tail": "SEC filings, cash basis.",
+ "details": [
+  "LongTermDebt includes the current portion at Microsoft and Amazon and is noncurrent at Alphabet and Meta. Each axis counts a fiscal year by the calendar year it ends in."
+ ],
+ "rows": [
+  {
+   "panel": "capex",
+   "series": "Microsoft",
+   "claim": "fin-001",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Alphabet",
+   "claim": "fin-002",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Amazon",
+   "claim": "fin-003",
+   "cites": [
+    "fin-057"
+   ],
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Meta",
+   "claim": "fin-004",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Apple",
+   "claim": "fin-005",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "NVIDIA",
+   "claim": "fin-006",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Tesla",
+   "claim": "fin-007",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Microsoft",
+   "claim": "fin-008",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Alphabet",
+   "claim": "fin-009",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Amazon",
+   "claim": "fin-010",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Meta",
+   "claim": "fin-011",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Apple",
+   "claim": "fin-012",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "NVIDIA",
+   "claim": "fin-013",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Tesla",
+   "claim": "fin-014",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Microsoft",
+   "claim": "fin-015",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Alphabet",
+   "claim": "fin-016",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Amazon",
+   "claim": "fin-017",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Meta",
+   "claim": "fin-018",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Apple",
+   "claim": "fin-019",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "NVIDIA",
+   "claim": "fin-020",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "debt",
+   "series": "Tesla",
+   "claim": "fin-021",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "Microsoft",
+   "claim": "fin-022",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "Alphabet",
+   "claim": "fin-023",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "Amazon",
+   "claim": "fin-024",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "Meta",
+   "claim": "fin-025",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "Apple",
+   "claim": "fin-026",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "buy",
+   "series": "NVIDIA",
+   "claim": "fin-027",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Microsoft",
+   "claim": "fin-028",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Alphabet",
+   "claim": "fin-029",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Amazon",
+   "claim": "fin-030",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Meta",
+   "claim": "fin-031",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Apple",
+   "claim": "fin-032",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "NVIDIA",
+   "claim": "fin-033",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "rev",
+   "series": "Tesla",
+   "claim": "fin-034",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Microsoft",
+   "claim": "fin-035",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Alphabet",
+   "claim": "fin-036",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Amazon",
+   "claim": "fin-037",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Meta",
+   "claim": "fin-038",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Apple",
+   "claim": "fin-039",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "NVIDIA",
+   "claim": "fin-040",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Tesla",
+   "claim": "fin-041",
+   "points": "series_fiscal_year_ends"
+  }
+ ],
+ "table": {
+  "by": [
+   "series",
+   "year",
+   "end"
+  ],
+  "across": "panel",
+  "labels": {
+   "series": "Company",
+   "year": "Fiscal year",
+   "end": "Year ends"
+  }
+ }
+}

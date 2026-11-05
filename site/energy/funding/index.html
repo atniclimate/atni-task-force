@@ -7,7 +7,7 @@
   <meta name="description" content="Federal and Bonneville Power Administration programs for Tribal energy work, each with its status, the date and source of the status check, live Grants.gov notices, and the programs matched to each Tribe's ranked energy types.">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#010B13">
-  <link rel="icon" href="data:,">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/site.css">
@@ -18,15 +18,23 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="wordmark" href="../../"><span class="wordmark-org">ATNI</span><span class="wordmark-name">Energy Task Forces</span></a>
+      <a class="wordmark" href="../../" aria-label="ATNI Energy Task Forces, home"><img class="lockup lockup-on-dark" src="../../assets/img/atni-energy-header-on-dark.svg" alt=""><img class="lockup lockup-on-light" src="../../assets/img/atni-energy-header.svg" alt=""></a>
       <nav class="site-nav" aria-label="Main">
         <ul>
           <li><a href="../../energy/" aria-current="true">Energy</a></li>
           <li><a href="../../data-centers/">Data Centers</a></li>
           <li><a href="../../ai/">AI</a></li>
+          <li><a href="../../explorer/">Explorer</a></li>
           <li><a href="../../summit/">Summit</a></li>
           <li><a href="../../library/">Library</a></li>
           <li><a href="../../about/">About</a></li>
+        </ul>
+      </nav>
+      <nav class="subnav" aria-label="Tribal Energy Feasibility pages">
+        <ul>
+          <li><a href="../">Overview</a></li>
+          <li><a href="../potential/">What Tribal Plans Say</a></li>
+          <li><a href="./" aria-current="page">Funding</a></li>
         </ul>
       </nav>
       <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
@@ -34,16 +42,6 @@
   </header>
 
   <main id="main">
-    <nav class="subnav" aria-label="Tribal Energy Feasibility pages">
-      <div class="wrap">
-        <ul>
-          <li><a href="../">Overview</a></li>
-          <li><a href="../potential/">What Tribal Plans Say</a></li>
-          <li><a href="./" aria-current="page">Funding</a></li>
-        </ul>
-      </div>
-    </nav>
-
     <header class="page-hero">
       <div class="wrap page-hero-grid">
         <div>
@@ -81,7 +79,10 @@
           <p>This page tracks federal programs and the Bonneville Power Administration’s Tribal efficiency grant, with each status read from the agency’s own page, the Grants.gov record, or the statute on a stated date, and pairs them with the energy types each Tribe’s own public plans name (<a href="../potential/">What Tribal Plans Say</a>; <a href="https://github.com/atniclimate/atni-task-force/blob/main/docs/ENERGY-FUNDING.md">method</a>).</p>
           <p>Three rules travel with every entry. A program’s presence for an energy type is a program fact, not a finding that a Tribe is eligible, would be competitive, or should apply. “Open” for a formula, rebate, loan, or tax program means the program is operating, not that money is waiting. Statuses are as of the date shown and should be confirmed with the agency before a council relies on one. Tax questions, including how Public Law 119-21 affects elective pay for a Tribally owned project, are for each Tribe’s counsel and tax advisers.</p>
           <p>State, utility, and philanthropic programs are not yet in the catalog. Check the Tribe’s state energy office and electric utility alongside this list.</p>
-          <h3>Caveats That Travel With the Data</h3>
+          <div class="disclosure-grid rail-details">
+          <details class="disclosure">
+            <summary><h3>Caveats That Travel With the Data</h3><span>These are program facts and screening flags, not eligibility determinations or recommendations.</span></summary>
+            <div class="rail-body">
           <ul>
             <li>These are program facts and screening flags, not eligibility determinations or recommendations. The Tribe decides whether and how to apply.</li>
             <li>Program statuses change quickly. Each was read on the date shown on the program’s page; confirm with the agency before relying on it.</li>
@@ -90,6 +91,9 @@
             <li>A forecasted opportunity has no close date; the agency’s estimated dates are not deadlines. Opportunity listings come from Grants.gov and state who the agency says may apply.</li>
             <li>The ranked energy types are a machine-assisted reading of public planning documents and may be incomplete or out of date. Each Tribe is the authority on its own plans.</li>
           </ul>
+            </div>
+          </details>
+          </div>
         </section>
 
         <section aria-labelledby="deadlines">

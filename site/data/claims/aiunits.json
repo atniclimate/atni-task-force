@@ -1,0 +1,1492 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "aiunits",
+ "claims": [
+  {
+   "id": "au-001",
+   "entity": "Software Carbon Intensity for AI (SCI for AI)",
+   "metric": "status of a consensus standard for AI carbon intensity",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2025,
+   "boundary": "Carbon only (operational plus allocated embodied emissions across the AI life cycle); energy coefficients are not supplied by the standard",
+   "basis": "n/a",
+   "layers": [
+    "operational",
+    "embodied"
+   ],
+   "source": {
+    "title": "SCI for AI Specification Ratified: Standard for Measuring AI Emissions Across the Lifecycle",
+    "publisher": "Green Software Foundation",
+    "url": "https://greensoftware.foundation/articles/sci-ai-specification-ratified-standard-for-measuring-ai-emissions-across-the/",
+    "published": "2025-12-17",
+    "kind": "model"
+   },
+   "quote": "Developed under the leadership of Navveen Balani (Accenture) and Henry Richardson (WattTime), this specification is the first consensus-based standard that makes the carbon footprint of AI systems transparent, comparable, and actionable.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-002",
+   "entity": "SCI for AI, suggested functional units",
+   "metric": "functional unit by AI system type",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2025,
+   "boundary": "Consumer-side and provider-side boundaries are kept separate in the specification",
+   "basis": "n/a",
+   "layers": [
+    "operational",
+    "embodied"
+   ],
+   "source": {
+    "title": "Software Carbon Intensity for Artificial Intelligence (SCI for AI), SPEC.md",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci-ai/blob/main/SPEC.md",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "Table 1 provides suggested examples of commonly used functional units. Given the diversity of AI system types and consumption models, these examples are indicative and not exhaustive.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-003",
+   "entity": "Watershed AI Emissions Framework (07/22/2026)",
+   "metric": "existence of a widely accepted AI emissions methodology",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Corporate AI emissions accounting (inference, training, data center overhead, embodied hardware)",
+   "basis": "n/a",
+   "layers": [
+    "inference",
+    "training",
+    "facility overhead",
+    "embodied"
+   ],
+   "source": {
+    "title": "An open framework for AI emissions measurement",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://watershed.com/en-GB/blog/ai-emissions-framework",
+    "published": "2026-07-22",
+    "kind": "blog"
+   },
+   "quote": "Despite rapid growth in corporate AI adoption, no widely accepted methodology exists for measuring AI's carbon footprint.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-004",
+   "entity": "Watershed AI Emissions Framework",
+   "metric": "proposed functional unit",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "kgCO2e per million tokens",
+   "year": 2026,
+   "boundary": "Inference with amortized training and embodied hardware reported as separate lines",
+   "basis": "n/a",
+   "layers": [
+    "inference",
+    "training",
+    "facility overhead",
+    "embodied"
+   ],
+   "source": {
+    "title": "An open framework for AI emissions measurement",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://watershed.com/en-GB/blog/ai-emissions-framework",
+    "published": "2026-07-22",
+    "kind": "blog"
+   },
+   "quote": "2) A functional unit (kgCO2e per million tokens) that aligns with the metric companies already track for cost management;",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-005",
+   "entity": "Tokenizers across LLMs",
+   "metric": "portability of a per-token unit across vendors",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Unit definition",
+   "basis": "n/a",
+   "layers": [],
+   "source": {
+    "title": "Greenpixie's AI Token Methodology: Assessing the Energy, Water and CO2-eq Impact of AI Tokens for Open and Closed Weight Models",
+    "publisher": "Greenpixie Ltd. (Horswill, Hunter, Clifford, Hall); arXiv 2609.33965",
+    "url": "https://arxiv.org/html/2609.33965v2",
+    "published": "2026-09-27",
+    "kind": "preprint"
+   },
+   "quote": "Tokenizers differ, so the same input text will map to different numbers of tokens for different LLMs",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-006",
+   "entity": "Greenpixie token methodology",
+   "metric": "publication of absolute per-token coefficients",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "Server-level energy for prefill and decode tokens, GPU measured plus non-GPU estimated from wall time",
+   "basis": "n/a",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead",
+    "embodied",
+    "water"
+   ],
+   "source": {
+    "title": "Greenpixie's AI Token Methodology: Assessing the Energy, Water and CO2-eq Impact of AI Tokens for Open and Closed Weight Models",
+    "publisher": "Greenpixie Ltd. (Horswill, Hunter, Clifford, Hall); arXiv 2609.33965",
+    "url": "https://arxiv.org/html/2609.33965v2",
+    "published": "2026-09-27",
+    "kind": "preprint"
+   },
+   "quote": "multiplied by a constant to mask the absolute scale",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-007",
+   "entity": "AI labs tracked by the Transparent AI Index",
+   "metric": "labs publishing methodology-backed per-query energy, as of April 2026",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "labs of 7",
+   "year": 2026,
+   "boundary": "Disclosure of per-query energy and water, not environmental performance",
+   "basis": "n/a",
+   "layers": [],
+   "source": {
+    "title": "The Transparent AI Index: Disclosure Scorecard for AI Labs",
+    "publisher": "ChangeEnable (independent research project)",
+    "url": "https://index.changeenable.com/",
+    "published": "2026-04-10",
+    "kind": "blog"
+   },
+   "quote": "Labs tracked 7 Measured 2 Marketing-grade 1 Not disclosed 4",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A per-token default derived from one Google median prompt and proposed for feedback, not a measurement of any other service.",
+   "id": "au-008",
+   "entity": "Hyperscaler default, input (prefill) tokens",
+   "metric": "Activity Tier energy intensity EI_in",
+   "value": 0.29,
+   "low": null,
+   "high": null,
+   "unit": "Wh per 1,000 tokens",
+   "year": 2026,
+   "boundary": "IT energy for inference, excluding facility overhead (PUE is applied separately); fleet-style default derived from Google's median prompt",
+   "basis": "median-derived",
+   "layers": [
+    "accelerator",
+    "host",
+    "idle"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "EI_in 0.29 Wh per 1,000 tokens 0.70 Wh per 1,000 tokens",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A per-token default derived from one Google median prompt, so it restates that prompt and is not an independent measurement.",
+   "id": "au-009",
+   "entity": "Hyperscaler default, output (decode) tokens",
+   "metric": "Activity Tier energy intensity EI_out",
+   "value": 0.87,
+   "low": null,
+   "high": null,
+   "unit": "Wh per 1,000 tokens",
+   "year": 2026,
+   "boundary": "IT energy for inference, excluding facility overhead",
+   "basis": "median-derived",
+   "layers": [
+    "accelerator",
+    "host",
+    "idle"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "EI_out 0.87 Wh per 1,000 tokens 2.1 Wh per 1,000 tokens",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "An assumption inside one vendor framework; no source measures this ratio on a production service.",
+   "id": "au-010",
+   "entity": "Hyperscaler default derivation",
+   "metric": "decode-to-prefill electricity ratio per token",
+   "value": 3,
+   "low": null,
+   "high": null,
+   "unit": "ratio (output : input)",
+   "year": 2026,
+   "boundary": "Assumption inside the Activity Tier",
+   "basis": "assumption",
+   "layers": [],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "assuming a prompt of roughly 500 tokens (375 input and 125 output) with a 3:1 decode-to-prefill electricity ratio per token",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "One vendor framework's proposed defaults for facility overhead and grid, offered for feedback, not final values.",
+   "id": "au-011",
+   "entity": "Hyperscaler default, facility and grid",
+   "metric": "PUE and location-based grid intensity defaults",
+   "value": 1.1,
+   "low": null,
+   "high": null,
+   "unit": "PUE (unitless); grid 341 gCO2e per kWh",
+   "year": 2026,
+   "boundary": "Facility overhead and US-average location-based grid factor",
+   "basis": "average",
+   "layers": [
+    "facility overhead"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "PUE 1.10 1.56 Hyperscaler default reflects reported averages, while unknown provider reflects global industry average",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-012",
+   "entity": "Spend Tier default",
+   "metric": "emissions per dollar of AI vendor spend",
+   "value": 0.134,
+   "low": null,
+   "high": null,
+   "unit": "kgCO2e per 2023 US dollar",
+   "year": 2026,
+   "boundary": "Economy-wide input-output factor for data processing and hosting (CEDA, BEA sector 518200)",
+   "basis": "average",
+   "layers": [
+    "operational",
+    "embodied"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "The current default is 0.134 kgCO2e per 2023 U.S. dollar (CEDA, BEA sector 518200, Data Processing, Hosting, & Related Services).",
+   "derived": "At Anthropic's Opus 5.5 output list price of $20 per million tokens, 20 x 0.134 = 2.68 kgCO2e per million output tokens; the Activity Tier gives 0.343 kgCO2e (operational plus embodied) for the same tokens, so the spend factor is about 7.8 times higher (2.68 / 0.343).",
+   "status": "verified"
+  },
+  {
+   "id": "au-013",
+   "entity": "Watershed illustrative company ($100,000 a year on a frontier API)",
+   "metric": "annual emissions by tier, spread",
+   "value": null,
+   "low": 2.8,
+   "high": 13.4,
+   "unit": "tCO2e per year",
+   "year": 2026,
+   "boundary": "Inference plus amortized training plus embodied, by tier of data quality",
+   "basis": "n/a",
+   "layers": [
+    "inference",
+    "training",
+    "embodied"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "The same AI use yields 13.4 tCO2e under the Spend Tier, 3.6-5.2 tCO2e under the Activity Tier, and 2.8-4.5 tCO2e under the Provider Tier.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-014",
+   "entity": "Hugging Face AI Energy Score as a benchmark",
+   "metric": "limits of GPU-only, batch-of-one benchmarks (Watershed's reading)",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "n/a",
+   "year": 2026,
+   "boundary": "AI Energy Score boundary as characterized by Watershed",
+   "basis": "n/a",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "Additionally, AI Energy Score reports GPU plus host CPU energy only and excludes facility overhead, which can increase the figure by 25% to 2x depending on the data center configuration, with frontier hyperscalers at the lower end of the range.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-015",
+   "entity": "Joule bottom-up model, workload assumptions",
+   "metric": "output tokens per query and input tokens assumed",
+   "value": 300,
+   "low": 129,
+   "high": 618,
+   "unit": "output tokens (median, standard regime)",
+   "year": 2026,
+   "boundary": "Full-node energy on an 8xH100 node with PUE; steady-state high-concurrency serving",
+   "basis": "median",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Energy Use of AI Inference, Efficiency Pathways, and Test-Time Scaling (arXiv 2509.20241, v2)",
+    "publisher": "Oviedo, Kazhamiaka, Choukse et al. (Microsoft)",
+    "url": "https://arxiv.org/pdf/2509.20241",
+    "published": "2026-06-09",
+    "kind": "preprint"
+   },
+   "quote": "a) Standard query, with 300 median output tokens (IQR: 129-618). b) Test-time scaling query, with 5,000 median output tokens (IQR: 2,040-9,717). In both cases, we assume 500 input tokens",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-016",
+   "entity": "Mixtral 8x22B (sparse mixture of experts), standard query",
+   "metric": "energy per query, median",
+   "value": 0.06,
+   "low": 0.03,
+   "high": 0.11,
+   "unit": "Wh per query",
+   "year": 2026,
+   "boundary": "Modeled full-node energy with PUE, H100 FP8, 300 median output tokens and 500 input tokens",
+   "basis": "median",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Energy use of AI inference, efficiency pathways, and test-time scaling",
+    "publisher": "Joule (Cell Press); Microsoft authors",
+    "url": "https://www.cell.com/joule/fulltext/S2542-4351(26)00114-5",
+    "published": "2026-04-22",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Mixtral 8x22B is estimated to consume a median of 0.06 Wh/query (IQR: 0.03–0.11)",
+   "derived": "0.06 Wh x 3600 / 300 output tokens = 0.72 J per output token (query-level, includes the 500 input tokens), or 200 Wh per million output tokens.",
+   "status": "verified"
+  },
+  {
+   "id": "au-017",
+   "entity": "DeepSeek-R1 671B, test-time scaling query",
+   "metric": "energy per query, median (model) against measured",
+   "value": 10.6,
+   "low": 4.29,
+   "high": 21.7,
+   "unit": "Wh per query",
+   "year": 2026,
+   "boundary": "Modeled full-node energy for 5,000 median output tokens; measurement is ML.ENERGY v3.0 at 11,287 average output tokens",
+   "basis": "median",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Energy Use of AI Inference, Efficiency Pathways, and Test-Time Scaling (arXiv 2509.20241, v2)",
+    "publisher": "Oviedo, Kazhamiaka, Choukse et al. (Microsoft)",
+    "url": "https://arxiv.org/pdf/2509.20241",
+    "published": "2026-06-09",
+    "kind": "preprint"
+   },
+   "quote": "DeepSeek-R1 consumes 10.6 Wh (IQR: 4.29–21.7), consistent with the median ML.ENERGY (v3.0) measurement of 20.9 Wh with an average query of 11,287 output tokens.",
+   "derived": "Measured: 20.9 Wh x 3600 / 11,287 tokens = 6.67 J per output token. Modeled: 10.6 Wh x 3600 / 5,000 = 7.63 J per output token. So per output token the two agree within 15 percent, and the difference in Wh per query is mostly the number of tokens.",
+   "status": "verified"
+  },
+  {
+   "id": "au-018",
+   "entity": "Llama 3.1 70B, production-style measurements against benchmark settings",
+   "metric": "energy per query",
+   "value": 0.04,
+   "low": 0.04,
+   "high": 1.01,
+   "unit": "Wh per query (ML.ENERGY production measurement)",
+   "year": 2026,
+   "boundary": "GPU-level measurements with batching; compared with the AI Energy Score batch-of-one setting",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Energy Use of AI Inference, Efficiency Pathways, and Test-Time Scaling (arXiv 2509.20241, v2)",
+    "publisher": "Oviedo, Kazhamiaka, Choukse et al. (Microsoft)",
+    "url": "https://arxiv.org/pdf/2509.20241",
+    "published": "2026-06-09",
+    "kind": "preprint"
+   },
+   "quote": "AI Energy Score ⁶ measured ~1.01 Wh per query for Llama 3.1 70B (average of 1.72 Wh across 1,000 queries with FP16 quantization, ~1.72/1.7=1.01 Wh at FP8)",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A prospective estimate that multiplies separate improvements on one server node; it has not been measured.",
+   "id": "au-019",
+   "entity": "Efficiency headroom across model, serving and hardware",
+   "metric": "line-of-sight reduction in energy per query",
+   "value": null,
+   "low": 8,
+   "high": 20,
+   "unit": "multiple (x)",
+   "year": 2026,
+   "boundary": "Model, serving platform and hardware interventions treated as independent multipliers on a fixed H100 node",
+   "basis": "n/a",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "Energy use of AI inference, efficiency pathways, and test-time scaling",
+    "publisher": "Joule (Cell Press); Microsoft authors",
+    "url": "https://www.cell.com/joule/fulltext/S2542-4351(26)00114-5",
+    "published": "2026-04-22",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Across models, serving systems, and hardware, we estimate 8–20× line-of-sight energy reductions.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-020",
+   "entity": "Serving volume at scale",
+   "metric": "daily electricity for 1 billion queries, with 10 percent long queries",
+   "value": 1.7,
+   "low": null,
+   "high": null,
+   "unit": "GWh per day",
+   "year": 2026,
+   "boundary": "Modeled data center energy for conversational queries; long queries are the test-time scaling regime",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Energy use of AI inference, efficiency pathways, and test-time scaling",
+    "publisher": "Joule (Cell Press); Microsoft authors",
+    "url": "https://www.cell.com/joule/fulltext/S2542-4351(26)00114-5",
+    "published": "2026-04-22",
+    "kind": "peer-reviewed"
+   },
+   "quote": "At data-center scale, serving 1 billion queries/day requires 0.7 GWh; if 10% are long queries, demand rises to 1.7 GWh/day.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-021",
+   "entity": "Llama 3.1 8B on H100, vLLM",
+   "metric": "GPU energy per output token at batch size 64, software stack of 2024 against 2025",
+   "value": 0.12,
+   "low": null,
+   "high": null,
+   "unit": "J per output token",
+   "year": 2025,
+   "boundary": "GPU energy only, steady-state batch of 64; no host, no facility overhead",
+   "basis": "average (steady-state)",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "LLM Inference Energy: A Longitudinal Analysis",
+    "publisher": "ML.ENERGY (Jae-Won Chung)",
+    "url": "https://ml.energy/blog/measurement/energy/llm-inference-energy-a-longitudinal-analysis/",
+    "published": "2026-02-09",
+    "kind": "blog"
+   },
+   "quote": "For instance, the 8B model on batch size 64 reduces energy per token by 41% (0.20 J to 0.12 J).",
+   "derived": "0.12 J/token x 1e6 / 3600 = 33.3 Wh per million output tokens (GPU only). The earlier software stack gave 0.20 J, 55.6 Wh per million.",
+   "status": "verified"
+  },
+  {
+   "id": "au-022",
+   "entity": "ML.ENERGY v3.0, all models on B200, minimum-energy configuration",
+   "metric": "GPU energy per response, problem solving against text conversation",
+   "value": 4625,
+   "low": 184,
+   "high": 4625,
+   "unit": "J per response (Problem Solving mean)",
+   "year": 2026,
+   "boundary": "GPU energy only, B200, each model at its minimum-energy configuration",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30/",
+    "published": "2026-01-29",
+    "kind": "blog"
+   },
+   "quote": "resulting in Problem Solving consuming on average 25x more energy per response than Text Conversation (mean 4,625 J vs. 184 J).",
+   "derived": "4,625 J / 3600 = 1.28 Wh per Problem Solving response; 184 J / 3600 = 0.051 Wh per Text Conversation response. Energy per response is energy per token times output tokens, so the 25 times is both longer output and a higher per-token cost at lower batch sizes.",
+   "status": "verified"
+  },
+  {
+   "id": "au-023",
+   "entity": "ML.ENERGY v3.0, vision-language models",
+   "metric": "energy per token for image and video input against text",
+   "value": null,
+   "low": 1.1,
+   "high": 15.0,
+   "unit": "multiple (x) of text",
+   "year": 2026,
+   "boundary": "GPU energy only; minimum-energy configurations",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Diagnosing Inference Energy Consumption with the ML.ENERGY Leaderboard v3.0",
+    "publisher": "ML.ENERGY",
+    "url": "https://ml.energy/blog/measurement/energy/diagnosing-inference-energy-consumption-with-the-mlenergy-leaderboard-v30/",
+    "published": "2026-01-29",
+    "kind": "blog"
+   },
+   "quote": "text + image inputs use 1.1-5.2x the energy per token of text, while text + video inputs use 1.3-15.0x.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-024",
+   "entity": "Llama 3 family, 1B to 70B parameters, four-GPU H100 node",
+   "metric": "growth of energy per token with parameter count",
+   "value": 7.3,
+   "low": null,
+   "high": null,
+   "unit": "multiple (x) for 70x parameters",
+   "year": 2025,
+   "boundary": "Node-level measurement including prefill; no facility overhead",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "TokenPowerBench: Benchmarking the Power Consumption of LLM Inference",
+    "publisher": "arXiv 2512.03024",
+    "url": "https://arxiv.org/html/2512.03024",
+    "published": "2025-12-02",
+    "kind": "preprint"
+   },
+   "quote": "Within each LLM family, energy rises faster than the parameter count. For LLaMA-3, moving from 1 B to 70 B parameters increases energy per token by $7.3\\times$ , even though parameter count grows $70\\times$ . This super-linear trend confirms that larger models pay an extra cache-bandwidth and memory-traffic penalty beyond pure FLOPs.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-025",
+   "entity": "Qwen3-8B, English, L40S, batch 256, vLLM steady state",
+   "metric": "energy per output token",
+   "value": 0.1,
+   "low": null,
+   "high": null,
+   "unit": "J per output token",
+   "year": 2026,
+   "boundary": "GPU-side serving measurement at saturated batch; no facility overhead",
+   "basis": "average (steady-state)",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "The Language-Energy Divide: Measuring Energy Costs of Multilingual LLM Inference",
+    "publisher": "EMNLP 2026 main conference",
+    "url": "https://aclanthology.org/2026.emnlp-main.2113.pdf",
+    "published": "2026-10-20",
+    "kind": "peer-reviewed"
+   },
+   "quote": "English(Latin) 0.10 0.17 0.51 0.59 0.09",
+   "derived": "0.10 J/token x 1e6 / 3600 = 27.8 Wh per million output tokens.",
+   "status": "verified"
+  },
+  {
+   "id": "au-026",
+   "entity": "Qwen3-8B, 122 languages (Belebele), L40S",
+   "metric": "total energy per response, most expensive against English",
+   "value": 179,
+   "low": null,
+   "high": null,
+   "unit": "multiple (x) of English per response",
+   "year": 2026,
+   "boundary": "GPU-side serving measurement at saturated batch",
+   "basis": "average (steady-state)",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "The Language-Energy Divide: Measuring Energy Costs of Multilingual LLM Inference",
+    "publisher": "EMNLP 2026 main conference",
+    "url": "https://aclanthology.org/2026.emnlp-main.2113.pdf",
+    "published": "2026-10-20",
+    "kind": "peer-reviewed"
+   },
+   "quote": "English uses 19.5 J/response, whereas Pashto consumes 3,496 J/response, Tibetan 3,337 J, Shan 3,276 J, and Tigrinya 2,681 J, presenting a 179 × gap between the cheapest and most expensive languages.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-027",
+   "entity": "Qwen2.5-coder 1.5B, local Ollama, A100 80GB, RepoBench Python",
+   "metric": "energy per generated token as context grows, 2,000 to 32,000 tokens",
+   "value": 2.0,
+   "low": 1.11,
+   "high": 2.0,
+   "unit": "J per generated token at 32,000-token context",
+   "year": 2026,
+   "boundary": "GPU power sampled with nvidia-smi on an A100 80GB PCIe, reported NET of idle (the paper subtracts the measured 46.82 W idle draw); total energy divided by generated tokens, so it includes prompt processing; no host, no facility overhead",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Green AI: Cost of LLM-Based Code Completion",
+    "publisher": "ESEM 2026 (Alizadeh, Saurabh, Castor); LIPIcs vol. 394",
+    "url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol394-esem2026/LIPIcs.ESEM.2026.42/LIPIcs.ESEM.2026.42.pdf",
+    "published": "2026-09-16",
+    "kind": "peer-reviewed"
+   },
+   "quote": "in Python, Qwen2.5-coder:1.5b increases from 1.11 J/token at a context size of 2000 to 2.00 J/token at 32000",
+   "derived": "1.11 J/token x 1e6 / 3600 = 308 Wh per generated million tokens at 2K context; 2.00 J = 556 Wh at 32K.",
+   "status": "verified"
+  },
+  {
+   "id": "au-028",
+   "entity": "Locally run code models on one A100 (Ollama), McEval Python",
+   "metric": "energy per generated token, mixture-of-experts against dense",
+   "value": 1.58,
+   "low": null,
+   "high": null,
+   "unit": "J per generated token (deepseek-coder-v2:16b)",
+   "year": 2026,
+   "boundary": "GPU power via nvidia-smi, reported NET of idle (the measured 46.82 W idle draw is subtracted); no host, no facility overhead",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Green AI: Cost of LLM-Based Code Completion",
+    "publisher": "ESEM 2026 (Alizadeh, Saurabh, Castor); LIPIcs vol. 394",
+    "url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol394-esem2026/LIPIcs.ESEM.2026.42/LIPIcs.ESEM.2026.42.pdf",
+    "published": "2026-09-16",
+    "kind": "peer-reviewed"
+   },
+   "quote": "deepseek-coder-v2:16b 582.85 30.98 1.58 73.64",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-029",
+   "entity": "Qwen3.8-27B coding agent on a two-GPU Blackwell server, sequential, SWE-bench Verified (50 tasks)",
+   "metric": "system energy per output token, agent against saturated serving",
+   "value": 63,
+   "low": null,
+   "high": null,
+   "unit": "multiple (x)",
+   "year": 2026,
+   "boundary": "Whole-system power (GPU, CPU, DRAM, other) from NVML, RAPL and IPMI; no facility overhead; no batching",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "idle"
+   ],
+   "source": {
+    "title": "Where Does the Energy Go? Profiling LLM Agent Inference on Blackwell GPUs",
+    "publisher": "arXiv 2609.29707",
+    "url": "https://arxiv.org/html/2609.29707v1",
+    "published": "2026-08-31",
+    "kind": "preprint"
+   },
+   "quote": "Our measurements reveal that GPU-only telemetry misses 41–45% of system energy across all three workloads, with non-GPU components accounting for the remainder. In our setup, the sequential agent workload consumes 63 $\\times$ more system energy per output token than saturated serving",
+   "derived": "Agent: 58,383 mJ per output token = 58.4 J = 16,218 Wh per million output tokens. Saturated serving at 16 requests per second: 920 mJ = 0.92 J = 256 Wh per million. One SWE-bench task: about 2,989 kJ = 830 Wh (2,989 / 3.6), at an average system power of 1,406 W (GPUs 55.9 percent, CPUs 23.7 percent).",
+   "status": "verified"
+  },
+  {
+   "limit": "A benchmark with modeled power, not a meter reading or a production service, and with no facility overhead.",
+   "id": "au-030",
+   "entity": "DeepSeek R1 0528 (671B mixture of experts), 8k input and 1k output tokens, FP8, interactive serving",
+   "metric": "energy per query across reported GPU configurations",
+   "value": null,
+   "low": 0.96,
+   "high": 3.74,
+   "unit": "Wh per query",
+   "year": 2025,
+   "boundary": "All-in power per GPU from SemiAnalysis' model divided by measured throughput; benchmark harness, not a production service; no facility overhead",
+   "basis": "average (steady-state)",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "Per-query energy consumption of LLMs",
+    "publisher": "Muxup (Alex Bradbury), using SemiAnalysis InferenceMAX data",
+    "url": "https://muxup.com/2026q1/per-query-energy-consumption-of-llms",
+    "published": "2026-Q1 (day not stated; data from 12/15/2025 and 12/19/2025 runs)",
+    "kind": "blog"
+   },
+   "quote": "a usable level of interactivity at fp8 report between 0.96-3.74 Wh/query",
+   "derived": "Per token: 0.96 to 3.74 Wh x 3600 / 8,294 tokens (90 percent of 8,192 + 1,024, as the harness averages) = 0.42 to 1.62 J per token, 116 to 451 Wh per million tokens blended input and output.",
+   "status": "partly"
+  },
+  {
+   "limit": "A benchmark with modeled power, not a meter reading or a production service.",
+   "id": "au-031",
+   "entity": "DeepSeek R1 0528, 1k input and 8k output tokens, FP8, 8-GPU setups",
+   "metric": "energy per query when the output is long",
+   "value": null,
+   "low": 15.0,
+   "high": 16.3,
+   "unit": "Wh per query",
+   "year": 2025,
+   "boundary": "All-in power per GPU from SemiAnalysis' model divided by measured throughput; benchmark harness",
+   "basis": "average (steady-state)",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "Per-query energy consumption of LLMs",
+    "publisher": "Muxup (Alex Bradbury), using SemiAnalysis InferenceMAX data",
+    "url": "https://muxup.com/2026q1/per-query-energy-consumption-of-llms",
+    "published": "2026-Q1 (day not stated; data from 12/15/2025 and 12/19/2025 runs)",
+    "kind": "blog"
+   },
+   "quote": "cost is 15.0-16.3 Wh/query (equivalent to 4.49-4.89 minutes of PS5 power draw",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A bottom-up estimate that assumes input cost grows with the square of length; an upper-style bound, not a measurement.",
+   "id": "au-032",
+   "entity": "GPT-4o-class query with a very long input",
+   "metric": "energy per query as input length grows, 10k to 100k tokens",
+   "value": 40,
+   "low": 2.5,
+   "high": 40,
+   "unit": "Wh per query (100k-token input)",
+   "year": 2025,
+   "boundary": "Bottom-up H100 estimate at 1,500 W per GPU all-in and 70 percent power factor; includes data center overhead through the 1,500 W figure; 10 percent FLOP utilization",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "How much energy does ChatGPT use?",
+    "publisher": "Epoch AI (Josh You)",
+    "url": "https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use",
+    "published": "2025-02-07",
+    "kind": "blog"
+   },
+   "quote": "a long input of 10k tokens (similar to a short paper or long magazine article) would substantially increase the cost per query to around 2.5 watt-hours, and a very long input length of 100k tokens (equal to roughly 200 pages of text) would require almost 40 watt-hours of energy.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-033",
+   "entity": "EcoLogits GPU energy model (ML.ENERGY data, H100, vLLM, 16-bit)",
+   "metric": "energy per output token as a function of active parameters P (billions) and batch size B",
+   "value": 1.17e-06,
+   "low": null,
+   "high": null,
+   "unit": "Wh per output token per billion active parameters, coefficient alpha",
+   "year": 2025,
+   "boundary": "GPU energy only in this term; server energy without GPUs (1.2 kW per 8-GPU server, shared by batch), PUE and embodied are separate terms",
+   "basis": "average",
+   "layers": [
+    "accelerator"
+   ],
+   "source": {
+    "title": "Environmental Impacts of LLM Inference (EcoLogits methodology)",
+    "publisher": "EcoLogits / GenAI Impact",
+    "url": "https://ecologits.ai/latest/methodology/llm_inference",
+    "published": null,
+    "kind": "model"
+   },
+   "quote": "\\alpha = 1.17 \\times 10^{-6}",
+   "derived": "f(P,B) = alpha x exp(beta x B) x P + gamma, alpha = 1.17e-6, beta = -1.12e-2, gamma = 4.05e-5 Wh per output token (GPU only). P = 8 billion, B = 64: 4.51e-05 Wh = 0.162 J per token = 45 Wh per million; P = 8 billion, B = 256: 4.10e-05 Wh = 0.148 J per token = 41 Wh per million; P = 70 billion, B = 64: 8.05e-05 Wh = 0.290 J per token = 80 Wh per million; P = 70 billion, B = 256: 4.52e-05 Wh = 0.163 J per token = 45 Wh per million. These are GPU-term values before the server-without-GPU term and PUE; they sit between ML.ENERGY's measured 0.12 J (8B, batch 64) and the whole-service figures.",
+   "status": "partly"
+  },
+  {
+   "id": "au-035",
+   "entity": "Claude Code, one user's logs, Couch method",
+   "metric": "assumed energy per million tokens, output and input at maximum context",
+   "value": 1950,
+   "low": null,
+   "high": null,
+   "unit": "Wh per million output tokens (390 Wh per million input)",
+   "year": 2026,
+   "boundary": "Data center electricity inferred from Epoch's GPT-4o estimate at 100k input tokens, scaled to Claude with a 5:1 output-to-input price ratio; cache reads taken at one tenth of input",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Electricity use of AI coding agents",
+    "publisher": "Simon P. Couch",
+    "url": "https://simonpcouch.com/blog/2026-01-20-cc-impact/",
+    "published": "2026-01-20",
+    "kind": "blog"
+   },
+   "quote": "So, ~390 Wh/MTok input, ~1950 Wh/MTok output.",
+   "derived": "Back-solved from Epoch: typical short query (130 in, 530 out, 0.3 Wh) gives about 110 and 540 Wh per million; medium context (10,000 in, 2.5 Wh) about 200 and 990; maximum context (100,000 in, 40 Wh) about 390 and 1,950. Cache reads then ~39 Wh per million, cache writes ~490. His median Claude Code day: 1,300 Wh for $15 to $20 of token spend.",
+   "status": "partly"
+  },
+  {
+   "limit": "One user's logs at API list prices, so it is a single inferred ratio, not a measurement of data center electricity.",
+   "id": "au-036",
+   "entity": "Claude Code, one user's logs, infrastructure check",
+   "metric": "electricity per dollar of token spend",
+   "value": 75.5,
+   "low": null,
+   "high": null,
+   "unit": "Wh per dollar of API-priced tokens",
+   "year": 2026,
+   "boundary": "Data center electricity inferred from one user's token mix at API list prices",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Electricity use of AI coding agents",
+    "publisher": "Simon P. Couch",
+    "url": "https://simonpcouch.com/blog/2026-01-20-cc-impact/",
+    "published": "2026-01-20",
+    "kind": "blog"
+   },
+   "quote": "At ~$17.50/day and ~1,300 Wh/day, that’s 75.5 Wh per dollar.",
+   "derived": "75.5 Wh per dollar x $13 per developer per active day (Anthropic docs) = about 980 Wh per day; scaled to Anthropic's roughly $10 billion annual revenue the author gets about 85 MW of inference power.",
+   "status": "partly"
+  },
+  {
+   "id": "au-037",
+   "entity": "Claude Code, one heavy user, 8 weeks (05/31 to 07/25/2026)",
+   "metric": "tokens processed and data center electricity",
+   "value": 170,
+   "low": 70,
+   "high": 330,
+   "unit": "kWh over 8 weeks (range 70 to 330)",
+   "year": 2026,
+   "boundary": "Data center electricity estimated from logged token counts and Watershed activity-tier factors, cache reads at 10 percent of fresh-input energy",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "The real energy use of agentic AI",
+    "publisher": "The Climate Brink (Zeke Hausfather)",
+    "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+    "published": "2026-08-05",
+    "kind": "blog"
+   },
+   "quote": "Over the past 8 weeks I typed 1,138 prompts into Claude Code. Those prompts triggered more than 14,000 model calls that processed 3.2 billion tokens. My best estimate is that this used around 170 kWh of data center electricity (with an uncertainty range of roughly 70 to 330 kWh across methods and assumptions).",
+   "derived": "170 kWh / 3.2e9 tokens = 53 Wh per million tokens blended over all token types (mostly cache reads); 170 kWh / 1,138 prompts = 149 Wh per typed prompt; 14,000 calls / 1,138 prompts = about 12 calls per prompt; 3.2e9 / 1,138 = 2.8 million tokens per prompt (the post says 2.9 million).",
+   "status": "partly"
+  },
+  {
+   "id": "au-038",
+   "entity": "Claude Code token mix, same user",
+   "metric": "share of tokens that are cache reads, and share that is visible output",
+   "value": 96,
+   "low": null,
+   "high": null,
+   "unit": "percent of tokens (cache reads); output about 0.4 percent",
+   "year": 2026,
+   "boundary": "Logged tokens by type",
+   "basis": "average",
+   "layers": [],
+   "source": {
+    "title": "The real energy use of agentic AI",
+    "publisher": "The Climate Brink (Zeke Hausfather)",
+    "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+    "published": "2026-08-05",
+    "kind": "blog"
+   },
+   "quote": "Some 96% of the tokens are cache reads where the agent re-reads its own context at each of those 14,000 steps.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-039",
+   "entity": "Claude Code session estimates compared",
+   "metric": "median Claude Code session, three estimates",
+   "value": 600,
+   "low": 41,
+   "high": 600,
+   "unit": "Wh per median session (this user); 41 Wh (Couch); 459 Wh (Masley calculator, 100k-token session)",
+   "year": 2026,
+   "boundary": "Data center electricity inferred from tokens; different token counts and coefficients",
+   "basis": "median",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "The real energy use of agentic AI",
+    "publisher": "The Climate Brink (Zeke Hausfather)",
+    "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+    "published": "2026-08-05",
+    "kind": "blog"
+   },
+   "quote": "My median session is ~600 Wh, involving a hundred-plus calls and around ten million tokens including numerous subagents for large data analyses projects.",
+   "derived": "Per million tokens: 41 Wh / 592,439 tokens = 69 Wh per million (Couch); 600 Wh / ~10e6 tokens = ~60 Wh per million (Hausfather). The two sessions differ about 17 times in tokens and about 15 times in energy, so the per-token rates agree and the sessions do not.",
+   "status": "partly"
+  },
+  {
+   "limit": "One heavy user's modeled estimate, extrapolated from eight weeks to a year; the small-model factor is that author's own estimate.",
+   "id": "au-040",
+   "entity": "Claude Code, one heavy user, annualized",
+   "metric": "yearly data center electricity and carbon",
+   "value": 1.1,
+   "low": 0.4,
+   "high": 2.2,
+   "unit": "MWh per year (range 0.4 to 2.2); 370 kgCO2e per year (150 to 730) at US-average grid",
+   "year": 2026,
+   "boundary": "Data center electricity, location-based US-average grid; no embodied or training",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "The real energy use of agentic AI",
+    "publisher": "The Climate Brink (Zeke Hausfather)",
+    "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+    "published": "2026-08-05",
+    "kind": "blog"
+   },
+   "quote": "a full year of my agentic Claude Code use would consume roughly 1.1 MWh of data center electricity (0.4 to 2.2 MWh), which is about a tenth of what an average US household uses. Applying the US-average grid intensity, that is roughly 370 kgCO2e per year (150 to 730 kgCO2e).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-041",
+   "entity": "Watershed activity-tier range for agentic work (as relayed)",
+   "metric": "electricity per agentic workflow",
+   "value": null,
+   "low": 50,
+   "high": 500,
+   "unit": "Wh per workflow of 5 to 50 frontier model calls",
+   "year": 2026,
+   "boundary": "Per-task electricity, boundary of the underlying studies",
+   "basis": "n/a",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "The real energy use of agentic AI",
+    "publisher": "The Climate Brink (Zeke Hausfather)",
+    "url": "https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai",
+    "published": "2026-08-05",
+    "kind": "blog"
+   },
+   "quote": "electricity per AI task spans more than five orders of magnitude, from thousandths of a watt-hour for text classification to 50-500 Wh for an agentic workflow making 5-50 frontier model calls.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-042",
+   "entity": "Eight frontier LLMs on SWE-bench Verified (OpenHands agent)",
+   "metric": "tokens consumed by agentic coding against single-round code reasoning",
+   "value": 3500,
+   "low": null,
+   "high": null,
+   "unit": "multiple (x) of single-round code reasoning; 1,200x multi-round code chat",
+   "year": 2026,
+   "boundary": "Tokens (input and output), not energy",
+   "basis": "average",
+   "layers": [],
+   "source": {
+    "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks",
+    "publisher": "Bai, Brynjolfsson, Pentland et al.; arXiv 2604.22750",
+    "url": "https://arxiv.org/pdf/2604.22750",
+    "published": "2026-04-24",
+    "kind": "preprint"
+   },
+   "quote": "On average, agentic coding tasks consume 3500x more tokens than a typical single-round reasoning task and 1200x more tokens than a",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-043",
+   "entity": "GitHub Copilot coding agent, sampled production traces, first week of June 2026",
+   "metric": "tokens per user turn: prompt, cached and completion",
+   "value": 227.6,
+   "low": null,
+   "high": null,
+   "unit": "thousand prompt tokens per user turn (median); 217.2K cached; 1.9K completion",
+   "year": 2026,
+   "boundary": "Tokens per turn, not energy; Visual Studio and VS Code users, US time zones",
+   "basis": "median",
+   "layers": [],
+   "source": {
+    "title": "Agentic Coding in the Wild: Characterizing GitHub Copilot at Production Scale",
+    "publisher": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/08/ghcp_traces-6.pdf",
+    "published": "2026-07-30",
+    "kind": "preprint"
+   },
+   "quote": "Prompt tokens 227.6K 654.0K 1.50M 582.5K 2.6× Cached tokens 217.2K 621.7K 1.43M 545.3K 2.5× Completion tokens 1.9K 4.6K 9.2K 4.0K 2.1×",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-044",
+   "entity": "Claude Code, enterprise deployments",
+   "metric": "API-list cost per developer",
+   "value": 13,
+   "low": null,
+   "high": null,
+   "unit": "USD per developer per active day (average); $150 to $250 per developer per month",
+   "year": 2026,
+   "boundary": "Price at API list, not energy; spend of active developers",
+   "basis": "average",
+   "layers": [],
+   "source": {
+    "title": "Manage costs effectively",
+    "publisher": "Anthropic (Claude Code docs)",
+    "url": "https://code.claude.com/docs/en/costs",
+    "published": null,
+    "kind": "company-report"
+   },
+   "quote": "Across enterprise deployments, the average cost is around $13 per developer per active day and $150-250 per developer per month, with costs remaining below $30 per active day for 90% of users.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A model, not a measurement: published token counts times one framework's default factors, with the model behind the traces unknown.",
+   "id": "au-045",
+   "entity": "GitHub Copilot coding agent, Watershed hyperscaler factors applied (this file's model)",
+   "metric": "energy per median session and per mean session",
+   "value": 36.2,
+   "low": 17.5,
+   "high": 67.4,
+   "unit": "Wh per median session (3 turns), facility included, cache reads at 10 percent",
+   "year": 2026,
+   "boundary": "Modeled data center energy: IT energy at Watershed hyperscaler EI_in 0.29 and EI_out 0.87 Wh per 1,000 tokens times PUE 1.10; model unknown, factors derived from a Gemini median prompt",
+   "basis": "median",
+   "layers": [
+    "accelerator",
+    "host",
+    "idle",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Agentic Coding in the Wild: Characterizing GitHub Copilot at Production Scale",
+    "publisher": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/08/ghcp_traces-6.pdf",
+    "published": "2026-07-30",
+    "kind": "preprint"
+   },
+   "quote": "Prompt tokens 227.6K 654.0K 1.50M 582.5K 2.6× Cached tokens 217.2K 621.7K 1.43M 545.3K 2.5× Completion tokens 1.9K 4.6K 9.2K 4.0K 2.1×",
+   "derived": "Median turn: fresh input (227.6 - 217.2) = 10.4K x 0.29 + cached 217.2K x 0.29 x w + completion 1.9K x 0.87 Wh. With w = 0.10: 11.0 Wh IT, x 3 turns = 32.9 Wh, x PUE 1.10 = 36.2 Wh per median session. w = 0.01 gives 17.5 Wh and w = 0.25 gives 67.4 Wh (facility included). Mean turn (582.5K prompt, 545.3K cached, 4.0K completion): 30.1 Wh IT at w = 0.10, x 6.1 turns x 1.10 = 202 Wh per mean session (w = 0.01: 106, w = 0.25: 361).",
+   "status": "partly"
+  },
+  {
+   "id": "au-046",
+   "entity": "Watershed Activity Tier defaults converted to carbon (this file's arithmetic)",
+   "metric": "operational plus embodied kgCO2e per million output tokens, location-based US grid",
+   "value": 0.343,
+   "low": null,
+   "high": null,
+   "unit": "kgCO2e per million output tokens (input: 0.126; training adds 0.1)",
+   "year": 2026,
+   "boundary": "Hyperscaler defaults: IT energy x PUE x 341 gCO2e/kWh, plus embodied 0.017 kgCO2e per million tokens; training reported separately",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "facility overhead",
+    "embodied"
+   ],
+   "source": {
+    "title": "AI Emissions Framework, White Paper (2026-Oct Update)",
+    "publisher": "Watershed (Bistline, Davis, Suh)",
+    "url": "https://cdn.sanity.io/files/3ogo9b9g/production/2623a182a6099bf3ddb05cd17f4d23b653111a31.pdf",
+    "published": "2026-10 (update to the 07/22/2026 paper; day not stated)",
+    "kind": "company-report"
+   },
+   "quote": "E_emb 0.017 kgCO2e per million tokens 0.025 kgCO2e per million tokens",
+   "derived": "Output: 0.87 kWh per million tokens x 1.10 PUE = 0.957 kWh; x 0.341 kgCO2e/kWh = 0.326 kg; + 0.017 embodied = 0.343 kgCO2e per million output tokens (0.443 with the 0.1 training default). Input: 0.29 x 1.10 = 0.319 kWh; x 0.341 = 0.109 kg; + 0.017 = 0.126 kgCO2e per million input tokens (0.226 with training). Location-based; a market-based figure with clean-power contracts would be far lower, and a clean grid cuts the operational part by about 90 percent (Hausfather).",
+   "status": "partly"
+  },
+  {
+   "id": "au-047",
+   "entity": "Water per million tokens at Watershed energy factors and Google's fleet WUE (this file's arithmetic)",
+   "metric": "on-site cooling water per million tokens",
+   "value": 1.0,
+   "low": null,
+   "high": null,
+   "unit": "liters per million output tokens (input: 0.33)",
+   "year": 2026,
+   "boundary": "On-site consumptive cooling water only (IT energy x WUE); excludes generation water, which depends on the grid",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host"
+   ],
+   "source": {
+    "title": "Measuring the environmental impact of delivering AI at Google Scale",
+    "publisher": "Google (Elsworth, Patterson, Dean et al.)",
+    "url": "https://arxiv.org/pdf/2508.15734",
+    "published": "2025-08-20",
+    "kind": "preprint"
+   },
+   "quote": "For both 2023 and 2024, Google’s WUE Category 2 value was 1.15 L/kWh.",
+   "derived": "Google's formula is water per prompt = (total energy - overhead energy) x WUE. Output: 0.87 kWh per million tokens x 1.15 L/kWh = 1.00 L per million output tokens (1.0 mL per 1,000). Input: 0.29 x 1.15 = 0.33 L per million. Check: 375 input and 125 output tokens give 0.375 x 0.33 + 0.125 x 1.00 = 0.25 mL against Google's 0.26 mL, which is circular because the energy factors were derived from the same prompt.",
+   "status": "partly"
+  },
+  {
+   "limit": "A top-down ceiling that counts all of Google's data center electricity against its reported tokens, so it cannot confirm a per-token figure.",
+   "id": "au-048",
+   "entity": "Google, all surfaces, top-down check (this file's arithmetic)",
+   "metric": "upper bound on data center electricity per token if all of it served tokens",
+   "value": 3.6,
+   "low": null,
+   "high": null,
+   "unit": "Wh per 1,000 tokens (3,600 Wh per million tokens)",
+   "year": 2025,
+   "boundary": "Total Google data center electricity 2025 (rs-002, 42,415,800 MWh) over 12 times the 980 trillion monthly tokens reported in July 2025; includes Search, YouTube, Cloud, training and everything else",
+   "basis": "average",
+   "layers": [
+    "accelerator",
+    "host",
+    "idle",
+    "facility overhead"
+   ],
+   "source": {
+    "title": "Alphabet earnings, Q2 2025: CEO's remarks",
+    "publisher": "Google (Alphabet)",
+    "url": "https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q2-2025/",
+    "published": "2025-07-23",
+    "kind": "company-report"
+   },
+   "quote": "At I/O in May, we announced that we processed 480 trillion monthly tokens across our surfaces. Since then we have doubled that number, now processing over 980 trillion monthly tokens, a remarkable increase.",
+   "derived": "42,415,800 MWh = 4.24158e13 Wh; 980e12 x 12 = 1.176e16 tokens; 4.24158e13 / 1.176e16 = 3.61e-3 Wh per token = 3.6 Wh per 1,000 tokens. At 480e12 x 12 the bound is 7.4; at the May 2026 rate of 3.2e15 x 12 (against 2025 electricity, so not a like-for-like year) it is 1.1.",
+   "status": "partly"
+  },
+  {
+   "id": "au-049",
+   "entity": "AI tasks, trend in energy per task",
+   "metric": "annual change in energy use per AI task, and the cost of video, reasoning and agentic tasks",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "order of magnitude per year; hundreds to thousands of times per query",
+   "year": 2026,
+   "boundary": "Energy per task, agency synthesis, not a measurement of any one model",
+   "basis": "average",
+   "layers": [],
+   "source": {
+    "title": "Key Questions on Energy and AI, Executive Summary",
+    "publisher": "International Energy Agency",
+    "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary",
+    "published": "2026-04-16",
+    "kind": "agency"
+   },
+   "quote": "Software and hardware advances have resulted in the energy use per AI task dropping by at least an order of magnitude annually in recent years.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-050",
+   "entity": "Typical production query on Microsoft Azure, Joule study",
+   "metric": "cooling water per typical query",
+   "value": null,
+   "low": 0.0,
+   "high": 0.067,
+   "unit": "mL per query",
+   "year": 2026,
+   "boundary": "Cooling water consumed by a typical query for large production models under conservative assumptions; excludes generation water",
+   "basis": "median",
+   "layers": [
+    "facility cooling"
+   ],
+   "source": {
+    "title": "Scaling AI with 8 to 20x energy efficiency",
+    "publisher": "Microsoft Cloud Blog",
+    "url": "https://www.microsoft.com/en-us/microsoft-cloud/blog/2026/06/15/scaling-ai-with-8-to-20x-energy-efficiency/",
+    "published": "2026-06-15",
+    "kind": "company-report"
+   },
+   "quote": "we estimate that a typical query uses in the range of 0.0 to 0.067 mL of water, with a median water use equivalent to about one-hundredth of a teaspoon or less than a single drop.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "au-051",
+   "entity": "Claude Haiku 5.5 (small class), prompts up to 100,000 tokens",
+   "metric": "API list price per million tokens",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens (input $0.10; cache hit $0.01)",
+   "year": 2026,
+   "boundary": "List price for pay-as-you-go API tokens, before discounts and subscriptions",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Pricing (Claude API model pricing)",
+    "publisher": "Anthropic",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "| Claude Haiku 5.5 (for prompts up to 100,000 tokens) | $0.10 / MTok | $0.125 / MTok | $0.20 / MTok | $0.01 / MTok | $0.50 / MTok |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-052",
+   "entity": "Claude Sonnet 5.5 (mid class)",
+   "metric": "API list price per million tokens",
+   "value": 10,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens (input $2; cache hit $0.10)",
+   "year": 2026,
+   "boundary": "List price for pay-as-you-go API tokens",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Pricing (Claude API model pricing)",
+    "publisher": "Anthropic",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "| Claude Sonnet 5.5 | $2 / MTok | $2.50 / MTok | $4 / MTok | $0.10 / MTok<sup>2</sup> | $10 / MTok |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-053",
+   "entity": "Claude Fable 5.1 (top class)",
+   "metric": "API list price per million tokens",
+   "value": 50,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens (input $10; cache hit $0.25)",
+   "year": 2026,
+   "boundary": "List price for pay-as-you-go API tokens",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Pricing (Claude API model pricing)",
+    "publisher": "Anthropic",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "| Claude Fable 5.1 | $10 / MTok | $12.50 / MTok | $20 / MTok | $0.25 / MTok<sup>1</sup> | $50 / MTok |",
+   "derived": "Output price spread within one vendor, Haiku 5.5 to Fable 5.1: 50 / 0.50 = 100 times. The energy spread between model classes in the record is much smaller: 7.3 times for 70 times the parameters (TokenPowerBench), 3 to 4 times across one model family (Watershed), 30 times between reasoning and smaller models (Watershed). Price is not an energy proxy.",
+   "status": "verified"
+  },
+  {
+   "id": "au-054",
+   "entity": "gpt-6-luna (small class), short context",
+   "metric": "API list price per million tokens",
+   "value": 0.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens (input $0.10; cached input $0.01)",
+   "year": 2026,
+   "boundary": "Standard list price, short context; batch and flex tiers are half",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Pricing (API)",
+    "publisher": "OpenAI",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "| gpt-6-luna | $0.10 | $0.50 | $0.01 | $0.125 | $0.25 | $0.20 | $0.75 | $0.02 | $0.25 | $0.50 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-055",
+   "entity": "gpt-6-astra (top class), short context",
+   "metric": "API list price per million tokens",
+   "value": 50,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens (input $10; cached input $1)",
+   "year": 2026,
+   "boundary": "Standard list price, short context",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Pricing (API)",
+    "publisher": "OpenAI",
+    "url": "https://developers.openai.com/api/docs/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "| gpt-6-astra | $10.00 | $50.00 | $1.00 | $12.50 | $25.00 | $20.00 | $75.00 | $2.00 | $25.00 | $50.00 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-056",
+   "entity": "Gemini 4 Argon, Standard tier, paid",
+   "metric": "API list price per million tokens, with a scheduled increase",
+   "value": 10,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens through 11/30/2026; $20 from 12/01/2026 (input $2, then $4)",
+   "year": 2026,
+   "boundary": "List price, thinking tokens included in output",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Gemini Developer API pricing",
+    "publisher": "Google AI for Developers",
+    "url": "https://ai.google.dev/gemini-api/docs/pricing",
+    "published": "2026-10-30",
+    "kind": "company-report"
+   },
+   "quote": "| Output price (including thinking tokens) | Not available | $10.00 through November 30, 2026. $20.00 starting December 1, 2026. |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-057",
+   "entity": "DeepSeek V4.1 Flash (open-weight, own API)",
+   "metric": "API list price per million tokens, off-peak and peak",
+   "value": 0.6,
+   "low": null,
+   "high": null,
+   "unit": "USD per million output tokens off-peak ($1.2 peak); input cache miss $0.15 off-peak ($0.30 peak)",
+   "year": 2026,
+   "boundary": "List price; off-peak is half of peak (01:00 to 04:00 and 06:00 to 10:00 UTC weekdays are peak)",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Models & Pricing",
+    "publisher": "DeepSeek API Docs",
+    "url": "https://api-docs.deepseek.com/quick_start/pricing",
+    "published": "page read 11/04/2026 (no page date)",
+    "kind": "company-report"
+   },
+   "quote": "|1M OUTPUT TOKENS |OFF-PEAK |$0.6 |$1.98 |",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "au-058",
+   "entity": "Gemini Omni 1.1 Flash (video generation)",
+   "metric": "API list price for generated video",
+   "value": 17.5,
+   "low": null,
+   "high": null,
+   "unit": "USD per million video output tokens, about $0.10 per second of 720p video",
+   "year": 2026,
+   "boundary": "List price, Standard tier; billed at 5,792 tokens per second of 720p video",
+   "basis": "list price",
+   "layers": [],
+   "source": {
+    "title": "Gemini Developer API pricing",
+    "publisher": "Google AI for Developers",
+    "url": "https://ai.google.dev/gemini-api/docs/pricing",
+    "published": "2026-10-30",
+    "kind": "company-report"
+   },
+   "quote": "Billing is based on total output token consumption, calculated at a rate of 5,792 tokens per second of 720p video. Under Standard pricing, this equates to an effective price of approximately $0.10 per second.",
+   "derived": "5,792 tokens/s x $17.50 / 1e6 = $0.101 per second of video; an 8-second clip is about $0.81. Veo 3 energy is 30.8 Wh per 8-second clip (fp-070), about 3.85 Wh per second.",
+   "status": "verified"
+  },
+  {
+   "id": "au-059",
+   "entity": "Unit identity used to place per-token and per-query figures on one scale",
+   "metric": "conversion between J per token and Wh per million tokens",
+   "value": 277.78,
+   "low": null,
+   "high": null,
+   "unit": "Wh per million tokens for each J per token",
+   "year": 2026,
+   "boundary": "Arithmetic only; boundaries of the figures converted are different and must stay labeled",
+   "basis": "n/a",
+   "layers": [],
+   "source": {
+    "title": "LLM Inference Energy: A Longitudinal Analysis",
+    "publisher": "ML.ENERGY (Jae-Won Chung)",
+    "url": "https://ml.energy/blog/measurement/energy/llm-inference-energy-a-longitudinal-analysis/",
+    "published": "2026-02-09",
+    "kind": "blog"
+   },
+   "quote": "For instance, the 8B model on batch size 64 reduces energy per token by 41% (0.20 J to 0.12 J).",
+   "derived": "1 J/token = 1e6 J per million tokens / 3600 J per Wh = 277.78 Wh per million tokens. Converted, per OUTPUT token unless stated, with the boundary in brackets: 0.12 J = 33 Wh (GPU only, 8B, batch 64); 0.10 J = 28 Wh and 0.51 J = 142 Wh (GPU, Qwen3 8B and 32B, English); 3.10 J = 861 Wh (GPU net of idle draw, local 7B code model on Ollama, batch size not stated, incl. prompt processing); Joule standard query 0.31 Wh / 300 output tokens = 3.72 J = 1,033 Wh (full node plus PUE, includes the 500 input tokens); Joule reasoning 3.91 Wh / 5,000 = 2.81 J = 781 Wh; Watershed hyperscaler 870 Wh output, 290 Wh input (IT energy before PUE); Couch 1,950 output, 390 input; claude-carbon Sonnet 1.0 J = 278 Wh; Blackwell agent 58.4 J = 16,218 Wh and saturated serving 0.92 J = 256 Wh (whole system, no facility). Reading: whole-service per-output-token figures cluster at about 0.8 to 2 kWh per million output tokens; GPU-only batched figures are about 6 to 30 times lower; the unbatched dedicated agent rig is about 19 times higher than the whole-service figure (16,218 / 870) and 63 times the same rig when saturated.",
+   "status": "verified"
+  }
+ ]
+}

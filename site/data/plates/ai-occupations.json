@@ -1,0 +1,248 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-occupations",
+ "fit": true,
+ "default": "jb-002",
+ "eyebrow": "Occupations",
+ "title": "By 2035, BLS projects +{c[jb-002][value]} percent for data scientists and {c[jb-007][value]} for data entry keyers, with electricians at +{c[jb-011][value]} and power-line installers at +{c[jb-013][value]}; all occupations grow {c[jb-010][value]}",
+ "subtitle": "Projected percent change in employment, 2025 to 2035. BLS says it adjusts for AI conservatively, where there is convincing evidence for a change.",
+ "text": [
+  "The Bureau of Labor Statistics' ten-year projection by occupation includes the trades that build data centers. The studies that have looked for AI's effect on employment so far disagree, and are shown together."
+ ],
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "occ_sort",
+   "label": "Sort",
+   "default": "value",
+   "options": [
+    {
+     "value": "value",
+     "label": "By change"
+    },
+    {
+     "value": "tag",
+     "label": "By group"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "bars",
+  "signed": true,
+  "sort": "occ_sort",
+  "projected": true,
+  "axis_label": "Projected percent change, 2025 to 2035",
+  "marks": [
+   {
+    "id": "all",
+    "label": "All occupations",
+    "claim": "jb-010"
+   }
+  ],
+  "domain": [
+   -40,
+   40
+  ]
+ },
+ "reading": "{label}: {display} projected change, 2025 to 2035. BLS Employment Projections, {published}.",
+ "rows": [
+  {
+   "id": "jb-002",
+   "label": "Data scientists",
+   "claim": "jb-002",
+   "tag": "Data and software",
+   "cols": {
+    "code": "15-2051",
+    "employment": "275.6 thousand",
+    "group": "Data and software"
+   },
+   "detail": "From 275.6 thousand jobs in 2025 to 371.0 thousand in 2035."
+  },
+  {
+   "id": "jb-013",
+   "label": "Power-line installers",
+   "claim": "jb-013",
+   "tag": "Buildout trade",
+   "cols": {
+    "code": "",
+    "employment": "",
+    "group": "Buildout trade"
+   },
+   "detail": "All U.S. power-line installers and repairers; BLS does not limit this to data center load growth."
+  },
+  {
+   "id": "jb-001",
+   "label": "Software developers",
+   "claim": "jb-001",
+   "tag": "Data and software",
+   "cols": {
+    "code": "15-1252",
+    "employment": "1717.8 thousand",
+    "group": "Data and software"
+   },
+   "detail": "From 1717.8 thousand jobs in 2025 to 1892.6 thousand in 2035."
+  },
+  {
+   "id": "jb-011",
+   "label": "Electricians",
+   "claim": "jb-011",
+   "tag": "Buildout trade",
+   "cols": {
+    "code": "",
+    "employment": "",
+    "group": "Buildout trade"
+   },
+   "detail": "BLS expects about 72,700 openings a year, including replacements. BLS does not attribute this demand to data centers.",
+   "cites": [
+    "jb-012"
+   ]
+  },
+  {
+   "id": "jb-014",
+   "label": "Accountants and auditors",
+   "claim": "jb-014",
+   "tag": "Business and legal",
+   "cols": {
+    "code": "",
+    "employment": "",
+    "group": "Business and legal"
+   }
+  },
+  {
+   "id": "jb-008",
+   "label": "Paralegals and legal assistants",
+   "claim": "jb-008",
+   "tag": "Business and legal",
+   "cols": {
+    "code": "23-2011",
+    "employment": "404.9 thousand",
+    "group": "Business and legal"
+   },
+   "detail": "From 404.9 thousand jobs in 2025 to 403.8 thousand in 2035."
+  },
+  {
+   "id": "jb-009",
+   "label": "Medical transcriptionists",
+   "claim": "jb-009",
+   "tag": "Office and records",
+   "cols": {
+    "code": "31-9094",
+    "employment": "42.0 thousand",
+    "group": "Office and records"
+   },
+   "detail": "From 42.0 thousand jobs in 2025 to 40.2 thousand in 2035."
+  },
+  {
+   "id": "jb-003",
+   "label": "Customer service representatives",
+   "claim": "jb-003",
+   "tag": "Office and records",
+   "cols": {
+    "code": "43-4051",
+    "employment": "2666.0 thousand",
+    "group": "Office and records"
+   },
+   "detail": "From 2666.0 thousand jobs in 2025 to 2524.1 thousand in 2035."
+  },
+  {
+   "id": "jb-006",
+   "label": "Claims adjusters and examiners",
+   "claim": "jb-006",
+   "tag": "Business and legal",
+   "cols": {
+    "code": "13-1031",
+    "employment": "376.1 thousand",
+    "group": "Business and legal"
+   },
+   "detail": "From 376.1 thousand jobs in 2025 to 355.5 thousand in 2035."
+  },
+  {
+   "id": "jb-005",
+   "label": "Bookkeeping and auditing clerks",
+   "claim": "jb-005",
+   "tag": "Office and records",
+   "cols": {
+    "code": "43-3031",
+    "employment": "1532.4 thousand",
+    "group": "Office and records"
+   },
+   "detail": "From 1532.4 thousand jobs in 2025 to 1446.8 thousand in 2035."
+  },
+  {
+   "id": "jb-004",
+   "label": "Administrative assistants",
+   "claim": "jb-004",
+   "tag": "Office and records",
+   "cols": {
+    "code": "43-6014",
+    "employment": "1889.8 thousand",
+    "group": "Office and records"
+   },
+   "detail": "From 1889.8 thousand jobs in 2025 to 1775.7 thousand in 2035."
+  },
+  {
+   "id": "jb-015",
+   "label": "Computer programmers",
+   "claim": "jb-015",
+   "tag": "Data and software",
+   "cols": {
+    "code": "",
+    "employment": "",
+    "group": "Data and software"
+   }
+  },
+  {
+   "id": "jb-007",
+   "label": "Data entry keyers",
+   "claim": "jb-007",
+   "tag": "Office and records",
+   "cols": {
+    "code": "43-9021",
+    "employment": "131.8 thousand",
+    "group": "Office and records"
+   },
+   "detail": "From 131.8 thousand jobs in 2025 to 98.2 thousand in 2035."
+  }
+ ],
+ "cites": [
+  "jb-016"
+ ],
+ "foot": [
+  {
+   "text": "What a data center itself brings in jobs is on the data centers page.",
+   "href": "../data-centers/#jobs",
+   "link": "Open the Jobs tab"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Occupation",
+    "field": "label"
+   },
+   {
+    "label": "Code",
+    "field": "code"
+   },
+   {
+    "label": "Change, percent",
+    "field": "text"
+   },
+   {
+    "label": "Employment, 2025",
+    "field": "employment"
+   },
+   {
+    "label": "Group",
+    "field": "group"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

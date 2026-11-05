@@ -1,0 +1,233 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-scale",
+ "model": "comparison-model",
+ "default": "chat",
+ "eyebrow": "Scale",
+ "title": "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year on a median-prompt floor; the buildout adds hundreds (2025 to 2030)",
+ "subtitle": "Terawatt-hours a year. Dashed and hollow rows are projections.",
+ "inputs": {
+  "now": {
+   "model": "computed_defaults.scale"
+  },
+  "yt_m": {
+   "model": "computed_defaults.scale.youtube_dc_twh_delivery"
+  },
+  "yt_d": {
+   "model": "computed_defaults.scale.youtube_dc_twh_desnz"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "scale_wh",
+   "label": "Wh per text prompt",
+   "default": "value",
+   "options": [
+    {
+     "value": "low",
+     "label": "0.24, Google"
+    },
+    {
+     "value": "value",
+     "label": "0.30, model"
+    },
+    {
+     "value": "mean",
+     "label": "0.34, OpenAI"
+    },
+    {
+     "value": "high",
+     "label": "0.60, Epoch"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "scale_intensity",
+   "label": "Streaming data center energy",
+   "default": "m",
+   "options": [
+    {
+     "value": "m",
+     "label": "Measured delivery",
+     "is": "yt_m"
+    },
+    {
+     "value": "d",
+     "label": "DESNZ scenario",
+     "is": "yt_d"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "ladder",
+  "scale": "log",
+  "domain": [
+   0.1,
+   1000
+  ],
+  "units": {
+   "TWh per year (less than)": "TWh"
+  }
+ },
+ "reading": "{label}: about {display} a year. {boundary} {evidence}",
+ "also": [
+  {
+   "claim": "fp-009",
+   "label": "Google's energy per median text prompt over twelve months",
+   "say": "down by a factor of {text}"
+  },
+  {
+   "claim": "rs-003",
+   "label": "Google's total electricity in 2025",
+   "say": "up {text} percent; a pair, with no forecast attached"
+  }
+ ],
+ "rows": [
+  {
+   "id": "chat",
+   "label": "ChatGPT text messages",
+   "tag": "07/2025 count, median prompt",
+   "unit": "TWh",
+   "boundary": "A text-only floor: it leaves out reasoning, images, video, agents, API traffic, training, and every other chat product.",
+   "cites": [
+    "fp-092",
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-015"
+   ],
+   "formula": {
+    "value": "now.chat_twh",
+    "low": "now.chat_twh_low",
+    "high": "now.chat_twh_high"
+   },
+   "equation": "Messages a day x 365 x Wh per prompt"
+  },
+  {
+   "id": "ytdc",
+   "label": "YouTube, data center segment",
+   "tag": "2016 hours, a floor",
+   "unit": "TWh",
+   "boundary": "Data center serving only, on the setting's Wh per GB.",
+   "cites": [
+    "fp-050",
+    "fp-122",
+    "fp-130",
+    "fp-043"
+   ],
+   "formula": {
+    "value": "scale_intensity"
+   },
+   "equation": "Hours a day x 365 x GB per hour x Wh per GB served"
+  },
+  {
+   "id": "search",
+   "label": "All web searches as simple AI queries",
+   "tag": "IEA upper bound",
+   "claim": "dem-045",
+   "range": false,
+   "boundary": "A hypothetical upper bound from the IEA, under this figure."
+  },
+  {
+   "id": "nw",
+   "label": "Council region data centers",
+   "tag": "2030, projected",
+   "claim": "dem-091",
+   "projected": true,
+   "boundary": "A workbook input for a power region, not a forecast of any facility."
+  },
+  {
+   "id": "ytwhole",
+   "label": "YouTube, whole chain",
+   "tag": "2016 hours, published hours",
+   "unit": "TWh",
+   "boundary": "Data center, network, router, and screen, on the published hours; most of it is in homes.",
+   "cites": [
+    "fp-050",
+    "fp-035",
+    "fp-120",
+    "fp-044"
+   ],
+   "formula": {
+    "value": "now.youtube_whole_twh",
+    "low": "now.youtube_whole_twh_low",
+    "high": "now.youtube_whole_twh_high"
+   }
+  },
+  {
+   "id": "lbnl24",
+   "label": "US data centers",
+   "tag": "LBNL, 2024",
+   "claim": "dem-028",
+   "boundary": "Servers, storage, network equipment, cooling, and power, for all US data centers."
+  },
+  {
+   "id": "iea25",
+   "label": "World data centers",
+   "tag": "IEA, 2025",
+   "claim": "dem-040",
+   "boundary": "All data centers worldwide, including AI-focused ones."
+  },
+  {
+   "id": "lbnl30",
+   "label": "US data centers",
+   "tag": "LBNL, 2030, projected",
+   "claim": "dem-029",
+   "range_from": "dem-030",
+   "projected": true,
+   "boundary": "Reference case, within the range LBNL prints."
+  },
+  {
+   "id": "iea30",
+   "label": "World data centers",
+   "tag": "IEA, 2030, projected",
+   "claim": "dem-048",
+   "projected": true,
+   "boundary": "Base case; the text of the 2026 report rounds it up."
+  }
+ ],
+ "foot": [
+  {
+   "text": "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights.",
+   "href": "../data-centers/#questions",
+   "link": "Read the Questions for Tribal Leaders"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "TWh",
+    "field": "display"
+   },
+   {
+    "label": "Low",
+    "field": "low"
+   },
+   {
+    "label": "High",
+    "field": "high"
+   },
+   {
+    "label": "Year",
+    "field": "year"
+   },
+   {
+    "label": "Basis",
+    "field": "tag"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

@@ -1,0 +1,1652 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "built": "2026-11-04",
+ "purpose": "Transparent model behind the chat-versus-video comparison. Every input carries claim ids from footprint.json (fp-), demand.json (dem-) or tradeoffs.json (tr-) and a basis label: measured (a meter or operator production data), reported (a company or survey total), or modeled (an estimate, allocation or this file's arithmetic). The page script reproduces these equations and checks its totals against computed_defaults. Ranges are low and high inputs run through the same equations, not confidence intervals.",
+ "units": {
+  "energy": "Wh unless stated",
+  "data": "GB",
+  "power": "W"
+ },
+ "inputs": {
+  "chat_wh_per_prompt": {
+   "value": 0.3,
+   "low": 0.24,
+   "high": 0.6,
+   "mean": 0.34,
+   "unit": "Wh per text prompt",
+   "basis": "measured (Google production median 0.24) and modeled (Joule median 0.31, interquartile 0.16 to 0.60; Jegham GPT-4o short prompt 0.42; OpenAI statement 0.34 'average query', no method; Epoch 0.6 including a development share)",
+   "claims": [
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-021",
+    "fp-015"
+   ],
+   "segment": "data center",
+   "note": "Text prompts only. 0.24 and 0.31 are medians: Google reports the median because the per-prompt distribution is skewed and the arithmetic mean is pulled up by a few heavy prompts, so any count times 0.30 is a floor. mean (0.34) is the only average-class figure in the record and carries no boundary; sums are also run at it. Reasoning, long-context, image, video and agent work are in heavy_ai and in the chat_kind setting."
+  },
+  "chat_kb_per_prompt": {
+   "value": 50,
+   "low": 5,
+   "high": 500,
+   "unit": "KB per prompt and reply",
+   "basis": "modeled from one phone-app measurement (several KB per prompt, 62 KB for a web-search prompt); 500 KB is an allowance for web clients and images",
+   "claims": [
+    "fp-134"
+   ],
+   "segment": "network"
+  },
+  "video_dc_wh_per_gb": {
+   "value": 0.45,
+   "low": 0.35,
+   "high": 30.1,
+   "unit": "Wh per GB served",
+   "basis": "modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35; DESNZ's scenario assumes 15 Wh of IT energy per GB streamed plus non-IT, which its Tables 5.3 and 5.4 make 11.1, 19.6 and 30.1 Wh per GB in the low, medium and high cases (0.155, 0.274 and 0.422 kWh over 14 GB)",
+   "claims": [
+    "fp-122",
+    "fp-130",
+    "fp-037",
+    "fp-043"
+   ],
+   "segment": "data center",
+   "note": "The 1-to-70 spread is not an allocation of encoding and storage. DESNZ attributes downloading and streaming entirely to the user (0.21 kWh for 14 GB at 0.015 kWh per GB) and its shared processing and storage shares are about 0.00001 kWh per user, so the dispute is the assumed serving energy per GB, about 45 times between DIMPACT and DESNZ. Every video row is GB times this intensity; the reader-chosen setting is video_dc_intensity."
+  },
+  "short_dc_ceiling_wh_per_hour": {
+   "value": 13.9,
+   "low": 9.1,
+   "high": 13.9,
+   "unit": "Wh per hour of short-video feed, ceiling",
+   "basis": "modeled bound: Meta's 15.1 Wh per daily active person per day spread over 65 minutes of daily Facebook and Instagram use (ENGIE) gives 13.9 Wh per hour; over Similarweb's 100 Instagram minutes, 9.1. All Meta products, AI training and offices included",
+   "claims": [
+    "fp-059",
+    "fp-055",
+    "fp-097"
+   ],
+   "segment": "data center",
+   "note": "The short row's data center segment is short_gb_per_hour times video_dc_wh_per_gb (delivery only; ranking and recommendation compute are unmeasured), capped at this ceiling per hour and at 15.1 Wh per day. No source measures the data center side of an Instagram or TikTok hour. ENGIE excludes Meta's data centers (fp-051)."
+  },
+  "meta_wh_per_person_day": {
+   "value": 15.1,
+   "low": null,
+   "high": null,
+   "unit": "Wh per daily active person per day",
+   "basis": "reported (Meta 2024: 18.42 TWh total electricity over 3.35 billion daily active people)",
+   "claims": [
+    "fp-059",
+    "fp-060",
+    "fp-084"
+   ],
+   "segment": "data center",
+   "note": "A company-wide fleet average per daily active person that counts AI training, ads, Reality Labs and offices. Not a bound on any one feed (a heavy Instagram user sits above a fleet average that includes WhatsApp-only people) and not on the chat row's text-inference boundary."
+  },
+  "net_fixed_avg_wh_per_gb": {
+   "value": 1.6,
+   "low": 1.6,
+   "high": 6.5,
+   "unit": "Wh per GB",
+   "basis": "modeled (DESNZ 2024 extrapolation 1.6; Carbon Trust 2020 regression 6.5)",
+   "claims": [
+    "fp-127",
+    "fp-124"
+   ],
+   "segment": "network"
+  },
+  "net_mobile_avg_wh_per_gb": {
+   "value": 25,
+   "low": 25,
+   "high": 183,
+   "unit": "Wh per GB",
+   "basis": "modeled (DESNZ 2024 extrapolation 25; Carbon Trust 2020 100; ENGIE Europe 2022 top-down 183)",
+   "claims": [
+    "fp-128",
+    "fp-125",
+    "fp-053"
+   ],
+   "segment": "network"
+  },
+  "net_fixed_marginal_wh_per_gb": {
+   "value": 0.13,
+   "low": 0.13,
+   "high": 0.13,
+   "unit": "Wh per GB",
+   "basis": "modeled (Carbon Trust power model: dynamic part of core and access power for a 6.67 Mbps stream)",
+   "claims": [
+    "fp-129"
+   ],
+   "segment": "network"
+  },
+  "net_mobile_marginal_wh_per_gb": {
+   "value": 3.4,
+   "low": 3.4,
+   "high": 3.4,
+   "unit": "Wh per GB",
+   "basis": "modeled (ENGIE short-term marginal 8.6 mWh per 2.5 MB; Carbon Trust power model agrees)",
+   "claims": [
+    "fp-053",
+    "fp-129"
+   ],
+   "segment": "network"
+  },
+  "router_watts": {
+   "value": 10,
+   "low": 5.88,
+   "high": 15,
+   "unit": "W",
+   "basis": "modeled (Carbon Trust 10 W router; DIMPACT 9 to 15 W); measured 5.88 Wh per hour for a home router during 1080p phone streaming (TNO poster)",
+   "claims": [
+    "fp-126",
+    "fp-133",
+    "fp-049"
+   ],
+   "segment": "home router",
+   "note": "A shared always-on device: by_time charges its whole hourly draw to one person's activity, the same for every row, so it never explains a difference between rows and is shown as a separate fixed band."
+  },
+  "router_wh_per_gb": {
+   "value": 25,
+   "low": null,
+   "high": null,
+   "unit": "Wh per GB",
+   "basis": "modeled (Carbon Trust conventional allocation of a 10 W router by household data)",
+   "claims": [
+    "fp-126"
+   ],
+   "segment": "home router"
+  },
+  "device_wh_per_hour": {
+   "phone": {
+    "value": 2.0,
+    "low": 1.0,
+    "high": 3.0,
+    "unit": "Wh per hour",
+    "basis": "measured for video (TNO 2.22 at 75 percent brightness; Greenspector YouTube 5.28 mAh per minute, about 1.2 Wh per hour at 3.85 V and 50 percent brightness); modeled for chat (Greenspector ChatGPT 5.5 to 7.2 mAh per minute, 1.05 to 1.36 times its YouTube rate); DIMPACT 1 to 2 W",
+    "claims": [
+     "fp-049",
+     "fp-088",
+     "fp-086",
+     "fp-090",
+     "fp-133",
+     "fp-132"
+    ],
+    "note": "Battery energy, not wall energy; charging losses would add roughly a third (EPA 19 Wh per charge, fp-073)."
+   },
+   "laptop": {
+    "value": 22,
+    "low": 15,
+    "high": 30,
+    "unit": "Wh per hour",
+    "basis": "modeled (Carbon Trust Table 10 portable computer 22 W; DIMPACT 15 to 30 W)",
+    "claims": [
+     "fp-132",
+     "fp-133"
+    ]
+   },
+   "tv": {
+    "value": 100,
+    "low": 40,
+    "high": 120,
+    "unit": "Wh per hour",
+    "basis": "modeled (100 W television in Google, DIMPACT, DESNZ and Carbon Trust; DIMPACT range 40 to 120 W)",
+    "claims": [
+     "fp-008",
+     "fp-122",
+     "fp-043",
+     "fp-132",
+     "fp-133"
+    ]
+   }
+  },
+  "video_gb_per_hour": {
+   "phone": {
+    "value": 1.0,
+    "low": 0.17,
+    "high": 3.0,
+    "unit": "GB per hour",
+    "basis": "modeled (Carbon Trust: SD 1, HD 3, mobile save-data 0.17, automatic 0.25)",
+    "claims": [
+     "fp-130"
+    ]
+   },
+   "laptop": {
+    "value": 1.9,
+    "low": 1.0,
+    "high": 3.0,
+    "unit": "GB per hour",
+    "basis": "modeled (Carbon Trust laptop mix 55 percent SD, 45 percent HD)",
+    "claims": [
+     "fp-130"
+    ]
+   },
+   "tv": {
+    "value": 3.0,
+    "low": 1.0,
+    "high": 7.0,
+    "unit": "GB per hour",
+    "basis": "modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)",
+    "claims": [
+     "fp-130",
+     "fp-043"
+    ]
+   },
+   "mix": {
+    "value": 2.88,
+    "unit": "GB per hour",
+    "basis": "modeled (Carbon Trust European device mix, 70 percent television); used only to turn the measured per-hour data center figures into Wh per GB and for the YouTube total",
+    "claims": [
+     "fp-130"
+    ]
+   }
+  },
+  "short_gb_per_hour": {
+   "value": 0.39,
+   "low": 0.25,
+   "high": 2.0,
+   "unit": "GB per hour",
+   "basis": "modeled (ENGIE 256 MB per day over 39.5 minutes of 700 kb/s video; upper allowance for HD feeds and preloading)",
+   "claims": [
+    "fp-053",
+    "fp-054",
+    "fp-055",
+    "fp-130"
+   ],
+   "segment": "network"
+  },
+  "chat_messages_per_day": {
+   "value": 3.67,
+   "low": 3.57,
+   "high": 8,
+   "unit": "prompts per user per day",
+   "basis": "reported mean per weekly user per day, counting days of non-use (OpenAI: 18 billion messages a week over 700 million weekly users; fp-092 calls it a mean over light and heavy users, not a typical person); a per-active-day figure is unpublished and would be higher; 8 is Jegham's high case, which the Reuters item it cites does not contain (fp-094, unverified)",
+   "claims": [
+    "fp-034",
+    "fp-092",
+    "fp-026",
+    "fp-094"
+   ]
+  },
+  "video_minutes_per_day": {
+   "value": 88,
+   "low": null,
+   "high": null,
+   "unit": "minutes per day",
+   "basis": "reported (Similarweb, YouTube Android app, August 2026)",
+   "claims": [
+    "fp-098"
+   ]
+  },
+  "short_minutes_per_day": {
+   "value": 100,
+   "low": 100,
+   "high": 115,
+   "unit": "minutes per day",
+   "basis": "reported (Similarweb, Instagram 100 and TikTok 115 minutes, August 2026)",
+   "claims": [
+    "fp-097",
+    "fp-096"
+   ]
+  },
+  "household_wh_per_day": {
+   "value": 28740,
+   "low": null,
+   "high": null,
+   "unit": "Wh per day",
+   "basis": "reported (EIA 2025 residential average, 10,491 kWh per year)",
+   "claims": [
+    "fp-075"
+   ]
+  },
+  "stream_whole_chain_wh_per_hour": {
+   "value": 188,
+   "low": 53.7,
+   "high": 417.5,
+   "unit": "Wh per streaming hour, data center plus network plus router plus device",
+   "basis": "modeled published hours: Carbon Trust 2020 Europe 188 (70 percent television, router by data); Preist 2016 YouTube 53.7 (no idle equipment, low bitrate); BBC 2024 UK 65.7 (no standby); DESNZ 2025 scenario 162.5, 262.5 and 417.5 (low, medium, high). The low and high are the sources' own extremes, not the span of central estimates",
+   "claims": [
+    "fp-035",
+    "fp-120",
+    "fp-041",
+    "fp-044"
+   ],
+   "note": "Used only as the published yardstick in view 3 and for the YouTube total in view 4; view 1 builds its own hour from segments and view 3 also uses that hour."
+  },
+  "heavy_ai": [
+   {
+    "key": "reasoning_15x",
+    "label": "Reasoning query, 15 times longer than typical (about 5,000 output tokens)",
+    "value": 3.91,
+    "low": 2.15,
+    "high": 7.05,
+    "basis": "modeled (Joule)",
+    "claims": [
+     "fp-019"
+    ]
+   },
+   {
+    "key": "o3_short",
+    "label": "OpenAI o3, short prompt",
+    "value": 1.177,
+    "low": null,
+    "high": null,
+    "basis": "modeled (Jegham, preprint)",
+    "claims": [
+     "fp-023"
+    ]
+   },
+   {
+    "key": "o3_long",
+    "label": "OpenAI o3, long prompt (10k in, 1.5k out)",
+    "value": 12.222,
+    "low": null,
+    "high": null,
+    "basis": "modeled (Jegham, preprint)",
+    "claims": [
+     "fp-023"
+    ]
+   },
+   {
+    "key": "gpt5_high_medium",
+    "label": "GPT-5 high reasoning, medium query",
+    "value": 17.15,
+    "low": 2.33,
+    "high": 17.15,
+    "basis": "modeled (Jegham; low is minimal reasoning)",
+    "claims": [
+     "fp-025"
+    ]
+   },
+   {
+    "key": "gpt5_high_long",
+    "label": "GPT-5 high reasoning, long query",
+    "value": 33.8,
+    "low": null,
+    "high": null,
+    "basis": "modeled (Jegham)",
+    "claims": [
+     "fp-136"
+    ]
+   },
+   {
+    "key": "gpt4o_long",
+    "label": "GPT-4o, long context (10k in, 1.5k out)",
+    "value": 2.875,
+    "low": null,
+    "high": null,
+    "basis": "modeled (Jegham)",
+    "claims": [
+     "fp-021"
+    ]
+   },
+   {
+    "key": "deepseek_r1_long",
+    "label": "DeepSeek-R1 on its own servers, long prompt",
+    "value": 29.078,
+    "low": 7.41,
+    "high": 29.078,
+    "basis": "modeled (Jegham; low is the same model on Azure)",
+    "claims": [
+     "fp-024"
+    ]
+   },
+   {
+    "key": "image_sd3",
+    "label": "One 1024 x 1024 image, Stable Diffusion 3 Medium",
+    "value": 0.634,
+    "low": 0.317,
+    "high": 0.634,
+    "basis": "measured GPU energy 0.317, doubled for overhead (MIT Technology Review assumption)",
+    "claims": [
+     "fp-066",
+     "fp-138"
+    ]
+   },
+   {
+    "key": "image_open_2023",
+    "label": "One image, open models of 2023 (Luccioni)",
+    "value": 1.35,
+    "low": null,
+    "high": null,
+    "basis": "measured on one node, no PUE",
+    "claims": [
+     "fp-065"
+    ]
+   },
+   {
+    "key": "veo3_8s",
+    "label": "Veo 3, 8-second 720p clip (estimate)",
+    "value": 30.8,
+    "low": 19.8,
+    "high": 43.4,
+    "basis": "modeled (scaling laws, preprint)",
+    "claims": [
+     "fp-070"
+    ]
+   },
+   {
+    "key": "sora2pro_8s",
+    "label": "Sora 2 Pro, 8-second clip (estimate, same paper)",
+    "value": 418.5,
+    "low": 315.1,
+    "high": 534.4,
+    "basis": "modeled (scaling laws, preprint; claim fp-137; value is the paper's own mean)",
+    "claims": [
+     "fp-137"
+    ]
+   },
+   {
+    "key": "wan_1_3b",
+    "label": "Wan2.1 1.3B open model, 5-second 720p clip",
+    "value": 90.5,
+    "low": null,
+    "high": null,
+    "basis": "measured on one H100, no PUE",
+    "claims": [
+     "fp-068"
+    ]
+   },
+   {
+    "key": "wan_14b",
+    "label": "Wan2.1 14B open model, 5-second 720p clip",
+    "value": 415.1,
+    "low": null,
+    "high": null,
+    "basis": "measured on one H100, no PUE",
+    "claims": [
+     "fp-069"
+    ]
+   },
+   {
+    "key": "cogvideox_5s",
+    "label": "CogVideoX, 5-second 16 fps clip",
+    "value": 944,
+    "low": null,
+    "high": null,
+    "basis": "measured GPU energy",
+    "claims": [
+     "fp-067"
+    ]
+   },
+   {
+    "key": "agent_prompt",
+    "label": "Claude Code, one typed prompt (one heavy user)",
+    "value": 150,
+    "low": 60,
+    "high": 290,
+    "basis": "modeled from token logs",
+    "claims": [
+     "fp-031"
+    ]
+   },
+   {
+    "key": "agent_session",
+    "label": "Claude Code, median session (one heavy user)",
+    "value": 600,
+    "low": 250,
+    "high": 1200,
+    "basis": "modeled from token logs",
+    "claims": [
+     "fp-032"
+    ]
+   },
+   {
+    "key": "agent_day",
+    "label": "Claude Code, average day (one heavy user)",
+    "value": 3000,
+    "low": 1200,
+    "high": 5900,
+    "basis": "modeled from token logs (claim fp-139)",
+    "claims": [
+     "fp-139"
+    ]
+   }
+  ],
+  "scale": {
+   "chatgpt_messages_per_day": {
+    "value": 2500000000.0,
+    "unit": "messages per day, July 2025, consumer plans",
+    "basis": "reported (OpenAI)",
+    "claims": [
+     "fp-092"
+    ],
+    "note": "One product; Gemini, Claude, Copilot and API traffic are not counted, so the chat total is a floor."
+   },
+   "youtube_hours_per_day": {
+    "value": 1000000000.0,
+    "unit": "viewing hours per day",
+    "basis": "reported for 2016 (as used by Preist et al.); a floor for today",
+    "claims": [
+     "fp-050",
+     "fp-120"
+    ]
+   },
+   "iea_world_2024_twh": {
+    "value": 415,
+    "claims": [
+     "dem-046"
+    ],
+    "basis": "modeled (agency)"
+   },
+   "iea_world_2025_twh": {
+    "value": 485,
+    "claims": [
+     "dem-040"
+    ],
+    "basis": "modeled (agency)"
+   },
+   "iea_world_2030_twh": {
+    "value": 945,
+    "claims": [
+     "dem-048",
+     "dem-041"
+    ],
+    "basis": "modeled (agency; text rounds to 950)"
+   },
+   "ai_focused_growth_2025_pct": {
+    "value": 50,
+    "claims": [
+     "dem-043"
+    ],
+    "basis": "modeled (agency)"
+   },
+   "iea_all_search_as_ai_twh": {
+    "value": 4,
+    "claims": [
+     "dem-045"
+    ],
+    "basis": "modeled (agency, upper bound)"
+   },
+   "lbnl_us_2024_twh": {
+    "value": 192,
+    "claims": [
+     "dem-028"
+    ],
+    "basis": "modeled (agency)"
+   },
+   "lbnl_us_2030_twh": {
+    "value": 649,
+    "low": 521,
+    "high": 843,
+    "claims": [
+     "dem-029",
+     "dem-030"
+    ],
+    "basis": "modeled (agency)"
+   },
+   "nw_dc_only_2030_amw": {
+    "value": 2020.4,
+    "low": 1301.9,
+    "high": 4429.3,
+    "claims": [
+     "dem-075"
+    ],
+    "basis": "modeled (NW Council workbook, data centers without chip fabs)"
+   },
+   "nw_region_amw": {
+    "value": 22000,
+    "claims": [
+     "dem-058"
+    ],
+    "basis": "reported (NW Council)"
+   },
+   "nw_dc_share_of_growth_pct": {
+    "value": 20.5,
+    "low": 15.4,
+    "high": 40.9,
+    "claims": [
+     "dem-063"
+    ],
+    "basis": "modeled (NW Council draft Ninth Plan futures, 2025 to 2046)"
+   },
+   "nw_adequacy_gap_2030_gw": {
+    "value": 9,
+    "claims": [
+     "dem-070"
+    ],
+    "basis": "modeled (E3 for Washington UTC)"
+   }
+  },
+  "water_carbon": {
+   "google_prompt_water_ml": {
+    "value": 0.26,
+    "claims": [
+     "fp-006"
+    ],
+    "basis": "measured, on-site cooling only"
+   },
+   "google_fleet_wue_l_per_kwh": {
+    "value": 1.15,
+    "claims": [
+     "fp-006"
+    ],
+    "basis": "reported"
+   },
+   "lbnl_site_wue_l_per_kwh": {
+    "value": 0.36,
+    "low": 0.45,
+    "high": 0.48,
+    "claims": [
+     "tr-009"
+    ],
+    "basis": "modeled (2023 plateau; range is the post-2023 scenario)"
+   },
+   "microsoft_wue_l_per_kwh": {
+    "value": 0.27,
+    "claims": [
+     "tr-028"
+    ],
+    "basis": "reported, cooling and humidification"
+   },
+   "meta_wue_withdrawal_l_per_kwh": {
+    "value": 0.19,
+    "claims": [
+     "tr-025"
+    ],
+    "basis": "reported, withdrawal basis"
+   },
+   "lbnl_indirect_water_l_per_kwh": {
+    "value": 4.52,
+    "claims": [
+     "tr-005"
+    ],
+    "basis": "modeled (US data center grid mix, 2023; all-sector 4.35)"
+   },
+   "li_gpt3_response_water_ml": {
+    "value": 16.9,
+    "claims": [
+     "tr-017"
+    ],
+    "basis": "modeled, GPT-3 era, on-site plus generation"
+   },
+   "mistral_response_water_ml": {
+    "value": 45,
+    "claims": [
+     "fp-027"
+    ],
+    "basis": "modeled life cycle"
+   },
+   "google_prompt_gco2e_market": {
+    "value": 0.03,
+    "claims": [
+     "fp-005"
+    ],
+    "basis": "reported, market-based"
+   },
+   "google_prompt_gco2e_location": {
+    "value": 0.093,
+    "claims": [
+     "fp-007"
+    ],
+    "basis": "modeled, location-based"
+   },
+   "google_location_factor_g_per_kwh": {
+    "value": 345,
+    "claims": [
+     "fp-007"
+    ],
+    "basis": "reported (Google 2024 location-based)"
+   },
+   "us_grid_average_g_per_kwh": {
+    "value": 370,
+    "claims": [
+     "tr-038"
+    ],
+    "basis": "reported (US average May 2024 to April 2025); hyperscale-weighted 545"
+   },
+   "lbnl_dc_grid_kg_per_kwh": {
+    "value": 0.34,
+    "claims": [
+     "tr-005"
+    ],
+    "basis": "modeled (US data center grid mix, 2023)"
+   },
+   "epa_marginal_lb_per_mwh": {
+    "value": 1405.3,
+    "claims": [
+     "fp-073"
+    ],
+    "basis": "reported (EPA equivalencies calculator non-baseload rate, 2022); equals about 637 g per kWh"
+   },
+   "streaming_gco2e_per_hour": {
+    "value": 56,
+    "low": 14.8,
+    "high": 56,
+    "claims": [
+     "fp-036",
+     "fp-042",
+     "fp-045"
+    ],
+    "basis": "modeled (Carbon Trust 2020 Europe 56; BBC 2024 UK 14.8; IEA 2019 36)"
+   },
+   "instagram_gco2e_per_min": {
+    "value": 0.87,
+    "claims": [
+     "fp-061"
+    ],
+    "basis": "modeled (Greenspector, France, phone plus projected server share)"
+   }
+  },
+  "comparators": [
+   {
+    "key": "phone_charge",
+    "label": "One smartphone charge",
+    "wh": 19,
+    "claims": [
+     "fp-073"
+    ],
+    "source_kind": "agency",
+    "note": "EPA, DOE data"
+   },
+   {
+    "key": "led_hour",
+    "label": "One hour of a 60 W-equivalent LED bulb",
+    "wh": 10.5,
+    "low": 5.9,
+    "high": 10.5,
+    "claims": [
+     "fp-135"
+    ],
+    "source_kind": "agency",
+    "note": "DOE FEMP Table 2"
+   },
+   {
+    "key": "tv_hour",
+    "label": "One hour of a 100 W television",
+    "wh": 100,
+    "claims": [
+     "fp-043",
+     "fp-008",
+     "fp-122"
+    ],
+    "source_kind": "agency-commissioned (DESNZ) and company (Google, DIMPACT)"
+   },
+   {
+    "key": "household_day",
+    "label": "One US household day",
+    "wh": 28740,
+    "claims": [
+     "fp-075"
+    ],
+    "source_kind": "agency",
+    "note": "EIA"
+   },
+   {
+    "key": "car_mile_gco2",
+    "label": "One mile in a typical passenger car (carbon only)",
+    "gco2": 400,
+    "claims": [
+     "fp-074"
+    ],
+    "source_kind": "agency",
+    "note": "EPA tailpipe"
+   },
+   {
+    "key": "iea_tv_sentence",
+    "label": "IEA: a simple text query uses less electricity than running a television for the same time",
+    "claims": [
+     "dem-044"
+    ],
+    "source_kind": "agency"
+   },
+   {
+    "key": "google_search",
+    "label": "One Google search (2009)",
+    "wh": 0.3,
+    "claims": [
+     "fp-071"
+    ],
+    "source_kind": "company, 17 years old"
+   },
+   {
+    "key": "microwave_minute",
+    "label": "One minute of an 800 W microwave",
+    "wh": 13.3,
+    "claims": [],
+    "source_kind": "none in the record: DOE's microwave standard regulates standby power only; 800 W is the Carbon Trust and MIT Technology Review convention",
+    "note": "Not for a chart until an agency wattage is found."
+   }
+  ]
+ },
+ "assumptions": {
+  "prompts_per_hour": {
+   "default": 10,
+   "min": 1,
+   "max": 60,
+   "step": 1,
+   "presets": [
+    2.52,
+    10,
+    30,
+    60
+   ],
+   "label": "Prompts the reader sends in the hour",
+   "why": "No source measures a chat hour. WildChat averages 2.52 prompts per conversation (fp-095) and OpenAI users average 3.67 per day (fp-034); ten per hour is one every six minutes, slow for someone chatting steadily, so 2.52, 10, 30 and 60 are offered as equal presets and no preset is the answer."
+  },
+  "device": {
+   "default": "phone",
+   "options": [
+    "phone",
+    "laptop",
+    "tv"
+   ],
+   "label": "Device for all three rows"
+  },
+  "connection": {
+   "default": "wifi",
+   "options": [
+    "wifi",
+    "cellular"
+   ],
+   "label": "Connection",
+   "why": "Cellular uses the mobile intensity and has no home router."
+  },
+  "network_mode": {
+   "default": "average",
+   "options": [
+    "average",
+    "marginal"
+   ],
+   "label": "Network accounting",
+   "why": "Average divides a network's whole energy by its traffic; marginal counts only the extra energy one more stream causes. Published figures differ by 10 to 50 times (fp-053, fp-129)."
+  },
+  "router_allocation": {
+   "default": "by_time",
+   "options": [
+    "by_time",
+    "by_data",
+    "excluded"
+   ],
+   "label": "Home router",
+   "why": "by_time charges the router's 10 W to every hour it is used (same for every app); by_data follows the Carbon Trust convention (25 Wh per GB); excluded follows BBC, which leaves always-on equipment out."
+  },
+  "video_dc_intensity": {
+   "default": "measured_delivery",
+   "options": {
+    "measured_delivery": 0.45,
+    "desnz_assumed": 19.6
+   },
+   "unit": "Wh per GB served",
+   "label": "Streaming data center energy per GB served",
+   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130); desnz_assumed is the DESNZ scenario's 15 Wh of IT energy per GB plus non-IT (fp-043, medium case; its low and high cases are 11.1 and 30.1). The 45-times gap is an assumed serving intensity, not an allocation of encoding and storage, which DESNZ attributes at about 0.01 Wh per viewer."
+  },
+  "chat_wh_per_prompt": {
+   "default": 0.3,
+   "min": 0.24,
+   "max": 0.6,
+   "step": 0.01,
+   "label": "Energy per text prompt in the data center",
+   "why": "The text slider; chat_kind overrides it for other kinds of chat."
+  },
+  "chat_kind": {
+   "default": "short_text",
+   "options": {
+    "short_text": 0.3,
+    "medium_prompt": 1.215,
+    "reasoning": 3.91,
+    "high_reasoning": 17.15
+   },
+   "unit": "Wh per prompt, data center",
+   "label": "Kind of chat (sets the energy per prompt)",
+   "why": "The text slider stops at 0.60, below GPT-5 minimal reasoning (0.67), Claude 3.7 (0.95) and o3 (1.18) in the same preprint. medium_prompt is Jegham's GPT-4o medium query (fp-021); reasoning is Joule's query 15 times longer than typical (fp-019); high_reasoning is Jegham's GPT-5 high reasoning, medium query (fp-025). Jegham is a preprint that Joule says overstates production figures by 4 to 20 times (fp-020). A multi-turn chat carries growing context and agents make about 12 model calls per typed prompt (fp-031); no source counts model calls per chat prompt.",
+   "claims": [
+    "fp-021",
+    "fp-019",
+    "fp-025",
+    "fp-020",
+    "fp-022",
+    "fp-023",
+    "fp-031"
+   ]
+  },
+  "chat_messages_per_day": {
+   "default": 3.67,
+   "options": [
+    3.67,
+    8
+   ],
+   "label": "Prompts per day for the per-person view"
+  },
+  "battery_nominal_volts": {
+   "default": 3.85,
+   "fixed": true,
+   "label": "Lithium-ion nominal voltage used to turn Greenspector mAh rates into Wh",
+   "why": "Plain assumption; typical phone battery nominal voltage. Not a claim."
+  }
+ },
+ "views": {
+  "same_hour": {
+   "title": "The same hour on the same device",
+   "rows": [
+    "chat",
+    "video",
+    "short"
+   ],
+   "segments": [
+    "data_center",
+    "network",
+    "router",
+    "device"
+   ],
+   "equations": {
+    "chat.data_center": "prompts_per_hour x chat_wh_per_prompt",
+    "chat.network": "prompts_per_hour x chat_kb_per_prompt / 1e6 GB x net intensity (fixed or mobile; average or marginal)",
+    "video.data_center": "video_gb_per_hour[device] x video_dc_intensity (measured_delivery 0.45 or desnz_assumed 19.6 Wh per GB)",
+    "video.network": "video_gb_per_hour[device] x net intensity",
+    "short.data_center": "min(short_gb_per_hour x video_dc_intensity, short_dc_ceiling_wh_per_hour)",
+    "short.network": "short_gb_per_hour x net intensity",
+    "*.router": "by_time: router_watts x 1 h; by_data: router_wh_per_gb x row GB (wifi only); excluded: 0; cellular: 0",
+    "*.device": "device_wh_per_hour[device] x 1 h (same for every row)",
+    "*.activity_added": "data_center + network: the segments that depend on what the hour is spent on; router and device are a fixed band, identical on every row"
+   }
+  },
+  "per_person_day": {
+   "title": "Inside the data center only, per person per day",
+   "rows": [
+    "chat_day",
+    "chat_day_mean",
+    "chat_day_high",
+    "meta_person",
+    "video_day",
+    "short_day"
+   ],
+   "equations": {
+    "chat_day": "chat_messages_per_day x chat_wh_per_prompt (a median times a mean count: a floor; chat_day_mean uses the 0.34 average-class figure; low is the low count times the low prompt)",
+    "meta_person": "meta_wh_per_person_day (a fleet average on another boundary and another denominator; printed, not compared as a ratio)",
+    "video_day": "video_minutes_per_day / 60 x video_gb_per_hour[phone] x video_dc_intensity (Similarweb minutes are Android app minutes)",
+    "short_day": "short_minutes_per_day / 60 x short_gb_per_hour x video_dc_intensity; high case min(minutes / 60 x short_dc_ceiling_wh_per_hour, 15.1)",
+    "household_share": "row / household_wh_per_day"
+   }
+  },
+  "heavy_ai": {
+   "title": "Heavy AI against the same yardstick",
+   "equations": {
+    "text_prompts": "Wh / chat_wh_per_prompt",
+    "stream_hours_same_device": "Wh / view 1 video total for the reader's device",
+    "stream_hours_published": "Wh / stream_whole_chain_wh_per_hour (188; range 53.7 to 417.5)",
+    "stream_hours_dc_only": "Wh / view 1 video data center segment for the reader's device (measured_delivery; desnz_assumed printed beside it)",
+    "text_prompt_seconds": "chat_wh_per_prompt / each yardstick x 3600"
+   },
+   "note": "The AI side is data center only. The same-device and published hours include the viewer's screen and router, so those ratios flatter AI; the data-center-only ratio is like for like but rests on the 45-times serving-intensity dispute. All are printed; none is the answer."
+  },
+  "scale": {
+   "title": "Per-person smallness against total growth",
+   "equations": {
+    "chat_twh_per_year": "chatgpt_messages_per_day x 365 x chat_wh_per_prompt / 1e12 (text-only floor, median prompt, July 2025 count; also run at the 0.34 mean)",
+    "chat_amw": "chatgpt_messages_per_day x chat_wh_per_prompt / 24 h / 1e6",
+    "youtube_dc_twh_per_year": "youtube_hours_per_day x 365 x video_gb_per_hour[mix] x video_dc_intensity / 1e12",
+    "youtube_whole_chain_twh_per_year": "youtube_hours_per_day x 365 x stream_whole_chain_wh_per_hour / 1e12",
+    "nw_dc_twh_2030": "nw_dc_only_2030_amw x 8.76 / 1000",
+    "withdrawn": "chat share of the 2030 Pacific Northwest data center load: a 07/2025 count of one product's text messages against a 2030 workbook input; deleted after review"
+   }
+  },
+  "project": {
+   "title": "A proposed project (the reader enters MW and load factor)",
+   "equations": {
+    "amw": "MW x load factor",
+    "twh_per_year": "aMW x 8.76 / 1000",
+    "share_of_region": "aMW / nw_region_amw (22,000, the Council region: Oregon, Idaho, Washington and Western Montana)",
+    "site_water_liters_per_year": "TWh x 1e9 kWh x the applicant's stated L per kWh; record spread on a consumption basis: Microsoft 0.27, LBNL 0.36 rising to 0.45 to 0.48 after 2023, Google 1.15; Meta's 0.19 is withdrawal and not on the same bar"
+   },
+   "illustration_amw": 100,
+   "note": "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights; those are the Questions for Tribal Leaders on the data centers page (Consent, Land, Water, Power, Rates, Jobs, Data, Exit Terms), and reserved-rights items are for counsel. A fleet average cannot describe a stream in a low-flow August."
+  }
+ },
+ "computed_defaults": {
+  "settings": {
+   "prompts_per_hour": 10,
+   "device": "phone",
+   "connection": "wifi",
+   "network_mode": "average",
+   "router_allocation": "by_time",
+   "video_dc_intensity": "measured_delivery",
+   "chat_wh_per_prompt": 0.3,
+   "chat_kind": "short_text",
+   "chat_messages_per_day": 3.67,
+   "battery_nominal_volts": 3.85
+  },
+  "same_hour": {
+   "default": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 3.0008,
+     "total": 15.0008
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "low": {
+    "chat": {
+     "data_center": 2.4,
+     "network": 8e-05,
+     "router": 5.88,
+     "device": 1.0,
+     "activity_added": 2.40008,
+     "total": 9.28008
+    },
+    "video": {
+     "data_center": 0.0595,
+     "network": 0.272,
+     "router": 5.88,
+     "device": 1.0,
+     "activity_added": 0.3315,
+     "total": 7.2115
+    },
+    "short": {
+     "data_center": 0.0875,
+     "network": 0.4,
+     "router": 5.88,
+     "device": 1.0,
+     "activity_added": 0.48750000000000004,
+     "total": 7.3675
+    }
+   },
+   "high": {
+    "chat": {
+     "data_center": 6.0,
+     "network": 0.0325,
+     "router": 15.0,
+     "device": 3.0,
+     "activity_added": 6.0325,
+     "total": 24.0325
+    },
+    "video": {
+     "data_center": 90.30000000000001,
+     "network": 19.5,
+     "router": 15.0,
+     "device": 3.0,
+     "activity_added": 109.80000000000001,
+     "total": 127.80000000000001
+    },
+    "short": {
+     "data_center": 13.9,
+     "network": 13.0,
+     "router": 15.0,
+     "device": 3.0,
+     "activity_added": 26.9,
+     "total": 44.9
+    }
+   },
+   "laptop": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 22,
+     "activity_added": 3.0008,
+     "total": 35.0008
+    },
+    "video": {
+     "data_center": 0.855,
+     "network": 3.04,
+     "router": 10.0,
+     "device": 22,
+     "activity_added": 3.895,
+     "total": 35.894999999999996
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 22,
+     "activity_added": 0.7995000000000001,
+     "total": 32.7995
+    }
+   },
+   "tv": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 100,
+     "activity_added": 3.0008,
+     "total": 113.0008
+    },
+    "video": {
+     "data_center": 1.35,
+     "network": 4.800000000000001,
+     "router": 10.0,
+     "device": 100,
+     "activity_added": 6.15,
+     "total": 116.15
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 100,
+     "activity_added": 0.7995000000000001,
+     "total": 110.7995
+    }
+   },
+   "router_by_data": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 0.0125,
+     "device": 2.0,
+     "activity_added": 3.0008,
+     "total": 5.0133
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 25.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 29.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 9.75,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.5495
+    }
+   },
+   "router_excluded": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 3.0008,
+     "total": 5.0008
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 4.050000000000001
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 2.7995
+    }
+   },
+   "cellular": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0125,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 3.0125,
+     "total": 5.0125
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 25.0,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 25.45,
+     "total": 27.45
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 9.75,
+     "router": 0.0,
+     "device": 2.0,
+     "activity_added": 9.9255,
+     "total": 11.9255
+    }
+   },
+   "marginal": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 6.500000000000001e-05,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 3.000065,
+     "total": 15.000065
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 0.13,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.5800000000000001,
+     "total": 12.58
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.0507,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.2262,
+     "total": 12.2262
+    }
+   },
+   "desnz": {
+    "chat": {
+     "data_center": 3.0,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 3.0008,
+     "total": 15.0008
+    },
+    "video": {
+     "data_center": 19.6,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 21.200000000000003,
+     "total": 33.2
+    },
+    "short": {
+     "data_center": 7.644000000000001,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 8.268,
+     "total": 20.268
+    }
+   },
+   "prompts_2_5": {
+    "chat": {
+     "data_center": 0.756,
+     "network": 0.00020160000000000002,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7562016,
+     "total": 12.7562016
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "prompts_30": {
+    "chat": {
+     "data_center": 9.0,
+     "network": 0.0024000000000000002,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 9.0024,
+     "total": 21.0024
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "prompts_60": {
+    "chat": {
+     "data_center": 18.0,
+     "network": 0.0048000000000000004,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 18.0048,
+     "total": 30.0048
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "kind_medium": {
+    "chat": {
+     "data_center": 12.15,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 12.1508,
+     "total": 24.1508
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "kind_reasoning": {
+    "chat": {
+     "data_center": 39.1,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 39.1008,
+     "total": 51.1008
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   },
+   "kind_high": {
+    "chat": {
+     "data_center": 171.5,
+     "network": 0.0008,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 171.5008,
+     "total": 183.5008
+    },
+    "video": {
+     "data_center": 0.45,
+     "network": 1.6,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 2.0500000000000003,
+     "total": 14.05
+    },
+    "short": {
+     "data_center": 0.17550000000000002,
+     "network": 0.6240000000000001,
+     "router": 10.0,
+     "device": 2.0,
+     "activity_added": 0.7995000000000001,
+     "total": 12.7995
+    }
+   }
+  },
+  "per_person_day": {
+   "chat_day": 1.101,
+   "chat_day_low": 0.8567999999999999,
+   "chat_day_mean": 1.2478,
+   "chat_day_high": 4.8,
+   "meta_person": 15.1,
+   "video_day": 0.6599999999999999,
+   "video_day_desnz": 28.746666666666666,
+   "video_day_high": 44.14666666666667,
+   "short_day": 0.29250000000000004,
+   "short_day_desnz": 12.740000000000002,
+   "short_day_high": 15.1,
+   "short_ceiling_per_hour_at_minutes": 9.059999999999999,
+   "chat_day_household_pct": 0.0038308977035490604,
+   "meta_household_pct": 0.05254001391788447
+  },
+  "heavy_ai": {
+   "yardsticks": {
+    "same_device_total": 14.05,
+    "same_device_dc": 0.45,
+    "desnz_dc": 19.6,
+    "published": 188
+   },
+   "text_prompt_seconds": {
+    "same_device_total": 76.86832740213522,
+    "same_device_dc": 2400.0,
+    "desnz_dc": 55.10204081632652,
+    "published": 5.74468085106383
+   },
+   "reasoning_15x": {
+    "wh": 3.91,
+    "prompts": 13.033333333333335,
+    "hours_same_device": 0.2782918149466192,
+    "hours_published": 0.020797872340425533,
+    "hours_published_low": 0.009365269461077845,
+    "hours_published_high": 0.0728119180633147,
+    "hours_dc_delivery": 8.688888888888888,
+    "hours_dc_desnz": 0.19948979591836735
+   },
+   "o3_short": {
+    "wh": 1.177,
+    "prompts": 3.923333333333334,
+    "hours_same_device": 0.08377224199288257,
+    "hours_published": 0.00626063829787234,
+    "hours_published_low": 0.0028191616766467067,
+    "hours_published_high": 0.02191806331471136,
+    "hours_dc_delivery": 2.6155555555555554,
+    "hours_dc_desnz": 0.060051020408163264
+   },
+   "o3_long": {
+    "wh": 12.222,
+    "prompts": 40.74,
+    "hours_same_device": 0.8698932384341637,
+    "hours_published": 0.06501063829787233,
+    "hours_published_low": 0.029274251497005986,
+    "hours_published_high": 0.22759776536312848,
+    "hours_dc_delivery": 27.159999999999997,
+    "hours_dc_desnz": 0.6235714285714286
+   },
+   "gpt5_high_medium": {
+    "wh": 17.15,
+    "prompts": 57.166666666666664,
+    "hours_same_device": 1.2206405693950175,
+    "hours_published": 0.09122340425531913,
+    "hours_published_low": 0.04107784431137724,
+    "hours_published_high": 0.3193668528864059,
+    "hours_dc_delivery": 38.11111111111111,
+    "hours_dc_desnz": 0.8749999999999999
+   },
+   "gpt5_high_long": {
+    "wh": 33.8,
+    "prompts": 112.66666666666666,
+    "hours_same_device": 2.4056939501779357,
+    "hours_published": 0.17978723404255317,
+    "hours_published_low": 0.08095808383233533,
+    "hours_published_high": 0.6294227188081936,
+    "hours_dc_delivery": 75.1111111111111,
+    "hours_dc_desnz": 1.7244897959183672
+   },
+   "gpt4o_long": {
+    "wh": 2.875,
+    "prompts": 9.583333333333334,
+    "hours_same_device": 0.20462633451957293,
+    "hours_published": 0.015292553191489361,
+    "hours_published_low": 0.0068862275449101795,
+    "hours_published_high": 0.053538175046554934,
+    "hours_dc_delivery": 6.388888888888888,
+    "hours_dc_desnz": 0.14668367346938774
+   },
+   "deepseek_r1_long": {
+    "wh": 29.078,
+    "prompts": 96.92666666666666,
+    "hours_same_device": 2.069608540925267,
+    "hours_published": 0.15467021276595744,
+    "hours_published_low": 0.06964790419161676,
+    "hours_published_high": 0.5414897579143388,
+    "hours_dc_delivery": 64.61777777777777,
+    "hours_dc_desnz": 1.4835714285714285
+   },
+   "image_sd3": {
+    "wh": 0.634,
+    "prompts": 2.1133333333333333,
+    "hours_same_device": 0.04512455516014235,
+    "hours_published": 0.003372340425531915,
+    "hours_published_low": 0.001518562874251497,
+    "hours_published_high": 0.01180633147113594,
+    "hours_dc_delivery": 1.4088888888888889,
+    "hours_dc_desnz": 0.0323469387755102
+   },
+   "image_open_2023": {
+    "wh": 1.35,
+    "prompts": 4.500000000000001,
+    "hours_same_device": 0.09608540925266904,
+    "hours_published": 0.007180851063829788,
+    "hours_published_low": 0.0032335329341317367,
+    "hours_published_high": 0.025139664804469275,
+    "hours_dc_delivery": 3.0,
+    "hours_dc_desnz": 0.06887755102040816
+   },
+   "veo3_8s": {
+    "wh": 30.8,
+    "prompts": 102.66666666666667,
+    "hours_same_device": 2.192170818505338,
+    "hours_published": 0.16382978723404257,
+    "hours_published_low": 0.07377245508982036,
+    "hours_published_high": 0.5735567970204841,
+    "hours_dc_delivery": 68.44444444444444,
+    "hours_dc_desnz": 1.5714285714285714
+   },
+   "sora2pro_8s": {
+    "wh": 418.5,
+    "prompts": 1395.0,
+    "hours_same_device": 29.7864768683274,
+    "hours_published": 2.226063829787234,
+    "hours_published_low": 1.0023952095808384,
+    "hours_published_high": 7.793296089385475,
+    "hours_dc_delivery": 930.0,
+    "hours_dc_desnz": 21.35204081632653
+   },
+   "wan_1_3b": {
+    "wh": 90.5,
+    "prompts": 301.6666666666667,
+    "hours_same_device": 6.4412811387900355,
+    "hours_published": 0.48138297872340424,
+    "hours_published_low": 0.21676646706586827,
+    "hours_published_high": 1.685288640595903,
+    "hours_dc_delivery": 201.11111111111111,
+    "hours_dc_desnz": 4.61734693877551
+   },
+   "wan_14b": {
+    "wh": 415.1,
+    "prompts": 1383.6666666666667,
+    "hours_same_device": 29.544483985765126,
+    "hours_published": 2.2079787234042554,
+    "hours_published_low": 0.994251497005988,
+    "hours_published_high": 7.72998137802607,
+    "hours_dc_delivery": 922.4444444444445,
+    "hours_dc_desnz": 21.178571428571427
+   },
+   "cogvideox_5s": {
+    "wh": 944,
+    "prompts": 3146.666666666667,
+    "hours_same_device": 67.18861209964412,
+    "hours_published": 5.0212765957446805,
+    "hours_published_low": 2.261077844311377,
+    "hours_published_high": 17.579143389199253,
+    "hours_dc_delivery": 2097.777777777778,
+    "hours_dc_desnz": 48.16326530612245
+   },
+   "agent_prompt": {
+    "wh": 150,
+    "prompts": 500.0,
+    "hours_same_device": 10.676156583629894,
+    "hours_published": 0.7978723404255319,
+    "hours_published_low": 0.3592814371257485,
+    "hours_published_high": 2.793296089385475,
+    "hours_dc_delivery": 333.3333333333333,
+    "hours_dc_desnz": 7.653061224489796
+   },
+   "agent_session": {
+    "wh": 600,
+    "prompts": 2000.0,
+    "hours_same_device": 42.704626334519574,
+    "hours_published": 3.1914893617021276,
+    "hours_published_low": 1.437125748502994,
+    "hours_published_high": 11.1731843575419,
+    "hours_dc_delivery": 1333.3333333333333,
+    "hours_dc_desnz": 30.612244897959183
+   },
+   "agent_day": {
+    "wh": 3000,
+    "prompts": 10000.0,
+    "hours_same_device": 213.52313167259786,
+    "hours_published": 15.957446808510639,
+    "hours_published_low": 7.18562874251497,
+    "hours_published_high": 55.865921787709496,
+    "hours_dc_delivery": 6666.666666666666,
+    "hours_dc_desnz": 153.0612244897959
+   }
+  },
+  "scale": {
+   "chat_twh": 0.27375,
+   "chat_twh_low": 0.219,
+   "chat_twh_mean": 0.31025,
+   "chat_twh_high": 0.5475,
+   "chat_amw": 31.25,
+   "chat_pct_iea_2025": 0.056443298969072166,
+   "chat_pct_iea_2025_high": 0.11288659793814433,
+   "chat_pct_lbnl_2024": 0.142578125,
+   "youtube_dc_twh_delivery": 0.47304,
+   "youtube_dc_twh_desnz": 20.60352,
+   "youtube_whole_twh": 68.62,
+   "youtube_whole_twh_low": 19.6005,
+   "youtube_whole_twh_high": 152.3875,
+   "nw_dc_twh_2030": 17.698704000000003,
+   "nw_dc_twh_2030_low": 11.404644000000001,
+   "nw_dc_twh_2030_high": 38.800667999999995,
+   "nw_dc_pct_of_region": 9.183636363636365,
+   "iea_growth_2025_2030_twh": 460,
+   "lbnl_growth_2024_2030_twh": 457
+  },
+  "project": {
+   "amw": 100,
+   "twh": 0.876,
+   "pct_of_region": 0.45454545454545453,
+   "site_water_ml_low": 236.52000000000004,
+   "site_water_ml_high": 1007.3999999999999
+  }
+ }
+}

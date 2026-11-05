@@ -1,0 +1,234 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-project",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "model": "comparison-model",
+ "eyebrow": "A proposal",
+ "title": "A {amw[text]} average-megawatt project uses about {twh[text]} TWh a year, {share[text]} percent of the region's {region} aMW, and {site[text]} million liters of site water a year at the operators' own water figures (illustration)",
+ "text": [
+  "Enter a proposal's megawatts and load factor; a blank water figure shows the record's spread."
+ ],
+ "inputs": {
+  "region": {
+   "claim": "dem-058"
+  },
+  "ms": {
+   "claim": "tr-028"
+  },
+  "lbnl": {
+   "claim": "tr-009"
+  },
+  "gen": {
+   "claim": "tr-005"
+  },
+  "google": {
+   "model": "inputs.water_carbon.google_fleet_wue_l_per_kwh.value"
+  }
+ },
+ "plot": {
+  "type": "instrument",
+  "groups": [
+   {
+    "id": "ctx",
+    "label": "For scale, fixed"
+   }
+  ]
+ },
+ "controls": [
+  {
+   "type": "range",
+   "name": "p_mw",
+   "label": "Project size, MW",
+   "min": 10,
+   "max": 2000,
+   "step": 5,
+   "default": 125
+  },
+  {
+   "type": "range",
+   "name": "p_lf",
+   "label": "Load factor",
+   "min": 0.5,
+   "max": 1,
+   "step": 0.05,
+   "default": 0.8
+  },
+  {
+   "type": "number",
+   "name": "p_l",
+   "label": "Applicant's liters per kWh",
+   "min": 0,
+   "max": 20,
+   "step": 0.01
+  },
+  {
+   "type": "segmented",
+   "name": "p_plant",
+   "label": "Count water at the power plant",
+   "default": "off",
+   "options": [
+    {
+     "value": "off",
+     "label": "No"
+    },
+    {
+     "value": "on",
+     "label": "Yes"
+    }
+   ]
+  }
+ ],
+ "reading": "{p_mw} MW at {p_lf} load factor is {amw[text]} aMW, about {twh[text]} TWh a year and {share[text]} percent of the region's {region} aMW; site water {site[display]} a year. Applicant's liters per kWh: {p_l}; the record's spread is {ms} to {google}. Water at the power plant: {plant[display]}. Modeled from the reader's inputs; sources checked 11/04/2026.",
+ "rows": [
+  {
+   "id": "amw",
+   "label": "Average load",
+   "unit": "aMW",
+   "formula": {
+    "value": "p_mw * p_lf"
+   },
+   "equation": "aMW = MW x load factor",
+   "cols": {
+    "factor": "MW x load factor"
+   },
+   "scale": "log",
+   "domain": [
+    1,
+    2000
+   ]
+  },
+  {
+   "id": "twh",
+   "label": "Energy a year",
+   "unit": "TWh",
+   "digits": 2,
+   "formula": {
+    "value": "amw * 8.76 / 1000"
+   },
+   "equation": "TWh = aMW x 8.76 / 1000",
+   "cols": {
+    "factor": "aMW x 8.76 / 1000"
+   },
+   "scale": "log",
+   "domain": [
+    0.01,
+    20
+   ]
+  },
+  {
+   "id": "share",
+   "label": "Share of the region, one square per 100 aMW, the project in orange",
+   "unit": "percent",
+   "digits": 2,
+   "formula": {
+    "value": "amw / region * 100"
+   },
+   "equation": "Share = aMW / the region's load today x 100",
+   "detail": "The region is a power region, not a watershed: Oregon, Idaho, Washington, and Western Montana.",
+   "cols": {
+    "factor": "aMW / 22,000 aMW"
+   }
+  },
+  {
+   "id": "site",
+   "label": "Site water",
+   "unit": "million liters",
+   "digits": 2,
+   "cites": [
+    "fp-006"
+   ],
+   "formula": {
+    "low": "twh * ifblank(p_l, ms) * 1000",
+    "high": "twh * ifblank(p_l, google) * 1000"
+   },
+   "equation": "Site water = TWh x L per kWh x 1000. Blank uses the record's spread on a consumption basis, Microsoft 0.27 to Google 1.15, with LBNL 0.36 between. A factor per IT kWh reads high on a whole project's TWh.",
+   "cols": {
+    "factor": "TWh x the applicant's L per kWh, or Microsoft 0.27 to Google 1.15"
+   },
+   "scale": "log",
+   "domain": [
+    10,
+    25000
+   ],
+   "tag": "No applicant figure; the record's spread"
+  },
+  {
+   "id": "plant",
+   "label": "Water at the power plant",
+   "unit": "million liters",
+   "digits": 2,
+   "formula": {
+    "value": "twh * gen * 1000"
+   },
+   "show": {
+    "p_plant": "on"
+   },
+   "gap": "Off: the reservoir evaporation convention is unstated",
+   "equation": "Plant water = TWh x 4.52 L per kWh x 1000, a 2023 national grid",
+   "cols": {
+    "factor": "TWh x 4.52 L per kWh, 2023 national grid"
+   },
+   "scale": "log",
+   "domain": [
+    100,
+    80000
+   ]
+  },
+  {
+   "id": "council",
+   "group": "ctx",
+   "label": "The Council's 2030 data center input",
+   "claim": "dem-075"
+  }
+ ],
+ "also": [
+  {
+   "claim": "tr-009",
+   "label": "LBNL's site figure, with the range after 2023"
+  }
+ ],
+ "details": [
+  "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights."
+ ],
+ "foot": [
+  {
+   "href": "#q-water",
+   "link": "Water checklist"
+  },
+  {
+   "href": "#q-power",
+   "link": "Power checklist"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Output",
+    "field": "label"
+   },
+   {
+    "label": "Value",
+    "field": "display"
+   },
+   {
+    "label": "Low",
+    "field": "low"
+   },
+   {
+    "label": "High",
+    "field": "high"
+   },
+   {
+    "label": "Factor",
+    "field": "factor"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ },
+ "subtitle": "Each ruler is logarithmic, so equal steps are equal multiples."
+}

@@ -44,13 +44,22 @@ function entryHTML(entry, compact = false) {
     : `<ul class="tags" role="list">${entry.areas.map((a) => `<li>${esc(AREAS[a] || a)}</li>`).join('')}${
         entry.tribal_specific ? '<li class="tag-tribal">Tribal-specific</li>' : ''
       }</ul>`;
+  // A long summary shows four lines, and More opens the rest. Print shows it whole.
+  const long = entry.summary.length > 200;
   return `<li class="entry">
 <p class="entry-type">${esc(TYPES[entry.type] || entry.type)}</p>
 <h3 class="entry-title"><a href="${esc(absolute(entry.url))}">${esc(entry.title)}${pdf}</a></h3>
 <p class="entry-meta">${esc(entry.publisher)}, <time datetime="${esc(entry.date)}">${esc(showDate(entry.date))}</time></p>
-<p class="entry-summary">${esc(entry.summary)}</p>${tags}
+<p class="entry-summary${long ? ' is-clamped' : ''}">${esc(entry.summary)}</p>${long ? '<button type="button" class="entry-more" aria-expanded="false">More</button>' : ''}${tags}
 </li>`;
 }
+document.addEventListener('click', (event) => {
+  const button = event.target.closest?.('.entry-more');
+  if (!button) return;
+  const clamped = button.previousElementSibling.classList.toggle('is-clamped');
+  button.setAttribute('aria-expanded', String(!clamped));
+  button.textContent = clamped ? 'More' : 'Less';
+});
 
 // Featured entries: resolutions first, then the rest, each group newest first.
 function renderFeatured(entries) {

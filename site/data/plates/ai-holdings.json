@@ -1,0 +1,167 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-holdings",
+ "default": "nvidia-float",
+ "eyebrow": "Size and stakes",
+ "title": "Public float ran from about {c[fin-078][value]:,.0f} billion dollars (Tesla) to {c[fin-077][value]:,.0f} (NVIDIA) on the dates their annual reports state; stakes in AI developers are carried at cost or mixed bases and sit on their own ruler",
+ "subtitle": "Billion dollars. The two rulers hold different kinds of value, so they do not share an axis.",
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "USD billion": "billion dollars"
+  },
+  "groups": [
+   {
+    "id": "float",
+    "label": "Public float: shares held by non-affiliates, as of the date in each row",
+    "mark": "bar",
+    "domain": [
+     0,
+     4000
+    ]
+   },
+   {
+    "id": "stakes",
+    "label": "Stakes and commitments: carrying values, not comparable with each other",
+    "mark": "square",
+    "domain": [
+     0,
+     300
+    ]
+   }
+  ]
+ },
+ "reading": "{label}: {display}. {boundary} SEC filing, {published}.",
+ "details": [
+  "Alphabet's 265.1 billion dollars of cash and marketable securities at 09/30/2026 includes 90.4 billion of marketable equity securities, which the company does not break out by holding."
+ ],
+ "cites": [
+  "fin-047"
+ ],
+ "rows": [
+  {
+   "id": "nvidia-float",
+   "group": "float",
+   "label": "NVIDIA",
+   "tag": "07/25/2025",
+   "claim": "fin-077"
+  },
+  {
+   "id": "apple-float",
+   "group": "float",
+   "label": "Apple",
+   "tag": "03/27/2026",
+   "claim": "fin-076"
+  },
+  {
+   "id": "microsoft-float",
+   "group": "float",
+   "label": "Microsoft",
+   "tag": "12/31/2025",
+   "claim": "fin-072"
+  },
+  {
+   "id": "amazon-float",
+   "group": "float",
+   "label": "Amazon",
+   "tag": "06/30/2025",
+   "claim": "fin-074"
+  },
+  {
+   "id": "alphabet-float",
+   "group": "float",
+   "label": "Alphabet",
+   "tag": "06/30/2025",
+   "claim": "fin-073"
+  },
+  {
+   "id": "meta-float",
+   "group": "float",
+   "label": "Meta",
+   "tag": "06/30/2025",
+   "claim": "fin-075"
+  },
+  {
+   "id": "tesla-float",
+   "group": "float",
+   "label": "Tesla",
+   "tag": "06/30/2025",
+   "claim": "fin-078"
+  },
+  {
+   "id": "nvidia-supply",
+   "group": "stakes",
+   "label": "NVIDIA supply and capacity commitments",
+   "tag": "07/26/2026",
+   "claim": "fin-061"
+  },
+  {
+   "id": "amazon-anthropic",
+   "group": "stakes",
+   "label": "Amazon's Anthropic holdings",
+   "tag": "09/30/2026, mixed basis",
+   "claim": "fin-059"
+  },
+  {
+   "id": "amazon-leases",
+   "group": "stakes",
+   "label": "Amazon leases not yet commenced",
+   "tag": "09/30/2026",
+   "claim": "fin-058"
+  },
+  {
+   "id": "nvidia-guarantees",
+   "group": "stakes",
+   "label": "NVIDIA guarantees, the cap",
+   "tag": "08/2026",
+   "claim": "fin-063"
+  },
+  {
+   "id": "nvidia-equity",
+   "group": "stakes",
+   "label": "NVIDIA equity investments",
+   "tag": "07/26/2026",
+   "claim": "fin-062"
+  },
+  {
+   "id": "amazon-openai",
+   "group": "stakes",
+   "label": "Amazon's OpenAI investment",
+   "tag": "09/30/2026",
+   "claim": "fin-060"
+  },
+  {
+   "id": "microsoft-openai",
+   "group": "stakes",
+   "label": "Microsoft's OpenAI funding",
+   "tag": "09/30/2026",
+   "claim": "fin-080"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Billion dollars",
+    "field": "text"
+   },
+   {
+    "label": "As of",
+    "field": "tag"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

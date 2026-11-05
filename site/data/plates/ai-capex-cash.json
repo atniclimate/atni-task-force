@@ -1,0 +1,195 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-capex-cash",
+ "default": "amazon",
+ "by": "fy",
+ "eyebrow": "Capital spending against cash",
+ "title": "In the latest fiscal year, Amazon spent {c[fin-003][series_fiscal_year_ends][7][usd_billion]:.0f} billion dollars on property and equipment against {c[fin-037][series_fiscal_year_ends][7][usd_billion]:.0f} billion of cash and securities; Apple spent {c[fin-005][series_fiscal_year_ends][8][usd_billion]:.0f} against {c[fin-039][series_fiscal_year_ends][8][usd_billion]:.0f}",
+ "subtitle": "One fiscal year at a time, on one basis: cash purchases of property and equipment, and cash plus marketable securities at that year's end.",
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "fy",
+   "label": "Fiscal year",
+   "default": "latest",
+   "options": [
+    {
+     "value": "2021",
+     "label": "FY2021"
+    },
+    {
+     "value": "2022",
+     "label": "FY2022"
+    },
+    {
+     "value": "2023",
+     "label": "FY2023"
+    },
+    {
+     "value": "2024",
+     "label": "FY2024"
+    },
+    {
+     "value": "2025",
+     "label": "FY2025"
+    },
+    {
+     "value": "latest",
+     "label": "Latest"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "USD billion": "billion dollars"
+  }
+ },
+ "reading_group": "{label}, fiscal {year} (ends {end}): capital spending {capex} billion against {cash} billion of cash and marketable securities. SEC filings, cash basis.",
+ "rows": [
+  {
+   "id": "microsoft",
+   "label": "Microsoft",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-001",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-035",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "alphabet",
+   "label": "Alphabet",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-002",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-036",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "amazon",
+   "label": "Amazon",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-003",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-037",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "meta",
+   "label": "Meta",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-004",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-038",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "apple",
+   "label": "Apple",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-005",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-039",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "nvidia",
+   "label": "NVIDIA",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-006",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-040",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "tesla",
+   "label": "Tesla",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-007",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-041",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  }
+ ],
+ "table": {
+  "by": [
+   "label",
+   "setting",
+   "year",
+   "end"
+  ],
+  "across": "series",
+  "labels": {
+   "label": "Company",
+   "setting": "Setting",
+   "year": "Fiscal year",
+   "end": "Year ends"
+  }
+ }
+}

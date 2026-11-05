@@ -1,0 +1,108 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-eia-servers",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Federal outlook",
+ "title": "EIA's baseline puts data center servers at {c[dem-001][series][2025]:.0f} billion kWh in 2025 and {c[dem-001][series][2030]:.0f} by 2030; its high case reaches {c[dem-004][series][2050]:.0f} by 2050, servers only (AEO2026)",
+ "subtitle": "Billion kWh a year, servers only.",
+ "text": [
+  "Three public forecasts count different things: EIA counts servers only, LBNL the whole building, and the IEA the world, so each has its own plate. The last plate shows how far earlier editions landed."
+ ],
+ "boundary": "Servers only; cooling and the rest of the building are not in this series.",
+ "plot": {
+  "type": "lines",
+  "highlight_by": "eia_case",
+  "projected_from": 2026,
+  "band": {
+   "across": "series"
+  },
+  "band_label": "Lowest to highest case",
+  "units": {
+   "BkWh": "billion kWh"
+  },
+  "domain": [
+   0,
+   900
+  ]
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "eia_case",
+   "label": "Case",
+   "default": "Counterfactual Baseline",
+   "options": [
+    {
+     "value": "Counterfactual Baseline",
+     "label": "Counterfactual Baseline"
+    },
+    {
+     "value": "High Electricity Demand",
+     "label": "High Electricity Demand"
+    },
+    {
+     "value": "High Economic Growth",
+     "label": "High Economic Growth"
+    },
+    {
+     "value": "Low Economic Growth",
+     "label": "Low Economic Growth"
+    }
+   ]
+  }
+ ],
+ "default": "2030",
+ "reading": "{series}: {text} billion kWh for data center servers in {year}; the four cases span {band_low} to {band_high}.",
+ "tail": "EIA AEO2026, servers only, 04/2026.",
+ "rows": [
+  {
+   "series": "Counterfactual Baseline",
+   "claim": "dem-001",
+   "points": "series"
+  },
+  {
+   "series": "High Electricity Demand",
+   "claim": "dem-004",
+   "points": "series"
+  },
+  {
+   "series": "High Economic Growth",
+   "claim": "dem-088",
+   "points": "series"
+  },
+  {
+   "series": "Low Economic Growth",
+   "claim": "dem-089",
+   "points": "series"
+  }
+ ],
+ "also": [
+  {
+   "claim": "dem-016",
+   "label": "Server share of commercial electricity, 2025"
+  },
+  {
+   "claim": "dem-017",
+   "label": "Server share of commercial electricity, 2050"
+  },
+  {
+   "claim": "dem-015",
+   "label": "High Electricity Demand above the baseline, 2050"
+  },
+  {
+   "claim": "dem-021",
+   "label": "The baseline's assumed efficiency gain after 2040"
+  }
+ ],
+ "table": {
+  "by": [
+   "year"
+  ],
+  "across": "series",
+  "labels": {
+   "year": "Year"
+  }
+ }
+}

@@ -1,0 +1,209 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-per-day",
+ "model": "comparison-model",
+ "default": "chat",
+ "eyebrow": "Per person per day",
+ "title": "An average weekly ChatGPT user's text prompts cost about {now[chat_day]:.0f} Wh a day in the data center, a floor; Meta reports {now[meta_person]:.0f} Wh per daily person for all its products, on another boundary (2024 to 2025)",
+ "subtitle": "Watt-hours a day inside the data center. Each group keeps its own boundary and its own ruler.",
+ "inputs": {
+  "now": {
+   "model": "computed_defaults.per_person_day"
+  },
+  "house": {
+   "model": "inputs.household_wh_per_day.value"
+  },
+  "video_floor": {
+   "model": "computed_defaults.per_person_day.video_day"
+  },
+  "short_floor": {
+   "model": "computed_defaults.per_person_day.short_day"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "day_count",
+   "label": "Prompts a day",
+   "default": "mean",
+   "options": [
+    {
+     "value": "mean",
+     "label": "3.67, OpenAI's mean"
+    },
+    {
+     "value": "eight",
+     "label": "8, unsourced"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "day_intensity",
+   "label": "Streaming data center energy",
+   "default": "measured_delivery",
+   "options": [
+    {
+     "value": "measured_delivery",
+     "label": "Measured delivery"
+    },
+    {
+     "value": "desnz_assumed",
+     "label": "DESNZ scenario"
+    }
+   ]
+  },
+  {
+   "type": "range",
+   "name": "day_wh",
+   "label": "Wh per text prompt",
+   "min": 0.24,
+   "max": 0.6,
+   "step": 0.01,
+   "default": 0.3
+  }
+ ],
+ "plot": {
+  "type": "bars",
+  "groups": [
+   {
+    "id": "day",
+    "label": "One person's day: text prompts and video delivery",
+    "domain": [
+     0,
+     50
+    ]
+   },
+   {
+    "id": "fleet",
+    "label": "Another boundary: all products, AI training, and offices",
+    "domain": [
+     0,
+     50
+    ]
+   }
+  ]
+ },
+ "fields": {
+  "share": {
+   "formula": "value / house * 100",
+   "digits": 2
+  }
+ },
+ "reading": "{label}: about {display} a day inside the data center, {share} percent of a household's {house} Wh. {evidence}",
+ "rows": [
+  {
+   "id": "chat",
+   "group": "day",
+   "label": "Average weekly ChatGPT user",
+   "unit": "Wh",
+   "cites": [
+    "fp-034",
+    "fp-092",
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-075"
+   ],
+   "formula": {
+    "value": "now.chat_day",
+    "low": "now.chat_day_low",
+    "high": "now.chat_day_high"
+   },
+   "equation": "Prompts a day x Wh per prompt",
+   "detail": "A median prompt times a mean count over days of non-use, so a floor. At the 0.34 Wh average-class figure the same count gives 1.25 Wh. The high end uses a count of 8, which is unsourced."
+  },
+  {
+   "id": "yt",
+   "group": "day",
+   "label": "YouTube, 88 minutes on a phone",
+   "unit": "Wh",
+   "cites": [
+    "fp-098",
+    "fp-130",
+    "fp-122",
+    "fp-043"
+   ],
+   "formula": {
+    "value": "now.video_day",
+    "low": "video_floor",
+    "high": "now.video_day_high"
+   },
+   "equation": "Minutes / 60 x GB per hour x Wh per GB served",
+   "detail": "0.66 Wh on measured delivery, 28.7 Wh at the DESNZ scenario's assumed intensity, and 44.1 Wh at its high case. The gap is a dispute over serving energy, not an allocation."
+  },
+  {
+   "id": "ig",
+   "group": "day",
+   "label": "Instagram, 100 minutes",
+   "unit": "Wh",
+   "cites": [
+    "fp-097",
+    "fp-053",
+    "fp-055",
+    "fp-059",
+    "fp-122",
+    "fp-043"
+   ],
+   "formula": {
+    "value": "now.short_day",
+    "low": "short_floor",
+    "high": "now.short_day_high"
+   },
+   "equation": "Minutes / 60 x GB per hour x Wh per GB served",
+   "detail": "Delivery only: ranking and recommendation compute are unmeasured. 12.7 Wh at the DESNZ intensity; the high end is capped at Meta's whole day."
+  },
+  {
+   "id": "meta",
+   "group": "fleet",
+   "label": "Meta, per daily active person",
+   "unit": "Wh",
+   "modeled": false,
+   "cites": [
+    "fp-059",
+    "fp-060"
+   ],
+   "formula": {
+    "value": "now.meta_person"
+   },
+   "detail": "A fleet average that includes WhatsApp-only people, AI training, ads, and offices. It does not bound a heavy Instagram user from above and does not sit on the chat row's boundary, so it is printed and never ratioed."
+  }
+ ],
+ "foot": [
+  {
+   "text": "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights.",
+   "href": "../data-centers/#questions",
+   "link": "Read the Questions for Tribal Leaders"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Wh a day",
+    "field": "value"
+   },
+   {
+    "label": "Low",
+    "field": "low"
+   },
+   {
+    "label": "High",
+    "field": "high"
+   },
+   {
+    "label": "Share of a household's day, percent",
+    "field": "share"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

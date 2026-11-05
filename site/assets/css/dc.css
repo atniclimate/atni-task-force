@@ -1,0 +1,178 @@
+/* The Data Center page, after site.css: the compact hero band, wider plots, count squares in the instruments, the policy
+   grid, and details that open across the width. Tokens and the plate kit stay in site.css. */
+
+/* Hero: one band with the facts at its right end. */
+.dc-hero { padding-block: 12px; }
+.dc-hero h1 { margin-bottom: 4px; }
+.dc-hero .lead { font-size: 1.125rem; line-height: 1.3; }
+.dc-hero .key-facts { padding: 12px 16px; }
+.dc-hero .key-facts ul { gap: 8px 24px; line-height: 1.25; }
+.dc-hero .key-facts strong { margin-top: 2px; font-size: 0.8125rem; line-height: 1.25; color: var(--atni-text-secondary); }
+.dc-fact { display: block; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.2; color: var(--atni-text-heading); }
+a.dc-fact { color: var(--atni-text-link); }
+@media (min-width: 1100px) {
+  .dc-hero .page-hero-grid { grid-template-columns: minmax(20rem, 1fr) minmax(0, 42rem); align-items: center; }
+  .dc-hero .key-facts ul { grid-template-columns: auto minmax(0, 1.6fr) minmax(0, 1.6fr) auto; }
+}
+
+/* Panel heads: the title, and links to what sits below the first screen. */
+.dc-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 24px; margin-bottom: 0; }
+.dc-panel-head .panel-title { margin: 0; }
+.dc-jump { display: flex; flex-wrap: wrap; gap: 0 16px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; }
+.dc-jump a { display: inline-flex; align-items: center; min-height: 32px; color: var(--atni-text-secondary); text-decoration-color: var(--control); }
+.dc-jump a:hover { color: var(--atni-text-heading); }
+
+/* Plates: the plot takes the room, and the claim zone stays short enough to fit a 900px window. A wide Table view keeps
+   the kit's columns. */
+.plate { padding: 16px 20px; scroll-margin-top: 56px; }
+.plate-claim { gap: 8px; }
+.plate-title { font-size: clamp(1.125rem, 0.75rem + 0.42vw, 1.5rem); }
+.plate-claim > p:not(.eyebrow, .caption) { font-size: clamp(0.875rem, 0.6rem + 0.3vw, 1rem); line-height: 1.45; }
+.plate .reading { font-size: clamp(1rem, 0.8rem + 0.25vw, 1.1875rem); line-height: 1.3; }
+.plate-claim .legend { gap: 2px 16px; }
+.plate .slider { row-gap: 0; }
+.plate .slider label { font-size: 0.8125rem; line-height: 1.3; }
+.plate .slider-stops { line-height: 1.1; }
+.plate .slider.is-typed { grid-template-columns: minmax(0, 1fr) 5rem; }
+.plate .slider.is-typed label { grid-column: 1; }
+@media (pointer: fine) {
+  .plate .slider input[type="range"] { height: 32px; }
+  .plate .slider input[type="range"]::-webkit-slider-thumb { height: 32px; margin-top: -15px; }
+  .plate .slider input[type="range"]::-moz-range-thumb { height: 32px; }
+  .plate .slider input[type="number"] { min-height: 32px; padding: 4px 8px; font-size: 0.875rem; }
+}
+@media (min-width: 1100px) {
+  .plate:not([data-view="table"], .dc-policy) { grid-template-columns: minmax(16rem, 21fr) minmax(0, 54fr) minmax(19rem, 25fr); }
+}
+.plate.is-live > :is(.plate-claim, .plate-detail) { scrollbar-width: thin; }
+@media (pointer: fine) { .plate-claim .segmented label { min-height: 28px; } }
+.plate-chips .receipt { max-width: 100%; }
+#dc-tradeoff-matrix .plate-legend, #dc-forecast-misses .plate-legend, #dc-cooling .plate-legend, #dc-project .plate-legend, #dc-jobs-per-mw .plate-legend { display: none; }
+/* Direct labels and the case control name the series, so these keys hold only what the plot cannot say. */
+:is(#dc-pnw-load, #dc-eia-servers) .plate-legend li:is([data-series], :has(.plate-square)) { display: none; }
+
+/* Count squares: one square per unit in a row's track, drawn from its measured size so it cannot feed back. */
+.dc-sq { position: absolute; left: 0; top: 0; display: block; overflow: hidden; }
+/* The selection washes the squares, not the row: the ruler is gone from these rows, so a range means nothing here. */
+.dc-sqrow.is-on .ladder-track { background: none; }
+.is-on .dc-sq { background: var(--energy-wash); box-shadow: 0 0 0 6px var(--energy-wash); }
+.dc-sqrow .instrument-ruler::before, .dc-sqrow .instrument-ruler > :not(.dc-sq) { display: none; }
+.dc-faint { opacity: 0.45; }
+.dc-ctx { fill: var(--series-context); fill-opacity: 0.6; }
+.dc-lit { fill: var(--energy-mark); }
+.dc-lit-range { fill: none; stroke: var(--energy-mark); stroke-width: 1.5; }
+.is-on .dc-sq .m-count.is-hollow { stroke: var(--energy-fill); }
+.dc-unit { flex: none; margin: 0 0 4px; }
+.dc-words .ladder-value { font-family: var(--body); font-weight: 500; font-size: 0.875rem; line-height: 1.35; }
+.plate-svg .dc-label { font-size: clamp(0.8125rem, 0.75rem + 0.12vw, 0.9375rem); }
+
+/* The three instruments: the row a reader should see first gets the height. */
+#dc-project .instrument { grid-auto-rows: minmax(40px, 1fr); }
+#dc-project [data-row="share"] { grid-row: span 3; }
+#dc-project .instrument-row:not(.is-fixed) .ladder-label { font-size: 0.875rem; }
+#dc-jobs-per-mw .instrument { grid-template-rows: minmax(72px, 5fr) minmax(40px, 2fr) minmax(72px, 5fr); grid-auto-rows: auto; }
+#dc-jobs-per-mw .instrument-row:not(.is-fixed) { grid-template-columns: minmax(7rem, 20%) minmax(0, 1fr) minmax(8rem, 22%); }
+.dc-fixed { display: grid; margin: 4px 0 0; padding: 0; list-style: none; }
+.dc-fixed .instrument-group { padding-top: 4px; }
+.dc-fixed .instrument-row.is-fixed { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding: 10px 4px; }
+.dc-fixed .is-fixed .ladder-value { order: 1; }
+.dc-fixed .is-fixed .instrument-spark { order: 2; }
+.dc-fixed .is-fixed .ladder-label { order: 3; font-family: var(--body); font-weight: 400; font-size: 0.8125rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.dc-fixed .instrument-line { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; font-family: var(--body); }
+.dc-fixed .ladder-num { font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.015em; color: var(--atni-text-heading); }
+.dc-fixed .ladder-unit { flex: 1 1 8rem; font-size: 0.8125rem; line-height: 1.3; color: var(--atni-text-body); }
+.dc-fixed .spark { height: 28px; }
+#dc-jobs-per-mw .is-fixed.is-on { background: var(--energy-wash); }
+@media (max-width: 899px) {
+  #dc-jobs-per-mw .instrument { grid-template-rows: none; grid-auto-rows: auto; }
+  #dc-jobs-per-mw .instrument-row:not(.is-fixed) { min-height: 96px; }
+}
+
+/* The matrix fits the window: less padding, and evidence squares a reader can see. */
+#dc-tradeoff-matrix .matrix tbody :is(td, th) { padding-block: 4px; }
+#dc-tradeoff-matrix .matrix thead :is(th, td):last-child { width: 20%; }
+/* Seven rows of words: the plate grows to hold them rather than hide the last rows behind a scroll. */
+@media (min-width: 1100px) { #dc-tradeoff-matrix.is-live { height: auto; min-height: var(--plate-h, 34rem); } }
+#dc-tradeoff-matrix .matrix-figures { gap: 2px; }
+#dc-tradeoff-matrix .matrix-figure { grid-template-columns: 10px minmax(0, 1fr); font-size: 0.8125rem; line-height: 1.3; }
+#dc-tradeoff-matrix .matrix-figure strong { font-size: clamp(0.875rem, 0.8rem + 0.2vw, 1.0625rem); }
+#dc-tradeoff-matrix .matrix-figure .plate-square { width: 10px; height: 10px; margin-top: 0.25em; }
+#dc-tradeoff-matrix .matrix-figure.is-hollow .plate-square { border-width: 2px; }
+#dc-tradeoff-matrix .matrix-words { font-size: 0.8125rem; }
+/* With scripts, each row's open question reads under its name, so the width goes to the two columns of figures. The cells keep their keys and
+   their selection; roles are set by plate.js, so the grid display costs no semantics. Without scripts, and in print, it stays a plain table. */
+@media screen and (min-width: 1100px) {
+  #dc-tradeoff-matrix.is-live .matrix { display: flex; flex-direction: column; }
+  #dc-tradeoff-matrix.is-live .matrix tbody { flex: 1; display: grid; grid-auto-rows: minmax(min-content, 1fr); }
+  #dc-tradeoff-matrix.is-live .matrix thead { display: block; }
+  #dc-tradeoff-matrix.is-live .matrix tr { display: grid; grid-template-columns: minmax(8rem, 22%) minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; border-bottom: 1px solid var(--rule); }
+  #dc-tradeoff-matrix.is-live .matrix thead tr { grid-template-rows: auto; border-bottom-color: var(--control); }
+  #dc-tradeoff-matrix.is-live .matrix tr > * { border: 0; }
+  #dc-tradeoff-matrix.is-live .matrix tr > :nth-child(1) { grid-area: 1 / 1; width: auto; }
+  #dc-tradeoff-matrix.is-live .matrix tr > :nth-child(2) { grid-area: 1 / 2 / 3; }
+  #dc-tradeoff-matrix.is-live .matrix tr > :nth-child(3) { grid-area: 1 / 3 / 3; width: auto; }
+  #dc-tradeoff-matrix.is-live .matrix tbody tr > :nth-child(4) { grid-area: 2 / 1; padding: 0 12px 8px 0; }
+  #dc-tradeoff-matrix.is-live .matrix thead tr > :nth-child(4) { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  #dc-tradeoff-matrix.is-live .matrix tbody tr > :nth-child(4) .matrix-words::before { content: "Open question: "; }
+}
+
+/* The policy grid: a static figure, rows by governments, one mark per sentence. */
+.dc-policy { align-items: stretch; }
+@media (min-width: 1100px) {
+  .dc-policy { grid-template-columns: minmax(16rem, 18fr) minmax(0, 82fr); min-height: calc(100vh - 280px); }
+}
+.dc-policy-side { min-width: 0; }
+.dc-policy-key { margin: 12px 0 0; }
+.dc-grid-wrap { overflow-x: auto; }
+.dc-grid { width: 100%; min-width: 44rem; height: 100%; border-collapse: collapse; table-layout: fixed; }
+.dc-grid thead :is(th, td) { padding: 0 16px 8px; font-family: var(--display); font-weight: 500; font-size: 1rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
+.dc-grid thead :is(th, td):first-child { width: clamp(6rem, 11%, 9rem); padding-left: 0; }
+.dc-grid tbody th { padding: 12px 12px 12px 0; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; text-align: left; vertical-align: top; color: var(--atni-text-heading); border-bottom: 1px solid var(--rule); }
+.dc-grid td { padding: 12px 16px; vertical-align: top; border-bottom: 1px solid var(--rule); }
+.dc-grid td p { position: relative; max-width: none; margin: 0 0 6px; padding-left: 18px; font-size: 0.875rem; line-height: 1.4; }
+.dc-grid td p:last-child { margin-bottom: 0; }
+.dc-grid td p::before { content: ""; position: absolute; left: 0; top: 0.3em; width: 10px; height: 10px; }
+.dc-grid .is-in::before { background: var(--series-context); }
+.dc-grid .is-open::before { border: 2px solid var(--series-context); }
+.dc-grid .is-none { color: var(--atni-text-secondary); }
+.dc-grid .is-none::before { top: 0.65em; height: 1px; background: var(--control); }
+.dc-none-key { flex: none; width: 10px; height: 1px; background: var(--control); }
+
+/* Details in a grid: each summary skims as a sentence; a long one opens across the width, in columns. */
+.dc-details { margin-top: 8px; }
+.dc-details > :is(.disclosure, .pull) { margin: 0; padding-top: 12px; border-top: 1px solid var(--rule); }
+.dc-details > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; min-height: 44px; padding: 0 0 12px; font-family: var(--body); font-weight: 400; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); list-style: none; }
+.dc-details > .disclosure > summary::-webkit-details-marker { display: none; }
+.dc-details > .disclosure > summary::before { content: ""; grid-row: 1; width: 10px; height: 10px; margin-top: 0.35em; border: 2px solid var(--energy-mark); }
+.dc-details > .disclosure[open] > summary::before { background: var(--energy-mark); }
+.dc-details > .disclosure > summary > * { grid-column: 2; margin: 0; }
+.dc-details > .disclosure > summary :is(h2, h3) { margin-bottom: 2px; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading); }
+.dc-details > .disclosure > summary:hover :is(h2, h3) { color: var(--atni-text-link-hover); }
+.dc-details > .disclosure > ul { max-width: none; font-size: 0.9375rem; line-height: 1.5; }
+.dc-long > .disclosure > .disclosure-body { max-width: none; padding-bottom: 16px; }
+.disclosure-body h4 { break-after: avoid; }
+.disclosure-body > ul { max-width: var(--measure); }
+@media (min-width: 900px) {
+  .dc-long > .disclosure[open] { grid-column: 1 / -1; }
+  .dc-long > .disclosure > .disclosure-body { columns: 26rem 4; column-gap: 32px; }
+}
+.dc-three { column-span: all; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 0 24px; align-items: start; margin-bottom: 12px; }
+.dc-three .disclosure { margin: 0; }
+.pull .caption { display: block; }
+
+/* What follows the plates. */
+.dc-after { margin-top: 24px; }
+.dc-after > h2, .dc-after > h3 { margin: 0 0 12px; font-size: 1.5rem; line-height: 1.15; }
+.dc-anchor { display: grid; gap: 4px 24px; align-items: baseline; margin: 16px 0 8px; }
+.dc-anchor p { margin: 0; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
+.dc-anchor ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 4px 32px; margin: 0; }
+.dc-anchor li { margin: 0; }
+main p.dc-wide-note { max-width: var(--measure-wide); margin-bottom: 8px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.dc-work-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: 0 24px; }
+
+@media print {
+  .dc-jump { display: none; }
+  .dc-long > .disclosure > .disclosure-body { columns: auto; }
+  .dc-grid { min-width: 0; height: auto; }
+  .dc-policy { min-height: 0; }
+}

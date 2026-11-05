@@ -1,0 +1,143 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-displacement",
+ "default": "stanford",
+ "eyebrow": "Displacement evidence",
+ "title": "Studies disagree: a payroll study finds workers in their early twenties in the most exposed jobs {c[jb-046][value]} percent below trend, a survey-based tracker finds no connection, and a job-ad study finds some entry-level openings up {c[jb-070][value]} percent",
+ "subtitle": "Every row measures a different thing, and each label says what its percent is of. They are shown together and never pooled.",
+ "plot": {
+  "type": "ladder",
+  "signed": true,
+  "units": {
+   "percent (nearly)": "percent"
+  },
+  "domain": [
+   -20,
+   60
+  ],
+  "axis_label": "Signed change in employment, openings, or headcount, percent"
+ },
+ "reading": "{label}: {display}. {boundary} {evidence}",
+ "reading_words": "{label}: {display}.",
+ "also": [
+  {
+   "claim": "jb-060",
+   "label": "Service firms in the New York region hiring fewer because of AI",
+   "say": "{display} of firms; a share, not a change"
+  },
+  {
+   "claim": "jb-059",
+   "label": "Service firms in the New York region laying off because of AI",
+   "say": "{display} of firms; a share, not a change"
+  },
+  {
+   "claim": "jb-053",
+   "label": "Goldman Sachs, across France, Canada, and the United States",
+   "say": "headcount growth lower by {display} per ten percent more exposure; an association"
+  },
+  {
+   "claim": "jb-056",
+   "label": "Challenger, Gray and Christmas, announced cuts citing AI, 2026 through September",
+   "say": "{display}; a count of announcements, not a rate"
+  },
+  {
+   "claim": "jb-057",
+   "label": "Challenger, Gray and Christmas, announced cuts citing AI, 2025",
+   "say": "{display}"
+  }
+ ],
+ "rows": [
+  {
+   "id": "stanford",
+   "label": "Workers 22 to 25, most exposed jobs, against trend",
+   "tag": "Stanford, ADP payroll",
+   "claim": "jb-046",
+   "negate": true
+  },
+  {
+   "id": "imf",
+   "label": "Online job postings, more exposed occupations",
+   "tag": "IMF working paper, 110 economies",
+   "claim": "jb-061",
+   "negate": true,
+   "modeled": true
+  },
+  {
+   "id": "quintile",
+   "label": "Workers 22 to 25, two most exposed quintiles",
+   "tag": "Stanford, ADP payroll",
+   "claim": "jb-048"
+  },
+  {
+   "id": "adp",
+   "label": "High-exposure jobs, all ages, year over year",
+   "tag": "ADP Research",
+   "claim": "jb-072"
+  },
+  {
+   "id": "denmark",
+   "label": "Danish earnings and hours, effects no larger than",
+   "tag": "Humlum and Vestergaard, survey and records",
+   "claim": "jb-052",
+   "modeled": true
+  },
+  {
+   "id": "pwcopen",
+   "label": "Openings, reshaped entry-level roles, since 2019",
+   "tag": "PwC job-ad study",
+   "claim": "jb-070",
+   "modeled": true
+  },
+  {
+   "id": "pwchead",
+   "label": "Headcount, most AI-exposed companies, since 2018",
+   "tag": "PwC job-ad study",
+   "claim": "jb-068",
+   "modeled": true
+  },
+  {
+   "id": "yale",
+   "label": "AI usage and employment or unemployment",
+   "tag": "Yale Budget Lab, survey tracker",
+   "claim": "jb-050",
+   "gap": "No connection found"
+  },
+  {
+   "id": "anthropic",
+   "label": "Unemployment, highly exposed workers",
+   "tag": "Anthropic, an AI developer",
+   "claim": "jb-051",
+   "gap": "No systematic increase"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Value",
+    "field": "display"
+   },
+   {
+    "label": "Year",
+    "field": "year"
+   },
+   {
+    "label": "Study",
+    "field": "tag"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

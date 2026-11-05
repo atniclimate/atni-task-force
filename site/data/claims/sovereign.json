@@ -1,0 +1,1539 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "cluster": "sovereign",
+ "claims": [
+  {
+   "id": "sf-001",
+   "entity": "Schleswig-Holstein state administration (Germany)",
+   "metric": "license cost savings claimed for 2026, Windows and Microsoft Office and related",
+   "value": 15,
+   "low": null,
+   "high": null,
+   "unit": "million EUR per year, license costs only, gross",
+   "year": 2026,
+   "boundary": "License fees only. Excludes staff time, training, hardware, hosting, and the one-time conversion spend. Ministry statement relayed by a news outlet.",
+   "layer": [
+    "price",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Goodbye, Microsoft: Schleswig-Holstein relies on Open Source and saves millions",
+    "publisher": "heise online (reporting the state ministry)",
+    "url": "https://www.heise.de/en/news/Goodbye-Microsoft-Schleswig-Holstein-relies-on-Open-Source-and-saves-millions-11105459.html",
+    "published": "2025-12-07",
+    "kind": "press"
+   },
+   "quote": "the state will save over 15 million euros in license costs for Windows, Microsoft Office & Co. next year alone.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-002",
+   "entity": "Schleswig-Holstein state administration (Germany)",
+   "metric": "expected structural saving versus the Microsoft landscape, from 2030 at the latest",
+   "value": 5,
+   "low": null,
+   "high": null,
+   "unit": "million EUR per year (stated as more than 5)",
+   "year": 2030,
+   "boundary": "Net operating comparison the state chancellery calls a hypothesis: Microsoft licenses for office, operating systems and infrastructure plus operating costs, against the operating costs of the sovereign workplace. Written government answer to a parliamentary question.",
+   "layer": [
+    "price",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Drucksache 20/3678, Kleine Anfrage und Antwort: Kosten fuer die Umstellung auf Open Source",
+    "publisher": "Schleswig-Holsteinischer Landtag",
+    "url": "https://www.landtag.ltsh.de/infothek/wahl20/drucks/03600/drucksache-20-03678.pdf",
+    "published": "2025-10-21",
+    "kind": "agency"
+   },
+   "quote": "Der spätestens ab 2030 erwartete strukturelle Einsparbetrag beträgt mehr als 5 Mio. Euro € pro Jahr.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-003",
+   "entity": "Schleswig-Holstein state administration (Germany)",
+   "metric": "spending on the LibreOffice conversion in 2025 (consulting, software, hardware, training, migration)",
+   "value": 1568.2,
+   "low": null,
+   "high": null,
+   "unit": "thousand EUR, 2025 spending so far (stated 10/21/2025), sum of the listed lines",
+   "year": 2025,
+   "boundary": "Project spending by line as reported by the state. Excludes departmental staff time (see sf-004). Columns in the source: consulting contracts, software licenses and subscriptions, hardware, training, migration.",
+   "layer": [
+    "price",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Drucksache 20/3678, Kleine Anfrage und Antwort: Kosten fuer die Umstellung auf Open Source",
+    "publisher": "Schleswig-Holsteinischer Landtag",
+    "url": "https://www.landtag.ltsh.de/infothek/wahl20/drucks/03600/drucksache-20-03678.pdf",
+    "published": "2025-10-21",
+    "kind": "agency"
+   },
+   "quote": "LibreOffice 417,5 T€ 11,2 T€ - 525,5 T€ 614,0 T€",
+   "derived": "417.5 + 11.2 + 525.5 + 614.0 = 1568.2",
+   "status": "verified"
+  },
+  {
+   "id": "sf-004",
+   "entity": "Schleswig-Holstein state administration (Germany)",
+   "metric": "departmental effort caused by the migration, in cost",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "not quantified by the state",
+   "year": 2025,
+   "boundary": "Staff time in the state departments during the migration phase. A cost that exists but was not recorded.",
+   "layer": [
+    "labor",
+    "price"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Drucksache 20/3678, Kleine Anfrage und Antwort: Kosten fuer die Umstellung auf Open Source",
+    "publisher": "Schleswig-Holsteinischer Landtag",
+    "url": "https://www.landtag.ltsh.de/infothek/wahl20/drucks/03600/drucksache-20-03678.pdf",
+    "published": "2025-10-21",
+    "kind": "agency"
+   },
+   "quote": "In den Ressorts ist migrationsbedingter Mehraufwand entstanden, der mangels Erfassung in der Migrationsphase nicht bezifferbar ist",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-005",
+   "entity": "Schleswig-Holstein state administration (Germany)",
+   "metric": "share of state workplaces switched to LibreOffice, outside the tax administration",
+   "value": 80,
+   "low": null,
+   "high": null,
+   "unit": "percent of workplaces (\"almost 80\")",
+   "year": 2025,
+   "boundary": "Count of workplaces switched, as stated by the minister. Not a measure of how well they work.",
+   "layer": [
+    "labor",
+    "compatibility"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Goodbye, Microsoft: Schleswig-Holstein relies on Open Source and saves millions",
+    "publisher": "heise online (reporting the state ministry)",
+    "url": "https://www.heise.de/en/news/Goodbye-Microsoft-Schleswig-Holstein-relies-on-Open-Source-and-saves-millions-11105459.html",
+    "published": "2025-12-07",
+    "kind": "press"
+   },
+   "quote": "outside the tax administration, almost 80 percent of workplaces in the state administration have already been switched to the open-source office software LibreOffice.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-006",
+   "entity": "Munich LiMux open-source migration (Germany)",
+   "metric": "outcome of the city's Linux and open-office migration",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative; project ended 2017",
+   "year": 2017,
+   "boundary": "City administration. Reversal decision after about a decade.",
+   "layer": [
+    "labor",
+    "compatibility",
+    "price"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Munich's Long History with Open Source in Public Administration",
+    "publisher": "Interoperable Europe Portal (European Commission)",
+    "url": "https://joinup.ec.europa.eu/collection/open-source-observatory-osor/document/munichs-long-history-open-source-public-administration",
+    "published": "2024-01-31",
+    "kind": "agency"
+   },
+   "quote": "The city moved away from using LiMux definitively in 2017, following issues with interoperability and replacement as well as weak political backing.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-007",
+   "entity": "Microsoft Cloud against traditional enterprise datacenters (Azure Compute, Azure Storage, Exchange Online, SharePoint Online)",
+   "metric": "energy efficiency advantage, and carbon efficiency advantage after renewable purchases",
+   "value": null,
+   "low": 22,
+   "high": 93,
+   "unit": "percent more efficient: energy 22 to 93; carbon 72 to 98",
+   "year": 2018,
+   "boundary": "Life cycle (manufacture, transport, use, end of life). Carbon figures count Microsoft's renewable electricity purchases (market-based). For Exchange Online and SharePoint Online the on-premises comparators are deployments of 1,000, 10,000 and 100,000 users (Azure comparisons use physical and virtualized servers and dedicated storage), not a small community server.",
+   "layer": [
+    "energy",
+    "co2e",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "The carbon benefits of cloud computing: A study on the Microsoft Cloud (updated 2020)",
+    "publisher": "Microsoft, with WSP",
+    "url": "https://download.microsoft.com/download/7/3/9/739bc4ad-a855-436e-961d-9c95eb51daf9/microsoft_cloud_carbon_study_2018.pdf",
+    "published": "2020-06-13",
+    "kind": "company-report"
+   },
+   "quote": "The results show that the Microsoft Cloud is between 22 and 93 percent more energy efficient than traditional enterprise datacenters, depending on the specific comparison being made. When taking into account our renewable energy purchases, the Microsoft Cloud is between 72 and 98 percent more carbon efficient.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-008",
+   "entity": "Server utilization",
+   "metric": "power increase when utilization rises from 10 to 40 percent",
+   "value": 1.7,
+   "low": null,
+   "high": null,
+   "unit": "times (power), for 4 times the load",
+   "year": 2018,
+   "boundary": "One server; SPECpower_ssj2008 samples of volume servers made in the previous two years. Device level, not a facility.",
+   "layer": [
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "The carbon benefits of cloud computing: A study on the Microsoft Cloud (updated 2020)",
+    "publisher": "Microsoft, with WSP",
+    "url": "https://download.microsoft.com/download/7/3/9/739bc4ad-a855-436e-961d-9c95eb51daf9/microsoft_cloud_carbon_study_2018.pdf",
+    "published": "2020-06-13",
+    "kind": "company-report"
+   },
+   "quote": "increasing the utilization rate from 10 percent to 40 percent will allow a server to process four times the previous load, while the power draw by the server may only increase 1.7 times.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-009",
+   "entity": "Cloud run in coal-heavy regions, against single-application on-premises servers (NRDC and WSP, small organizations)",
+   "metric": "carbon reduction of a typical public cloud in coal-heavy US regions",
+   "value": 50,
+   "low": null,
+   "high": null,
+   "unit": "percent lower carbon (factor of two)",
+   "year": 2012,
+   "boundary": "Carbon of running office-type applications (email, database, accounting, file sharing) in five scenarios, US regions by grid. Operational model, not a measurement.",
+   "layer": [
+    "co2e",
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Is Cloud Computing Always Greener? (issue brief)",
+    "publisher": "Natural Resources Defense Council and WSP",
+    "url": "https://www.nrdc.org/sites/default/files/cloud-computing-efficiency-IB.pdf",
+    "published": "2012-10-03",
+    "kind": "agency"
+   },
+   "quote": "Even there, the cloud has a lower carbon output by a factor of two, or a 50 percent reduction, than on-premise facilities that have servers running only a single application.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-010",
+   "entity": "Cloud in the Pacific Northwest, against single-application on-premises servers (NRDC and WSP)",
+   "metric": "carbon reduction of a public cloud on a clean grid",
+   "value": 97,
+   "low": null,
+   "high": null,
+   "unit": "percent lower carbon (nearly 48 times)",
+   "year": 2012,
+   "boundary": "Same model as sf-009, cloud provider located on the Pacific Northwest grid.",
+   "layer": [
+    "co2e"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Is Cloud Computing Always Greener? (issue brief)",
+    "publisher": "Natural Resources Defense Council and WSP",
+    "url": "https://www.nrdc.org/sites/default/files/cloud-computing-efficiency-IB.pdf",
+    "published": "2012-10-03",
+    "kind": "agency"
+   },
+   "quote": "But when the cloud service provider is located in areas where more clean energy is used, such as the Pacific Northwest, the carbon savings increase dramatically to nearly a 48 times improvement, reducing the carbon emissions by 97 percent.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-011",
+   "entity": "On-premises server room with efficiency best practices, against a \"brown\" cloud (NRDC and WSP)",
+   "metric": "when local beats cloud",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative finding",
+   "year": 2012,
+   "boundary": "Same study. The finding concerns server utilization, power usage effectiveness, and the carbon factor of the electricity.",
+   "layer": [
+    "co2e",
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Is Cloud Computing Always Greener?",
+    "publisher": "Natural Resources Defense Council and WSP",
+    "url": "https://www.nrdc.org/resources/cloud-computing-always-greener",
+    "published": "2012-10-03",
+    "kind": "agency"
+   },
+   "quote": "An on-premise server room that implements energy efficiency best practices can be a greener alternative than a \"brown\" cloud.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-012",
+   "entity": "AWS-managed storage (FSx for ONTAP, lift and shift) against on-premises NAS, modeled by Accenture",
+   "metric": "carbon and energy advantage for a storage-heavy workload",
+   "value": null,
+   "low": 65,
+   "high": 88,
+   "unit": "percent lower carbon: 65 to 88 by region; energy efficiency factor 1.8 to 2.5",
+   "year": 2024,
+   "boundary": "Operational and embodied emissions per TiB-hour, SCI-based, with carbon-free energy procurement counted. On-premises was modeled \"equivalent to the AWS lift-and-shift architecture\": a paired enterprise file system, not a small local node.",
+   "layer": [
+    "energy",
+    "co2e",
+    "embodied",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "How moving onto the AWS cloud reduces carbon emissions",
+    "publisher": "Accenture for Amazon Web Services",
+    "url": "https://sustainability.aboutamazon.com/carbon-reduction-aws.pdf",
+    "published": "2024-07-02",
+    "kind": "company-report"
+   },
+   "quote": "The results showed that an AWS-managed storage service with carbon-free energy procurement offers up to 88% lower carbon emissions and is up to 2.5 times more energy efficient than comparable NAS systems on-premises (Table 1).",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-013",
+   "entity": "Microsoft Office 365 against standalone Office 2010, three applications",
+   "metric": "power of the cloud version relative to the standalone version, by application",
+   "value": null,
+   "low": -17,
+   "high": 17,
+   "unit": "percent difference in power, cloud relative to standalone; negative means cloud lower",
+   "year": 2013,
+   "boundary": "Data center (Microsoft supplied confidential data), network and end-user device, with the device stage measured directly. Peer-reviewed.",
+   "layer": [
+    "energy",
+    "co2e",
+    "device",
+    "network",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Impact of office productivity cloud computing on energy consumption and greenhouse gas emissions",
+    "publisher": "Environmental Science & Technology (Williams and Tang)",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/23548097",
+    "published": "2013-04-29",
+    "kind": "peer-reviewed"
+   },
+   "quote": "The power consumption of the cloud based Outlook (8%) and Excel (17%) was lower than their traditional counterparts. However, the power consumption of the cloud version of Word was 17% higher than its traditional equivalent.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-014",
+   "entity": "Google Docs and Microsoft online document tools against local editing on a low-power netbook and a tablet",
+   "metric": "extra power when the cloud does the task",
+   "value": null,
+   "low": 1,
+   "high": 10,
+   "unit": "W, cloud minus local; 1 to 10",
+   "year": 2015,
+   "boundary": "Whole path: end-user device, access network and data center. The paper stresses that studies favoring the cloud had ignored network and end-user device power.",
+   "layer": [
+    "energy",
+    "device",
+    "network"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Energy Consumption Comparison of Interactive Cloud-Based and Local Applications",
+    "publisher": "IEEE Journal on Selected Areas in Communications (KTH, IBM Research)",
+    "url": "https://www.cesc.kth.se/polopoly_fs/1.647739.1600689530!/Energy%20Consumption%20Comparison%20of%20Interactive%20Cloud-Based%20and%20Local%20Applications.pdf",
+    "published": "2015-04-10",
+    "kind": "peer-reviewed"
+   },
+   "quote": "We show that using the cloud to perform certain tasks consumes more power (by a watt to 10 watts depending on the scenario) than performing the same tasks locally on a low-power consuming computer and a tablet.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-015",
+   "entity": "Google Docs against LibreOffice Writer, one test laptop",
+   "metric": "extra average power while editing text, Google Docs over LibreOffice",
+   "value": 3.8,
+   "low": null,
+   "high": null,
+   "unit": "W (client machine at the wall)",
+   "year": 2012,
+   "boundary": "End-user machine only, AC power meter (Watts Up Pro, plus or minus 3 percent), 40 runs per application. No server or network energy counted.",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "The Impact of User Choice on Energy Consumption",
+    "publisher": "IEEE Software (Zhang and colleagues)",
+    "url": "https://softwareprocess.es/pubs/zhang2014IEEESoftware-user-choice.pdf",
+    "published": "2014-02-10",
+    "kind": "peer-reviewed"
+   },
+   "quote": "the average consumption of Google Docs is 6.3, 4.3 and 3.8 watts higher than that of the system baseline, gedit, and LibreOffice respectively.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A 2011 figure written by the cloud vendor; email stands in for an office suite, and no 2020s measurement of the same case was found.",
+   "id": "sf-016",
+   "entity": "Locally hosted email in a small business, against Gmail (Google case study)",
+   "metric": "annual energy per user, small office with its own server",
+   "value": 175,
+   "low": 28.4,
+   "high": null,
+   "unit": "kWh per user per year",
+   "year": 2011,
+   "boundary": "Server power only: IT power per user 8 W, PUE 2.5, total 20 W per user (small); the medium business row is 3.2 W per user and 28.4 kWh. Before Google's carbon offsets. Google's own model.",
+   "layer": [
+    "energy",
+    "co2e",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Google's Green Computing: Efficiency at Scale",
+    "publisher": "Google",
+    "url": "https://www.google.com/green/pdfs/google-green-computing.pdf",
+    "published": "2011-09-06",
+    "kind": "company-report"
+   },
+   "quote": "Small 8 W 2.5 20 W 175 kWh Medium 1.8 W 1.8 3.2 W 28.4 kWh",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-017",
+   "entity": "Microsoft 365 datacenter emissions per active user (commercial customers)",
+   "metric": "emissions per active user for one month",
+   "value": 210,
+   "low": null,
+   "high": null,
+   "unit": "g CO2e per active user for July 2022",
+   "year": 2022,
+   "boundary": "Microsoft datacenters only, all three scopes, Scope 2 market-based. Excludes network, the user's device, and any water. Global average.",
+   "layer": [
+    "co2e",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Microsoft 365 sustainability whitepaper",
+    "publisher": "Microsoft",
+    "url": "https://download.microsoft.com/download/d/c/1/dc1c940e-30f3-4388-a4aa-676493d5ece3/Microsoft365_Sustainability_Whitepaper.pdf",
+    "published": "2022-10-07",
+    "kind": "company-report"
+   },
+   "quote": "we estimate that the volume of datacenter-driven emissions from providing Microsoft 365 services amounted to approximately 210 grams of carbon dioxide equivalent (CO2e) per active user",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-018",
+   "entity": "Microsoft 365 datacenter emissions, split by scope",
+   "metric": "share of emissions from supply chain (embodied)",
+   "value": 96,
+   "low": null,
+   "high": null,
+   "unit": "percent of datacenter emissions are Scope 3",
+   "year": 2022,
+   "boundary": "Fiscal year 2022 average, Microsoft 365 datacenters. Scope 2 uses market-based accounting that counts Microsoft's renewable purchases.",
+   "layer": [
+    "co2e",
+    "embodied"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Microsoft 365 sustainability whitepaper",
+    "publisher": "Microsoft",
+    "url": "https://download.microsoft.com/download/d/c/1/dc1c940e-30f3-4388-a4aa-676493d5ece3/Microsoft365_Sustainability_Whitepaper.pdf",
+    "published": "2022-10-07",
+    "kind": "company-report"
+   },
+   "quote": "The far greater share of emissions (96%) was attributable to the supply chain, as reflected in the embodied carbon necessary to build, ship, and recycle datacenter equipment.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-019",
+   "entity": "Global data centers 2010 to 2018",
+   "metric": "growth in computing against growth in energy",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "percent: compute workloads about +550; electricity +6",
+   "year": 2018,
+   "boundary": "Global data centers; a shift of work from small traditional data centers to large cloud and hyperscale facilities is the main stated reason. The Science paper this restates is said to put 79 percent of compute instances in smaller traditional data centers in 2010 (not found in the fetched Siddik text; unverified).",
+   "layer": [
+    "energy",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "The environmental footprint of data centers in the United States",
+    "publisher": "Environmental Research Letters (Siddik, Shehabi, Marston)",
+    "url": "https://iopscience.iop.org/article/10.1088/1748-9326/abfba1",
+    "published": "2021-05-21",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Though the amount of data center computing workloads has increased nearly 550% between 2010 and 2018, data center electricity consumption has only risen by 6% due to dramatic improvements in energy efficiency and storage-drive density across the industry",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-020",
+   "entity": "US data centers, modeled server utilization by space type",
+   "metric": "average server utilization",
+   "value": null,
+   "low": 11,
+   "high": 20,
+   "unit": "percent: internal and small 11 (2014) to 20 (2027); colocation 21 to 35; hyperscale 45 to 50",
+   "year": 2014,
+   "boundary": "LBNL model assumptions for conventional servers; AI training servers are assumed constant at 80 percent and the same servers doing inference at 40 percent. LBNL's heading is 'Server Operational Time (Utilization)': it is a share of time operating, not a measured compute load. A modeled assumption, not a metered survey.",
+   "layer": [
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2024 United States Data Center Energy Usage Report",
+    "publisher": "Lawrence Berkeley National Laboratory",
+    "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf",
+    "published": "2024-12-19",
+    "kind": "agency"
+   },
+   "quote": "Servers in internal and small data centers average 11% utilization in 2014, rising linearly to 20% in 2027. Colocation data centers average 21% utilization in 2014, rising to 35% in 2027. Hyperscale data centers average 45% in 2014, rising to 50% in 2027.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-021",
+   "entity": "US data centers by space type, direct water use",
+   "metric": "share of direct water consumption in internal (small, in-house) data centers",
+   "value": 12,
+   "low": null,
+   "high": null,
+   "unit": "percent of the 66 billion liter total in 2023 (64 percent of 21.2 billion liters in 2014)",
+   "year": 2023,
+   "boundary": "Direct (site) water only. Excludes the water used to generate the electricity.",
+   "layer": [
+    "water",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "2024 United States Data Center Energy Usage Report",
+    "publisher": "Lawrence Berkeley National Laboratory",
+    "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/us_data_center_energy_usage_report_lbnl-2001637_0.pdf",
+    "published": "2024-12-19",
+    "kind": "agency"
+   },
+   "quote": "In 2014, data centers consumed 21.2 billion liters of water, with 64% in internal data centers. By 2023, hyperscale and colocation account for 84% of the 66-billion-liter total, while internal data centers fell to just 12%, driven by water efficiency improvements.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-022",
+   "entity": "Data centers worldwide, power usage effectiveness (Uptime Institute survey)",
+   "metric": "industry average PUE",
+   "value": 1.58,
+   "low": null,
+   "high": null,
+   "unit": "PUE (ratio)",
+   "year": 2023,
+   "boundary": "Per-respondent average across surveyed facilities. Capacity-weighted PUE is 1.47. Facility overhead only; says nothing about server utilization.",
+   "layer": [
+    "energy",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Large data centers are mostly more efficient, analysis confirms",
+    "publisher": "Uptime Institute",
+    "url": "https://journal.uptimeinstitute.com/large-data-centers-are-mostly-more-efficient-analysis-confirms",
+    "published": "2024-02-07",
+    "kind": "company-report"
+   },
+   "quote": "In 2023, industry average PUE stood at 1.58.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A vendor life-cycle estimate with a use phase inside, so it overstates the embodied line for a small machine.",
+   "id": "sf-023",
+   "entity": "Dell OptiPlex Micro 7010 (small business desktop, a typical local-node class)",
+   "metric": "product carbon footprint over the life cycle",
+   "value": 250,
+   "low": null,
+   "high": null,
+   "unit": "kg CO2e (standard deviation 57)",
+   "year": 2022,
+   "boundary": "Cradle to grave per device with a stated lifetime; uses the PAIA model. Vendor estimate.",
+   "layer": [
+    "embodied",
+    "co2e",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Dell OptiPlex Micro 7010 Product Carbon Footprint datasheet",
+    "publisher": "Dell Technologies",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/desktops-and-all-in-ones/technical-support/dell-optiplex-micro-7010-pcf-datasheet.pdf",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "For this product, that estimate has a mean of 250 kg of CO2e and standard deviation of 57 kg of CO2e.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A secondary relay of a research estimate that disagrees sharply with the manufacturer's figure; the gap is unresolved.",
+   "id": "sf-024",
+   "entity": "Hard disk drive and solid state drive, embodied carbon (Tech Carbon Standard)",
+   "metric": "embodied carbon per TB of capacity",
+   "value": null,
+   "low": 20,
+   "high": 160,
+   "unit": "kg CO2e per TB: hard disk 20; solid state 160",
+   "year": 2022,
+   "boundary": "Manufacturing of the storage medium only; averages from Tannu and Nair (cited by the standard) and a tape data sheet.",
+   "layer": [
+    "embodied",
+    "co2e",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Data View",
+    "publisher": "Tech Carbon Standard",
+    "url": "https://www.techcarbonstandard.org/technology-categories/data",
+    "published": "unknown",
+    "kind": "model"
+   },
+   "quote": "Hard Disk Drive (HDD) 20 kgCO2e/TB Solid State Drive (SSD) 160 kgCO2e/TB",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A vendor analysis with a stake in the answer; it differs from another estimate by more than twenty times, unresolved.",
+   "id": "sf-025",
+   "entity": "Hard drives (Seagate 30 TB class) and data center SSDs, embodied carbon",
+   "metric": "embodied carbon per TB, vendor analysis",
+   "value": null,
+   "low": 1,
+   "high": 160,
+   "unit": "kg CO2e per TB: SSD 160; hard drive under 1",
+   "year": 2025,
+   "boundary": "Product embodied carbon, 5-year view, generic 30.72 TB data center SSD against a Seagate 30 TB Mozaic 3+ hard drive. Vendor analysis with a stake in the answer.",
+   "layer": [
+    "embodied",
+    "co2e",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Decarbonizing Data: Strategic Considerations for Data Center Sustainability in the AI Era",
+    "publisher": "Seagate Technology",
+    "url": "https://www.seagate.com/content/dam/seagate/assets/resources/decarbonizing-data-report/decarbonizing-data-report-040325.pdf",
+    "published": "2025-04-03",
+    "kind": "company-report"
+   },
+   "quote": "SSD3 4,915 160 32 Hard drive4 29.7 <1 <0.2",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-026",
+   "entity": "Seagate Corvault 4U106 with 24 TB hard drives (106-drive system)",
+   "metric": "average annual electricity per TB of capacity",
+   "value": 5.09,
+   "low": null,
+   "high": 8.5,
+   "unit": "kWh per TB per year",
+   "year": 2026,
+   "boundary": "Whole storage system power at the manufacturer (idle 0.61 W per TB, operating 0.69 W per TB). Excludes cooling and facility overhead.",
+   "layer": [
+    "energy",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Corvault 4U106 with Exos 24 TB HDDs sustainability report",
+    "publisher": "Seagate Technology",
+    "url": "https://www.seagate.com/content/dam/seagate/assets/sustainability/files/corvault-4U106-with-exos-24-tb-hdds-sustainability-report.pdf",
+    "published": "2026-02-20",
+    "kind": "company-report"
+   },
+   "quote": "Average Annual (kWh) 12,943 5.09",
+   "derived": "12,943 / (106 drives x 24 TB = 2,544 TB) = 5.09",
+   "status": "partly"
+  },
+  {
+   "limit": "A vendor's authors, 2018 hardware at peak power, and storage power only; a model, not a measurement.",
+   "id": "sf-027",
+   "entity": "Cubbit peer-hosted storage network against centralized cloud racks (model)",
+   "metric": "reduction in storage power per TB of the distributed design",
+   "value": 77,
+   "low": 50,
+   "high": 95,
+   "unit": "percent lower (range 50 to 95 across racks)",
+   "year": 2018,
+   "boundary": "Storage power only, peak wattage per TB with PUE and redundancy applied: home node 2.55 W per TB (PUE 1.0, redundancy 1.5) against enterprise racks filled with 8 TB disks (PUE 1.6 to 1.9, redundancy 2.0). Excludes the home router and device embodied carbon.",
+   "layer": [
+    "energy",
+    "storage",
+    "network"
+   ],
+   "basis": "peak",
+   "source": {
+    "title": "The carbon footprint of distributed cloud storage",
+    "publisher": "arXiv preprint by authors at Cubbit (vendor)",
+    "url": "https://arxiv.org/html/1803.06973v3",
+    "published": "unknown",
+    "kind": "preprint"
+   },
+   "quote": "corresponding to an overall 77% reduction:",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-028",
+   "entity": "Netflix Open Connect storage appliance (MBX-2200, 24 TB flash)",
+   "metric": "peak power at full video throughput",
+   "value": 360,
+   "low": null,
+   "high": null,
+   "unit": "W, at 180 Gbps of video traffic",
+   "year": 2022,
+   "boundary": "One appliance: power at the wall at peak, at 20 C. Excludes the ISP network beyond the appliance and the traffic that fills the cache.",
+   "layer": [
+    "energy",
+    "data center"
+   ],
+   "basis": "peak",
+   "source": {
+    "title": "Open Connect Appliance 2X 100G Flash (MBX-2200) specifications",
+    "publisher": "Netflix",
+    "url": "https://openconnect.netflix.com/specsheets/RevBK-jnUmyg.pdf",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Power Draw Operational (Peak) 360 W (at 180Gbps of video traffic at 20C) Approximate Operational Throughput 180 Gbps Raw Storage Capacity 24 TB",
+   "derived": "360 W / 180 Gbps = 2 W per Gbps = 16 J per GB = 0.0044 Wh per GB at peak",
+   "status": "verified"
+  },
+  {
+   "limit": "A company statement on an undated page; the savings land on network links, with no energy figure attached.",
+   "id": "sf-029",
+   "entity": "Google Global Cache (caches inside ISP networks)",
+   "metric": "share of cacheable traffic served from the embedded cache",
+   "value": null,
+   "low": 70,
+   "high": 90,
+   "unit": "percent: 70 to 90",
+   "year": 2025,
+   "boundary": "Cacheable Google content; hit rates vary by network. Company statement; the page carries no date.",
+   "layer": [
+    "network",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Introduction to GGC",
+    "publisher": "Google Interconnect Help",
+    "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Typically between 70-90% of cacheable traffic can be served from GGC.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-030",
+   "entity": "Local peer sharing of online TV (London, month-long trace of over 3 million monthly users)",
+   "metric": "reduction in system-wide carbon footprint of streaming from local sharing",
+   "value": null,
+   "low": 24,
+   "high": 48,
+   "unit": "percent: 24 to 48",
+   "year": 2018,
+   "boundary": "Model fed with real viewing traces: content delivery network plus peers, shorter paths for nearby peers. Network and delivery; assumptions about peer devices and swarm size.",
+   "layer": [
+    "co2e",
+    "network"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Consume Local: Towards Carbon Free Content Delivery",
+    "publisher": "IEEE ICDCS 2018",
+    "url": "https://store.computer.org/csdl/pds/api/csdl/proceedings/download-article/12OmNAZx8OJ/pdf",
+    "published": "2018-07-01",
+    "kind": "peer-reviewed"
+   },
+   "quote": "we show that local sharing can result in a decrease of 24-48% in the system-wide carbon footprint of online video streaming",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "The project's own test of bandwidth on one live video under optimal conditions; bandwidth, not energy.",
+   "id": "sf-031",
+   "entity": "PeerTube (open-source federated video) live stream with 1,000 simulated viewers",
+   "metric": "server bandwidth saved by peer-to-peer delivery",
+   "value": null,
+   "low": 3,
+   "high": 4,
+   "unit": "factor of 3 to 4",
+   "year": 2023,
+   "boundary": "Server bandwidth for one live video, 1,000 browsers watching the same stream under optimal conditions. Bandwidth, not energy.",
+   "layer": [
+    "network",
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "PeerTube stress tests: resilience lies in your peers!",
+    "publisher": "JoinPeerTube (project news, with NLnet and Octopuce)",
+    "url": "https://joinpeertube.org/news/stress-test-2023",
+    "published": "2023-12-21",
+    "kind": "blog"
+   },
+   "quote": "Under optimal conditions, the P2P aspect of PeerTube reduces the bandwidth required to broadcast a live video by a factor of 3 or 4",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-032",
+   "entity": "IPFS (content-addressed, peer-to-peer storage), top 180 storage providers sampled",
+   "metric": "duplicate data removable by content-defined chunking",
+   "value": 90,
+   "low": null,
+   "high": null,
+   "unit": "percent of duplicates removed (against 4 percent for fixed-size chunking)",
+   "year": 2025,
+   "boundary": "Storage footprint of the sampled files (1 percent sample); mechanism study, not energy. Sample in a small number of cloud-hosted providers.",
+   "layer": [
+    "storage"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Centralization in the Decentralized Web: Challenges and Opportunities in IPFS Data Management",
+    "publisher": "The Web Conference (WWW) 2025",
+    "url": "https://tddg.github.io/assets/pdf/www25-ipfs-dedup.pdf",
+    "published": "2025-02-06",
+    "kind": "peer-reviewed"
+   },
+   "quote": "FSC manages to eliminate only about 4% of duplicates in the snapshots of the top-180 providers. In stark contrast, content-based algorithms such as RF, BH, and FastCDC can reduce nearly 90% of duplicates in the same scenario, which can result in substantial storage savings of nearly 16 TB.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-033",
+   "entity": "Federated learning against centralized training (JMLR carbon model)",
+   "metric": "carbon of federated learning relative to centralized training",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "up to two orders of magnitude more; comparable in some settings",
+   "year": 2023,
+   "boundary": "Model of the training procedure across client devices and a server; training only, not inference or hosting.",
+   "layer": [
+    "co2e",
+    "energy",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "A First Look into the Carbon Footprint of Federated Learning",
+    "publisher": "Journal of Machine Learning Research 24(129)",
+    "url": "https://jmlr.org/papers/v24/21-0445.html",
+    "published": "2023",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Our findings show that, depending on the configuration, FL can emit up to two orders of magnitude more carbon than centralized training. However, in certain settings, it can be comparable to centralized learning due to the reduced energy consumption of embedded devices.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-034",
+   "entity": "Federated learning energy research",
+   "metric": "quality of the evidence base",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative finding",
+   "year": 2026,
+   "boundary": "Survey of how federated learning energy is evaluated.",
+   "layer": [
+    "energy"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Towards sustainable Federated Learning: A survey on energy and experimental practices",
+    "publisher": "ScienceDirect (peer-reviewed survey)",
+    "url": "https://www.sciencedirect.com/science/article/pii/S2210537926001812",
+    "published": "2026-09-24",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Our findings reveal that simulation dominates current evaluation practices, but lacks real-world validation.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A preprint on single-turn queries; the top figure routes each query to the best of many local models, and a small model averages far lower.",
+   "id": "sf-035",
+   "entity": "Local language models answering real chat and reasoning queries (Stanford, \"Intelligence per Watt\")",
+   "metric": "share of one million single-turn queries a local model answered successfully",
+   "value": 88.7,
+   "low": null,
+   "high": null,
+   "unit": "percent of queries answered correctly by the best-of-local ensemble (each query routed to the best of the local models); best single local model 71.4 percent",
+   "year": 2025,
+   "boundary": "Coverage (share of queries answered correctly) of local models up to 20B active parameters on 1 million single-turn chat and reasoning queries; 20+ models, 8 accelerators. The 88.7 percent is the best-of-local ensemble with per-query selection. Single-turn only; no long agentic sessions.",
+   "layer": [
+    "energy",
+    "device",
+    "compatibility"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Intelligence per Watt: Measuring Intelligence Efficiency of Local AI",
+    "publisher": "arXiv (accepted at NeurIPS 2026; revised 10/01/2026)",
+    "url": "https://arxiv.org/abs/2511.07885",
+    "published": "2025-11-11",
+    "kind": "preprint"
+   },
+   "quote": "First, local LMs successfully answer 88.7% of these queries, with accuracy varying by domain.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-036",
+   "entity": "Local accelerators against cloud accelerators running identical models (Stanford, \"Intelligence per Watt\")",
+   "metric": "efficiency of local hardware relative to cloud hardware",
+   "value": 1.4,
+   "low": null,
+   "high": null,
+   "unit": "times lower intelligence per watt for local (at least)",
+   "year": 2025,
+   "boundary": "Task accuracy per unit of power on identical models. Power and energy measured per query on local laptops and cloud accelerators.",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Intelligence per Watt: Measuring Intelligence Efficiency of Local AI",
+    "publisher": "arXiv (accepted at NeurIPS 2026; revised 10/01/2026)",
+    "url": "https://arxiv.org/abs/2511.07885",
+    "published": "2025-11-11",
+    "kind": "preprint"
+   },
+   "quote": "Third, local accelerators achieve at least 1.4x lower IPW than cloud accelerators running identical models, revealing significant headroom for local accelerator optimization.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "A preprint whose system power is an assumed ten watts, not a wall meter, for single-user quantized models.",
+   "id": "sf-037",
+   "entity": "Apple M4 Pro laptop running open-source language models (3B to 9B parameters)",
+   "metric": "system energy per generated token",
+   "value": null,
+   "low": 0.09,
+   "high": 0.25,
+   "unit": "J per token: 0.09 to 0.25",
+   "year": 2026,
+   "boundary": "Package power measured by macOS powermetrics (0.47 W, excludes memory); system power is an estimate of about 10 W, not metered at the wall. Single user, quantized models.",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "GreenBench: Benchmarking Energy Efficiency and Carbon Footprint of Open-Source LLM Inference on Apple Silicon",
+    "publisher": "arXiv preprint",
+    "url": "https://arxiv.org/pdf/2608.28667",
+    "published": "2026-08-24",
+    "kind": "preprint"
+   },
+   "quote": "The M4 Pro's system-level energy cost ranges from 0.09 to 0.25 J/tok",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "An estimate of one unbatched stream, not a measurement and not production serving.",
+   "id": "sf-038",
+   "entity": "GreenBench claim of 30 to 40 times better efficiency than datacenter GPUs",
+   "metric": "comparator energy per token for an NVIDIA H100, single user",
+   "value": 4.0,
+   "low": null,
+   "high": null,
+   "unit": "J per token, estimated",
+   "year": 2026,
+   "boundary": "Estimate of 400 W divided by 100 tokens per second for one user. Not a measurement, and not batched serving.",
+   "layer": [
+    "energy",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "GreenBench: Benchmarking Energy Efficiency and Carbon Footprint of Open-Source LLM Inference on Apple Silicon",
+    "publisher": "arXiv preprint",
+    "url": "https://arxiv.org/pdf/2608.28667",
+    "published": "2026-08",
+    "kind": "preprint"
+   },
+   "quote": "Datacenter GPUs justify their power draw through batching many requests at once; that option is simply not there for low-volume, local workloads.",
+   "derived": "400 W / 100 tok/s = 4.0 J per token (the paper's table note)",
+   "status": "partly"
+  },
+  {
+   "id": "sf-039",
+   "entity": "Raspberry Pi 5 with a Hailo-10H accelerator, 1B to 1.7B parameter models",
+   "metric": "whole-system energy per query",
+   "value": 122,
+   "low": 122,
+   "high": 219,
+   "unit": "J per query (CPU-only 219); system power 4.8 W (CPU-only 9.8 W); idle 3.0 W",
+   "year": 2026,
+   "boundary": "USB-C supply power at 2 Hz for the board and accelerator; tiny models only; query length not captured in the table.",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Edge-LLM-Bench: Characterising LLM Inference on Raspberry Pi 5 with Hailo-10H NPU Acceleration",
+    "publisher": "ACM proceedings",
+    "url": "https://dl.acm.org/doi/pdf/10.1145/3812836.3814998",
+    "published": "2026-05-02",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Idle system power (W) 3.0 Mean system power (W) 4.8 9.8 Energy per query (J) 122 219 Energy per token (mJ/tok) 660 1 101",
+   "derived": "122 J / 3600 = 0.034 Wh",
+   "status": "verified"
+  },
+  {
+   "id": "sf-040",
+   "entity": "Public and private cloud AI inference (MLPerf Inference v5.0, 739 submissions)",
+   "metric": "effect of cloud type on inference efficiency per watt of rated power",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "no significant difference",
+   "year": 2026,
+   "boundary": "Throughput divided by vendor-reported thermal design power, a proxy; submissions to a benchmark, which are tuned.",
+   "layer": [
+    "energy",
+    "data center"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Benchmarking AI Inference Efficiency in Public and Private Clouds: An MLPerf-Based Comparative Study",
+    "publisher": "IEEE Transactions on Cloud Computing",
+    "url": "https://www.computer.org/csdl/journal/cc/2026/02/11447405/2eZeveJQyOI",
+    "published": "2026-04-01",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Results indicated no significant cloud-type effect, significant differences across accelerator models (with NVIDIA H200-SXM-141GB exhibiting approximately 45% higher median efficiency), and no cloud–accelerator interaction.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-041",
+   "entity": "Self-hosted LLM serving on one NVIDIA H100",
+   "metric": "effective cost per million output tokens depending on how busy the GPU is",
+   "value": null,
+   "low": 0.21,
+   "high": 15.25,
+   "unit": "USD per million output tokens: 0.21 to 15.25",
+   "year": 2026,
+   "boundary": "Rented-GPU style cost on identical hardware as the request rate varies; 42 benchmarks; an open-source cost meter. Cost, not energy.",
+   "layer": [
+    "price",
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Beyond Per-Token Pricing: A Concurrency-Aware Methodology for LLM Infrastructure Cost Estimation",
+    "publisher": "arXiv preprint",
+    "url": "https://arxiv.org/abs/2606.11690",
+    "published": "2026-06-10",
+    "kind": "preprint"
+   },
+   "quote": "on identical H100 hardware, effective cost spans $0.21 to $15.25 per million output tokens, an underutilization penalty of 2.5-24x across low-to-moderate enterprise loads (1-10 rps)",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "One blog's wall meter with no sample size or uncertainty, published by a tools site for the same software.",
+   "id": "sf-042",
+   "entity": "Intel N100 mini PC (Beelink S12 Pro) running Jellyfin, a self-hosted media server",
+   "metric": "wall power with the server running and no streams",
+   "value": 8,
+   "low": 7,
+   "high": 9,
+   "unit": "W, idle (range 7 to 9)",
+   "year": 2026,
+   "boundary": "Kill-A-Watt at the wall, includes the power supply; Ubuntu 24.04 in Docker. The full table lists 12 to 16 W for one hardware 4K-to-1080p transcode and 0.8 W off.",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "idle",
+   "source": {
+    "title": "Jellyfin Power Consumption Guide 2026: Real Measurements for N100, N305, NAS, and Old PCs (Kill-A-Watt Tested)",
+    "publisher": "JellyWatch Blog",
+    "url": "https://jellywatch.app/blog/jellyfin-power-consumption-electricity-cost-n100-nas-2026",
+    "published": "2026-05-29",
+    "kind": "blog"
+   },
+   "quote": "Idle (Jellyfin running, no streams) 7-9W Typical: 8W",
+   "derived": "8 W x 8,760 h = 70.1 kWh per year; at $0.15 per kWh = $10.51",
+   "status": "partly"
+  },
+  {
+   "limit": "One blog's wall meter, from the same site, with the same limits.",
+   "id": "sf-043",
+   "entity": "Synology DS224+ two-bay NAS",
+   "metric": "wall power at idle",
+   "value": null,
+   "low": 15,
+   "high": 18,
+   "unit": "W: 15 to 18 with drives spinning; 8 to 10 with drives sleeping",
+   "year": 2026,
+   "boundary": "Kill-A-Watt at the wall, including two hard drives.",
+   "layer": [
+    "energy",
+    "storage"
+   ],
+   "basis": "idle",
+   "source": {
+    "title": "Jellyfin Power Consumption Guide 2026: Real Measurements for N100, N305, NAS, and Old PCs (Kill-A-Watt Tested)",
+    "publisher": "JellyWatch Blog",
+    "url": "https://jellywatch.app/blog/jellyfin-power-consumption-electricity-cost-n100-nas-2026",
+    "published": "2026-05-29",
+    "kind": "blog"
+   },
+   "quote": "Idle (drives spinning) 15-18W 2x HDD spinning Idle (drives sleeping) 8-10W HDD hibernation enabled",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-044",
+   "entity": "Peer-to-peer content delivery on already-on machines (Intel Research and Microsoft Research model)",
+   "metric": "end-system energy of peers against data center servers",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative; peers usually win on end systems",
+   "year": 2008,
+   "boundary": "Model with measured idle power of a server (291 W) and a desktop (140 W), 2008 hardware. End systems only; the network is separate (sf-045).",
+   "layer": [
+    "energy",
+    "device"
+   ],
+   "basis": "marginal",
+   "source": {
+    "title": "Hot Data Centers vs. Cool Peers",
+    "publisher": "USENIX HotPower 2008 (Nedevschi, Ratnasamy, Padhye)",
+    "url": "https://www.usenix.org/legacy/events/hotpower08/tech/full_papers/nedevschi/nedevschi.pdf",
+    "published": "2008-11-14",
+    "kind": "peer-reviewed"
+   },
+   "quote": "In summary, from the point of view of end systems, p2p is likely to always win. This is to be expected, since the baseline energy consumption at peers comes for free.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-045",
+   "entity": "Peer-to-peer content delivery (Intel Research and Microsoft Research model)",
+   "metric": "network energy of peers against data center servers",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative; peers usually fare worse in the network",
+   "year": 2008,
+   "boundary": "In-network energy only, with random peer selection and the protocol overhead of the peer system.",
+   "layer": [
+    "network",
+    "energy"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Hot Data Centers vs. Cool Peers",
+    "publisher": "USENIX HotPower 2008 (Nedevschi, Ratnasamy, Padhye)",
+    "url": "https://www.usenix.org/legacy/events/hotpower08/tech/full_papers/nedevschi/nedevschi.pdf",
+    "published": "2008-11-14",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Thus, as expected, p2p usually fares worse, to an extent determined primarily by the efficiency of the p2p protocol.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-046",
+   "entity": "Nano data centers (small servers placed near users) against centralized data centers",
+   "metric": "energy tradeoff of pushing content to the edge",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative; can save or can cost more",
+   "year": 2014,
+   "boundary": "Measurements and models for content delivery; savings depend on application, hardware efficiency and utilization.",
+   "layer": [
+    "energy",
+    "network"
+   ],
+   "basis": "average",
+   "source": {
+    "title": "Energy Consumption Comparison of Nano and Centralized Data Centers",
+    "publisher": "ACM SIGMETRICS GreenMetrics 2014 (Jalali and colleagues)",
+    "url": "https://www.sigmetrics.org/greenmetrics/2014/papers/greenmetrics2014-jalali.pdf",
+    "published": "2014-04-15",
+    "kind": "peer-reviewed"
+   },
+   "quote": "Our results indicate that while nano data centers can save energy for some applications by pushing content closer to end-users and decreasing the energy consumption in the transport network, it also can consume more energy",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-047",
+   "entity": "Microsoft 365 Business Standard",
+   "metric": "list price",
+   "value": 14.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per user per month, paid yearly",
+   "year": 2026,
+   "boundary": "List price excluding tax. A 12 percent increase from 12.50 effective 07/01/2026 is claimed (Microsoft licensing notice; not on the product page read, unverified). The page lists Word, Excel and PowerPoint, professional email, cloud file storage, online meetings and AI chat.",
+   "layer": [
+    "price"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Microsoft 365 Business Standard",
+    "publisher": "Microsoft",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-standard",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Microsoft 365 Business Standard $14.00 user/month, paid yearly",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-048",
+   "entity": "Google Workspace Business Standard",
+   "metric": "list price",
+   "value": 14.0,
+   "low": null,
+   "high": null,
+   "unit": "USD per user per month, annual commitment, after a promotion",
+   "year": 2026,
+   "boundary": "List price excluding tax; 2 TB pooled storage per user. A 20 percent introductory discount ($11.20) is shown for a window starting 11/18/2026.",
+   "layer": [
+    "price",
+    "storage"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Compare Flexible Pricing Plan Options",
+    "publisher": "Google Workspace",
+    "url": "https://workspace.google.com/pricing",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Standard 20% off for 3 months help 20% off for 3 months help Price details Nov 18, 2026 – Feb 18, 2027 20% off For all users $11.20 Feb 18, 2027 - Onwards For all users $14.00",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "limit": "The page is undated, the price starts at 100 users, and a subscription is optional; the customer still supplies hardware, hosting, and administration.",
+   "id": "sf-049",
+   "entity": "Nextcloud Enterprise subscription (self-hosted support subscription)",
+   "metric": "price per user per year, 100 users and up",
+   "value": null,
+   "low": 71.29,
+   "high": 204.75,
+   "unit": "EUR per user per year: 71.29 to 204.75 at 100 users; 53.17 to 183.75 at 200 users",
+   "year": 2026,
+   "boundary": "Support subscription only, net of VAT; the customer still supplies hardware, hosting and administration. Three tiers; tier names were not captured.",
+   "layer": [
+    "price",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Nextcloud Enterprise pricing",
+    "publisher": "Nextcloud GmbH",
+    "url": "https://nextcloud.com/pricing",
+    "published": "2022-04-12",
+    "kind": "company-report"
+   },
+   "quote": "Pricing starts at 100 users. Contact us for a quote relevant for your specific market vertical. 71.29€ per user/year 104.99€ per user/year 204.75€ per user/year",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "List prices from a competitor's comparison page; check rival numbers against each provider.",
+   "id": "sf-050",
+   "entity": "Backblaze B2, Amazon S3 Standard, Microsoft Azure and Google Cloud (as compared by Backblaze)",
+   "metric": "object storage price and egress fee",
+   "value": null,
+   "low": 6.95,
+   "high": 26,
+   "unit": "USD per TB per month: B2 6.95, S3 26, Azure 20, Google 23; egress per GB: B2 free up to 3x stored data, S3 0.09, Azure 0.08, Google 0.11",
+   "year": 2026,
+   "boundary": "List prices from a competitor's comparison page; column order follows the logos on the page (B2, S3, Azure, Google Cloud). Amazon's own S3 Standard is $0.023 per GB-month in US East per secondary trackers.",
+   "layer": [
+    "price",
+    "storage"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Backblaze B2 Cloud Storage: transparent pricing comparison",
+    "publisher": "Backblaze (a storage vendor)",
+    "url": "https://www.backblaze.com/cloud-storage/landing/ad/use-cases/cloud-storage?sa=X",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Storage (TB/month) $ 6.95 $26 $20 $23 Egress ($/GB) Free* $0.09 $0.08 $0.11",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "A hosting vendor's model, not a measurement, from a seller of the managed alternative.",
+   "id": "sf-051",
+   "entity": "Self-hosting Nextcloud on a rented server, model for 5, 25 and 100 users",
+   "metric": "administration labor in the monthly cost and cost per user",
+   "value": null,
+   "low": 17.6,
+   "high": 48.4,
+   "unit": "USD per user per month: 48.40 (5 users), 24.80 (25), 17.60 (100)",
+   "year": 2026,
+   "boundary": "Hosting vendor's model: server $12, $40, $160; storage and backup $20, $100, $400; administration hours at $60 per hour (3.5, 8 and 20 hours a month). Not a measurement.",
+   "layer": [
+    "price",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Managed Nextcloud Hosting vs Self-Hosting Cost",
+    "publisher": "MassiveGRID (a hosting vendor)",
+    "url": "https://massivegrid.com/blog/managed-nextcloud-hosting-vs-self-hosting-cost-per-user",
+    "published": "2026-10-15",
+    "kind": "blog"
+   },
+   "quote": "Administration (hours × $60) $210 (3.5 h) $480 (8 h) $1,200 (20 h) Total $242 $620 $1,760 Per user per month $48.40 $24.80 $17.60",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "limit": "One affiliate-funded tracker's lowest retail price, which moves weekly; one drive is not a redundant store.",
+   "id": "sf-052",
+   "entity": "Hard drives, consumer and NAS class",
+   "metric": "lowest retail price per terabyte",
+   "value": 22.22,
+   "low": null,
+   "high": null,
+   "unit": "USD per TB (WD Purple 18 TB at $399.99)",
+   "year": 2026,
+   "boundary": "Retail price tracker, 11/03/2026; recording technology not verified for that drive. One tracker reports prices up 15 to 92 percent between March and August 2026.",
+   "layer": [
+    "price",
+    "storage"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Best Hard Drive Price Per Terabyte Today",
+    "publisher": "datacenterdisk.com (an affiliate-funded price tracker)",
+    "url": "https://datacenterdisk.com/best/price-per-tb",
+    "published": "2026-08-19",
+    "kind": "blog"
+   },
+   "quote": "The best hard drive price per terabyte today is the WD Purple 18TB WD180PURZ at $399.99 ($22.22/TB), as of 2026-11-03.",
+   "derived": null,
+   "status": "partly"
+  },
+  {
+   "id": "sf-055",
+   "entity": "Mukurtu CMS (open-source platform for Indigenous cultural heritage)",
+   "metric": "ongoing technical support to self-host",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "qualitative; updates about every 12 weeks plus server maintenance",
+   "year": 2025,
+   "boundary": "The project's own requirements for self-hosting: a server for Drupal 7, initial IT support and ongoing IT support; otherwise contract a hosting provider.",
+   "layer": [
+    "labor",
+    "price"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "FAQs",
+    "publisher": "Mukurtu CMS project",
+    "url": "https://mukurtu.org/faqs",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Ongoing IT support to maintain the site and server (expect Mukurtu updates approximately every 12 weeks, plus other regular server maintenance).",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-056",
+   "entity": "Tribal lands, fixed broadband availability",
+   "metric": "share of people without access to broadband",
+   "value": 24,
+   "low": null,
+   "high": null,
+   "unit": "percent (national comparison about 7)",
+   "year": 2022,
+   "boundary": "FCC data, December 2022 deployment data, fixed terrestrial broadband at 100/20 Mbps for the 24 percent figure as reported by the Congressional Research Service.",
+   "layer": [
+    "network",
+    "compatibility"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Tribal Broadband Deployment: Federal Funding and Considerations for Congress (CRS R48563)",
+    "publisher": "Congressional Research Service",
+    "url": "https://www.congress.gov/crs-product/R48563",
+    "published": "2025-06-06",
+    "kind": "agency"
+   },
+   "quote": "approximately 24% of Americans living on tribal lands lack broadband access, in contrast to about 7% of Americans broadly.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-057",
+   "entity": "ArtCraft Crafting Apps (WordCraft and sibling apps)",
+   "metric": "maturity of an open-source word processor",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "status label: \"In development\"",
+   "year": 2026,
+   "boundary": "Vendor self-description on the apps page, with status labels per app (several are \"Early alpha\" or \"In development\"). The page says every app is open source under permissive licenses, native Rust, and runs on local files. No resource, price or compatibility claim.",
+   "layer": [
+    "compatibility",
+    "labor"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Crafting Apps: sixteen open-source creative apps",
+    "publisher": "ArtCraft",
+    "url": "https://getartcraft.com/apps",
+    "published": "unknown",
+    "kind": "company-report"
+   },
+   "quote": "Word Craft Fast, open-source word processing, rebuilt in pure Rust. In development Installers ready macOS Windows Linux Web Explore WordCraft",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-058",
+   "entity": "Software Carbon Intensity (SCI) specification",
+   "metric": "status as an international standard",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "ISO/IEC 21031:2024",
+   "year": 2024,
+   "boundary": "Carbon only (operational plus allocated embodied), per a chosen functional unit; location-based marginal emission factors. Does not cover energy cost, water, or price.",
+   "layer": [
+    "metric"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "sci-ai specification (extends SCI)",
+    "publisher": "Green Software Foundation",
+    "url": "https://github.com/Green-Software-Foundation/sci-ai/blob/main/SPEC.md",
+    "published": "unknown",
+    "kind": "model"
+   },
+   "quote": "This document extends the Software Carbon Intensity (SCI) methodology specified in ISO/IEC 21031:2024",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-059",
+   "entity": "Software Carbon Intensity (SCI) specification",
+   "metric": "functional unit",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "not prescribed by the specification",
+   "year": 2024,
+   "boundary": "The unit of work (R) is the user's choice, for example per user, per API call, per ML job, per token.",
+   "layer": [
+    "metric"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "Measurement",
+    "publisher": "Green Software Foundation, Learn Green Software",
+    "url": "https://learn.greensoftware.foundation/measurement",
+    "published": "unknown",
+    "kind": "model"
+   },
+   "quote": "The specification currently doesn't prescribe the functional unit and you are free to pick whichever best describes how your application scales.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "sf-060",
+   "entity": "Real-Time Cloud (RTC) standard",
+   "metric": "what it asks cloud providers to disclose",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "PUE, WUE, carbon-free energy and four carbon intensity bases per region",
+   "year": 2026,
+   "boundary": "Region-level disclosure, not per workload or per customer. A standard of the Green Software Foundation.",
+   "layer": [
+    "metric",
+    "water",
+    "energy"
+   ],
+   "basis": "not applicable",
+   "source": {
+    "title": "RTC: Real Time Cloud",
+    "publisher": "Green Software Foundation",
+    "url": "https://greensoftware.foundation/standards/rtc/",
+    "published": "unknown",
+    "kind": "model"
+   },
+   "quote": "The first standard requiring cloud providers to share real-time energy and carbon data in a common format.",
+   "derived": null,
+   "status": "partly"
+  }
+ ]
+}

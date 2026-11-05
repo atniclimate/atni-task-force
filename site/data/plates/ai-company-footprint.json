@@ -1,0 +1,318 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-company-footprint",
+ "default": "2025",
+ "eyebrow": "Footprint",
+ "gap": "none reported",
+ "title": "Google's electricity rose {c[rs-003][value]} percent in 2025 to {display}; location-based Scope 2 rose at every company that reports more than one year of it",
+ "subtitle": "Company reports, each row on its own boundary. Fiscal years differ: Microsoft July to June, Apple to September, NVIDIA to January.",
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "foot_co",
+   "label": "Company",
+   "default": "Alphabet",
+   "options": [
+    {
+     "value": "Microsoft",
+     "label": "Microsoft"
+    },
+    {
+     "value": "Alphabet",
+     "label": "Alphabet"
+    },
+    {
+     "value": "Amazon",
+     "label": "Amazon"
+    },
+    {
+     "value": "Meta",
+     "label": "Meta"
+    },
+    {
+     "value": "Apple",
+     "label": "Apple"
+    },
+    {
+     "value": "NVIDIA",
+     "label": "NVIDIA"
+    },
+    {
+     "value": "Tesla",
+     "label": "Tesla"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "multiples",
+  "highlight_by": "foot_co",
+  "units": {
+   "MMT CO2e": "million tCO2e"
+  },
+  "panels": [
+   {
+    "id": "elec",
+    "label": "Electricity"
+   },
+   {
+    "id": "use",
+    "label": "Water consumed"
+   },
+   {
+    "id": "draw",
+    "label": "Water withdrawn"
+   },
+   {
+    "id": "scope2",
+    "label": "Scope 2, location-based"
+   }
+  ]
+ },
+ "reading_group": "{series}, {year}. Electricity, TWh: {elec}. Water consumed, megaliters: {use}. Water withdrawn, megaliters: {draw}. Scope 2 location-based, million tCO2e: {scope2}.",
+ "tail": "Company reports; each figure keeps its own boundary.",
+ "details": [
+  "Amazon publishes no electricity quantity. Market-based Scope 2 never goes on this chart; those figures are in the block under the plates."
+ ],
+ "rows": [
+  {
+   "panel": "elec",
+   "series": "Alphabet",
+   "claim": "rs-001",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "elec",
+   "series": "Microsoft",
+   "claim": "rs-020",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "elec",
+   "series": "Meta",
+   "claim": "rs-033",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "elec",
+   "series": "Apple",
+   "claim": "rs-054",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "elec",
+   "series": "NVIDIA",
+   "claim": "rs-066",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "elec",
+   "series": "Tesla",
+   "claim": "rs-072",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-09,
+    "to": "TWh"
+   }
+  },
+  {
+   "panel": "use",
+   "series": "Alphabet",
+   "claim": "rs-014",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 3.78541,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "use",
+   "series": "Microsoft",
+   "claim": "rs-030",
+   "points": "series"
+  },
+  {
+   "panel": "use",
+   "series": "Meta",
+   "claim": "rs-045",
+   "points": "series"
+  },
+  {
+   "panel": "draw",
+   "series": "Alphabet",
+   "claim": "rs-013",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 3.78541,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "draw",
+   "series": "Microsoft",
+   "claim": "rs-029",
+   "points": "series"
+  },
+  {
+   "panel": "draw",
+   "series": "Meta",
+   "claim": "rs-043",
+   "points": "series"
+  },
+  {
+   "panel": "draw",
+   "series": "Amazon",
+   "claim": "rs-051",
+   "digits": 4,
+   "convert": {
+    "times": 1000,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "draw",
+   "series": "Apple",
+   "claim": "rs-060",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 3.78541,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "draw",
+   "series": "NVIDIA",
+   "claim": "rs-067",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 0.001,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "draw",
+   "series": "Tesla",
+   "claim": "rs-073",
+   "points": "series",
+   "digits": 4,
+   "convert": {
+    "times": 0.001,
+    "to": "megaliters"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "Alphabet",
+   "claim": "rs-007",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "Microsoft",
+   "claim": "rs-023",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "Meta",
+   "claim": "rs-039",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "Amazon",
+   "claim": "rs-075",
+   "points": "series"
+  },
+  {
+   "panel": "scope2",
+   "series": "Apple",
+   "claim": "rs-057",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "NVIDIA",
+   "claim": "rs-064",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  },
+  {
+   "panel": "scope2",
+   "series": "Tesla",
+   "claim": "rs-069",
+   "points": "series",
+   "digits": 3,
+   "convert": {
+    "times": 1e-06,
+    "to": "million tCO2e"
+   }
+  }
+ ],
+ "table": {
+  "by": [
+   "series",
+   "year"
+  ],
+  "across": "panel",
+  "labels": {
+   "series": "Company",
+   "year": "Year"
+  }
+ }
+}

@@ -1,0 +1,636 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-same-hour",
+ "fit": true,
+ "model": "comparison-model",
+ "by": "boundary",
+ "default": "chat",
+ "eyebrow": "The same hour",
+ "title": "On the same phone, ten text prompts add about {now[chat][activity_added]:.0f} Wh in the data center and an hour of video about {now[video][activity_added]:.0f} Wh in the data center and network; the screen and router add {fixed} Wh to either hour (modeled, 11/2026)",
+ "subtitle": "Energy for one hour, in watt-hours, one boundary at a time.",
+ "text": [
+  "Resolution #2026-039 set up this task force to identify what member Tribes hold in common on AI. The first question most readers bring is whether their own chat use is the problem, so the page starts there: one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled."
+ ],
+ "inputs": {
+  "now": {
+   "model": "computed_defaults.same_hour.default"
+  },
+  "lo": {
+   "model": "computed_defaults.same_hour.low"
+  },
+  "hi": {
+   "model": "computed_defaults.same_hour.high"
+  },
+  "prompt": {
+   "model": "inputs.chat_wh_per_prompt.value"
+  },
+  "house": {
+   "model": "inputs.household_wh_per_day.value"
+  },
+  "tv_wh": {
+   "model": "inputs.device_wh_per_hour.tv"
+  },
+  "m": {
+   "model": "inputs"
+  },
+  "a": {
+   "model": "assumptions"
+  },
+  "want": {
+   "model": "computed_defaults"
+  },
+  "k_r_low": {
+   "claim": "fp-019",
+   "field": "low"
+  },
+  "k_r_high": {
+   "claim": "fp-019",
+   "field": "high"
+  },
+  "k_h_low": {
+   "claim": "fp-025",
+   "field": "low"
+  },
+  "k_h_high": {
+   "claim": "fp-025",
+   "field": "high"
+  },
+  "over_lo": {
+   "claim": "fp-020",
+   "field": "low"
+  },
+  "over_hi": {
+   "claim": "fp-020",
+   "field": "high"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "boundary",
+   "label": "Boundary",
+   "default": "adds",
+   "options": [
+    {
+     "value": "dc",
+     "label": "Data center only"
+    },
+    {
+     "value": "adds",
+     "label": "Plus network"
+    },
+    {
+     "value": "whole",
+     "label": "Whole hour"
+    }
+   ]
+  },
+  {
+   "type": "range",
+   "name": "prompts",
+   "label": "Prompts in the hour, the reader's assumption",
+   "min": 1,
+   "max": 60,
+   "step": 1,
+   "default": 10,
+   "presets": [
+    2.52,
+    10,
+    30,
+    60
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "chat_kind",
+   "label": "Kind of chat",
+   "default": "short_text",
+   "options": [
+    {
+     "value": "short_text",
+     "label": "Short"
+    },
+    {
+     "value": "medium_prompt",
+     "label": "Medium"
+    },
+    {
+     "value": "reasoning",
+     "label": "Reasoning"
+    },
+    {
+     "value": "high_reasoning",
+     "label": "High reasoning"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "device",
+   "label": "Device, the same for every row",
+   "default": "phone",
+   "options": [
+    {
+     "value": "phone",
+     "label": "Phone"
+    },
+    {
+     "value": "laptop",
+     "label": "Laptop"
+    },
+    {
+     "value": "tv",
+     "label": "TV"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "connection",
+   "label": "Connection",
+   "default": "wifi",
+   "more": true,
+   "options": [
+    {
+     "value": "wifi",
+     "label": "Wi-Fi"
+    },
+    {
+     "value": "cellular",
+     "label": "Cellular"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "network_mode",
+   "label": "Network accounting",
+   "default": "average",
+   "more": true,
+   "options": [
+    {
+     "value": "average",
+     "label": "Average"
+    },
+    {
+     "value": "marginal",
+     "label": "Marginal"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "router_allocation",
+   "label": "Home router",
+   "default": "by_time",
+   "more": true,
+   "options": [
+    {
+     "value": "by_time",
+     "label": "By time"
+    },
+    {
+     "value": "by_data",
+     "label": "By data"
+    },
+    {
+     "value": "excluded",
+     "label": "Excluded"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "video_dc_intensity",
+   "label": "Streaming data center energy",
+   "default": "measured_delivery",
+   "more": true,
+   "options": [
+    {
+     "value": "measured_delivery",
+     "label": "Measured delivery"
+    },
+    {
+     "value": "desnz_assumed",
+     "label": "DESNZ scenario"
+    }
+   ]
+  },
+  {
+   "type": "range",
+   "name": "chat_wh_per_prompt",
+   "label": "Wh per short text prompt",
+   "min": 0.24,
+   "max": 0.6,
+   "step": 0.01,
+   "default": 0.3,
+   "more": true
+  }
+ ],
+ "plot": {
+  "type": "ladder",
+  "scale": "log",
+  "domain": [
+   0.01,
+   100000
+  ],
+  "units": {
+   "Wh/hour": "Wh",
+   "W": "Wh"
+  },
+  "count": {
+   "unit": "prompt",
+   "noun": "text prompt",
+   "nouns": "text prompts",
+   "cap": 500
+  },
+  "marks": [
+   {
+    "id": "fixed",
+    "label": "Screen and router",
+    "value": "now.chat.router + now.chat.device",
+    "unit": "Wh",
+    "when": {
+     "boundary": "whole"
+    }
+   }
+  ],
+  "fold": true
+ },
+ "fields": {
+  "fixed": {
+   "formula": "now.chat.router + now.chat.device"
+  }
+ },
+ "reading": "{label}, counted at this boundary: {boundary}. About {display} for the hour. {evidence}",
+ "details": [
+  "The router and the device are the same on every row, so they never explain a difference between rows."
+ ],
+ "rows": [
+  {
+   "id": "chat",
+   "label": "Chat, 10 prompts",
+   "tag": "Adds 3 Wh",
+   "unit": "Wh",
+   "cites": [
+    "fp-001",
+    "fp-017",
+    "fp-012",
+    "fp-021",
+    "fp-015",
+    "fp-134",
+    "fp-127",
+    "fp-126",
+    "fp-133",
+    "fp-049"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.chat.data_center",
+     "low": "lo.chat.data_center",
+     "high": "hi.chat.data_center"
+    },
+    "adds": {
+     "value": "now.chat.activity_added",
+     "low": "lo.chat.activity_added",
+     "high": "hi.chat.activity_added"
+    },
+    "whole": {
+     "value": "now.chat.total",
+     "low": "lo.chat.total",
+     "high": "hi.chat.total"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.chat.data_center",
+     "modeled": false,
+     "word": "measured at Google only"
+    },
+    {
+     "label": "Network",
+     "value": "now.chat.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Router",
+     "value": "now.chat.router",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    },
+    {
+     "label": "Device",
+     "value": "now.chat.device",
+     "modeled": true,
+     "word": "modeled from video measurements",
+     "at": [
+      "whole"
+     ]
+    }
+   ],
+   "cols": {
+    "seg_dc": "3",
+    "seg_net": "0.0008",
+    "seg_router": "10",
+    "seg_device": "2",
+    "evidence": "Data center: measured at Google only; Network: modeled; Router: modeled; Device: modeled from video measurements"
+   },
+   "note": "The prompts in the hour are the reader's setting; no source measures a chat hour.",
+   "equation": "Data center = prompts x Wh per prompt. Network = prompts x KB per prompt x Wh per GB."
+  },
+  {
+   "id": "video",
+   "label": "Streamed video, one hour",
+   "tag": "Adds 2.05 Wh",
+   "unit": "Wh",
+   "cites": [
+    "fp-122",
+    "fp-130",
+    "fp-037",
+    "fp-127",
+    "fp-126",
+    "fp-133",
+    "fp-049",
+    "fp-088"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.video.data_center",
+     "low": "lo.video.data_center",
+     "high": "hi.video.data_center"
+    },
+    "adds": {
+     "value": "now.video.activity_added",
+     "low": "lo.video.activity_added",
+     "high": "hi.video.activity_added"
+    },
+    "whole": {
+     "value": "now.video.total",
+     "low": "lo.video.total",
+     "high": "hi.video.total"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.video.data_center",
+     "modeled": true,
+     "word": "modeled from measured hours"
+    },
+    {
+     "label": "Network",
+     "value": "now.video.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Router",
+     "value": "now.video.router",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    },
+    {
+     "label": "Device",
+     "value": "now.video.device",
+     "modeled": false,
+     "word": "measured during video",
+     "at": [
+      "whole"
+     ]
+    }
+   ],
+   "cols": {
+    "seg_dc": "0.45",
+    "seg_net": "1.6",
+    "seg_router": "10",
+    "seg_device": "2",
+    "evidence": "Data center: modeled from measured hours; Network: modeled; Router: modeled; Device: measured during video"
+   },
+   "equation": "Data center = GB x Wh per GB served. Network = GB x Wh per GB."
+  },
+  {
+   "id": "short",
+   "label": "Short-video feed, one hour",
+   "tag": "Adds 0.8 Wh",
+   "unit": "Wh",
+   "cites": [
+    "fp-053",
+    "fp-054",
+    "fp-055",
+    "fp-059",
+    "fp-097",
+    "fp-122",
+    "fp-130",
+    "fp-127",
+    "fp-126",
+    "fp-133",
+    "fp-049"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.short.data_center",
+     "low": "lo.short.data_center",
+     "high": "hi.short.data_center"
+    },
+    "adds": {
+     "value": "now.short.activity_added",
+     "low": "lo.short.activity_added",
+     "high": "hi.short.activity_added"
+    },
+    "whole": {
+     "value": "now.short.total",
+     "low": "lo.short.total",
+     "high": "hi.short.total"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.short.data_center",
+     "modeled": true,
+     "word": "modeled"
+    },
+    {
+     "label": "Network",
+     "value": "now.short.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Router",
+     "value": "now.short.router",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    },
+    {
+     "label": "Device",
+     "value": "now.short.device",
+     "modeled": true,
+     "word": "modeled from video measurements",
+     "at": [
+      "whole"
+     ]
+    }
+   ],
+   "cols": {
+    "seg_dc": "0.176",
+    "seg_net": "0.624",
+    "seg_router": "10",
+    "seg_device": "2",
+    "evidence": "Data center: modeled; Network: modeled; Router: modeled; Device: modeled from video measurements"
+   },
+   "equation": "Data center = GB x Wh per GB served, capped at a ceiling from Meta's fleet average.",
+   "detail": "Modeled from ENGIE's study for Meta. No source measures the data center side of an Instagram or TikTok hour, and ranking and recommendation compute are unmeasured."
+  },
+  {
+   "id": "bulb",
+   "label": "LED bulb, one hour",
+   "claims": {
+    "dc": null,
+    "adds": null,
+    "whole": "fp-135"
+   },
+   "detail": "An LED bulb that replaces a 60 W incandescent, at its rated power for one hour. It stands as a yardstick at the whole hour; the settings do not move it."
+  },
+  {
+   "id": "charge",
+   "label": "Phone, one charge",
+   "claims": {
+    "dc": null,
+    "adds": null,
+    "whole": "fp-073"
+   },
+   "detail": "Wall-plug energy to recharge a depleted phone battery. It stands as a yardstick at the whole hour; the settings do not move it."
+  },
+  {
+   "id": "tv",
+   "label": "Television, one hour",
+   "unit": "Wh",
+   "cites": [
+    "fp-008",
+    "fp-122",
+    "fp-043",
+    "fp-133"
+   ],
+   "formula": {
+    "dc": null,
+    "adds": null,
+    "whole": {
+     "value": "tv_wh.value",
+     "low": "tv_wh.low",
+     "high": "tv_wh.high"
+    }
+   },
+   "detail": "The 100 W television that Google, DIMPACT, DESNZ, and Carbon Trust all assume; the screen alone, with nothing streaming. It stands as a yardstick at the whole hour; the settings do not move it."
+  },
+  {
+   "id": "household",
+   "label": "US household, one day",
+   "unit": "Wh",
+   "digits": 4,
+   "modeled": false,
+   "cites": [
+    "fp-075"
+   ],
+   "formula": {
+    "dc": null,
+    "adds": null,
+    "whole": {
+     "value": "house"
+    }
+   },
+   "detail": "EIA's 2025 residential average, divided by the days in the year. It stands as a yardstick at the whole hour; the settings do not move it."
+  }
+ ],
+ "cites": [
+  "fp-019",
+  "fp-020",
+  "fp-021",
+  "fp-025",
+  "fp-095",
+  "fp-124",
+  "fp-125",
+  "fp-128",
+  "fp-129",
+  "fp-053",
+  "fp-132",
+  "fp-043",
+  "fp-008",
+  "fp-086",
+  "fp-090"
+ ],
+ "limits": {
+  "fp-095": "Turns per conversation in one free chatbot service's logs from 2023 and 2024; it gives no duration, so it is not a rate per hour."
+ },
+ "foot": [
+  {
+   "text": "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights.",
+   "href": "../data-centers/#questions",
+   "link": "Read the Questions for Tribal Leaders"
+  },
+  {
+   "text": "What a building would run is a question for the project view.",
+   "href": "../data-centers/#dc-project",
+   "link": "Open the project view"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Boundary",
+    "field": "setting"
+   },
+   {
+    "label": "Data center",
+    "field": "seg_dc"
+   },
+   {
+    "label": "Network",
+    "field": "seg_net"
+   },
+   {
+    "label": "Router",
+    "field": "seg_router"
+   },
+   {
+    "label": "Device",
+    "field": "seg_device"
+   },
+   {
+    "label": "At this boundary (low to high)",
+    "field": "display"
+   },
+   {
+    "label": "Measured or modeled",
+    "field": "evidence"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

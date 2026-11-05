@@ -1,0 +1,353 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-heavy-ai",
+ "fit": true,
+ "model": "comparison-model",
+ "default": "prompt",
+ "eyebrow": "Heavy AI",
+ "title": "A text prompt is seconds to minutes of streaming; an AI video clip is minutes to hours; an agent session is hours on every yardstick (modeled, 2025 to 2026)",
+ "subtitle": "Watt-hours for one unit of AI work, and the same energy in streaming time.",
+ "text": [
+  "The same model, three more ways: heavy AI work against a video yardstick, inside the data center per person per day, and all of ChatGPT's text messages against the buildout."
+ ],
+ "inputs": {
+  "prompt_wh": {
+   "model": "inputs.chat_wh_per_prompt.value"
+  },
+  "y_same": {
+   "model": "computed_defaults.heavy_ai.yardsticks.same_device_total"
+  },
+  "y_pub": {
+   "model": "computed_defaults.heavy_ai.yardsticks.published"
+  },
+  "y_dc": {
+   "model": "computed_defaults.heavy_ai.yardsticks.same_device_dc"
+  },
+  "pub_lo": {
+   "model": "inputs.stream_whole_chain_wh_per_hour.low"
+  },
+  "pub_hi": {
+   "model": "inputs.stream_whole_chain_wh_per_hour.high"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "yard",
+   "label": "Yardstick",
+   "default": "same",
+   "options": [
+    {
+     "value": "same",
+     "label": "Video hour on this device",
+     "is": "y_same"
+    },
+    {
+     "value": "pub",
+     "label": "Published hour",
+     "is": "y_pub"
+    },
+    {
+     "value": "dc",
+     "label": "Data center only",
+     "is": "y_dc"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "heavy_device",
+   "label": "Device",
+   "default": "phone",
+   "options": [
+    {
+     "value": "phone",
+     "label": "Phone"
+    },
+    {
+     "value": "laptop",
+     "label": "Laptop"
+    },
+    {
+     "value": "tv",
+     "label": "TV"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "heavy_intensity",
+   "label": "Streaming data center energy",
+   "default": "measured_delivery",
+   "options": [
+    {
+     "value": "measured_delivery",
+     "label": "Measured delivery"
+    },
+    {
+     "value": "desnz_assumed",
+     "label": "DESNZ scenario"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "ladder",
+  "scale": "log",
+  "domain": [
+   0.1,
+   10000
+  ],
+  "axis_label": "Watt-hours, each mark ten times the last; the last column is the same energy in streaming time",
+  "units": {
+   "Wh/video": "Wh",
+   "Wh/image": "Wh",
+   "Wh/prompt": "Wh",
+   "Wh/query": "Wh",
+   "Wh/session": "Wh",
+   "Wh/clip": "Wh"
+  },
+  "marks": [
+   {
+    "id": "y-same",
+    "label": "Video hour on this device",
+    "value": "y_same",
+    "unit": "Wh",
+    "when": {
+     "yard": "same"
+    }
+   },
+   {
+    "id": "y-pub",
+    "label": "Published hour",
+    "value": "y_pub",
+    "low": "pub_lo",
+    "high": "pub_hi",
+    "unit": "Wh",
+    "when": {
+     "yard": "pub"
+    }
+   },
+   {
+    "id": "y-dc",
+    "label": "Data center segment",
+    "value": "y_dc",
+    "unit": "Wh",
+    "when": {
+     "yard": "dc"
+    }
+   }
+  ]
+ },
+ "fields": {
+  "prompts": {
+   "formula": "ifblank(value, low) / prompt_wh"
+  },
+  "hours": {
+   "formula": "ifblank(value, low) / yard"
+  },
+  "h_same": {
+   "formula": "ifblank(value, low) / y_same"
+  },
+  "h_pub": {
+   "formula": "ifblank(value, low) / y_pub"
+  },
+  "h_dc": {
+   "formula": "ifblank(value, low) / y_dc"
+  }
+ },
+ "reading": "{label}: about {display}; text prompts, {prompts}; hours of this yardstick, {yard}, {hours}. {evidence}",
+ "details": [
+  "The whole-chain yardsticks include the viewer's screen and router, so they flatter AI; the data center yardstick is like for like but rests on a 45-times dispute over serving energy."
+ ],
+ "rows": [
+  {
+   "id": "prompt",
+   "label": "One text prompt",
+   "tag": "Model default",
+   "unit": "Wh",
+   "cites": [
+    "fp-001",
+    "fp-017"
+   ],
+   "formula": {
+    "value": "prompt_wh"
+   },
+   "cols": {
+    "overhead": "Data center, median prompt"
+   },
+   "detail": "The model's default for a short text prompt, between Google's measured median and the modeled figures."
+  },
+  {
+   "id": "image",
+   "label": "One image, 1024 pixels",
+   "tag": "GPU energy doubled for overhead",
+   "claim": "fp-138",
+   "modeled": true,
+   "detail": "Measured GPU energy on one card, doubled by MIT Technology Review for non-GPU and cooling energy.",
+   "cols": {
+    "overhead": "GPU energy doubled for overhead"
+   }
+  },
+  {
+   "id": "reasoning",
+   "label": "Reasoning query",
+   "tag": "Modeled, 15 times longer than typical",
+   "claim": "fp-019",
+   "modeled": true,
+   "detail": "Modeled, peer reviewed: a query 15 times longer than typical, near 5,000 output tokens.",
+   "cols": {
+    "overhead": "Modeled, 15 times longer than typical"
+   }
+  },
+  {
+   "id": "veo",
+   "label": "Veo 3, 8-second clip",
+   "tag": "Modeled from machine power",
+   "claim": "fp-070",
+   "modeled": true,
+   "detail": "Modeled from scaling laws fitted to open models; not a measurement of Veo 3.",
+   "cols": {
+    "overhead": "Modeled from machine power"
+   }
+  },
+  {
+   "id": "gpt5",
+   "label": "GPT-5 high reasoning, long query",
+   "tag": "Modeled, preprint",
+   "claim": "fp-136",
+   "modeled": true,
+   "detail": "Modeled from public throughput and rated power in a preprint that a peer-reviewed paper says overstates production figures.",
+   "cols": {
+    "overhead": "Modeled, preprint"
+   }
+  },
+  {
+   "id": "wan13",
+   "label": "Wan2.1 1.3B, 5-second clip",
+   "tag": "One H100, no PUE",
+   "claim": "fp-068",
+   "modeled": false,
+   "detail": "Measured on one H100: GPU, CPU, and RAM, with no PUE or idle capacity.",
+   "cols": {
+    "overhead": "One H100, no PUE"
+   }
+  },
+  {
+   "id": "ccprompt",
+   "label": "Claude Code, one typed prompt",
+   "tag": "One heavy user's logs",
+   "claim": "fp-031",
+   "modeled": true,
+   "detail": "One self-described heavy user's token logs, converted to energy; about a dozen model calls per typed prompt.",
+   "cols": {
+    "overhead": "One heavy user's logs"
+   }
+  },
+  {
+   "id": "wan14",
+   "label": "Wan2.1 14B, 5-second clip",
+   "tag": "One H100, no PUE",
+   "claim": "fp-069",
+   "modeled": false,
+   "detail": "Measured on one H100: GPU, CPU, and RAM, with no PUE or idle capacity.",
+   "cols": {
+    "overhead": "One H100, no PUE"
+   }
+  },
+  {
+   "id": "sora",
+   "label": "Sora 2 Pro, 8-second clip",
+   "tag": "Modeled from machine power",
+   "claim": "fp-137",
+   "modeled": true,
+   "detail": "Modeled from scaling laws fitted to open models; not a measurement of Sora.",
+   "cols": {
+    "overhead": "Modeled from machine power"
+   }
+  },
+  {
+   "id": "ccsession",
+   "label": "Claude Code, median session",
+   "tag": "One heavy user's logs",
+   "claim": "fp-032",
+   "modeled": true,
+   "detail": "One self-described heavy user's token logs, converted to energy.",
+   "cols": {
+    "overhead": "One heavy user's logs"
+   }
+  },
+  {
+   "id": "cog",
+   "label": "CogVideoX, 5-second clip",
+   "tag": "GPU energy only, research rig",
+   "claim": "fp-067",
+   "modeled": false,
+   "detail": "Measured GPU energy on a research rig, with no doubling for overhead.",
+   "cols": {
+    "overhead": "GPU energy only, research rig"
+   }
+  },
+  {
+   "id": "ccday",
+   "label": "Claude Code, average day",
+   "tag": "One heavy user's logs",
+   "claim": "fp-139",
+   "modeled": true,
+   "detail": "One self-described heavy user's token logs, converted to energy.",
+   "cols": {
+    "overhead": "One heavy user's logs"
+   }
+  }
+ ],
+ "foot": [
+  {
+   "text": "This comparison does not decide a proposal. It says nothing about a site, a stream, a rate class, or Treaty-reserved rights.",
+   "href": "../data-centers/#questions",
+   "link": "Read the Questions for Tribal Leaders"
+  },
+  {
+   "text": "What a building would run is a question for the project view.",
+   "href": "../data-centers/#dc-project",
+   "link": "Open the project view"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Wh",
+    "field": "display"
+   },
+   {
+    "label": "Text prompts",
+    "field": "prompts"
+   },
+   {
+    "label": "Hours, this device",
+    "field": "h_same"
+   },
+   {
+    "label": "Hours, published",
+    "field": "h_pub"
+   },
+   {
+    "label": "Hours, data center",
+    "field": "h_dc"
+   },
+   {
+    "label": "Overhead",
+    "field": "overhead"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

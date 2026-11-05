@@ -1,0 +1,169 @@
+input,value,low,high,unit,kind,status,claims,layer,note
+e_prompt,0.3,0.24,0.6,Wh per text prompt,measured,same-hour input,fp-001 fp-017 fp-012 fp-021 fp-015,data center,"measured (Google production median 0.24) and modeled (Joule median 0.31, interquartile 0.16 to 0.60; Jegham GPT-4o short prompt 0.42; OpenAI statement 0.34 'average query', no method; Epoch 0.6 including a development share)"
+kb_prompt,50,5,500,KB per prompt and reply,modeled,same-hour input,fp-134,network,"modeled from one phone-app measurement (several KB per prompt, 62 KB for a web-search prompt); 500 KB is an allowance for web clients and images"
+i_dc,0.45,0.35,30.1,Wh per GB served,modeled,same-hour input,fp-122 fp-130 fp-037 fp-043,data center,"modeled from measured hours: DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's 2.88 GB average hour (fp-130) gives 0.45; Carbon Trust's own 1 Wh hour (fp-037) gives 0.35; DESNZ's scenario assumes 15 Wh of IT energy per GB streamed plus non-IT, which its Tables 5.3 and 5.4 make 11.1, 19.6 and 30.1 Wh per GB in the low, medium and high cases (0.155, 0.274 and 0.422 kWh over 14 GB)"
+short_gb,0.39,0.25,2.0,GB per hour,modeled,same-hour input,fp-053 fp-054 fp-055 fp-130,network,modeled (ENGIE 256 MB per day over 39.5 minutes of 700 kb/s video; upper allowance for HD feeds and preloading)
+short_ceiling,13.9,9.1,13.9,"Wh per hour of short-video feed, ceiling",modeled,same-hour input,fp-059 fp-055 fp-097,data center,"modeled bound: Meta's 15.1 Wh per daily active person per day spread over 65 minutes of daily Facebook and Instagram use (ENGIE) gives 13.9 Wh per hour; over Similarweb's 100 Instagram minutes, 9.1. All Meta products, AI training and offices included"
+net_fixed_avg,1.6,1.6,6.5,Wh per GB,modeled,same-hour input,fp-127 fp-124,network,modeled (DESNZ 2024 extrapolation 1.6; Carbon Trust 2020 regression 6.5)
+net_fixed_marg,0.13,0.13,0.13,Wh per GB,modeled,same-hour input,fp-129,network,modeled (Carbon Trust power model: dynamic part of core and access power for a 6.67 Mbps stream)
+net_mobile_avg,25,25,183,Wh per GB,modeled,same-hour input,fp-128 fp-125 fp-053,network,modeled (DESNZ 2024 extrapolation 25; Carbon Trust 2020 100; ENGIE Europe 2022 top-down 183)
+net_mobile_marg,3.4,3.4,3.4,Wh per GB,modeled,same-hour input,fp-053 fp-129,network,modeled (ENGIE short-term marginal 8.6 mWh per 2.5 MB; Carbon Trust power model agrees)
+router_w,10,5.88,15,W,modeled,same-hour input,fp-126 fp-133 fp-049,home router,modeled (Carbon Trust 10 W router; DIMPACT 9 to 15 W); measured 5.88 Wh per hour for a home router during 1080p phone streaming (TNO poster)
+router_wh_per_gb,25,25,25,Wh per GB,modeled,same-hour input,fp-126,home router,modeled (Carbon Trust conventional allocation of a 10 W router by household data)
+dev_phone,2.0,1.0,3.0,Wh per hour,measured,same-hour input,fp-049 fp-088 fp-086 fp-090 fp-133 fp-132,device,"measured for video (TNO 2.22 at 75 percent brightness; Greenspector YouTube 5.28 mAh per minute, about 1.2 Wh per hour at 3.85 V and 50 percent brightness); modeled for chat (Greenspector ChatGPT 5.5 to 7.2 mAh per minute, 1.05 to 1.36 times its YouTube rate); DIMPACT 1 to 2 W"
+dev_laptop,22,15,30,Wh per hour,modeled,same-hour input,fp-132 fp-133,device,modeled (Carbon Trust Table 10 portable computer 22 W; DIMPACT 15 to 30 W)
+dev_tv,100,40,120,Wh per hour,modeled,same-hour input,fp-008 fp-122 fp-043 fp-132 fp-133,device,"modeled (100 W television in Google, DIMPACT, DESNZ and Carbon Trust; DIMPACT range 40 to 120 W)"
+gb_phone,1.0,0.17,3.0,GB per hour,modeled,same-hour input,fp-130,network,"modeled (Carbon Trust: SD 1, HD 3, mobile save-data 0.17, automatic 0.25)"
+gb_laptop,1.9,1.0,3.0,GB per hour,modeled,same-hour input,fp-130,network,"modeled (Carbon Trust laptop mix 55 percent SD, 45 percent HD)"
+gb_tv,3.0,1.0,7.0,GB per hour,modeled,same-hour input,fp-130 fp-043,network,"modeled (Carbon Trust HD 3, 4K 7; DESNZ 3.5)"
+meta_wh_person_day,15.1,15.1,15.1,Wh per daily active person per day,measured,same-hour input,fp-059 fp-060 fp-084,data center,reported (Meta 2024: 18.42 TWh total electricity over 3.35 billion daily active people)
+short_minutes_day,100,100,115,minutes per day,measured,same-hour input,fp-097 fp-096,check,"reported (Similarweb, Instagram 100 and TikTok 115 minutes, August 2026)"
+e_prompt_mean,0.34,0.34,0.34,Wh per text prompt,modeled,same-hour input,fp-001 fp-017 fp-012 fp-021 fp-015,data center,"measured (Google production median 0.24) and modeled (Joule median 0.31, interquartile 0.16 to 0.60; Jegham GPT-4o short prompt 0.42; OpenAI statement 0.34 'average query', no method; Epoch 0.6 including a development share)"
+ei_in,0.29,0.087,0.7,"Wh per 1,000 input tokens, IT",modeled,partly,au-008 ec-018,data center,"Hyperscaler default, derived from one Google median prompt; high is the framework's unknown provider; low is ei_out over the ratio-10 alternative."
+ei_out,0.87,0.87,2.1,"Wh per 1,000 output tokens, IT",modeled,partly,au-009,data center,"Hyperscaler default; high is the unknown provider. Circular with fp-001, so fp-001 is not a back-test of the chain."
+decode_ratio,3,3,10,"ratio, output to input energy per token",modeled,partly,au-010 ec-018,data center,Used by the calibration only; ei_in and ei_out carry the kept value.
+cache_share,0.1,0.01,0.25,share of fresh input energy,assumed,assumption,au-038 au-045,data center,No source measures a cache read; the bounds are a price-ratio convention.
+tok_in_short,500,100,500,input tokens,modeled,verified,au-015 px-024,price,"Joule's query shape, 500 in, the same shape as the energy median (fp-017), so price and energy share one unit; 100 is the pricing example's shape (px-024)."
+tok_out_short,300,129,618,output tokens,modeled,verified,px-024 au-015,price,Interquartile range from Joule.
+tok_in_median,500,500,500,input tokens,modeled,verified,au-015,data center,
+tok_out_median,300,129,618,output tokens,modeled,verified,au-015,data center,
+coding_turns,3,3,6.1,user turns per session,measured,verified,au-043,data center,"Median 3, mean 6.1, production traces."
+coding_fresh,10400,10400,37200,fresh input tokens per turn,modeled,verified,au-043,data center,"Derived: median prompt less median cached. Quantiles do not subtract, so this is a convention, not a measured column (au-043 reports none); high is the mean turn, 582.5k less 545.3k, a difference of means."
+coding_cached,217200,217200,545300,cached input tokens per turn,measured,verified,au-043 au-038,data center,Median and mean turn.
+coding_out,1900,1900,4000,output tokens per turn,measured,verified,au-043,data center,Median and mean turn.
+coding_gb_per_hour,0.05,0.01,0.5,GB per hour,assumed,assumption,,network,No source measures an agent session's traffic.
+coding_usd_per_active_day,13,13,30,USD per developer per active day,measured,verified,px-016,price,High: 90 percent of users stay below it.
+coding_hours_per_active_day,4,2,8,hours,assumed,assumption,,price,No source gives hours of agent time per day.
+image_wh,0.63,0.32,1.35,Wh per image,modeled,verified,fp-138 fp-066 fp-065,data center,GPU energy doubled; low is GPU only; high is a 2023 open model.
+clip_wh,30.8,19.8,43.4,Wh per 8-second clip,modeled,partly,fp-070,data center,Veo 3 estimate from scaling laws; the price row is another model's list.
+clip_seconds,8,8,8,seconds,assumed,assumption,fp-070,price,The estimate's clip length.
+search_base_wh,0.3,0.3,0.3,Wh per search,measured,verified,fp-071 sv-056,data center,"2009 figure, the only one; the Joule authors say it likely overestimates today."
+pue_hyper,1.1,1.09,1.1,PUE,measured,verified,gf-053 au-011,data center,
+pue_colo,1.45,1.36,1.58,PUE,modeled,verified,tr-065 sf-022,data center,National 1.45; low is LBNL's 2030 aggregate; high is the Uptime survey.
+pue_room,1.1,1.0,1.5,PUE,assumed,assumption,,local node,No general field figure.
+u_hyper,0.5,0.45,0.5,utilization share,modeled,verified,sf-020 ec-028,data center,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
+u_colo,0.3,0.21,0.35,utilization share,modeled,verified,sf-020 ec-028,data center,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
+u_room,0.1,0.05,0.15,utilization share,modeled,verified,lf-024 sv-038 ec-028,local node,"U is defined once: the share of the fleet's peak capacity in use, averaged over the year. sf-020 gives a modeled operating time and lf-024 a load; the model treats both as this one U and says so. Untested against a metered curve."
+a_idle,0.11,0.11,0.36,"idle power over maximum power, accelerator",modeled,partly,ec-020 sf-008 sv-039 lf-024,data center,"GPU idle fraction, A100 46 of 407 W (ec-020), because every row the multiplier touches is accelerator work. The conventional-server anchors, sf-008 (solves to 0.25) and sv-039 (0.36), appear in the calibration block and set no row; 0.36 is the high. Untested: no back-test row touches the idle term, and the linear power curve is a simplification lf-024's own numbers do not follow (75 percent of peak at 10 percent load implies 0.72 against its stated 50 percent idle)."
+local_penalty,1.45,1.4,1.5,"ratio, energy per answer, local over cloud hardware, same model",measured,partly,sf-036 lf-012,local node,
+grid_us,350,350,350,g CO2e per kWh,measured,verified,gf-007,grid,"eGRID 2023, location-based average."
+grid_us_nonbaseload,626,626,626,g CO2e per kWh,measured,verified,gf-007,grid,"eGRID non-baseload, a stand-in for a US margin."
+grid_nwpp,288,288,288,g CO2e per kWh,measured,verified,gf-001,grid,eGRID subregion; crosses state lines; not a Tribal Nation or utility factor.
+grid_wa,113,113,113,g CO2 per kWh,measured,verified,gf-009,grid,"In-state generation, CO2 not CO2e, exports included; not a delivered-electricity factor."
+grid_nw_srm,728,728,728,g CO2 per kWh,modeled,verified,gf-019,grid,AVERT Northwest short-run fossil margin.
+grid_nw_lrm,79,79,79,g CO2 per kWh,modeled,verified,gf-023,grid,"Cambium long-run margin, levelized."
+grid_hydro,21,21,21,g CO2e per kWh,modeled,partly,gf-035,grid,"Life cycle, attributed by column position in the source."
+grid_wind,13,13,13,g CO2e per kWh,modeled,partly,gf-034,grid,Life cycle.
+grid_solar,43,43,43,g CO2e per kWh,modeled,partly,gf-033,grid,Life cycle.
+grid_diesel,729.3,729.3,729.3,g CO2 per kWh,measured,verified,gf-047 gf-049,grid,"10.21 kg CO2 per gallon over 14 kWh per gallon, one community."
+wue_site,0.36,0.27,1.15,L per kWh on site,modeled,verified,tr-009 tr-028 fp-006,data center,"Three operators and an average, consumption basis; describes no stream."
+wue_local,0.0,0.0,0.0,L per kWh on site,assumed,partly,gf-044,local node,An air-cooled room; the source says some water may be needed for humidity.
+w_gen_us,4.52,4.52,4.52,"L per kWh, generation",modeled,verified,tr-005,grid,
+w_gen_ercot,1.4,1.4,1.4,"L per kWh, generation",modeled,partly,gf-041,grid,
+hydro_columbia,6.8,6.8,6.8,"L per kWh, hydropower",modeled,verified,gf-040,grid,"Even split among a reservoir's functions, 1985 to 2014."
+hydro_none,0.0,0.0,0.0,"L per kWh, hydropower",modeled,partly,gf-046,grid,Reservoir evaporation excluded.
+hydro_primary,38.0,38.0,38.0,"L per kWh, hydropower",modeled,verified,gf-039,grid,"Gross, primary-purpose allocation; net is 6.0."
+gas_water,0.776,0.492,1.136,"L per kWh, gas combined cycle with tower",measured,verified,gf-037,grid,"Stands for all non-hydro in the mix formula, so coal and nuclear are understated."
+hydro_share_nwpp,0.387,0.387,0.387,share of generation,measured,verified,gf-008,grid,
+hydro_share_bpa,0.775,0.775,0.775,share of delivered power,measured,verified,gf-018,grid,
+pue_tower,1.25,1.15,1.35,"PUE, cooling tower design range",modeled,partly,gf-043,data center,Central is the midpoint.
+wue_tower,2.12,1.74,2.5,"L per kWh on site, cooling tower design range",modeled,partly,gf-043,data center,0.46 to 0.66 gal per kWh; central is the midpoint.
+pue_dry,1.325,1.2,1.45,"PUE, dry cooling design range",modeled,partly,gf-044,data center,Central is the midpoint; not suited to high power density or hot climates.
+stor_wh_tb_h,0.65,0.57,1.2,"Wh per TB-hour, device",modeled,verified,ec-021 lf-027,data center,"Hard disk 0.65, solid state 1.2; low is the UK central estimate (lf-027, 5 kWh per TB-year). The one storage coefficient on every row, cloud or local."
+replicas,3,2,3,copies,assumed,assumption,ec-030,data center,"Capacity and redundancy drive stored-data emissions, so the factor is stated."
+seat_gb,100,30,500,GB stored per seat,assumed,assumption,sv-019 px-046,data center,"Quotas run 30 GB to 2 TB pooled; no source gives use. Printed beside the seat row and not added to it, since the 2011 service figure likely includes storage."
+seat_kwh_yr,2.2,2.2,6.6,"kWh per user-year, suite compute",modeled,partly,sf-016,data center,"A 2011 vendor bound on Gmail, read as whole-service energy with storage inside; the high is an assumption. Email, not a suite. The weakest input; illustrative."
+seat_hours_month,160,120,180,active hours per month,assumed,assumption,,device,
+sync_w,2,1,10,W added by cloud editing,assumed,assumption,sf-014 sf-015,device,"Range from 2015; one 2012 meter reads 3.8. Central is an assumption, and the comparison reverses inside this range."
+active_hours,1500,1000,2000,hours per user-year,assumed,assumption,,device,
+nas_w,46,15,46,"W idle, NAS",modeled,partly,lf-032 sf-043,local node,"Four-bay figure is researched, not metered; two-bay measured 15 to 18."
+mini_w,8,7,9,"W idle, mini PC",measured,partly,sf-042 lf-033,local node,One blog's wall meter.
+stream_w,1,0,2,W per stream,measured,partly,lf-033,local node,
+node_w,40,30,250,"W idle, desk node",assumed,partly,gf-054 sv-039,local node,30 to 45 measured on one box with no GPU load; 250 is 36 percent of a 700 W GPU machine.
+office_w,45,30,60,"W, one office server",measured,partly,gf-054,local node,"One tester, one product."
+j_node,1.5,1.11,4.0,"J per token, net of idle",measured,partly,au-027 au-028 sf-038,local node,"Local code models, GPU only; 4.0 is an unbatched H100 estimate."
+j_laptop,0.25,0.09,0.25,"J per token, 3 to 9B model",modeled,partly,sf-037 lf-009,device,"System power is an estimate, not a wall meter."
+j_phone_query,262,122,3590,J per query,measured,partly,lf-018 sf-039 lf-008,device,Phone NPU; low is a small board; high is a consumer GPU with thinking on.
+prefill_share,0.1,0.1,0.33,input token energy as a share of output token energy,modeled,partly,ec-018 au-010,local node,A tenth per token; a third at the framework's ratio.
+local_coverage,0.714,0.496,0.887,share of single-turn queries answered,measured,partly,sf-035,device,Best single local model 71.4; best-of-local ensemble 88.7; a 4B model 49.6. A 3 to 9B laptop model sits near the low end.
+charger_overhead,2.1,1.4,3.6,charger overhead over the phone's own energy,modeled,partly,lf-022,device,"So the wall multiple is 1 + overhead, 2.4 to 4.6."
+phone_source_charge_eff,0.8,0.8,0.8,charger efficiency inside the phone figure,modeled,partly,lf-018,device,Removed before the wall multiple so it is not counted twice.
+oca_w,360,360,360,W at peak,measured,verified,sf-028,cache,
+oca_gbps,180,180,180,Gbps at peak,measured,verified,sf-028,cache,
+oca_load,0.25,0.1,1.0,share of peak traffic,assumed,assumption,sf-028,cache,"Power held at peak, which overstates a lightly loaded box's energy per GB less than idle draw would; idle was not found."
+p_in,2.0,0.15,10.0,USD per M input tokens,measured,verified,px-003 px-012 au-053 au-055,price,Sonnet 5.5 list; range spans an open-weight model on its maker's API to a top-class model.
+p_out,10.0,0.6,50.0,USD per M output tokens,measured,verified,px-004 px-013 au-053 au-055,price,
+p_cache,0.1,0.01,1.0,USD per M cache reads,measured,verified,px-003 au-051 au-055,price,
+p_open_in,0.15,0.15,0.15,USD per M input tokens,measured,verified,px-014,price,"A host's price for open weights, not the cost of running them."
+p_open_out,0.6,0.6,0.6,USD per M output tokens,measured,verified,px-015,price,
+p_open_cache,0.015,0.015,0.015,USD per M cache reads,measured,verified,px-014,price,
+p_small_in,0.1,0.1,0.1,USD per M input tokens,measured,verified,au-051,price,Haiku 5.5.
+p_small_out,0.5,0.5,0.5,USD per M output tokens,measured,verified,au-051,price,
+p_image,0.0336,0.0336,0.0336,USD per 1K image,measured,verified,px-027,price,
+p_clip_s,0.1,0.1,0.1,USD per second of 720p video,measured,verified,px-028,price,"Gemini Omni; Veo's older prices are stale, so the energy and the price describe different models."
+p_search,0.014,0.014,0.014,USD per grounded search call,measured,verified,px-029,price,
+seat_usd,14.0,7.0,23.5,USD per user-month,measured,verified,px-045 px-046 lf-043 sv-018,price,
+p_s3,0.023,0.023,0.023,USD per GB-month,measured,verified,px-048,price,
+p_r2,0.015,0.015,0.015,USD per GB-month,measured,verified,px-050,price,
+p_b2_tb,6.95,6.95,6.95,USD per TB per 30 days,measured,verified,px-052,price,
+p_egress,0.09,0.0,0.11,USD per GB,measured,partly,px-049 px-051 sf-050,price,"S3 list, free at R2, 0.11 at Google Cloud on a rival's page."
+p_delivery,0.06,0.06,0.06,USD per hour-view,measured,verified,px-053,price,"One dollar per 1,000 minutes."
+node_usd,6950,899,6950,"USD, desk AI node",measured,verified,px-059 lf-044,price,Out of stock on the read date.
+hdd_usd_tb,22.22,18,56,USD per TB,measured,partly,sf-052 lf-044,price,Moves weekly; one tracker's low.
+office_box_usd,2000,899,6950,"USD, office server",assumed,assumption,lf-044 px-059,price,
+office_tb,20,10,40,TB,assumed,assumption,,price,
+mini_box_usd,300,150,600,"USD, mini PC",assumed,assumption,,price,
+nas_chassis_usd,400,200,800,"USD, NAS chassis",assumed,assumption,,price,
+nas_raw_tb,12,10,16,raw TB per Nation for 10 TB held,assumed,assumption,,price,Ten terabytes plus parity; used for both price and embodied carbon.
+life,5,3,7,years of hardware life,assumed,assumption,ec-048 gf-051,price,
+tariff_wa_com,0.1097,0.1097,0.1097,USD per kWh,measured,verified,sv-023,price,"State average, not any customer's rate."
+tariff_or_com,0.098,0.098,0.098,USD per kWh,measured,verified,sv-024,price,
+tariff_wa_res,0.1317,0.1317,0.1317,USD per kWh,measured,verified,lf-041,price,
+tariff_us_res,0.1723,0.1723,0.1723,USD per kWh,measured,verified,sv-022,price,
+tariff_us_ind,0.0851,0.0851,0.0851,USD per kWh,measured,verified,ec-050,price,
+tariff_bpa,0.04016,0.04016,0.04016,"USD per kWh, wholesale to a utility",measured,verified,px-058,price,Before transmission and retail charges.
+tariff_home,0.1317,0.1317,0.1723,"USD per kWh, a home or a personal device",measured,verified,lf-041 sv-022,price,
+office_admin_h_month,14,8,20,"paid hours per month, 50 users",assumed,assumption,sv-042 sf-051,price,"Between 8 hours for 25 users and 20 for 100, a seller's figures."
+mini_admin_h_month,1,0.5,3.5,paid hours per month,assumed,assumption,sv-042,price,
+nas_admin_h_month,1,0.5,3.5,paid hours per month per Nation,assumed,assumption,sv-042,price,
+fed_admin_h_month,1,0.5,3.5,paid hours per month per Nation,assumed,assumption,sv-042,price,
+node_admin_h_year,24,12,42,paid hours per year,assumed,assumption,sv-042,price,High is 3.5 hours a month.
+support_usd_user_yr,0,0,204.75,USD per user-year,measured,partly,sf-049 sf-055,price,"Optional. The source lists 71 to 205 EUR from 100 users; EUR taken at par, since the record holds no rate."
+gpu_cost_low,0.21,0.21,0.21,"USD per M output tokens, busy H100",modeled,verified,sf-041,price,
+gpu_cost_high,15.25,15.25,15.25,"USD per M output tokens, idle H100",modeled,verified,sf-041,price,
+emb_h100_kg,1312,1312,1312,kg CO2e per eight-GPU board,modeled,verified,gf-050,embodied,Reference line.
+emb_server_kg,841,841,841,"kg CO2e, one 1U server, manufacture, transport, end of life",modeled,partly,gf-051,embodied,"Split out of a four-year 3,424 kg footprint with a very wide stated uncertainty. Reference line."
+emb_desktop_kg,250,30,841,kg CO2e per small machine,modeled,partly,sf-023 sv-036 gf-051,embodied,"sf-023 and sv-036 are life-cycle totals with a use phase inside, so they overstate the embodied line; gf-051's 841 kg is a split figure for a larger server."
+emb_mini_kg,30,30,41,kg CO2e per mini PC,modeled,partly,sv-036,embodied,A Mac mini life-cycle total stands in for a small box.
+emb_hdd_kg_tb,20,1,20,kg CO2e per TB of hard disk,modeled,partly,sf-024 sf-025,embodied,"Sources differ over 20 times, unresolved."
+emb_hdd_low_kg_tb,1,1,1,kg CO2e per TB of hard disk,modeled,partly,sf-025,embodied,Under 1; used at 1 for the printed low reading.
+emb_tokens_kg_m,0.017,0.017,0.025,"kg CO2e per M tokens, accelerator card only",modeled,partly,au-011,embodied,The framework calls it a lower bound.
+rev_netflix,0.256,0.256,0.256,USD per hour viewed,modeled,partly,px-043,price,"Revenue, not a cost: it does not bound what serving it costs; not a list price."
+rev_youtube,0.122,0.122,0.122,USD of ads per TV hour,modeled,partly,px-039,price,"Revenue, not a cost; not a list price."
+rev_meta,0.155,0.115,0.195,USD per hour of single-app time,modeled,partly,px-035,price,"Midpoint of a range; revenue, not a cost; TikTok has no figure of its own."
+rev_search,0.05,0.05,0.05,USD per query,modeled,partly,px-040,price,"Revenue, not a cost; not a list price."
+paid_video_month,8.99,8.99,26.99,USD per member-month,measured,verified,px-044,price,Falls with use.
+paid_chat_month,20.0,20.0,20.0,USD per user-month,measured,verified,px-047,price,Falls with use.
+video_hours_month,30,10,100,hours per month,assumed,assumption,,price,The reader's own viewing.
+chat_hours_month,20,5,60,hours per month,assumed,assumption,,price,The reader's own use.
+eps,0.112,0.075,0.29,kWh per revenue dollar,modeled,partly,rs-001 rs-020 rs-033 fin-028 fin-029 fin-031,check,Three-company median; low from the Google prompt over its list price; high from a stylized AI data center. A second reading on token rows only.
+spend_kg_usd,0.089,0.089,0.089,kg CO2e per dollar,modeled,verified,ec-053 ec-054,check,Spend factors overshoot usage on the one audited account.
+google_wh_per_1k,3.6,3.6,3.6,"Wh per 1,000 tokens, all Google electricity",modeled,partly,au-048,check,A ceiling on another boundary.
+m365_g_month,210,210,210,g CO2e per active user-month,measured,verified,sf-017 sv-052,check,"All scopes, market-based; another boundary."
+m365_scope3_share,0.96,0.96,0.96,share,measured,verified,sf-018,check,
+small_model_factor,6,5,7,times less energy per token,modeled,partly,au-040 au-016 au-019,lever,
+reasoning_energy_mult,25,13,25,times the energy per response,measured,partly,ec-017 fp-019,lever,
+reasoning_output_mult,9.7,9.7,9.7,times the output tokens,measured,partly,ec-017,lever,"6,988 over 717."
+agent_token_mult,3500,1200,3500,times the tokens of one chat task,measured,verified,au-042,lever,Reference line.
+cache_hit,0.8,0.7,0.9,share of cacheable traffic served by the cache,measured,partly,sf-029 sv-059,lever,"Midpoint; the savings land on links, with no energy figure attached."
+carbon_temporal,0.161,0.161,0.161,share of CO2 removed,modeled,partly,lf-053,lever,Simulated.
+carbon_spatial,0.384,0.384,0.384,share of CO2 removed,modeled,partly,lf-053,lever,"Simulated, against a speed-first baseline."
+dedupe,0.9,0.9,0.9,share of duplicates removed,measured,verified,sf-032,lever,"Bytes, not kilowatt-hours."
+fed_copies,1,1,3,copies per Nation,assumed,assumption,ec-030,local node,One copy is not the same durability as three replicas in the cloud row.
+fed_moved_share,0.01,0.001,0.1,share of the data moving each month,assumed,assumption,,network,No source measures a federated query's traffic.
+coding_fresh_mean,37200,37200,37200,fresh input tokens per mean turn,measured,verified,au-043,,Mean prompt 582.5k less mean cached 545.3k; a difference of means is a mean. Used for anything scaled by a count.
+coding_cached_mean,545300,545300,545300,cached input tokens per mean turn,measured,verified,au-043 au-038,,
+coding_out_mean,4000,4000,4000,output tokens per mean turn,measured,verified,au-043,,
+coding_turns_mean,6.1,6.1,6.1,user turns per mean session,measured,verified,au-043 au-045,,"The mean session (6.1 turns in 62.6 minutes) is the better aggregate; the median is typical, a floor for totals."
+cloud_admin_h_month,2,0,14,"paid hours per month, cloud seats for 50 users",assumed,assumption,,,"No source. The seller's 14 hours for the local suite covers user administration the cloud also needs, so part of it belongs on the cloud side; 0 to the local figure is the spread."
+central_admin_h_month,1,0.5,3.5,"paid hours per month, one operator of the central copy",assumed,assumption,sv-042,,"The same per-operator figure as a NAS, for one operator instead of ten."
