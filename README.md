@@ -13,16 +13,17 @@ The site is meant to be published at <https://atniclimate.github.io/atni-task-fo
 
 | Path | Contents |
 |---|---|
-| `site/` | The published website: plain HTML, CSS, and JavaScript with no build step and no outside services. One folder per page, each with its own `index.html`. |
+| `site/` | The published website: plain HTML, CSS, and JavaScript with no outside services and nothing built at deploy time. One folder per page, each with its own `index.html`. Figures on the Data Centers, AI, and Explorer pages are poured into the page by the scripts below, so chart, table, and receipt cannot disagree. |
+| `site/data-centers/`, `site/ai/` | Full-width workbench pages: tabs, interactive plates, and a detail panel with each figure's sources. |
+| `site/explorer/` | The Resource Use Explorer: energy, CO2e, water, and price across AI, search, social media, cloud software, and streaming, and across cloud, local, and federated setups. Modeled estimates; method and checks are on the page. |
 | `site/energy/potential/` | What Tribal plans say about energy: method and caveats, a chart across the Tribes, and a searchable list of each Tribe's ranked energy types with quoted source text. Reads `site/data/energy-potential.json`. |
 | `site/energy/funding/` | Tribal energy funding: upcoming deadlines, the program catalog, the Grants.gov live layer, and programs matched to each Tribe. Reads `site/data/energy-funding.json`. |
-| `site/ai/economics/` | The brief "AI as an Economic Force: Benefits and Risks for Tribal Nations." |
 | `site/data/` | The open data files the pages read (table below). |
 | `site/library/resolutions/` | Adopted ATNI resolutions hosted as PDFs. |
 | `site/assets/` | Stylesheets, scripts, and self-hosted fonts with their licenses. `assets/css/tokens.css` is copied unchanged from the ATNI Climate Design System (`dist/css/tokens.css`). |
-| `docs/` | Schemas and methods: `LIBRARY.md`, `CONTENT-SLOTS.md`, `ENERGY-POTENTIAL.md`, `ENERGY-FUNDING.md`, `POLICY-WATCH.md`. |
+| `docs/` | Schemas and methods: `LIBRARY.md`, `CONTENT-SLOTS.md`, `ENERGY-POTENTIAL.md`, `ENERGY-FUNDING.md`, `POLICY-WATCH.md`, `RESOURCE-MODEL.md`, `COMPARISON-METHOD.md`. Design: `DESIGN-SPEC.md`, `PLATE-KIT.md`, `PAGE-ARCHITECTURE.md`, `EXPLORER-SPEC.md`. |
 | `scripts/` | The build and check scripts (table below). |
-| `tests/` | Tests for the energy potential pipeline and its helpers. |
+| `tests/` | Tests for the energy potential pipeline, the plate builder, the resource model, and their helpers. |
 | `.github/workflows/pages.yml` | The single publisher: checks `site/`, then deploys it to GitHub Pages. |
 | `DATA-TIERS.md` | The project's data tiers under the Tiered Sovereign Data Framework. |
 
@@ -38,6 +39,10 @@ Run every script from the repository root. Each one documents its own options at
 | `scripts/energy_funding.py` | Joins the program catalog, the live layer, and the energy potential file. Method in `docs/ENERGY-FUNDING.md`. | `site/data/energy-funding.json`; a T1 section stays in `planning-T1/` until the owner releases it | T0 public file |
 | `scripts/policy_watch.py` | Builds the official and Policy Sentinel links for the saved searches, runs the live checks, and writes the importable follow lists. Method in `docs/POLICY-WATCH.md`. | `site/data/policy-watch.json` and `site/data/policy-sentinel/follow-*.json` | T0 |
 | `scripts/jev_release_screen.py` | Screens cleaned T1 notes section by section and queues a release recommendation; the owner makes every release decision. Needs owner direction and a logged entry before any T1 text is sent. | Files in `planning-T1/` only | T1 |
+| `scripts/build_plates.py` | Pours figures from the claims files into each plate's table, static plot, and inline data, and exports public claims. Usage in `docs/PLATE-KIT.md`. | Plate blocks in pages; `site/data/claims/*.json` | T0 |
+| `scripts/resource_model.py` | The process model behind the Explorer, with its self-test, back-tests, and public export. Method in `docs/RESOURCE-MODEL.md`. | `site/data/resource-model.json` and `resource-model-inputs.csv` | T0 |
+| `scripts/build_explorer.py` | Fills the Explorer page's blocks from the model's output. | Blocks in `site/explorer/index.html` | T0 |
+| `scripts/eia_outlook.py`, `scripts/sec_financials.py` | Pull EIA outlook series and SEC company figures from public APIs. | Local working files | T0 content |
 | `scripts/check_t1_leak.py` | Compares the visible text of `site/` with T1 working files and reports any verbatim overlap. Runs only on the owner's machine. | Nothing | Check |
 | `scripts/validate_public.py` | The release-boundary check for `site/` (below). | Nothing | Check |
 

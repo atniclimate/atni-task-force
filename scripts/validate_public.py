@@ -18,9 +18,14 @@ This script checks, and exits non-zero on any problem:
 - the data products are light-checked: data/energy-potential.json (T0, known types, stages and
   checks, cited https links that end in #page=N), data/energy-funding.json (T0, no key or string
   that names a heat screen and no heat section, program statuses and dated status checks, https
-  links), data/policy-watch.json and the Policy Sentinel follow files (required fields, https links).
+  links), data/policy-watch.json and the Policy Sentinel follow files (required fields, https links);
+- shipped claims (data/claims/) each have a unique id, an https source, a quote, a status of verified
+  or partly, and no email; every plate data block in a page names claims that ship, holds only their
+  numbers (or a model's, or a formula's over those), and states the limit of a partly claim; every plate
+  definition (data/plates/) is T0 and built; a figure poured into a page (data-pour) names a claim that ships.
 
-Standard library plus PyMuPDF (imported as fitz). Run: python scripts/validate_public.py
+Standard library plus PyMuPDF (imported as fitz, only when PDFs are read, so scripts/build_plates.py can
+reuse these rules with the standard library alone). Run: python scripts/validate_public.py
 """
 from datetime import date
 from html.parser import HTMLParser
@@ -29,8 +34,6 @@ from pathlib import Path
 import re
 import sys
 from urllib.parse import unquote, urlsplit
-
-import fitz
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -41,6 +44,8 @@ TEXT = {".html", ".css", ".js", ".json", ".csv", ".txt", ".svg"}
 PRIVATE_DIRS = {".git", "planning-T1", "files-unsorted", "work", "node_modules", "__pycache__"}
 
 LOCAL_PATH = re.compile(r"(?i)(?<![a-z0-9])[a-z]:[\\/]|file:/|[\\/]Users[\\/]|AppData[\\/]")
+HTTPS_URL = re.compile(r"https://[^\s\"'<>]+")  # a web address may hold /users/ in its own path
+EMAIL = re.compile(r"[\w.%+-]+@[\w-]+\.[A-Za-z]{2,}")
 SECRET = re.compile(
     r"-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}"
     r"|(?<![\w-])sk-(?:ant-|proj-)?[A-Za-z0-9][A-Za-z0-9_-]{30,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|xox[abposr]-[A-Za-z0-9-]{10,}"
@@ -51,6 +56,10 @@ EXTERNAL_LOAD_TAGS = {"script", "link", "img", "iframe", "source", "audio", "vid
 CSS_EXTERNAL = re.compile(r"(?i)@import|url\(\s*['\"]?(?:https?:)?//")
 JS_EXTERNAL = re.compile(r"(?i)(?:\bfrom\s*|\bimport\s*\(\s*|\bfetch\s*\(\s*)['\"`](?:https?:)?//")
 SLOT = re.compile(r"<!--\s*(/?)SLOT(?::([a-z0-9-]+):([a-z0-9-]+))?\s*-->")
+PLATE_BLOCK = re.compile(r'<script type="application/json" id="plate-data-([^"]+)">(.*?)</script>', re.S)
+POURED = re.compile(r'<[a-z][^<>]*\sdata-pour="([^"]+)"[^<>]*>')
+CLAIM_STATUS = {"verified", "partly"}
+CLAIM_ID = re.compile(r"\b(?:au|ec|fp|fin|gf|lf|px|rs|sf|sv|tr)-\d{3}\b")
 
 TYPES = {"resolution", "report", "policy", "legislation", "article", "academic", "dataset", "tool", "website", "news"}
 AREAS = {"energy-feasibility", "data-centers", "ai", "summit", "cross-cutting"}
@@ -71,6 +80,12 @@ def self_test():
     """Guard the patterns against silent regressions."""
     assert LOCAL_PATH.search(r"C:\Users\someone\file.txt") and LOCAL_PATH.search("I:/climate/x") and LOCAL_PATH.search("file:///x")
     assert not LOCAL_PATH.search("https://atnitribes.org/contact-us/ T1: network")
+    assert not LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://agc.org/files/users/u1/a%20(4).pdf")) and LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://x.org C:/Users/me"))
+    assert EMAIL.search("write to someone@example.org") and not EMAIL.search("@handle and 3 @ 4.5")
+    assert PLATE_BLOCK.findall('<script type="application/json" id="plate-data-a">{"rows":[]}</script>') == [("a", '{"rows":[]}')]
+    assert POURED.findall('<span class="x" data-pour="a-1">1</span>') == ["a-1"]
+    assert numeric_tree({"a": {"b": 1, "c": "words"}, "d": "words", "e": [1, 2], "f": ["x"]}) == {"a": {"b": 1}, "e": [1, 2]}
+    assert lookup({"a": {"b": 1}}, "a.b") == 1
     assert SECRET.search("ghp_" + "a" * 36) and not SECRET.search("data-center-task-force-questions-for-tribal-leaders")
     assert FORBIDDEN.search("someone@ATNITRIBES.org") and FORBIDDEN.search("see planning-T1/notes") and not FORBIDDEN.search("atnitribes.org/contact-us/")
     assert EM_DASH.search("a \u2014 b") and not EM_DASH.search("<!-- SLOT:a:b --> --atni-color")
@@ -106,7 +121,7 @@ def parse(path, cache={}):
     return cache[path]
 
 
-VERBATIM_KEYS = {"excerpt", "title"}  # quoted source text and titles of external works keep their own dashes
+VERBATIM_KEYS = {"excerpt", "title", "quote"}  # quoted source text and titles of external works keep their own dashes
 
 
 def our_prose(node, key=None):
@@ -123,7 +138,7 @@ def our_prose(node, key=None):
 
 
 def check_text(rel, body, errors):
-    if LOCAL_PATH.search(body):
+    if LOCAL_PATH.search(HTTPS_URL.sub(" ", body)):
         errors.append(f"Local path in {rel}")
     if SECRET.search(body):
         errors.append(f"Credential-like content in {rel}")
@@ -256,6 +271,8 @@ def check_library(errors):
 
 
 def check_pdf(path, rel, errors):
+    import fitz
+
     try:
         with fitz.open(path) as pdf:
             if pdf.page_count == 0 or path.stat().st_size == 0:
@@ -446,10 +463,210 @@ def check_policy_watch(errors):
     return searches, follows
 
 
+def check_claim_file(data, rel, claims, errors):
+    """One shipped claims file. Adds each claim to the claims dict by id, so ids stay unique across files."""
+    check_header(data, rel, errors)
+    if not isinstance(data.get("claims"), list) or not data["claims"]:
+        errors.append(f"{rel}: claims must be a non-empty list")
+        return
+    for claim in data["claims"]:
+        claim_id = claim.get("id")
+        where = f"{rel} claim '{claim_id or '?'}'"
+        if not isinstance(claim_id, str) or not claim_id.strip():
+            errors.append(f"{where}: needs an id")
+            continue
+        if claim_id in claims:
+            errors.append(f"{where}: duplicate id")
+        claims[claim_id] = claim
+        if not https((claim.get("source") or {}).get("url")):
+            errors.append(f"{where}: source.url must be https")
+        need(claim, ("quote",), where, errors)
+        if claim.get("status") not in CLAIM_STATUS:
+            errors.append(f"{where}: status must be one of {sorted(CLAIM_STATUS)}")
+        if EMAIL.search(json.dumps(claim, ensure_ascii=False)):
+            errors.append(f"{where}: holds an email address")
+
+
+def is_model(data):
+    """A comparison model ships as data: numbers and equations with their claim ids, no claim rows of its own."""
+    return isinstance(data, dict) and "computed_defaults" in data
+
+
+def load_model(name, site=None):
+    """A model file by name, from data/ or data/claims/, or None."""
+    for folder in ("data", "data/claims"):
+        path = Path(site or SITE) / folder / f"{name}.json"
+        if path.is_file():
+            return json.loads(path.read_text(encoding="utf-8"))
+    return None
+
+
+def lookup(tree, path):
+    node = tree
+    for part in path.split("."):
+        node = node[part]
+    return node
+
+
+def numeric_tree(node):
+    """The numbers in a branch of a model, under their names. Its prose stays in the file."""
+    if isinstance(node, dict):
+        kept = {key: numeric_tree(value) for key, value in node.items()}
+        return {key: value for key, value in kept.items() if value is not None} or None
+    if isinstance(node, list):
+        return node if node and all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in node) else None
+    return node if isinstance(node, (int, float)) and not isinstance(node, bool) else None
+
+
+def check_claims(errors):
+    claims = {}
+    for path in sorted((SITE / "data" / "claims").glob("*.json")):
+        rel = path.relative_to(SITE).as_posix()
+        data = load_data(rel, errors)
+        if is_model(data):
+            check_header(data, rel, errors)
+        elif isinstance(data, dict):
+            check_claim_file(data, rel, claims, errors)
+    return claims
+
+
+def numbers_in(node):
+    """Every number a claim holds, so a plate row can be traced back to it."""
+    if isinstance(node, dict):
+        return {n for key, value in node.items() if key != "source" for n in numbers_in(value)}
+    if isinstance(node, list):
+        return {n for value in node for n in numbers_in(value)}
+    return {node} if isinstance(node, (int, float)) and not isinstance(node, bool) else set()
+
+
+def check_plate_inputs(where, data, claims, errors):
+    """Every named number a block's formulas read comes from a claim or a model, unchanged."""
+    env = data.get("env") or {}
+    for name, source in (data.get("sources") or {}).items():
+        if "claim" in source:
+            claim = claims.get(source["claim"])
+            if claim is None:
+                errors.append(f"{where}: input {name} names unknown claim {source['claim']!r}")
+            elif env.get(name) not in numbers_in(claim):
+                errors.append(f"{where}: input {name} holds a number claim {source['claim']} does not; rebuild the page")
+        else:
+            try:
+                expected = numeric_tree(lookup(load_model(source["file"]) or {}, source["model"]))
+            except (KeyError, TypeError):
+                expected = None
+            if expected is None or expected != env.get(name):
+                errors.append(f"{where}: input {name} does not match model {source.get('file')}; rebuild the page")
+
+
+def check_plate_row(where, row, data, claims, errors):
+    name = f"{where}: row '{row.get('key', '?')}'"
+    cited = [c for c in [row.get("claim"), *(row.get("cites") or [])] if c]
+    unknown = [c for c in cited if c not in claims]
+    computed, words = row.get("f") is not None, row.get("words") is True
+    if unknown or not (cited or computed or words):
+        errors.append(f"{name} names unknown claim {(unknown or [row.get('claim')])[0]!r}")
+        return
+    if computed or words:
+        if words and any(row.get(k) is not None for k in ("value", "low", "high")):
+            errors.append(f"{name} is words but holds a number; rebuild the page")
+    else:
+        numbers = {n for c in cited for n in numbers_in(claims[c])}
+        numbers |= {-n for n in numbers} if row.get("negated") else set()
+        if row.get("converted"):  # the arithmetic is the claim's derived text; the row states its factor
+            numbers = {round(n * row["converted"], 6) for n in numbers}
+            holds = lambda v: round(v, 6) in numbers
+        else:
+            holds = lambda v: v in numbers
+        if any(row.get(k) is not None and not holds(row[k]) for k in ("value", "low", "high")) or any(not holds(v) for _, v in row.get("spark") or []):
+            errors.append(f"{name} holds a number claim {cited[0]} does not; rebuild the page")
+    if row.get("claim") and claims[row["claim"]].get("status") == "partly" and not str(row.get("limit") or "").strip():
+        errors.append(f"{name} uses a partly verified claim without its limit")
+    for claim_id in row.get("cites") or []:
+        if claims[claim_id].get("status") == "partly" and not str(((data.get("receipts") or {}).get(claim_id) or {}).get("limit") or "").strip():
+            errors.append(f"{name} cites partly verified claim {claim_id} without its limit")
+
+
+def check_plate_blocks(rel, body, claims, errors):
+    """A page's plate data names claims that ship, and holds only their numbers. Returns the block count."""
+    blocks = PLATE_BLOCK.findall(body)
+    for plate_id, text in blocks:
+        where = f"{rel} plate '{plate_id}'"
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError as error:
+            errors.append(f"{where}: data block is not valid JSON: {error}")
+            continue
+        check_plate_inputs(where, data, claims, errors)
+        for row in data.get("rows") or []:
+            check_plate_row(where, row, data, claims, errors)
+        for claim_id in data.get("receipts") or {}:
+            if claim_id not in claims:
+                errors.append(f"{where}: receipt names unknown claim {claim_id!r}")
+    return len(blocks)
+
+
+def check_plate_scripts(rel, body, errors):
+    """The SVG marks load before the kit that uses them."""
+    if PLATE_BLOCK.search(body) and not -1 < body.find("/plate-svg.js") < body.find("/plate.js"):
+        errors.append(f"{rel}: a page with plates loads assets/js/plate-svg.js and then assets/js/plate.js")
+
+
+def check_poured(rel, body, claims, errors):
+    """A figure poured into a page's own text names a claim that ships, and a partly claim's limit is on the page."""
+    for claim_id in sorted(set(POURED.findall(body))):
+        claim = claims.get(claim_id)
+        if claim is None:
+            errors.append(f"{rel}: data-pour names unknown claim {claim_id!r}")
+        elif claim.get("status") == "partly" and f'data-pour="{claim_id}" data-field="limit"' not in body:
+            errors.append(f"{rel}: data-pour {claim_id} is partly verified; its limit must be on the page (data-field=\"limit\")")
+
+
+def check_resource_model(claims, errors):
+    """The Explorer's public model and page: the header, every claim id they name ships, and a partly verified one has its public limit."""
+    rel = "data/resource-model.json"
+    if not (SITE / rel).is_file():
+        return
+    data = load_data(rel, errors)
+    if not isinstance(data, dict):
+        return
+    check_header(data, rel, errors)
+    errors.extend(f"{rel}: missing {key}" for key in ("inputs", "assumptions", "catalog", "architectures", "disclaimer", "limits") if not data.get(key))
+    page = SITE / "explorer" / "index.html"
+    body = page.read_text(encoding="utf-8") if page.is_file() else ""
+    receipts = {m[1]: m[0] for m in re.finditer(r'<li id="src-([^"]+)".*?</li>', body, re.S)}
+    named = set(CLAIM_ID.findall(json.dumps(data)))
+    for claim_id in sorted(named | set(re.findall(r'href="#src-([a-z]+-\d{3})"', body))):
+        claim = claims.get(claim_id)
+        if claim is None:
+            errors.append(f"{rel}: names claim {claim_id}, which does not ship")
+        elif claim_id not in named and claim_id not in receipts:
+            errors.append(f"explorer/index.html: no receipt for {claim_id}")
+        elif claim.get("status") == "partly" and not (claim.get("limit") or (data.get("limits") or {}).get(claim_id) or "Limit: " in receipts.get(claim_id, "")):
+            errors.append(f"{rel}: partly verified claim {claim_id} has no public limit")
+
+
+def check_plate_files(errors):
+    paths = sorted((SITE / "data" / "plates").glob("*.json"))
+    for path in paths:
+        rel = path.relative_to(SITE).as_posix()
+        data = load_data(rel, errors)
+        if not isinstance(data, dict):
+            continue
+        check_header(data, rel, errors)
+        page = SITE / str(data.get("page"))
+        if not page.is_file() or f'id="plate-data-{data.get("id")}"' not in page.read_text(encoding="utf-8"):
+            errors.append(f"{rel}: not built into {data.get('page')}; run scripts/build_plates.py")
+    return len(paths)
+
+
 def main():
+    import fitz
+
     self_test()
     fitz.TOOLS.mupdf_display_errors(False)
     errors, slots = [], {}
+    claims = check_claims(errors)
+    plate_blocks = 0
     files = sorted(p for p in SITE.rglob("*") if p.is_file())
     for path in files:
         rel = path.relative_to(SITE).as_posix()
@@ -471,6 +688,9 @@ def main():
             if path.suffix == ".html":
                 check_html(path, rel, errors)
                 check_slots(path, rel, body, slots, errors)
+                plate_blocks += check_plate_blocks(rel, body, claims, errors)
+                check_plate_scripts(rel, body, errors)
+                check_poured(rel, body, claims, errors)
         elif path.suffix == ".pdf":
             check_pdf(path, rel, errors)
     if not (SITE / ".nojekyll").is_file():
@@ -481,7 +701,9 @@ def main():
     tribes = check_energy_potential(errors)
     programs = check_energy_funding(errors)
     searches, follows = check_policy_watch(errors)
-    documented = SLOTS_DOC.read_text(encoding="utf-8") if SLOTS_DOC.is_file() else ""
+    plates = check_plate_files(errors)
+    check_resource_model(claims, errors)
+    documented =SLOTS_DOC.read_text(encoding="utf-8") if SLOTS_DOC.is_file() else ""
     for slot, rel in slots.items():
         if f"`{slot}`" not in documented:
             errors.append(f"Slot {slot} ({rel}) is not listed in docs/CONTENT-SLOTS.md")
@@ -503,6 +725,9 @@ def main():
         "funding_programs": programs,
         "policy_searches": searches,
         "policy_follow_items": follows,
+        "claims": len(claims),
+        "plates": plates,
+        "plate_blocks": plate_blocks,
     }))
 
 

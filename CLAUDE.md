@@ -21,10 +21,13 @@ The public repository serves `site/` only. Read `DATA-TIERS.md` before touching 
 python scripts\validate_public.py      # public boundary, schemas, links, house style
 python scripts\check_t1_leak.py        # verbatim T1 text in site/ (local only); exit 1 blocks, 3 = review
                                         # derived-doc overlaps (--all lists them; record reviews in planning-T1\leak-allowlist.txt)
-python -m pytest -q tests              # energy-potential and helper tests
+python -m pytest -q tests              # energy-potential, plates, resource model, and helper tests
 ```
 
-Never push or enable Pages without an explicit owner command in the session.
+After changing plates or claims, rebuild with `python scripts\build_plates.py` (`--page PATH` for one page). After changing
+the model, run `python scripts\resource_model.py --self-test`, `--export`, then `python scripts\build_explorer.py`. Pushing
+to `main` publishes the site through `pages.yml`, so work on a branch. Never push to `main` or enable Pages without an
+explicit owner command in the session.
 
 ## Data products
 
@@ -34,6 +37,31 @@ Never push or enable Pages without an explicit owner command in the session.
 | `site/data/energy-potential.json` | `scripts/energy_potential.py` (plan-assessor public plans, Jev judgments, code ranking) | T0 (owner declared) |
 | `site/data/energy-funding.json` | `scripts/energy_funding.py` (program catalog, Grants.gov live layer) | T0; heat section T1 until released |
 | `site/data/policy-watch.json` | policy searches aligned to Policy Sentinel sources | T0 |
+| `site/data/claims/*.json` | `scripts/build_plates.py --export-claims` from local evidence files (verified or partly only, with public limits) | T0 |
+| `site/data/plates/*.json`, plate blocks in pages | definitions by hand or generator; `scripts/build_plates.py` pours numbers from claims | T0 |
+| `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `explorer.js`) | T0 |
+| `site/explorer/index.html` blocks | `scripts/build_explorer.py` | T0 |
+
+EIA and SEC pulls: `scripts/eia_outlook.py`, `scripts/sec_financials.py` (generic User-Agent, no email).
+
+## Design authority
+
+`docs/DESIGN-SPEC.md` (sections A and B override the rest), `docs/PLATE-KIT.md`, `docs/PAGE-ARCHITECTURE.md`,
+`docs/EXPLORER-SPEC.md`, `docs/RESOURCE-MODEL.md`, `docs/COMPARISON-METHOD.md`. Owner rulings: desktop first and full
+screen, tight margins, less scrolling, interactive detail views; Energy pages use Orange Element `#FF914C`, including ENERGY
+in the logo on any ground; ATNI Red stays the organizational color.
+
+## Creative work
+
+Design and copy are free within the design system and the rules on this page. The hard lines are few: T0 only in `site/`;
+every number on a plate or in the Explorer carries a claim id with its status and limit; no external fetches, scripts, or
+styles; no tracking or data collection; no speaking for a Nation; no Indigenous imagery or motif from stock, ever, and the
+seal is the only such mark; nothing ships without the owner's push. Everything else in the design documents is a default,
+including their refusal lists, page and script budgets, layouts, and component rules. Depart from a default with a one-line
+reason, and update the document when a departure proves out. Budgets should warn, not block. Photographs from the shared
+asset library or a Nation's consented photo are welcome, under the library's license terms. Run the smallest check that
+covers a change, and use a browser at each integration checkpoint rather than per edit. If a rule slows good work and
+protects nothing above, say so and propose removing it.
 
 Upstream repositories (plan-assessor, TCR Policy Scanner, Policy Sentinel) are read-only from here;
 each has its own owner and active writer.
