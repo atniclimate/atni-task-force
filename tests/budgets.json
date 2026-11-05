@@ -1,0 +1,25 @@
+{
+  "tier": "T0",
+  "schema": 1,
+  "warn_at": 0.9,
+  "scripts": {
+    "site/assets/js/ai.js": 25600,
+    "site/assets/js/data-centers.js": 14700,
+    "site/assets/js/energy-funding.js": 19100,
+    "site/assets/js/energy-potential.js": 14800,
+    "site/assets/js/explorer.js": 94600,
+    "site/assets/js/library.js": 11100,
+    "site/assets/js/plate-svg.js": 10000,
+    "site/assets/js/plate.js": 42100,
+    "site/assets/js/policy-watch.js": 4300,
+    "site/assets/js/theme.js": 2200,
+    "site/assets/js/util.js": 3700
+  },
+  "pages_gzip_kb": {
+    "default": 33,
+    "site/ai/index.html": 154,
+    "site/data-centers/index.html": 98,
+    "site/explorer/index.html": 127
+  },
+  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code."
+}

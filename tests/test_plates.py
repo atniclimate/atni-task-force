@@ -1,11 +1,20 @@
-"""Tests for scripts/build_plates.py and the plate checks in scripts/validate_public.py (no network, no browser)."""
+"""Tests for scripts/build_plates.py and the plate checks in scripts/validate_public.py (no network, no browser).
+
+Exact matching is for figures, units, claim ids, receipts, source URLs, and the provenance rules. Page copy and markup are
+read through dom.parse: polish must not fail a test, and a changed number, a lost claim id, or a broken structure must.
+Sentences a fixture writes itself are compared exactly, because there the words are the input and only the pour is under test.
+"""
+import gzip
 import importlib.util
 import json
 from pathlib import Path
 import re
 import sys
+import warnings
 
 import pytest
+
+from dom import numbers, parse
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -30,6 +39,18 @@ def built(tmp_path, plate=None, claims=None):
     page = (site / "page.html").read_text(encoding="utf-8")
     data = json.loads(vp.PLATE_BLOCK.findall(page)[0][1])
     return page, data, bp.load_claims(site)
+
+
+def title(doc):
+    return doc.one(id=doc.one("figure").attrs["aria-labelledby"]).text()
+
+
+def reading(doc):
+    return doc.one(cls="reading").text()
+
+
+def receipt(doc, claim_id):
+    return doc.one("li", id=f"sample-source-{claim_id}").text()
 
 
 def rejected(tmp_path, match, plate=None, claims=None):
@@ -57,7 +78,7 @@ def test_build_writes_between_the_markers_and_is_idempotent(tmp_path):
     site = bp.sample_site(tmp_path / "site")
     assert bp.build(site)["pages_written"] == ["page.html"]
     page = (site / "page.html").read_text(encoding="utf-8")
-    assert page.startswith("<main>before\n<!-- plate:sample -->\n<figure") and page.endswith("<!-- /plate:sample -->\nafter</main>")
+    assert page.startswith("<main>before\n<!-- plate:sample -->") and page.endswith("<!-- /plate:sample -->\nafter</main>") and parse(page).one("figure")
     assert "\nold\n" not in page
     assert bp.build(site)["pages_written"] == []
     assert (site / "page.html").read_text(encoding="utf-8") == page
@@ -66,9 +87,10 @@ def test_build_writes_between_the_markers_and_is_idempotent(tmp_path):
 def test_output_holds_table_plot_reading_and_exactly_the_receipts_used(tmp_path):
     claims = [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12, "partly"), bp.sample_claim("s-3", None), bp.sample_claim("s-unused", 99)]
     page, data, _ = built(tmp_path, claims=claims)
-    assert '<table class="data-table plate-table">' in page and "<td>0.24 Wh</td>" in page
-    assert 'class="ladder-row" data-row="a"' in page
-    assert '<p class="reading">Row A: 0.24 Wh, 2025.' in page
+    doc = parse(page)
+    assert "0.24 Wh" in doc.one(cls="plate-table").texts("td")
+    assert doc.one(cls="ladder-row", data_row="a").one(cls="ladder-value").text() == "0.24 Wh"
+    assert all(part in reading(doc) for part in ("Row A", "0.24 Wh", "2025"))
     assert sorted(data["receipts"]) == ["s-1", "s-2", "s-3"]
     assert [row["claim"] for row in data["rows"]] == ["s-1", "s-2", "s-3"]
     assert "s-unused" not in page
@@ -85,7 +107,7 @@ def test_our_sentences_take_numbers_through_placeholders(tmp_path, field):
 
 def test_placeholders_reach_any_row(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(title="{a[display]} against {b[display]}"))
-    assert ">0.24 Wh against 12 Wh</h3>" in page
+    assert title(parse(page)) == "0.24 Wh against 12 Wh"
 
 
 def test_a_row_with_no_claim_id_fails(tmp_path):
@@ -108,29 +130,30 @@ def test_a_partly_claim_without_a_limit_fails(tmp_path):
 def test_a_partly_limit_reaches_reading_sources_receipt_and_data(tmp_path):
     limit = "The B figure is an old estimate."
     page, data, _ = built(tmp_path, bp.sample_plate(default="b"))
-    assert '<p class="reading">Row B: 12 Wh, 2025.' in page and limit in page.split('class="reading">')[1].split("</p>")[0]
-    assert f"Partly verified. Limit: {limit}" in page.split('class="plate-sources"')[1]
+    doc = parse(page)
+    assert all(part in reading(doc) for part in ("Row B", "12 Wh", "2025", limit))
+    assert limit in receipt(doc, "s-2") and "s-2" in receipt(doc, "s-2") and "partly" in receipt(doc, "s-2").lower() and "partly" not in receipt(doc, "s-1").lower()
     row = next(r for r in data["rows"] if r["key"] == "b")
     assert row["limit"] == limit and limit in row["reading"] and data["receipts"]["s-2"]["limit"] == limit
-    assert ", partly verified</td>" in page
+    assert any("partly" in cell.lower() for cell in doc.one(cls="plate-table").texts("td"))
 
 
 def test_a_limit_on_the_claim_itself_is_used(tmp_path):
     claims = [bp.sample_claim("s-1", status="partly", limit="Stated on the claim.")]
     page, _, _ = built(tmp_path, bp.sample_plate(rows=[{"id": "a", "label": "A", "claim": "s-1"}]), claims)
-    assert "Limit: Stated on the claim." in page
+    assert "Stated on the claim." in receipt(parse(page), "s-1")
 
 
 def test_a_custom_reading_cannot_drop_the_limit(tmp_path):
     _, data, _ = built(tmp_path, bp.sample_plate(reading="{label} used {display}."))
-    assert next(r for r in data["rows"] if r["key"] == "b")["reading"].endswith("Limit: The B figure is an old estimate.")
+    assert next(r for r in data["rows"] if r["key"] == "b")["reading"].endswith("The B figure is an old estimate.")
 
 
 def test_a_claim_with_no_value_keeps_its_place_with_words(tmp_path):
     page, data, _ = built(tmp_path)
     row = next(r for r in data["rows"] if r["key"] == "c")
     assert "value" not in row and row["display"] == bp.NO_MEASUREMENT and "frac" not in row
-    assert f'<span class="ladder-value">{bp.NO_MEASUREMENT}</span>' in page
+    assert bp.NO_MEASUREMENT in parse(page).texts(cls="ladder-value")
     assert "s-3" in data["receipts"]
 
 
@@ -140,7 +163,7 @@ def test_ranges(tmp_path):
     page, data, _ = built(tmp_path, plate, claims)
     assert [r["display"] for r in data["rows"]] == ["2 to 9 Wh", "5 (2 to 9) Wh", "at least 20 Wh"]
     assert "frac" not in data["rows"][0] and data["rows"][1]["frac"] == 0.25 and data["rows"][1]["lo"] == 0.1
-    assert 'style="--lo:0.1;--hi:0.45"' in page
+    assert any(node.style().get("--lo") == "0.1" and node.style().get("--hi") == "0.45" for node in parse(page).all(style=True))
 
 
 def test_one_axis_one_unit(tmp_path):
@@ -153,7 +176,7 @@ def test_a_row_can_convert_a_unit_with_its_arithmetic_on_the_receipt(tmp_path):
     plate = bp.sample_plate(plot={"type": "lines"}, default=None, title="{series}", rows=[{"series": "A", "claim": "s-1", "points": "series", "convert": {"times": 3.78541, "to": "megaliters"}}, {"series": "B", "claim": "s-2", "points": "series"}])
     page, data, _ = built(tmp_path, plate, claims)
     assert [(r["value"], r["display"]) for r in data["rows"] if r["series"] == "A"] == [(378.541, "378.5 megaliters"), (757.082, "757.1 megaliters")]
-    assert data["plot"]["unit"] == "megaliters" and "Arithmetic: 14,689 million gallons" in page
+    assert data["plot"]["unit"] == "megaliters" and "14,689 million gallons x 3.78541 = 55,603 megaliters" in receipt(parse(page), "s-1")
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
     rejected(tmp_path / "x", "needs its arithmetic", plate, [bp.sample_claim("s-1", 1, unit="million gallons", series={"2024": 1}), claims[1]])
@@ -196,16 +219,18 @@ def test_lines_read_a_claims_series_and_every_point_keeps_its_claim(tmp_path):
     assert [(r["key"], r["series"], r["value"], r["claim"]) for r in data["rows"]] == [
         ("2020", "A", 1, "s-1"), ("2021", "A", 2, "s-1"), ("2022", "A", 3, "s-1"), ("2021", "B", 4, "s-2"), ("2022", "B", 5, "s-2")]
     assert data["default"] == "2022" and data["plot"]["xdomain"] == [2020, 2022] and data["plot"]["domain"] == [0, 5]
-    assert 'class="m-line is-on"' in page and page.count('class="m-line') == 2
-    assert "A: 3 Wh, 2022. B: 5 Wh, 2022." in page and "verified against the source." in data["tail"]
-    assert '<ul class="legend plate-legend">' in page and 'role="img"' in page
+    doc = parse(page)
+    assert len(doc.all(cls="m-line")) == 2 and len(doc.all(cls="m-line is-on")) == 1
+    assert numbers(reading(doc))[:4] == ["3", "2022", "5", "2022"] and "verified" in data["tail"]
+    assert doc.one(cls="plate-legend") and doc.one(role="img")
 
 
 def test_series_keep_the_plates_order_when_a_later_one_starts_first(tmp_path):
     claims = [bp.sample_claim("s-1", 3, series={"2021": 2, "2022": 3}), bp.sample_claim("s-2", 5, series={"2020": 4, "2022": 5})]
     page, data, _ = built(tmp_path, lines_plate(), claims)
     assert list(dict.fromkeys(r["series"] for r in data["rows"])) == ["A", "B"] and data["default"] == "2022"
-    assert page.index('</span>A</li>') < page.index('</span>B</li>')
+    legend = parse(page).one(cls="plate-legend").texts("li")
+    assert legend.index("A") < legend.index("B")
 
 
 def test_lines_read_periods_with_an_end_date(tmp_path):
@@ -224,18 +249,21 @@ def test_projection_is_dashed_and_hollow(tmp_path):
     plate = lines_plate()
     plate["plot"]["projected_from"] = 2022
     page, data, _ = built(tmp_path, plate, LINE_CLAIMS)
-    assert len(re.findall(r'class="m-line[^"]* is-proj"', page)) == 2 and all(r.get("hollow") for r in data["rows"] if r["x"] == 2022) and not any(r.get("projected") for r in data["rows"] if r["x"] < 2022)
-    assert '<span class="plate-key is-proj"></span>Projection' in page
+    doc = parse(page)
+    assert len(doc.all(cls="m-line is-proj")) == 2 and all(r.get("hollow") for r in data["rows"] if r["x"] == 2022) and not any(r.get("projected") for r in data["rows"] if r["x"] < 2022)
+    assert doc.one(cls="plate-key is-proj")
 
 
 def test_bars_and_multiples_write_static_marks(tmp_path):
     bars = bp.sample_plate(plot={"type": "bars"}, title="{label}", rows=[{"id": "a", "label": "A", "claim": "s-1"}, {"id": "b", "label": "B", "claim": "s-2"}])
     page, _, _ = built(tmp_path, bars, [bp.sample_claim("s-1", 3), bp.sample_claim("s-2", -2)])
-    assert page.count('class="ladder-bar') == 2 and 'class="ladder-row is-neg"' in page and 'no-needle' in page and 'data-form="bar"' in page
+    doc = parse(page)
+    assert len(doc.all(cls="ladder-bar")) == 2 and doc.one(cls="ladder-row is-neg") and doc.one(cls="no-needle") and doc.one(data_form="bar")
     many = lines_plate()
     many["plot"] = {"type": "multiples"}
     page, _, _ = built(tmp_path / "x", many, LINE_CLAIMS)
-    assert page.count('class="m-title"') == 2 and page.count('class="m-line') == 2
+    doc = parse(page)
+    assert len(doc.all(cls="m-title")) == 2 and len(doc.all(cls="m-line")) == 2
 
 
 def by_plate(**row):
@@ -246,14 +274,15 @@ def by_plate(**row):
 def test_a_row_can_change_claim_with_a_setting(tmp_path):
     page, data, _ = built(tmp_path, by_plate(claims={"dc": None, "full": "s-3"}), [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12, "partly"), bp.sample_claim("s-3", 30)])
     assert data["by"] == "boundary" and [(r["key"], r["when"]) for r in data["rows"]] == [("a", "dc"), ("a", "full"), ("b", "full")]
-    assert f'<span class="ladder-value">{bp.NOT_COUNTED}</span>' in page and "Setting shown: Boundary: Inside." in page
-    assert "<th scope=\"col\">Setting</th>" in page and "<td>Whole chain</td>" in page
-    assert 'value="dc" checked' in page and 'data-param="boundary"' in page and 'class="plate-controls" data-js hidden' in page
+    doc = parse(page)
+    assert bp.NOT_COUNTED in doc.texts(cls="ladder-value") and all(part in doc.one(cls="plate-setting").text() for part in ("Boundary", "Inside"))
+    assert all(th.attrs["scope"] == "col" for th in doc.one("thead").all("th")) and "Whole chain" in doc.texts("td")
+    assert doc.one("input", value="dc", checked=True) and doc.one(data_param="boundary") and doc.one(cls="plate-controls", data_js=True, hidden=True)
 
 
 def test_a_setting_outranks_a_built_in_sentence_field(tmp_path):
     page, data, _ = built(tmp_path, by_plate(claim="s-1") | {"reading": "At {boundary}, {label}: {display}."}, [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12, "partly")])
-    assert '<p class="reading">At Inside, A: 0.24 Wh.' in page and data["rows"][0]["t"].startswith("At {boundary}, A")
+    assert reading(parse(page)).startswith("At Inside, A: 0.24 Wh.") and data["rows"][0]["t"].startswith("At {boundary}, A")
 
 
 def test_a_row_must_name_every_stop(tmp_path):
@@ -272,8 +301,10 @@ def test_a_control_default_must_be_on_a_stop(tmp_path):
 
 def test_controls_write_native_inputs(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(controls=[{"type": "range", "name": "use", "label": "Use", "min": 1, "max": 9, "step": 2, "default": 3}]))
-    assert 'type="range" id="sample-use" min="1" max="9" step="2" value="3"' in page and 'type="number" min="1" max="9" step="2" value="3" aria-label="Use, typed"' in page
-    assert '<span class="slider-stops caption"><span>1</span><span>9</span></span>' in page
+    doc = parse(page)
+    assert doc.one("input", type="range", id="sample-use", min="1", max="9", step="2", value="3")
+    assert doc.one("input", type="number", min="1", max="9", step="2", value="3", aria_label=True)
+    assert doc.one(cls="slider-stops").texts("span") == ["1", "9"]
 
 
 def test_markers_must_be_there_once(tmp_path):
@@ -313,11 +344,9 @@ def test_every_class_the_kit_writes_has_a_rule():
     assert len(used) > 30 and not used - defined, sorted(used - defined)
 
 
-@pytest.mark.parametrize("name, budget", [("plate.js", 34_000), ("plate-svg.js", 8_000)])
-def test_plate_scripts_stay_in_budget_and_write_no_markup(name, budget):
-    script = SITE / "assets" / "js" / name
-    assert script.stat().st_size <= budget
-    text = script.read_text(encoding="utf-8")
+@pytest.mark.parametrize("name", ["plate.js", "plate-svg.js"])
+def test_plate_scripts_write_no_markup(name):
+    text = (SITE / "assets" / "js" / name).read_text(encoding="utf-8")
     assert not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|\beval\(|new Function|\bfetch\(", text)
     assert not re.search(r"^\s*(import|export)\s", text, flags=re.M), "a classic deferred script, so page scripts can follow it"
 
@@ -371,10 +400,11 @@ def test_an_instrument_builds_its_default_setting_statically(tmp_path):
     rows = {r["key"]: r for r in data["rows"]}
     assert rows["amw"]["value"] == 80 and rows["amw"]["display"] == "80 aMW" and rows["amw"]["f"] == {"value": "mw * lf"} and "claim" not in rows["amw"]
     assert rows["twh"]["display"] == "0.7 TWh" and rows["share"]["display"] == "40 percent"
-    assert '100 MW is 0.7 TWh, 40 percent of 200' in page, "the title is the finding at the default setting"
+    doc = parse(page)
+    assert title(doc) == "100 MW is 0.7 TWh, 40 percent of 200", "the title is the finding at the default setting"
     assert rows["spread"]["display"] == "1.75 to 140 L" and rows["off"]["display"] == "Off for now" and "value" not in rows["off"]
-    assert "Setting shown: MW: 100; Load factor: 0.8; Your figure: blank; Extra: No." in page
-    assert "Equation: aMW = MW x load factor" in page, "the default row's equation prints without scripts"
+    assert all(part in doc.one(cls="plate-setting").text() for part in ("MW: 100", "Load factor: 0.8", "Your figure", "Extra: No"))
+    assert "aMW = MW x load factor" in doc.one(cls="plate-facts").text(), "the default row's equation prints without scripts"
 
 
 def test_a_ruler_runs_to_what_the_settings_can_reach(tmp_path):
@@ -390,7 +420,7 @@ def test_an_instrument_reading_keeps_live_names(tmp_path):
     assert row["t"] == "{mw} MW at {lf} is {amw[text]} aMW and {twh[text]} TWh. Modeled."
     assert row["reading"] == "100 MW at 0.8 is 80 aMW and 0.7 TWh. Modeled."
     fixed = next(r for r in data["rows"] if r["key"] == "fixed")
-    assert fixed["reading"].startswith("Context: 200 aMW, 2025."), "a fixed row keeps a row's own sentence"
+    assert all(part in fixed["reading"] for part in ("Context", "200 aMW", "2025")), "a fixed row keeps a row's own sentence"
 
 
 def test_a_formula_row_cites_the_claims_it_reads(tmp_path):
@@ -428,7 +458,8 @@ def test_a_stop_can_stand_for_a_claim_or_another_control(tmp_path):
                             rows=[{"id": "x", "label": "X", "unit": "kW", "formula": {"value": "pue * 2"}}])
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1", 1.45)])
     assert data["stands"] == {"pue": {"a": "pue_a", "b": "typed"}} and data["rows"][0]["display"] == "2.9 kW" and data["rows"][0]["cites"] == ["s-1"]
-    assert 'type="number" id="sample-typed" min="1" max="3" step="0.01" value="1.5"' in page and "All: 2.9." in page
+    doc = parse(page)
+    assert doc.one("input", type="number", id="sample-typed", min="1", max="3", step="0.01", value="1.5") and "All: 2.9." in reading(doc)
     bad = bp.sample_plate(plot={"type": "instrument"}, default="x", controls=[{**controls[1], "options": [{"value": "a", "label": "A", "is": "gone"}]}], rows=[{"id": "x", "label": "X", "claim": "s-1"}])
     rejected(tmp_path / "x", "stands for gone", bad, INSTRUMENT_CLAIMS)
 
@@ -447,13 +478,15 @@ def test_a_decimal_stop_is_on_its_step(tmp_path):
 
 def test_a_preset_may_sit_off_the_slider_step(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(controls=[{"type": "range", "name": "use", "label": "Use", "min": 1, "max": 60, "default": 10, "presets": [2.52, 10]}]))
-    assert 'data-presets="2.52,10"' in page and '<button type="button" data-preset="2.52">2.52</button>' in page
+    doc = parse(page)
+    assert doc.one(data_presets="2.52,10") and doc.one("button", data_preset="2.52").text() == "2.52"
     built(tmp_path / "x", bp.sample_plate(controls=[{"type": "range", "name": "use", "label": "Use", "min": 1, "max": 60, "default": 2.52, "presets": [2.52]}]))
 
 
 def test_a_control_can_wait_in_more_assumptions(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(more="More settings", controls=[{"type": "segmented", "name": "d", "label": "D", "more": True, "options": [{"value": "a", "label": "A"}]}]))
-    assert '<details class="plate-more"><summary>More settings</summary>' in page and 'data-param="d"' in page
+    more = parse(page).one("details", "plate-more")
+    assert more.one("summary").text() == "More settings" and more.one(data_param="d")
 
 
 def test_a_model_reaches_a_plate_as_named_numbers(tmp_path):
@@ -465,7 +498,7 @@ def test_a_model_reaches_a_plate_as_named_numbers(tmp_path):
     page = (site / "page.html").read_text(encoding="utf-8")
     data = json.loads(vp.PLATE_BLOCK.findall(page)[0][1])
     assert data["env"]["tree"] == {"value": 2}, "prose stays in the file"
-    assert data["rows"][0]["value"] == 5.08 and ">2.5, 2</h3>" in page
+    assert data["rows"][0]["value"] == 5.08 and title(parse(page)) == "2.5, 2"
     assert data["sources"]["x"] == {"file": "m", "model": "computed_defaults.a"}
     vp.SITE, keep = site, vp.SITE
     try:
@@ -505,9 +538,10 @@ def test_a_matrix_writes_cells_with_figures_and_words(tmp_path):
     page, data, _ = built(tmp_path, matrix_plate(), [bp.sample_claim("s-1"), bp.sample_claim("s-2", 5)])
     assert [(r["key"], r.get("claim"), r.get("words")) for r in data["rows"]] == [("water--a", "s-1", None), ("water--a", "s-2", None), ("water--b", None, True)]
     assert data["rows"][0]["display"] == "about 0.24 watt-hours on site" and data["rows"][0]["column"] == "National"
-    assert 'data-row="water--a"' in page and '<strong>0.24 watt-hours</strong> on site' in page
-    assert 'class="matrix-figure is-hollow"' in page and '<p class="matrix-words">Season and stream</p>' in page
-    assert data["rows"][2]["reading"] == "Water, Open: Season and stream."
+    doc = parse(page)
+    assert doc.one(data_row="water--a") and "0.24 watt-hours" in doc.texts("strong") and any("0.24 watt-hours on site" in text for text in doc.texts(cls="matrix-figure"))
+    assert doc.one(cls="matrix-figure is-hollow") and "Season and stream" in doc.texts(cls="matrix-words")
+    assert all(part in data["rows"][2]["reading"] for part in ("Water", "Open", "Season and stream"))
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
 
@@ -532,7 +566,8 @@ def band_plate(band, **extra):
 def test_a_band_runs_between_two_series_or_across_all(tmp_path):
     page, data, _ = built(tmp_path, band_plate({"low": "C", "high": "B"}), BAND_CLAIMS)
     assert data["plot"]["band"] == [[2024, 5, 12, 0], [2025, 6, 40, 1], [2026, 7, 60, 1]]
-    assert 'class="m-band"' in page and 'class="m-band-edge is-proj"' in page and '<span class="plate-key is-band"></span>Range' in page
+    doc = parse(page)
+    assert doc.one(cls="m-band") and doc.one(cls="m-band-edge is-proj") and doc.one(cls="plate-key is-band")
     assert next(r for r in data["rows"] if r["series"] == "A" and r["x"] == 2026)["reading"] == "A: 30 Wh; 7 to 60."
     _, across, _ = built(tmp_path / "x", band_plate({"across": "series"}), BAND_CLAIMS)
     assert across["plot"]["band"] == data["plot"]["band"]
@@ -567,10 +602,11 @@ def test_panels_have_their_own_axes_and_one_sentence_per_company_year(tmp_path):
     assert panels["spend"]["domain"] == [0, 400] and panels["cash"]["domain"] == [0, 80] and panels["cash"]["title"] == "Cash (USD billion)"
     assert data["default"] == "2025" and data["plot"]["highlight"] == "B"
     assert data["readings"]["2025|B|"] == "B, 2025 (ends 06/30/2025): spend 400, cash not reported, buybacks not reported."
-    assert "B, 2025 (ends 06/30/2025): spend 400" in page.split('class="reading">')[1], "the default sentence is on the page"
+    doc = parse(page)
+    assert "B, 2025 (ends 06/30/2025): spend 400" in reading(doc), "the default sentence is on the page"
     assert not any("reading" in r for r in data["rows"]), "the sentence lives once per company and year"
-    assert '<th scope="col">Company</th>' in page and '<th scope="col">Spending</th>' in page and "<td>06/30/2025</td>" in page
-    assert page.count('class="m-title"') == 3 and 'plate-key is-on"></span>Selected' in page
+    assert {"Company", "Spending"} <= set(doc.texts("th", scope="col")) and "06/30/2025" in doc.texts("td")
+    assert len(doc.all(cls="m-title")) == 3 and doc.one(cls="plate-key is-on")
 
 
 def test_each_panel_keeps_one_unit(tmp_path):
@@ -591,7 +627,8 @@ def test_a_point_can_be_its_own_selection(tmp_path):
                             rows=[{"id": "a", "panel": "p", "series": "New", "claim": "s-1"}, {"id": "b", "panel": "p", "series": "Old", "claim": "s-2", "modeled": True, "dx": 8}])
     page, data, _ = built(tmp_path, plate, claims)
     assert [r["key"] for r in data["rows"]] == ["a", "b"] and data["plot"]["dots"] is True
-    assert "m-needle" not in page and 'class="m-range"' in page and 'class="m-dot is-solo' in page
+    doc = parse(page)
+    assert not doc.all(cls="m-needle") and doc.one(cls="m-range") and doc.one(cls="m-dot is-solo")
 
 
 def test_a_row_can_set_its_own_x(tmp_path):
@@ -607,10 +644,11 @@ def test_two_rulers_hold_separate_axes_and_labels(tmp_path):
     plate = bp.sample_plate(title="{label}", default="x", plot={"type": "ladder", "groups": [{"id": "a", "label": "Basis A", "domain": [0, 2], "mark": "bar"}, {"id": "b", "label": "Basis B"}]},
                             rows=[{"id": "x", "group": "a", "label": "X", "claim": "s-1"}, {"id": "y", "group": "b", "label": "Y", "claim": "s-2"}])
     page, data, _ = built(tmp_path, plate, claims)
-    assert page.count('class="ladder-group-label"') == 2 and page.count('class="ladder-axis"') == 2 and 'data-form="bar"' in page and 'data-form="square"' in page
+    doc = parse(page)
+    assert len(doc.all(cls="ladder-group-label")) == 2 and len(doc.all(cls="ladder-axis")) == 2 and doc.one(data_form="bar") and doc.one(data_form="square")
     assert data["rows"][0]["frac"] == 0.5 and data["rows"][1]["frac"] == 1, "each row sits on its own ruler"
     assert [g["unit"] for g in data["plot"]["groups"]] == ["L/kWh", "GW"]
-    assert page.count('class="ladder-bar') == 1
+    assert len(doc.all(cls="ladder-bar")) == 1
 
 
 def test_a_group_of_bars_cannot_be_log(tmp_path):
@@ -623,8 +661,9 @@ def test_a_row_can_cite_more_claims_and_every_receipt_ships(tmp_path):
     plate = bp.sample_plate(title="{label}", rows=[{"id": "a", "label": "A", "claim": "s-1", "cites": ["s-2", "s-3"]}, {"id": "b", "label": "B", "claim": "s-4"}])
     page, data, _ = built(tmp_path, plate, claims)
     assert data["rows"][0]["cites"] == ["s-2", "s-3"] and sorted(data["receipts"]) == ["s-1", "s-2", "s-3", "s-4"]
-    assert data["receipts"]["s-3"]["limit"] == "Only one quarter." and "Only one quarter." in page.split('class="plate-sources"')[1]
-    assert page.count(' data-claim="') == 4
+    doc = parse(page)
+    assert data["receipts"]["s-3"]["limit"] == "Only one quarter." and "Only one quarter." in receipt(doc, "s-3")
+    assert sorted(node.attrs["data-claim"] for node in doc.all(data_claim=True)) == ["s-1", "s-2", "s-3", "s-4"]
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
 
@@ -651,7 +690,8 @@ def test_a_shortfall_can_read_as_a_minus(tmp_path):
     plate = bp.sample_plate(title="{label}", plot={"type": "ladder", "signed": True}, rows=[{"id": "a", "label": "A", "claim": "s-1", "negate": True}, {"id": "b", "label": "B", "claim": "s-2"}])
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1", 19, unit="percent"), bp.sample_claim("s-2", 35, unit="percent")])
     assert data["rows"][0]["display"] == "-19 percent" and data["rows"][1]["display"] == "+35 percent" and data["rows"][0]["negated"] is True
-    assert 'class="ladder-row is-neg"' in page and 'class="ladder-row is-pos"' in page and 'class="is-zero"' in page
+    doc = parse(page)
+    assert doc.one(cls="ladder-row is-neg") and doc.one(cls="ladder-row is-pos") and doc.one(cls="is-zero")
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
 
@@ -666,9 +706,10 @@ def test_bars_sort_mark_a_baseline_and_cap_a_projection(tmp_path):
     claims = [bp.sample_claim("s-1", 34.6, unit="percent"), bp.sample_claim("s-2", -25.5, unit="percent"), bp.sample_claim("s-3", 3.5, unit="percent")]
     page, data, _ = built(tmp_path, bars_plate(), claims)
     assert [r["key"] for r in data["rows"]] == ["big", "small"], "biggest first"
-    assert page.index('data-row="big"') < page.index('data-row="small"') and 'class="ladder-bar is-hollow is-proj"' in page
-    assert 'class="ladder-tick" data-mark="all"' in page and "All, +3.5 percent" in page and '<p class="ladder-group-label">Projected percent</p>' in page
-    assert '<span class="ladder-tag">Trade</span>' in page and data["rows"][0]["display"] == "+34.6 percent"
+    doc = parse(page)
+    assert [node.attrs["data-row"] for node in doc.all(cls="ladder-row")] == ["big", "small"] and doc.one(cls="ladder-bar is-hollow is-proj")
+    assert "+3.5 percent" in doc.one(cls="ladder-tick", data_mark="all").text() and "Projected percent" in doc.texts(cls="ladder-group-label")
+    assert "Trade" in doc.texts(cls="ladder-tag") and data["rows"][0]["display"] == "+34.6 percent"
     assert "s-3" in data["receipts"] and data["cites"] == ["s-3"], "a mark's claim ships a receipt"
 
 
@@ -679,7 +720,10 @@ def test_a_pair_of_marks_by_fiscal_year(tmp_path):
     page, data, _ = built(tmp_path, plate, money_claims())
     assert [(r["when"], r["series"], r["value"]) for r in data["rows"]] == [("2024", "Spending", 1), ("2024", "Cash", 50), ("latest", "Spending", 2), ("latest", "Cash", 60)]
     assert data["readings"]["a||latest"] == "A, 2025: spend 2 against 60." and data["plot"]["pair_names"] == ["Spending", "Cash"]
-    assert '<span class="ladder-value">2 and 60 USD billion</span>' in page and 'class="ladder-mark is-b"' in page and "--x2:" in page
+    doc = parse(page)
+    value = doc.one(cls="ladder-value").text()
+    assert numbers(value) == ["2", "60"] and value.endswith("USD billion") and doc.one(cls="ladder-mark is-b")
+    assert any("--x2" in node.style() for node in doc.all(style=True))
 
 
 def test_ticks_can_wait_for_a_setting(tmp_path):
@@ -688,8 +732,9 @@ def test_ticks_can_wait_for_a_setting(tmp_path):
                             plot={"type": "ladder", "scale": "log", "marks": [{"id": "m1", "label": "One", "value": "yard", "unit": "Wh", "when": {"y": "a"}}, {"id": "m2", "label": "Two", "claim": "s-2", "when": {"y": "b"}}]},
                             rows=[{"id": "a", "label": "A", "claim": "s-1"}])
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12)])
-    assert 'data-mark="m1" style="--x:' in page and re.search(r'data-mark="m2" style="[^"]+" hidden', page) and "One, 12 Wh" in page
-    assert data["plot"]["marks"][0]["f"] == {"value": "yard"} and ' has-ticks"' in page
+    doc = parse(page)
+    assert "--x" in doc.one(data_mark="m1").style() and doc.one(data_mark="m2", hidden=True) and "12 Wh" in doc.one(data_mark="m1").text()
+    assert data["plot"]["marks"][0]["f"] == {"value": "yard"} and doc.one(cls="has-ticks")
 
 
 def test_a_count_view_adds_its_own_control(tmp_path):
@@ -697,7 +742,9 @@ def test_a_count_view_adds_its_own_control(tmp_path):
                             rows=[{"id": "a", "label": "A", "claim": "s-2"}])
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12)])
     assert data["plot"]["count"] == {"unit": "prompt", "noun": "text prompt", "nouns": "text prompts", "cap": 200, "control": "sample-plot"}
-    assert 'data-param="sample-plot"' in page and 'value="ruler" checked' in page and "s-1" in data["receipts"] and "View" not in page.split('class="caption plate-setting"')[-1].split("</p>")[0]
+    doc = parse(page)
+    assert doc.one(data_param="sample-plot") and doc.one("input", value="ruler", checked=True) and "s-1" in data["receipts"]
+    assert not any("View" in text for text in doc.texts(cls="plate-setting")), "the view is not a setting of the figure"
 
 
 def test_the_static_detail_shows_only_the_segments_its_stop_counts(tmp_path):
@@ -707,8 +754,8 @@ def test_the_static_detail_shows_only_the_segments_its_stop_counts(tmp_path):
                             controls=[{"type": "segmented", "name": "edge", "label": "Edge", "default": "dc", "options": [{"value": "dc", "label": "Inside"}, {"value": "whole", "label": "Whole"}]}],
                             rows=[{"id": "x", "label": "X", "unit": "Wh", "cites": ["s-1", "s-2"], "segments": parts, "formula": {"dc": {"value": "a"}, "whole": {"value": "a + b"}}}])
     page, data, _ = built(tmp_path, plate, claims)
-    facts = page.split('class="plate-facts"')[1].split('class="plate-actions"')[0]
-    assert facts.count('class="plate-seg"') == 1 and "Here," in facts and "Later," not in facts
+    facts = parse(page).one(cls="plate-facts")
+    assert len(facts.all(cls="plate-seg")) == 1 and "Here" in facts.text() and "Later" not in facts.text()
     assert data["rows"][0]["segments"][1]["at"] == ["whole"], "plate.js filters the same way when the stop changes"
 
 
@@ -724,22 +771,26 @@ def test_a_figure_beside_the_plot_ships_its_receipt(tmp_path):
     plate = bp.sample_plate(title="{label}", also=[{"claim": "s-2", "label": "Beside it", "say": "about {display} a year"}],
                             rows=[{"id": "a", "label": "A", "claim": "s-1", "also": [{"claim": "s-3", "label": "Row note"}]}])
     page, data, _ = built(tmp_path, plate, claims)
-    assert data["also"] == [{"label": "Beside it", "display": "about 12 Wh a year", "claim": "s-2"}, {"at": "a", "label": "Row note", "display": "5 Wh Limit: One year only.", "claim": "s-3"}]
-    assert sorted(data["receipts"]) == ["s-1", "s-2", "s-3"] and "Beside it: about 12 Wh a year" in page
+    assert data["also"][0] == {"label": "Beside it", "display": "about 12 Wh a year", "claim": "s-2"}
+    note = data["also"][1]
+    assert (note["at"], note["label"], note["claim"]) == ("a", "Row note", "s-3") and note["display"].startswith("5 Wh") and note["display"].endswith("One year only.")
+    assert sorted(data["receipts"]) == ["s-1", "s-2", "s-3"] and any("about 12 Wh a year" in text for text in parse(page).one(cls="plate-also").texts("li"))
 
 
 def test_plain_detail_sentences_print_in_the_detail(tmp_path):
     plate = bp.sample_plate(title="{label}", details=["A fleet average cannot describe a stream."], rows=[{"id": "a", "label": "A", "claim": "s-1", "detail": "Region here means a power region, 2 of them.", "note": "Assumed."}],
                             table={"columns": [{"label": "Row", "field": "label"}, {"label": "Boundary", "field": "boundary"}]})
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1")])
-    facts = page.split('class="plate-facts">')[1].split("</div>")[0]
-    assert "A fleet average cannot describe a stream." in facts and "Region here means a power region" in facts and "Assumption: Assumed." in facts
-    assert data["details"] == ["A fleet average cannot describe a stream."] and "<td>Counted: the data center. Not counted: the network.</td>" in page
+    doc = parse(page)
+    facts = doc.one(cls="plate-facts").text()
+    assert "A fleet average cannot describe a stream." in facts and "Region here means a power region" in facts and "Assumed." in facts
+    assert data["details"] == ["A fleet average cannot describe a stream."] and "Counted: the data center. Not counted: the network." in doc.texts("td")
 
 
 def test_a_foot_links_out(tmp_path):
     page, _, _ = built(tmp_path, bp.sample_plate(foot=[{"text": "This does not decide a proposal.", "href": "../x/#y", "link": "Read the questions"}]))
-    assert '<p class="caption plate-foot">This does not decide a proposal. <a href="../x/#y">Read the questions</a></p>' in page
+    foot = parse(page).one(cls="plate-foot")
+    assert "This does not decide a proposal." in foot.text() and foot.one("a", href="../x/#y").text() == "Read the questions"
 
 
 @pytest.mark.parametrize("text", ["Resolution #2026-039 charged it", "by 2030, as of 11/2026 or 11/04/2026", "location-based Scope 2 and CO2", "GPT-5 and FY2026"])
@@ -756,7 +807,7 @@ def test_a_sentence_can_read_any_claim_and_ships_its_receipt(tmp_path):
     claims = [bp.sample_claim("s-1"), bp.sample_claim("s-2", 2500.4, series={"2030": 178.26}), bp.sample_claim("s-3", 7)]
     plate = bp.sample_plate(title="About {c[s-2][value]:,.0f}, and {c[s-2][series][2030]:.0f}, of {c[s-3][display]}", rows=[{"id": "a", "label": "A", "claim": "s-1"}])
     page, data, _ = built(tmp_path, plate, claims)
-    assert ">About 2,500, and 178, of 7 Wh</h3>" in page and sorted(data["receipts"]) == ["s-1", "s-2", "s-3"] and data["cites"] == ["s-2", "s-3"]
+    assert title(parse(page)) == "About 2,500, and 178, of 7 Wh" and sorted(data["receipts"]) == ["s-1", "s-2", "s-3"] and data["cites"] == ["s-2", "s-3"]
     rejected(tmp_path / "x", "bad placeholder", bp.sample_plate(title="{c[nope][value]}", rows=[{"id": "a", "label": "A", "claim": "s-1"}]), claims)
 
 
@@ -767,7 +818,8 @@ def test_custom_table_columns(tmp_path):
     page, data, _ = built(tmp_path, plate, [bp.sample_claim("s-1", 12), bp.sample_claim("s-2", 3)])
     assert data["fields"] == {"times": ["value / unit_wh", 2]} and data["rows"][0]["fields"] == {"times": "4"}
     assert data["rows"][0]["reading"] == "A: 12 Wh, or 4 times." and data["rows"][0]["t"] == "A: 12 Wh, or {times} times."
-    assert '<td>12</td><td data-cell="a||times">4</td><td>GPU only</td><td>s-1</td>' in page
+    doc = parse(page)
+    assert doc.one(cls="plate-table").texts("td") == ["12", "4", "GPU only", "s-1"] and doc.one("td", data_cell="a||times").text() == "4"
 
 
 # Page build, bench rows, poured figures --------------------------------------------------------------
@@ -807,7 +859,8 @@ def test_a_bench_row_carries_a_plates_reading_to_another_page(tmp_path):
     (site / "other" / "deep" / "index.html").write_text("<!-- bench:sample -->\nold\n<!-- /bench:sample -->", encoding="utf-8")
     assert bp.build(site, "other/deep/index.html") == {"plates": 0, "pages_written": ["other/deep/index.html"]}
     text = (site / "other" / "deep" / "index.html").read_text(encoding="utf-8")
-    assert 'href="../../page.html#sample"' in text and "Open the plate" in text and "Row A: 0.24 Wh, 2025." in text and 'class="bench-ruler"' in text
+    doc = parse(text)
+    assert doc.one("a", href="../../page.html#sample") and doc.one(cls="bench-ruler") and all(part in doc.text() for part in ("Row A", "0.24 Wh", "2025"))
     assert bp.build(site, "other/deep/index.html")["pages_written"] == [], "a second run changes nothing"
     (site / "other" / "deep" / "index.html").write_text("<!-- bench:gone --><!-- /bench:gone -->", encoding="utf-8")
     with pytest.raises(bp.BuildError, match="no definition"):
@@ -822,8 +875,10 @@ def test_a_figure_pours_from_its_claim(tmp_path):
     (site / "data" / "claims" / "sample.json").write_text(json.dumps({"schema": 1, "tier": "T0", "cluster": "sample", "claims": claims}), encoding="utf-8")
     bp.build(site)
     text = (site / "about.html").read_text(encoding="utf-8")
-    assert '<span data-pour="s-1">0.24 Wh</span>' in text and '<b data-field="unit" data-pour="s-1">Wh</b>' in text and "An old estimate." in text and ">12</span>" in text
-    assert 'data-field="source" href="https://example.org/files/users/report.pdf">Example Agency</a>' in text
+    doc = parse(text)
+    assert doc.one("span", data_pour="s-1").text() == "0.24 Wh" and doc.one("b", data_pour="s-1", data_field="unit").text() == "Wh"
+    assert doc.one(data_pour="s-2", data_field="limit").text() == "An old estimate." and doc.one(data_pour="s-2", data_field="text").text() == "12"
+    assert doc.one("a", data_pour="s-1", data_field="source", href="https://example.org/files/users/report.pdf").text() == "Example Agency"
     assert bp.build(site)["pages_written"] == []
     errors = []
     vp.check_poured("about", text, bp.load_claims(site), errors)
@@ -1065,3 +1120,202 @@ def test_the_explorer_page_prints_no_undefined():
     page = (SITE / "explorer" / "index.html").read_text(encoding="utf-8")
     ours = re.sub(r"<!-- explorer:sources -->.*?<!-- /explorer:sources -->", "", page, flags=re.S)  # a source's own quote may use the word
     assert not re.search(r"\bundefined\b", ours)
+
+
+# Shipped pages: what a reader sees traces to its claims -------------------------------------------------
+
+@pytest.fixture(scope="module")
+def shipped():
+    """Every public page as (name, text, parsed), with the claims that ship."""
+    pages = []
+    for path in sorted(SITE.rglob("*.html")):
+        text = path.read_text(encoding="utf-8")
+        pages.append((path.relative_to(SITE).as_posix(), text, parse(text)))
+    return pages, bp.load_claims(SITE)
+
+
+def plates(doc, text):
+    """Each plate on a page: its figure, and the data block written beside it."""
+    return [(doc.one("figure", id=plate_id), json.loads(block)) for plate_id, block in vp.PLATE_BLOCK.findall(text)]
+
+
+def plate_structure_problems(figure, data):
+    """The views, labels, and table a plate needs to work by keyboard and screen reader, and without scripts."""
+    plate_id, problems = figure.attrs["id"], []
+    views = {node.attrs["value"] for node in figure.all("input", type="radio", name=f"{plate_id}-view")}
+    panels = {node.attrs["data-view"] for node in figure.all(cls="plate-view", data_view=True)}
+    if views != panels or not {"reading", "sources", "table"} <= panels:
+        problems.append(f"{plate_id}: view switch {sorted(views)} does not match its panels {sorted(panels)}")
+    if not figure.all(id=figure.attrs.get("aria-labelledby", "none")):
+        problems.append(f"{plate_id}: the figure is not labelled by its title")
+    for node in figure.all(aria_controls=True):
+        if not figure.all(id=node.attrs["aria-controls"]):
+            problems.append(f"{plate_id}: aria-controls names no element: {node.attrs['aria-controls']}")
+    table = figure.all(cls="plate-table")
+    if not table or not table[0].all("thead") or any(th.attrs.get("scope") != "col" for th in table[0].one("thead").all("th")):
+        problems.append(f"{plate_id}: the table needs a head of column headers")
+    elif not (region := [n for n in figure.all(cls="table-scroll", role="region") if "tabindex" in n.attrs and ("aria-label" in n.attrs or "aria-labelledby" in n.attrs)]) or not region[0].all(cls="plate-table"):
+        problems.append(f"{plate_id}: the table scroller needs a role, a name, and keyboard focus")
+    if not figure.all(role="status") or not figure.all("output", aria_live="polite"):
+        problems.append(f"{plate_id}: changes need a status and a live output")
+    return problems
+
+
+def test_a_built_plate_has_its_views_labels_and_table(tmp_path):
+    page, data, _ = built(tmp_path)
+    assert plate_structure_problems(parse(page).one("figure"), data) == []
+
+
+def test_a_broken_plate_structure_is_seen(tmp_path):
+    page, data, _ = built(tmp_path)
+    for broken in (page.replace('data-view="table"', 'data-view="grid"'), page.replace('aria-labelledby="sample-title"', 'aria-labelledby="gone"'),
+                   page.replace('aria-controls="sample-receipt"', 'aria-controls="gone"'), page.replace('role="status"', ""), page.replace('scope="col"', "")):
+        assert broken != page and plate_structure_problems(parse(broken).one("figure"), data)
+
+
+def test_shipped_claims_plates_and_model_pass_the_validator():
+    errors = []
+    claims = vp.check_claims(errors)
+    assert claims and vp.check_plate_files(errors) > 0
+    vp.check_resource_model(claims, errors)
+    assert not errors, errors
+
+
+def test_shipped_pages_hold_only_their_claims_numbers(shipped):
+    pages, claims = shipped
+    errors, blocks = [], 0
+    for name, text, _ in pages:
+        blocks += vp.check_plate_blocks(name, text, claims, errors)
+        vp.check_plate_scripts(name, text, errors)
+        vp.check_poured(name, text, claims, errors)
+    assert blocks > 0 and not errors, errors
+
+
+def test_every_poured_figure_on_a_shipped_page_matches_its_claim(shipped):
+    pages, claims = shipped
+    wrong, seen = [], 0
+    for name, _, doc in pages:
+        for node in doc.all(data_pour=True):
+            seen += 1
+            claim = claims[node.attrs["data-pour"]]
+            field = node.attrs.get("data-field", "display")
+            if node.text() != " ".join(bp.poured_text(claim, field).split()):
+                wrong.append(f"{name}: {node.attrs['data-pour']} {field} prints {node.text()!r}; rebuild the page")
+            if node.tag == "a" and field == "source" and node.attrs.get("href") != claim["source"]["url"]:
+                wrong.append(f"{name}: {node.attrs['data-pour']} links away from its source")
+    assert seen and not wrong, wrong
+
+
+def test_every_claim_a_shipped_plate_uses_keeps_its_receipt(shipped):
+    pages, claims = shipped
+    wrong, seen = [], 0
+    for name, text, doc in pages:
+        for figure, data in plates(doc, text):
+            plate_id = figure.attrs["id"]
+            used = {claim_id for row in data["rows"] for claim_id in [row.get("claim"), *(row.get("cites") or [])] if claim_id}
+            wrong += [f"{name} {plate_id}: {claim_id} has no receipt" for claim_id in used - set(data.get("receipts") or {})]
+            for claim_id in data.get("receipts") or {}:
+                seen += 1
+                claim, found = claims[claim_id], figure.all("li", id=f"{plate_id}-source-{claim_id}")
+                if not found:
+                    wrong.append(f"{name} {plate_id}: no Sources entry for {claim_id}")
+                    continue
+                words = found[0].text()
+                if claim_id not in words or not found[0].all("a", href=claim["source"]["url"]) or " ".join(claim["quote"].split()) not in words:
+                    wrong.append(f"{name} {plate_id}: the Sources entry for {claim_id} lost its id, its link, or its quote")
+                if claim["status"] == "partly" and not ("partly" in words.lower() and (data["receipts"][claim_id].get("limit") or "?") in words):
+                    wrong.append(f"{name} {plate_id}: the Sources entry for {claim_id} lost its limit")
+            for node in figure.all(data_claim=True):
+                if node.attrs["data-claim"] not in claims:
+                    wrong.append(f"{name} {plate_id}: data-claim names unknown claim {node.attrs['data-claim']}")
+    assert seen and not wrong, wrong
+
+
+def test_figures_printed_in_a_shipped_plate_match_a_fresh_build(shipped):
+    """Every figure a plate prints, in order, is what its claims build to now; the words around them are free. Nothing is written."""
+    pages, claims = shipped
+    docs = {name: doc for name, _, doc in pages}
+    definitions = [json.loads(path.read_text(encoding="utf-8")) for path in sorted((SITE / "data" / "plates").glob("*.json"))]
+    models = {defn["model"]: vp.load_model(defn["model"], SITE) for defn in definitions if defn.get("model")}
+    wrong = []
+    for defn in definitions:
+        fresh = numbers(parse(bp.plate_block(defn, claims, models)[0]).one("figure").text())
+        printed = numbers(docs[bp.page_name(defn["page"])].one("figure", id=defn["id"]).text())
+        if printed != fresh:
+            first = next((i for i, pair in enumerate(zip(printed, fresh)) if pair[0] != pair[1]), min(len(printed), len(fresh)))
+            wrong.append(f"{defn['page']} {defn['id']}: figure {first} prints {printed[first:first + 1]}, its claims build {fresh[first:first + 1]}; rebuild the page")
+    assert definitions and not wrong, wrong
+
+
+def test_shipped_workbench_tabs_point_at_their_panels_in_order(shipped):
+    pages, _ = shipped
+    strips = 0
+    for name, _, doc in pages:
+        for strip in doc.all("nav", cls="section-strip", data_workbench=True):
+            strips += 1
+            targets = [a.attrs["href"].removeprefix("#") for a in strip.all("a") if a.attrs.get("href", "").startswith("#")]
+            panels = [node.attrs["id"] for node in doc.all(cls="panel", id=True)]
+            assert strip.all("ul") and strip.attrs.get("aria-label") and targets and [t for t in targets if t in panels] == targets, f"{name}: {targets} against {panels}"
+    script = (SITE / "assets" / "js" / "plate.js").read_text(encoding="utf-8")
+    assert strips > 0 and all(f"role: '{role}'" in script for role in ("tablist", "tab", "tabpanel")) and "'aria-selected'" in script
+
+
+def test_every_shipped_plate_has_its_views_labels_and_table(shipped):
+    pages, _ = shipped
+    problems = [problem for _, text, doc in pages for figure, data in plates(doc, text) for problem in plate_structure_problems(figure, data)]
+    assert not problems, problems
+
+
+# Budgets: tests/budgets.json is the one place the numbers live ---------------------------------------------
+
+ROOT = SCRIPTS.parent
+BUDGETS = json.loads((Path(__file__).parent / "budgets.json").read_text(encoding="utf-8"))
+
+
+def budget_warning(name, size, budget, warn_at, unit="bytes"):
+    """Budgets warn and never fail, so a one-line fix cannot fail a test."""
+    if budget is None:
+        warnings.warn(f"no budget for {name} ({size} {unit}); add one to tests/budgets.json", UserWarning)
+    elif size > budget:
+        warnings.warn(f"OVER BUDGET: {name} is {size:g} {unit}, over its {budget:g} in tests/budgets.json", UserWarning)
+    elif size >= warn_at * budget:
+        warnings.warn(f"near budget: {name} is {size:g} {unit} of its {budget:g} in tests/budgets.json", UserWarning)
+
+
+def check_budgets(budgets, root=ROOT):
+    """Warns on every script and page near or over its number. Pages weigh their HTML gzipped."""
+    warn_at, pages = budgets["warn_at"], budgets["pages_gzip_kb"]
+    for path in sorted((root / "site" / "assets" / "js").glob("*.js")):
+        name = path.relative_to(root).as_posix()
+        budget_warning(name, path.stat().st_size, budgets["scripts"].get(name), warn_at)
+    for path in sorted((root / "site").rglob("index.html")):
+        name = path.relative_to(root).as_posix()
+        size = round(len(gzip.compress(path.read_bytes(), 9)) / 1024, 1)
+        budget_warning(name, size, pages.get(name, pages["default"]), warn_at, "KB gzipped")
+
+
+def test_budgets_file_has_its_shape():
+    assert BUDGETS["tier"] == "T0" and BUDGETS["schema"] == 1 and 0 < BUDGETS["warn_at"] < 1 and BUDGETS["note"]
+    assert BUDGETS["scripts"] and all(name.startswith("site/assets/js/") and size > 0 for name, size in BUDGETS["scripts"].items())
+    assert BUDGETS["pages_gzip_kb"]["default"] > 0 and all(name == "default" or name.endswith("index.html") for name in BUDGETS["pages_gzip_kb"])
+
+
+def test_scripts_and_pages_against_their_budgets():
+    check_budgets(BUDGETS)
+
+
+def test_an_over_budget_file_only_warns(tmp_path):
+    with pytest.warns(UserWarning, match="OVER BUDGET"):
+        budget_warning("x.js", 11, 10, 0.9)
+    with pytest.warns(UserWarning, match="near budget"):
+        budget_warning("x.js", 9, 10, 0.9)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        budget_warning("x.js", 8, 10, 0.9)
+    (tmp_path / "site" / "assets" / "js").mkdir(parents=True)
+    (tmp_path / "site" / "assets" / "js" / "big.js").write_text("x" * 100, encoding="utf-8")
+    (tmp_path / "site" / "index.html").write_text("<p>" * 9000, encoding="utf-8")
+    tiny = {"warn_at": 0.9, "scripts": {"site/assets/js/big.js": 10}, "pages_gzip_kb": {"default": 0.01}}
+    with pytest.warns(UserWarning) as caught:
+        check_budgets(tiny, tmp_path)
+    assert [str(w.message).split(":")[0] for w in caught] == ["OVER BUDGET", "OVER BUDGET"], "over budget warns, and the test goes on"

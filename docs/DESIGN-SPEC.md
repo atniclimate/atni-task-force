@@ -53,8 +53,9 @@ least one signature graphic that is more than a bar list (for example the prompt
 over time, a tradeoff matrix, a scenario band with past forecast misses). Tab change counts as a touch, so a 160 to 240ms plot
 transition is allowed there; reduced motion stays 0ms. On-page video stayed out of the first build (section B governs now).
 
-**A8. Budget.** `plate.js` up to 20 KB and per-page modules up to 12 KB each. A per-page weight target of 350 KB
-replaces 250 KB. Checks and screenshots target 1280, 1440, and 1920 wide; 390 gets a sanity look only.
+**A8. Budget.** Script and page budgets live in one place, `tests/budgets.json`: bytes per script, and one page weight
+measured gzipped with larger numbers named for the heaviest pages. Budgets warn near and over the number; they never fail a
+test or a push. Checks and screenshots target 1280, 1440, and 1920 wide; 390 gets a sanity look only.
 
 ## B. Imagery and Motion, Revised 11/04/2026 (overrides sections below)
 
@@ -307,7 +308,7 @@ Note: section B governs where it conflicts with this section (imagery, the image
 | State | Settings live in the query (`?mw=100&use=80#plate-id`) via `replaceState`, validated against allowed stops, default on anything else; nothing stored. Copy Reading puts the sentence, URL, and source titles on the clipboard; on failure it selects the sentence and says so. |
 | Scroll | Never changes a reading. No pinning, no scroll stories, no smooth-scroll override. |
 | No JS | Default reading, full table, and static plot render; controls stay `hidden`; a line names the setting shown. |
-| Budget | HTML and one CSS file paint first; `plate.js` under 8 KB, `defer`, plus at most one per-page module under 6 KB; data inline; fonts the six vendored woff2 with `font-display: swap`; 250 KB per page target, no images beyond the lockup. |
+| Budget | HTML and one CSS file paint first; `plate.js`, `defer`, plus at most one per-page module; data inline; fonts the six vendored woff2 with `font-display: swap`; sizes in `tests/budgets.json` (they warn, see A8); no images beyond the lockup. |
 
 **Motion.** Nothing moves until the reader touches something. Needle 120ms linear; marks 160ms ease-out; text
 changes instantly; the section strip's current marker swaps without transition. No load sequence (the Ledger's rule
@@ -343,4 +344,4 @@ rewritten to `plate.js`, a later task. Nothing on this page needs a plate in thi
 
 **For the design system's owner:** a `program.energy` group (`#FF914C`, `#C34B00`, `#F25C00`, `#A33F00`) with pair
 entries for the contrast test, the Readout role, the lead color mismatch, and the `--measure-wide` step.
-**Unverified until build:** League Spartan `tnum`; the lockup's size and weight (the logo is still being drawn); 250 KB.
+**Unverified until build:** League Spartan `tnum`; the lockup's size and weight (the logo is still being drawn).

@@ -101,7 +101,7 @@ plate.register('ai-same-hour', { render(ctx) { ctx.inputs.now = compute(ctx.stat
 - `reading_for: {"Series": "template"}` gives one series its own `reading_group` sentence; a row's `cites` then gives its receipt.
 - `ctx.setRow(key, {off: true, text})`: a figure the ruler cannot hold, in words, with no mark and no `.is-gap`.
 - A page script may change a one-ruler plate's axis: assign `scale` and `domain` on `ctx.data.plot`, call `ctx.auto()` again, place non-formula rows with `ctx.setRow`, and rebuild `.ladder-grid` and `.ladder-axis` (`setRuler` in `ai.js`).
-- Budgets in `tests/test_plates.py`: `plate.js` 34,000 bytes (was 30,000), `plate-svg.js` 8,000; `ai_dom_check.js` holds `ai.js` to 20,480.
+- Script and page budgets live in one place, `tests/budgets.json`. They warn near and over the number and never fail a test.
 
 ## What the real data needs (found building the proof set)
 - `ai-same-hour`: the plan's 0.1 floor clips video's low at the data center (0.0595); use `"domain": [0.01, 100000]`. fp-135 is in W: `"units": {"Wh/hour": "Wh", "W": "Wh"}` on a one-hour row. fp-094 is unverified, so it cannot be cited; print "unsourced" in the label.

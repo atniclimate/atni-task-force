@@ -22,6 +22,7 @@ python scripts\validate_public.py      # public boundary, schemas, links, house 
 python scripts\check_t1_leak.py        # verbatim T1 text in site/ (local only); exit 1 blocks, 3 = review
                                         # derived-doc overlaps (--all lists them; record reviews in planning-T1\leak-allowlist.txt)
 python -m pytest -q tests              # energy-potential, plates, resource model, and helper tests
+node scripts\page_check.js --all       # jsdom checks of every plate page (npm ci once; about 4 minutes); budgets print warnings, never fail
 ```
 
 After changing plates or claims, rebuild with `python scripts\build_plates.py` (`--page PATH` for one page). After changing
