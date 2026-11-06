@@ -843,7 +843,7 @@ svg.county-map { position: static; display: block; flex: none; width: 100%; heig
 .county-map .tile { transform-box: fill-box; transform-origin: center; transform: scale(var(--k, 1.5)); cursor: pointer; }
 .county-map .tile rect { fill: var(--plot-ground); stroke: var(--series-context); stroke-width: 1.5; transition: fill 160ms ease-out; }
 .county-map .tile text { font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; text-anchor: middle; dominant-baseline: central; fill: var(--atni-text-heading); transition: fill 160ms ease-out; }
-.county-map .tile.is-on rect { fill: var(--energy-mark); stroke: var(--plot-ground); }
+.county-map .tile.is-on rect { fill: var(--energy-fill); stroke: var(--plot-ground); } /* the fill a figure stands on: light --energy-mark under white was 3.7 to 1 */
 .county-map .tile.is-on text { fill: var(--energy-on-fill); }
 /* Its key, first in the legend: the map's own marks at 14px. */
 .key-map .plate-square { width: 14px; height: 14px; border: 1px solid color-mix(in srgb, var(--baseline) 35%, transparent); }
