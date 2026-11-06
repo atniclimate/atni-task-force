@@ -23,7 +23,7 @@ python scripts\check_t1_leak.py        # verbatim T1 text in site/ (local only);
                                         # derived-doc overlaps (--all lists them; record reviews in planning-T1\leak-allowlist.txt)
 python -m pytest -q -rs tests          # energy-potential, plates, resource model, claim marks, site counts, index and briefing, intake, freshness, and helper tests
                                         # -rs names every skip: a skip here means a local file is missing, not a pass
-node scripts\page_check.js --all       # jsdom checks of every plate page and the briefing (npm ci once; about 4 minutes); --page NAME for one; budgets print warnings, never fail
+node scripts\page_check.js --all       # jsdom checks of every plate page and the briefing (npm ci once; about 20 minutes, the Explorer alone 10 to 15); --page NAME for one; budgets print warnings, never fail
 ```
 
 At an integration checkpoint, in a browser: `node scripts\a11y_check.js --out DIR --pages ...` and `node scripts\capture.js --out DIR --pages all`.
@@ -68,6 +68,7 @@ A day-level `source.published` (YYYY-MM-DD) carries `source.date_words`, the wor
 | `site/data/index.json` | `scripts/build_index.py` (manifest of plates, claims, and data files; `validate_public.py` reads it) | T0 |
 | `site/briefing/index.html` rail and packet | `scripts/build_briefing.py` (copies of built plate blocks and the checklists) | T0 |
 | `site/briefing/atni-energy-briefing.pdf`, and its link beside Print packet | `scripts/build_briefing_pdf.py` (headless Chrome prints the default packet: the first plate each page lists and every checklist; `--check` compares a hash of the packet's HTML and of the stylesheets, scripts, and fonts it is drawn with, and needs no browser; a style change leaves the PDF stale until it is built again) | T0 |
+| `site/assets/fonts/` (a Latin core and a Latin-extended woff2 per face, joined by unicode-range) | `scripts/subset_fonts.py` from the whole faces (needs `pip install fonttools brotli`); `tests/test_fonts.py` checks every character the site draws | T0 under the SIL OFL |
 | `site/assets/img/cards/` | `scripts/build_share_cards.py` (needs VectorCraft; `--check` does not) | T0 |
 | page-meta blocks, `robots.txt`, `sitemap.txt` | `scripts/add_page_meta.py` | T0 |
 | `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `site/assets/js/resource-model.js`, the page's pure model, which `explorer.js` draws) | T0 |
