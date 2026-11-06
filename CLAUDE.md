@@ -107,6 +107,9 @@ each has its own owner and active writer.
 - Every verifier returns one verdict per item, and the conductor checks the count against the list before accepting. Use `work/tools/workflows/verify-items.js`
   (local; it batches the list, keys verdicts by id, asks once more for missing ids, and returns `complete` only when every item has a verdict).
 - New public sentences are drafted or passed by pf-voice-lead when they are written, not in a later pass.
+- `work/tools/workflows/journal_dump.py <journal.jsonl> <dir>` writes each workflow agent's return value to its own file.
+- Lanes that share generated files return change lists; the conductor runs `rebuild_all.py` once, then commits per lane by explicit path (never `git add -A`:
+  `.claude/` is not ignored and may hold worktrees). Run `page_check.js --page` per lane and `--all` once, at the final boundary.
 
 ## Writing
 
