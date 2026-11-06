@@ -17,7 +17,7 @@
     "title": "AWS proceeds with data center project in Walla Walla, Washington",
     "publisher": "DatacenterDynamics",
     "url": "https://www.datacenterdynamics.com/en/news/aws-proceeds-with-data-center-project-in-walla-walla-washington/",
-    "published": "2026-11-02",
+    "published": "2026-11-05",
     "kind": "press"
    },
    "quote": "... 300MW power capacity",
@@ -61,7 +61,7 @@
     "title": "2026.02.25 Data Center Closer Look Report",
     "publisher": "Columbia Riverkeeper",
     "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
-    "published": "2026-02-25",
+    "published": "2026-02",
     "kind": "press"
    },
    "quote": "The campus would need at least 320 MW to power the facility along with 5 data center buildings on an adjacent campus ...",
@@ -341,7 +341,7 @@
     "title": "Data Center Closer Look report",
     "publisher": "Columbia Riverkeeper",
     "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
-    "published": null,
+    "published": "2026-02",
     "kind": "advocacy-report"
    },
    "quote": "Chelan PUD agreed to supply up to 288 MW to Microsoft over a 15-year period",
@@ -363,13 +363,13 @@
     "title": "Amazon purchases 1,300 acres in Morrow County, Oregon",
     "publisher": "DatacenterDynamics",
     "url": "https://www.datacenterdynamics.com/en/news/amazon-purchases-1300-acres-in-morrow-county-oregon/",
-    "published": null,
+    "published": "2026-03-31",
     "kind": "press"
    },
    "quote": "... planning documents that were submitted to Morrow County last year suggest the project could offer 1GW of capacity, with 20 buildings spread across four million sq ft",
    "derived": "Figure as printed. Basis: press report of planning documents describing a 'hypothetical' 1 GW facility.",
    "status": "partly",
-   "limit": "MW as that source states it; bases differ (nameplate, load request, press report) and a request or an application is not an approval. Basis here: press report of planning documents describing a 'hypothetical' 1 GW facility. The planning documents describe a hypothetical facility; Amazon says 'development plans are not final'."
+   "limit": "MW as that source states it; bases differ (nameplate, load request, press report) and a request or an application is not an approval. Basis here: press report of planning documents describing a 'hypothetical' 1 GW facility. The planning documents describe a hypothetical 1 GW facility; Amazon says 'development plans are not final'. On OPB's Think Out Loud of 09/14/2026, Roger Wehner, introduced as Amazon's vice president of economic development, said 'a four-building campus' is 'the way we probably envision developing that site', that 'over the term we could do several of those probably on that campus', and that 'our current vision and our partnership with those communities is not to do something on that scale'."
   },
   {
    "id": "pj-018",
@@ -472,13 +472,13 @@
     "title": "Agenda Item 14: Appeal of Hearing Examiner Decision Denying CUP26-00003",
     "publisher": "City of Pocatello",
     "url": "https://pocatello.gov/AgendaCenter/ViewFile/Item/5666?fileID=15371",
-    "published": "2026-08-28",
+    "published": null,
     "kind": "county-city"
    },
    "quote": "Up to 100 megawatts of power will be needed to run the data center which will not be available immediately",
    "derived": "Figure as printed. Basis: city agenda staff report: 'Up to 100 megawatts of power will be needed'.",
    "status": "verified",
-   "limit": "The City of Pocatello agenda item of 08/28/2026 also records a pending reconsideration request."
+   "limit": "The City of Pocatello agenda packet also holds the appellant's request for reconsideration, signed 07/29/2026."
   },
   {
    "id": "pj-023",
@@ -516,7 +516,7 @@
     "title": "Proposed Montana Data Centers (committee slide)",
     "publisher": "Montana State Legislature",
     "url": "https://docs.legmt.gov/download-ticket?ticketId=32797b18-bd34-4518-b7b4-6eec609baebb",
-    "published": null,
+    "published": "2026-07-16",
     "kind": "agency"
    },
    "quote": "... Initial Load (MW) Final Load (MW) Atlas Butte 65 ¹ 150 Quantica Broadview 500 1,000 Sabey Butte 50 250 ...",
@@ -537,7 +537,7 @@
     "title": "Power drain: A guide to proposed data centers so far in Montana",
     "publisher": "Missoulian / MSU Exponent",
     "url": "https://www.msuexponent.com/news/state/power-drain-a-guide-to-proposed-data-centers-so-far-in-montana/article_2c5fca44-9749-5d5b-9fda-3114f3546eff.html",
-    "published": "2026-02-24",
+    "published": "2026-02-23",
     "kind": "press"
    },
    "quote": "The energy supply load for the Atlas data center is expected to be 75 megawatts beginning in 2026 with forecasted growth of up to another 75 megawatts in the subsequent three to five years. That’s a total load of 150 megawatts",
@@ -559,7 +559,7 @@
     "title": "Lyon County Board of Commissioners agenda, September 3, 2026, item 6.b",
     "publisher": "Lyon County, Nevada",
     "url": "https://www.lyon-county.org/AgendaCenter/ViewFile/Agenda/_09032026-2097",
-    "published": "2026-08-28",
+    "published": "2026-09-03",
     "kind": "county-city"
    },
    "quote": "... a 4.6 million square foot, 1,000 Megawatt (MW) data center consisting of 8, two-story buildings up to 95 feet tall ...",
@@ -575,19 +575,19 @@
    "low": null,
    "high": null,
    "unit": "MW",
-   "year": 2026,
+   "year": 2024,
    "boundary": "Counted: the figure the named source prints for this project on its date. Not counted: any other source's figure, or a battery that a source lists beside generation. A request or an application is not an approval.",
    "source": {
     "title": "Tract breaks ground on 810MW data center park in Reno, Nevada",
     "publisher": "DatacenterDynamics",
     "url": "https://www.datacenterdynamics.com/en/news/tract-breaks-ground-on-810mw-data-center-park-in-reno-nevada/",
-    "published": "2026-11-02",
+    "published": "2024-05-01",
     "kind": "press"
    },
    "quote": "The Peru Shelf Technology Park, spanning 686 acres within the Tahoe-Reno Industrial Center, will support up to 810MW of utility capacity at full build-out",
    "derived": "Figure as printed. Basis: press: up to 810 MW of utility capacity at full build-out.",
    "status": "partly",
-   "limit": "MW as that source states it; bases differ (nameplate, load request, press report) and a request or an application is not an approval. Basis here: press: up to 810 MW of utility capacity at full build-out."
+   "limit": "MW as that source states it; bases differ (nameplate, load request, press report) and a request or an application is not an approval. Basis here: press: up to 810 MW of utility capacity at full build-out. Status is as of Tract's groundbreaking announcement, which DatacenterDynamics reported on 05/01/2024 ('announced this week it had broken ground'); no later source read states how far construction has gone."
   },
   {
    "id": "pj-028",
@@ -625,7 +625,7 @@
     "title": "2025 Status of Energy Report",
     "publisher": "Nevada Governor’s Office of Energy",
     "url": "https://epubs.nsla.nv.gov/statepubs/epubs/675157-2025.pdf",
-    "published": "2026-02-13",
+    "published": "2026-02",
     "kind": "agency"
    },
    "quote": "... Vantage Data Centers has committed nearly $3 billion to develop a 224-megawatt AI campus just outside Reno ...",
@@ -734,7 +734,7 @@
     "title": "Carriger Solar | EFSEC",
     "publisher": "Washington Energy Facility Site Evaluation Council",
     "url": "https://efsec.wa.gov/facilities/carriger-solar",
-    "published": "2026-05-01",
+    "published": null,
     "kind": "agency"
    },
    "quote": "... Carriger Solar is a proposed solar photovoltaic (PV) electric generating facility with a capacity of 160 megawatts (MW) of alternating current (AC) solar energy and 63 MW of battery energy storage",
@@ -819,7 +819,7 @@
     "title": "Energy Northwest Unveils Name, Concept Images for First-Ever Small Modular Reactor Project in the Pacific Northwest",
     "publisher": "Energy Northwest",
     "url": "https://www.energy-northwest.com/news-releases/energy-northwest-unveils-name-concept-images-for-first-ever-small-modular-reactor-project-in-the-pacific-northwest/",
-    "published": "2025-10-17",
+    "published": null,
     "kind": "utility"
    },
    "quote": "... is projected to generate 320 megawatts (MW) of carbon-free, reliable energy, and when fully built out, up to 960MW",
@@ -845,7 +845,8 @@
    },
    "quote": "... The order sustains the Commission’s January 22, 2026, order issuing an original license to FFP Project 101, LLC to construct, operate, and maintain the Goldendale Energy Pumped Storage Hydroelectric Project, a 1,200-megawatt project located in Klickitat County, Washington",
    "derived": "Figure as printed. Basis: FERC order summary.",
-   "status": "verified"
+   "status": "verified",
+   "limit": "Status is the FERC license. On 09/21/2026, a release of the Western Environmental Law Center says a panel of judges sided with the Confederated Tribes and Bands of the Yakama Nation (Yakama Nation), Columbia Riverkeeper, and the Western Environmental Law Center, ordering the Washington State Department of Ecology to rewrite a portion of its water quality certification for the project. The release says this effectively delays construction. It also says Columbia Riverkeeper and the Yakama Nation filed petitions for judicial review at the Ninth Circuit Court of Appeals."
   },
   {
    "id": "pj-040",
@@ -861,7 +862,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of approximately 1,000 MW ...",
@@ -882,7 +883,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "... Solar photovoltaic power generation facility with a nominal generating capacity of up to 199 MW ...",
@@ -903,7 +904,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Combined wind (400 MW with turbine blade tip heights up to 698 feet), solar photovoltaic (1,400 MW on 7,819 acres/12.21 sq. miles) ...",
@@ -925,7 +926,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Solar photovoltaic power generation facility with a generating capacity of approximately 800 MW ...",
@@ -946,7 +947,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Wind power generation facility with a nominal generating capacity of 190 MW ...",
@@ -967,7 +968,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of 1,200 MW ...",
@@ -988,7 +989,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 400 MW ...",
@@ -1009,7 +1010,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Wind (turbine blade tip heights up to 788 feet) and solar photovoltaic (micrositing acreage not yet known) facility with up to 500 MW combined capacity ...",
@@ -1030,7 +1031,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 1,200 MW ...",
@@ -1052,7 +1053,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "A 500 MW solar power generation facility currently under construction ...",
@@ -1073,7 +1074,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "An approved but not yet constructed 600 MW wind and solar power generation facility ...",
@@ -1095,7 +1096,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Increase the solar capacity from 50 MW on 315 acres (.49 sq. miles) to 185 MW on 849.7 acres",
@@ -1116,7 +1117,7 @@
     "title": "November EFSC Project Updates",
     "publisher": "Oregon Department of Energy",
     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-    "published": "2026-11-04",
+    "published": "2026-11",
     "kind": "agency"
    },
    "quote": "Expand the site boundary by 839 acres to allow construction and operation of up to 200 MW of photovoltaic solar power generation ...",
@@ -1137,7 +1138,7 @@
     "title": "Morrow County Energy Project List",
     "publisher": "Morrow County, Oregon",
     "url": "https://www.morrowcountyor.gov/sites/default/files/fileattachments/planning/page/16138/morrow_county_energy_project_list.pdf",
-    "published": "2026-10-06",
+    "published": "2026-11-05",
     "kind": "county-city"
    },
    "quote": "... 750MW solar",
@@ -1180,7 +1181,7 @@
     "title": "SWIP-North",
     "publisher": "Idaho Power",
     "url": "https://idahopower.com/about-us/energy/planning-and-electrical-projects/current-projects/swip-north/",
-    "published": "2025-07-02",
+    "published": null,
     "kind": "utility"
    },
    "quote": "When complete, SWIP-North could deliver up to 500 megawatts to Idaho Power customers ...",
@@ -1202,7 +1203,7 @@
     "title": "2027 IRP RFP Update",
     "publisher": "Idaho Power",
     "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
-    "published": "2026-09-03",
+    "published": "2026-09",
     "kind": "utility"
    },
    "quote": "... 400 MW Solar — Blacks Creek ...",
@@ -1310,7 +1311,7 @@
     "title": "2027 IRP RFP Update",
     "publisher": "Idaho Power",
     "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
-    "published": "2026-09-03",
+    "published": "2026-09",
     "kind": "utility"
    },
    "quote": "Bennett Mountain Expansion (NG - Recips) - 167 MW ... South Hills (NG - Recips) - 222 MW ...",
@@ -1353,7 +1354,7 @@
     "title": "Portfolio",
     "publisher": "BHE Montana",
     "url": "https://www.bhemontana.com/portfolio/",
-    "published": "2023-09-11",
+    "published": null,
     "kind": "company"
    },
    "quote": "... BHE Montana is developing a 120-megawatt Solar photovoltaic (PV) facility ...",
@@ -1396,7 +1397,7 @@
     "title": "NV Energy 2026 Integrated Resource Plan, Vol. 27",
     "publisher": "NV Energy (filed with PUCN)",
     "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-27.pdf",
-    "published": "2026-05-05",
+    "published": null,
     "kind": "utility"
    },
    "quote": "... The White Pine Solar, LLC project is 350 megawatts of solar accompanied by 350 MW of battery energy storage capacity being developed by AMPYR Energy USA",
@@ -1418,7 +1419,7 @@
     "title": "2026 Investor Conference Presentation",
     "publisher": "Berkshire Hathaway Energy",
     "url": "https://www.brkenergy.com/assets/pdf/fiic-presentations/2026-fiic-presentation.pdf",
-    "published": "2026-03-24",
+    "published": "2026",
     "kind": "company"
    },
    "quote": "... NV Energy commenced construction of a 400-MW solar facility ...",
@@ -1440,7 +1441,7 @@
     "title": "NV Energy 2026 Integrated Resource Plan, Vol. 2",
     "publisher": "NV Energy (filed with PUCN)",
     "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-2.pdf",
-    "published": "2026-05-05",
+    "published": "2026-05-06",
     "kind": "utility"
    },
    "quote": "... Fort Churchill Additions 1 Project – 401 MW new simple-cycle aeroderivative gas turbines at the Fort Churchill Generation Station with an in-service date of June 2030 ...",

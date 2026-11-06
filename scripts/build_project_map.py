@@ -297,6 +297,8 @@ def us(iso):
     if not iso:
         return ""
     p = iso.split("-")
+    if len(p) == 1:
+        return iso  # a year only, when that is all the source prints
     return f"{p[1]}/{p[2]}/{p[0]}" if len(p) == 3 else f"{p[1]}/{p[0]}"
 
 

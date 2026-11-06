@@ -1058,7 +1058,7 @@
    "quote": "we estimate emissions associated with the deployment of YouTube to be approximately 10MtCO ₂ e p.a.",
    "derived": "10.1e6 t x 1e6 g/t = 1.01e13 g; 1e9 h/day x 365 = 3.65e11 h; 1.01e13 / 3.65e11 = 27.7 gCO2e per viewing hour (27.4 using the rounded 10 Mt)",
    "status": "partly",
-   "limit": "A 2016 scoping estimate for the whole YouTube service using 2016 grid factors; the one billion viewing hours a day is a reported lower-bound figure, so a current hour may be higher."
+   "limit": "A 2016 scoping estimate for the whole YouTube service using 2016 grid factors and a 1.18 Mb/s average bitrate that the paper calls a conservative lower bound, so emissions per viewing hour are probably understated; the one billion viewing hours a day is a reported 2016 figure."
   },
   {
    "id": "fp-120",

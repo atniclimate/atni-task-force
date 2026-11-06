@@ -72,11 +72,11 @@
      "title": "AWS proceeds with data center project in Walla Walla, Washington",
      "publisher": "DatacenterDynamics",
      "url": "https://www.datacenterdynamics.com/en/news/aws-proceeds-with-data-center-project-in-walla-walla-washington/",
-     "date": "2026-11-02",
-     "date_basis": "page metadata",
+     "date": "2026-11-05",
+     "date_basis": "byline date printed on the page",
      "quote": "The campus is expected to have a 300MW power capacity.",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -184,8 +184,8 @@
    "mw": 320,
    "mw_basis": "advocacy report: the campus 'would need at least 320 MW'",
    "status": "proposed",
-   "status_date": "2026-02-25",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-02",
+   "status_basis": "the month printed on the report's cover; no day is printed",
    "counties": [
     {
      "fips": "53005",
@@ -206,11 +206,11 @@
      "title": "2026.02.25 Data Center Closer Look Report",
      "publisher": "Columbia Riverkeeper",
      "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
-     "date": "2026-02-25",
-     "date_basis": "page metadata",
+     "date": "2026-02",
+     "date_basis": "month printed on the report's cover; no day is printed",
      "quote": "Swiss fertilizer company Atlas Agro is proposing to build the county’s first data center campus adjacent to the company’s planned “green” fertilizer plant.",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
@@ -1028,11 +1028,11 @@
      "title": "Avista agrees to framework to provide single business with power equal to half of all Spokane County customers",
      "publisher": "The Spokesman-Review",
      "url": "https://www.spokesman.com/stories/2026/jun/03/avista-working-with-developer-to-provide-massive-a",
-     "date": "2026-06-04",
-     "date_basis": "page metadata",
+     "date": "2026-06-03",
+     "date_basis": "date line printed on the page",
      "quote": "“The Customer is seeking an initial load demand of 125 megawatts (MW) starting in 2029, with a pathway to expand to 500 MW by 2032,”",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -1061,8 +1061,8 @@
    "mw": 288,
    "mw_basis": "advocacy report: Chelan PUD 'agreed to supply up to 288 MW to Microsoft over a 15-year period'",
    "status": "in development",
-   "status_date": "2026-02-25",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-02",
+   "status_basis": "the month printed on the report's cover; no day is printed",
    "counties": [
     {
      "fips": "53007",
@@ -1094,22 +1094,22 @@
      "title": "LPPC Member's Large-Load Projects & Tariffs",
      "publisher": "Large Public Power Council",
      "url": "https://cdn.prod.website-files.com/69d01496278ffde976813ce8/6a1ded2bef625343807f66cd_LPPC-LargeLoadProjects-Tariffs_05.26.26.pdf",
-     "date": "2026-05-27",
-     "date_basis": "page metadata",
+     "date": "2026-03",
+     "date_basis": "month printed in the document's footer; no day is printed",
      "quote": "Chelan County PUD (Washington) Data Centers Under Construction ... Four active data center projects totaling 1,150 MW at full buildout.",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
      "title": "Data Center Closer Look report",
      "publisher": "Columbia Riverkeeper",
      "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
-     "date": null,
-     "date_basis": null,
+     "date": "2026-02",
+     "date_basis": "month printed on the report's cover; no day is printed",
      "quote": "Chelan PUD agreed to supply up to 288 MW to Microsoft ...",
      "kind": "advocacy-report",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -1139,7 +1139,7 @@
    "mw_basis": "press report of planning documents describing a 'hypothetical' 1 GW facility",
    "status": "proposed",
    "status_date": "2026-03-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_basis": "'Published' date printed in the article header",
    "counties": [
     {
      "fips": "41049",
@@ -1161,21 +1161,32 @@
      "publisher": "The Oregonian / OregonLive",
      "url": "https://www.oregonlive.com/silicon-forest/2026/03/plans-call-for-oregons-first-exascale-data-center-on-amazon-site.html",
      "date": "2026-03-27",
-     "date_basis": "page metadata",
+     "date_basis": "'Published' date printed in the article header (it also prints an update of Mar. 30, 2026)",
      "quote": "Planning documents submitted to Morrow County last year describe a hypothetical 1-gigawatt facility with as many as 20 buildings spread over 4 million square feet.",
      "kind": "press",
      "read_on": "11/05/2026",
-     "read_via": "search-index excerpt (page blocked to fetch)"
+     "read_via": "search-index excerpt (page blocked to fetch), which the quotes rest on; the printed date read 11/06/2026 by extract"
     },
     {
      "title": "Amazon purchases 1,300 acres in Morrow County, Oregon",
      "publisher": "DatacenterDynamics",
      "url": "https://www.datacenterdynamics.com/en/news/amazon-purchases-1300-acres-in-morrow-county-oregon/",
-     "date": null,
-     "date_basis": null,
+     "date": "2026-03-31",
+     "date_basis": "byline date printed on the page",
      "quote": "... 1GW of capacity ...",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Amazon VP on natural resources and data centers in Eastern Oregon",
+     "publisher": "Oregon Public Broadcasting",
+     "url": "https://www.opb.org/article/2026/09/14/think-out-loud-amazon-data-centers-eastern-oregon/",
+     "date": "2026-09-14",
+     "date_basis": "byline date printed on the page",
+     "quote": "... our current vision and our partnership with those communities is not to do something on that scale, and to grow incrementally like we have for 15 years in the region, that kind of four-building campus approach",
+     "kind": "press",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -1191,7 +1202,7 @@
     "source": 0,
     "quote": "... hasn’t submitted a development application for the site ..."
    },
-   "limit": "The planning documents describe a hypothetical facility; Amazon says 'development plans are not final'.",
+   "limit": "The planning documents describe a hypothetical 1 GW facility; Amazon says 'development plans are not final'. On OPB's Think Out Loud of 09/14/2026, Roger Wehner, introduced as Amazon's vice president of economic development, said 'a four-building campus' is 'the way we probably envision developing that site', that 'over the term we could do several of those probably on that campus', and that 'our current vision and our partnership with those communities is not to do something on that scale'.",
    "tribal_context": null,
    "consistent_with_site_claims": []
   },
@@ -1619,8 +1630,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-10-28",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-10-27",
+   "status_basis": "publication date printed in the byline ('Posted 5:06 PM, Oct 27, 2026', drawn by the page's script); the article gives the BLM pre-application status as of January 2026",
    "counties": [
     {
      "fips": "16053",
@@ -1646,11 +1657,11 @@
      "title": "Data center eyed for Jerome, Lincoln desert where Lava Ridge stalled",
      "publisher": "KIVI-TV",
      "url": "https://www.kivitv.com/twin-falls/data-center-eyed-for-jerome-lincoln-desert-where-lava-ridge-stalled",
-     "date": "2026-10-28",
-     "date_basis": "page metadata",
+     "date": "2026-10-27",
+     "date_basis": "byline 'Posted 5:06 PM, Oct 27, 2026', drawn by the page's script",
      "quote": "Copia Digital LLC is in pre-application with the BLM for a roughly 3,000-acre data center on public lands south of Shoshone Butte, an area that has opposed development before.",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
@@ -1670,7 +1681,7 @@
    "mw_claim": null,
    "status_claim": {
     "source": 0,
-    "quote": "... Copia Digital LLC is in pre-application with the BLM for a roughly 3,000-acre data center on public lands south of Shoshone Butte ..."
+    "quote": "... The Bureau of Land Management Twin Falls District confirmed a data center on about 3,000 acres of public lands south of Shoshone Butte is in pre-application as of January 2026"
    },
    "limit": null,
    "tribal_context": null,
@@ -1707,11 +1718,11 @@
      "title": "Agenda Item 14: Appeal of Hearing Examiner Decision Denying CUP26-00003",
      "publisher": "City of Pocatello",
      "url": "https://pocatello.gov/AgendaCenter/ViewFile/Item/5666?fileID=15371",
-     "date": "2026-08-28",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "the packet prints no date of its own; its lead document, the appellant's request for reconsideration, is signed 07/29/2026",
      "quote": "On July 16, 2026, the Council heard the appeal as the final item of its regular meeting and voted 4–1 to affirm the Hearing Examiner’s denial of the application.",
      "kind": "county-city",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
@@ -1738,7 +1749,7 @@
     "source": 0,
     "quote": "On July 16, 2026, the Council heard the appeal as the final item of its regular meeting and voted 4–1 to affirm the Hearing Examiner’s denial of the application"
    },
-   "limit": "The City of Pocatello agenda item of 08/28/2026 also records a pending reconsideration request.",
+   "limit": "The City of Pocatello agenda packet also holds the appellant's request for reconsideration, signed 07/29/2026.",
    "tribal_context": [
     {
      "text": "... The Fort Hall Business Council of the Shoshone-Bannock Tribes has issued a formal resolution and public statement opposing data center development on the Fort Hall Reservation, as well as any such development within ceded lands, Treaty-protected areas, or locations that could adversely affect the Reservation or its residents",
@@ -1839,11 +1850,11 @@
      "title": "Montana Data Centers (Energy & Technology Interim Committee)",
      "publisher": "Montana State Legislature",
      "url": "https://docs.legmt.gov/download-ticket?ticketId=32797b18-bd34-4518-b7b4-6eec609baebb",
-     "date": "2026-07-10",
-     "date_basis": "page metadata",
+     "date": "2026-07-16",
+     "date_basis": "presentation date printed on the title slide",
      "quote": "Quantica Broadview 500 1,000",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -1905,11 +1916,11 @@
      "title": "Proposed Montana Data Centers (committee slide)",
      "publisher": "Montana State Legislature",
      "url": "https://docs.legmt.gov/download-ticket?ticketId=32797b18-bd34-4518-b7b4-6eec609baebb",
-     "date": null,
-     "date_basis": null,
+     "date": "2026-07-16",
+     "date_basis": "presentation date printed on the title slide",
      "quote": "Initial Load (MW) Final Load (MW) Atlas Butte 65 ¹ 150 Quantica Broadview 500 1,000 Sabey Butte 50 250",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -1938,8 +1949,8 @@
    "mw": 150,
    "mw_basis": "press: 75 MW beginning in 2026 plus up to 75 MW more",
    "status": "proposed",
-   "status_date": "2026-02-24",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-02-23",
+   "status_basis": "byline date printed on the page",
    "counties": [
     {
      "fips": "30093",
@@ -1960,11 +1971,11 @@
      "title": "Power drain: A guide to proposed data centers so far in Montana",
      "publisher": "Missoulian / MSU Exponent",
      "url": "https://www.msuexponent.com/news/state/power-drain-a-guide-to-proposed-data-centers-so-far-in-montana/article_2c5fca44-9749-5d5b-9fda-3114f3546eff.html",
-     "date": "2026-02-24",
-     "date_basis": "page metadata",
+     "date": "2026-02-23",
+     "date_basis": "byline date printed on the page (it also prints an update of May 28, 2026)",
      "quote": "The energy supply load for the Atlas data center is expected to be 75 megawatts beginning in 2026 with forecasted growth of up to another 75 megawatts in the subsequent three to five years.",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2015,11 +2026,11 @@
      "title": "Lyon County Board of Commissioners agenda, September 3, 2026, item 6.b",
      "publisher": "Lyon County, Nevada",
      "url": "https://www.lyon-county.org/AgendaCenter/ViewFile/Agenda/_09032026-2097",
-     "date": "2026-08-28",
-     "date_basis": "page metadata",
+     "date": "2026-09-03",
+     "date_basis": "meeting date printed on the agenda packet; no posting date is printed",
      "quote": "approval of a zone change to Planned Unit Development for the Monarch Data Center, a 4.6 million square foot, 1,000 Megawatt (MW) data center consisting of 8, two-story buildings up to 95 feet tall, a 500-MW battery energy storage system, a 500-MW natural gas backup system, an electrical substation, high voltage power lines and other accessory uses",
      "kind": "county-city",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
@@ -2059,8 +2070,8 @@
    "mw": 810,
    "mw_basis": "press: up to 810 MW of utility capacity at full build-out",
    "status": "under construction",
-   "status_date": "2026-11-02",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2024-05-01",
+   "status_basis": "byline date of the article, which says Tract 'announced this week it had broken ground'",
    "counties": [
     {
      "fips": "32029",
@@ -2081,11 +2092,11 @@
      "title": "Tract breaks ground on 810MW data center park in Reno, Nevada",
      "publisher": "DatacenterDynamics",
      "url": "https://www.datacenterdynamics.com/en/news/tract-breaks-ground-on-810mw-data-center-park-in-reno-nevada/",
-     "date": "2026-11-02",
-     "date_basis": "page metadata",
+     "date": "2024-05-01",
+     "date_basis": "byline date printed on the page",
      "quote": "The Peru Shelf Technology Park, spanning 686 acres within the Tahoe-Reno Industrial Center, will support up to 810MW of utility capacity at full build-out.",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2101,7 +2112,7 @@
     "source": 0,
     "quote": "... announced this week it had broken ground on its Peru Shelf Technology Park project in Storey County"
    },
-   "limit": null,
+   "limit": "Status is as of Tract's groundbreaking announcement, which DatacenterDynamics reported on 05/01/2024 ('announced this week it had broken ground'); no later source read states how far construction has gone.",
    "tribal_context": null,
    "consistent_with_site_claims": []
   },
@@ -2169,8 +2180,8 @@
    "mw": 224,
    "mw_basis": "Nevada Governor's Office of Energy report",
    "status": "in development",
-   "status_date": "2026-02-13",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-02",
+   "status_basis": "the month printed on the report's cover; no day is printed",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -2185,11 +2196,11 @@
      "title": "2025 Status of Energy Report",
      "publisher": "Nevada Governor’s Office of Energy",
      "url": "https://epubs.nsla.nv.gov/statepubs/epubs/675157-2025.pdf",
-     "date": "2026-02-13",
-     "date_basis": "page metadata",
+     "date": "2026-02",
+     "date_basis": "month printed on the report's cover; no day is printed",
      "quote": "Vantage Data Centers has committed nearly $3 billion to develop a 224-megawatt AI campus just outside Reno",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2219,7 +2230,7 @@
    "mw_basis": "press, quoting city documents",
    "status": "permitting",
    "status_date": "2026-10-22",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_basis": "date printed under the byline ('October 22nd, 2026'), drawn by the page's script",
    "counties": [
     {
      "fips": "32019",
@@ -2241,10 +2252,10 @@
      "publisher": "The Nevada Independent",
      "url": "https://thenevadaindependent.com/article/fernley-commissioners-step-down-over-power-plant-brouhaha-after-lawyers-lean-in",
      "date": "2026-10-22",
-     "date_basis": "page metadata",
+     "date_basis": "date printed under the byline ('October 22nd, 2026'), drawn by the page's script",
      "quote": "Mark IV Capital is seeking city approval to construct a modular natural gas plant and battery energy storage systems capable of producing up to 324 megawatts (MW) of power for businesses within the logistics district",
      "kind": "press",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2490,11 +2501,11 @@
      "title": "Carriger Solar | EFSEC",
      "publisher": "Washington Energy Facility Site Evaluation Council",
      "url": "https://efsec.wa.gov/facilities/carriger-solar",
-     "date": "2026-05-01",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "the page prints no publication or update date",
      "quote": "Carriger Solar is a proposed solar photovoltaic (PV) electric generating facility with a capacity of 160 megawatts (MW) of alternating current (AC) solar energy and 63 MW of battery energy storage. The proposed site is located approximately two miles northwest of Goldendale.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2691,11 +2702,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "The facility is proposed by Cascade Renewable Transmission, LLC., a joint enterprise of PB CRTS, LLC, a wholly owned subsidiary of PowerBridge, LLC, and Sun2o Partners, LLC. ... Phase: Preliminary Application for Site Certificate ... Completeness review will continue through Q4 2026.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     },
     {
@@ -2768,11 +2779,11 @@
      "title": "Energy Northwest Unveils Name, Concept Images for First-Ever Small Modular Reactor Project in the Pacific Northwest",
      "publisher": "Energy Northwest",
      "url": "https://www.energy-northwest.com/news-releases/energy-northwest-unveils-name-concept-images-for-first-ever-small-modular-reactor-project-in-the-pacific-northwest/",
-     "date": "2025-10-17",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "no publication date is printed; the release says only 'today'",
      "quote": "Construction is anticipated to begin by the end of the decade, with operations targeted for the 2030s.",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2851,6 +2862,17 @@
      "kind": "tribal-government",
      "read_on": "11/05/2026",
      "read_via": "extract"
+    },
+    {
+     "title": "Court orders changes to controversial water quality certification, delaying destruction of sacred Tribal resources",
+     "publisher": "Western Environmental Law Center",
+     "url": "https://westernlaw.org/court-orders-changes-to-controversial-water-quality-certification-delaying-destruction-of-sacred-tribal-resources",
+     "date": "2026-09-21",
+     "date_basis": "date printed under the headline",
+     "quote": "... A panel of judges today sided with the Confederated Tribes and Bands of the Yakama Nation (Yakama Nation) and Columbia Riverkeeper, and the Western Environmental Law Center, ordering the Washington State Department of Ecology (Ecology) to rewrite a portion of a controversial water quality certification ...",
+     "kind": "advocacy-report",
+     "read_on": "11/06/2026",
+     "read_via": "extract"
     }
    ],
    "bpa_requests": [],
@@ -2865,7 +2887,7 @@
     "source": 0,
     "quote": "... The order sustains the Commission’s January 22, 2026, order issuing an original license to FFP Project 101, LLC to construct, operate, and maintain the Goldendale Energy Pumped Storage Hydroelectric Project, a 1,200-megawatt project located in Klickitat County, Washington"
    },
-   "limit": null,
+   "limit": "Status is the FERC license. On 09/21/2026, a release of the Western Environmental Law Center says a panel of judges sided with the Confederated Tribes and Bands of the Yakama Nation (Yakama Nation), Columbia Riverkeeper, and the Western Environmental Law Center, ordering the Washington State Department of Ecology to rewrite a portion of its water quality certification for the project. The release says this effectively delays construction. It also says Columbia Riverkeeper and the Yakama Nation filed petitions for judicial review at the Ninth Circuit Court of Appeals.",
    "tribal_context": [
     {
      "text": "The order also denies the stay request and addresses Tribal consultation and issues arising under the National Historic Preservation Act, the National Environmental Policy Act, and the Federal Power Act",
@@ -2911,11 +2933,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of approximately 1,000 MW and 1,000 MW of battery storage on up to 13,626 acres (21.3 square miles) in Wasco County. The facility is proposed by DECH bn, LLC, a wholly owned subsidiary of BrightNight, LLC.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -2966,11 +2988,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 199 MW and 199 MW of battery storage on to 1,588 acres (2.5 sq. miles) in Linn County. The facility is proposed by Muddy Creek Energy Park LLC, a subsidiary of Hanwha Q Cells USA Corp.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3021,11 +3043,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Combined wind (400 MW with turbine blade tip heights up to 698 feet), solar photovoltaic (1,400 MW on 7,819 acres/12.21 sq. miles) and 1,400 MW of battery storage within Sherman County. The facility is proposed by BGTF Speedway Project LLC, a subsidiary of Brookfield Renewable U.S. ... The Department issued its determination that the pASC was incomplete on September 17, 2026.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3076,11 +3098,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a generating capacity of approximately 800 MW and 800 MW of battery storage on up to 6,981 acres (21.3 square miles) in Morrow County. The facility is proposed by PacifiCorp , a wholly-owned subsidiary of Berkshire Hathaway Energy Company. ... The Preliminary Application for Site Certificate must be submitted by February 27, 2027.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3131,11 +3153,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Wind power generation facility with a nominal generating capacity of 190 MW consisting of up to 67 wind turbines with a maximum blade-tip height of 640 feet in Morrow County. The facility is proposed by Heppner Lena Wind, LLC, a subsidiary of NextEra Energy Resources, LLC. ... The Preliminary Application for Site Certificate must be submitted by March 27, 2027.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3186,11 +3208,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of 1,200 MW and 1,200 MW of battery storage on up to 7,852 acres (12.2 sq. miles) in Sherman County. The facility is proposed by Buckley Solar, LLC, a subsidiary of Clenera DevCo, LLC. ... The Preliminary Application for Site Certificate must be submitted by August 17, 2027.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3241,11 +3263,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 400 MW and 400 MW of battery storage on up to 8,600 acres (13.4 sq. miles) in Klamath County. The facility is proposed by Klamath Falls Energy Center, LLC, a subsidiary of Horsted North America Inc.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3296,11 +3318,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Wind (turbine blade tip heights up to 788 feet) and solar photovoltaic (micrositing acreage not yet known) facility with up to 500 MW combined capacity, and 500 MW of battery storage in Gilliam County. The facility is proposed by three limited liability companies: Big River Wind Power Project LLC, Big River Energy Storage LLC and Big River Solar Park LLC. All three are subsidiaries of EDP Renewables North America, LLC.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3356,11 +3378,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "230 kV transmission line connecting Umatilla Electric Cooperative’s (UEC) existing Highway 730 Switchyard to their planned Ordnance Switchyard. There are four alternative routes ranging from approximately 13.1 to 14.4 miles. The facility is proposed by UEC.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3406,11 +3428,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 1,200 MW and 1,200 MW of battery storage on up to 9,442 acres (14.75 square miles) in Morrow County. The certificate holder is Oregon Solar 1, LLC, a wholly owned subsidiary of Amazon.com, Inc. ... Review is currently on hold until further notice from the certificate holder.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3461,11 +3483,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 500 MW and 500 MW of battery storage on up to 7,450 acres (11.6 square miles) in Morrow County. The certificate holder is Wagon Trail Energy Center, LLC, a wholly owned subsidiary of NextEra Energy Resources, LLC. ... Construction has begun for each site, starting with prepping and grading each Phase’s site area.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3516,11 +3538,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "An approved but not yet constructed 600 MW wind and solar power generation facility in Umatilla County. The certificate holder is Nolin Hills Wind LLC, a subsidiary of Capitol Power Corporation. ... Extend the construction commencement deadlines by 3 years, extending from July 29, 2026 to July 29, 2029.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3576,11 +3598,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Increase the solar capacity from 50 MW on 315 acres (.49 sq. miles) to 185 MW on 849.7 acres (1.32 sq. miles), add 156 MW of battery storage, increase the site boundary by 252 acres, and amend site certificate conditions, including the beginning construction deadline.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3631,11 +3653,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "Expand the site boundary by 839 acres to allow construction and operation of up to 200 MW of photovoltaic solar power generation and related or supporting facilities (including 1,000 MW-hrs of battery energy storage components).",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3706,11 +3728,11 @@
      "title": "November EFSC Project Updates",
      "publisher": "Oregon Department of Energy",
      "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
-     "date": "2026-11-04",
-     "date_basis": "page metadata",
+     "date": "2026-11",
+     "date_basis": "month printed in the document's page header; no day is printed",
      "quote": "500 kV single circuit electrical transmission line approximately 300 miles in length (273 miles in Oregon) in Morrow, Umatilla, Union, Baker and Malheur County in Oregon. The certificate holder is Idaho Power Company (IPC). ... IPC commenced construction on June 24, 2025.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3735,7 +3757,7 @@
    "mw_basis": "Morrow County energy project list (750 MW solar, 500 MW BESS)",
    "status": "permitting",
    "status_date": "2026-11-05",
-   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "status_basis": "the list's printed 'As of' date",
    "counties": [
     {
      "fips": "41049",
@@ -3756,11 +3778,11 @@
      "title": "Morrow County Energy Project List",
      "publisher": "Morrow County, Oregon",
      "url": "https://www.morrowcountyor.gov/sites/default/files/fileattachments/planning/page/16138/morrow_county_energy_project_list.pdf",
-     "date": "2026-10-06",
-     "date_basis": "page metadata",
+     "date": "2026-11-05",
+     "date_basis": "'As of: 05NOV2026' printed in the footer of both pages of the list",
      "quote": "Well Springs Solar 750MW solar | 500 MW BESS | 7,365 ac proposed Applications under review Applications received June 2026; under review ... EFSC application withdrawn; permitting locally.",
      "kind": "county-city",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3844,8 +3866,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-01-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-01-23",
+   "status_basis": "the 'updated' date printed in the document's title",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -3860,11 +3882,11 @@
      "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
      "publisher": "Bonneville Power Administration",
      "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
-     "date": "2026-01-27",
-     "date_basis": "page metadata",
+     "date": "2026-01-23",
+     "date_basis": "'updated' date printed in the document's title",
      "quote": "BPA proposes to rebuild 91 miles of the existing Big Eddy-Chemawa #1 230 kV line to a 500 kV line and re-terminate between BPA’s Big Eddy Substation (The Dalles, OR), Ostrander Substation (Oregon City, OR) and Pearl Substation (Wilsonville, OR). ... Preliminary estimated direct cost: $670 million Estimated completion: 2033 (updated from 2032)",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3888,8 +3910,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-01-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-01-23",
+   "status_basis": "the 'updated' date printed in the document's title",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -3904,11 +3926,11 @@
      "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
      "publisher": "Bonneville Power Administration",
      "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
-     "date": "2026-01-27",
-     "date_basis": "page metadata",
+     "date": "2026-01-23",
+     "date_basis": "'updated' date printed in the document's title",
      "quote": "This facility would be a new hub substation in Central Oregon near Prineville, OR. The new 115/230/500 kV Bonanza Substation would be built near BPA’s existing Ponderosa Substation. ... Estimated completion: 2031 (updated from 2030) ... a proposed new 52-mile 230 kV transmission line in Central Oregon between BPA’s La Pine Substation (La Pine, OR) and proposed Bonanza Substation (Prineville, OR).",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3932,8 +3954,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-01-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-01-23",
+   "status_basis": "the 'updated' date printed in the document's title",
    "counties": [
     {
      "fips": "41055",
@@ -3954,11 +3976,11 @@
      "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
      "publisher": "Bonneville Power Administration",
      "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
-     "date": "2026-01-27",
-     "date_basis": "page metadata",
+     "date": "2026-01-23",
+     "date_basis": "'updated' date printed in the document's title",
      "quote": "This project is a proposed rebuild of BPA’s Buckley Substation in Sherman County, OR. The rebuild would be a new air-insulated 500 kV substation built near the existing gas-insulated substation, which will be retired. ... Estimated completion: 2029",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -3982,8 +4004,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-01-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-01-23",
+   "status_basis": "the 'updated' date printed in the document's title",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -3998,11 +4020,11 @@
      "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
      "publisher": "Bonneville Power Administration",
      "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
-     "date": "2026-01-27",
-     "date_basis": "page metadata",
+     "date": "2026-01-23",
+     "date_basis": "'updated' date printed in the document's title",
      "quote": "BPA proposes upgrading the existing Schultz- Raver #3 and Schultz-Raver #4 500 kV lines to a higher-rated capacity. BPA would reconductor the 77 miles of line (154 miles total) between BPA’s Schultz Substation (Ellensburg, WA) and Raver Substation (Ravensdale, WA). ... Estimated completion: 2032 (updated from 2030)",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4026,8 +4048,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-01-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-01-23",
+   "status_basis": "the 'updated' date printed in the document's title",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -4042,11 +4064,11 @@
      "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
      "publisher": "Bonneville Power Administration",
      "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
-     "date": "2026-01-27",
-     "date_basis": "page metadata",
+     "date": "2026-01-23",
+     "date_basis": "'updated' date printed in the document's title",
      "quote": "... a new 500/230-kV transformer would be added at Keeler Substation",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4102,11 +4124,11 @@
      "title": "SWIP-North",
      "publisher": "Idaho Power",
      "url": "https://idahopower.com/about-us/energy/planning-and-electrical-projects/current-projects/swip-north/",
-     "date": "2025-07-02",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "the page prints no publication or update date",
      "quote": "SWIP-North is a 285-mile, 500-kilovolt (kV) transmission line that will run between eastern Nevada near Ely and Idaho Power’s Midpoint Substation near Jerome, Idaho. ... Mid-2026: Construction begins ... Mid-2028: Expected in-service date",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4135,8 +4157,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "permitting",
-   "status_date": "2026-07-27",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-07-28",
+   "status_basis": "date printed on the transmittal letter and the update's title page",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -4151,11 +4173,11 @@
      "title": "Idaho Power Company’s Transmission Update for 2nd Quarter 2026",
      "publisher": "Idaho Power (filed with Oregon PUC)",
      "url": "https://edocs.puc.state.or.us/efdocs/HAQ/re136haq348127039.pdf",
-     "date": "2026-07-27",
-     "date_basis": "page metadata",
+     "date": "2026-07-28",
+     "date_basis": "date printed on the transmittal letter and the update's title page",
      "quote": "Current permitting and pre-construction activities are focused on Segment E-8 (“Segment 8”), the section of line between Hemingway and Midpoint substations.",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4195,11 +4217,11 @@
      "title": "2027 IRP RFP Update",
      "publisher": "Idaho Power",
      "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
-     "date": "2026-09-03",
-     "date_basis": "page metadata",
+     "date": "2026-09",
+     "date_basis": "month printed on the title slide; no day is printed",
      "quote": "2027 400 MW Solar — Blacks Creek 100 MW Solar + 100 MW BESS - Crimson Orchard",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4468,11 +4490,11 @@
      "title": "2027 IRP RFP Update",
      "publisher": "Idaho Power",
      "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
-     "date": "2026-09-03",
-     "date_basis": "page metadata",
+     "date": "2026-09",
+     "date_basis": "month printed on the title slide; no day is printed",
      "quote": "Bennett Mountain Expansion (NG - Recips) - 167 MW ... South Hills (NG - Recips) - 222 MW",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4593,11 +4615,11 @@
      "title": "Portfolio",
      "publisher": "BHE Montana",
      "url": "https://www.bhemontana.com/portfolio/",
-     "date": "2023-09-11",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "the page prints no publication or update date",
      "quote": "... BHE Montana is developing a 120-megawatt Solar photovoltaic (PV) facility ...",
      "kind": "company",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4763,11 +4785,11 @@
      "title": "NV Energy 2026 Integrated Resource Plan, Vol. 27",
      "publisher": "NV Energy (filed with PUCN)",
      "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-27.pdf",
-     "date": "2026-05-05",
-     "date_basis": "page metadata",
+     "date": null,
+     "date_basis": "this volume prints no date of its own",
      "quote": "The White Pine Solar, LLC project is 350 megawatts of solar accompanied by 350 MW of battery energy storage capacity being developed by AMPYR Energy USA. The facility will be located in White Pine County, Nevada. Its commercial operation date is targeted for December 2028.",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4797,7 +4819,7 @@
    "mw_basis": "company investor presentation (400 MW solar plus 400 MW storage)",
    "status": "under construction",
    "status_date": "2026-11-05",
-   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "status_basis": "the presentation prints only the year 2026; status as shown when read 11/05/2026",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -4812,11 +4834,11 @@
      "title": "2026 Investor Conference Presentation",
      "publisher": "Berkshire Hathaway Energy",
      "url": "https://www.brkenergy.com/assets/pdf/fiic-presentations/2026-fiic-presentation.pdf",
-     "date": "2026-03-24",
-     "date_basis": "page metadata",
+     "date": "2026",
+     "date_basis": "only the year is printed (cover slide)",
      "quote": "NV Energy commenced construction of a 400-MW solar facility with commercial operation expected in 2027, plus 400-MW co-located battery storage facility",
      "kind": "company",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4845,8 +4867,8 @@
    "mw": 401,
    "mw_basis": "NV Energy 2026 IRP volume",
    "status": "proposed",
-   "status_date": "2026-11-05",
-   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "status_date": "2026-05-06",
+   "status_basis": "signature date printed at the end of the application in this volume",
    "counties": [],
    "land": {
     "class": "not-stated",
@@ -4861,11 +4883,11 @@
      "title": "NV Energy 2026 Integrated Resource Plan, Vol. 2",
      "publisher": "NV Energy (filed with PUCN)",
      "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-2.pdf",
-     "date": "2026-05-05",
-     "date_basis": "page metadata",
+     "date": "2026-05-06",
+     "date_basis": "signature date printed at the end of the application",
      "quote": "Fort Churchill Additions 1 Project 6/1/2030 CT 401 Sierra Fort Churchill $ 2,006,583",
      "kind": "utility",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
@@ -4943,8 +4965,8 @@
    "mw": null,
    "mw_basis": null,
    "status": "proposed",
-   "status_date": "2026-05-21",
-   "status_basis": "publication date of the source, from the page's metadata",
+   "status_date": "2026-06-01",
+   "status_basis": "report date printed on the cover of the lessee's progress report",
    "counties": [
     {
      "fips": "06023",
@@ -4965,11 +4987,11 @@
      "title": "Semi-Annual Progress Report 2, Lease OCS-P 0562",
      "publisher": "Bureau of Ocean Energy Management",
      "url": "https://www.boem.gov/renewable-energy/state-activities/2026-6-01-canf-progress-reportlease-562-1",
-     "date": "2026-05-21",
-     "date_basis": "page metadata",
+     "date": "2026-06-01",
+     "date_basis": "report date printed on the cover (reporting period 12/1/2025 through 5/31/2026)",
      "quote": "California North Floating LLC is the leaseholder of Lease Area OCS-P 0562 (the “Project”). California North Floating is an affiliate of Vineyard Offshore.",
      "kind": "agency",
-     "read_on": "11/05/2026",
+     "read_on": "11/06/2026",
      "read_via": "extract"
     }
    ],
