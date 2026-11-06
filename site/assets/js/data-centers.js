@@ -1,4 +1,5 @@
-// The Data Center page: count squares in the instruments, the Council plate's second view, the jobs ruler, the matrix's one sentence, and the check of past projections.
+// The Data Center page: count squares in the instruments, the Council plate's second view, the jobs ruler, the matrix's one sentence, the check of past projections,
+// and the county map on the Land and Climate tabs.
 // Numbers come from the plates' data blocks; text reaches the page by textContent only.
 (function () {
 const { add, frame, inner, chart, scale } = plate.draw;
@@ -258,19 +259,73 @@ plate.register('dc-forecast-check', {
   },
 });
 
+// The county map, Land and Climate: one drawing (build_project_map.py), its tiles the plate's options, so plate.js gives them their keys, names, and
+// selection. figureOf(key) is a county's figure, or null where this view does not count it: its tile goes and its county stays an outline. With a
+// domain a county fills on five steps of ink, more for more (build_plates.py step_of); without one it takes the one named fill. A tile is 20 units,
+// scaled here to 20 CSS px at any width; print and a page with no scripts keep the sheet's 1.5.
+const STEPS = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
+const stepOf = (v, [lo, hi]) => STEPS[Math.min(4, Math.max(0, Math.floor(((v - lo) / (hi - lo)) * 5)))];
+function countyMap(ctx, figureOf, domain) {
+  const svg = ctx.plot.querySelector('.county-map');
+  const fips = Object.fromEntries([...svg.querySelectorAll('.tile')].map((tile) => [tile.dataset.row, tile.dataset.fips]));
+  if (ctx.reason !== 'select') {
+    if (ctx.plot.clientWidth) ctx.plot.style.setProperty('--k', +svg.getAttribute('viewBox').split(' ')[2] / ctx.plot.clientWidth);
+    const fill = {};
+    for (const tile of svg.querySelectorAll('.tile')) {
+      const v = figureOf(tile.dataset.row);
+      tile.toggleAttribute('hidden', v === null);
+      if (v === null) continue;
+      tile.querySelector('text').textContent = plate.fig(v);
+      fill[tile.dataset.fips] = domain ? stepOf(v, domain) : 'is-named';
+    }
+    for (const county of svg.querySelectorAll('.county')) {
+      county.classList.remove('is-ghost', 'is-named', ...STEPS);
+      county.classList.add(fill[county.dataset.fips] || 'is-ghost');
+    }
+    for (const line of svg.querySelectorAll('.leaders line')) line.toggleAttribute('hidden', !fill[line.dataset.fips]);
+  }
+  for (const county of svg.querySelectorAll('.county')) county.classList.toggle('is-on', county.dataset.fips === fips[ctx.key]);
+  return fips;
+}
+
+// Where proposals sit, by county: the facts name the county's records, and the record list under the plates marks them. Picking a county (not a
+// hover) opens the states that hold its records, without scrolling there. Each MW figure is its pj- claim, which the row cites.
+plate.register('dc-project-map', {
+  render(ctx) {
+    ctx.auto();
+    const fips = countyMap(ctx, (key) => ctx.data.rows.find((r) => r.key === key)?.value ?? null);
+    for (const [name, kind, mw] of ctx.data.measures.records[ctx.key] || []) ctx.fact(`${name}, ${kind}, ${mw ? `${num(mw[1])} MW as filed` : 'no MW stated by the sources read'}`);
+    const chosen = plate.read(ctx.data.id).selected;
+    for (const item of document.querySelectorAll('#land-records li[data-fips]')) {
+      const mine = item.dataset.fips.split(' ').includes(fips[chosen]);
+      item.classList.toggle('is-county', mine);
+      if (mine && ctx.reason === 'select' && ctx.key === chosen) item.closest('details').open = true;
+    }
+  },
+});
+
 // County climate: the scenario is the kit's own setting; the measure and the counties shown are placed here. Each row's figures by measure
 // arrive in the plate's data as [claim, value, low, high], every claim already among its receipts, and each measure has its own ruler.
+// Show picks the map or the rows (the ladder); a row the Counties filter hides is an outline on the map, with no tile.
 const fig3 = (v, lo, hi) => `${plate.fig(v)} (${plate.fig(lo)} to ${plate.fig(hi)})`;
 plate.register('dc-climate-counties', {
   render(ctx) {
     const m = ctx.data.measures;
     const meta = m.metrics[ctx.state.cc_metric];
     const pick = ctx.state.cc_state;
+    const shows = (key) => (pick === 'dc' ? m.dc.includes(key) : key.endsWith(`-${pick}`));
     const of = (key) => {
       const f = m.rows[key][ctx.state.cc_metric];
       return { base: f.baseline, fut: f[ctx.state.cc_scenario] };
     };
     if (ctx.reason !== 'select') {
+      // One form at a time, by the hidden attribute, which plate.js reads to know which marks are the options. Before this ran, plate.js saw
+      // both forms and hid the second copy of each key from a screen reader; that copy is the ladder's, so it is given back here.
+      const map = ctx.state.cc_form === 'map';
+      ctx.plot.querySelector('.ladder-groups').hidden = map;
+      ctx.plot.querySelector('.county-map').toggleAttribute('hidden', !map);
+      ctx.plot.parentElement.classList.toggle('dc-is-map', map);
+      if (ctx.reason === 'init') ctx.plot.querySelectorAll('[data-row][aria-hidden]').forEach((n) => n.removeAttribute('aria-hidden'));
       ctx.auto();
       const [lo, hi] = meta.domain;
       const at = (v) => (v - lo) / (hi - lo);
@@ -283,30 +338,23 @@ plate.register('dc-climate-counties', {
       for (const node of ctx.plot.querySelectorAll('.ladder-row')) {
         const key = node.dataset.row;
         const { base, fut } = of(key);
-        node.hidden = pick === 'dc' ? !m.dc.includes(key) : !key.endsWith(`-${pick}`);
+        node.hidden = !shows(key);
         // One line a county, the finding first, "87 F, from 84": the ranges are in the readout and the facts beside the plot.
         ctx.setRow(key, { frac: at(fut[1]), x2: at(base[1]), lo: Math.min(at(base[1]), at(fut[1])), hi: Math.max(at(base[1]), at(fut[1])), text: `${plate.fig(fut[1])} ${meta.unit}, from ${plate.fig(base[1])}` });
       }
       const chosen = ctx.plot.querySelector(`.ladder-row[data-row="${ctx.key}"]`);
       if (chosen?.hidden) requestAnimationFrame(() => ctx.plot.querySelector('.ladder-row:not([hidden])')?.click()); // a filter hid the selected county, so the first one shown takes over
+      // The map's key: five steps across this measure's ruler, its edges printed as the ruler's ticks are (build_plates.py map_key).
+      const edge = (i) => plate.fig(lo + ((hi - lo) * i) / 5);
+      [...ctx.plot.parentElement.querySelectorAll('.key-map > span:last-child')].slice(0, 5).forEach((span, i) => { span.textContent = `${edge(i)} to ${edge(i + 1)}${i === 4 ? ` ${meta.unit}` : ''}`; });
     }
+    countyMap(ctx, (key) => (shows(key) ? of(key).fut[1] : null), meta.domain);
     const label = ctx.data.rows.find((r) => r.key === ctx.key)?.label;
     const { base, fut } = of(ctx.key);
     const [b, f] = [fig3(...base.slice(1)), fig3(...fut.slice(1))];
     ctx.reading(`${label}, ${m.scenarios[ctx.state.cc_scenario]}: the ${meta.words} averages about ${f} ${meta.unit} in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against ${b} ${meta.unit} in 1995 to 2014. A county mean on a quarter-degree grid. Limit: ${ctx.data.receipts[fut[0]].limit}`);
     ctx.readout(f, meta.unit);
     for (const r of ctx.rows) r.display = `${r.series.startsWith('2040') ? f : b} ${meta.unit}`; // the facts list beside the plot names this measure's figures, not the build's
-  },
-});
-
-// Where proposals sit: the selected land row lights its squares on the county map, and the kind picked dims the rest.
-plate.register('dc-project-land', {
-  render(ctx) {
-    ctx.auto();
-    for (const sq of document.querySelectorAll('#project-map .m')) {
-      sq.classList.toggle('is-selected', sq.dataset.row === ctx.key);
-      sq.classList.toggle('is-dim', sq.dataset.row !== ctx.key || (ctx.state.kind !== 'all' && sq.dataset.kind !== ctx.state.kind));
-    }
   },
 });
 })();

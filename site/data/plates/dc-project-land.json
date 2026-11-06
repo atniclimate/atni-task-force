@@ -71,9 +71,8 @@
    "link": "projects.json"
   },
   {
-   "text": "The county map:",
-   "href": "../assets/img/maps/projects.svg",
-   "link": "projects.svg"
+   "href": "#dc-project-map",
+   "link": "The county map"
   }
  ],
  "rows": [

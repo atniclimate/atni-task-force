@@ -56,6 +56,7 @@
   --lead-ink: var(--atni-text-body);
   --series-context: #8A94A6;
   --grid: #2B323C;
+  --map-named: .12; --map-on: .3; --map-1: .1; --map-2: .22; --map-3: .36; --map-4: .52; --map-5: .7; /* county map fills: heading ink at these opacities */
   --accent: var(--energy-mark);
   --atni-text-red: var(--energy-text);
   --atni-text-link: var(--energy-text);
@@ -74,6 +75,7 @@
   --lead-ink: var(--atni-text-secondary);
   --series-context: #667085;
   --grid: #D9E0EA;
+  --map-named: .08; --map-on: .22; --map-1: .08; --map-2: .18; --map-3: .3; --map-4: .44; --map-5: .6;
   --baseline: #667085;
   --accent: var(--energy-mark);
   --atni-text-red: var(--energy-text);
@@ -99,6 +101,7 @@
     --lead-ink: var(--atni-text-secondary);
     --series-context: #667085;
     --grid: #D9E0EA;
+    --map-named: .08; --map-on: .22; --map-1: .08; --map-2: .18; --map-3: .3; --map-4: .44; --map-5: .6;
     --baseline: #667085;
     --accent: var(--energy-mark);
     --atni-text-red: var(--energy-text);
@@ -127,6 +130,7 @@
     --lead-ink: var(--atni-text-secondary);
     --series-context: #667085;
     --grid: #D9E0EA;
+    --map-named: .08; --map-on: .22; --map-1: .08; --map-2: .18; --map-3: .3; --map-4: .44; --map-5: .6;
     --baseline: #667085;
     --accent: var(--energy-mark);
     --atni-text-red: var(--energy-text);
@@ -815,6 +819,43 @@ main > .panel + .panel { border-top: 0; }
 .plate-square.is-b { background: var(--atni-text-heading); }
 .plate-square.is-on { background: var(--energy-mark); }
 .plate-square.is-hollow.is-on { background: none; border-color: var(--energy-mark); }
+/* The county map (kind map, or plot.map over a ladder): one drawing in the sprite at the top of main, shown by use, its tiles the plate's options.
+   Ink at an opacity everywhere and orange for the selection alone: a luminance ramp, not the stage steps, since orange is a plate's only chromatic
+   ink and the dark stage ramp greys out at its top. In the flow at the plot's width, so the key sits right under it and print keeps its shape. A page
+   script sets --k on the plot so a tile is 20 CSS px at any width; print and a page with no scripts take 1.5. */
+.county-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+svg.county-map { position: static; display: block; flex: none; width: 100%; height: auto; overflow: visible; }
+.plate.is-live[data-kind="map"] > .plate-plot { min-height: 0; }
+.county-map :is(.states, .counties, .state-names, .leaders) { pointer-events: none; } /* only a tile answers the pointer */
+.county-map .states use { fill: none; stroke: var(--baseline); stroke-width: 1; stroke-opacity: .7; }
+.county-map .county { stroke: var(--baseline); stroke-width: .6; stroke-opacity: .35; stroke-linejoin: round; transition: fill 160ms ease-out, fill-opacity 160ms ease-out; }
+.county-map .county.is-ghost { fill: none; }
+.county-map .county:is(.is-named, .step-1, .step-2, .step-3, .step-4, .step-5) { fill: var(--atni-text-heading); }
+.county-map .county.is-named { fill-opacity: var(--map-named); }
+.county-map .county.step-1 { fill-opacity: var(--map-1); }
+.county-map .county.step-2 { fill-opacity: var(--map-2); }
+.county-map .county.step-3 { fill-opacity: var(--map-3); }
+.county-map .county.step-4 { fill-opacity: var(--map-4); }
+.county-map .county.step-5 { fill-opacity: var(--map-5); }
+.county-map .county.is-on { fill: var(--energy-fill); fill-opacity: var(--map-on); }
+.county-map .state-names text { font-size: 28px; font-weight: 400; fill: var(--atni-text-secondary); fill-opacity: .55; text-anchor: middle; dominant-baseline: central; }
+.county-map .leaders line { stroke: var(--baseline); stroke-width: 1; stroke-opacity: .7; }
+.county-map .tile { transform-box: fill-box; transform-origin: center; transform: scale(var(--k, 1.5)); cursor: pointer; }
+.county-map .tile rect { fill: var(--plot-ground); stroke: var(--series-context); stroke-width: 1.5; transition: fill 160ms ease-out; }
+.county-map .tile text { font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; text-anchor: middle; dominant-baseline: central; fill: var(--atni-text-heading); transition: fill 160ms ease-out; }
+.county-map .tile.is-on rect { fill: var(--energy-mark); stroke: var(--plot-ground); }
+.county-map .tile.is-on text { fill: var(--energy-on-fill); }
+/* Its key, first in the legend: the map's own marks at 14px. */
+.key-map .plate-square { width: 14px; height: 14px; border: 1px solid color-mix(in srgb, var(--baseline) 35%, transparent); }
+.key-map .plate-square.is-tile { background: var(--plot-ground); border: 1.5px solid var(--series-context); }
+.key-map .plate-square.is-county { background: none; }
+.key-map .plate-square.step-1 { background: color-mix(in srgb, var(--atni-text-heading) calc(var(--map-1) * 100%), transparent); }
+.key-map .plate-square.step-2 { background: color-mix(in srgb, var(--atni-text-heading) calc(var(--map-2) * 100%), transparent); }
+.key-map .plate-square.step-3 { background: color-mix(in srgb, var(--atni-text-heading) calc(var(--map-3) * 100%), transparent); }
+.key-map .plate-square.step-4 { background: color-mix(in srgb, var(--atni-text-heading) calc(var(--map-4) * 100%), transparent); }
+.key-map .plate-square.step-5 { background: color-mix(in srgb, var(--atni-text-heading) calc(var(--map-5) * 100%), transparent); }
+.key-map .plate-key.is-leader { height: 1px; background: color-mix(in srgb, var(--baseline) 70%, transparent); }
+@media (prefers-reduced-motion: reduce) { .county-map :is(.county, .tile rect, .tile text) { transition: none; } }
 .plate-foot { color: var(--atni-text-secondary); }
 .plate-setting { color: var(--atni-text-secondary); }
 @media screen { .plate.is-live .plate-setting { display: none; } } /* the controls say it; the line stays for print and for no scripts */
@@ -1201,6 +1242,8 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .plate-controls, .plate-switch, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows { display: none !important; }
   .plate-view[hidden] { display: grid !important; }
   .ladder-groups[hidden] { display: flex !important; }
+  .county-map[hidden] { display: block !important; } /* a map and the ladder it stands over both print */
+  svg.county-map { --k: 1.5; } /* the screen's tile scale was for the screen's width */
   .plate-views ~ .plate-view > .label { display: block !important; }
   .plate { padding: 12pt; border: 1px solid var(--rule); }
   .plate-detail { padding: 0; background: none; border: 0; }
@@ -1432,6 +1475,14 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .lockup-on-dark { background: #010B13; } /* a logo drawn for one ground keeps that ground on any other */
   .lockup-on-light { background: #FFFFFF; }
   [data-row].is-on { outline: 2px solid Highlight; outline-offset: -2px; }
+  .county-map { forced-color-adjust: none; }
+  .county-map :is(.states use, .county, .leaders line) { stroke: CanvasText; }
+  .county-map .county:not(.is-ghost) { fill: CanvasText; }
+  .county-map .county.is-on { fill: Highlight; }
+  .county-map .state-names text, .county-map .tile text { fill: CanvasText; }
+  .county-map .tile rect { fill: Canvas; stroke: CanvasText; }
+  .county-map .tile.is-on rect { fill: Highlight; stroke: Canvas; }
+  .county-map .tile.is-on text { fill: HighlightText; }
 }
 
 /* Print: light and linear, every panel and table open, link targets written out. */

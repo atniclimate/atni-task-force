@@ -50,7 +50,11 @@ HELD_BACK = {"ec-055", "ec-056", "lf-059", "lf-070", "lf-071", "sf-053", "sf-054
 HOUSE_WORDS = re.compile(r"\b(?:tribes?|tribal|indigenous|[iI]ntertribal|treat(?:y|ies))\b")
 LINE_KINDS = {"lines", "multiples"}
 RULER_KINDS = {"ladder", "bars"}
-PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix"}
+PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix", "map"}
+# A county map draws the sprite and layout scripts/build_project_map.py writes at the top of its page (<use href="#co-FIPS">), so two plates share one drawing.
+SPRITE = re.compile(r'<svg class="county-sprite"[^>]*>(.*?)</svg>\s*<script type="application/json" id="county-layout">(.*?)</script>', re.S)
+MAP_TILE = 20  # a tile's side in drawing units; the page scales it to 20 CSS px
+MAP_STEPS = ("step-1", "step-2", "step-3", "step-4", "step-5")  # classes of ink on a stepped map, the least first
 BINARY = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
 CALLS = {"min", "max", "ifblank"}
 # Digits our own sentences may type: years, dates, resolution numbers, and names like CO2, GPT-5, or Scope 2. shortcut: a bare
@@ -1052,12 +1056,28 @@ def setting_line(defn):
     return f'<p class="caption plate-setting">Setting shown: {escape("; ".join(str(s) for s in shown))}.</p>' if shown else ""
 
 
+def map_key(plot):
+    """A map's key, first in its legend: the five steps with their edges from the domain (ruler ticks, not claims), or the tile, the outline, and the line."""
+    if plot.get("map") == "steps":
+        lo, hi = plot["domain"]
+        n = len(MAP_STEPS)
+        edge = lambda i: number(rounded(lo + (hi - lo) * i / n))  # noqa: E731  (plate.fig in the page script prints the same)
+        items = [f'<li class="key-map"><span class="plate-square {step}"></span><span>{edge(i)} to {edge(i + 1)}{" " + escape(plot["unit"]) if i == n - 1 and plot.get("unit") else ""}</span></li>'
+                 for i, step in enumerate(MAP_STEPS)]
+        return items + ['<li class="key-map"><span class="plate-square is-county"></span><span>Outlined: not in this view</span></li>']
+    return ['<li class="key-map"><span class="plate-square is-tile"></span><span>A square: the county a filing names, with its count</span></li>',
+            '<li class="key-map"><span class="plate-square is-county"></span><span>Outlined: no named proposal</span></li>',
+            '<li class="key-map"><span class="plate-key is-leader"></span><span>A line: the square moved to clear a neighbour</span></li>']
+
+
 def legend_html(data):
     items = []
     plot = data["plot"]
     if plot.get("key"):  # a plate whose marks mean their own thing says so; a page's sheet draws each shape
         shape = lambda k: '<span class="plate-square is-%s"></span>' % escape(k["shape"]) if k.get("shape") else ""
         return f'<ul class="legend plate-legend">{"".join(f"<li>{shape(k)}{escape(own_text(data['id'], 'key', k['label']))}</li>" for k in plot["key"])}</ul>'
+    if plot["type"] == "map" or plot.get("map"):
+        items += map_key(plot)
     names = list(dict.fromkeys(r["series"] for r in data["rows"] if r.get("series") and r.get("x") is not None))
     if plot["type"] == "lines" and len(names) >= 2:
         items += [f'<li data-series="{escape(n)}"><span class="plate-key{" is-on" if n == plot.get("highlight") else ""}"></span>{escape(n)}</li>' for n in names]
@@ -1294,6 +1314,58 @@ def multiples_svg(data, now):
     return f'{svg_open(data, width, height)}{"".join(cells)}</svg>'
 
 
+def county_layout(plate, page):
+    """A map's drawing, from its page: the counties are the sprite's ids, the rest is the layout beside it."""
+    match = SPRITE.search(page or "")
+    if not match:
+        raise BuildError(f"plate {plate}: a map draws the county sprite at the top of its page; run python scripts/build_project_map.py first")
+    return {**json.loads(match[2]), "counties": re.findall(r'<path id="co-(\d{5})"', match[1])}
+
+
+def step_of(value, domain):
+    """One of five equal classes across the domain, more ink for more. data-centers.js stepOf classes the same way."""
+    lo, hi = domain
+    return MAP_STEPS[min(len(MAP_STEPS) - 1, max(0, math.floor((value - lo) / (hi - lo) * len(MAP_STEPS))))]
+
+
+def county_map(layout, figures, prefix, default=None, domain=None):
+    """Inside a map's svg: state outlines, counties, state names, leaders, then the tiles, which are the plate's options in the layout's order.
+    figures maps a key to the number its tile prints; a county with none is an outline, with no tile. With a domain a counted county fills on
+    five steps of ink; without one it takes the one named fill. The default's tile and county start selected, as the page shows them before scripts."""
+    key_of = {t["fips"]: t["key"] for t in layout["tiles"]}
+    on = next((t["fips"] for t in layout["tiles"] if t["key"] == default), None)
+
+    def fill(fips):
+        value = figures.get(key_of.get(fips))
+        if value is None:
+            return "is-ghost"
+        return (step_of(value, domain) if domain else "is-named") + (" is-on" if fips == on else "")
+    shown = [t for t in layout["tiles"] if figures.get(t["key"]) is not None]
+    states = "".join(f'<use href="#st-{s["id"]}"/>' for s in layout["states"])
+    counties = "".join(f'<use href="#co-{f}" class="county {fill(f)}" data-fips="{f}"/>' for f in layout["counties"])
+    names = "".join(f'<text x="{s["x"]:g}" y="{s["y"]:g}">{escape(s["name"])}</text>' for s in layout["states"])
+    leaders = "".join(f'<line x1="{t["from"][0]:g}" y1="{t["from"][1]:g}" x2="{t["x"]:g}" y2="{t["y"]:g}" data-fips="{t["fips"]}"/>' for t in shown if t.get("from"))
+    half = MAP_TILE / 2
+    tiles = "".join(  # the figure is hidden from a screen reader: with scripts plate.js names the tile with its Reading
+        f'<g class="tile{" is-on" if t["key"] == default else ""}" id="{prefix}-tile-{t["key"]}" data-row="{t["key"]}" data-fips="{t["fips"]}">'
+        f'<rect x="{t["x"] - half:g}" y="{t["y"] - half:g}" width="{MAP_TILE}" height="{MAP_TILE}"/>'
+        f'<text x="{t["x"]:g}" y="{t["y"]:g}" aria-hidden="true">{number(rounded(figures[t["key"]]))}</text></g>' for t in shown)
+    return (f'<g class="states" aria-hidden="true">{states}</g><g class="counties" aria-hidden="true">{counties}</g>'
+            f'<g class="state-names" aria-hidden="true">{names}</g><g class="leaders" aria-hidden="true">{leaders}</g>{tiles}')
+
+
+def map_svg(plate, data, now, layout):
+    """A plate's county map: each key's first row at the default setting gives its tile's figure, and plot.map "steps" fills counties on the plot's domain."""
+    figures = {}
+    for r in now:
+        if r["key"] not in figures and r.get("value") is not None:
+            figures[r["key"]] = r["value"]
+    plot = data["plot"]
+    width, height = layout["viewBox"]
+    drawing = county_map(layout, figures, plate, data["default"], plot["domain"] if plot.get("map") == "steps" else None)
+    return f'<svg class="plate-svg county-map" viewBox="0 0 {width} {height}" role="none">{drawing}</svg>'
+
+
 def cell_text(r, field, data, by_label):
     if field == "setting":
         return by_label.get(r.get("when"), "")
@@ -1466,14 +1538,20 @@ def readout_html(head):
     return f'<p class="readout{" is-long" if len(big) >= 9 else ""}"><span class="readout-value">{escape(big)}</span> <span class="readout-unit">{escape(small)}</span></p>'
 
 
-def plate_block(defn, claims, models=None):
-    """Returns the HTML that goes between a plate's markers, and a short summary for bench rows."""
+def plate_block(defn, claims, models=None, page=None):
+    """Returns the HTML that goes between a plate's markers, and a short summary for bench rows. A map reads its drawing from its page
+    (the text being built, or the page in site/ when none is given)."""
     plate = defn.get("id")
     if not (isinstance(plate, str) and vp.SLUG.fullmatch(plate)):
         raise BuildError(f"plate id must be kebab case: {plate!r}")
     kind = (defn.get("plot") or {}).get("type")
     if kind not in PLOT_KINDS:
         raise BuildError(f"plate {plate}: plot.type must be one of {sorted(PLOT_KINDS)}")
+    if defn["plot"].get("map") not in (None, "named", "steps") or (defn["plot"].get("map") and kind not in RULER_KINDS | {"map"}):
+        raise BuildError(f"plate {plate}: plot.map is \"named\" or \"steps\", on a map or above a ladder")
+    layout = None
+    if kind == "map" or defn["plot"].get("map"):
+        layout = county_layout(plate, page if page is not None else (vp.SITE / str(defn.get("page"))).read_text(encoding="utf-8"))
     if not defn.get("title"):
         raise BuildError(f"plate {plate}: needs a title, written as the finding at the default setting")
     if (defn["plot"].get("count")):
@@ -1634,8 +1712,11 @@ def plate_block(defn, claims, models=None):
     })
     alt = {**data, "alt": f"{title} The table holds every value.", "stops_now": {c["name"]: control_default(c) for c in defn.get("controls") or []}}
     now_full = [r for r in rows if not r.get("when") or r["when"] == stop]
-    if kind in RULER_KINDS:
-        plot_html = ladder_html(alt, now_full)
+    drawing = map_svg(plate, alt, now_full, layout) if layout else ""  # above a ladder too, since print and a page with no scripts show every form
+    if kind == "map":
+        plot_html = drawing
+    elif kind in RULER_KINDS:
+        plot_html = drawing + ladder_html(alt, now_full)
     elif kind == "lines":
         plot_html = lines_svg(alt, now_full)
     elif kind == "multiples":
@@ -1778,7 +1859,7 @@ def build(site=vp.SITE, page=None):
                 raise BuildError(f"{rel}: the name {name} is already used by plate {names[(target, name)]} on that page")
         if target not in pages:
             pages[target] = target.read_bytes().decode("utf-8")
-        block, summaries[stem] = plate_block(defn, claims, models)
+        block, summaries[stem] = plate_block(defn, claims, models, page=pages[target])
         pages[target] = inject(pages[target], defn["id"], block)
         built += 1
     extras = [site / only] if only else sorted(site.rglob("*.html"))
@@ -1792,7 +1873,8 @@ def build(site=vp.SITE, page=None):
             if stem not in definitions:
                 raise BuildError(f"{rel}: a bench row names plate {stem}, which has no definition")
             if stem not in summaries:
-                summaries[stem] = plate_block(definitions[stem], claims, models)[1]
+                source = site / str(definitions[stem]["page"])
+                summaries[stem] = plate_block(definitions[stem], claims, models, page=pages.get(source) or source.read_text(encoding="utf-8"))[1]
             start, end = f"<!-- bench:{stem} -->", f"<!-- /bench:{stem} -->"
             if text.count(start) != 1 or text.count(end) != 1:
                 raise BuildError(f"{rel}: a bench row needs one {start} and one {end}")

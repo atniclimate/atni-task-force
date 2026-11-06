@@ -64,7 +64,7 @@ async function tabs() {
   eq(links[7].getAttribute('aria-selected'), 'true', 'End');
   key(window, links[7], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
-  eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
+  eq(document.querySelectorAll('[data-plate]').length, 13, 'thirteen plates');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -627,31 +627,103 @@ async function project() {
   eq(errors.join(), '', 'no script errors');
 }
 
-// County climate and where proposals sit: the measure's own ruler and figures, the scenario, the county filter, and the map's lit squares.
+// County climate and where proposals sit: the county map on both tabs (its tiles the options, the keys, the fills, the key), the measure's own
+// ruler and figures in Rows, the scenario, the county filter on both forms, and the record list the Land map marks.
 async function climateLand() {
   const { window, document, errors } = await load('#climate');
   const c = parts(document, 'dc-climate-counties');
   const m = JSON.parse(document.getElementById('plate-data-dc-climate-counties').textContent).measures;
+  const ladderRow = (k) => c.plot.querySelector(`.ladder-row[data-row="${k}"]`);
   const shown = () => [...c.plot.querySelectorAll('.ladder-row')].filter((n) => !n.hidden).map((n) => n.dataset.row);
+  const tile = (k) => c.plot.querySelector(`.county-map .tile[data-row="${k}"]`);
+  const tiled = () => [...c.plot.querySelectorAll('.county-map .tile')].filter((n) => !n.hasAttribute('hidden')).map((n) => n.dataset.row);
+  const county = (k) => c.plot.querySelector(`.county[data-fips="${tile(k).dataset.fips}"]`);
   const ww = m.rows['walla-walla-wa'];
+  ok(c.root.querySelector('.plate-switch [data-param="cc_form"]'), 'Show sits over the plot');
+  ok(c.plot.querySelector('.ladder-groups').hidden && !c.plot.querySelector('.county-map').hasAttribute('hidden'), 'the map shows first and the ladder waits');
   eq(shown().join(), m.dc.join(), 'the first view is the data center counties');
+  eq(tiled().sort().join(), [...m.dc].sort().join(), 'and only they have tiles');
+  eq(c.plot.querySelectorAll('.county:not(.is-ghost)').length, m.dc.length, 'every other county is an outline');
+  eq(c.plot.getAttribute('aria-activedescendant'), tile('walla-walla-wa').id, 'the default tile is the active option');
+  eq(`${tile('walla-walla-wa').getAttribute('role')} ${tile('walla-walla-wa').getAttribute('aria-selected')}`, 'option true', 'a tile is a selected option');
+  ok(tile('walla-walla-wa').getAttribute('aria-label').startsWith('Walla Walla County, WA, SSP2-4.5'), 'named with its Reading');
+  ok(tile('walla-walla-wa').classList.contains('is-on') && county('walla-walla-wa').classList.contains('is-on'), 'its tile is orange and its county washed');
+  eq(tile('walla-walla-wa').querySelector('text').textContent, String(ww.tmax_summer.ssp245[1]), 'the tile prints the 2040 to 2059 median');
+  const step = (v, [lo, hi]) => `step-${Math.min(5, Math.max(1, Math.floor(((v - lo) / (hi - lo)) * 5) + 1))}`;
+  ok(county('benton-wa').classList.contains(step(m.rows['benton-wa'].tmax_summer.ssp245[1], m.metrics.tmax_summer.domain)), 'a county fills on the step of its median');
+  eq(c.plot.querySelectorAll('[data-row][aria-hidden]').length, 0, 'no option is hidden from a screen reader');
   ok(['Walla Walla County, WA, SSP2-4.5', `about ${ww.tmax_summer.ssp245[1]} (`].every((s) => c.reading.textContent.includes(s)), `default: ${c.reading.textContent.slice(0, 160)}`);
+  const keys = JSON.parse(document.getElementById('plate-data-dc-climate-counties').textContent).rows.map((r) => r.key).filter((k, i, all) => all.indexOf(k) === i && m.dc.includes(k));
+  key(window, c.plot, 'ArrowDown');
+  const next = keys[keys.indexOf('walla-walla-wa') + 1];
+  eq(c.plot.getAttribute('aria-activedescendant'), tile(next).id, `an arrow walks to the next county shown: ${next}`);
+  ok(county(next).classList.contains('is-on') && !county('walla-walla-wa').classList.contains('is-on'), 'and its county takes the wash');
+  key(window, c.plot, 'Escape'); // the first closes the receipt the arrow opened
+  key(window, c.plot, 'Escape');
+  eq(c.plot.getAttribute('aria-activedescendant'), tile('walla-walla-wa').id, 'Escape gives back the default');
   moves(window, c, () => setRadio(window, c.radio('cc_metric', 'days_95')), (t) => t.includes(`about ${ww.days_95.ssp245[1]} (`) && t.includes(`against ${ww.days_95.baseline[1]} (`) && t.includes('days a year'), 'measure');
   const d = m.metrics.days_95;
+  eq(tile('walla-walla-wa').querySelector('text').textContent, String(ww.days_95.ssp245[1]), 'the tiles print the measure picked');
+  ok(county('walla-walla-wa').classList.contains('is-on') && county('benton-wa').classList.contains(step(m.rows['benton-wa'].days_95.ssp245[1], d.domain)), 'and the counties fill on its ruler');
+  eq([...c.root.querySelectorAll('.key-map > span:last-child')][4].textContent, `${d.domain[0] + ((d.domain[1] - d.domain[0]) * 4) / 5} to ${d.domain[1]} ${d.unit}`, "the key's top step reads the measure's top");
+  setRadio(window, c.radio('cc_form', 'rows'));
+  ok(!c.plot.querySelector('.ladder-groups').hidden && c.plot.querySelector('.county-map').hasAttribute('hidden'), 'Rows: the ladder, and the map waits');
+  eq(c.plot.getAttribute('aria-activedescendant'), ladderRow('walla-walla-wa').id, 'the row is the active option now');
+  eq(c.plot.querySelectorAll('[data-row][aria-hidden]').length, 0, 'and no row is hidden from a screen reader');
   eq(c.plot.querySelector('.ladder-group-label').textContent, d.axis, 'the ruler says what it measures');
   eq(c.plot.querySelector('.ladder-axis').lastChild.textContent, String(d.domain[1]), 'and runs to its own top');
-  near(place(row(c.root, 'walla-walla-wa'), 'x'), (ww.days_95.ssp245[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'the 2040 to 2059 mark stands at its figure');
-  near(place(row(c.root, 'walla-walla-wa'), 'x2'), (ww.days_95.baseline[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'and the 1995 to 2014 mark at its own');
+  near(place(ladderRow('walla-walla-wa'), 'x'), (ww.days_95.ssp245[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'the 2040 to 2059 mark stands at its figure');
+  near(place(ladderRow('walla-walla-wa'), 'x2'), (ww.days_95.baseline[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'and the 1995 to 2014 mark at its own');
   ok(c.facts.textContent.includes(`${ww.days_95.baseline[1]} (`), 'the facts follow the measure');
   moves(window, c, () => setRadio(window, c.radio('cc_scenario', 'ssp370')), (t) => t.includes('SSP3-7.0') && t.includes(`about ${ww.days_95.ssp370[1]} (`), 'scenario');
   setRadio(window, c.radio('cc_state', 'mt'));
   ok(shown().length && shown().every((k) => k.endsWith('-mt')), 'a state shows its counties only');
   await wait(40);
   ok(c.reading.textContent.includes(', MT,'), `a county shown takes the selection: ${c.reading.textContent.slice(0, 60)}`);
+  setRadio(window, c.radio('cc_form', 'map'));
+  eq(tiled().sort().join(), [...shown()].sort().join(), 'back on the map, the filter keeps the same counties');
+  ok(c.plot.getAttribute('aria-activedescendant').endsWith('-mt'), 'and the selection with them');
+
   const land = await load('#land');
-  const squares = [...land.document.querySelectorAll('#project-map .m')];
-  const lit = squares.filter((s) => !s.classList.contains('is-dim'));
-  ok(lit.length && lit.every((s) => s.dataset.row === 'federal-blm'), `the map lights the selected land row: ${lit.length} of ${squares.length}`);
+  const p = parts(land.document, 'dc-project-map');
+  const data = JSON.parse(land.document.getElementById('plate-data-dc-project-map').textContent);
+  const lt = (k) => p.plot.querySelector(`.tile[data-row="${k}"]`);
+  const marked = () => [...land.document.querySelectorAll('#land-records li.is-county')];
+  const morrow = data.rows.find((r) => r.key === 'morrow-or');
+  eq(land.document.querySelector('#land [data-plate]'), p.root, 'the map plate leads the Land tab');
+  eq(p.plot.querySelectorAll('.tile').length, data.rows.length, 'one tile a named county');
+  eq(p.plot.getAttribute('aria-activedescendant'), lt('morrow-or').id, 'Morrow County is the default');
+  ok(leads(p.reading.textContent, ['Morrow County, OR', String(morrow.value)]), `its Reading: ${p.reading.textContent.slice(0, 80)}`);
+  eq(lt('morrow-or').querySelector('text').textContent, String(morrow.value), 'its tile prints the count');
+  eq(p.facts.querySelectorAll('.plate-more p').length, data.measures.records['morrow-or'].length, 'the facts name each of its records');
+  ok(p.facts.textContent.includes('MW as filed'), 'with each MW figure as filed');
+  eq(marked().length, data.measures.records['morrow-or'].length, 'the record list marks its records');
+  ok(marked().every((li) => !li.closest('details').open), 'and opens nothing until a reader picks');
+  const lw = land.window;
+  key(lw, p.plot, 'ArrowRight');
+  eq(p.plot.getAttribute('aria-activedescendant'), lt(data.rows[data.rows.indexOf(morrow) + 1].key).id, 'an arrow walks the record list order');
+  ok(marked().length && marked().every((li) => li.closest('details').open), 'picking a county opens the states that hold its records');
+  key(lw, p.plot, 'Home');
+  eq(p.plot.getAttribute('aria-activedescendant'), lt(data.rows[0].key).id, 'Home');
+  key(lw, p.plot, 'End');
+  eq(p.plot.getAttribute('aria-activedescendant'), lt(data.rows.at(-1).key).id, 'End');
+  setRadio(lw, p.root.querySelector('input[name="dc-project-map-view"][value="table"]'));
+  eq(`${p.root.dataset.view} ${p.root.querySelectorAll('.plate-table tbody tr').length}`, `table ${data.rows.length}`, 'the Table lists every county');
+  key(lw, p.plot, 'Enter');
+  eq(p.root.dataset.view, 'reading', 'Enter brings the Reading forward');
+  key(lw, p.plot, 'Escape'); // the first closes the receipt
+  key(lw, p.plot, 'Escape');
+  eq(p.plot.getAttribute('aria-activedescendant'), lt('morrow-or').id, 'Escape gives back the default');
+  const before = marked().length;
+  lw.under = lt('benton-wa').querySelector('rect');
+  fire(lw, p.plot, 'pointermove');
+  await wait(40);
+  ok(p.reading.textContent.startsWith('Benton County, WA'), 'a hover previews a county');
+  eq(`${lt('benton-wa').getAttribute('aria-selected')} ${marked().length}`, `false ${before}`, 'and selects nothing, so the record list stays');
+  fire(lw, p.plot, 'pointerleave');
+  ok(p.reading.textContent.startsWith('Morrow County, OR'), 'leaving restores');
+  ok(land.document.querySelector('#dc-project-land a[href="#dc-project-map"]'), 'the land ladder links the map');
+  ok(!land.document.getElementById('project-map') && !land.document.querySelector('.dc-map'), 'the footnote map is gone');
   ok(land.document.querySelector('#land-records .cr[data-claim^="pj-"]'), 'the record list marks its MW figures');
   eq([...errors, ...land.errors].join(), '', 'no script errors');
 }
@@ -668,6 +740,10 @@ async function noScripts() {
   }
   ok(holds(document.querySelector('#dc-project .plate-setting').textContent, ['125']), 'the setting named');
   ok(document.querySelector('#dc-jobs-per-mw .plate-plot [data-row="naics"]'), 'without scripts the fixed record stays in the plot');
+  ok(document.querySelector('#dc-project-map .tile.is-on[data-row="morrow-or"]') && document.querySelector('#dc-project-map .county.is-on[data-fips="41049"]'), 'the map shows its default county picked');
+  ok(document.querySelector('#dc-climate-counties .plate-plot > svg.county-map + .ladder-groups'), 'the climate plot holds both forms, the map over the rows');
+  eq(document.querySelectorAll('#dc-climate-counties .tile').length, document.querySelectorAll('#dc-climate-counties .ladder-row').length, 'with a tile for every row');
+  eq(document.querySelectorAll('.county-map [hidden], svg.county-map[role="img"]').length, 0, 'nothing on a map is hidden, and no map is one picture that hides its options');
   ok(document.querySelector('.section-strip a[href="resource-use/"]') && !document.querySelector('header .subnav'), 'the other page of the family is a link in the strip');
   eq(document.querySelector('.section-strip a[href="resource-use/"]').textContent, 'Reference: What Uses Data Center Energy and Water', 'and says so');
   eq(document.querySelector('#dc-pnw-load .m-needle').getAttribute('x1'), `${+document.querySelector('#dc-pnw-load .m-grid').getAttribute('x1') + 24}.0`, 'the static needle stands 24px in from the ticks too');

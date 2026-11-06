@@ -87,6 +87,22 @@
      "label": "CA"
     }
    ]
+  },
+  {
+   "type": "segmented",
+   "name": "cc_form",
+   "label": "Show",
+   "default": "map",
+   "options": [
+    {
+     "value": "map",
+     "label": "Map"
+    },
+    {
+     "value": "rows",
+     "label": "Rows"
+    }
+   ]
   }
  ],
  "by": "cc_scenario",
@@ -96,7 +112,9 @@
    65,
    90
   ],
-  "axis_label": "Degrees F, May to September daytime high, county mean"
+  "axis_label": "Degrees F, May to September daytime high, county mean",
+  "switch": "cc_form",
+  "map": "steps"
  },
  "default": "walla-walla-wa",
  "reading_group": "{label}: the May to September daytime high averages about {fut} F in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against {base} F in 1995 to 2014. A county mean on a quarter-degree grid.",

@@ -156,9 +156,11 @@ def plate(data, regions, ids, claims):
              "options": [{"value": m, "label": data["metrics"][m]["label"]} for m in METRIC_ORDER]},
             {"type": "segmented", "name": "cc_state", "label": "Counties", "default": "dc",
              "options": [{"value": "dc", "label": "Data centers"}, *({"value": s.lower(), "label": s} for s in states)]},
+            # The county map (scripts/build_project_map.py draws it, build_plates.py places it over the ladder) or the ladder; the switch sits over the plot.
+            {"type": "segmented", "name": "cc_form", "label": "Show", "default": "map", "options": [{"value": "map", "label": "Map"}, {"value": "rows", "label": "Rows"}]},
         ],
         "by": "cc_scenario",
-        "plot": {"type": "ladder", "domain": metrics[DEFAULT_METRIC]["domain"], "axis_label": AXIS[DEFAULT_METRIC]},
+        "plot": {"type": "ladder", "domain": metrics[DEFAULT_METRIC]["domain"], "axis_label": AXIS[DEFAULT_METRIC], "switch": "cc_form", "map": "steps"},
         "default": DEFAULT_ROW,
         "reading_group": ("{label}: the May to September daytime high averages about {fut} F in 2040 to 2059, the median of seven models "
                           "with the lowest and highest in parentheses, against {base} F in 1995 to 2014. A county mean on a quarter-degree grid."),

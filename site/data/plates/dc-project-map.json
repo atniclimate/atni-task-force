@@ -1,0 +1,1136 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-project-map",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Named proposals in public filings, read 11/05/2026",
+ "title": "Morrow County, OR holds {c[pc-029][value]:.0f} of {c[ld-001][value]:.0f} named proposals, the most of any county",
+ "subtitle": "The county a filing names, never the site. One square a county, its count inside.",
+ "text": [
+  "A request or an application is not an approval. A square sits inside the county it counts; a square that moved to clear a neighbour keeps a line back to its county."
+ ],
+ "plot": {
+  "type": "map",
+  "units": {
+   "projects": ""
+  }
+ },
+ "default": "morrow-or",
+ "reading": "{label}: {display} of the named proposals read sit in filings that name this county, by the public documents read on 11/05/2026. The county a filing names, not the site; a request or an application is not an approval.",
+ "foot": [
+  {
+   "href": "#land-records",
+   "link": "Every record, by state"
+  },
+  {
+   "href": "../data/projects.json",
+   "link": "projects.json"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "County",
+    "field": "county"
+   },
+   {
+    "label": "State",
+    "field": "state"
+   },
+   {
+    "label": "Records",
+    "field": "display"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ },
+ "rows": [
+  {
+   "id": "walla-walla-wa",
+   "label": "Walla Walla County, WA",
+   "claim": "pc-044",
+   "cites": [
+    "pj-001",
+    "pj-012"
+   ],
+   "cols": {
+    "county": "Walla Walla County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "benton-wa",
+   "label": "Benton County, WA",
+   "claim": "pc-036",
+   "cites": [
+    "pj-002",
+    "pj-003",
+    "pj-004",
+    "pj-005",
+    "pj-032",
+    "pj-033",
+    "pj-036",
+    "pj-038"
+   ],
+   "cols": {
+    "county": "Benton County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "klickitat-wa",
+   "label": "Klickitat County, WA",
+   "claim": "pc-040",
+   "cites": [
+    "pj-006",
+    "pj-007",
+    "pj-008",
+    "pj-009",
+    "pj-010",
+    "pj-011",
+    "pj-034",
+    "pj-037",
+    "pj-039"
+   ],
+   "cols": {
+    "county": "Klickitat County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "cowlitz-wa",
+   "label": "Cowlitz County, WA",
+   "claim": "pc-039",
+   "cites": [
+    "pj-013"
+   ],
+   "cols": {
+    "county": "Cowlitz County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "spokane-wa",
+   "label": "Spokane County, WA",
+   "claim": "pc-043",
+   "cites": [
+    "pj-014"
+   ],
+   "cols": {
+    "county": "Spokane County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "chelan-wa",
+   "label": "Chelan County, WA",
+   "claim": "pc-037",
+   "cites": [
+    "pj-016"
+   ],
+   "cols": {
+    "county": "Chelan County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "skagit-wa",
+   "label": "Skagit County, WA",
+   "claim": "pc-041",
+   "cites": [
+    "pj-035"
+   ],
+   "cols": {
+    "county": "Skagit County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "clark-wa",
+   "label": "Clark County, WA",
+   "claim": "pc-038",
+   "cites": [
+    "pj-037"
+   ],
+   "cols": {
+    "county": "Clark County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "skamania-wa",
+   "label": "Skamania County, WA",
+   "claim": "pc-042",
+   "cites": [
+    "pj-037"
+   ],
+   "cols": {
+    "county": "Skamania County",
+    "state": "Washington"
+   }
+  },
+  {
+   "id": "morrow-or",
+   "label": "Morrow County, OR",
+   "claim": "pc-029",
+   "cites": [
+    "pj-017",
+    "pj-043",
+    "pj-044",
+    "pj-048",
+    "pj-049",
+    "pj-051",
+    "pj-053",
+    "pj-054"
+   ],
+   "cols": {
+    "county": "Morrow County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "umatilla-or",
+   "label": "Umatilla County, OR",
+   "claim": "pc-032",
+   "cites": [
+    "pj-018",
+    "pj-050"
+   ],
+   "cols": {
+    "county": "Umatilla County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "washington-or",
+   "label": "Washington County, OR",
+   "claim": "pc-035",
+   "cites": [
+    "pj-019"
+   ],
+   "cols": {
+    "county": "Washington County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "crook-or",
+   "label": "Crook County, OR",
+   "claim": "pc-022",
+   "cites": [
+    "pj-020"
+   ],
+   "cols": {
+    "county": "Crook County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "jefferson-or",
+   "label": "Jefferson County, OR",
+   "claim": "pc-025",
+   "cites": [
+    "pj-020"
+   ],
+   "cols": {
+    "county": "Jefferson County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "wasco-or",
+   "label": "Wasco County, OR",
+   "claim": "pc-034",
+   "cites": [
+    "pj-037",
+    "pj-040"
+   ],
+   "cols": {
+    "county": "Wasco County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "hood-river-or",
+   "label": "Hood River County, OR",
+   "claim": "pc-024",
+   "cites": [
+    "pj-037"
+   ],
+   "cols": {
+    "county": "Hood River County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "multnomah-or",
+   "label": "Multnomah County, OR",
+   "claim": "pc-030",
+   "cites": [
+    "pj-037"
+   ],
+   "cols": {
+    "county": "Multnomah County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "linn-or",
+   "label": "Linn County, OR",
+   "claim": "pc-027",
+   "cites": [
+    "pj-041"
+   ],
+   "cols": {
+    "county": "Linn County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "sherman-or",
+   "label": "Sherman County, OR",
+   "claim": "pc-031",
+   "cites": [
+    "pj-042",
+    "pj-045",
+    "pj-052"
+   ],
+   "cols": {
+    "county": "Sherman County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "klamath-or",
+   "label": "Klamath County, OR",
+   "claim": "pc-026",
+   "cites": [
+    "pj-046"
+   ],
+   "cols": {
+    "county": "Klamath County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "gilliam-or",
+   "label": "Gilliam County, OR",
+   "claim": "pc-023",
+   "cites": [
+    "pj-047",
+    "pj-051"
+   ],
+   "cols": {
+    "county": "Gilliam County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "union-or",
+   "label": "Union County, OR",
+   "claim": "pc-033",
+   "cols": {
+    "county": "Union County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "baker-or",
+   "label": "Baker County, OR",
+   "claim": "pc-021",
+   "cols": {
+    "county": "Baker County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "malheur-or",
+   "label": "Malheur County, OR",
+   "claim": "pc-028",
+   "cols": {
+    "county": "Malheur County",
+    "state": "Oregon"
+   }
+  },
+  {
+   "id": "ada-id",
+   "label": "Ada County, ID",
+   "claim": "pc-002",
+   "cites": [
+    "pj-021"
+   ],
+   "cols": {
+    "county": "Ada County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "elmore-id",
+   "label": "Elmore County, ID",
+   "claim": "pc-005",
+   "cites": [
+    "pj-021",
+    "pj-057",
+    "pj-060"
+   ],
+   "cols": {
+    "county": "Elmore County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "jerome-id",
+   "label": "Jerome County, ID",
+   "claim": "pc-007",
+   "cites": [
+    "pj-055",
+    "pj-059"
+   ],
+   "cols": {
+    "county": "Jerome County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "lincoln-id",
+   "label": "Lincoln County, ID",
+   "claim": "pc-008",
+   "cites": [
+    "pj-059"
+   ],
+   "cols": {
+    "county": "Lincoln County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "bannock-id",
+   "label": "Bannock County, ID",
+   "claim": "pc-003",
+   "cites": [
+    "pj-022"
+   ],
+   "cols": {
+    "county": "Bannock County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "cassia-id",
+   "label": "Cassia County, ID",
+   "claim": "pc-004",
+   "cites": [
+    "pj-055"
+   ],
+   "cols": {
+    "county": "Cassia County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "twin-falls-id",
+   "label": "Twin Falls County, ID",
+   "claim": "pc-009",
+   "cites": [
+    "pj-055"
+   ],
+   "cols": {
+    "county": "Twin Falls County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "gooding-id",
+   "label": "Gooding County, ID",
+   "claim": "pc-006",
+   "cites": [
+    "pj-059"
+   ],
+   "cols": {
+    "county": "Gooding County",
+    "state": "Idaho"
+   }
+  },
+  {
+   "id": "yellowstone-mt",
+   "label": "Yellowstone County, MT",
+   "claim": "pc-016",
+   "cites": [
+    "pj-023"
+   ],
+   "cols": {
+    "county": "Yellowstone County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "silver-bow-mt",
+   "label": "Silver Bow County, MT",
+   "claim": "pc-014",
+   "cites": [
+    "pj-024",
+    "pj-025"
+   ],
+   "cols": {
+    "county": "Silver Bow County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "rosebud-mt",
+   "label": "Rosebud County, MT",
+   "claim": "pc-013",
+   "cites": [
+    "pj-062"
+   ],
+   "cols": {
+    "county": "Rosebud County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "custer-mt",
+   "label": "Custer County, MT",
+   "claim": "pc-010",
+   "cites": [
+    "pj-062"
+   ],
+   "cols": {
+    "county": "Custer County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "fallon-mt",
+   "label": "Fallon County, MT",
+   "claim": "pc-011",
+   "cites": [
+    "pj-062"
+   ],
+   "cols": {
+    "county": "Fallon County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "glacier-mt",
+   "label": "Glacier County, MT",
+   "claim": "pc-012",
+   "cites": [
+    "pj-063"
+   ],
+   "cols": {
+    "county": "Glacier County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "toole-mt",
+   "label": "Toole County, MT",
+   "claim": "pc-015",
+   "cites": [
+    "pj-063"
+   ],
+   "cols": {
+    "county": "Toole County",
+    "state": "Montana"
+   }
+  },
+  {
+   "id": "lyon-nv",
+   "label": "Lyon County, NV",
+   "claim": "pc-017",
+   "cites": [
+    "pj-026",
+    "pj-028",
+    "pj-030",
+    "pj-064"
+   ],
+   "cols": {
+    "county": "Lyon County",
+    "state": "Nevada"
+   }
+  },
+  {
+   "id": "storey-nv",
+   "label": "Storey County, NV",
+   "claim": "pc-019",
+   "cites": [
+    "pj-027"
+   ],
+   "cols": {
+    "county": "Storey County",
+    "state": "Nevada"
+   }
+  },
+  {
+   "id": "mineral-nv",
+   "label": "Mineral County, NV",
+   "claim": "pc-018",
+   "cites": [
+    "pj-064"
+   ],
+   "cols": {
+    "county": "Mineral County",
+    "state": "Nevada"
+   }
+  },
+  {
+   "id": "white-pine-nv",
+   "label": "White Pine County, NV",
+   "claim": "pc-020",
+   "cites": [
+    "pj-065"
+   ],
+   "cols": {
+    "county": "White Pine County",
+    "state": "Nevada"
+   }
+  },
+  {
+   "id": "humboldt-ca",
+   "label": "Humboldt County, CA",
+   "claim": "pc-001",
+   "cols": {
+    "county": "Humboldt County",
+    "state": "California"
+   }
+  }
+ ],
+ "measures": {
+  "records": {
+   "walla-walla-wa": [
+    [
+     "Amazon Attalia Data Center Campus (Wallula Gap Business Park)",
+     "a data center",
+     "pj-001"
+    ],
+    [
+     "Two 1,200 MW data center load requests (Walla Walla County, BPA L0649 and L0682)",
+     "a data center",
+     "pj-012"
+    ]
+   ],
+   "benton-wa": [
+    [
+     "AWS campus at Lewis and Clark Ranch, West Richland (BPA request L0621, 'West Richland Data Center Campus')",
+     "a data center",
+     "pj-002"
+    ],
+    [
+     "Atlas Agro data center campus, Horn Rapids, Richland (BPA rows: Atlas Agro; Atlas Agro Data Server Facility, Phases 1 and 2)",
+     "a data center",
+     "pj-003"
+    ],
+    [
+     "ATP TES Data Server (BPA row L0668)",
+     "a data center",
+     "pj-004"
+    ],
+    [
+     "DOE Data Center (BPA request L0673, requestor DOE Hanford Field Office)",
+     "a data center",
+     "pj-005"
+    ],
+    [
+     "Wautoma Solar Project",
+     "generation",
+     "pj-032"
+    ],
+    [
+     "Hop Hill Solar",
+     "generation",
+     "pj-033"
+    ],
+    [
+     "Horse Heaven Wind Project",
+     "generation",
+     "pj-036"
+    ],
+    [
+     "Cascade Advanced Energy Facility (up to 12 Xe-100 small modular reactors, Hanford Site)",
+     "generation",
+     "pj-038"
+    ]
+   ],
+   "klickitat-wa": [
+    [
+     "STACK IPI Data Center, Goldendale (BPA request L0545)",
+     "a data center",
+     "pj-006"
+    ],
+    [
+     "Energizer Data Center and Energizer Data Center Expanded Capacity (Hoctor Road, Klickitat County)",
+     "a data center",
+     "pj-007"
+    ],
+    [
+     "Energizer II (Goodnoe Hills, Klickitat County)",
+     "a data center",
+     "pj-008"
+    ],
+    [
+     "Vines Rest (near Alderdale, Klickitat County)",
+     "a data center",
+     "pj-009"
+    ],
+    [
+     "Dallesport Data Center / Dallesport Server Farm (Klickitat County)",
+     "a data center",
+     "pj-010"
+    ],
+    [
+     "Lakeside Industries (Dallesport, Klickitat County)",
+     "a data center",
+     "pj-011"
+    ],
+    [
+     "Carriger Solar",
+     "generation",
+     "pj-034"
+    ],
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ],
+    [
+     "Goldendale Energy Storage Project (pumped storage)",
+     "storage",
+     "pj-039"
+    ]
+   ],
+   "cowlitz-wa": [
+    [
+     "TC KERR Data Center (Longview, Cowlitz County)",
+     "a data center",
+     "pj-013"
+    ]
+   ],
+   "spokane-wa": [
+    [
+     "Big Rock / Rock Point Data Center (West Plains, Spokane County)",
+     "a data center",
+     "pj-014"
+    ]
+   ],
+   "chelan-wa": [
+    [
+     "Microsoft Malaga data center campus (Chelan County)",
+     "a data center",
+     "pj-016"
+    ]
+   ],
+   "skagit-wa": [
+    [
+     "Goldeneye Battery Storage",
+     "storage",
+     "pj-035"
+    ]
+   ],
+   "clark-wa": [
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ]
+   ],
+   "skamania-wa": [
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ]
+   ],
+   "morrow-or": [
+    [
+     "Amazon exascale data center campus near Boardman (Morrow County planning documents)",
+     "a data center",
+     "pj-017"
+    ],
+    [
+     "Percheron Data Center Site (Morrow County)",
+     "a data center",
+     null
+    ],
+    [
+     "Sunrise Solar and Storage Projects",
+     "generation",
+     "pj-043"
+    ],
+    [
+     "Heppner Wind Project",
+     "generation",
+     "pj-044"
+    ],
+    [
+     "Umatilla-Morrow County Connect Project",
+     "a transmission line",
+     null
+    ],
+    [
+     "Sunstone Solar Project",
+     "generation",
+     "pj-048"
+    ],
+    [
+     "Wagon Trail Solar Project",
+     "generation",
+     "pj-049"
+    ],
+    [
+     "Carty Generating Station solar and battery expansion (Amendment 4)",
+     "generation",
+     "pj-051"
+    ],
+    [
+     "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+     "a transmission line",
+     null
+    ],
+    [
+     "Well Springs Solar",
+     "generation",
+     "pj-053"
+    ],
+    [
+     "Copia battery storage facility near Irrigon",
+     "storage",
+     "pj-054"
+    ]
+   ],
+   "umatilla-or": [
+    [
+     "Sabey Umatilla data center campus (Wanapa Road, Umatilla)",
+     "a data center",
+     "pj-018"
+    ],
+    [
+     "Charlestown Data Center and Battery Energy Storage System (BLM land near Hermiston)",
+     "a data center",
+     null
+    ],
+    [
+     "Umatilla-Morrow County Connect Project",
+     "a transmission line",
+     null
+    ],
+    [
+     "Nolin Hills Wind Power Project",
+     "generation",
+     "pj-050"
+    ],
+    [
+     "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+     "a transmission line",
+     null
+    ]
+   ],
+   "washington-or": [
+    [
+     "West Hillsboro Data Center Project, Phase 1 (BPA request L0560)",
+     "a data center",
+     "pj-019"
+    ]
+   ],
+   "crook-or": [
+    [
+     "Central Oregon data center loads (BPA requests L0658, L0662, L0650)",
+     "a data center",
+     "pj-020"
+    ]
+   ],
+   "jefferson-or": [
+    [
+     "Central Oregon data center loads (BPA requests L0658, L0662, L0650)",
+     "a data center",
+     "pj-020"
+    ]
+   ],
+   "wasco-or": [
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ],
+    [
+     "Deschutes Solar and Battery Energy Storage System Facility",
+     "generation",
+     "pj-040"
+    ]
+   ],
+   "hood-river-or": [
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ]
+   ],
+   "multnomah-or": [
+    [
+     "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+     "a transmission line",
+     "pj-037"
+    ]
+   ],
+   "linn-or": [
+    [
+     "Muddy Creek Energy Park",
+     "generation",
+     "pj-041"
+    ]
+   ],
+   "sherman-or": [
+    [
+     "Speedway Energy Facility",
+     "generation",
+     "pj-042"
+    ],
+    [
+     "Buckley Solar Facility",
+     "generation",
+     "pj-045"
+    ],
+    [
+     "Biglow Canyon solar additions (125 MW solar under construction; Amendment 5 for up to 200 MW more)",
+     "generation",
+     "pj-052"
+    ],
+    [
+     "BPA Buckley 500 kV Substation Rebuild",
+     "a substation",
+     null
+    ]
+   ],
+   "klamath-or": [
+    [
+     "Klamath Falls Energy Center",
+     "generation",
+     "pj-046"
+    ]
+   ],
+   "gilliam-or": [
+    [
+     "Big River Energy Facility",
+     "generation",
+     "pj-047"
+    ],
+    [
+     "Carty Generating Station solar and battery expansion (Amendment 4)",
+     "generation",
+     "pj-051"
+    ]
+   ],
+   "union-or": [
+    [
+     "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+     "a transmission line",
+     null
+    ]
+   ],
+   "baker-or": [
+    [
+     "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+     "a transmission line",
+     null
+    ]
+   ],
+   "malheur-or": [
+    [
+     "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+     "a transmission line",
+     null
+    ]
+   ],
+   "ada-id": [
+    [
+     "Rhea Data Center (BLM land near Blacks Creek exit, I-84)",
+     "a data center",
+     "pj-021"
+    ]
+   ],
+   "elmore-id": [
+    [
+     "Rhea Data Center (BLM land near Blacks Creek exit, I-84)",
+     "a data center",
+     "pj-021"
+    ],
+    [
+     "Crimson Orchard Solar and Battery Storage",
+     "generation",
+     "pj-057"
+    ],
+    [
+     "Appaloosa Wind and Solar",
+     "generation",
+     "pj-060"
+    ]
+   ],
+   "jerome-id": [
+    [
+     "Snake River Energy Data Center / Falcon Data Center (BLM land, Jerome and Lincoln Counties)",
+     "a data center",
+     null
+    ],
+    [
+     "SWIP-North (Southwest Intertie Project North), Midpoint Substation near Jerome, ID to near Ely, NV",
+     "a transmission line",
+     "pj-055"
+    ],
+    [
+     "Taurus Wind, Snake River Energy Solar and shared 550 MW battery storage (BLM right-of-way applications)",
+     "generation",
+     "pj-059"
+    ]
+   ],
+   "lincoln-id": [
+    [
+     "Snake River Energy Data Center / Falcon Data Center (BLM land, Jerome and Lincoln Counties)",
+     "a data center",
+     null
+    ],
+    [
+     "Taurus Wind, Snake River Energy Solar and shared 550 MW battery storage (BLM right-of-way applications)",
+     "generation",
+     "pj-059"
+    ]
+   ],
+   "bannock-id": [
+    [
+     "AI data center at the former Hoku site, Pocatello (Lex Developments)",
+     "a data center",
+     "pj-022"
+    ]
+   ],
+   "cassia-id": [
+    [
+     "SWIP-North (Southwest Intertie Project North), Midpoint Substation near Jerome, ID to near Ely, NV",
+     "a transmission line",
+     "pj-055"
+    ]
+   ],
+   "twin-falls-id": [
+    [
+     "SWIP-North (Southwest Intertie Project North), Midpoint Substation near Jerome, ID to near Ely, NV",
+     "a transmission line",
+     "pj-055"
+    ]
+   ],
+   "gooding-id": [
+    [
+     "Taurus Wind, Snake River Energy Solar and shared 550 MW battery storage (BLM right-of-way applications)",
+     "generation",
+     "pj-059"
+    ]
+   ],
+   "yellowstone-mt": [
+    [
+     "Quantica Big Sky Campus (Broadview)",
+     "a data center",
+     "pj-023"
+    ]
+   ],
+   "silver-bow-mt": [
+    [
+     "Sabey data center, Montana Connections Industrial Park (Butte)",
+     "a data center",
+     "pj-024"
+    ],
+    [
+     "Atlas Power data center expansion (Butte)",
+     "a data center",
+     "pj-025"
+    ]
+   ],
+   "rosebud-mt": [
+    [
+     "North Plains Connector (HVDC, Colstrip, MT to North Dakota)",
+     "a transmission line",
+     "pj-062"
+    ]
+   ],
+   "custer-mt": [
+    [
+     "North Plains Connector (HVDC, Colstrip, MT to North Dakota)",
+     "a transmission line",
+     "pj-062"
+    ]
+   ],
+   "fallon-mt": [
+    [
+     "North Plains Connector (HVDC, Colstrip, MT to North Dakota)",
+     "a transmission line",
+     "pj-062"
+    ]
+   ],
+   "glacier-mt": [
+    [
+     "Glacier Solar Park",
+     "generation",
+     "pj-063"
+    ]
+   ],
+   "toole-mt": [
+    [
+     "Glacier Solar Park",
+     "generation",
+     "pj-063"
+    ]
+   ],
+   "lyon-nv": [
+    [
+     "Monarch Data Center (Yerington)",
+     "a data center",
+     "pj-026"
+    ],
+    [
+     "Tract Silver Springs campus",
+     "a data center",
+     "pj-028"
+    ],
+    [
+     "Mark IV Capital modular natural gas plant and battery storage (Fernley logistics district)",
+     "generation",
+     "pj-030"
+    ],
+    [
+     "Libra Solar and Storage",
+     "generation",
+     "pj-064"
+    ]
+   ],
+   "storey-nv": [
+    [
+     "Peru Shelf Technology Park (Tahoe-Reno Industrial Center)",
+     "a data center",
+     "pj-027"
+    ]
+   ],
+   "mineral-nv": [
+    [
+     "Libra Solar and Storage",
+     "generation",
+     "pj-064"
+    ]
+   ],
+   "white-pine-nv": [
+    [
+     "White Pine Solar",
+     "generation",
+     "pj-065"
+    ]
+   ],
+   "humboldt-ca": [
+    [
+     "California North Floating offshore wind lease OCS-P 0562 (Humboldt)",
+     "generation",
+     null
+    ]
+   ]
+  }
+ }
+}
