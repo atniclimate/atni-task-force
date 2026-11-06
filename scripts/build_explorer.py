@@ -971,10 +971,12 @@ def admin_html(pub, st):
     if flip is None:
         raise BuildError(f"the office price order no longer flips on {name}: rewrite the admin hours note")
     local = pub["inputs"]["office_admin_h_month"]
-    return (f'<div class="x-admin-row"><div class="x-field" data-js hidden><label for="a-admin">Cloud admin hours a month</label><input id="a-admin" type="number" min="0" step="any" inputmode="decimal" value="{hours:g}" data-input="{name}"></div>'
+    return (f'<div class="x-admin-row"><div class="x-field" data-js hidden><label for="a-admin">Cloud admin hours a month</label><input id="a-admin" type="number" min="0" max="{pub["typed_limits"]["most"]:.15g}" step="any" inputmode="decimal" value="{hours:g}" data-input="{name}"></div>'
             f'<p class="caption"><strong>The price order flips by {flip} hours a month.</strong> <span data-admin-tie>{escape(st["adminWords"])}</span></p></div>'
             f'<p class="caption" role="status" data-input-why></p>'
-            f'<p class="caption">Cloud seats need an administrator too. With no source for it, this page assumes {hours:g} paid hours a month, against {local["value"]:g} for the local suite ({", ".join(local["claims"])}). By {flip} the local suite is the cheaper.</p>')
+            f'<p class="caption">Cloud seats need an administrator too. With no source for it, this page assumes {hours:g} paid hours a month, against {local["value"]:g} for the local suite ({", ".join(local["claims"])}). '
+            'It also assumes, with no source, that a cloud seat\'s price includes sign-in, permissions, and access control, which a local suite has to provide itself; '
+            f'the record does not say how much of the {local["value"]:g} hours that work takes. Above the tie point beside the input, the local suite is the cheaper.</p>')  # the tie prints live in the line above
 
 
 def facility_words(claims):
@@ -1005,13 +1007,26 @@ def wins_words(letter, spec, pub):
 NESTED_READINGS = {"s3": "S3", "r2": "R2", "b2": "B2", "node": "the Nation's own node", "federated": "the federated set"}
 
 
+def reads_words(reads, label, pub):
+    """A derived figure's receipts, from the model's trace at the default settings: the claims of the inputs it reads that its label does not already name, and the
+    assumptions it rests on. Returns the claim ids in parentheses and the sentences after them, so the figure's own claims and limits are a click away."""
+    name = lambda k: INPUT_NAMES.get(k) or pub["inputs"][k]["unit"]
+    ids = [c for c in reads["claims"] if c not in label]
+    tails = [f'{head}: {"; ".join(name(k) for k in keys)}.' for head, keys in (("Assumed", reads["assumed"]), ("Assumed, with no source", reads["no_source"])) if keys]
+    return (f' ({", ".join(ids)})' if ids else ""), " ".join(tails)
+
+
 def exit_note(pub):
     """Comparison E's typed fields, off the address as every typed number is. The hours and the other bill have no source, so they stay visible and say so."""
     hours, other = pub["inputs"]["exit_admin_h"], pub["inputs"]["exit_other_usd"]
-    field = lambda name, label, value: f'<div class="x-field"><label for="e-{name}">{escape(label)}</label><input id="e-{name}" type="number" min="0" step="any" inputmode="decimal" value="{value:g}" data-input="{name}"></div>'
-    return (f'<div class="x-fields x-exit-fields" data-js hidden>{field("exit_tb", "Terabytes", pub["scenario"]["exit_tb"])}{field("exit_admin_h", "Paid hours per copy", hours["value"])}{field("exit_other_usd", "Other bill, dollars", other["value"])}</div>'
+    limit, most = pub["typed_limits"]["exit_tb"], pub["typed_limits"]["most"]  # the field's ceiling is the model's, the same one resource-model.js enforces live and on a file
+    field = lambda name, label, value, top=most: (f'<div class="x-field"><label for="e-{name}">{escape(label)}</label><input id="e-{name}" type="number" min="0" max="{top:.15g}" step="any" inputmode="decimal" '
+                                                  f'value="{value:g}" data-input="{name}"></div>')
+    return (f'<div class="x-fields x-exit-fields" data-js hidden>{field("exit_tb", "Terabytes", pub["scenario"]["exit_tb"], limit)}{field("exit_admin_h", "Paid hours per copy", hours["value"])}{field("exit_other_usd", "Other bill, dollars", other["value"])}</div>'
             f'<p class="caption" role="status" data-input-why></p>'
-            f'<p class="caption">{escape(pub["scenario_labels"]["exit_tb"])} The hours ({hours["value"]:g}; {hours["low"]:g} to {hours["high"]:g}) and any other bill (${other["value"]:g}; ${other["low"]:g} to ${other["high"]:,g}) have no source: labeled assumptions.</p>')
+            f'<p class="caption">{escape(pub["scenario_labels"]["exit_tb"])} The model counts one four-bay box per copy at any size and adds no box as the data grows, so the size goes up to {limit:,g} TB, '
+            f'the most one box holds at an assumed {pub["scenario"]["nas_box_max_raw_tb"]:,g} raw TB, which has no source. '
+            f'The hours ({hours["value"]:g}; {hours["low"]:g} to {hours["high"]:g}) and any other bill (${other["value"]:g}; ${other["low"]:g} to ${other["high"]:,g}) have no source: labeled assumptions.</p>')
 
 
 def paybacks_html(st):
@@ -1064,11 +1079,19 @@ def arch_words(pub, data, st):
                 return f'{r["label"]}: {NESTED_READINGS[stop]}'
             counts = {"node_100k": pub["scenario"]["node_prompts_100k"], "node_1m": pub["scenario"]["node_prompts_1m"]}
             return f'{r["label"]}: {counts[stop] if stop in counts else int(stop):,}'
-        readings = "".join(f'<li>{escape(reading_label(k, r))}: <strong data-reading="arch.{letter}.readings.{k}">{escape(st["readings"][f"arch.{letter}.readings.{k}"])}</strong></li>' for k, r in spec["readings"].items())
-        payback_label = f'<p class="caption">{escape(spec["payback_label"])}.</p>' if "payback_label" in spec else ""
+        def reading_line(k, r):
+            ids, tails = reads_words(r["reads"], r["label"], pub)
+            return (f'<li>{escape(reading_label(k, r))}: <strong data-reading="arch.{letter}.readings.{k}">{escape(st["readings"][f"arch.{letter}.readings.{k}"])}</strong>'
+                    f'{escape(ids)}{escape(". " + tails) if tails else ""}</li>')
+        readings = "".join(reading_line(k, r) for k, r in spec["readings"].items())
+        payback_label = ""
+        if "payback_label" in spec:
+            ids, tails = reads_words(spec["payback_reads"], spec["payback_label"], pub)
+            payback_label = f'<p class="caption">{escape(spec["payback_label"])}{escape(ids)}.{escape(" " + tails) if tails else ""}</p>'
         out.append(f'<div class="x-arch-words" data-group="comparison:{letter}"><p class="label">Wins, at the default settings</p><p class="caption">{escape(wins_words(letter, spec, pub))}</p><p class="label">Loses, at the default settings</p><p class="caption">{escape(spec["loses"])}</p>'
                    f'<p class="caption">{escape(spec["note"])}</p>{payback_label}'
-                   f'<details class="plate-more"><summary>Figures beside the rows</summary><ul class="x-readings">{readings}</ul></details></div>')
+                   f'<details class="plate-more"><summary>Figures beside the rows</summary><ul class="x-readings">{readings}</ul>'
+                   '<p class="caption">Each figure names the claims of the inputs it reads at the default settings, beyond those its label names, and the assumptions it rests on.</p></details></div>')
     return "".join(out)
 
 
@@ -1449,7 +1472,7 @@ def receipts_html(pub, data, st, claims, limits, words):
     project_claim = claim_words(["dem-058"], claims, limits, lambda claim_id: f'<a href="data-centers/?dc-project-view=sources#dc-project">{claim_id}</a>')
     return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values and receipts"><table class="data-table"><caption>Every figure on this ladder, at each boundary. Modeled, {built[5:7]}/{built[:4]}.</caption>'
             f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
-            f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: a bottom-up process model, checked against published figures. A range is a spread, not a confidence interval.</p>'
+            f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: an open-book model, checked against published figures. A range is a spread, not a confidence interval.</p>'
             f'<p class="caption">The project question, at example settings a reader can change: {escape(words["q:mw"])} MW at a load factor of {escape(words["q:lf"])} is {escape(project["amw"]["text"])} average megawatts, about {escape(words["q:twh"])} TWh a year, {escape(words["q:share"])} percent of the region\'s {region["value"]:,g} aMW. {project_claim} Published by {escape(region["source"]["publisher"])}.</p>'
             f'<p class="caption">Sources with their quotes: <a href="ai/?ai-same-hour-view=sources#overview">chat and video on the AI page</a>, and <a href="explorer/#all-sources">every row in the Explorer</a>. The Resource Use Explorer runs the energy, carbon, water, and price of AI, video, search, and cloud software at settings you choose. Nothing you enter leaves your browser.</p>')
 

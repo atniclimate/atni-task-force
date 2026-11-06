@@ -87,7 +87,7 @@
    "quote": "\"key\": \"catalog.coding_session\", \"energy_wh\": {\"value\": 36.1937, \"low\": 8.98192, \"high\": 871.411}",
    "derived": "8.98192 Wh / 0.30 Wh = 29.9, printed as 30; 871.411 Wh / 0.30 Wh = 2,905, printed as 2,900.",
    "status": "partly",
-   "limit": "Modeled: a ratio of two modeled extremes from this site's process model, not a measurement of any coding session."
+   "limit": "Modeled: a ratio of two modeled extremes from this site's open-book model, not a measurement of any coding session."
   },
   {
    "id": "mv-005",

@@ -2221,7 +2221,7 @@
     "ec-030"
    ],
    "segment": "local node",
-   "note": "One copy is not the same durability as three replicas in the cloud row."
+   "note": "One copy per Nation against the cloud row's three. Copy count is not durability, and no failure, repair, or integrity model is in this record."
   },
   "fed_moved_share": {
    "value": 0.01,
@@ -2345,7 +2345,7 @@
     "ec-030"
    ],
    "segment": "local node",
-   "note": "One box, or a second box at the same Nation. One box is not the durability of three replicas."
+   "note": "One box, or a second box at the same Nation: one or two copies against the cloud row's three. Copy count is not durability, and no failure, repair, or integrity model is in this record."
   },
   "exit_fed_pulls": {
    "value": 1,
@@ -2823,7 +2823,7 @@
     }
    },
    "label": "Wage for paid hours",
-   "why": "A vendor's 60 dollars, or 25, or 0 if staff time is already paid. The largest line in every self-hosted price.",
+   "why": "A vendor's 60 dollars, or 25, or 0 if staff time is already paid. At 60 dollars, paid hours are the largest line in every self-hosted price on this page.",
    "claims": [
     "sf-051"
    ]
@@ -7520,7 +7520,7 @@
       "g": "sync_w",
       "ml": "hydro_convention"
      },
-     "note": "2012 to 2015 figures. Fair comparison for a local-first row, which avoids these watts.",
+     "note": "Laptop watts added by cloud editing, from 2012 to 2015 figures and assumed here. The energy order against the local suite turns on them, and the watts at which the two tie print beside the rows. A local-first row avoids these watts.",
      "ml_by_place": {
       "cloud": 536800.0,
       "home": 466093.0
@@ -8066,7 +8066,19 @@
      "label": "Added laptop draw of cloud editing, 2012 to 2015 figures (sf-014, sf-015)",
      "value": 150000.0,
      "low": 50000.0,
-     "high": 1000000.0
+     "high": 1000000.0,
+     "reads": {
+      "claims": [
+       "sf-014",
+       "sf-015"
+      ],
+      "assumed": [
+       "sync_w"
+      ],
+      "no_source": [
+       "active_hours"
+      ]
+     }
     },
     "cloud_admin_usd": {
      "label": "Assumed cloud administration hours at the wage setting, 2 a month (the local row carries 14)",
@@ -8074,6 +8086,15 @@
      "value": 1440.0,
      "low": 0.0,
      "high": 10080.0,
+     "reads": {
+      "claims": [
+       "sf-051"
+      ],
+      "assumed": [],
+      "no_source": [
+       "cloud_admin_h_month"
+      ]
+     },
      "date": "11/04/2026"
     },
     "vendor_all_scopes_g": {
@@ -8081,53 +8102,154 @@
      "grid": "the vendor's all-scope figure; not comparable to the location-based rows",
      "value": 126000.0,
      "low": 126000.0,
-     "high": 126000.0
+     "high": 126000.0,
+     "reads": {
+      "claims": [
+       "sf-017",
+       "sv-052"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "vendor_scope3_g": {
      "label": "The vendor's supply-chain share, another boundary (sf-018)",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 120960.0,
      "low": 120960.0,
-     "high": 120960.0
+     "high": 120960.0,
+     "reads": {
+      "claims": [
+       "sf-017",
+       "sf-018",
+       "sv-052"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "ratio_energy_local_over_cloud": {
      "label": "Local over cloud energy, data center only; a spread, never the central ratio",
      "value": 3.942,
      "low": 0.796364,
-     "high": 7.16727
+     "high": 7.16727,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sf-016"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "ratio_energy_two_boxes_over_cloud": {
      "label": "Two boxes over cloud energy, data center only; a spread, never the central ratio",
      "value": 7.884,
      "low": 1.59273,
-     "high": 14.3345
+     "high": 14.3345,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sf-016"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "ratio_energy_local_over_cloud_with_sync": {
      "label": "Local over cloud energy with sync watts charged to the cloud; a spread, never the central ratio",
      "value": 1.66777,
      "low": 0.197594,
-     "high": 4.9275
+     "high": 4.9275,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sf-014",
+       "sf-015",
+       "sf-016"
+      ],
+      "assumed": [
+       "pue_room",
+       "sync_w"
+      ],
+      "no_source": [
+       "active_hours"
+      ]
+     }
     },
     "embodied_local_g": {
      "label": "Embodied carbon per year, desktop and drives at 20 kg per TB (sf-023, sf-024)",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 130000.0,
      "low": 5714.29,
-     "high": 547000.0
+     "high": 547000.0,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-023",
+       "sf-024",
+       "sf-025",
+       "sv-036"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": [
+       "office_tb"
+      ]
+     }
     },
     "embodied_local_g_low_hdd": {
      "label": "The same at under 1 kg per TB (sf-025), unresolved",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 54000.0,
      "low": 5714.29,
-     "high": 293667.0
+     "high": 293667.0,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-023",
+       "sf-025",
+       "sv-036"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": [
+       "office_tb"
+      ]
+     }
     },
     "water_no_hydro_ml": {
      "label": "Water with reservoir evaporation excluded (gf-046)",
      "convention": "NWPP mix with hydro at 0 L per kWh; 0 on site",
      "value": 206268.0,
      "low": 79259.4,
-     "high": 549017.0
+     "high": 549017.0,
+     "reads": {
+      "claims": [
+       "gf-037",
+       "gf-054",
+       "lf-067",
+       "lf-078"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "usd_at_wage.60": {
      "label": "Self-run price at this hourly wage",
@@ -8135,6 +8257,31 @@
      "value": 10616.4,
      "low": 5942.97,
      "high": 27787.3,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "gf-054",
+       "lf-044",
+       "lf-067",
+       "lf-078",
+       "px-059",
+       "sf-049",
+       "sf-051",
+       "sf-052",
+       "sf-055",
+       "sv-042"
+      ],
+      "assumed": [
+       "pue_room",
+       "office_box_usd",
+       "life",
+       "office_admin_h_month"
+      ],
+      "no_source": [
+       "office_tb"
+      ]
+     },
      "date": "11/04/2026"
     },
     "usd_at_wage.25": {
@@ -8143,6 +8290,31 @@
      "value": 4736.45,
      "low": 2582.97,
      "high": 19387.3,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "gf-054",
+       "lf-044",
+       "lf-067",
+       "lf-078",
+       "px-059",
+       "sf-049",
+       "sf-051",
+       "sf-052",
+       "sf-055",
+       "sv-042"
+      ],
+      "assumed": [
+       "pue_room",
+       "office_box_usd",
+       "life",
+       "office_admin_h_month"
+      ],
+      "no_source": [
+       "office_tb"
+      ]
+     },
      "date": "11/04/2026"
     },
     "usd_at_wage.0": {
@@ -8151,19 +8323,85 @@
      "value": 536.448,
      "low": 182.972,
      "high": 13387.3,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "gf-054",
+       "lf-044",
+       "lf-067",
+       "lf-078",
+       "px-059",
+       "sf-049",
+       "sf-052",
+       "sf-055"
+      ],
+      "assumed": [
+       "pue_room",
+       "office_box_usd",
+       "life"
+      ],
+      "no_source": [
+       "office_tb"
+      ]
+     },
      "date": "11/04/2026"
     },
     "wage_at_price_tie": {
      "label": "Hourly wage at which local and cloud cost the same, USD per hour",
      "value": 54.608,
      "low": -38.2805,
-     "high": 54.608
+     "high": 54.608,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "gf-054",
+       "lf-043",
+       "lf-044",
+       "lf-067",
+       "lf-078",
+       "px-045",
+       "px-046",
+       "px-059",
+       "sf-049",
+       "sf-051",
+       "sf-052",
+       "sf-055",
+       "sv-018",
+       "sv-042"
+      ],
+      "assumed": [
+       "pue_room",
+       "office_box_usd",
+       "life",
+       "office_admin_h_month"
+      ],
+      "no_source": [
+       "office_tb",
+       "cloud_admin_h_month"
+      ]
+     }
     },
     "sync_w_at_energy_tie": {
      "label": "Added laptop watts at which local and cloud energy tie",
      "value": 4.31493,
      "low": -0.672,
-     "high": 13.568
+     "high": 13.568,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sf-016"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": [
+       "active_hours"
+      ]
+     }
     }
    },
    "wins": "License price (0); working without broadband (24 percent on Tribal lands lack it, sf-056); custody; carbon only as a declared clean feed (9 kg a year on hydro against the cloud's 32 kg on the same grid, gf-035, gf-001), with the local embodied line (130 kg a year, 54 at the low drive figure) printed beside on the local side only.",
@@ -8903,49 +9141,136 @@
      "value": 122.0,
      "low": 122.0,
      "high": 122.0,
+     "reads": {
+      "claims": [
+       "px-039",
+       "px-065"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "viewer_side_wh_per_view": {
      "label": "Router and device, identical on every row, shown once",
      "value": 12.0,
      "low": 6.88,
-     "high": 18.0
+     "high": 18.0,
+     "reads": {
+      "claims": [
+       "fp-049",
+       "fp-086",
+       "fp-088",
+       "fp-090",
+       "fp-126",
+       "fp-132",
+       "fp-133"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "local_wh_per_view.1000": {
      "label": "Node energy per view at this many views a year",
      "value": 78.188,
      "low": 61.32,
-     "high": 121.26
+     "high": 121.26,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_wh_per_view.10000": {
      "label": "Node energy per view at this many views a year",
      "value": 8.8088,
      "low": 6.132,
-     "high": 14.826
+     "high": 14.826,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_wh_per_view.100000": {
      "label": "Node energy per view at this many views a year",
      "value": 1.87088,
      "low": 0.6132,
-     "high": 4.1826
+     "high": 4.1826,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_idle_wh_per_view.1000": {
      "label": "The idle floor inside that figure",
      "value": 77.088,
      "low": 61.32,
-     "high": 118.26
+     "high": 118.26,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_idle_wh_per_view.10000": {
      "label": "The idle floor inside that figure",
      "value": 7.7088,
      "low": 6.132,
-     "high": 11.826
+     "high": 11.826,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_idle_wh_per_view.100000": {
      "label": "The idle floor inside that figure",
      "value": 0.77088,
      "low": 0.6132,
-     "high": 1.1826
+     "high": 1.1826,
+     "reads": {
+      "claims": [
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "local_usd_per_year": {
      "label": "Self-run price per year with one paid hour a month",
@@ -8953,6 +9278,25 @@
      "value": 788.577,
      "low": 388.155,
      "high": 2733.3,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "lf-033",
+       "lf-078",
+       "sf-042",
+       "sf-051",
+       "sv-042"
+      ],
+      "assumed": [
+       "pue_room",
+       "life",
+       "mini_admin_h_month"
+      ],
+      "no_source": [
+       "mini_box_usd"
+      ]
+     },
      "date": "11/04/2026"
     },
     "local_usd_per_year_no_staff": {
@@ -8961,6 +9305,22 @@
      "value": 68.5772,
      "low": 28.1554,
      "high": 213.302,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "lf-033",
+       "lf-078",
+       "sf-042"
+      ],
+      "assumed": [
+       "pue_room",
+       "life"
+      ],
+      "no_source": [
+       "mini_box_usd"
+      ]
+     },
      "date": "11/04/2026"
     },
     "embodied_local_g_per_year": {
@@ -8968,17 +9328,37 @@
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 6000.0,
      "low": 4285.71,
-     "high": 13666.7
+     "high": 13666.7,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sv-036"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": []
+     }
     },
     "cache_wh_per_gb": {
      "label": "Embedded cache energy per GB at the assumed load",
      "value": 0.0177778,
      "low": 0.00444444,
-     "high": 0.0444444
+     "high": 0.0444444,
+     "reads": {
+      "claims": [
+       "sf-028"
+      ],
+      "assumed": [
+       "oca_load"
+      ],
+      "no_source": []
+     }
     }
    },
    "wins": "When the link out is slow, metered, or down, and when many people watch the same thing (sf-030, sf-031). The embedded cache wins on energy (19 against 2,050 Wh per 1,000 views), an upper bound the platform places.",
-   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box never beats the platform's serving energy at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year), or at the DESNZ follow-up's lower one; only the top-down average, an upper bound, would reverse it. The embedded cache loses on control.",
+   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box uses more energy per view than the platform at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year), or at the DESNZ follow-up's lower one, and at these settings no audience size closes the gap, though one change to the inputs puts the crossover at 170,000 to 310,000 views a year; at 100,000 only the top-down average, an upper bound, would reverse it. The embedded cache loses on control.",
    "note": "A network credit, charging the Nation's own network at marginal cost against the platform's average, is a convention and prints as one."
   },
   "C": {
@@ -8989,7 +9369,7 @@
      "key": "arch.C.ten_copies",
      "label": "Ten full copies on ten NAS boxes, one fill each",
      "unit": "one year",
-     "counted": "ten boxes holding 10 TB each (120 TB raw), or drives only when the nodes are already on (the setting); one network fill per Nation; every Nation reads locally; durability one box each",
+     "counted": "ten boxes holding 10 TB each (120 TB raw), or drives only when the nodes are already on (the setting); one network fill per Nation; every Nation reads locally; one copy, on one box, at each Nation",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 4592560.0,
@@ -9146,7 +9526,7 @@
      "key": "arch.C.central_s3",
      "label": "One central cloud copy, three replicas, S3",
      "unit": "one year",
-     "counted": "three replicas of 10 TB in one region, drives only; every Nation reads over the network; durability three copies",
+     "counted": "three replicas of 10 TB in one region, drives only; every Nation reads over the network",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 187902.0,
@@ -9577,9 +9957,9 @@
       "high": 346896.0
      },
      "price_usd": {
-      "value": 1554.0,
-      "low": 1194.0,
-      "high": 3354.0,
+      "value": 1565.58,
+      "low": 1205.58,
+      "high": 3365.58,
       "basis": "api_list",
       "date": "11/04/2026",
       "note": "Storage list; egress free to three times stored data (px-052); plus one assumed admin hour a month"
@@ -9627,18 +10007,18 @@
        {
         "name": "central_admin_h_month",
         "type": "input",
-        "at_low": 1194.0,
-        "at_high": 3354.0,
-        "swing_over_central": 1.38996
+        "at_low": 1205.58,
+        "at_high": 3365.58,
+        "swing_over_central": 1.37968
        },
        {
         "name": "wage",
         "type": "setting",
-        "at_low": 834.0,
-        "at_high": 1554.0,
+        "at_low": 845.583,
+        "at_high": 1565.58,
         "low_option": "0",
         "high_option": "60",
-        "swing_over_central": 0.46332
+        "swing_over_central": 0.459892
        }
       ],
       "g": [
@@ -9705,7 +10085,7 @@
      "key": "arch.C.federated",
      "label": "Federated query in place, one copy per Nation",
      "unit": "one year",
-     "counted": "each Nation holds its own 1 TB; 1 percent of the bytes move each month; whole boxes, or drives only when the nodes are already on (the setting); durability one copy; every Nation reads what the others grant",
+     "counted": "each Nation holds its own 1 TB; 1 percent of the bytes move each month; whole boxes, or drives only when the nodes are already on (the setting); one copy of each Nation's data; every Nation reads what the others grant",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 4434480.0,
@@ -9864,7 +10244,7 @@
      "key": "arch.C.federated_replicas",
      "label": "Federated query in place, three copies per Nation",
      "unit": "one year",
-     "counted": "as above, with each Nation's 1 TB held three times across member nodes, the cloud row's durability",
+     "counted": "as above, with each Nation's 1 TB held three times across member nodes: three copies, the count the cloud row assumes; copy count is not durability, and no failure, repair, or integrity model is in this record",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 4434480.0,
@@ -10024,25 +10404,75 @@
      "label": "Network energy if each Nation pulls the data once, average accounting",
      "value": 160000.0,
      "low": 160000.0,
-     "high": 650000.0
+     "high": 650000.0,
+     "reads": {
+      "claims": [
+       "fp-124",
+       "fp-127"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "query_wh_per_year": {
      "label": "Network energy of federated queries in a year",
      "value": 1920.0,
      "low": 192.0,
-     "high": 78000.0
+     "high": 78000.0,
+     "reads": {
+      "claims": [
+       "fp-124",
+       "fp-127"
+      ],
+      "assumed": [],
+      "no_source": [
+       "fed_moved_share"
+      ]
+     }
     },
     "federated_wh_nodes_on": {
      "label": "Federated row with the nodes already on: drives only",
      "value": 64554.0,
      "low": 50124.0,
-     "high": 551040.0
+     "high": 551040.0,
+     "reads": {
+      "claims": [
+       "ec-021",
+       "ec-030",
+       "fp-124",
+       "fp-127",
+       "lf-027",
+       "lf-078"
+      ],
+      "assumed": [
+       "pue_room",
+       "fed_copies"
+      ],
+      "no_source": [
+       "fed_moved_share"
+      ]
+     }
     },
     "federated_wh_nodes_not_on": {
      "label": "Federated row with ten whole boxes: the same energy as ten copies",
      "value": 4434480.0,
      "low": 1314190.0,
-     "high": 6122400.0
+     "high": 6122400.0,
+     "reads": {
+      "claims": [
+       "fp-124",
+       "fp-127",
+       "lf-032",
+       "lf-078",
+       "sf-043"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": [
+       "fed_moved_share"
+      ]
+     }
     },
     "egress_one_pull_each_usd": {
      "label": "Egress at S3 list for one pull each (px-049)",
@@ -10050,6 +10480,16 @@
      "value": 9000.0,
      "low": 0.0,
      "high": 11000.0,
+     "reads": {
+      "claims": [
+       "px-049",
+       "px-051",
+       "px-063",
+       "sf-050"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "central_admin_usd": {
@@ -10058,6 +10498,16 @@
      "value": 720.0,
      "low": 360.0,
      "high": 2520.0,
+     "reads": {
+      "claims": [
+       "sf-051",
+       "sv-042"
+      ],
+      "assumed": [
+       "central_admin_h_month"
+      ],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "labor_ten_copies_usd": {
@@ -10066,6 +10516,16 @@
      "value": 7200.0,
      "low": 3600.0,
      "high": 25200.0,
+     "reads": {
+      "claims": [
+       "sf-051",
+       "sv-042"
+      ],
+      "assumed": [
+       "nas_admin_h_month"
+      ],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "embodied_ten_copies_g": {
@@ -10073,31 +10533,79 @@
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 480000.0,
      "low": 14285.7,
-     "high": 1066670.0
+     "high": 1066670.0,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-024",
+       "sf-025"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": [
+       "nas_raw_tb"
+      ]
+     }
     },
     "embodied_ten_copies_g_low_hdd": {
      "label": "The same at under 1 kg per TB (sf-025), unresolved",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 24000.0,
      "low": 14285.7,
-     "high": 53333.3
+     "high": 53333.3,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-025"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": [
+       "nas_raw_tb"
+      ]
+     }
     },
     "embodied_federated_g": {
      "label": "Embodied carbon of the federated drives per year at 20 kg per TB, all ten Nations",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 40000.0,
      "low": 1428.57,
-     "high": 200000.0
+     "high": 200000.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "ec-048",
+       "gf-051",
+       "sf-024",
+       "sf-025"
+      ],
+      "assumed": [
+       "life",
+       "fed_copies"
+      ],
+      "no_source": []
+     }
     },
     "duplicate_bytes_removed_gb": {
      "label": "Bytes content-defined chunking could remove from ten full pulls (sf-032); bytes, not kilowatt-hours",
      "value": 90000.0,
      "low": 90000.0,
-     "high": 90000.0
+     "high": 90000.0,
+     "reads": {
+      "claims": [
+       "sf-032"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     }
    },
    "wins": "Bytes (90,000 GB of ten full pulls removable by content-defined chunking, sf-032), one external dependency fewer, and consent, which no row prices. Only under the declared setting that the nodes are already on for other work (never a finding), drives only, the one-copy row is 65 kWh against the cloud's 188, and three copies equal it. The only measured interfederation saving is bytes (sf-032, sf-031), not kilowatt-hours.",
-   "loses": "Energy unless the nodes are already on: 4,434 kWh for ten boxes against 188 for the central copy, a declared setting. Price: the central copy on R2 or B2 costs $2,520 and $1,554 a year with an admin hour against $8,531 federated, 3.4 and 5.5 times less; S3 with ten pulls is $12,480. Availability (ten nodes must be up), labor (ten operators against one), and simplicity. Every federated kilowatt-hour in the literature is simulated (sf-034); federated learning can emit up to 100 times centralized (sf-033, lf-052); federated social software copies content to every member server (lf-029, sv-060).",
+   "loses": "Energy unless the nodes are already on: 4,434 kWh for ten boxes against 188 for the central copy, a declared setting. Price: the central copy on R2 or B2 costs $2,520 and $1,566 a year with an admin hour against $8,531 federated, 3.4 and 5.4 times less; S3 with ten pulls is $12,480. Availability (ten nodes must be up), labor (ten operators against one), and simplicity. Every federated kilowatt-hour in the literature is simulated (sf-034). Two other kinds of federation are not this one: federated learning can emit up to 100 times centralized (sf-033, lf-052), and federated social software copies content to every member server (lf-029, sv-060).",
    "note": "Comparison C never sits on the hour axis. One storage coefficient (ec-021, 0.65 Wh per TB-hour) and one boundary (drives, before replication, with the room or facility PUE) on every row; the cloud's figure is device-level and sits far below whole-service storage footprints on other boundaries."
   },
   "D": {
@@ -12084,13 +12592,36 @@
      "label": "What the token chain would say for the hyperscaler row; the measured median is used instead",
      "value": 446.6,
      "low": 169.746,
-     "high": 1812.58
+     "high": 1812.58,
+     "reads": {
+      "claims": [
+       "au-008",
+       "au-009",
+       "au-011",
+       "au-015",
+       "ec-018",
+       "gf-053"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "hyper_at_mean_prompt_wh": {
      "label": "The block at the mean-class prompt, 0.34 Wh; the median is a floor for totals",
      "value": 340.0,
      "low": 340.0,
-     "high": 340.0
+     "high": 340.0,
+     "reads": {
+      "claims": [
+       "fp-001",
+       "fp-012",
+       "fp-015",
+       "fp-017",
+       "fp-021"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "hyper_small_model_usd": {
      "label": "The block at a like-class small model's list (Haiku 5.5, au-051), the fair price pair for a 7B node",
@@ -12098,61 +12629,161 @@
      "value": 0.2,
      "low": 0.1145,
      "high": 0.359,
+     "reads": {
+      "claims": [
+       "au-015",
+       "au-051"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "node_marginal_wh": {
      "label": "Node energy of the work itself, net of idle",
      "value": 160.417,
      "low": 55.1917,
-     "high": 1305.0
+     "high": 1305.0,
+     "reads": {
+      "claims": [
+       "au-010",
+       "au-015",
+       "au-027",
+       "au-028",
+       "ec-018",
+       "lf-078",
+       "sf-038"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "node_idle_wh.node_100k": {
      "label": "The idle floor inside the node row",
      "value": 3854.4,
      "low": 2628.0,
-     "high": 32850.0
+     "high": 32850.0,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sv-039"
+      ],
+      "assumed": [
+       "pue_room",
+       "node_w"
+      ],
+      "no_source": []
+     }
     },
     "node_idle_wh.node_1m": {
      "label": "The idle floor inside the node row",
      "value": 385.44,
      "low": 262.8,
-     "high": 3285.0
+     "high": 3285.0,
+     "reads": {
+      "claims": [
+       "gf-054",
+       "lf-067",
+       "lf-078",
+       "sv-039"
+      ],
+      "assumed": [
+       "pue_room",
+       "node_w"
+      ],
+      "no_source": []
+     }
     },
     "fallback_wh": {
      "label": "Cloud energy for the queries the local model cannot answer",
      "value": 85.8,
      "low": 27.12,
-     "high": 302.4
+     "high": 302.4,
+     "reads": {
+      "claims": [
+       "fp-001",
+       "fp-012",
+       "fp-015",
+       "fp-017",
+       "fp-021",
+       "sf-035"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "embodied_hyper_g": {
      "label": "Accelerator embodied carbon, a lower bound (au-011)",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 13.6,
      "low": 10.693,
-     "high": 27.95
+     "high": 27.95,
+     "reads": {
+      "claims": [
+       "au-011",
+       "au-015"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     },
     "embodied_node_g_100k": {
      "label": "Embodied carbon of a small machine, spread over 100,000 prompts a year",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 500.0,
      "low": 42.8571,
-     "high": 2803.33
+     "high": 2803.33,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-023",
+       "sv-036"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": []
+     }
     },
     "embodied_node_g_1m": {
      "label": "The same over 1,000,000 prompts a year",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 50.0,
      "low": 4.28571,
-     "high": 280.333
+     "high": 280.333,
+     "reads": {
+      "claims": [
+       "ec-048",
+       "gf-051",
+       "sf-023",
+       "sv-036"
+      ],
+      "assumed": [
+       "life"
+      ],
+      "no_source": []
+     }
     },
     "gpu_cost_swing": {
      "label": "How far cost per token swings with how busy one H100 is (sf-041), times",
      "value": 72.619,
      "low": 72.619,
-     "high": 72.619
+     "high": 72.619,
+     "reads": {
+      "claims": [
+       "sf-041"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     }
    },
-   "wins": "A laptop that is on anyway wins on energy per answer it can give (24 against 300 Wh, 110 with the cloud share); a node wins on who holds the data and on a model for a language the cloud does not serve. On one grid the node catches the hyperscaler on energy and carbon only above 2,761,361 prompts a year (a declared hydro feed moves the carbon crossover to 79,643, and 504,154 with embodied carbon on both sides); these print as ranges.",
+   "wins": "A laptop that is on anyway wins on energy per answer it can give (24 against 300 Wh, 110 with the cloud share), with a smaller model whose answers are not equal, and a machine bought for the work would carry its idle energy, as the node rows do. A node keeps the data with the Nation, which no row prices, and can run a model for a language the cloud does not serve. On one grid the node catches the hyperscaler on energy and carbon only above 2,761,361 prompts a year (a declared hydro feed moves the carbon crossover to 79,643, and 504,154 with embodied carbon on both sides); these print as ranges.",
    "loses": "Energy at 100,000 prompts a year (4,015 against 300 Wh per 1,000, 3,854 of it idle) and at 1,000,000 (546); carbon on one grid at both counts; price against a like-class model ($2.89 at 1,000,000 against $0.20 at Haiku list, not the $4.00 frontier list); local hardware is 1.4 to 1.5 times less efficient per watt for the same model (sf-036, lf-012); cost per million tokens swings 73 times with how busy one GPU is (sf-041); a 7B model is a different product from a frontier one (sf-037, lf-013); water under the reservoir convention on hydro power; and the queries the local model cannot answer go to the cloud anyway (sf-035).",
    "note": "The token chain would put the hyperscaler at 447 Wh; the measured median is used where one exists. Hydro 21 g is a life-cycle factor and eGRID rates count combustion only; the same-grid rows avoid mixing them. Crossovers print as ranges, never as one count."
   },
@@ -13476,9 +14107,9 @@
       "high": 346896.0
      },
      "price_usd": {
-      "value": 1554.0,
-      "low": 1194.0,
-      "high": 3354.0,
+      "value": 1565.58,
+      "low": 1205.58,
+      "high": 3365.58,
       "basis": "api_list",
       "date": "11/04/2026",
       "note": "Storage list (px-052) plus one assumed admin hour a month"
@@ -13527,18 +14158,18 @@
        {
         "name": "central_admin_h_month",
         "type": "input",
-        "at_low": 1194.0,
-        "at_high": 3354.0,
-        "swing_over_central": 1.38996
+        "at_low": 1205.58,
+        "at_high": 3365.58,
+        "swing_over_central": 1.37968
        },
        {
         "name": "wage",
         "type": "setting",
-        "at_low": 834.0,
-        "at_high": 1554.0,
+        "at_low": 845.583,
+        "at_high": 1565.58,
         "low_option": "0",
         "high_option": "60",
-        "swing_over_central": 0.46332
+        "swing_over_central": 0.459892
        }
       ],
       "g": [
@@ -13742,7 +14373,7 @@
      "key": "arch.E.year_node",
      "label": "The year after: one copy on the Nation's own node",
      "unit": "one year",
-     "counted": "one NAS box all year, or drives only when the node is already on (the setting); durability one box",
+     "counted": "one NAS box all year, or drives only when the node is already on (the setting); one copy",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 443256.0,
@@ -13893,7 +14524,7 @@
      "key": "arch.E.year_federated",
      "label": "The year after: three copies on a federated set of Nations' nodes",
      "unit": "one year",
-     "counted": "three boxes at three Nations, or drives only when the nodes are already on (the setting); the cloud row's durability, across three sites",
+     "counted": "three boxes at three Nations, or drives only when the nodes are already on (the setting): three copies, the count the cloud row assumes, across three sites; copy count is not durability, and no failure, repair, or integrity model is in this record",
      "basis": "Modeled estimate, not a measurement: published coefficients run through the unit law.",
      "energy_wh": {
       "value": 1329770.0,
@@ -14052,6 +14683,16 @@
      "value": 900.0,
      "low": 0.0,
      "high": 1100.0,
+     "reads": {
+      "claims": [
+       "px-049",
+       "px-051",
+       "px-063",
+       "sf-050"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "egress_per_pull_usd.r2": {
@@ -14060,6 +14701,13 @@
      "value": 0.0,
      "low": 0.0,
      "high": 0.0,
+     "reads": {
+      "claims": [
+       "px-051"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "egress_per_pull_usd.b2": {
@@ -14068,25 +14716,59 @@
      "value": 0.0,
      "low": 0.0,
      "high": 100.0,
+     "reads": {
+      "claims": [
+       "px-052"
+      ],
+      "assumed": [],
+      "no_source": []
+     },
      "date": "11/04/2026"
     },
     "copies.node": {
      "label": "Copies held after the move, on the Nation's own node and across the federated set",
      "value": 1.0,
      "low": 1.0,
-     "high": 2.0
+     "high": 2.0,
+     "reads": {
+      "claims": [
+       "ec-030"
+      ],
+      "assumed": [
+       "exit_node_copies"
+      ],
+      "no_source": []
+     }
     },
     "copies.federated": {
      "label": "Copies held after the move, on the Nation's own node and across the federated set",
      "value": 3.0,
      "low": 2.0,
-     "high": 3.0
+     "high": 3.0,
+     "reads": {
+      "claims": [
+       "ec-030"
+      ],
+      "assumed": [
+       "replicas"
+      ],
+      "no_source": []
+     }
     },
     "transfer_days_one_copy": {
      "label": "Days on the wire for one copy at the link's line rate, with no overhead, so a lower bound",
      "value": 9.25926,
      "low": 0.925926,
-     "high": 37.037
+     "high": 37.037,
+     "reads": {
+      "claims": [
+       "sf-056"
+      ],
+      "assumed": [
+       "exit_link_mbps"
+      ],
+      "no_source": []
+     }
     },
     "hardware_usd.node": {
      "label": "Boxes and drives bought for the new home, one time; the year rows count them over their life",
@@ -14094,6 +14776,20 @@
      "value": 666.64,
      "low": 380.0,
      "high": 3392.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "lf-044",
+       "sf-052"
+      ],
+      "assumed": [
+       "exit_node_copies"
+      ],
+      "no_source": [
+       "nas_chassis_usd",
+       "nas_raw_tb"
+      ]
+     },
      "date": "11/04/2026"
     },
     "hardware_usd.federated": {
@@ -14102,6 +14798,20 @@
      "value": 1999.92,
      "low": 760.0,
      "high": 5088.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "lf-044",
+       "sf-052"
+      ],
+      "assumed": [
+       "replicas"
+      ],
+      "no_source": [
+       "nas_chassis_usd",
+       "nas_raw_tb"
+      ]
+     },
      "date": "11/04/2026"
     },
     "embodied_own_node_g": {
@@ -14109,39 +14819,153 @@
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 48000.0,
      "low": 1428.57,
-     "high": 213333.0
+     "high": 213333.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "ec-048",
+       "gf-051",
+       "sf-024",
+       "sf-025"
+      ],
+      "assumed": [
+       "life",
+       "exit_node_copies"
+      ],
+      "no_source": [
+       "nas_raw_tb"
+      ]
+     }
     },
     "embodied_federated_set_g": {
      "label": "Embodied carbon of the federated set's drives per year, at the same coefficient and life",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 144000.0,
      "low": 2857.14,
-     "high": 320000.0
+     "high": 320000.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "ec-048",
+       "gf-051",
+       "sf-024",
+       "sf-025"
+      ],
+      "assumed": [
+       "replicas",
+       "life"
+      ],
+      "no_source": [
+       "nas_raw_tb"
+      ]
+     }
     },
     "embodied_cloud_replicas_g": {
      "label": "Embodied carbon of the cloud's replicas per year, at the same coefficient and life, so both sides sit on one boundary",
      "grid": "embodied carbon, a separate line, never mixed into operations (ec-008)",
      "value": 120000.0,
      "low": 2857.14,
-     "high": 200000.0
+     "high": 200000.0,
+     "reads": {
+      "claims": [
+       "ec-030",
+       "ec-048",
+       "gf-051",
+       "sf-024",
+       "sf-025"
+      ],
+      "assumed": [
+       "replicas",
+       "life"
+      ],
+      "no_source": []
+     }
     },
     "node_w_at_energy_tie": {
      "label": "Watts at which one box a year uses what the cloud's drives-only figure uses, on this boundary",
      "value": 19.5,
      "low": 4.142,
-     "high": 39.6
+     "high": 39.6,
+     "reads": {
+      "claims": [
+       "au-011",
+       "ec-021",
+       "ec-030",
+       "gf-053",
+       "lf-027",
+       "lf-078"
+      ],
+      "assumed": [
+       "pue_room",
+       "replicas",
+       "exit_node_copies"
+      ],
+      "no_source": []
+     }
+    },
+    "tb_at_energy_tie.node": {
+     "label": "Size at which a year on whole boxes uses what the cloud's drives-only figure uses, on this boundary; above it the cloud's figure is the larger, because the model counts one four-bay box per copy at any size; an end above the size limit printed with the typed fields is more than one box holds, so it lies outside the model",
+     "value": 23.5897,
+     "low": 3.78788,
+     "high": 111.057,
+     "reads": {
+      "claims": [
+       "au-011",
+       "ec-021",
+       "ec-030",
+       "gf-053",
+       "lf-027",
+       "lf-032",
+       "lf-078",
+       "sf-043"
+      ],
+      "assumed": [
+       "pue_room",
+       "replicas",
+       "exit_node_copies"
+      ],
+      "no_source": []
+     }
+    },
+    "tb_at_energy_tie.federated": {
+     "label": "Size at which a year on whole boxes uses what the cloud's drives-only figure uses, on this boundary; above it the cloud's figure is the larger, because the model counts one four-bay box per copy at any size; an end above the size limit printed with the typed fields is more than one box holds, so it lies outside the model",
+     "value": 70.7692,
+     "low": 11.3636,
+     "high": 111.057,
+     "reads": {
+      "claims": [
+       "au-011",
+       "ec-021",
+       "gf-053",
+       "lf-027",
+       "lf-032",
+       "lf-078",
+       "sf-043"
+      ],
+      "assumed": [
+       "pue_room"
+      ],
+      "no_source": []
+     }
     },
     "cloud_service_boundary_g": {
-     "label": "A ceiling on another boundary: the same data at one agency's whole-service figure for online storage (ec-026)",
+     "label": "A reading on another boundary, not a bound: the same data at one agency's whole-service figure for online storage across four data centers (ec-026)",
      "grid": "another boundary: the global warming potential of a service in four data centres, not this row's drives on a grid",
      "value": 2230000.0,
      "low": 1660000.0,
-     "high": 2800000.0
+     "high": 2800000.0,
+     "reads": {
+      "claims": [
+       "ec-026"
+      ],
+      "assumed": [],
+      "no_source": []
+     }
     }
    },
-   "wins": "At the default settings the move ends a vendor's hold on the data, which no row prices. One copy on the Nation's own node costs less a year than S3, R2, or B2 at list, each side with one paid hour a month, and the move pays back within a few years; three copies across three Nations' nodes cost less than S3 only. At the assumed hours, the bill for leaving is mostly hours, not egress, and the vendors' free exit programs can take the egress to zero on their terms (mv-001, mv-002, mv-003).",
-   "loses": "Energy: a box runs all year against the store's drives-only figure, so the year after uses more unless the node is already on or draws under the tie printed beside it. Carbon on one grid follows energy. Durability: one box is not three replicas. Three copies cost more a year than R2 or B2, so that move never pays back against them. The hours are an assumption with no source, and the days on the wire depend on the link (sf-056).",
-   "note": "Comparison E never sits on the hour axis. A move row is one time and a year row is one year; the page prints them apart and adds them for no one. One storage coefficient (ec-021) and one boundary on every year row, the same as comparison C, so the cloud's figure is drives only, a floor, while the box is counted whole: the boundary leans toward the cloud. The one whole-service figure in the record prints beside it as a ceiling on another boundary (ec-026), and the record holds no whole-service figure for a local box, so the two are never subtracted. Migration hours and any other one-time bill have no source in the record; both are labeled assumptions with a range.",
+   "wins": "Leaving moves the data from a vendor's contract to the Nation's own node, a change of custody no row prices; the Nation then carries the box, its paid hours, and any other copies it keeps. One copy on the Nation's own node costs less a year than S3, R2, or B2 at list, each side with one assumed paid hour a month. At the assumed 40 paid hours for the move, it pays back against S3 in 1.3 years (0.35 to 4.2), R2 in 1.5 (0 to 5.9, or never), and B2 in 3.6 (0 to 14, or never), one change at a time. Three copies across three Nations' nodes cost less than S3 only. At the assumed hours, the bill for leaving is mostly hours, not egress, and the vendors' free exit programs can take the egress to zero on their terms (mv-001, mv-002, mv-003).",
+   "loses": "Energy: a box runs all year against the store's drives-only figure, so the year after uses more unless the node is already on, draws under the watts tie printed beside it, or holds more than the size tie there; the model counts one four-bay box per copy at any size. Carbon on one grid follows energy. Copies: one box is one copy against the cloud row's three, and copy count is not durability; no failure, repair, or integrity model is in this record. Three copies cost more a year than R2 or B2 at list, so at these settings that move does not pay back against them. The hours are an assumption with no source, and the days on the wire depend on the link (sf-056).",
+   "note": "Comparison E never sits on the hour axis. A move row is one time and a year row is one year; the page prints them apart and adds them for no one. One storage coefficient (ec-021) and one boundary on every year row, the same as comparison C, so the cloud's figure is drives only, a floor, while the box is counted whole: the boundary leans toward the cloud. The one whole-service figure in the record prints beside it as a reading on another boundary (ec-026), from four data centers in one agency's study and not a bound on any one service, and the record holds no whole-service figure for a local box, so the two are never subtracted. Migration hours and any other one-time bill have no source in the record; both are labeled assumptions with a range.",
    "payback": {
     "node_vs_s3": {
      "value": 1.28004,
@@ -14158,9 +14982,9 @@
      ]
     },
     "node_vs_b2": {
-     "value": 3.68072,
+     "value": 3.61647,
      "low_one_input_or_setting": 0.0,
-     "high_one_input_or_setting": 14.7229,
+     "high_one_input_or_setting": 14.4659,
      "never_under": [
       "nas_admin_h_month high",
       "exit_node_copies high"
@@ -14185,13 +15009,50 @@
     "federated_vs_b2": {
      "value": null,
      "low_one_input_or_setting": 0.0,
-     "high_one_input_or_setting": 11.1087,
+     "high_one_input_or_setting": 10.9137,
      "never_under": [
       "central"
      ]
     }
    },
-   "payback_label": "Years for the move's one-time price to pay back against a store's yearly price, a self-run cost against a list price, each side with its own paid hours; never means it does not pay back at these settings"
+   "payback_label": "Years for the move's one-time price to pay back against a store's yearly price, a self-run cost against a list price, each side with its own paid hours; never means it does not pay back at these settings",
+   "payback_reads": {
+    "claims": [
+     "ec-030",
+     "ec-048",
+     "gf-051",
+     "lf-032",
+     "lf-044",
+     "lf-078",
+     "px-048",
+     "px-049",
+     "px-050",
+     "px-051",
+     "px-052",
+     "px-063",
+     "sf-043",
+     "sf-050",
+     "sf-051",
+     "sf-052",
+     "sv-042"
+    ],
+    "assumed": [
+     "pue_room",
+     "life",
+     "nas_admin_h_month",
+     "central_admin_h_month",
+     "exit_node_copies",
+     "replicas",
+     "fed_admin_h_month"
+    ],
+    "no_source": [
+     "nas_chassis_usd",
+     "nas_raw_tb",
+     "exit_admin_h",
+     "exit_other_usd",
+     "exit_fed_pulls"
+    ]
+   }
   }
  },
  "levers": [
@@ -17146,7 +18007,7 @@
   ],
   "where_local_or_federated_systems_lose": [
    "Idle hardware at low use: the a/U term, and 77 of 78 Wh per local video view at 1,000 views a year.",
-   "Paid hours, the largest line in every self-hosted price (sf-051, sf-004).",
+   "Paid hours, the largest line in every self-hosted price on this page at the default wage (sf-051, sf-004).",
    "Energy per answer at equal model size (sf-036).",
    "Answer quality and agentic work (sf-035, lf-013).",
    "Water under the reservoir convention on hydro power (gf-039, gf-040).",
@@ -17166,7 +18027,7 @@
   ],
   "rebound": "Rebound is outside the unit: per-task energy falls 10 times a year (ec-057; Google 33 times, fp-009) while totals rise (Google plus 37 percent, rs-003), price elasticity sits near one at the provider level (ec-044), and the IEA says so (ec-058). The page prints the per-unit number and the count beside it, and this pair as the reason a per-unit saving is not a total one."
  },
- "disclaimer": "These are modeled estimates, not measurements: a bottom-up process model, units of work times published coefficients, checked against published figures. It is not an econometric model; it estimates no coefficient, and its ranges are spreads, not distributions. Each row is units of work times published coefficients, plus the share of hardware that sits idle to serve it, scaled by the building and the grid where it runs. No vendor has published a measured production figure for most rows, no Tribally owned facility in the record has published its electricity use or total water, and the back-test printed here shows where the model lands within a factor of two and where it misses by five to eight. Change a setting and the answer changes; that is the point of the tool. It says nothing about any site, stream, rate class, or Treaty-reserved right, and it never turns sovereignty, consent, or resilience into a number.",
+ "disclaimer": "These are modeled estimates, not measurements, from an open-book model checked against published figures: every input is a published figure or a labeled assumption, shown with its receipt, every other number is arithmetic on those inputs, and nothing is fitted. In technical terms it is a bottom-up engineering model; it estimates no coefficient from data, so it is not econometric. Its ranges are spreads, not distributions. Each row is units of work times published coefficients, plus the share of hardware that sits idle to serve it, scaled by the building and the grid where it runs. No vendor has published a measured production figure for most rows, no Tribally owned facility in the record has published its electricity use or total water, and the back-test printed here shows where the model lands within a factor of two and where it misses by five to eight. Change a setting and the answer changes; that is the point of the tool. It says nothing about any site, stream, rate class, or Treaty-reserved right, and it never turns sovereignty, consent, or resilience into a number.",
  "project_scale": {
   "label": "Project scale, no defaults",
   "inputs": [
@@ -18954,7 +19815,7 @@
      "type": "input",
      "rows_first": 3,
      "rows_moved": 4,
-     "mean_swing_over_central": 0.760218
+     "mean_swing_over_central": 0.757647
     },
     {
      "name": "support_usd_user_yr",
@@ -19389,9 +20250,9 @@
     "id": "c_fed_price_b2",
     "label": "Data: federated against B2, price",
     "a": 8530.9,
-    "b": 1554.0,
+    "b": 1565.58,
     "a_is_lower": false,
-    "ratio_a_over_b": 5.48964,
+    "ratio_a_over_b": 5.44902,
     "flips_on_one_input": [],
     "flips_on_one_setting": [],
     "flips_with_all_inputs_at_extremes": false,
@@ -19812,9 +20673,9 @@
     "id": "e_node_price_b2",
     "label": "Leaving: one copy on the Nation's node against B2, price a year",
     "a": 901.953,
-    "b": 1554.0,
+    "b": 1565.58,
     "a_is_lower": true,
-    "ratio_a_over_b": 0.580407,
+    "ratio_a_over_b": 0.576113,
     "flips_on_one_input": [
      "nas_admin_h_month at 3.5",
      "exit_node_copies at 2"
@@ -19861,9 +20722,9 @@
     "id": "e_federated_price_b2",
     "label": "Leaving: three copies across Nations' nodes against B2, price a year",
     "a": 2705.86,
-    "b": 1554.0,
+    "b": 1565.58,
     "a_is_lower": false,
-    "ratio_a_over_b": 1.74122,
+    "ratio_a_over_b": 1.72834,
     "flips_on_one_input": [
      "central_admin_h_month at 3.5"
     ],
@@ -20132,7 +20993,12 @@
   "node_prompts_1m": "An illustration of one Nation's pooled demand, in prompts a year.",
   "wage_readings": "The three wages printed beside the office price: a vendor's 60 dollars (sf-051), 25, and 0 where staff time is already paid.",
   "exit_tb": "An illustration, the size of comparison C; no Nation's holdings. The reader types their own.",
-  "cache_share_top": "The top of the cache share's spread, where the field protocol asks what a logged share would change."
+  "cache_share_top": "The top of the cache share's spread, where the field protocol asks what a logged share would change.",
+  "nas_box_max_raw_tb": "An assumption with no source: the most raw terabytes one four-bay box holds, four 24 TB drives. The model counts one such box per copy at any size, so it takes no size whose copy needs more."
+ },
+ "typed_limits": {
+  "most": 1000000000.0,
+  "exit_tb": 80.0
  },
  "custody": {
   "label": "Where this data may be held",
@@ -20782,7 +21648,7 @@
           8530.9
          ],
          "left": [
-          1554.0,
+          1565.58,
           12480.0
          ],
          "bases": {
@@ -21017,7 +21883,7 @@
           901.953
          ],
          "left": [
-          1554.0,
+          1565.58,
           3480.0
          ],
          "bases": {
@@ -21300,7 +22166,7 @@
           9037.08
          ],
          "left": [
-          1554.0,
+          1565.58,
           12480.0
          ],
          "bases": {
@@ -21533,7 +22399,7 @@
           2705.86
          ],
          "left": [
-          1554.0,
+          1565.58,
           3480.0
          ],
          "bases": {
@@ -22551,7 +23417,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 117627.0,
       "ml": 916962.0
      },
@@ -22647,7 +23513,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 117627.0,
       "ml": 916962.0
      }
@@ -22781,7 +23647,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 54115.8,
       "ml": 651510.0
      },
@@ -22877,7 +23743,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 54115.8,
       "ml": 651510.0
      }
@@ -23011,7 +23877,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 9263.57,
       "ml": 651510.0
      },
@@ -23107,7 +23973,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 9263.57,
       "ml": 651510.0
      }
@@ -23241,7 +24107,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 136793.0,
       "ml": 651510.0
      },
@@ -23337,7 +24203,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 136793.0,
       "ml": 651510.0
      }
@@ -23471,7 +24337,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 14844.3,
       "ml": 651510.0
      },
@@ -23567,7 +24433,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 14844.3,
       "ml": 651510.0
      }
@@ -23701,7 +24567,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 3945.94,
       "ml": 1345380.0
      },
@@ -23797,7 +24663,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 3945.94,
       "ml": 1345380.0
      }
@@ -23931,7 +24797,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 2442.73,
       "ml": null
      },
@@ -24027,7 +24893,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 2442.73,
       "ml": null
      }
@@ -24161,7 +25027,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 8079.79,
       "ml": null
      },
@@ -24257,7 +25123,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 8079.79,
       "ml": null
      }
@@ -24391,7 +25257,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 137037.0,
       "ml": null
      },
@@ -24487,7 +25353,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 137037.0,
       "ml": null
      }
@@ -24624,7 +25490,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 65765.7,
       "ml": 330708.0
      },
@@ -24720,7 +25586,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1554.0,
+      "usd": 1565.58,
       "g": 65765.7,
       "ml": 330708.0
      }
@@ -26922,7 +27788,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 1134.0,
+      "usd": 1145.58,
       "g": 65765.7,
       "ml": 916962.0
      },
@@ -27024,7 +27890,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 1134.0,
+      "usd": 1145.58,
       "g": 65765.7,
       "ml": 916962.0
      },
@@ -27128,7 +27994,7 @@
      },
      "arch.C.central_b2": {
       "wh": 187902.0,
-      "usd": 834.0,
+      "usd": 845.583,
       "g": 65765.7,
       "ml": 916962.0
      },
@@ -27230,7 +28096,7 @@
      },
      "arch.E.year_b2": {
       "wh": 187902.0,
-      "usd": 834.0,
+      "usd": 845.583,
       "g": 65765.7,
       "ml": 916962.0
      },
@@ -28414,7 +29280,8 @@
    0
   ],
   "exit_tb": 10,
-  "cache_share_top": 0.25
+  "cache_share_top": 0.25,
+  "nas_box_max_raw_tb": 96
  },
  "scenario_from_selectors": {
   "i_dc_measured": [

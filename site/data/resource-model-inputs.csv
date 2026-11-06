@@ -160,7 +160,7 @@ cache_hit,0.8,0.7,0.9,share of cacheable traffic served by the cache,measured,pa
 carbon_temporal,0.161,0.161,0.161,share of CO2 removed,modeled,partly,lf-053,lever,Simulated.
 carbon_spatial,0.384,0.384,0.384,share of CO2 removed,modeled,partly,lf-053,lever,"Simulated, against a speed-first baseline."
 dedupe,0.9,0.9,0.9,share of duplicates removed,measured,verified,sf-032,lever,"Bytes, not kilowatt-hours."
-fed_copies,1,1,3,copies per Nation,assumed,assumption,ec-030,local node,One copy is not the same durability as three replicas in the cloud row.
+fed_copies,1,1,3,copies per Nation,assumed,assumption,ec-030,local node,"One copy per Nation against the cloud row's three. Copy count is not durability, and no failure, repair, or integrity model is in this record."
 fed_moved_share,0.01,0.001,0.1,share of the data moving each month,assumed,assumption,,network,No source measures a federated query's traffic.
 coding_fresh_mean,37200,37200,37200,fresh input tokens per mean turn,measured,verified,au-043,,Mean prompt 582.5k less mean cached 545.3k; a difference of means is a mean. Used for anything scaled by a count.
 coding_cached_mean,545300,545300,545300,cached input tokens per mean turn,measured,verified,au-043 au-038,,
@@ -170,7 +170,7 @@ cloud_admin_h_month,2,0,14,"paid hours per month, cloud seats for 50 users",assu
 central_admin_h_month,1,0.5,3.5,"paid hours per month, one operator of the central copy",assumed,assumption,sv-042,,"The same per-operator figure as a NAS, for one operator instead of ten."
 exit_admin_h,40,8,160,"paid hours to run the move, per copy, one time",assumed,assumption,,price,"No source. Scripting the pull, checking every file against its checksum, cutting over, and emptying the store; one working day to one working month. A Nation's own figure replaces it."
 exit_other_usd,0,0,1000,"USD, any other one-time bill",assumed,assumption,,price,"No source. A cold-tier retrieval fee, request charges, a contract's minimum, or an early-exit term; zero on plain hot storage on a plain account."
-exit_node_copies,1,1,2,copies on the Nation's own node or nodes,assumed,assumption,ec-030,local node,"One box, or a second box at the same Nation. One box is not the durability of three replicas."
+exit_node_copies,1,1,2,copies on the Nation's own node or nodes,assumed,assumption,ec-030,local node,"One box, or a second box at the same Nation: one or two copies against the cloud row's three. Copy count is not durability, and no failure, repair, or integrity model is in this record."
 exit_fed_pulls,1,1,3,"pulls billed by the store, federated set",assumed,assumption,,price,"One pull, then peer copies that pay no egress; three pulls if each Nation takes its copy from the store."
 exit_link_mbps,100,25,1000,"Mbps, the Nation's link",assumed,assumption,sf-056,network,"100 Mbps is the download half of the standard in sf-056; 25 and 1,000 are illustrations. Line rate with no overhead, so the days are a lower bound."
 whole_service_kg_tb,223,166,280,"kg CO2e per TB-year, a service's whole footprint",modeled,partly,ec-026,check,"Four data centres, on a service boundary; central is the midpoint. A check on another boundary, never a row."

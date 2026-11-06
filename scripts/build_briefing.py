@@ -22,7 +22,7 @@ import validate_public as vp  # noqa: E402
 
 PAGES = {"ai/index.html": "AI", "data-centers/index.html": "Data Centers", "energy/index.html": "Energy"}
 LABELS = {"energy-types-by-stage": "Energy types in Tribal plans", "energy-deadlines": "Funding deadlines"}  # these two plates have no eyebrow yet
-MODELS = {"comparison-model": "the comparison model", "resource-model": "the resource model"}
+MODELS = {"comparison-model": "the comparison model", "resource-model": "the open-book model"}  # the Explorer's model by its public name (owner ruling, 11/05/2026)
 CHECKLISTS_PAGE = "data-centers/index.html"
 FOOT = "This comparison does not decide a proposal."
 EMPTY = "Nothing chosen yet. Tick plates and checklists at left; the packet builds here."

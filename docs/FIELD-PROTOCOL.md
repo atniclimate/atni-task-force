@@ -17,7 +17,7 @@ This protocol serves Tribal IT staff, energy staff, and independent researchers 
 
 **The ordinary week.** Leave the meter on for one week of the machine's normal use, and log watts and utilization at whatever interval the tools allow. This sets `U`, the share of full capacity in use.
 
-Put both in one comma-separated values (CSV) file. The load test rows carry `sweep` in the phase column and the week's rows carry `log`; `seconds` says how long each reading lasted. These rows show the format only and are not a measurement:
+Put both in one comma-separated values (CSV) file. The load test rows carry `sweep` in the phase column and the week's rows carry `log`, and once one row has a phase every row needs one, or the script refuses the file and names the line; `seconds` says how long each reading lasted. These rows show the format only and are not a measurement:
 
 ```text
 utilization,watts,seconds,phase
@@ -40,7 +40,7 @@ Each reading stands in for a named input in the model:
 | Reading | Input it replaces |
 |---|---|
 | Idle watts, AI node | `node_w` |
-| Watts, office server | `office_w` |
+| Average watts over the ordinary week, office server | `office_w` |
 | Idle watts, network-attached storage box | `nas_w` |
 | Idle watts, media box | `mini_w` |
 | Idle fraction, from the load test | `a_idle` |
@@ -53,7 +53,7 @@ Each reading stands in for a named input in the model:
 python scripts\fit_idle.py readings.csv --compare node_w
 ```
 
-The script fits a straight line from idle to full load and prints the idle watts, the full-load watts, `a`, `U`, and what they do to the model's energy per unit of work, each with its error and beside the model's default. `--compare` names which default to read beside the idle watts: `node_w`, `office_w`, `nas_w`, or `mini_w`. It warns when a reading is missing near idle or near full load, and when the straight line fits this machine poorly.
+The script fits a straight line from idle to full load and prints the idle watts, the full-load watts, `a`, `U`, and what they do to the model's energy per unit of work, each with its error and beside the model's default. `--compare` names which default to read beside this machine's figure. For `node_w`, `nas_w`, or `mini_w` that figure is the idle watts. For `office_w` it is the average watts over the ordinary week, because the model counts the office server's whole year at that one draw; an idle reading typed there would understate the year. It warns when no reading sits within 10 percent of idle or of full load, and then marks the idle watts, the full-load watts, and `a` as extrapolated past the readings; it also warns when the straight line fits this machine poorly.
 
 To see what a reading does to the answer, type it into the Explorer's measured field for that input. Every row it moves carries the label **your measurement, not verified by ATNI**, and that label stays with the row through Copy Reading, print, and CSV. A typed value stays out of the page's address, so a shared link cannot carry it, and the page has no way to write it to the claims record.
 
@@ -61,7 +61,7 @@ To see what a reading does to the answer, type it into the Explorer's measured f
 
 One device's readings do not generalize. They describe this box, on these days, running this work; they say nothing of another machine, a fleet, or a Nation's other sites, and the script prints that limit beside every result.
 
-A week is not a year, and the model's `U` is a year's average. The standard errors read low, because readings in a load test are not a random sample. A straight line is a simplification of how a machine draws power, and a machine may not follow it.
+A week is not a year, and the model's `U` is a year's average. The standard errors assume independent readings on a straight line, so serial dependence between readings, meter error, a machine whose curve the line does not follow, and a small number of readings all make them read low. A straight line is a simplification of how a machine draws power, and a machine may not follow it.
 
 Watts are not answers. A small model on a quiet box can draw less and answer less, and this test measures only the first. It also says nothing about the cloud's side of a comparison, which stays a modeled figure from published sources, and nothing about custody, consent, or whether a Nation should host a facility. Those questions belong to the Nation.
 

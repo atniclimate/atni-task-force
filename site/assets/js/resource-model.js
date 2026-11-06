@@ -3,6 +3,7 @@
 (function () {
 'use strict';
 const HOURS = 8760;
+const B2_PERIODS = HOURS / 720; // B2 lists dollars per TB per 30 days, and the model's year is 8,760 hours: 365/30 of those periods, as Python
 const WEEK = 168; // hours in the week Your Use counts
 const blank = (v) => v === undefined || v === null;
 
@@ -251,7 +252,7 @@ function data(p, c, L) {
     central_s3: four([L.dc(centralWh)], s3),
     central_s3_with_pulls: four([L.dc(centralWh), L.net(pullWh)], s3 + egress),
     central_r2: four([L.dc(centralWh)], total * p.p_r2 * 12 + centralAdmin),
-    central_b2: four([L.dc(centralWh)], tb * p.p_b2_tb * 12 + centralAdmin),
+    central_b2: four([L.dc(centralWh)], tb * p.p_b2_tb * B2_PERIODS + centralAdmin),
     federated: local(fedTb, fedHours, queryWh),
     federated_replicas: local(p.fed_tb * p.replicas, fedHours, queryWh),
     readings: {
@@ -279,10 +280,10 @@ function leaving(p, L) {
   const box = raw * p.hdd_usd_tb + (p.already_on ? 0 : p.nas_chassis_usd);
   const cloudWh = tb * p.replicas * p.stor_wh_tb_h * HOURS * p.pue_hyper;
   const admin = p.central_admin_h_month * 12 * p.wage;
-  const stay = { s3: gb * p.p_s3 * 12 + admin, r2: gb * p.p_r2 * 12 + admin, b2: tb * p.p_b2_tb * 12 + admin };
+  const stay = { s3: gb * p.p_s3 * 12 + admin, r2: gb * p.p_r2 * 12 + admin, b2: tb * p.p_b2_tb * B2_PERIODS + admin };
   const rate = { s3: p.p_egress, r2: p.p_r2_egress, b2: p.p_b2_egress };
   const nodeCopies = p.exit_node_copies;
-  const fedCopies = p.replicas;
+  const fedCopies = p.replicas; // the cloud row's replica count: an assumption about how many copies, not about durability, which nothing here models
   const [nodeWh, nodeUsd] = storeYear(p, nodeCopies, raw, nodeCopies * p.nas_admin_h_month * 12);
   const [fedWh, fedUsd] = storeYear(p, fedCopies, raw, fedCopies * p.fed_admin_h_month * 12);
   const out = {};
@@ -302,6 +303,9 @@ function leaving(p, L) {
     }
   }
   const embodied = p.emb_hdd_kg_tb / p.life * 1000;
+  const perTb = p.replicas * p.stor_wh_tb_h * HOURS * p.pue_hyper;
+  // the size where a year on whole boxes meets the cloud's drives-only figure, which grows with the data while one box per copy does not; drives only, both grow, so no size ties
+  const wholeBoxes = (copies) => (p.already_on ? null : copies * p.nas_w * HOURS * p.pue_room / perTb);
   out.payback = payback;
   out.readings = {
     egress_per_pull_usd: { s3: gb * rate.s3, r2: gb * rate.r2, b2: gb * rate.b2 },
@@ -312,7 +316,8 @@ function leaving(p, L) {
     embodied_federated_set_g: fedCopies * raw * embodied,
     embodied_cloud_replicas_g: tb * p.replicas * embodied,
     node_w_at_energy_tie: cloudWh / (nodeCopies * HOURS * p.pue_room),
-    cloud_service_boundary_g: tb * p.whole_service_kg_tb * 1000, // a ceiling on another boundary, printed beside the drives-only floor and never as the row
+    tb_at_energy_tie: { node: wholeBoxes(nodeCopies), federated: wholeBoxes(fedCopies) },
+    cloud_service_boundary_g: tb * p.whole_service_kg_tb * 1000, // a reading on another boundary, one agency's four data centers, printed beside the drives-only floor and never as the row or as a bound
   };
   return out;
 }
@@ -364,7 +369,7 @@ function fieldLines(p, cat, arch) {
   };
   for (const v of p.views) rows[`media_box_${v}`] = [arch.B[`local_${v}`], 'mini_w', off * room * p.views_block / v];
   const idle = {};
-  for (const [name, [row, key, perW]] of Object.entries(rows)) idle[name] = { default_w: p[key], idle_share: p[key] * perW / row.wh, halves_at_w: wattsFor(0.5, row.wh, p[key], perW), doubles_at_w: wattsFor(2, row.wh, p[key], perW) };
+  for (const [name, [row, key, perW]] of Object.entries(rows)) idle[name] = { default_w: p[key], idle_share: row.wh ? p[key] * perW / row.wh : null, halves_at_w: wattsFor(0.5, row.wh, p[key], perW), doubles_at_w: wattsFor(2, row.wh, p[key], perW) };
   const top = { ...p, cache_share: p.cache_share_top };
   const median = [p.coding_fresh, p.coding_out, p.coding_cached];
   const mean = [p.coding_fresh_mean, p.coding_out_mean, p.coding_cached_mean];
@@ -682,13 +687,17 @@ function custodyView(D, tree, rule) {
   return out;
 }
 
-// %g, as Python prints a typed value in the measured line.
+// %g, as Python prints a typed value in the measured line: six significant figures, and a value exactly halfway rounds to the even figure, as Python's does,
+// where toPrecision alone would round it up (12345.25 prints 12345.2 on both). toExponential(30) shows the binary value's own digits, so a true half is seen as one.
 function shortest(x) {
   if (!x) return '0';
-  const rounded = +x.toPrecision(6);
+  const exact = Math.abs(x).toExponential(30);
+  const cut = exact.indexOf('e');
+  const half = exact[7] === '5' && !/[1-9]/.test(exact.slice(8, cut)) && +exact[6] % 2 === 0;
+  const rounded = half ? Number(`${x < 0 ? '-' : ''}${exact.slice(0, 7)}${exact.slice(cut)}`) : +x.toPrecision(6);
   const e = Math.floor(Math.log10(Math.abs(rounded)));
   if (e >= -4 && e < 6) return String(rounded);
-  const [mantissa, power] = x.toExponential(5).split('e');
+  const [mantissa, power] = rounded.toExponential(5).split('e');
   return `${mantissa.replace(/\.?0+$/, '')}e${power[0]}${power.slice(1).padStart(2, '0')}`;
 }
 const NUMBER_TEXT = /^\s*[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?\s*$/;
@@ -709,14 +718,29 @@ function applyMeasured(D, typed) {
   return { values, records };
 }
 const ROW_TREES = ['catalog', 'hour', 'where', 'arch', 'lever'];
-// The rows a typed value changed, from two flat trees: these carry the label.
-function movedRows(before, after) {
+// The rows a typed value reaches, from flat trees, as moved_rows in Python: every row it changed, and every row that moves when a typed input sits at its model low or high
+// (the probes). So a reading equal to the model's figure, which only narrows a row's spread, still labels the rows that use it.
+function movedRows(before, after, probes = []) {
   const rows = new Set();
-  for (const k of new Set([...Object.keys(before), ...Object.keys(after)])) {
-    const cut = k.lastIndexOf('.');
-    if (MS.includes(k.slice(cut + 1)) && ROW_TREES.includes(k.split('.')[0]) && before[k] !== after[k]) rows.add(k.slice(0, cut));
+  for (const other of [after, ...probes]) {
+    for (const k of new Set([...Object.keys(before), ...Object.keys(other)])) {
+      const cut = k.lastIndexOf('.');
+      if (MS.includes(k.slice(cut + 1)) && ROW_TREES.includes(k.split('.')[0]) && before[k] !== other[k]) rows.add(k.slice(0, cut));
+    }
   }
   return [...rows].sort();
+}
+// What the reader's readings reach at these settings: the rows above, and Your Use and the crossovers, which are rows on this page though the model's CSV does not hold them.
+// base is the run without the readings; after is the tree with them.
+function readingReach(D, base, after, measured) {
+  const before = compute(base);
+  const probes = Object.keys(measured).flatMap((k) => [1, 2].map((i) => compute({ ...base, [k]: D.inputs[k][i] })));
+  const reach = new Set(movedRows(flatten(before), flatten(after), probes.map((t) => flatten(t))));
+  for (const t of [after, ...probes]) {
+    for (const k of Object.keys(before.use)) if (MS.some((m) => before.use[k][m] !== t.use[k][m])) reach.add(`use.${k}`);
+    for (const k of Object.keys(before.cross)) if (before.cross[k] !== t.cross[k]) reach.add(`cross.${k}`);
+  }
+  return reach;
 }
 // The one sentence that travels with any figure a typed value touched: copy, print, and CSV all use it. Unused, it names the reading without saying the figures include it.
 const measuredLine = (D, records, used = true) => {
@@ -730,15 +754,22 @@ const carbonDamage = (g, family) => Object.fromEntries(['low', 'central', 'high'
 function damageColumn(D, g, choice = 'off') {
   if (choice === 'off') return null;
   const family = D.carbon_damage.families[choice];
-  const column = family.kind.startsWith('avoidance') ? D.carbon_damage.column_avoidance ?? D.carbon_damage.column : D.carbon_damage.column; // an avoidance cost never wears the damage head
-  return { column, as_of: D.carbon_damage.as_of, family: family.label, unit: family.unit, kind: family.kind, claims: family.claims, ...carbonDamage(g, family) };
+  const avoidance = family.kind.startsWith('avoidance'); // an avoidance cost never wears the damage head, in the line or the table
+  const column = avoidance ? D.carbon_damage.column_avoidance ?? D.carbon_damage.column : D.carbon_damage.column;
+  return { column, head: avoidance ? 'Avoidance cost' : 'Damage', as_of: D.carbon_damage.as_of, family: family.label, unit: family.unit, kind: family.kind, claims: family.claims, ...carbonDamage(g, family) };
 }
 
 // A scenario file: settings and typed values on the reader's own machine. Inbound files are untrusted, so only known names and allowed values pass, the whole file is refused on any problem, and nothing in it can set a label or a sentence.
 const SCENARIO_KIND = 'atni-resource-use-explorer-scenario';
 const SCENARIO_WARNING = 'This file may hold your Nation\'s figures.';
-const SCENARIO_MAX = 1e9;
+const SCENARIO_MAX = 1e9; // Python's TYPED_MOST: the largest count or typed figure a field or a file takes, so no figure overflows
 const SCENARIO_KEYS = ['kind', 'schema', 'notice', 'saved', 'model_hash', 'settings', 'mode', 'seats', 'fields', 'inputs', 'measured', 'custody', 'damage'];
+// The largest size comparison E takes, as exit_tb_limit in Python: one four-bay box per copy at any size, so the most raw terabytes one box holds over the raw terabytes each terabyte needs.
+const exitTbLimit = (D) => D.scenario.nas_box_max_raw_tb * D.scenario.shared_tb / D.inputs.nas_raw_tb[0];
+// One rule for a figure a reader types, live or from a scenario file: a finite number from its floor to its ceiling. name is a typed model input, 'seats', or 'field' for a Your Use count.
+const typedRange = (D, name) => [name === 'seats' ? 1 : 0, name === 'exit_tb' ? exitTbLimit(D) : SCENARIO_MAX];
+const typedOk = (D, name, v) => { const [low, high] = typedRange(D, name); return typeof v === 'number' && Number.isFinite(v) && v >= low && v <= high; };
+const typedWords = (D, name) => { const [low, high] = typedRange(D, name); return `a number from ${grouped(low)} to ${grouped(high)}${name === 'exit_tb' ? ' terabytes, the most one four-bay box holds per copy' : ''}`; };
 function readScenario(D, text) {
   let raw;
   try { raw = JSON.parse(text); } catch { return { problems: ['This file is not JSON, so nothing was changed. Choose a scenario file saved from this page.'] }; }
@@ -753,7 +784,6 @@ function readScenario(D, text) {
     problems.push(`${name} must be a set of names and values.`);
     return {};
   };
-  const count = (v, low) => typeof v === 'number' && Number.isFinite(v) && v >= low && v <= SCENARIO_MAX;
   const scenario = { settings: {}, fields: {}, inputs: {}, measured: {} };
   for (const [name, option] of Object.entries(section('settings'))) {
     if (!Object.hasOwn(D.sel, name)) problems.push(`Unknown setting: ${said(name)}.`);
@@ -762,12 +792,12 @@ function readScenario(D, text) {
   }
   for (const [name, v] of Object.entries(section('fields'))) {
     if (!Object.hasOwn(D.fields, name)) problems.push(`Unknown Your Use input: ${said(name)}.`);
-    else if (!count(v, 0)) problems.push(`The ${name} count must be a number zero or above.`);
+    else if (!typedOk(D, 'field', v)) problems.push(`The ${name} count must be ${typedWords(D, 'field')}.`);
     else scenario.fields[name] = v;
   }
   for (const [name, v] of Object.entries(section('inputs'))) {
     if (!D.typed.includes(name)) problems.push(`Unknown typed input: ${said(name)}.`);
-    else if (!count(v, 0)) problems.push(`${D.names[name] || name} must be a number zero or above.`);
+    else if (!typedOk(D, name, v)) problems.push(`${D.names[name] || name} must be ${typedWords(D, name)}.`);
     else scenario.inputs[name] = v;
   }
   for (const [name, v] of Object.entries(section('measured'))) {
@@ -775,7 +805,7 @@ function readScenario(D, text) {
     else try { Object.assign(scenario.measured, applyMeasured(D, { [name]: v }).values); } catch (error) { problems.push(`${error.message}.`); }
   }
   if (raw.mode !== undefined) { if (raw.mode === 'person' || raw.mode === 'office') scenario.mode = raw.mode; else problems.push('Who is counted must be person or office.'); }
-  if (raw.seats !== undefined) { if (count(raw.seats, 1)) scenario.seats = raw.seats; else problems.push('Staff seats must be a number of one or more.'); }
+  if (raw.seats !== undefined) { if (typedOk(D, 'seats', raw.seats)) scenario.seats = raw.seats; else problems.push(`Staff seats must be ${typedWords(D, 'seats')}.`); }
   if (raw.custody !== undefined) { if (typeof raw.custody === 'string' && Object.hasOwn(D.custody.options, raw.custody)) scenario.custody = raw.custody; else problems.push(`${D.custody.label} has no such option.`); }
   if (raw.damage !== undefined) {
     if (raw.damage === 'off' || (D.carbon_damage && typeof raw.damage === 'string' && Object.hasOwn(D.carbon_damage.families, raw.damage))) scenario.damage = raw.damage;
@@ -786,19 +816,22 @@ function readScenario(D, text) {
 
 // ---------------------------------------------------------------- figures in words
 const grouped = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(v);
+const unfit = (v) => typeof v === 'number' && !Number.isFinite(v); // NaN or an infinity: it says so in words, never as 0 or $0
 // Two significant figures, three at 100 and above; d overrides. No trailing zero, here or on the plates: 3, not 3.0.
 function num(v, d) {
+  if (unfit(v)) return 'no figure';
   const a = Math.abs(v);
   if (!a) return '0';
   if (a >= 99.5) return grouped(Number(v.toPrecision(d || 3)));
   return String(+v.toPrecision(d || 2));
 }
 const cents = (s) => (+s && s.length < 4 ? (+s).toFixed(2) : s); // money keeps its cents below a dollar: $0.20, $0.04, $0.004
-const usd = (v) => (Math.abs(v) >= 100 ? `$${grouped(Number(v.toPrecision(3)))}` : Math.abs(v) >= 1 ? `$${v.toFixed(2)}` : `$${cents(num(v))}`);
+const usd = (v) => (unfit(v) ? 'no figure' : Math.abs(v) >= 100 ? `$${grouped(Number(v.toPrecision(3)))}` : Math.abs(v) >= 1 ? `$${v.toFixed(2)}` : `$${cents(num(v))}`);
 const SCALE = { wh: [[1e7, 1e6, 'MWh'], [1e4, 1e3, 'kWh'], [0, 1, 'Wh']], g: [[1e7, 1e6, 't CO2e'], [1e4, 1e3, 'kg CO2e'], [0, 1, 'g CO2e']], ml: [[1e3, 1e3, 'L'], [0, 1, 'mL']] };
 const scaleOf = (v, m) => SCALE[m].find(([from]) => Math.abs(v) >= from);
 function figure(v, lo, hi, m, at) { // num, unit, and the spread as a tag: the one form every value and table cell reads
   if (blank(v)) return { num: 'no price', unit: '', tag: '' };
+  if (unfit(v)) return { num: 'no figure', unit: '', tag: '' };
   if (m === 'usd') return { num: usd(v), unit: '', tag: !blank(lo) && usd(lo) !== usd(hi) ? `(${usd(lo)} to ${usd(hi)})` : '' };
   const [, div, unit] = at || scaleOf(v, m);
   const n = (x) => num(x / div);
@@ -828,13 +861,7 @@ function Views(D) {
     V.p = V.run.base;
     V.t = V.run.tree;
     V.records = applyMeasured(D, S.measured).records;
-    V.moved = new Set();
-    if (V.records.length) { // what a reading changed at these settings; Your Use and the crossovers are rows on this page too, though the model's CSV does not hold them
-      const before = compute({ ...baseOf(D, S.settings), ...S.inputs });
-      V.moved = new Set(movedRows(flatten(before), flatten(V.t)));
-      for (const k of Object.keys(before.use)) if (MS.some((m) => before.use[k][m] !== V.t.use[k][m])) V.moved.add(`use.${k}`);
-      for (const k of Object.keys(before.cross)) if (before.cross[k] !== V.t.cross[k]) V.moved.add(`cross.${k}`);
-    }
+    V.moved = V.records.length ? readingReach(D, { ...baseOf(D, S.settings), ...S.inputs }, V.t, S.measured) : new Set(); // every row a reading reaches at these settings
   };
   V.isMoved = (key) => V.moved.has(key) || V.moved.has(`${key}.before`) || V.moved.has(`${key}.after`);
   V.measuredLine = (used = true) => measuredLine(D, V.records, used);
@@ -1067,6 +1094,7 @@ function Views(D) {
     if (blank(v)) return 'no tie at these settings';
     const [lo, hi] = V.run.spread(`reading:${key}`, (t) => at(t, key));
     if (name.startsWith('ratio_')) return `${num(lo)} to ${num(hi)} times, a spread`;
+    if (name.startsWith('tb_')) return `${num(v)}${lo === hi ? '' : ` (${num(lo)} to ${num(hi)})`} TB`; // a size, with its spread, read beside the size the reader typed
     if (name.includes('tie')) return name.includes('wage') ? `$${num(v)} an hour` : `${num(v, name.startsWith('node_w') ? 3 : 2)} W`;
     if (name.includes('swing')) return `${num(v)} times`;
     if (name.includes('duplicate')) return `${num(v)} GB`;
@@ -1147,7 +1175,7 @@ function Views(D) {
 
 const api = {
   MS, TAGS, FEED, SCENARIO_KIND, SCENARIO_WARNING, blank, compute, baseOf, Run, flatten, Views, projectScale, num, usd, figure, words, pct, grouped, leverText, plainFig,
-  custodyView, applyMeasured, movedRows, measuredLine, carbonDamage, damageColumn, readScenario,
+  custodyView, applyMeasured, movedRows, readingReach, measuredLine, carbonDamage, damageColumn, readScenario, exitTbLimit, typedRange, typedOk, typedWords,
 };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else window.resourceModel = api;

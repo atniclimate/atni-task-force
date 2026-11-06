@@ -1,7 +1,7 @@
 // Resource Use Explorer: the page around the model, which is resource-model.js. Text by textContent only.
 (function () {
 'use strict';
-const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario } = window.resourceModel;
+const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario, typedOk, typedWords } = window.resourceModel;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -224,9 +224,9 @@ function paintTables() {
   }
   $$('[data-damage-col]').forEach((n) => { n.hidden = !on; });
   if (!on) return;
-  const c = V.damageOf(1); // the family's own words; the figure is each row's
-  $$('th[data-damage-col]').forEach((th) => { th.textContent = `Damage, ${V.damageCurrency(c)}`; });
-  $$('caption [data-damage-col]').forEach((n) => { n.textContent = ` Damage column: ${c.family}, ${c.kind}; ${c.column}, as of ${c.as_of}.`; });
+  const c = V.damageOf(1); // the family's own words, its head among them, so an avoidance cost never reads as a damage; the figure is each row's
+  $$('th[data-damage-col]').forEach((th) => { th.textContent = `${c.head}, ${V.damageCurrency(c)}`; });
+  $$('caption [data-damage-col]').forEach((n) => { n.textContent = ` ${c.head} column: ${c.family}, ${c.kind}; ${c.column}, as of ${c.as_of}.`; });
 }
 // What the custody rule leaves out, always listed under the plate with its reason, and what the rule costs. One block for each comparison, so print holds them all.
 function custodyBlock(letter) {
@@ -480,7 +480,7 @@ function closeDrawer() {
 }
 function project() {
   const box = $('[data-plate-x="project"]');
-  const read = (k) => { const n = $(`[data-pf="${k}"]`, box); return n.value === '' || !(+n.value >= 0) ? null : +n.value; };
+  const read = (k) => { const n = $(`[data-pf="${k}"]`, box); return n.value === '' || !typedOk(D, 'field', +n.value) ? null : +n.value; }; // past the typed ceiling a figure waits, as for a blank, and never overflows
   const r = projectScale(...['mw', 'lf', 'wue', 'grid', 'load'].map(read));
   const ask = (say) => (blank(r.mwh) ? '–' : say); // once a year prints, an empty row says what it waits for
   const big = (v, unit, missing) => (blank(v) ? ask(missing) : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
@@ -586,16 +586,16 @@ function onInput(e) {
     S.opts[t.dataset.opt] = t.value;
     refresh();
     if (t.dataset.opt === 'waffle') $('[data-waffle-status]').textContent = $('.x-waffle:not([hidden]) figcaption strong').textContent; // no Reading on this plate says what changed
-  } else if (t.dataset.field) {
-    const seat = t.dataset.field === 'seats';
-    const bad = t.value === '' || !(+t.value >= (seat ? 1 : 0));
+  } else if (t.dataset.field) { // the model's one rule for a typed figure, the same a scenario file meets, so nothing typed can overflow
+    const name = t.dataset.field === 'seats' ? 'seats' : 'field';
+    const bad = t.value === '' || !typedOk(D, name, +t.value);
     t.setAttribute('aria-invalid', bad);
-    $('[data-why]').textContent = bad ? `Enter a number${seat ? ' of one or more' : ' zero or above'}. The Wall keeps the last good value.` : t.dataset.whyText;
-    if (!bad) { if (seat) S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; refresh(); }
+    $('[data-why]').textContent = bad ? `Enter ${typedWords(D, name)}. The Wall keeps the last good value.` : t.dataset.whyText;
+    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; refresh(); }
   } else if (t.dataset.input) {
-    const bad = t.value === '' || !(+t.value >= 0);
+    const bad = t.value === '' || !typedOk(D, t.dataset.input, +t.value);
     t.setAttribute('aria-invalid', bad);
-    $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? 'Enter a number zero or above. The figures keep the last good value.' : '';
+    $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? `Enter ${typedWords(D, t.dataset.input)}. The figures keep the last good value.` : '';
     if (!bad) { S.inputs[t.dataset.input] = +t.value; refresh('settings'); }
   } else if (t.dataset.measured) {
     const why = $('[data-measured-why]');

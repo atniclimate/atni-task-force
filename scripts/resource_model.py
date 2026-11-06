@@ -22,6 +22,8 @@ import sys
 from pathlib import Path
 
 HOURS = 8760.0
+B2_PERIODS = HOURS / 720  # B2 lists dollars per TB per 30 days, and the model's year is 8,760 hours: 365/30 of those periods, not 12
+TYPED_MOST = 1e9  # the largest count or figure a page field or a scenario file takes, so no figure can overflow
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "work" / "site-refresh" / "evidence"
 PARAMS = EVIDENCE / "resource-model-params.json"
@@ -359,7 +361,7 @@ def data_comparison(p, c, dc, net, room):
         "central_s3": four([dc(central_wh)], s3),
         "central_s3_with_pulls": four([dc(central_wh), net(pull_wh)], s3 + egress),
         "central_r2": four([dc(central_wh)], gb_total * p["p_r2"] * 12 + central_admin),
-        "central_b2": four([dc(central_wh)], tb * p["p_b2_tb"] * 12 + central_admin),
+        "central_b2": four([dc(central_wh)], tb * p["p_b2_tb"] * B2_PERIODS + central_admin),
         "federated": local(fed_tb, fed_hours, "query"),
         "federated_replicas": local(p["fed_tb"] * p["replicas"], fed_hours, "query"),
         "readings": {
@@ -387,9 +389,9 @@ def exit_comparison(p, dc, net, room, same_grid):
     box = raw * p["hdd_usd_tb"] + (0.0 if p["already_on"] else p["nas_chassis_usd"])
     cloud_wh = tb * p["replicas"] * p["stor_wh_tb_h"] * HOURS * p["pue_hyper"]
     admin = p["central_admin_h_month"] * 12 * p["wage"]
-    stay = {"s3": gb * p["p_s3"] * 12 + admin, "r2": gb * p["p_r2"] * 12 + admin, "b2": tb * p["p_b2_tb"] * 12 + admin}
+    stay = {"s3": gb * p["p_s3"] * 12 + admin, "r2": gb * p["p_r2"] * 12 + admin, "b2": tb * p["p_b2_tb"] * B2_PERIODS + admin}
     rate = {"s3": p["p_egress"], "r2": p["p_r2_egress"], "b2": p["p_b2_egress"]}
-    node_copies, fed_copies = p["exit_node_copies"], p["replicas"]
+    node_copies, fed_copies = p["exit_node_copies"], p["replicas"]  # the set takes the cloud row's replica count: an assumption about how many copies, not about durability, which nothing here models
     node_wh, node_usd = _store_year(p, node_copies, raw, node_copies * p["nas_admin_h_month"] * 12)
     fed_wh, fed_usd = _store_year(p, fed_copies, raw, fed_copies * p["fed_admin_h_month"] * 12)
     out = {"year_%s" % s: four([dc(cloud_wh)], usd) for s, usd in stay.items()}
@@ -407,6 +409,9 @@ def exit_comparison(p, dc, net, room, same_grid):
             payback["%s_vs_%s" % (dest, s)] = _positive(row["usd"], stay[s] - year_usd)
     out["payback"] = payback
     embodied = p["emb_hdd_kg_tb"] / p["life"] * 1000
+    per_tb = p["replicas"] * p["stor_wh_tb_h"] * HOURS * p["pue_hyper"]
+    # the size where a year on whole boxes meets the cloud's drives-only figure, which grows with the data while one box per copy does not; drives only, both grow, so no size ties
+    whole_boxes = lambda copies: None if p["already_on"] else copies * p["nas_w"] * HOURS * p["pue_room"] / per_tb
     out["readings"] = {
         "egress_per_pull_usd": {s: gb * rate[s] for s in rate},
         "copies": {"node": node_copies, "federated": fed_copies},
@@ -416,9 +421,16 @@ def exit_comparison(p, dc, net, room, same_grid):
         "embodied_federated_set_g": fed_copies * raw * embodied,
         "embodied_cloud_replicas_g": tb * p["replicas"] * embodied,
         "node_w_at_energy_tie": cloud_wh / (node_copies * HOURS * p["pue_room"]),
-        "cloud_service_boundary_g": tb * p["whole_service_kg_tb"] * 1000,  # a ceiling on another boundary, printed beside the drives-only floor and never as the row
+        "tb_at_energy_tie": {"node": whole_boxes(node_copies), "federated": whole_boxes(fed_copies)},
+        "cloud_service_boundary_g": tb * p["whole_service_kg_tb"] * 1000,  # a reading on another boundary, one agency's four data centers, printed beside the drives-only floor and never as the row or as a bound
     }
     return out
+
+
+def exit_tb_limit(p):
+    """The largest size comparison E takes: the model counts one four-bay box per copy at any size, so the most raw terabytes one box holds (an assumption with no source)
+    over the raw terabytes each terabyte of data needs. A typed size above it is refused, on the page and in a scenario file."""
+    return p["nas_box_max_raw_tb"] * p["shared_tb"] / p["nas_raw_tb"]
 
 
 def upkeep(p):
@@ -465,8 +477,8 @@ def field_lines(p, cat, arch):
             "node_1m": (arch["D"]["node_1m"], "node_w", off * room * p["prompts_block"] / p["node_prompts_1m"]),
             **{"media_box_%d" % v: (arch["B"]["local_%d" % v], "mini_w", off * room * p["views_block"] / v) for v in p["views"]}}
     idle = {}
-    for name, (row, key, per_w) in rows.items():
-        idle[name] = {"default_w": p[key], "idle_share": p[key] * per_w / row["wh"], "halves_at_w": _watts_for(0.5, row["wh"], p[key], per_w), "doubles_at_w": _watts_for(2.0, row["wh"], p[key], per_w)}
+    for name, (row, key, per_w) in rows.items():  # a row at zero energy, from a typed zero, has no idle share
+        idle[name] = {"default_w": p[key], "idle_share": p[key] * per_w / row["wh"] if row["wh"] else None, "halves_at_w": _watts_for(0.5, row["wh"], p[key], per_w), "doubles_at_w": _watts_for(2.0, row["wh"], p[key], per_w)}
     top = {**p, "cache_share": p["cache_share_top"]}
     median = (p["coding_fresh"], p["coding_out"], p["coding_cached"])
     mean = (p["coding_fresh_mean"], p["coding_out_mean"], p["coding_cached_mean"])
@@ -832,7 +844,7 @@ def stability(comparisons, inputs, selectors, base, central, oat, runs):
 
 
 def _num(x):
-    return "%g" % x
+    return "0" if not x else "%g" % x  # a typed -0 prints 0, as the page prints it
 
 
 def crossover_spread(central_tree, oat, runs, where=("cross",)):
@@ -861,6 +873,30 @@ def crossover_spread(central_tree, oat, runs, where=("cross",)):
                     never.append("%s = %s" % (name, o))
         out[key] = {"value": value, "low_one_input_or_setting": min(vals) if vals else None,
                     "high_one_input_or_setting": max(vals) if vals else None, "never_under": never}
+    return out
+
+
+def trace(inputs, selectors, base, central, runs, keys):
+    """What each figure reads at these settings, for its receipt: an input is read when moving it moves the figure, a setting when one of its options does. The figure then names
+    its inputs' and settings' claims and the assumptions it rests on, so a figure derived from others carries their receipts. Words only: no number changes here."""
+    moved = {k: flatten(compute({**base, k: base[k] * 1.5 + 1})) for k in inputs}
+    out = {}
+    for r in keys:
+        reads = [k for k, flat in moved.items() if flat.get(r) != central.get(r)]
+        claims = {c for k in reads for c in inputs[k]["claims"]}
+        claims |= {c for name, options in runs.items() if any(flat.get(r) != central.get(r) for flat in options.values()) for c in selectors[name].get("claims", [])}
+        out[r] = {"claims": sorted(claims), "assumed": [k for k in reads if inputs[k]["kind"] == "assumed" and inputs[k]["claims"]],
+                  "no_source": [k for k in reads if inputs[k]["kind"] == "assumed" and not inputs[k]["claims"]]}
+    return out
+
+
+def merged(traces):
+    """Several figures' receipts as one, in order, for a label that stands over all of them."""
+    out = {"claims": [], "assumed": [], "no_source": []}
+    for t in traces:
+        for field, items in t.items():
+            out[field] += [x for x in items if x not in out[field]]
+    out["claims"].sort()
     return out
 
 
@@ -1204,6 +1240,8 @@ def build(doc, cm):
                 if abs(sh_out[name][row][field] - value) > 1e-6:
                     raise AssertionError("same-hour drift at %s %s %s: %r against %r" % (name, row, field, sh_out[name][row][field], value))
 
+    paybacks = ["arch.%s.payback.%s" % (letter, k) for letter, a in tree["arch"].items() for k in a.get("payback", {})]
+    reads = trace(inputs, selectors, base, central, runs, [k for k in central if k.startswith("arch.") and ".readings." in k] + paybacks)
     architectures = {}
     for letter, spec in doc["architectures"].items():
         options = []
@@ -1212,13 +1250,14 @@ def build(doc, cm):
         readings = {}
         for k, v in flatten(tree["arch"][letter].get("readings", {})).items():
             low, high = ranges.get("arch.%s.readings.%s" % (letter, k), (v, v))
-            readings[k] = dict(doc["reading_labels"][k.split(".")[0]], value=v, low=low, high=high)
+            readings[k] = dict(doc["reading_labels"][k.split(".")[0]], value=v, low=low, high=high, reads=reads["arch.%s.readings.%s" % (letter, k)])
             if "basis" in readings[k]:
                 readings[k]["date"] = doc["price_date"]
         architectures[letter] = {"title": spec["title"], "unit_of_comparison": spec["unit"], "options": options, "readings": readings,
                                  "wins": spec["wins"], "loses": spec["loses"], "note": spec.get("note", "")}
         if "payback" in tree["arch"][letter]:  # a payback can be never, so it prints as a crossover does, not as a low and a high
-            architectures[letter].update(payback=crossover_spread(tree, oat, runs, ("arch", letter, "payback")), payback_label=spec["payback_label"])
+            architectures[letter].update(payback=crossover_spread(tree, oat, runs, ("arch", letter, "payback")), payback_label=spec["payback_label"],
+                                         payback_reads=merged(reads[k] for k in paybacks if k.startswith("arch.%s." % letter)))
 
     where = {}
     for w, wm in doc["workloads"].items():
@@ -1294,6 +1333,7 @@ def build(doc, cm):
                         "global_architectures": global_ranking(ranked_paths, central, oat, runs, inputs)},
         "stability": {"method": doc["stability_method"], "comparisons": stable},
         "upkeep": tree["upkeep"], "field_lines": tree["field"], "scenario_labels": doc["scenario_labels"],
+        "typed_limits": {"most": TYPED_MOST, "exit_tb": exit_tb_limit(base)},
         "custody": custody_block(doc, tree), "measured": doc["measured"],
         "computed_defaults": {
             "settings": {name: sel["default"] for name, sel in selectors.items()},
@@ -1374,11 +1414,16 @@ def custody_block(doc, tree):
 
 MEASURED_LABEL = "your measurement, not verified by ATNI"
 ROW_TREES = ("catalog", "hour", "where", "arch", "lever")
+# The grammar of a typed value in text, as resource-model.js reads it (its NUMBER_TEXT): plain digits 0 to 9, one point, an exponent, and the whitespace a browser trims.
+# So an underscore, another script's digits, or a spelled infinity is refused here as it is there.
+SPACES = "\t\n\v\f\r " + "".join(map(chr, (0xA0, 0x1680, *range(0x2000, 0x200B), 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF)))
+NUMBER_TEXT = "[%s]*[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?[%s]*" % (SPACES, SPACES)
 
 
 def apply_measured(doc, inputs, base, typed):
     """A typed value stands in for an input in this run and nowhere else. It takes no spread, keeps no claim, and carries the label; the label comes from here, never from
     what the reader or a file supplies. Nothing in this model or on the page writes to the claims record. Returns new inputs, new base values, and the records."""
+    import re
     spec = doc["measured"]["inputs"]
     new_inputs, new_base, records = dict(inputs), dict(base), []
     for key, raw in typed.items():
@@ -1386,7 +1431,7 @@ def apply_measured(doc, inputs, base, typed):
         if rule is None:
             raise ValueError("%s does not take a measured value" % key)
         try:
-            value = float(raw)
+            value = float(raw.strip(SPACES) if re.fullmatch(NUMBER_TEXT, raw) else "nan") if isinstance(raw, str) else float(raw)
         except (TypeError, ValueError):
             value = math.nan
         if isinstance(raw, bool) or not rule["min"] <= value <= rule["max"]:  # a NaN fails the comparison too
@@ -1397,14 +1442,21 @@ def apply_measured(doc, inputs, base, typed):
     return new_inputs, new_base, sorted(records, key=lambda r: r["input"])
 
 
-def moved_rows(before, after):
-    """The rows a typed value changed, from two flat trees: these carry the label."""
+def moved_rows(before, after, probes=()):
+    """The rows a typed value reaches, from flat trees: every row it changed, and every row that reads the typed input at all, which moves when that input sits at its
+    model low or high (the probes, from reading_probes). So a reading equal to the model's figure, which only narrows a row's spread, still labels the rows that use it."""
     rows = set()
-    for k in set(before) | set(after):
-        head, _, measure = k.rpartition(".")
-        if measure in MEASURES and k.split(".")[0] in ROW_TREES and before.get(k) != after.get(k):
-            rows.add(head)
+    for other in (after, *probes):
+        for k in set(before) | set(other):
+            head, _, measure = k.rpartition(".")
+            if measure in MEASURES and k.split(".")[0] in ROW_TREES and before.get(k) != other.get(k):
+                rows.add(head)
     return sorted(rows)
+
+
+def reading_probes(inputs, base, typed):
+    """The model with each typed input at its own low and at its own high, the rest as they stand: the trees moved_rows reads to find what depends on a reading."""
+    return [flatten(compute({**base, k: inputs[k][end]})) for k in typed for end in ("low", "high")]
 
 
 def measured_line(records, used=True):
@@ -1446,8 +1498,10 @@ def damage_column(doc, g, choice="off"):
     if choice == "off":
         return None
     family = spec["families"][choice]
-    column = spec.get("column_avoidance", spec["column"]) if family["kind"].startswith("avoidance") else spec["column"]  # an avoidance cost never wears the damage head
-    return {"column": column, "as_of": spec["as_of"], "family": family["label"], "unit": family["unit"], "kind": family["kind"], "claims": family["claims"], **carbon_damage(g, family)}
+    avoidance = family["kind"].startswith("avoidance")  # an avoidance cost never wears the damage head, in the line or the table
+    column = spec.get("column_avoidance", spec["column"]) if avoidance else spec["column"]
+    return {"column": column, "head": "Avoidance cost" if avoidance else "Damage", "as_of": spec["as_of"], "family": family["label"], "unit": family["unit"], "kind": family["kind"],
+            "claims": family["claims"], **carbon_damage(g, family)}
 
 
 # ---------------------------------------------------------------- report
@@ -1552,7 +1606,10 @@ def self_test():
     q.update(network_mode="average", connection="cellular", net_fixed_avg=2.0, net_fixed_marg=0.1)
     plain = lambda wh: layer(wh, 100, 0.0, 1.0)
     e = exit_comparison(q, plain, plain, plain, plain)
-    assert close(e["year_s3"]["usd"], 360) and close(e["year_r2"]["usd"], 240) and close(e["year_b2"]["usd"], 168)
+    assert close(B2_PERIODS, 365 / 30) and close(e["year_s3"]["usd"], 360) and close(e["year_r2"]["usd"], 240) and close(e["year_b2"]["usd"], 2 * 2 * 365 / 30 + 120), "B2's 30-day rate, over a 365-day year"
+    assert close(e["readings"]["tb_at_energy_tie"]["federated"], 10) and close(e["readings"]["tb_at_energy_tie"]["node"], 10 / 3), "one box per copy against drives that grow with the data"
+    assert exit_comparison({**q, "already_on": 1}, plain, plain, plain, plain)["readings"]["tb_at_energy_tie"] == {"node": None, "federated": None}, "drives only, both sides grow"
+    assert close(exit_tb_limit({"nas_box_max_raw_tb": 96, "shared_tb": 10, "nas_raw_tb": 12}), 80)
     assert close(e["move_s3_node"]["usd"], 200 + 100 + 5) and close(e["move_s3_node"]["wh"], 4000) and close(e["move_r2_federated"]["usd"], 300 + 5) and close(e["move_r2_federated"]["wh"], 12000)
     assert close(e["move_s3_federated"]["egress_usd"], 200), "a peer copy pays no egress"
     assert close(e["readings"]["transfer_days_one_copy"], 16e6 / 100 / 86400) and close(e["year_node"]["wh"], 10 * HOURS)
@@ -1574,8 +1631,13 @@ def self_test():
     damage_doc = {"carbon_damage": {"column": "damage", "column_avoidance": "avoidance", "as_of": "x", "families": {"d": {"label": "D", "unit": "u", "kind": "damage estimate", "claims": [], "low": 1, "central": 2, "high": 3},
                                                                                                        "a": {"label": "A", "unit": "u", "kind": "avoidance cost, not a damage estimate", "claims": [], "low": 1, "central": 2, "high": 3}}}}
     assert damage_column(damage_doc, 1e6, "d")["column"] == "damage" and damage_column(damage_doc, 1e6, "a")["column"] == "avoidance" and damage_column(damage_doc, 1e6) is None
+    assert damage_column(damage_doc, 1e6, "d")["head"] == "Damage" and damage_column(damage_doc, 1e6, "a")["head"] == "Avoidance cost"
     assert moved_rows({"arch.A.x.wh": 1.0, "arch.A.y.wh": 2.0}, {"arch.A.x.wh": 1.5, "arch.A.y.wh": 2.0}) == ["arch.A.x"]
-    for bad in ({"w": -1}, {"w": "many"}, {"w": True}, {"w": float("nan")}, {"v": 1}):
+    assert moved_rows({"arch.A.x.wh": 1.0, "arch.A.y.wh": 2.0}, {"arch.A.x.wh": 1.0, "arch.A.y.wh": 2.0}, [{"arch.A.x.wh": 1.2, "arch.A.y.wh": 2.0}]) == ["arch.A.x"], "an equal reading still labels the row that reads it"
+    assert _num(12345.25) == "12345.2" and _num(-0.0) == "0" and _num(1234565) == "1.23456e+06", "an exact half rounds to the even figure, as resource-model.js prints it"
+    for text, want in ((" 62 ", 62.0), ("6.2e1", 62.0), (".5", 0.5), ("62.", 62.0)):
+        assert apply_measured(measured_doc, {"w": {"central": 40.0, "claims": []}}, {"w": 40.0}, {"w": text})[1]["w"] == want, text
+    for bad in ({"w": -1}, {"w": "many"}, {"w": True}, {"w": float("nan")}, {"v": 1}, {"w": "1_0"}, {"w": chr(0xFF11) + chr(0xFF12)}, {"w": chr(0x661) + chr(0x662)}, {"w": "inf"}, {"w": "nan"}, {"w": " "}, {"w": "1,000"}):
         try:
             apply_measured(measured_doc, {"w": {"central": 40.0, "claims": []}}, {"w": 40.0}, bad)
         except ValueError:
@@ -1753,6 +1815,7 @@ def write_oracle(doc, cm, path=ORACLE, cases=300, seed=20261104):
         p = dict(base)
         for n, o in settings.items():
             p.update(selectors[n]["options"][o])
+        assert p["exit_tb"] <= exit_tb_limit(p), "an oracle case at a size the page refuses"
         tree = compute(p)
         flat = flatten(tree)
         central = {k: v for k, v in flat.items() if kept.match(k)}
@@ -1773,17 +1836,21 @@ def write_oracle(doc, cm, path=ORACLE, cases=300, seed=20261104):
             "your_use": {k: {t: ({m: near(x) for m, x in v.items()} if isinstance(v, dict) else near(v)) for t, v in row.items()} for k, row in your_use(p, fields).items()},
         })
     typed_cases = []
-    for typed in ({"node_w": 62}, {"nas_w": 15, "mini_w": 5}, {"a_idle": 0.25, "u_room": 0.2}, {"dev_phone": 3.2, "router_w": 6}, {"cache_share": 0.25}):
+    # a zero at the floor, values equal to the model's (which move no figure and narrow a spread), and an exact half at the sixth figure, beside ordinary readings
+    for typed in ({"node_w": 62}, {"nas_w": 15, "mini_w": 5}, {"a_idle": 0.25, "u_room": 0.2}, {"dev_phone": 3.2, "router_w": 6}, {"cache_share": 0.25},
+                  {"office_w": 0}, {"nas_w": 0}, {"nas_w": 46}, {"node_w": 40}, {"node_w": 12345.25}):
         ins, q, records = apply_measured(doc, inputs, base, typed)
-        before, after = flatten(compute(base)), flatten(compute(q))
-        moved = moved_rows(before, after)
+        before, after_tree = flatten(compute(base)), compute(q)
+        after = flatten(after_tree)
+        moved = moved_rows(before, after, reading_probes(inputs, base, typed))
         central = {k: v for k, v in after.items() if kept.match(k) and k.rpartition(".")[0] in moved}
         typed_cases.append({"typed": typed, "line": measured_line(records), "line_unused": measured_line(records, used=False), "records": records, "moved": moved, "tree": {k: near(v) for k, v in central.items()},
-                            "ranges": {k: [near(a), near(b)] for k, (a, b) in input_extremes(ins, q, central, one_at_a_time(ins, q)).items()}})
-    refused = ({"node_w": -1}, {"node_w": "many"}, {"node_w": True}, {"u_room": 0}, {"pue_room": 0.5}, {"a_idle": 1.5}, {"p_in": 3})
-    extra = {"measured_cases": typed_cases, "measured_refused": list(refused)}
+                            "ranges": {k: [near(a), near(b)] for k, (a, b) in input_extremes(ins, q, central, one_at_a_time(ins, q)).items()}, "field": near_all(after_tree["field"])})
+    refused = ({"node_w": -1}, {"node_w": "many"}, {"node_w": True}, {"u_room": 0}, {"pue_room": 0.5}, {"a_idle": 1.5}, {"p_in": 3}, {"node_w": "1_0"})
+    extra = {"measured_cases": typed_cases, "measured_refused": list(refused), "typed_limits": {"most": TYPED_MOST, "exit_tb": exit_tb_limit(base)}}
     if "carbon_damage" in doc:  # part of the removable damage layer
-        extra["damage_cases"] = [{"g": g, "family": name, "column": damage_column(doc, g, name)["column"], **carbon_damage(g, family)} for name, family in doc["carbon_damage"]["families"].items() for g in (73.0, 306600e6)]
+        extra["damage_cases"] = [{"g": g, "family": name, "column": damage_column(doc, g, name)["column"], "head": damage_column(doc, g, name)["head"], **carbon_damage(g, family)}
+                                 for name, family in doc["carbon_damage"]["families"].items() for g in (73.0, 306600e6)]
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(json.dumps({"seed": seed, "cases": out, **extra}, separators=(",", ":")), encoding="utf-8")
     return len(out)

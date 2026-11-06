@@ -378,6 +378,15 @@ def test_tier_schema_and_prose(world):  # (11)
 
 
 @need_files
+def test_the_model_goes_by_its_public_name(world):
+    """Owner ruling of 11/05/2026: the Open-book model, with one technical line, and the old name nowhere a reader sees it."""
+    words = world["out"]["disclaimer"]
+    assert "from an open-book model checked against published figures: every input is a published figure or a labeled assumption, shown with its receipt" in words and "nothing is fitted" in words
+    assert words.count("a bottom-up engineering model; it estimates no coefficient from data, so it is not econometric.") == 1 and words.count("econometric") == 1
+    assert not [s for s in strings(world["out"]) if "process model" in s.lower()]
+
+
+@need_files
 def test_worked_example_stays_off_the_site_file(world):
     text = json.dumps(world["out"]).lower()
     assert "worked example" not in text and "30 million" not in text and "30m token" not in text
@@ -454,15 +463,16 @@ def test_the_year_after_uses_the_box_or_the_drives(world):
     embodied = world["out"]["architectures"]["E"]["readings"]
     assert embodied["embodied_cloud_replicas_g"]["grid"] and embodied["embodied_own_node_g"]["grid"], "embodied carbon prints on both sides, on one boundary"
     assert e["readings"]["transfer_days_one_copy"] == pytest.approx(p["exit_tb"] * 8e6 / p["exit_link_mbps"] / 86400)
-    ceiling = embodied["cloud_service_boundary_g"]
-    assert ceiling["low"] == pytest.approx(p["exit_tb"] * 166e3) and ceiling["high"] == pytest.approx(p["exit_tb"] * 280e3) and "another boundary" in ceiling["grid"], "a ceiling beside the floor, named as another boundary"
+    other = embodied["cloud_service_boundary_g"]
+    assert other["low"] == pytest.approx(p["exit_tb"] * 166e3) and other["high"] == pytest.approx(p["exit_tb"] * 280e3) and "another boundary" in other["grid"], "a reading on another boundary beside the floor"
+    assert "not a bound" in other["label"] and "ceiling" not in other["label"] + world["out"]["architectures"]["E"]["note"], "four data centers bound no one service, so nothing calls them a ceiling"
     assert "never subtracted" in world["out"]["architectures"]["E"]["note"]
 
 
 @need_files
 def test_local_wins_on_custody_not_watt_hours_and_the_words_say_where_it_wins_on_price(world):
     e, reversals = world["tree"]["arch"]["E"], {s["id"]: s for s in world["out"]["stability"]["comparisons"]}
-    # watt-hours: the local rows use more, and three copies, the cloud's durability, use more on every single change
+    # watt-hours at the default size: the local rows use more, and three copies, the count the cloud row assumes, use more on every single change to the inputs
     assert e["year_node"]["wh"] > e["year_s3"]["wh"] and e["year_federated"]["wh"] > e["year_s3"]["wh"] and e["year_node"]["g"] > e["year_cloud_same_grid"]["g"]
     assert reversals["e_federated_energy"]["stable"] and reversals["e_federated_carbon"]["stable"]
     assert set(reversals["e_node_energy"]["flips_on_one_input"] + reversals["e_node_energy"]["flips_on_one_setting"]) == {"nas_w at 15", "node_already_on = yes"}
@@ -471,10 +481,79 @@ def test_local_wins_on_custody_not_watt_hours_and_the_words_say_where_it_wins_on
     assert e["year_federated"]["usd"] < e["year_s3"]["usd"] and e["year_federated"]["usd"] > e["year_r2"]["usd"] and e["year_federated"]["usd"] > e["year_b2"]["usd"]
     assert not reversals["e_node_price_r2"]["stable"] and not reversals["e_node_price_b2"]["stable"]
     assert e["move_s3_node"]["labor_usd"] > e["move_s3_node"]["egress_usd"], "at the assumed hours, the bill is mostly hours"
-    pay = world["out"]["architectures"]["E"]["payback"]
-    assert all(pay["node_vs_" + s]["value"] < 5 for s in ("s3", "r2", "b2")), "within a few years"
+    pay, wins, g = world["out"]["architectures"]["E"]["payback"], world["out"]["architectures"]["E"]["wins"], lambda x: "%.2g" % x
+    for s, years in (("s3", " years"), ("r2", ""), ("b2", "")):  # the words print each payback and its range as the page does
+        c = pay["node_vs_" + s]
+        said = f'{s.upper()} in {g(c["value"])}{years} ({g(c["low_one_input_or_setting"])} to {g(c["high_one_input_or_setting"])}{", or never" if c["never_under"] else ""})'
+        assert said in wins, said
     assert pay["federated_vs_s3"]["value"] > 5 and pay["federated_vs_r2"]["value"] is None and pay["federated_vs_b2"]["value"] is None
     assert pay["federated_vs_s3"]["never_under"], "a payback prints its or-never"
+
+
+@need_files
+def test_the_size_reverses_the_three_copy_row_and_the_page_takes_no_size_one_box_cannot_hold(world):
+    """Review of 11/05/2026, finding 2: one four-bay box per copy at any size, so the cloud's drives-only figure passes the boxes as the data grows."""
+    p, e = world["base"], world["tree"]["arch"]["E"]
+    tie = e["readings"]["tb_at_energy_tie"]
+    at = lambda tb: rm.compute({**p, "exit_tb": tb})["arch"]["E"]
+    assert at(tie["federated"])["year_federated"]["wh"] == pytest.approx(at(tie["federated"])["year_s3"]["wh"]), "at the printed size the three-copy row ties"
+    assert at(tie["federated"] * 1.01)["year_federated"]["wh"] < at(tie["federated"] * 1.01)["year_s3"]["wh"] and 70 < tie["federated"] < 72, "and above it the order reverses, near 71 TB"
+    assert at(tie["node"] * 1.01)["year_node"]["wh"] < at(tie["node"] * 1.01)["year_s3"]["wh"] and 23 < tie["node"] < 25, "the one-copy row reverses near 24 TB"
+    assert rm.compute({**p, "already_on": 1})["arch"]["E"]["readings"]["tb_at_energy_tie"] == {"node": None, "federated": None}, "drives only, both sides grow with the data"
+    limit = world["out"]["typed_limits"]["exit_tb"]
+    assert limit == pytest.approx(p["nas_box_max_raw_tb"] * p["shared_tb"] / p["nas_raw_tb"]) == 80 and world["out"]["typed_limits"]["most"] == rm.TYPED_MOST
+    assert "no source" in world["doc"]["scenario_labels"]["nas_box_max_raw_tb"] and "one four-bay box per copy" in world["out"]["architectures"]["E"]["loses"]
+
+
+@need_files
+def test_copies_are_counted_as_copies_and_never_as_durability(world):
+    """Review of 11/05/2026, finding 5: the record holds no failure, repair, or integrity model, so an equal copy count is not equal durability."""
+    words = json.dumps({k: world["out"]["architectures"][k] for k in ("C", "E")}, ensure_ascii=False)
+    assert "durability three" not in words and "cloud row's durability" not in words and "the cloud's durability" not in words
+    rows = {r["key"]: r for r in world["out"]["architectures"]["E"]["options"]}
+    assert "copy count is not durability, and no failure, repair, or integrity model is in this record" in rows["arch.E.year_federated"]["counted"]
+    assert "copy count is not durability" in world["out"]["architectures"]["E"]["loses"]
+
+
+@need_files
+def test_a_verdict_word_holds_at_the_settings_it_names(world):
+    """Fairness pass of 11/05/2026: each verdict is scoped to what the model shows, and its figures are the model's."""
+    arch, p = world["out"]["architectures"], world["base"]
+    cross = world["out"]["crossovers"]["views_measured_same_network"]
+    ends = "%s to %s views a year" % tuple(f'{round(x, -4):,.0f}' for x in (cross["low_one_input_or_setting"], cross["high_one_input_or_setting"]))
+    assert cross["value"] is None and "no audience size closes the gap" in arch["B"]["loses"] and ends in arch["B"]["loses"], "never at these settings, a range on one change"
+    assert "never pays back" not in arch["E"]["loses"] and "at these settings that move does not pay back" in arch["E"]["loses"] and "ends a vendor" not in arch["E"]["wins"]
+    assert "Two other kinds of federation are not this one" in arch["C"]["loses"]
+    # paid hours lead every self-hosted price at the default wage; comparison D's node is the closest call
+    assert p["node_admin_h_year"] * p["wage"] > p["node_usd"] / p["life"] and any("at the default wage" in x for x in world["out"]["qualitative"]["where_local_or_federated_systems_lose"])
+
+
+@need_files
+def test_b2_is_priced_by_its_30_day_period_over_a_365_day_year(world):
+    """Review of 11/05/2026, finding 7: twelve 30-day periods are 360 days, and the model's year is 8,760 hours."""
+    p, t = world["base"], world["tree"]["arch"]
+    want = p["exit_tb"] * p["p_b2_tb"] * 365 / 30 + p["central_admin_h_month"] * 12 * p["wage"]
+    assert t["E"]["year_b2"]["usd"] == pytest.approx(want) == pytest.approx(1565.58, abs=0.01) and t["C"]["central_b2"]["usd"] == pytest.approx(want)
+    assert world["inputs"]["p_b2_tb"]["unit"] == "USD per TB per 30 days"
+
+
+@need_files
+def test_derived_figures_name_the_claims_and_assumptions_they_read(world):
+    """Review of 11/05/2026, finding 6: every figure beside the rows carries its inputs' claims and the assumptions it rests on, traced from the model, at the default settings."""
+    index, arch = _claim_index(), world["out"]["architectures"]
+    for letter, a in arch.items():
+        for k, r in a["readings"].items():
+            reads = r["reads"]
+            assert reads["claims"] == sorted(reads["claims"]) and all(index[c]["status"] in ("verified", "partly") for c in reads["claims"]), (letter, k)
+            assert reads["claims"] or reads["no_source"] or reads["assumed"] or k.startswith("copies"), (letter, k)
+    e = arch["E"]["readings"]
+    assert {"ec-021", "lf-027"} <= set(e["node_w_at_energy_tie"]["reads"]["claims"]) and "pue_room" in e["node_w_at_energy_tie"]["reads"]["assumed"]
+    assert e["transfer_days_one_copy"]["reads"] == {"claims": ["sf-056"], "assumed": ["exit_link_mbps"], "no_source": []}
+    pay = arch["E"]["payback_reads"]
+    assert {"px-048", "px-049", "sv-042"} <= set(pay["claims"]) and {"exit_admin_h", "exit_other_usd"} <= set(pay["no_source"]), "the paybacks rest on hours and a bill with no source, and say so"
+    before = json.loads(json.dumps(rm.flatten(world["tree"])))
+    rm.trace(world["inputs"], world["selectors"], world["base"], rm.flatten(world["tree"]), rm.selector_runs(world["selectors"], world["base"]), ["arch.E.readings.node_w_at_energy_tie"])
+    assert rm.flatten(rm.compute(world["base"])) == before, "the trace moves no figure"
 
 
 @need_files
@@ -597,6 +676,45 @@ def test_the_label_survives_copy_and_csv(world):
     assert {"row", "copy", "print", "csv", "address", "claims"} == set(doc["measured"]["travels"])
 
 
+@need_files
+def test_a_reading_equal_to_the_model_still_labels_every_row_that_reads_it(world):
+    """Review of 11/05/2026, finding 4: an equal value moves no figure, yet takes the input out of the spread, so provenance follows what reads the input, not what moved."""
+    doc, inputs, base = world["doc"], world["inputs"], world["base"]
+    ins, q, records = rm.apply_measured(doc, inputs, base, {"nas_w": 46})
+    before, after = rm.flatten(world["tree"]), rm.flatten(rm.compute(q))
+    assert before == after and rm.moved_rows(before, after) == [], "the figures are the model's"
+    moved = rm.moved_rows(before, after, rm.reading_probes(inputs, base, {"nas_w": 46}))
+    assert {"arch.E.year_node", "arch.E.year_federated", "arch.C.federated", "arch.C.ten_copies"} <= set(moved) and "arch.E.year_s3" not in moved
+    narrowed = rm.input_extremes(ins, q, {"arch.E.year_node.wh": after["arch.E.year_node.wh"]}, rm.one_at_a_time(ins, q))["arch.E.year_node.wh"]
+    default = {r["key"]: r for r in world["out"]["architectures"]["E"]["options"]}["arch.E.year_node"]["energy_wh"]
+    assert narrowed[0] > default["low"], "its spread narrowed"
+    assert rm.copied_reading("A Reading.", "arch.E.year_node", records, moved).endswith(rm.measured_line(records))
+    assert '"%s"' % rm.MEASURED_LABEL in [l for l in rm.outputs_csv(after, records, moved).splitlines() if l.startswith("arch.E.year_node,wh,")][0]
+
+
+@need_files
+def test_a_zero_reading_computes_and_has_no_idle_share(world):
+    """Review of 11/05/2026, finding 1: a typed zero is allowed, and a row at zero energy has no share of idle in it."""
+    for key, line in (("office_w", "office_server"), ("nas_w", "nas_own_node")):
+        _, q, _ = rm.apply_measured(world["doc"], world["inputs"], world["base"], {key: 0})
+        field = rm.compute(q)["field"]["idle"][line]
+        assert field["idle_share"] is None and field["halves_at_w"] is None and field["doubles_at_w"] is None, key
+
+
+@pytest.mark.parametrize("text", ["1_0", chr(0xFF11) + chr(0xFF10), chr(0x661) + chr(0x660), "inf", "nan", "Infinity", "1,000", "", "0x10"])
+@need_files
+def test_typed_text_follows_the_pages_grammar(world, text):
+    """Review of 11/05/2026, finding 13: Python reads typed text as strictly as resource-model.js, so no underscore, other script's digits, or spelled infinity passes."""
+    with pytest.raises(ValueError):
+        rm.apply_measured(world["doc"], world["inputs"], world["base"], {"node_w": text})
+
+
+@need_files
+def test_a_typed_half_prints_as_python_and_the_page_print_it(world):
+    _, _, records = rm.apply_measured(world["doc"], world["inputs"], world["base"], {"node_w": 12345.25})
+    assert rm.measured_line(records).endswith("AI node idle 12345.2 W (model 40).")
+
+
 @pytest.mark.parametrize("typed", [{"node_w": -1}, {"node_w": "many"}, {"node_w": True}, {"node_w": None}, {"node_w": float("nan")}, {"node_w": float("inf")}, {"u_room": 0}, {"pue_room": 0.5}, {"a_idle": 1.5}, {"p_in": 3}])
 @need_files
 def test_a_bad_typed_value_is_refused_and_says_why(world, typed):
@@ -656,6 +774,15 @@ def test_damage_reproduces_the_note_and_stays_in_its_own_column(world):
     assert "price_usd" not in coding and "usd" not in coding
     flat = rm.flatten(world["tree"])
     assert not [k for k in flat if "damage" in k], "compute never reads it, so no price or ranking can"
+
+
+@need_files
+def test_an_avoidance_cost_never_wears_the_damage_head(world):
+    """Review of 11/05/2026, finding 12: the head comes from the family's own kind, in the line and in the table."""
+    for name, family in world["doc"]["carbon_damage"]["families"].items():
+        column = rm.damage_column(world["doc"], 1e6, name)
+        assert column["head"] == ("Avoidance cost" if family["kind"].startswith("avoidance") else "Damage"), name
+    assert rm.damage_column(world["doc"], 1e6, "ec_2019")["head"] == "Avoidance cost"
 
 
 @need_files

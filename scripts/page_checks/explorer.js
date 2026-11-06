@@ -33,6 +33,7 @@ async function load(query = '', source = html) {
 }
 
 const text = (node) => node.textContent.replace(/\s+/g, ' ').trim();
+const OVERFLOW = new RegExp(`NaN|Infinity|${String.fromCharCode(0x221e)}`); // what a number past a finite range prints
 const setRadio = (window, node) => { node.checked = true; fire(window, node, 'input'); };
 const setField = (window, node, v) => { node.value = String(v); fire(window, node, 'input'); };
 const setting = (document, name, v) => document.querySelector(`#settings input[data-setting="${name}"][value="${v}"]`);
@@ -102,20 +103,25 @@ function noScript() {
   eq([...document.querySelectorAll('.section-strip a')].map((a) => a.getAttribute('href').slice(1)).join(), panels.join(), 'the tabs follow the spec\'s nine, in order');
   eq([...document.querySelectorAll('section.panel')].map((n) => n.id).join(), panels.join(), 'and so do the panels');
   ok(/Modeled estimates, not measurements\. Ranges are spreads, not confidence intervals\./.test(text(document.querySelector('.x-band'))), 'disclaimer band');
-  ok(/It is not an econometric model/.test(text(document.getElementById('method'))), 'the disclaimer is verbatim');
-  // Owner rulings of 11/04/2026.
-  ok(/bottom-up process model, checked against published figures/.test(text(document.querySelector('.x-band'))) && /bottom-up process model, units of work times published coefficients, checked against published figures/.test(text(document.getElementById('method'))), 'the model is named as the owner ruled on every tab, and in Method with what it multiplies');
+  // Owner ruling of 11/05/2026: the model's public name is the Open-book model, and the Method tab keeps one technical line.
+  ok(/An open-book model, checked against published figures\./.test(text(document.querySelector('.x-band'))), 'the model is named as the owner ruled, on every tab');
+  ok(!/process model/i.test(text(document.body)), 'and the old name is gone from the page');
   const whatItIs = text(document.getElementById('method'));
+  ok(/from an open-book model checked against published figures: every input is a published figure or a labeled assumption, shown with its receipt, every other number is arithmetic on those inputs, and nothing is fitted\./.test(whatItIs), 'Method says once, plainly, what the name means');
+  eq(whatItIs.match(/a bottom-up engineering model; it estimates no coefficient from data, so it is not econometric\./g)?.length, 1, 'and keeps exactly one technical line');
+  eq(whatItIs.match(/econometric/g).length, 1, 'with no other word on it');
   eq(whatItIs.match(/that is the point/g).length, 1, 'Method says what the tool is for once');
   eq(whatItIs.match(/Change a setting and the answer changes/g).length, 1, 'and its setting sentence once');
   ok(/has no published measurement behind it yet\./.test(whatItIs), 'and still says the idle term is unmeasured');
-  ok(/It is not an econometric model; it estimates no coefficient, and its ranges are spreads/.test(whatItIs), 'and what it is not');
+  ok(/Its ranges are spreads, not distributions\./.test(whatItIs), 'and what its ranges are');
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) if (/hydro/i.test(text(r.querySelector('.ladder-label')))) ok(/scenario/i.test(text(r.querySelector('.ladder-label'))), `${r.dataset.row} is labeled a scenario`);
   for (const k of ['arch.A.local_hydro', 'arch.D.node_100k_hydro', 'arch.D.node_1m_hydro']) ok(row(document, k).hidden, `${k} is not in the main comparison`);
   for (const q of document.querySelectorAll('.x-pairs li > span:first-child')) if (/hydro/.test(text(q))) ok(/scenario/.test(text(q)), `a hydro pair says scenario: ${text(q)}`);
   ok(/declared clean feed, a scenario/.test(text(document.querySelector('.x-arch-words[data-group="comparison:A"]'))), 'the office row\'s clean feed says scenario');
   const admin = text(document.querySelector('.x-admin-note'));
   ok(/2 paid hours a month/.test(admin) && /flips by 14/.test(admin) && /tie at about 3\.1 hours/.test(admin), 'the two admin hours print beside the flip point');
+  ok(/assumes, with no source, that a cloud seat's price includes sign-in, permissions, and access control, which a local suite has to provide itself/.test(admin) && /does not say how much of the 14 hours/.test(admin) && !/By 14 the local/.test(admin),
+    'and say what a seat includes (owner ruling 23, 11/05/2026), as an assumption, with 14 not read as the tie');
   ok(!/Potawatomi|Data Holdings/.test(html), 'the facility is anonymized');
   ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('where-it-runs'))), 'and its figure attributed to its public source');
   ok(/Partly verified\. Limit: One operator/.test(text(document.getElementById('src-lf-059'))) && /sustainability report/i.test(text(document.getElementById('src-lf-059'))), 'with its receipt, status, and limit');
@@ -350,7 +356,6 @@ async function measuredOracle() {
   const { window } = await load();
   const ex = window.explorer;
   const D = ex.data;
-  const before = ex.flatten(new ex.Run(D, null, {}).tree);
   for (const c of oracle.measured_cases) {
     const name = Object.keys(c.typed).join();
     const { values, records } = ex.applyMeasured(D, c.typed);
@@ -359,7 +364,10 @@ async function measuredOracle() {
     eq(ex.measuredLine(D, records, false), c.line_unused, `${name}: the sentence where no row uses it`);
     const run = new ex.Run(D, null, {}, values);
     const flat = ex.flatten(run.tree);
-    eq(ex.movedRows(before, flat).join(), c.moved.join(), `${name}: the rows it moved`);
+    const reach = [...ex.readingReach(D, ex.baseOf(D, null), run.tree, values)].filter((k) => !/^(use|cross)\./.test(k)).sort();
+    eq(reach.join(), c.moved.join(), `${name}: the rows it reaches, by what reads the input as well as by what it moved`);
+    ok(c.moved.length > 0, `${name}: a reading always reaches a row, even one equal to the model's figure`);
+    deepNear(run.tree.field, c.field, `${name}: the field lines, a zero's undefined share among them`);
     for (const [k, v] of Object.entries(c.tree)) near(flat[k], v, `${name}: ${k}`);
     for (const key of Object.keys(values)) ok(!run.swept.includes(key), `${name}: a typed value takes no spread`);
     for (const [k, [lo, hi]] of Object.entries(c.ranges)) {
@@ -368,12 +376,17 @@ async function measuredOracle() {
       near(b, hi, `${name}: high ${k}`);
     }
   }
-  ok(oracle.measured_cases.length >= 5 && oracle.measured_refused.length >= 7, 'the oracle holds typed values and refusals');
+  ok(oracle.measured_cases.length >= 10 && oracle.measured_refused.length >= 8, 'the oracle holds typed values, zeros, equal values, a half, and refusals');
+  for (const typed of [{ office_w: 0 }, { nas_w: 0 }, { nas_w: 46 }, { node_w: 40 }, { node_w: 12345.25 }]) ok(oracle.measured_cases.some((c) => JSON.stringify(c.typed) === JSON.stringify(typed)), `the oracle holds ${JSON.stringify(typed)}`);
+  ok(oracle.measured_cases.find((c) => c.typed.office_w === 0).field.idle.office_server.idle_share === null, 'a zero has no idle share in Python either');
+  eq(oracle.measured_cases.find((c) => c.typed.node_w === 12345.25).line, `Includes ${D.measured.label}: AI node idle 12345.2 W (model 40).`, 'and a half rounds to the even figure on both sides');
+  near(ex.exitTbLimit(D), oracle.typed_limits.exit_tb, 'the size limit is Python\'s');
+  eq(ex.typedRange(D, 'field')[1], oracle.typed_limits.most, 'and so is the ceiling on every typed figure');
   for (const typed of oracle.measured_refused) {
     count(1);
     assert.throws(() => ex.applyMeasured(D, typed), undefined, `${JSON.stringify(typed)} is refused`);
   }
-  for (const bad of [{ node_w: '' }, { node_w: null }, { node_w: [40] }, { node_w: '0x10' }, { node_w: NaN }, { node_w: Infinity }, { ['__proto__']: 1 }, { toString: 1 }]) {
+  for (const bad of [{ node_w: '' }, { node_w: null }, { node_w: [40] }, { node_w: '0x10' }, { node_w: NaN }, { node_w: Infinity }, { ['__proto__']: 1 }, { toString: 1 }, { node_w: '1_0' }, { node_w: String.fromCharCode(0xff11, 0xff12) }, { node_w: 'inf' }]) {
     count(1);
     assert.throws(() => ex.applyMeasured(D, bad), undefined, `${JSON.stringify(bad)} is refused`);
   }
@@ -382,7 +395,8 @@ async function measuredOracle() {
   for (const c of oracle.damage_cases) {
     const got = ex.carbonDamage(c.g, D.carbon_damage.families[c.family]);
     for (const k of ['low', 'central', 'high']) { if (c[k] === null) eq(got[k], null, `${c.family}: no central is invented`); else near(got[k], c[k], `${c.family} ${k}`); }
-    eq(ex.damageColumn(D, c.g, c.family).column, c.column, `${c.family}: the head Python gives it`);
+    eq(ex.damageColumn(D, c.g, c.family).column, c.column, `${c.family}: the column Python gives it`);
+    eq(ex.damageColumn(D, c.g, c.family).head, c.head, `${c.family}: and the head`);
   }
   ok(oracle.damage_cases.length >= 12, 'the oracle holds the damage families');
   eq(ex.damageColumn(D, 73), null, 'the column is off by default');
@@ -454,6 +468,7 @@ async function behavior() {
   eq(ex.usd(0.2), '$0.20', 'and money keeps its cents');
   eq(ex.usd(0.004), '$0.004', 'below a cent it shows what it has');
   eq(ex.usd(0), '$0', 'and nothing is nothing');
+  for (const bad of [NaN, Infinity, -Infinity]) eq(`${ex.usd(bad)} ${ex.num(bad)} ${ex.figure(bad, null, null, 'usd').num} ${ex.plainFig(bad, 'wh')}`, 'no figure no figure no figure no figure', `${bad} prints as words, never as $0 or 0`);
   eq(ex.num(3), '3', 'no trailing zero at 1 and above either, as the plates print');
   eq(ex.num(0.996), '1', 'and a figure that rounds up to 1 prints as 1');
   eq(ex.num(2.4), '2.4', 'two figures stay two figures');
@@ -588,8 +603,13 @@ async function behavior() {
   eq(window.location.search, '', 'a typed number stays off the address');
   setField(window, hours, -3);
   eq(hours.getAttribute('aria-invalid'), 'true', 'a bad field says so');
-  ok(/zero/.test(text(document.querySelector('[data-why]'))), 'and how to fix it');
+  ok(/Enter a number from 0 to 1,000,000,000\./.test(text(document.querySelector('[data-why]'))), 'and how to fix it, in the model\'s one rule for a typed figure');
   ok(/14 hours/.test(text(screen)), 'the Wall keeps the last good value');
+  for (const big of ['1e308', '1e400', '1000000001']) { // a finite number past the ceiling, one that parses to infinity, and one just over: refused live as a scenario file refuses them
+    setField(window, hours, big);
+    ok(hours.getAttribute('aria-invalid') === 'true' && /14 hours/.test(text(screen)), `a screen count of ${big} is refused, and the Wall keeps the last good value`);
+  }
+  ok(!OVERFLOW.test(text(document.body)), 'and nothing on the page overflowed');
   fire(window, hours, 'change');
   eq(hours.value, '14', 'the field returns to it');
   setField(window, hours, 7);
@@ -994,7 +1014,13 @@ async function secondVersion() {
   ok(/days$/.test(text(document.querySelector('[data-reading="arch.E.readings.transfer_days_one_copy"]'))), 'days on the wire read as days');
   eq(text(document.querySelector('[data-reading="arch.E.readings.copies.node"]')), '1 (1 to 2) copies', 'copies read as copies');
   ok(/19\.5 W/.test(text(document.querySelector('[data-reading="arch.E.readings.node_w_at_energy_tie"]'))), 'the tie reads in watts');
-  ok(/kg CO2e/.test(text(document.querySelector('[data-reading="arch.E.readings.cloud_service_boundary_g"]'))), 'the ceiling in kilograms');
+  eq(['node', 'federated'].map((k) => text(document.querySelector(`[data-reading="arch.E.readings.tb_at_energy_tie.${k}"]`))).join(), '24 (3.8 to 111) TB,71 (11 to 111) TB', 'and the sizes where one box per copy meets the cloud\'s drives-only figure, in terabytes with their spread');
+  ok(/kg CO2e/.test(text(document.querySelector('[data-reading="arch.E.readings.cloud_service_boundary_g"]'))), 'the reading on another boundary, in kilograms');
+  ok(/A reading on another boundary, not a bound/.test(text(document.querySelector('.x-arch-words[data-group="comparison:E"]'))) && !/ceiling/i.test(text(document.querySelector('.x-arch-words[data-group="comparison:E"]'))) && !/ceiling/i.test(text(document.querySelector('.disclosure[data-group="comparison:E"]'))), 'and no comparison E word calls it a ceiling');
+  const eWords = text(document.querySelector('.x-arch-words[data-group="comparison:E"]'));
+  ok(/9\.3 \(0\.93 to 37\) days \(sf-056\)\. Assumed: the Nation's link speed\./.test(eWords) && /19\.5 W \(au-011, ec-021, ec-030, gf-053, lf-027, lf-078\)\. Assumed: room PUE/.test(eWords), 'each figure beside the rows names the claims it reads and the assumptions it rests on');
+  ok(/never means it does not pay back at these settings \(ec-030, [^)]*px-049[^)]*sv-042\)\. Assumed: [^.]*\. Assumed, with no source: [^.]*paid hours to run the move, per copy; any other one-time bill/.test(eWords), 'and so do the paybacks');
+  ok(!/durab/.test(text(document.querySelector('.disclosure[data-group="comparison:E"]')).replace('copy count is not durability', '')), 'copies are counted as copies, never as durability');
   for (const [k, words] of Object.entries({ node_vs_s3: /^1\.3 \(0\.35 to 4\.2\) years$/, node_vs_r2: /or never/, federated_vs_r2: /^never/ })) ok(words.test(text(document.querySelector(`[data-payback="${k}"]`))), `the payback ${k} prints as a crossover does`);
   // The typed fields: Nation-size figures, off the address.
   const tb = document.getElementById('e-exit_tb');
@@ -1006,8 +1032,19 @@ async function secondVersion() {
   eq(window.location.search, '', 'and stays off the address');
   setField(window, tb, -1);
   eq(tb.getAttribute('aria-invalid'), 'true', 'a bad size says so');
-  ok(/zero or above/.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"] [data-input-why]'))), 'in its own note');
+  ok(/Enter a number from 0 to 80 terabytes, the most one four-bay box holds per copy\./.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"] [data-input-why]'))), 'in its own note, with the model\'s limit');
   near(V.p.exit_tb, 20, 'and keeps the last good value');
+  near(ex.exitTbLimit(D), oracle.typed_limits.exit_tb, 'the limit is Python\'s');
+  eq(tb.max, String(oracle.typed_limits.exit_tb), 'and the field says it');
+  ok(/one four-bay box per copy at any size/.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"]'))), 'and its caption says the model adds no box as the data grows');
+  for (const big of [1e308, ex.exitTbLimit(D) + 1]) {
+    setField(window, tb, big);
+    ok(tb.getAttribute('aria-invalid') === 'true' && V.p.exit_tb === 20, `a size of ${big} is refused, and the figures keep the last good value`);
+  }
+  ok(!OVERFLOW.test(text(document.querySelector('[data-plate-x="arch"]'))), 'and nothing overflowed');
+  setField(window, tb, ex.exitTbLimit(D));
+  eq(`${tb.getAttribute('aria-invalid')} ${V.p.exit_tb}`, `false ${ex.exitTbLimit(D)}`, 'the limit itself is taken');
+  setField(window, tb, 20);
   setField(window, tb, 10);
   fire(window, tb, 'change');
   setField(window, document.getElementById('e-exit_admin_h'), 80);
@@ -1166,6 +1203,18 @@ async function secondVersion() {
   ok(clear.hidden && foot('arch').hidden, 'the line and the button go');
   eq(reading('node_w').value, '', 'and the field empties');
   eq(flatNow(), untouched, 'and every figure is the model\'s again');
+  // A reading equal to the model's figure moves no figure, yet narrows the spread of every row that reads it, so those rows carry the label too (review of 11/05/2026, finding 4).
+  compare('E');
+  setField(window, reading('nas_w'), 46);
+  eq(flatNow(), untouched, 'an equal reading moves no figure');
+  ok(moved('arch.E.year_node') && moved('arch.E.year_federated') && moved('arch.C.federated'), 'yet every row that reads it carries the label');
+  ok(!moved('arch.E.year_s3') && !moved('arch.D.node_100k'), 'and no row that does not');
+  eq(text(foot('arch')), `Includes ${label}: NAS idle 46 W (model 46).`, 'and the plate\'s foot says its rows include it');
+  fire(window, document.querySelector('[data-outputs]'), 'click');
+  ok((await window.lastBlob.text()).split('\n').some((l) => l.startsWith('arch.E.year_node,wh,') && l.endsWith(`,"${label}"`)), 'as the CSV does');
+  setField(window, reading('nas_w'), '');
+  ok(foot('arch').hidden && !moved('arch.E.year_node'), 'and clearing it takes the label away');
+  compare('D'); // the checks below read comparison D's rows
 
   // The damage control: off by default, its own column, and it moves nothing else.
   const damage = document.querySelector('[data-damage]');
@@ -1200,6 +1249,12 @@ async function secondVersion() {
   setDamage('ec_2019');
   eq(text(line.querySelector('.x-damage-head')), `${D.carbon_damage.column_avoidance}, as of ${D.carbon_damage.as_of}`, 'an avoidance cost never wears the damage head');
   ok(/^Not a price\./.test(text(line.querySelector('.caption'))) && /an avoidance cost:/.test(text(line.querySelector('.x-damage-figures'))), 'and its note opens by saying it is not a price');
+  for (const family of ['ec_2019', 'ec_2019_long']) { // the table's head and caption too, which print as they show (review of 11/05/2026, finding 12)
+    setDamage(family);
+    ok(text(damageHead) === 'Avoidance cost, 2016 EUR' && /^Avoidance cost column: /.test(text(damageCaption)) && !/Damage/.test(text(damageHead) + text(damageCaption)), `${family}: the Table head says avoidance cost, from the family's own metadata`);
+  }
+  setDamage('epa_2020');
+  eq(text(damageHead), 'Damage, 2020 USD', 'and a damage estimate keeps the damage head');
   // A project shows its tonnes first.
   const pf = (k) => document.querySelector(`[data-pf="${k}"]`);
   const damageRow = document.querySelector('[data-po-damage-row]');
@@ -1305,6 +1360,9 @@ async function secondVersion() {
     'an endless count': `{"kind":"${ex.SCENARIO_KIND}","schema":1,"fields":{"chat":1e999}}`,
     'a model input no field takes': JSON.stringify({ ...file, inputs: { p_in: 3 } }),
     'a typed value in words': JSON.stringify({ ...file, inputs: { exit_tb: '10' } }),
+    'a size past one box per copy': JSON.stringify({ ...file, inputs: { exit_tb: 81 } }),
+    'a typed figure past the ceiling': JSON.stringify({ ...file, inputs: { exit_other_usd: 1e10 } }),
+    'seats past the ceiling': JSON.stringify({ ...file, seats: 2e9 }),
     'a reading out of bounds': JSON.stringify({ ...file, measured: { u_room: 0 } }),
     'a reading that is true': JSON.stringify({ ...file, measured: { node_w: true } }),
     'a reading with a label of its own': JSON.stringify({ ...file, measured: { node_w: { value: 62, label: 'verified by ATNI' } } }),
@@ -1374,7 +1432,7 @@ async function homeBand() {
   ok(band && band.previousElementSibling.classList.contains('home-door'), 'the instrument stands under the door');
   eq(still.querySelector('.home-links a[href="explorer/"]').textContent, 'Open the Resource Use Explorer', 'with a link in');
   ok(still.querySelector('.site-nav a[href="explorer/"]'), 'and the Explorer is in the nav');
-  ok(/bottom-up process model, checked against published figures/.test(text(panel)) && /not measurements/.test(text(panel)), 'the receipts say what the figure is');
+  ok(/an open-book model, checked against published figures/.test(text(panel)) && /not measurements/.test(text(panel)) && !/process model/i.test(home), 'the receipts say what the figure is, by the model\'s public name');
   ok(/Nothing you enter leaves your browser/.test(text(panel)), 'and that nothing a reader enters leaves the browser');
   ok(/Modeled, \d{2}\/\d{4}/.test(text(band.querySelector('.home-read'))), 'the figure says it is modeled, and when');
   ok(!/<script[^>]+(resource-model|plate\.js)|id="explorer-data"/.test(home), 'the home page loads no model and no kit');

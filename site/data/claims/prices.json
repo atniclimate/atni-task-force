@@ -1190,7 +1190,7 @@
    "value": 6.95,
    "low": null,
    "high": null,
-   "unit": "USD per TB-month",
+   "unit": "USD per TB per 30 days",
    "year": 2026,
    "boundary": "API list charge to the buyer only; excludes data center energy, network, device and embodied impacts, taxes, and negotiated discounts. US dollars, global standard endpoint, short context unless stated.",
    "source": {
