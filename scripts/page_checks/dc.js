@@ -65,6 +65,10 @@ async function tabs() {
   key(window, links[7], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
   eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
+  // jsdom loads no CSS, so the rule is held as text: four plates hide their key and keep Read as a table, in the kit's room for it (a11y A3).
+  const css = read('site/assets/css/dc.css');
+  ok(css.includes(':is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }') && !/\.plate-under \{ display: none; \}/.test(css) && !/--below: 0px/.test(css), 'four plates hide their key, never Read as a table');
+  for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-under > .plate-to-table`), `${id}: Read as a table is in the box that stays`);
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -97,6 +101,18 @@ async function deepLinks() {
     eq(band.document.getElementById('dc-pnw-load').dataset.view, 'sources', `${a.textContent} opens Sources`);
     eq(band.window.scrolled, `dc-pnw-load-source-${a.textContent}`, `${a.textContent} reaches its receipt`);
     eq(band.errors.join(), '', `${a.textContent} no errors`);
+  }
+  // Settings after the anchor (#id&name=value) name no element, so the browser lands nowhere: the kit opens the anchor's tab and lands on it as the browser
+  // would on a plain #id, in view and with focus there (a11y A1), and a disclosure it names still opens (A2). The old ?query form lands the same way.
+  for (const [hash, tab, opens] of [['land', 'land', false], ['climate', 'climate', false], ['dc-pnw-load', 'overview', false], ['purpose', 'overview', true], ['?dc-pnw-load=2046#dc-pnw-load', 'overview', false]]) {
+    const deep = await load(hash.startsWith('?') ? hash : `#${hash}&dc-pnw-load=2046`);
+    const id = hash.split('#').pop();
+    const target = deep.document.getElementById(id);
+    ok(!deep.document.getElementById(tab).hidden && deep.window.scrolled === id && deep.document.activeElement === target, `${hash} with settings opens ${tab}, scrolls to ${id}, and starts focus there`);
+    eq(deep.window.location.hash, `#${id}&dc-pnw-load=2046`, `${hash}: the anchor first, then the settings`);
+    eq(deep.window.plate.read('dc-pnw-load').selected, '2046', `${hash}: with its setting`);
+    if (opens) ok(target.closest('details').open, `${hash} with settings opens its details`);
+    eq(deep.errors.join(), '', `${hash} with settings: no errors`);
   }
 }
 

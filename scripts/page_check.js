@@ -3,7 +3,7 @@
 //   node scripts/page_check.js --all
 //   node scripts/page_check.js --page ai     (plate, dc, ai, ru, explorer, library, energy, briefing)
 // Exit 1 on a failed check and 2 on bad arguments. Budgets in tests/budgets.json only print warnings; they never change the exit code.
-// Needs "npm ci" once. The Explorer page reads 300 oracle cases and takes about three minutes.
+// Needs "npm ci" once. The Explorer page reads 300 oracle cases and takes ten to fifteen minutes (825 seconds on 11/06/2026); run it last.
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');

@@ -737,7 +737,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "The equivalent energy consumption is a European average of 188Wh per hour of video streaming using the conventional approach (Figure 18).",
    "derived": null,
@@ -758,7 +758,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "The European average carbon emissions per hour of video streaming for the year 2020 has been estimated to be 56gCO2e/hour video streaming using the conventional approach",
    "derived": null,
@@ -779,7 +779,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "Data Centres <1 1 1%",
    "derived": null,
@@ -800,7 +800,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "Transmission 6 Network 20 10%",
    "derived": null,
@@ -821,7 +821,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "Home Router 21 71 38%",
    "derived": null,
@@ -842,7 +842,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "Screens 25 86 46%",
    "derived": null,
@@ -2322,7 +2322,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2343,7 +2343,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2364,7 +2364,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2427,7 +2427,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2449,7 +2449,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2470,7 +2470,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },
@@ -2491,7 +2491,7 @@
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
-    "kind": "company-report",
+    "kind": "model",
     "published": "2021-06",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf"
    },

@@ -18,7 +18,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "TV Peripheral 3 10 5%",
    "derived": "188 Wh total less data centers 1, network 20, home router 71, and screens 86 leaves 10 Wh, the same as the table row.",
@@ -60,7 +60,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "Data centres (including hosting, encoding and CDNs), account for less than 1gCO2e/hour and approximately 1Wh/hour, representing roughly 1% of total emissions and energy.",
    "derived": "Carbon Trust's own words: roughly 1 percent. Check on its rounded figures: 1 Wh / 188 Wh = 0.53 percent, which is the table's 1 Wh rounded, not a separate finding.",
@@ -1330,7 +1330,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix. | the energy consumption related to data centres is estimated with an energy intensity per viewing hour of 1.3Wh/hour, which is derived from a selection of DIMPACT members based on measured data in 2020.",
    "derived": "1.3 Wh per hour / 2.88 GB per hour = 0.451 Wh/GB, printed as 0.45.",
@@ -2549,7 +2549,7 @@
     "publisher": "Carbon Trust (with DIMPACT)",
     "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
     "published": "2021-06",
-    "kind": "company-report"
+    "kind": "model"
    },
    "quote": "and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix.",
    "derived": "6.40 Mbps x 3,600 s / 8 = 2,880 MB = 2.88 GB per hour.",

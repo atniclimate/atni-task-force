@@ -1037,6 +1037,7 @@ async function access() {
     const how = document.getElementById(x.getAttribute('aria-describedby'));
     ok(how && how.hidden && how.textContent === 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.', `${name}: the plot is described by the instruction, out of view`);
     ok(p.classList.contains('has-under') && p.querySelector(':scope > .plate-under').previousElementSibling === x && p.querySelector(':scope > .plate-under > .plate-to-table').textContent === 'Read as a table', `${name}: Read as a table stands right under the plot`);
+    eq(p.querySelector('.plate-view[data-view="table"] .table-scroll').getAttribute('aria-label'), `Table of values: ${text(p.closest('.panel').querySelector('.panel-title'))}`, `${name}: the table it opens is named after its plate, as the kit names its regions (a11y A10)`);
   }
   fire(window, plate.querySelector('.plate-to-table'), 'click');
   ok(!plate.querySelector('.plate-view[data-view="table"]').hidden && plate.querySelector('.plate-view[data-view="reading"]').hidden && plate.querySelector('.plate-views input[value="table"]').checked, 'the button opens the Table view, and the radio follows');
@@ -1054,7 +1055,7 @@ async function access() {
 }
 
 // The owner's chart ideas (ruling 31) in the Explorer: what moves it most in every row plate's detail, and the starting point behind a moved bar ----------
-const INTRO = 'Each row shows how far this result moves when one input goes from its low end to its high end, with the others held where they are.'; // the voice lead's words, E4
+const INTRO = 'Each row shows how far this result moves when one input goes from its low end to its high end, with the others held where they are. Settings are not ranked here; the darker part of each bar lies below your figure, the lighter above it.'; // the voice lead's words, E4 and L3
 async function charts() {
   const { window, document } = await load();
   const ex = window.explorer;
@@ -1065,11 +1066,12 @@ async function charts() {
       const box = doc.querySelector(`[data-plate-x="${name}"] .x-drivers`);
       ok(box && box.tagName === 'DETAILS' && text(box.querySelector('summary')) === 'What moves it most' && box.closest('.plate-view').dataset.view === 'reading', `${name}: what moves it most stands in the detail, under the Reading`);
       eq(text(box.querySelector('caption')), INTRO, `${name}: its intro is the table's caption, word for word`);
-      eq([...box.querySelectorAll('thead th')].map(text).join('|'), 'Input|Low end to high end', `${name}: a table, so its rows read as rows`);
+      eq([...box.querySelectorAll('thead th')].map(text).join('|'), 'Input|Low end to high end|Sources', `${name}: a table, so its rows read as rows, and the claims under their own head (a11y A9)`);
       const rows = ranked(doc, name);
       ok(rows.length >= 1 && rows.length <= 5, `${name}: up to five inputs`);
       for (const tr of rows) {
         ok(tr.querySelector('th[scope="row"]') && /^\$?[\d.,]+ to \$?[\d.,]+( \S.*)?$/.test(text(tr.querySelector('td').firstChild)), `${name}: ${text(tr)} names the input and the figure at its two ends`);
+        ok(tr.children.length === 3 && !tr.children[1].querySelector('a') && !tr.children[2].querySelector('.plate-driver-bar'), `${name}: ${text(tr.querySelector('th'))}: the figures and the bar in one cell, the claims in the next`);
         const ids = [...tr.querySelectorAll('td a.x-c')].map((a) => a.getAttribute('href').slice(5));
         ok(ids.length ? ids.every((id) => doc.getElementById(`src-${id}`)) : /no source, an assumption/.test(text(tr)), `${name}: ${text(tr.querySelector('th'))} names its range's claims, each with a receipt, or says it is an assumption`);
         const bar = tr.querySelector('.plate-driver-bar');
@@ -1120,6 +1122,8 @@ async function charts() {
   const close = (a, b, message) => ok(Math.abs(a - b) < 0.02, `${message}: ${a} against ${b}`); // both printed to a hundredth of a percent
   close(parseFloat(mark.style.width), (parseFloat(coding.querySelector('.wall-needle').style.left) - wallAt) / 3, 'a third of the bar three hours draw, from the wall: one hour, the default');
   close(wallAt, ex.view.layout(ex.view.boardKeys('use', 'wh'), 'wh', false, ex.view.boardScale('use', 'wh')).wall * 100, 'standing at the wall, where the row\'s bar begins');
+  const end = (wallAt + parseFloat(mark.style.width)) / 100;
+  eq(mark.classList.contains('is-flip'), end > 0.7, `its name reads on from the end tick, at ${end.toFixed(2)} of the ruler, and turns back only past 0.7 (critique M1)`);
   fire(window, coding, 'click');
   const reading = document.querySelector('[data-plate-x="use"] [data-d="reading"]');
   ok(text(reading).endsWith(`From a starting point of ${was} Wh.`), `the Reading says the default figure, the static page's own: ${text(reading).slice(-60)}`);

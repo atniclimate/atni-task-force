@@ -30,7 +30,7 @@
   {"id": "ct-tv", "group": "ct", "label": "TV peripherals", "claim": "ru-001", "modeled": true},
   {"id": "desnz-whole", "group": "desnz", "label": "Whole chain", "claim": "fp-143", "modeled": true},
   {"id": "desnz-dc", "group": "desnz", "label": "Data center", "claim": "fp-141", "modeled": true},
-  {"id": "desnz-rest", "group": "desnz", "label": "Network, router, and television", "tag": "Derived", "claim": "ru-002", "modeled": true},
+  {"id": "desnz-rest", "group": "desnz", "label": "Network, router, TV", "tag": "Derived", "claim": "ru-002", "modeled": true},
   {"id": "iea", "group": "more", "label": "IEA, typical hour", "claim": "fp-046", "modeled": true},
   {"id": "bbc", "group": "more", "label": "BBC iPlayer, UK", "claim": "fp-041", "modeled": true},
   {"id": "youtube", "group": "more", "label": "YouTube, worldwide", "claim": "fp-120", "modeled": true}

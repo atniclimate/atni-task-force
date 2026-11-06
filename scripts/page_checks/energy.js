@@ -22,7 +22,7 @@ async function load(rel, modules, query = '', today = [2026, 10, 5]) {
       static now() { return now; }
     };
     window.ResizeObserver = class { observe() {} };
-    window.Element.prototype.scrollIntoView = function () {};
+    window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id; };
     window.fetch = async (url) => ({ ok: true, json: async () => JSON.parse(read(new URL(url).pathname.slice(1))) });
   });
   await wait(20); // the promises of a module that reads a data file
@@ -122,6 +122,12 @@ async function panelLinks() {
   ok(panel(sources).open && view(sources) === 'sources', 'and a view');
   const source = (await overview('#energy-deadlines-source-ef-011')).document.getElementById('energy-deadlines');
   ok(panel(source).open && view(source) === 'sources', 'and a source, on its view');
+  // Settings after the anchor, as Copy Reading writes them, name no element: the kit lands on the plate as the browser would on a plain #id (a11y A1).
+  const deep = await overview('#energy-deadlines&energy-deadlines=doe-40101d');
+  const plate = deep.document.getElementById('energy-deadlines');
+  ok(deep.window.scrolled === 'energy-deadlines' && deep.document.activeElement === plate, 'a link with settings scrolls to its plate and starts focus there');
+  ok(panel(plate).open && plate.querySelector('[data-key="doe-40101d"]').classList.contains('is-on'), 'with its row selected and its panel open');
+  eq(deep.errors.join(), '', 'no script errors');
 }
 
 async function tribesList() {

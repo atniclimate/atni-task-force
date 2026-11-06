@@ -84,17 +84,20 @@
 #ai-heavy-ai .ladder-tick[data-mark="y-pub"] span { left: auto; right: 6px; z-index: 1; } /* the published hour stands far along the ruler, so its long name reads back into the plot, over the needle */
 #ai-occupations .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 52px; }
 #ai-occupations .ladder-tick span { top: 24px; }
-/* Its key stands under the ruler, on the line of the tick's name, where the first screen reads it: the foot of thirteen rows is under the fold. It shares the plot's grid cell, over the head the rows leave empty. */
+/* Its key stands under the ruler, on the line of the tick's name, where the first screen reads it: the foot of thirteen rows is under the fold. It shares the plot's grid cell, over the head the rows leave empty.
+   Read as a table is no part of the key: its box gives way (display: contents, a plain div), so the button stays under the plot, after it in reading order, at every width. */
+#ai-occupations.has-under > .plate-under { display: contents; }
 @media screen and (min-width: 1100px) {
-  #ai-occupations.has-under > .plate-under { grid-row: 2; z-index: 3; justify-self: start; margin-top: 46px; padding: 0 8px 0 0; background: var(--plot-ground); }
+  #ai-occupations.has-under > .plate-under > :not(.plate-to-table) { grid-column: 2; grid-row: 2; z-index: 3; justify-self: start; align-self: start; margin-top: 46px; padding: 0 8px 0 0; background: var(--plot-ground); }
+  #ai-occupations.has-under > .plate-under > .plate-to-table { grid-column: 2; grid-row: 3; justify-self: start; margin-top: 8px; }
 }
 @media screen and (min-width: 1100px) and (max-width: 1319px) { /* two lines in the label column, so it stops short of the tick's name */
-  #ai-occupations.has-under > .plate-under { max-width: calc(var(--l) + 12px); }
+  #ai-occupations.has-under > .plate-under > :not(.plate-to-table) { max-width: calc(var(--l) + 12px); }
   #ai-occupations .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 64px; }
 }
 @media print, (max-width: 1099px) {
   #ai-occupations > .plate-claim { order: -2; }
-  #ai-occupations > .plate-under { order: -1; }
+  #ai-occupations > .plate-under > :not(.plate-to-table) { order: -1; }
 }
 
 /* A projected bar is a dashed outline, and its key the same outline on a square. Selected, the dashes turn orange around a 40 percent wash, as the Jobs instrument fills. */
@@ -138,8 +141,9 @@
 .count-sample.seg-band { opacity: 0.4; }
 .count-sample.is-hollow { background: none; border: 1.5px solid var(--series-context); }
 
-/* Small multiples: the first panel's needle says the year and the rest keep the line, since a selected mark can sit on the word. On Paying for it, a name at a line's end picks that company. */
-:is(#ai-company-money, #ai-company-footprint) .plate-svg > g ~ g .m-needle-label { display: none; }
+/* Small multiples: the kit prints the year once, at the first needle, and each cell's own figure at its needle's head (Company Footprint). Paying for It draws its own
+   panels, which carry no figure, so its later needles keep the line alone. On Paying for it, a name at a line's end picks that company. */
+#ai-company-money .plate-svg > g ~ g .m-needle-label { display: none; }
 #ai-company-money .m-label { cursor: pointer; }
 #ai-company-footprint .m-end { display: none; } /* only the selected company is named; the rest are Others in the legend and the Table */
 

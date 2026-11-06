@@ -85,33 +85,25 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
 .ru-sub { margin: 16px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .ru-fig .plate-square, .ru-grid .plate-square { display: inline-block; vertical-align: 0.05em; margin-right: 4px; }
 
-/* A stack: one whole, drawn as outlined parts because each is a modeled estimate. The data center's part is the only solid. */
-.ru-hour { display: flex; flex-direction: column; margin-bottom: 0; }
-.ru-hour-plot { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+/* Plates on this page whose rows are one- or two-line labels with short values, so they set their own least row height (the kit allows it): at the kit's 56px
+   the hour's twelve rows put its foot under the 1440 fold, and the boundary ruler's sixteen ran 2.7 screens before its words moved to the Reading and the Table. */
+#ru-hour, #ru-boundary { --row-min: 48px; }
+
+/* A stack (the water split): one whole, drawn as outlined parts because each is a modeled estimate. The data center's part is the only solid. */
 .ru-hour-row { display: flex; flex-direction: column; margin-bottom: 12px; }
-.ru-hour-plot > .ru-hour-row:not(.is-thin) { flex: 1 1 auto; }
-.ru-hour-row.is-thin { position: relative; margin-bottom: 0; }
 .ru-hour-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px; margin: 0 0 2px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); }
 .ru-hour-head strong { font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .ru-stack-line { flex: 1; display: flex; font-size: 0.875rem; }
 .ru-stack-line.has-top { padding-top: 1.45em; }
 .ru-stack-line.has-bottom { padding-bottom: 1.45em; }
 .ru-stack { flex: none; display: flex; gap: 2px; width: calc(var(--total) / var(--max) * 100%); min-height: clamp(44px, 6vh, 96px); max-height: 160px; margin: 0; padding: 0; list-style: none; }
-.ru-stack.is-thin { min-height: 18px; max-height: 18px; }
 .ru-seg { position: relative; flex: var(--v) 1 0; display: flex; align-items: center; min-width: 3px; margin: 0; border: 1.5px solid var(--series-context); }
 .ru-seg-label { padding: 2px 6px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .ru-seg.is-on { background: var(--energy-fill); border-color: var(--energy-fill); }
 .ru-seg.is-on .ru-seg-label { font-weight: 500; color: var(--energy-on-fill); }
 .ru-seg.is-top .ru-seg-label { position: absolute; left: -1.5px; bottom: 100%; padding: 0 0 2px; white-space: nowrap; font-weight: 500; color: var(--atni-text-heading); }
 .ru-seg.is-bottom .ru-seg-label { position: absolute; left: -1.5px; top: 100%; padding: 2px 0 0; white-space: nowrap; color: var(--atni-text-secondary); }
-.ru-hour-row.is-thin .ru-tip { position: absolute; top: 0; left: calc(var(--at) * 100% + 8px); margin: 0; font-size: 0.875rem; line-height: 18px; white-space: nowrap; color: var(--atni-text-secondary); }
-.ru-hour-axis { position: relative; height: 20px; border-top: 1px solid var(--baseline); }
-.ru-hour-axis i { position: absolute; left: calc(var(--x) * 100%); top: 2px; font-style: normal; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
-@media (min-width: 1100px) {
-  .ru-hour { min-height: calc(100vh - 300px); }
-}
 @media (max-width: 1099px) {
-  .ru-hour-row.is-thin .ru-tip { position: static; white-space: normal; line-height: 1.3; }
   .ru-seg.is-bottom:last-child .ru-seg-label { left: auto; right: 0; }
 }
 
@@ -138,15 +130,6 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
 .ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark:not(.is-hollow), .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar:not(.is-hollow) { background: var(--energy-text); }
 .ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark.is-hollow, .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar.is-hollow { border-color: var(--energy-text); }
 .ru-chart tbody tr:is(:hover, :focus-within) .ladder-range:not(.is-proj) { opacity: 1; background: var(--energy-text); }
-
-/* One boundary at a time, with native radios and no script. A browser without :has shows both, which is still true. */
-.ru-switch { margin-bottom: 8px; }
-.ru-switch legend { float: left; margin: 0 16px 0 0; line-height: 44px; }
-.ru-boundary:has(input[value="dc"]:checked) [data-group="whole"], .ru-boundary:has(input[value="whole"]:checked) [data-group="dc"] { display: none; }
-@media (pointer: fine) {
-  .ru-switch label { min-height: 32px; }
-  .ru-switch legend { line-height: 32px; }
-}
 
 /* Grids of words: who holds what. Squares are the evidence; "is-gap" is a cell with nothing to report. */
 .ru-grid { font-size: 0.9375rem; }
@@ -186,16 +169,13 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
   .ru-questions { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 }
 
-/* Print: every part open, both boundaries, no switch. */
+/* Print: every part open. */
 @media print {
   .ru-split, .ru-questions { display: block; }
   .ru-columns, .ru-intro, .ru-question-flow { columns: auto; }
-  .ru-switch { display: none; }
-  .ru-boundary [data-group="whole"], .ru-boundary [data-group="dc"] { display: revert !important; }
   .ru-detail > summary::before { content: none; }
   .ru-detail > summary { display: block; }
   .ru-fig { break-inside: avoid; min-height: 0 !important; }
-  .ru-hour { min-height: 0; }
   .ru-chart tbody td:last-child { font-size: 12pt; }
   .ru-notice-line { border: 0; }
 }

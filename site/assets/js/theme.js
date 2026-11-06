@@ -14,9 +14,13 @@
   var saved = read();
   if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
 
-  // A deep link into a closed disclosure opens it, and every disclosure around it.
+  // A deep link into a closed disclosure opens it, and every disclosure around it. The anchor is the fragment's first part, since settings may follow it
+  // (#id&name=value, as plate.js and util.js write them); a first part with "=" is a setting, and a broken escape names nothing.
   function reveal() {
-    var target = document.getElementById(location.hash.slice(1));
+    var raw = location.hash.slice(1).split('&')[0];
+    var id = '';
+    try { id = raw.indexOf('=') < 0 ? decodeURIComponent(raw) : ''; } catch (error) { /* names nothing */ }
+    var target = id && document.getElementById(id);
     var opened = false;
     for (var box = target && target.closest('details'); box; box = box.parentElement.closest('details')) {
       if (!box.open) { box.open = true; opened = true; }

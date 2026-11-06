@@ -6,6 +6,9 @@ string; and the text of scripts, CSV and text files, SVGs, and PDFs. The T1 side
 text, every JSON string, Word documents, and PDFs in planning-T1/, and in files-unsorted/ when it
 exists. A shingle that also occurs in a T0 source (public research compilations, extracted
 resolutions, released drafts) is not counted, because public text may legitimately repeat it.
+A research record under research/intake/ or research/candidates/ counts as released once its https
+url and its summary are in site/data/library.json (owner ruling 33, 11/06/2026), so an overlap that
+traces only to released records is not a review item; one that any other T1 text holds still is.
 Run from the repository root before any push:
 
     python scripts/check_t1_leak.py
@@ -138,10 +141,28 @@ def t1_texts(path):
     return []
 
 
+def library_urls(site=SITE):
+    """The https urls that site/data/library.json lists with a summary. N8 rewrote the 11/05 merge's summaries for the library, and ruling 33 covers those
+    entries, so a record is matched by its url wherever the library gives that url a summary of its own."""
+    path = site / "data" / "library.json"
+    if not path.is_file():
+        return set()
+    entries = json.loads(path.read_text(encoding="utf-8")).get("entries") or []
+    return {e["url"] for e in entries if str(e.get("url") or "").startswith("https://") and str(e.get("summary") or "").strip()}
+
+
+def research_texts(path, released):
+    """A research file's strings, less those of each record the library has released (ruling 33): a record with a summary whose https url it lists."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    records = data if isinstance(data, list) else [data]
+    held = [r for r in records if not (isinstance(r, dict) and str(r.get("summary") or "").strip() and r.get("url") in released)]
+    return [s for r in held for s in json_strings(r)]
+
+
 def main(t1=T1, site=SITE, unsorted=UNSORTED):
     if not t1.is_dir():
         sys.exit("planning-T1/ not found: run this on the owner's machine")
-    found_in, t0 = {}, set()
+    found_in, t0, released = {}, set(), library_urls(site)
     allow = t1 / "leak-allowlist.txt"  # overlaps a person reviewed as public facts; one shingle per line
     if allow.is_file():
         t0 |= {ln.strip() for ln in allow.read_text(encoding="utf-8").splitlines() if ln.strip() and ln[0] != "#"}
@@ -152,7 +173,8 @@ def main(t1=T1, site=SITE, unsorted=UNSORTED):
         rel = p.relative_to(root).as_posix()
         if (root == t1 and rel == "leak-allowlist.txt") or p.name.startswith("~$"):  # ~$ is Word's lock file beside an open document
             continue
-        texts = t1_texts(p)
+        research = root == t1 and rel.startswith(T1_INSIDE_T0) and p.suffix.lower() == ".json"
+        texts = research_texts(p, released) if research else t1_texts(p)  # a released record's words are T0; only they leave the comparison
         if root == t1 and rel.startswith(T0_INSIDE_T1) and not rel.startswith(T1_INSIDE_T0):
             t0.update(*map(shingles, texts))
             continue

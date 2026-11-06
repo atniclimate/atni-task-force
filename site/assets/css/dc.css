@@ -38,9 +38,8 @@
 }
 .plate-chips .receipt { max-width: 100%; }
 .plate-claim .slot-label::before { border-color: var(--series-context); } /* orange inside a plate means the selection */
-/* These plots say what a key would (the subtitle, the Reading, or a direct label), so they keep the room a key would take. */
-:is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) { --below: 0px; }
-:is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under { display: none; }
+/* These plots say what a key would (the subtitle, the Reading, or a direct label), so only Read as a table stands under them, in the kit's room for it (--below). */
+:is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }
 /* Direct labels and the case control name the series, so these keys hold only what the plot cannot say. */
 :is(#dc-pnw-load, #dc-eia-servers) .plate-legend li:is([data-series], :has(.plate-square)) { display: none; }
 /* In Squares there is no band or projection to name. */

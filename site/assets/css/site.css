@@ -1213,25 +1213,24 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .wall-track > .start-mark.is-off { border-right-width: 0; }
 .wall-track > .start-mark.is-left.is-off { border-right-width: 1px; border-left-width: 0; }
 .wall-track > .start-mark.is-off::after { display: none; } /* an end past the ruler has no place on it */
-.start-mark > span { display: none; position: absolute; bottom: calc(100% + 4px); left: 0; padding-inline: 4px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-secondary); background: var(--plot-ground); }
+.start-mark > span { display: none; position: absolute; bottom: calc(100% + 4px); left: 0; padding-inline: 4px; font-family: var(--body); font-style: normal; font-weight: 400; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-secondary); background: var(--plot-ground); } /* roman, though the mark is an <i> */
 .is-on > * > .start-mark > span { display: block; }
 .start-mark.is-flip > span { left: auto; right: 0; }
-:is([data-form="bar"] .ladder-track, .wall-track) > .start-mark > span { bottom: calc(100% + 1px); left: auto; right: 4px; } /* inward from its end, over the gap above the bar */
-.wall-track > .start-mark.is-left > span { right: auto; left: 4px; }
+/* A bar's or the Wall's name starts at the end tick and reads outward, over the gap above the bar, on the row it names; only a long mark turns it back inside. */
+:is([data-form="bar"] .ladder-track, .wall-track) > .start-mark > span { bottom: calc(100% + 1px); left: calc(100% + 4px); right: auto; }
+:is([data-form="bar"] .ladder-track, .wall-track) > .start-mark.is-flip > span { left: auto; right: 4px; }
+.wall-track > .start-mark.is-left > span { right: calc(100% + 4px); left: auto; }
+.wall-track > .start-mark.is-left.is-flip > span { right: auto; left: 4px; }
 .wall-track > .start-mark.is-below > span { bottom: auto; top: calc(100% + 12px); } /* the first row's: under its spread, where the plot's top would cut it */
 
 /* The Table view as a chart: a thin bar under each figure on the plate's ruler, from its zero, or a square on a log ruler; under 3:1 on purpose, as the range
    band is, because the cell prints the figure. plate.js sets --b0 and --bw. */
-.plate-table .has-bar { position: relative; padding-bottom: 10px; }
+.plate-table td.has-bar { position: relative; min-width: 6rem; padding-bottom: 10px; } /* a track wide enough to read rank and size; the table scrolls in its own region (section C) */
 .plate-table .has-bar::after { content: ""; position: absolute; left: calc(8px + var(--b0) * (100% - 16px)); bottom: 3px; width: calc(var(--bw) * (100% - 16px)); min-width: 2px; height: 4px; background: var(--series-context); opacity: 0.4; }
 .plate-table .has-bar.is-dot::after { bottom: 2px; width: 6px; height: 6px; margin-left: -3px; }
 .plate-table .has-bar.is-on::after { background: var(--energy-mark); opacity: 1; }
 
-/* Small multiples: each cell's figure beside the needle, in heading ink with a ground halo, on the selection and on a hover's preview only. */
-.plate-svg .m-value { display: none; font-variant-numeric: tabular-nums; fill: var(--atni-text-heading); paint-order: stroke; stroke: var(--plot-ground); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
-.plate-svg .is-on > .m-value { display: inline; }
-
-/* What moves it most: one input a row, the figure at the input's low end to its high end, its claims under. The figure's own place is a 1px neutral zero;
+/* What moves it most: one input a row, the figure at the input's low end to its high end, its claims in a column of their own. The figure's own place is a 1px neutral zero;
    the part of the swing under it takes one grey and the part over it the other, as the kit reads a sign. The words carry every figure. */
 .plate-drivers { margin-top: 8px; }
 .plate-drivers th[scope="row"] { width: 45%; }

@@ -76,6 +76,24 @@ def test_a_t1_sentence_in_a_script_string_blocks_and_a_candidate_in_an_alt_text_
     assert "[review] from planning-T1/research/candidates/a.json" in capsys.readouterr().out
 
 
+def test_a_research_record_the_library_lists_is_released_and_its_neighbors_stay_t1(tmp_path, capsys):  # 3, owner ruling 33
+    t1, site, unsorted = tmp_path / "planning-T1", tmp_path / "site", tmp_path / "files-unsorted"
+    (t1 / "research" / "intake").mkdir(parents=True)
+    (site / "data").mkdir(parents=True)
+    records = [{"url": "https://example.org/a", "summary": OTHER}, {"url": "https://example.org/c", "title": SENTENCE}]
+    (t1 / "research" / "intake" / "pull.json").write_text(json.dumps(records), encoding="utf-8")
+    library = [{"url": "https://example.org/a", "summary": "Rewritten for the library."}, {"url": "https://example.org/c", "summary": "Listed with a summary."}]
+    (site / "data" / "library.json").write_text(json.dumps({"entries": library}), encoding="utf-8")
+    (site / "index.html").write_text(f"<p>{OTHER}.</p>", encoding="utf-8")
+    assert leak.main(t1, site, unsorted) == 0, "the library lists record a's url with a summary, so its words are released, as the rewritten 11/05 summaries are"
+    (site / "index.html").write_text(f"<p>{SENTENCE}.</p>", encoding="utf-8")
+    assert leak.main(t1, site, unsorted) == 3, "record c's url is listed, but it has no summary of its own, so its words stay T1"
+    (t1 / "notes.md").write_text(f"{OTHER}.\n", encoding="utf-8")
+    (site / "index.html").write_text(f"<p>{OTHER}.</p>", encoding="utf-8")
+    assert leak.main(t1, site, unsorted) == 3, "an overlap that another T1 file also holds is still a review item"
+    assert "[review] from planning-T1/notes.md" in capsys.readouterr().out
+
+
 def test_a_receipt_prints_a_partial_date_as_written():  # 4
     source = {"url": "https://x.org", "title": "T", "publisher": "P", "kind": "agency", "published": "2026-10 (update to the 07/22/2026 paper; day not stated)"}
     claim = {"status": "verified", "quote": "q", "boundary": "b", "source": source}

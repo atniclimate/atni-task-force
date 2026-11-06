@@ -531,6 +531,9 @@ async function otherPlates() {
   walk(oc, 'ai-occupations');
   for (const id of ['ai-occupations', 'ai-jobs-sector']) eq(document.querySelector(`#${id} .plate-under .plate-legend`).textContent, 'Dashed outline: BLS projection, 2025 to 2035', `${id}: the key says what the dashes mean`);
   ok(document.querySelector('#ai-occupations .plate-under .plate-square.is-proj'), 'with the same dashed outline on a square');
+  // jsdom loads no CSS, so the rule is held as text: only the key rides over the plot's head; Read as a table stays under the plot, in reading order, at every width (a11y A4).
+  const aiCss = read('site/assets/css/ai.css');
+  ok(aiCss.includes('#ai-occupations.has-under > .plate-under { display: contents; }') && aiCss.includes('#ai-occupations.has-under > .plate-under > .plate-to-table { grid-column: 2; grid-row: 3;') && !/#ai-occupations[^{,]*> \.plate-under \{[^}]*(order|grid-row)/.test(aiCss), 'the occupations key moves alone; the button keeps its place under the plot');
   eq(oc.row('jb-007').querySelector('.ladder-value').textContent, '-25.5 percent', 'a printed minus');
   eq(oc.row('jb-002').querySelector('.ladder-value').textContent, '+34.6 percent', 'a printed plus');
   ok(oc.row('jb-007').classList.contains('is-neg') && oc.row('jb-002').classList.contains('is-pos'), 'polarity');

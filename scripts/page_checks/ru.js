@@ -24,6 +24,7 @@ const load = (hash = '') => open(html, `${PAGE}${hash}`, (window) => {
   };
   window.ResizeObserver = class { observe() {} }; // plate.js watches the rail and each plot
   window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id; };
+  Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: async (t) => { window.clip = t; } } });
 });
 
 // A claim's figure as a plate prints it: grouped, as stated, the range in parentheses or alone.
@@ -310,6 +311,29 @@ async function behavior() {
   ok(ahead.facts.textContent.includes(CLAIMS['ru-089'].limit), 'the figures beside the plot stay, with their limits');
 }
 
+// A link with settings after its anchor (#plate&name=value) names no element, so the browser lands nowhere; on this page, which has no tabs, the kit lands on
+// the anchor as the browser would on a plain #id: in view, and with focus there, where Tab and a screen reader start (a11y A1). Copy Reading writes that link.
+async function landing() {
+  const a = await load();
+  const plate = (doc, id) => doc.getElementById(id);
+  fire(a.window, row(plate(a.document, 'ru-boundary'), 'gemini'), 'click');
+  fire(a.window, plate(a.document, 'ru-boundary').querySelector('[data-copy]'), 'click');
+  await wait(300);
+  const link = a.window.clip.split('\n')[1];
+  ok(link.endsWith('#ru-boundary&ru-boundary=gemini'), `Copy Reading's link names the plate, then its setting: ${link}`);
+  const b = await load(link.slice(link.indexOf('#')));
+  eq(b.window.scrolled, 'ru-boundary', 'that link scrolls to its plate');
+  eq(b.document.activeElement, plate(b.document, 'ru-boundary'), 'and focus starts there, so Tab goes on into the plate');
+  eq(plate(b.document, 'ru-boundary').getAttribute('tabindex'), '-1', 'which takes focus without joining the Tab order');
+  eq(plate(b.document, 'ru-boundary').querySelector('.plate-plot').getAttribute('aria-activedescendant'), row(plate(b.document, 'ru-boundary'), 'gemini').id, 'with its setting');
+  b.window.location.hash = '#ru-forecasts&ru-forecasts=epri-2030';
+  await wait(20);
+  ok(b.window.scrolled === 'ru-forecasts' && b.document.activeElement === plate(b.document, 'ru-forecasts'), 'a change of fragment lands the same way');
+  const c = await load('#ru-boundary');
+  ok(c.document.activeElement === c.document.body && !plate(c.document, 'ru-boundary').hasAttribute('tabindex'), 'a plain #id is left to the browser');
+  eq(a.errors.join() + b.errors.join() + c.errors.join(), '', 'no script errors');
+}
+
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   eq(document.querySelectorAll('.ru-section').length, 10, 'every section renders');
@@ -327,4 +351,4 @@ async function noScripts() {
   }
 }
 
-module.exports = { groups: { ids, content, plates, behavior, noScripts } };
+module.exports = { groups: { ids, content, plates, behavior, landing, noScripts } };

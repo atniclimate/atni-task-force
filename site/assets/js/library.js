@@ -1,7 +1,7 @@
 // Reads data/library.json and fills the library page's list, [data-library-feed] feeds, [data-library-featured] lists, and [data-figure] counts.
 // Each page keeps a plain link to the library, so nothing is lost when this script cannot run.
 
-import { ROOT, esc, href, day, fold, linkFilters, setFigure, addOptions } from './util.js';
+import { ROOT, esc, href, day, fold, linkFilters, setFigure, addOptions, hashTarget } from './util.js';
 
 const PAGE_SIZE = 40;
 const FILTERS = ['q', 'area', 'type', 'tribal', 'year'];
@@ -204,7 +204,7 @@ if (sinceLine) {
 }
 const newest = document.getElementById('whats-new');
 if (newest) {
-  if (window.location.hash === '#whats-new') newest.open = true;
+  if (hashTarget() === newest) newest.open = true; // the anchor, with or without the filters after it
   window.addEventListener('beforeprint', () => { newest.open = true; });
 }
 

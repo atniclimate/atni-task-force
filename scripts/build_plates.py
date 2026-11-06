@@ -67,6 +67,7 @@ EVIDENCE_LABEL = {
     "peer-reviewed": "Peer-reviewed study", "preprint": "Preprint, not peer reviewed", "press": "Press report",
     "model": "Modeled estimate", "blog": "Blog post",
 }
+MODELED_IN = {"company-report": "a company report"}  # the kind the key names for a filled mark; a filing's hollow rows are the page's arithmetic on it, not its model
 
 
 class BuildError(Exception):
@@ -961,8 +962,11 @@ def finish_plot(ctx, rows):
     return compact(plot)
 
 
-def evidence_text(claim, limit):
-    label = EVIDENCE_LABEL.get(claim["source"].get("kind"), "Source")
+def evidence_text(claim, limit, hollow=False):
+    kind = claim["source"].get("kind")
+    label = EVIDENCE_LABEL.get(kind, "Source")
+    if hollow and kind in MODELED_IN:  # a hollow mark: a company's own report of a modeled figure says both, never the key's "filled: company-reported" alone (critique M2)
+        label = f"Modeled estimate in {MODELED_IN[kind]}"
     return f"{label}, partly verified. Limit: {limit}" if claim["status"] == "partly" else f"{label}, verified against the source."
 
 
@@ -975,7 +979,7 @@ def row_fields(defn, row, spec_boundary, claims):
     claim = claims.get(row.get("claim"))
     cited = [claims[c] for c in row.get("cites") or []]
     boundary = spec_boundary or defn.get("boundary") or (claim or {}).get("boundary") or ""
-    evidence = evidence_text(claim, row.get("limit")) if claim else ("Modeled from the figures in its receipts." if cited else "Modeled from the reader's settings." if row.get("f") else "")
+    evidence = evidence_text(claim, row.get("limit"), row.get("hollow")) if claim else ("Modeled from the figures in its receipts." if cited else "Modeled from the reader's settings." if row.get("f") else "")
     source = short_name(claim["source"]["publisher"]) if claim else "; ".join(dict.fromkeys(short_name(c["source"]["publisher"]) for c in cited))
     published = us_date(claim["source"].get("published")) if claim else ""
     plain = {k: row.get(k) if row.get(k) is not None else "" for k in ("series", "end", "column", "tag")}
@@ -1369,12 +1373,13 @@ def table_html(defn, data):
                 columns.append({"label": "Part", "field": "series"})
             columns += [{"label": "Value", "field": "display"}, {"label": "Year", "field": "year"}, {"label": "Source", "field": "source"}]
         head = "".join(f'<th scope="col">{escape(c["label"])}</th>' for c in columns)
+        own = {s.get("id"): s["boundary"] for s in defn.get("rows") or [] if s.get("boundary")}  # a row's own boundary words stand before its claims' (ru-boundary)
         body = []
         for r in rows:
             cells = []
             for i, c in enumerate(columns):
                 field = c["field"]
-                text = cell_text(r, field, data, by_label)
+                text = own[r["key"]] if field == "boundary" and r["key"] in own else cell_text(r, field, data, by_label)
                 if field == "display" and r.get("spark"):
                     text = "; ".join(f"{x}: {number(v)}" for x, v in r["spark"]) + f' {r["unit"]}'
                 inner = verbatim(text) if field == "source" else escape(text)

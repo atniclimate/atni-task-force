@@ -43,6 +43,17 @@ function writeAddress(anchor, params) {
   const hash = [anchor, params.toString()].filter(Boolean).join('&');
   try { history.replaceState(null, '', `${location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
 }
+// Settings after the anchor leave the browser no element to land on, so the kit lands as the browser does on a plain #id: the anchor in view and focus on it,
+// where Tab and a screen reader then start (a11y A1). A plain #id stays the browser's own; a page that has already taken the reader inside keeps its focus.
+function land(raw) {
+  const { anchor } = parse(raw);
+  let target = null;
+  try { target = anchor && raw !== anchor ? document.getElementById(decodeURIComponent(anchor)) : null; } catch { /* a broken escape names nothing */ }
+  if (!target || target.contains(document.activeElement)) return;
+  target.scrollIntoView?.();
+  if (target.tabIndex < 0 && !target.hasAttribute('tabindex')) target.tabIndex = -1; // a plate or a heading takes focus without joining the Tab order
+  target.focus({ preventScroll: true });
+}
 if (!NO_ADDRESS) {
   on(document, 'DOMContentLoaded', () => { if (location.search) { const { anchor, params } = readAddress(); writeAddress(anchor, params); } });
   // A link within the page (#id) takes the whole fragment: the settings it held come back after it, so a reload or a copied link keeps them.
@@ -456,10 +467,11 @@ function nameNeedle(p, key, spot, at) {
     (needle.querySelector('.needle-label') || needle.appendChild(span('needle-label', ''))).textContent = words;
     needle.classList.toggle('is-flip', +at > 0.6);
   }
-  for (const label of all(p.plot, '.m-needle-label')) { // the plot's far end, in the same coordinates as the needle's px
+  all(p.plot, '.m-needle-label').forEach((label, i) => { // the plot's far end, in the same coordinates as the needle's px
     const flip = parseFloat(at) > label.getAttribute('data-end') * 0.6;
-    set(label, { text: words, 'text-anchor': flip ? 'end' : 'start', dx: flip ? -8 : 8 });
-  }
+    const text = label.figures ? [i ? '' : words, label.figures.get(key)].filter(Boolean).join(': ') : words; // small multiples: the year once, then each cell's figure
+    set(label, { text, 'text-anchor': flip ? 'end' : 'start', dx: flip ? -8 : 8 });
+  });
 }
 // The Reading for one key: a page script's own sentence, or the plate's. A partly number keeps its limit either way.
 function readingAt(p, key, own) {
@@ -643,25 +655,23 @@ function startMark(p, node, r) {
   const g = fracOn(axis, s);
   const mark = node.querySelector('.start-mark') || node.querySelector('.ladder-track').appendChild(h('i', { class: 'start-mark', 'aria-hidden': 'true' }, h('span', { text: 'Starting point' })));
   node.style.setProperty('--s', g);
-  mark.classList.toggle('is-flip', r.frac > g ? g > 0.15 : g > 0.85); // its name reads away from the row's own mark, while the ruler has room
+  // A bar's name reads on from its end tick, on its own row, and turns back only near the ruler's end; a square's reads away from the row's own mark.
+  mark.classList.toggle('is-flip', node.closest('[data-form="bar"]') ? g > 0.7 : r.frac > g ? g > 0.15 : g > 0.85);
 }
-// Small multiples print each cell's own figure beside the needle, so the cells compare at a glance. The words are the row's own, as the facts list prints them,
-// placed by the square the drawing set at that year, and shown as it is: on the selection and on a hover's preview.
+// Small multiples print each cell's own figure at its needle's head, where no mark can stand, so the cells compare at a glance (critique S4). The words are the
+// row's own, as the facts list prints them; nameNeedle shows the year's, on the selection and on a hover's preview.
 function needleFigures(p) {
   const cfg = p.data.plot;
   if (cfg.select === 'point') return;
   const cells = [...(p.plot.querySelector('.plate-svg')?.children || [])]; // one group per panel, in order
   cfg.panels.forEach((panel, i) => {
     const label = cells[i]?.querySelector('.m-needle-label');
-    for (const band of label ? cells[i].querySelectorAll('[data-row]') : []) {
+    if (!label) return;
+    label.figures = new Map();
+    for (const band of cells[i].querySelectorAll('[data-row]')) {
       const rows = current(p).filter((r) => r.key === band.dataset.row && r.panel === panel.id && !blank(r.value));
       const r = cfg.highlight ? rows.find((x) => x.series === cfg.highlight) : rows.length === 1 && rows[0];
-      const dot = r && band.querySelector(cfg.highlight ? '.m-dot.is-lead' : '.m-dot');
-      if (!dot) continue;
-      const [x, y, s] = ['x', 'y', 'width'].map((name) => +dot.getAttribute(name));
-      const flip = +band.dataset.nx > label.getAttribute('data-end') * 0.6; // as the needle's own name turns back
-      const below = y - 6 < +label.getAttribute('y') + 22; // under the square where the year at the needle's top would meet it
-      add(band, 'text', { class: 'm-value', x: flip ? x - 6 : x + s + 6, y: below ? y + s + 18 : y - 6, 'text-anchor': flip ? 'end' : 'start', 'aria-hidden': 'true', text: r.display });
+      if (r) label.figures.set(band.dataset.row, r.display);
     }
   });
 }
@@ -1005,12 +1015,16 @@ function wirePlot(p) {
   }).observe(plot);
 }
 
-// A plot says once how it is used, as its description, and the Table is one press away, under it, with focus taken there (the screen-reader report, R3 and R4).
-// The Explorer's plots use this too.
-const HOW = 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.';
-function aid(root, plot, id, toTable) {
+// A plot says once how it is used, as its description, in the words of its form, and the Table is one press away, under it, with focus taken there (the
+// screen-reader report, R3 and R4; the voice lead's words, a11y A5). The Explorer's plots, all lists of rows, use this too.
+const HOW = {
+  rows: 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.',
+  years: 'Use the left and right arrow keys to move between years, Home and End to reach the first and last, and the Table view for all values.',
+  cells: 'Use arrow keys to move between cells, Home and End for the ends of a row, Ctrl with Home or End for the corners, and the Table view for all values.',
+};
+function aid(root, plot, id, toTable, form = 'rows') {
   plot.setAttribute('aria-describedby', id);
-  root.append(h('p', { id, hidden: '', text: HOW }));
+  root.append(h('p', { id, hidden: '', text: HOW[form] }));
   const press = h('button', { type: 'button', class: 'plate-to-table', text: 'Read as a table' });
   on(press, 'click', () => {
     toTable();
@@ -1047,7 +1061,7 @@ function arrange(p) {
   p.note = cfg.fit === 'data' ? all(root, '.plate-claim > .caption').find((n) => n.textContent.startsWith('Each mark is ten times')) : null;
   const under = [p.note, root.querySelector('.plate-claim .plate-legend')].filter(Boolean);
   if (under.length) plot.after(h('div', { class: 'plate-under' }, ...under));
-  aid(root, plot, `${p.id}-how`, () => setView(p, 'table'));
+  aid(root, plot, `${p.id}-how`, () => setView(p, 'table'), cfg.type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(cfg.type) ? 'years' : 'rows');
   if (cfg.needle && cfg.type === 'instrument') plot.querySelector('.instrument').prepend(h('li', { class: 'needle', role: 'none', 'aria-hidden': 'true' }));
   moveProse(root);
 }
@@ -1222,6 +1236,8 @@ function register(id, { render, defaults = {}, countParts } = {}) {
 all(document, '[data-plate]').forEach(initPlate);
 all(document, '[data-strip]').forEach(initStrip);
 all(document, '.section-strip[data-workbench]').forEach(initTabs);
+on(document, 'DOMContentLoaded', () => land(location.hash.slice(1))); // after an old ?query has moved into the fragment, and after a tab has opened
+on(window, 'hashchange', (e) => { if (e.newURL) land(new URL(e.newURL).hash.slice(1)); }); // where the reader went; the Explorer's own event after Back names nothing
 // A strip that scrolls says so: its right edge fades while more waits past it.
 for (const list of all(document, '.section-strip ul, .toc ul')) {
   const cut = () => list.classList.toggle('is-cut', list.scrollLeft + list.clientWidth < list.scrollWidth - 1);

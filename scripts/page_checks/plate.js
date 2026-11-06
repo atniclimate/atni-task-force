@@ -1093,6 +1093,8 @@ async function charts() {
   const css = read('site/assets/css/site.css');
   ok(/\.start-mark \{ display: none;[^}]*border: 1px solid var\(--series-context\)/.test(css) && !/\.start-mark[^{]*\{[^}]*energy/.test(css), 'a hollow mark in context ink, never orange');
   ok(/\.is-on > \* > \.start-mark > span \{ display: block; \}/.test(css), 'named on the selected row alone');
+  ok(/:is\(\[data-form="bar"\] \.ladder-track, \.wall-track\) > \.start-mark > span \{ bottom: calc\(100% \+ 1px\); left: calc\(100% \+ 4px\); right: auto; \}/.test(css), 'a bar\'s name starts at its end tick and reads outward, on the row it names (critique M1)');
+  ok(/\.start-mark > span \{[^}]*font-style: normal;/.test(css), 'in roman, though the mark is an <i>');
   ok(/@media \(forced-colors: active\)[^@]*\.start-mark, \.plate-driver-bar/.test(css), 'and kept in its own ink under High Contrast');
   // An instrument's rows leave theirs too.
   const inst = await load('#project');
@@ -1139,26 +1141,28 @@ async function charts() {
   ok(on(m).every((c) => c.parentElement.querySelector('th').textContent === 'Amazon'), 'on its own line');
   ok(/\.plate-table \.has-bar::after \{[^}]*opacity: 0\.4;/.test(css) && /\.plate-table \.has-bar\.is-on::after \{ background: var\(--energy-mark\); opacity: 1; \}/.test(css), 'under 3:1 on purpose, as the range band is; orange for the selection');
 
-  // The figure at every needle of small multiples.
-  const figs = () => [...m.plot.querySelectorAll('.is-on > .m-value')];
-  eq(figs().length, 3, 'one figure in each cell, at the needle');
-  eq(figs().map((n) => n.textContent).join('|'), [...m.facts.querySelectorAll('.plate-values li strong')].map((n) => n.textContent).join('|'), 'the facts list\'s own words, so the two never disagree');
-  ok(figs().every((n) => n.getAttribute('aria-hidden') === 'true'), 'aria-hidden: the one option says them all');
-  ok(m.plot.querySelectorAll('.m-value').length > 3, 'each year carries its own, shown on the selection');
+  // The figure at every needle of small multiples, at the needle's head where no mark can stand (critique S4): the year once, in the first cell, then each cell's own.
+  const heads = (r) => [...r.plot.querySelectorAll('.m-needle-label')].map((n) => n.textContent);
+  const said = (r) => [...r.facts.querySelectorAll('.plate-values li strong')].map((n) => n.textContent);
+  const year = (r) => r.plot.querySelector('[aria-selected="true"]').dataset.row;
+  eq(heads(m).length, 3, 'one needle in each cell');
+  eq(heads(m).join('|'), [`${year(m)}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'the facts list\'s own words, so the two never disagree');
+  ok([...m.plot.querySelectorAll('.m-needle-label')].every((n) => n.getAttribute('aria-hidden') === 'true'), 'aria-hidden: the one option says them all');
+  eq(m.plot.querySelectorAll('.m-value').length, 0, 'and none stands beside a square, where the other companies\' marks are');
   key(money.window, m.plot, 'ArrowLeft');
-  eq(figs().map((n) => n.textContent).join('|'), [...m.facts.querySelectorAll('.plate-values li strong')].map((n) => n.textContent).join('|'), 'they follow the arrows');
+  eq(heads(m).join('|'), [`${year(m)}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'they follow the arrows');
   const other = [...m.plot.querySelectorAll('[data-row]')].find((n) => !n.classList.contains('is-on')).dataset.row;
   money.window.under = m.plot.querySelector(`[data-row="${other}"] .m-hit`);
   fire(money.window, m.plot, 'pointermove');
   await frame();
-  ok(figs().length >= 1 && figs().every((n) => n.parentElement.dataset.row === other), 'and a hover\'s preview');
-  ok(/\.plate-svg \.is-on > \.m-value \{ display: inline; \}/.test(css), 'shown as the selection\'s square is');
+  ok(heads(m)[0].startsWith(`${other}: `) && heads(m).join('|') === [`${other}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'and a hover\'s preview');
+  ok(!/m-value/.test(css), 'the kit draws no figure beside a square');
   const history = await load('#history');
   const h = parts(history.document, 'capital-history');
   fire(history.window, history.document.querySelector('a[href="#history"]'), 'click');
   history.window.observers.forEach((cb) => cb());
   await frame();
-  eq(h.plot.querySelectorAll('.is-on > .m-value').length, 4, 'one series a cell: each prints its own');
+  ok(heads(h).length === 4 && heads(h).every((t, i) => /\d/.test(t) && (i ? !t.startsWith(year(h)) : t.startsWith(`${year(h)}: `))), `one series a cell: each prints its own: ${heads(h).join(' | ')}`);
   eq(errors.join() + inst.errors.join() + latest.errors.join() + log.errors.join() + off.errors.join() + money.errors.join() + history.errors.join(), '', 'no script errors');
 }
 
@@ -1573,18 +1577,30 @@ async function findable() {
   eq(errors.join(), '', 'no script errors');
 }
 
-// The screen-reader report, R3 and R4: each plot says once how it is used, as its description, and the Table is one press from it.
+// The screen-reader report, R3 and R4: each plot says once how it is used, as its description, in the words of its form (a11y A5, the voice lead's), and the
+// Table is one press from it.
+const HOW = {
+  rows: 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.',
+  years: 'Use the left and right arrow keys to move between years, Home and End to reach the first and last, and the Table view for all values.',
+  cells: 'Use arrow keys to move between cells, Home and End for the ends of a row, Ctrl with Home or End for the corners, and the Table view for all values.',
+};
 async function aids() {
   const { window, document, errors } = await load();
   const plots = [...document.querySelectorAll('[data-plate] .plate-plot')];
   ok(plots.length >= 10, `every plot: ${plots.length}`);
+  const forms = new Set();
   for (const plot of plots) {
     const root = plot.closest('[data-plate]');
     const how = document.getElementById(plot.getAttribute('aria-describedby'));
-    ok(how && how.hidden && how.textContent === 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.', `${root.id}: the plot is described by the instruction, out of view`);
+    const { type } = JSON.parse(document.getElementById(`plate-data-${root.dataset.plate}`).textContent).plot;
+    const form = type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(type) ? 'years' : 'rows';
+    forms.add(form);
+    ok(how && how.hidden && how.textContent === HOW[form], `${root.id}: the plot is described by the instruction for ${form}, out of view`);
+    eq(form === 'cells' ? 'grid' : form === 'years' ? 'horizontal' : 'listbox', form === 'years' ? plot.getAttribute('aria-orientation') : plot.getAttribute('role'), `${root.id}: and the words fit how its keys move`);
     ok(root.querySelector(':scope > .plate-under').previousElementSibling === plot && root.querySelector(':scope > .plate-under > .plate-to-table').textContent === 'Read as a table', `${root.id}: Read as a table stands right under the plot`);
   }
   eq(new Set(plots.map((n) => n.getAttribute('aria-describedby'))).size, plots.length, 'each plot has its own');
+  eq([...forms].sort().join(), 'cells,rows,years', 'the demonstration holds all three forms');
   const p = parts(document, 'session-energy');
   fire(window, p.root.querySelector('.plate-to-table'), 'click');
   ok(!p.views('table').hidden && p.views('reading').hidden && p.radio('session-energy-view', 'table').checked, 'the button opens the Table view, and the radio follows');

@@ -11,6 +11,7 @@ const TOTAL = data.entries.length;
 async function load(query = '', source = html) {
   const page = await open(source, `http://localhost/site/library/index.html${query}`, (window) => {
     window.fetch = async () => ({ ok: true, json: async () => data });
+    window.Element.prototype.scrollIntoView = function () {}; // jsdom has none; theme.js scrolls to a disclosure a deep link opens
   });
   page.window.eval(`(function () {\n${script}\n})();`);
   await wait(5);
@@ -140,6 +141,14 @@ const groups = {
     eq(figures(status.textContent)[1], printed(before), 'the shared year bar has a filter behind it');
     eq(bars.filter((b) => b.hasAttribute('aria-current')).length, 1, 'and is lit on arrival');
     eq(document.querySelector('.comp-row[aria-current]').dataset.value, before.dataset.value, 'the right one');
+  },
+
+  async aDeepLinkWithFiltersOpensWhatsNew() { // the anchor is the fragment's first part; the filters after it are settings (a11y A2)
+    const plain = await load('#whats-new');
+    ok(plain.document.getElementById('whats-new').open, '#whats-new opens What\'s New');
+    const filtered = await load('#whats-new&q=solar');
+    ok(filtered.document.getElementById('whats-new').open, 'and so does #whats-new with a filter after it');
+    eq(filtered.form.elements.namedItem('q').value, 'solar', 'whose filter still applies');
   },
 
   async entryMarkup() {

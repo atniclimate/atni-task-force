@@ -82,7 +82,7 @@ content as a details grid.
 
 ### 3.0 What every plate needs from the kit
 
-Three zones (spec A4); detail panel with Reading, Sources, Table; selection by click, Enter, arrows; receipts per row; query state; print shows the table. Beyond `ladder`, `bars`, `lines`, `multiples`, the
+Three zones (spec A4); detail panel with Reading, Sources, Table; selection by click, Enter, arrows; receipts per row; state in the address's fragment (`#plate-id&name=value`, owner ruling 29); print shows the table. Beyond `ladder`, `bars`, `lines`, `multiples`, the
 plates below need: (a) **instrument**: number and range input pairs whose output rows the page module computes from values poured from claims, with the default setting built statically so no-JS and print show
 the illustration and a line naming it; (b) **matrix**: rows by columns of cells, each cell a figure plus an evidence square, one cell selectable; (c) **count** as a second view of a ladder: one 8px square per
 unit up to 200, remainder printed; (d) **band**: a 10 percent wash between a low and a high series on `lines` and `multiples`, dashed past the last historical year; (e) **two rulers in one plate** with separate

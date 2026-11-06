@@ -85,6 +85,7 @@ function startMark(n, key, m, lay, sc, first) {
   const [from, to] = [lay.wall - left * sc, lay.wall + right * sc];
   mark.classList.toggle('is-left', !right && left > 0); // all on the reader's side: its end is the far left
   mark.classList.toggle('is-off', right ? to > 1 : from < 0);
+  mark.classList.toggle('is-flip', right ? to > 0.7 : from < 0.3); // its name reads on from the end tick, and turns back only near the ruler's end
   mark.classList.toggle('is-below', first);
   mark.style.left = pct(Math.max(0, from));
   mark.style.width = pct(Math.min(1, to) - Math.max(0, from));
@@ -346,10 +347,10 @@ function movesOf(key, m) {
     };
   });
 }
-function movesInto(body, key) { // a table, so its rows read as rows; the bar under each figure is the same figure drawn, and aria-hidden
+function movesInto(body, key) { // a table, so its rows read as rows; the bar under each figure is the same figure drawn, and aria-hidden; the claims have their own column
   const rows = movesOf(key, S.m);
   const none = el('tr');
-  none.append(Object.assign(el('td', '', 'No input\'s stated range moves this figure at these settings.'), { colSpan: 2 }));
+  none.append(Object.assign(el('td', '', 'No input\'s stated range moves this figure at these settings.'), { colSpan: 3 }));
   body.replaceChildren(...(rows.length ? rows.map((r) => {
     const tr = el('tr');
     Object.entries({ '--l': r.l, '--c': r.c, '--h': r.h, '--z': r.z }).forEach(([name, v]) => tr.style.setProperty(name, v));
@@ -361,8 +362,10 @@ function movesInto(body, key) { // a table, so its rows read as rows; the bar un
     const ids = el('span', 'caption', r.claims.length ? '' : 'no source, an assumption');
     ids.append(...r.claims.flatMap((id, i) => { const a = el('a', 'x-c', id); a.href = `#src-${id}`; return i ? [', ', a] : [a]; }));
     const td = el('td', '', r.ends);
-    td.append(bar, ids);
-    tr.append(th, td);
+    td.append(bar);
+    const from = el('td');
+    from.append(ids);
+    tr.append(th, td, from);
     return tr;
   }) : [none]));
 }
@@ -744,6 +747,7 @@ function wirePlot(plot) {
   plot.tabIndex = 0;
   plot.setAttribute('role', 'listbox');
   aid(plate, plot, `how-${name}`, () => setView(plate, 'table'));
+  $('.plate-view[data-view="table"] .table-scroll', plate)?.setAttribute('aria-label', `Table of values: ${$('.panel-title', plate.closest('.panel'))?.textContent ?? name}`); // named after its plate, as the kit names its regions (a11y A10)
   $$('ol, .wall-group', plot).forEach((n) => n.setAttribute('role', 'none'));
   $$('.wall-key, .x-lever-note', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the detail's layer list, and the claim zone says each row has its own ruler
   on(plot, 'keydown', (e) => {

@@ -20,7 +20,7 @@
 .x-settings-button:hover { background: var(--grid); }
 /* A phone: the tabs fill their row and scroll (the kit fades their edge), so the button wraps to its own row under them. */
 @media (max-width: 719px) { .x-settings-button { min-height: 44px; margin-block: 4px 8px; } }
-.x-band { display: block; max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); } /* one line at 1440, now that it also says the public site receives nothing */
+.x-band { display: block; max-width: none; margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); } /* the full width, since it also says what leaves the page: nothing typed or chosen, while GitHub, the host, logs each visitor's IP address */
 .x-band .wrap { display: block; padding-block: 8px 4px; }
 main .x-band a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 .x-check-top { max-width: none; margin: 0; padding: 8px var(--gutter); }

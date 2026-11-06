@@ -309,7 +309,7 @@
   "claims/externalities.json": "b195dba4fc16",
   "claims/factors.json": "1ac3229d6915",
   "claims/finance.json": "b4e2ca3aff3f",
-  "claims/footprint.json": "57f31476c059",
+  "claims/footprint.json": "600ae7d16b40",
   "claims/funding.json": "04f2991c7dd7",
   "claims/jobs.json": "34df1d4e5d29",
   "claims/local.json": "077ed30220fe",
@@ -320,10 +320,10 @@
   "claims/prose-ai.json": "32aeabf28373",
   "claims/prose-dc.json": "555b14beeaea",
   "claims/prose-energy.json": "29b09a7a0f6d",
-  "claims/prose-ru.json": "e12cd45baac7",
+  "claims/prose-ru.json": "3215761f4ad6",
   "claims/resources.json": "d37721f0aae3",
   "claims/services.json": "3f60b542e4cb",
-  "claims/site-counts.json": "f52432fe4546",
+  "claims/site-counts.json": "e8bd4470456e",
   "claims/sovereign.json": "4a01ea106810",
   "claims/tradeoffs.json": "e140d57246dd",
   "follow/0331-AA10": "2026-11-05",
@@ -393,9 +393,9 @@
   "plates/energy-deadlines.json": "fa73c314c2dc",
   "plates/energy-types-by-stage-plans.json": "2baa46d8d682",
   "plates/energy-types-by-stage.json": "27d3fb086f6a",
-  "plates/ru-boundary.json": "e24c122e3367",
+  "plates/ru-boundary.json": "38d43365f212",
   "plates/ru-electricity.json": "2410896c0c33",
   "plates/ru-forecasts.json": "5eac9b897879",
-  "plates/ru-hour.json": "dc29cbc7b8d8"
+  "plates/ru-hour.json": "3088862e1393"
  }
 }
