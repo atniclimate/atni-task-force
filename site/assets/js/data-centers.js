@@ -257,4 +257,56 @@ plate.register('dc-forecast-check', {
     if (lead?.fields) ctx.readout(lead.fields.diff, lead.fields.diff_unit);
   },
 });
+
+// County climate: the scenario is the kit's own setting; the measure and the counties shown are placed here. Each row's figures by measure
+// arrive in the plate's data as [claim, value, low, high], every claim already among its receipts, and each measure has its own ruler.
+const fig3 = (v, lo, hi) => `${plate.fig(v)} (${plate.fig(lo)} to ${plate.fig(hi)})`;
+plate.register('dc-climate-counties', {
+  render(ctx) {
+    const m = ctx.data.measures;
+    const meta = m.metrics[ctx.state.cc_metric];
+    const pick = ctx.state.cc_state;
+    const of = (key) => {
+      const f = m.rows[key][ctx.state.cc_metric];
+      return { base: f.baseline, fut: f[ctx.state.cc_scenario] };
+    };
+    if (ctx.reason !== 'select') {
+      ctx.auto();
+      const [lo, hi] = meta.domain;
+      const at = (v) => (v - lo) / (hi - lo);
+      const ticks = Array.from({ length: Math.round((hi - lo) / meta.step) + 1 }, (_, i) => lo + i * meta.step);
+      const grid = ctx.plot.querySelector('.ladder-grid');
+      grid.querySelectorAll('i:not(.ladder-needle):not(.ladder-tick)').forEach((n) => n.remove());
+      grid.prepend(...ticks.map((t) => Object.assign(document.createElement('i'), { style: `--x:${at(t)}` })));
+      ctx.plot.querySelector('.ladder-axis').replaceChildren(...ticks.map((t) => Object.assign(document.createElement('span'), { style: `--x:${at(t)}`, textContent: plate.fig(t) })));
+      ctx.plot.querySelector('.ladder-group-label').textContent = meta.axis;
+      for (const node of ctx.plot.querySelectorAll('.ladder-row')) {
+        const key = node.dataset.row;
+        const { base, fut } = of(key);
+        node.hidden = pick === 'dc' ? !m.dc.includes(key) : !key.endsWith(`-${pick}`);
+        // One line a county, the finding first, "87 F, from 84": the ranges are in the readout and the facts beside the plot.
+        ctx.setRow(key, { frac: at(fut[1]), x2: at(base[1]), lo: Math.min(at(base[1]), at(fut[1])), hi: Math.max(at(base[1]), at(fut[1])), text: `${plate.fig(fut[1])} ${meta.unit}, from ${plate.fig(base[1])}` });
+      }
+      const chosen = ctx.plot.querySelector(`.ladder-row[data-row="${ctx.key}"]`);
+      if (chosen?.hidden) requestAnimationFrame(() => ctx.plot.querySelector('.ladder-row:not([hidden])')?.click()); // a filter hid the selected county, so the first one shown takes over
+    }
+    const label = ctx.data.rows.find((r) => r.key === ctx.key)?.label;
+    const { base, fut } = of(ctx.key);
+    const [b, f] = [fig3(...base.slice(1)), fig3(...fut.slice(1))];
+    ctx.reading(`${label}, ${m.scenarios[ctx.state.cc_scenario]}: the ${meta.words} averages about ${f} ${meta.unit} in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against ${b} ${meta.unit} in 1995 to 2014. A county mean on a quarter-degree grid. Limit: ${ctx.data.receipts[fut[0]].limit}`);
+    ctx.readout(f, meta.unit);
+    for (const r of ctx.rows) r.display = `${r.series.startsWith('2040') ? f : b} ${meta.unit}`; // the facts list beside the plot names this measure's figures, not the build's
+  },
+});
+
+// Where proposals sit: the selected land row lights its squares on the county map, and the kind picked dims the rest.
+plate.register('dc-project-land', {
+  render(ctx) {
+    ctx.auto();
+    for (const sq of document.querySelectorAll('#project-map .m')) {
+      sq.classList.toggle('is-selected', sq.dataset.row === ctx.key);
+      sq.classList.toggle('is-dim', sq.dataset.row !== ctx.key || (ctx.state.kind !== 'all' && sq.dataset.kind !== ctx.state.kind));
+    }
+  },
+});
 })();

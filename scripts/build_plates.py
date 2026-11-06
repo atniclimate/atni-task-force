@@ -1613,12 +1613,24 @@ def plate_block(defn, claims, models=None):
             receipts.setdefault(claim_id, receipt_of(claim_id))
     for claim_id in sorted(ctx.plate_cites):
         receipts.setdefault(claim_id, receipt_of(claim_id))
+
+    def measure(node):  # a page script's claims by setting (dc-climate-counties): each id becomes [id, value, low, high], and must be a receipt already
+        if isinstance(node, dict):
+            return {k: measure(v) for k, v in node.items()}
+        if isinstance(node, list):
+            return [measure(v) for v in node]
+        if isinstance(node, str) and vp.CLAIM_ID.fullmatch(node):
+            if node not in receipts:
+                raise BuildError(f"plate {plate}: measures names {node}, which no row cites: add it to a row's cites")
+            return [node, claims[node].get("value"), claims[node].get("low"), claims[node].get("high")]
+        return node
     block_rows = [compact(r) for r in rows]
     data = compact({
         "id": plate, "plot": plot, "by": defn.get("by"), "default": default, "not_counted": own_text(plate, "not_counted", defn.get("not_counted") or NOT_COUNTED),
         "tail": tail or None, "rows": block_rows, "receipts": receipts, "env": {k: v for k, v in ctx.env.items() if k in ctx.sources} or None, "sources": ctx.sources or None, "stands": ctx.stands or None,
         "fields": {name: [spec["formula"], spec.get("digits")] for name, spec in fields_spec.items()} or None, "setting": setting_data(defn) or None, "readings": readings or None,
         "also": also or None, "cites": sorted(ctx.plate_cites) or None, "details": [own_text(plate, "details", t) for t in defn.get("details") or []] or None,
+        "measures": measure(defn["measures"]) if defn.get("measures") else None,
     })
     alt = {**data, "alt": f"{title} The table holds every value.", "stops_now": {c["name"]: control_default(c) for c in defn.get("controls") or []}}
     now_full = [r for r in rows if not r.get("when") or r["when"] == stop]

@@ -456,6 +456,55 @@ def check_header(data, rel, errors):
         errors.append(f"{rel}: tier must be T0 and schema 1: set both at the top of the file, and move anything that is not T0 out of site/")
 
 
+def keys_named(data, pattern):
+    """Every key anywhere in the data that matches the pattern (strings_and_keys yields a key as its own path's last part)."""
+    return sorted({text for path, text in strings_and_keys(data) if re.split(r"[.\[]", path)[-1] == text and pattern.search(text)})
+
+
+def check_climate_regions(errors):
+    """County projections: whole counties by FIPS, no cell coordinates or Nation ids, no heat screen, and NASA's terms carried with the file."""
+    rel = "data/climate-regions.json"
+    data = load_data(rel, errors)
+    if data is None:
+        return
+    check_header(data, rel, errors)
+    for r in data.get("regions") or []:
+        if r.get("coverage") != 1.0 or not re.fullmatch(r"\d{5}", str(r.get("fips"))):
+            errors.append(f"{rel}: region {r.get('fips')} needs a five-digit FIPS and coverage 1.0: a partly covered county goes to not_assessed; rerun scripts/climate_regions.py")
+    for key in keys_named(data, re.compile(r"(?i)^(?:lat|lon|latitude|longitude|cells|nations|tribe\w*|epa_\w+)$")):
+        errors.append(f"{rel}: holds the key {key}: no cell coordinates and no Nation id leave the pull; remove it in scripts/climate_regions.py and rerun")
+    for path, text in strings_and_keys(data):
+        if HEAT_SCREEN.search(text) or re.search(r"epa_1000\d{5}", text):
+            errors.append(f"{rel}: {path} names a heat screen or a Nation id: remove it; both stay T1")
+    if "CC BY-SA 4.0" not in str(data.get("license")):
+        errors.append(f"{rel}: the license line must carry NASA's CC BY-SA 4.0 terms for the temperature figures (ruling 25): rerun scripts/climate_regions.py")
+
+
+def check_projects(errors):
+    """Named proposals: land as each filing states it, no owner-of-record or private-party field, https sources, and no parcel geometry yet."""
+    rel = "data/projects.json"
+    data = load_data(rel, errors)
+    if data is None:
+        return
+    check_header(data, rel, errors)
+    for key in keys_named(data, re.compile(r"(?i)owner_name|owner$|mailing|situs|assessed|sale_price|legal_desc|normalized_owner|owner_cluster|private_party|^owner_review$")):
+        errors.append(f"{rel}: holds the key {key}: no owner-of-record, assessor, or private-party field is published; drop it in the N6 recheck and copy the file again")
+    ids = [p.get("id") for p in data.get("projects") or []]
+    if len(ids) != len(set(ids)):
+        errors.append(f"{rel}: record ids repeat: each record needs its own id")
+    for p in data.get("projects") or []:
+        where = f"{rel} record {p.get('id')}"
+        if (p.get("land") or {}).get("class") not in (data.get("land_classes") or {}):
+            errors.append(f"{where}: land class must be one of land_classes: use the filing's own class")
+        if (p.get("land") or {}).get("geometry") is not None:
+            errors.append(f"{where}: geometry must stay null until a parcel file and the owner's decision exist")
+        if any(not re.fullmatch(r"\d{5}", str(c.get("fips"))) for c in p.get("counties") or []):
+            errors.append(f"{where}: county FIPS must be five digits")
+        for s in p.get("sources") or []:
+            if not https(s.get("url")) or not s.get("quote"):
+                errors.append(f"{where}: every source needs an https url and the quote it rests on")
+
+
 def check_energy_potential(errors):
     rel = "data/energy-potential.json"
     data = load_data(rel, errors)
@@ -853,6 +902,8 @@ def main():
     entries = check_library(errors)
     tribes = check_energy_potential(errors)
     programs = check_energy_funding(errors)
+    check_climate_regions(errors)
+    check_projects(errors)
     searches, follows = check_policy_watch(errors)
     plates = check_plate_files(errors)
     check_manifest(errors)

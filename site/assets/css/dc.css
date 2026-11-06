@@ -244,6 +244,29 @@ main p.dc-wide-note { max-width: var(--measure-wide); margin-bottom: 8px; font-s
 .dc-work-links .bench-figure { padding-bottom: 0; }
 .dc-work-links .bench-link { font-size: 0.9375rem; }
 
+/* County climate: the 2040 to 2059 median is the pair's first mark, so the kit's selection orange is the finding; 1995 to 2014, the second, is the hollow mark it moved from.
+   One line a county ("87 F, from 84"), so the default eighteen rows end above a 900px window's fold. The facts list keys its two figures as the plot draws them. */
+#dc-climate-counties { --l: clamp(12rem, 26%, 13rem); --v: clamp(12rem, 22%, 13rem); --row-min: 32px; }
+#dc-climate-counties :is(.ladder-mark, .plate-square).is-b, #dc-climate-counties .plate-values li:last-child .plate-square { background: var(--plot-ground); border: 2px solid var(--series-context); }
+#dc-climate-counties .ladder-row.is-on .ladder-mark.is-b { border-color: var(--atni-text-heading); }
+#dc-climate-counties .plate-values li:first-child .plate-square { background: var(--energy-mark); }
+#climate .dc-details > .climate-voice { grid-column: 1 / -1; max-width: var(--measure-wide); }
+
+/* Where proposals sit: the county map beside every record, by state. The map's squares take the plate's orange. */
+.dc-land { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px 32px; align-items: start; }
+.dc-map { margin: 0; color: var(--atni-text-secondary); }
+.dc-map h2 { margin: 0 0 8px; font-size: 1.5rem; line-height: 1.15; color: var(--atni-text-heading); }
+.dc-map svg { display: block; width: 100%; height: auto; --mark: var(--energy-mark); --mark-edge: var(--plot-ground); }
+.dc-map .m { transition: opacity 160ms ease-out; }
+.dc-map svg .m.is-selected { stroke: var(--atni-text-heading); } /* the drawing's currentColor is the secondary ink, too faint a ring on orange */
+.dc-records { grid-template-columns: 1fr; align-content: start; }
+.dc-record-list { margin: 0; padding-left: 1.25rem; }
+.dc-record-list li { margin: 0 0 12px; }
+.dc-record-list p { margin: 0 0 4px; }
+.dc-record-list blockquote { margin: 4px 0 4px 8px; padding-left: 12px; border-left: 2px solid var(--grid); }
+@media (max-width: 1099px) { .dc-land { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .dc-map .m { transition: none; } }
+
 @media print {
   .dc-jump, .slot-label { display: none; }
   .dc-long > .disclosure > .disclosure-body { columns: auto; }

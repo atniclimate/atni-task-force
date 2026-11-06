@@ -1,0 +1,169 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-project-land",
+ "page": "data-centers/index.html",
+ "fit": true,
+ "eyebrow": "Named proposals in public filings, read 11/05/2026",
+ "title": "The filings read put {c[ld-005][value]:.0f} of {c[ld-001][value]:.0f} named proposals on BLM public land",
+ "subtitle": "Land as each filing states it. No parcel outline yet, and no owner of record.",
+ "text": [
+  "A request or an application is not an approval. Each bar counts proposals whose public filing states that kind of land; a filing that says nothing is counted as not stated."
+ ],
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "kind",
+   "label": "Kind",
+   "default": "all",
+   "options": [
+    {
+     "value": "all",
+     "label": "All kinds"
+    },
+    {
+     "value": "dc",
+     "label": "Data centers"
+    },
+    {
+     "value": "gs",
+     "label": "Generation and storage"
+    },
+    {
+     "value": "tx",
+     "label": "Transmission and substations"
+    }
+   ]
+  }
+ ],
+ "by": "kind",
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "projects": ""
+  },
+  "groups": [
+   {
+    "id": "land",
+    "label": "Named proposals",
+    "mark": "bar",
+    "domain": [
+     0,
+     50
+    ]
+   }
+  ]
+ },
+ "default": "federal-blm",
+ "boundary": "What public filings say about where a proposal sits. Not a title record and not an ownership finding; on Tribal or Trust land, only the source's own words.",
+ "reading": "{label}: {display} of the named proposals read ({kind}), by the public documents read on 11/05/2026. The class is the filing's own wording, not a title search; a request or an application is not an approval.",
+ "not_counted": "None of the named proposals read sits here",
+ "details": [
+  "The one parcel number a public notice prints is in the record list; no outline is drawn until a county's parcel file is captured and its terms allow it.",
+  "Developers are named as the filing names them, never from an assessor's owner field.",
+  "BLM public land, the site itself: the filing says the facility is on BLM land. BLM-managed land along a line's route: a record or decision of the Bureau of Land Management covers a right-of-way for a line, without saying how much of the route.",
+  "The one record on land a source calls Tribal or Trust land is worded as that source words it."
+ ],
+ "foot": [
+  {
+   "text": "Every record, its sources, and the quotes they rest on:",
+   "href": "../data/projects.json",
+   "link": "projects.json"
+  },
+  {
+   "text": "The county map:",
+   "href": "../assets/img/maps/projects.svg",
+   "link": "projects.svg"
+  }
+ ],
+ "rows": [
+  {
+   "id": "federal-blm",
+   "label": "BLM public land, the site itself",
+   "group": "land",
+   "claims": {
+    "all": "ld-005",
+    "dc": "ld-006",
+    "gs": "ld-007",
+    "tx": null
+   }
+  },
+  {
+   "id": "federal-blm-route",
+   "label": "BLM-managed land along a line's route",
+   "group": "land",
+   "claims": {
+    "all": "ld-008",
+    "dc": null,
+    "gs": null,
+    "tx": "ld-009"
+   }
+  },
+  {
+   "id": "federal-doe",
+   "label": "A U.S. Department of Energy site",
+   "group": "land",
+   "claims": {
+    "all": "ld-010",
+    "dc": "ld-011",
+    "gs": "ld-012",
+    "tx": null
+   }
+  },
+  {
+   "id": "federal-offshore",
+   "label": "A federal offshore lease",
+   "group": "land",
+   "claims": {
+    "all": "ld-013",
+    "dc": null,
+    "gs": "ld-014",
+    "tx": null
+   }
+  },
+  {
+   "id": "state-permitted",
+   "label": "A state siting docket",
+   "group": "land",
+   "claims": {
+    "all": "ld-015",
+    "dc": null,
+    "gs": "ld-016",
+    "tx": "ld-017"
+   }
+  },
+  {
+   "id": "county-permitted",
+   "label": "A county or city land-use action",
+   "group": "land",
+   "claims": {
+    "all": "ld-018",
+    "dc": "ld-019",
+    "gs": "ld-020",
+    "tx": null
+   }
+  },
+  {
+   "id": "tribal-as-stated",
+   "label": "Land the source calls Tribal or Trust land",
+   "group": "land",
+   "claims": {
+    "all": "ld-021",
+    "dc": "ld-022",
+    "gs": null,
+    "tx": null
+   }
+  },
+  {
+   "id": "not-stated",
+   "label": "Not stated by the sources read",
+   "group": "land",
+   "claims": {
+    "all": "ld-023",
+    "dc": "ld-024",
+    "gs": "ld-025",
+    "tx": "ld-026"
+   }
+  }
+ ]
+}

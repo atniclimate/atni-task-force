@@ -49,22 +49,22 @@ async function tabs() {
   const { window, document, errors } = await load();
   const links = [...document.querySelectorAll('[role="tab"]')];
   const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-  eq(links.length, 6, 'six tabs');
-  eq(panels.length, 6, 'six panels');
-  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,jobs,policy-landscape,questions', 'panel ids');
+  eq(links.length, 8, 'eight tabs');
+  eq(panels.length, 8, 'eight panels');
+  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,land,climate,jobs,policy-landscape,questions', 'panel ids');
   ok(!panels[0].hidden && panels.slice(1).every((n) => n.hidden), 'Overview shows first');
-  for (let i = 1; i < 6; i++) {
+  for (let i = 1; i < 8; i++) {
     fire(window, links[i], 'click');
     ok(!panels[i].hidden, `tab ${i} shows`);
     eq(window.location.hash, `#${panels[i].id}`, 'hash written');
   }
-  key(window, links[5], 'ArrowRight');
+  key(window, links[7], 'ArrowRight');
   eq(links[0].getAttribute('aria-selected'), 'true', 'arrow wraps');
   key(window, links[0], 'End');
-  eq(links[5].getAttribute('aria-selected'), 'true', 'End');
-  key(window, links[5], 'Home');
+  eq(links[7].getAttribute('aria-selected'), 'true', 'End');
+  key(window, links[7], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
-  eq(document.querySelectorAll('[data-plate]').length, 10, 'ten plates');
+  eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -627,9 +627,38 @@ async function project() {
   eq(errors.join(), '', 'no script errors');
 }
 
+// County climate and where proposals sit: the measure's own ruler and figures, the scenario, the county filter, and the map's lit squares.
+async function climateLand() {
+  const { window, document, errors } = await load('#climate');
+  const c = parts(document, 'dc-climate-counties');
+  const m = JSON.parse(document.getElementById('plate-data-dc-climate-counties').textContent).measures;
+  const shown = () => [...c.plot.querySelectorAll('.ladder-row')].filter((n) => !n.hidden).map((n) => n.dataset.row);
+  const ww = m.rows['walla-walla-wa'];
+  eq(shown().join(), m.dc.join(), 'the first view is the data center counties');
+  ok(['Walla Walla County, WA, SSP2-4.5', `about ${ww.tmax_summer.ssp245[1]} (`].every((s) => c.reading.textContent.includes(s)), `default: ${c.reading.textContent.slice(0, 160)}`);
+  moves(window, c, () => setRadio(window, c.radio('cc_metric', 'days_95')), (t) => t.includes(`about ${ww.days_95.ssp245[1]} (`) && t.includes(`against ${ww.days_95.baseline[1]} (`) && t.includes('days a year'), 'measure');
+  const d = m.metrics.days_95;
+  eq(c.plot.querySelector('.ladder-group-label').textContent, d.axis, 'the ruler says what it measures');
+  eq(c.plot.querySelector('.ladder-axis').lastChild.textContent, String(d.domain[1]), 'and runs to its own top');
+  near(place(row(c.root, 'walla-walla-wa'), 'x'), (ww.days_95.ssp245[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'the 2040 to 2059 mark stands at its figure');
+  near(place(row(c.root, 'walla-walla-wa'), 'x2'), (ww.days_95.baseline[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'and the 1995 to 2014 mark at its own');
+  ok(c.facts.textContent.includes(`${ww.days_95.baseline[1]} (`), 'the facts follow the measure');
+  moves(window, c, () => setRadio(window, c.radio('cc_scenario', 'ssp370')), (t) => t.includes('SSP3-7.0') && t.includes(`about ${ww.days_95.ssp370[1]} (`), 'scenario');
+  setRadio(window, c.radio('cc_state', 'mt'));
+  ok(shown().length && shown().every((k) => k.endsWith('-mt')), 'a state shows its counties only');
+  await wait(40);
+  ok(c.reading.textContent.includes(', MT,'), `a county shown takes the selection: ${c.reading.textContent.slice(0, 60)}`);
+  const land = await load('#land');
+  const squares = [...land.document.querySelectorAll('#project-map .m')];
+  const lit = squares.filter((s) => !s.classList.contains('is-dim'));
+  ok(lit.length && lit.every((s) => s.dataset.row === 'federal-blm'), `the map lights the selected land row: ${lit.length} of ${squares.length}`);
+  ok(land.document.querySelector('#land-records .cr[data-claim^="pj-"]'), 'the record list marks its MW figures');
+  eq([...errors, ...land.errors].join(), '', 'no script errors');
+}
+
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
-  eq(document.querySelectorAll('section.panel').length, 6, 'all panels in the page');
+  eq(document.querySelectorAll('section.panel').length, 8, 'all panels in the page');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#jobs"]'), 'strip is a jump list');
   for (const root of document.querySelectorAll('[data-plate]')) {
     ok(root.querySelector('.reading').textContent.length > 20, `${root.id} default Reading`);
@@ -675,4 +704,4 @@ async function untrusted() {
 }
 
 
-module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, project, noScripts, untrusted } };
+module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, project, climateLand, noScripts, untrusted } };
