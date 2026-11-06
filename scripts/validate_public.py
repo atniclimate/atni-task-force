@@ -115,7 +115,7 @@ SAYS_BOUND = {  # each direction's plain equivalents, as a source may write them
     "upper": re.compile(r"(?i)\b(?:ceilings?|upper[\s-]bounds?|upper limit|at most|no more than|not more than|maximum|up to|or less|or fewer|less than|fewer than)\b"),
 }
 BOUND_WINDOW = 6
-REFUSE_BOUND_WORDS = False  # False (N10 step 2a): list each bound word its claim does not state, and leave the exit code alone; True: each one fails
+REFUSE_BOUND_WORDS = True  # True since N10 step 4 (0 hits): each bound word its claim does not state fails; False lists them only
 # The claim ids in the evidence files when source.date_words came in (N10, 11/06/2026), as prefix:first-last runs. A day-level source.published
 # with no date_words is a warning for these ids and fails for any other.
 DATE_WORDS_BASELINE = ("at:1-2 au:1-62 cp:1-528 dem:1-145 ec:1-62 ef:1-14,21-28,41-43 ep:1-18,21-33,41-42 ex:1-19 fin:1-111 fp:1-107,120-162 gf:1-65 jb:1-117 "

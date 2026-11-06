@@ -161,7 +161,7 @@
    "id": "pe-008",
    "entity": "Grants.gov forecast records read on 11/05/2026",
    "metric": "forecasted notice for the HUD Indian Community Development Block Grant program, second record",
-   "value": 1,
+   "value": null,
    "low": null,
    "high": null,
    "unit": "notice",

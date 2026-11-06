@@ -265,6 +265,11 @@ def test_a_planted_bound_word_is_listed_in_report_mode_and_fails_once_refused(tm
     assert "  - index.html: aa-001: 'at least' names a lower bound" in validator_output(tmp_path, monkeypatch, capsys)
 
 
+def test_both_new_gates_ship_refusing():  # N10 step 4 cleared every hit (0 of 432 marks, 0 bound words), then turned them on
+    import pour_claim_refs as cr
+    assert cr.REFUSE_FIGURES is True and vp.REFUSE_BOUND_WORDS is True
+
+
 def test_a_day_without_its_words_warns_for_an_old_claim_and_fails_a_new_one():  # 16
     def dated(claim_id, published="2026-10-05", **source):
         return claim_id, {"id": claim_id, "source": {"url": "https://x.org", "published": published, **source}}

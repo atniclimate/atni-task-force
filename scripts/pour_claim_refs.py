@@ -40,8 +40,8 @@ SRC_ANCHOR = re.compile(r'\sid="src-([^"]+)"')
 NUMBER = re.compile(r"(?<![\w.,])(\d+(?:,\d{3})*(?:\.\d+)?)(?:\s*(thousand|million|billion|trillion)\b)?")  # a figure; a digit inside a name (CO2, H100) is not one
 SCALE = {"thousand": 10**3, "million": 10**6, "billion": 10**9, "trillion": 10**12}
 WIDE = Context(prec=60, rounding=ROUND_HALF_UP)  # room for any claim's digits at any printed precision
-# The figure rule's mode. False (N10 step 2a): report each mark it fails and leave exit codes alone. True: refuse such a mark like any other problem.
-REFUSE_FIGURES = False
+# The figure rule's mode. True since N10 step 4 (0 hits in 432 marks): refuse such a mark like any other problem. False reports only.
+REFUSE_FIGURES = True
 
 
 def load_claims(site=SITE):
@@ -149,7 +149,7 @@ def block(ids, claims, anchored):
     return ('    <!-- claims-cited -->\n'
             '    <section class="wrap section claims-cited" aria-labelledby="claims-cited-title">\n'
             '      <h2 id="claims-cited-title">Claims Cited on This Page</h2>\n'
-            '      <p class="caption">Each figure with a dotted underline links to its claim here.</p>\n'
+            '      <p class="caption">Each dotted underline links to its claim here.</p>\n'
             f'      <ul class="plate-sources">\n{rows}      </ul>\n'
             '    </section>\n'
             '    <!-- /claims-cited -->\n')
