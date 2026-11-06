@@ -335,9 +335,10 @@
     "published": "2025-07-01",
     "kind": "peer-reviewed"
    },
-   "quote": "datacenters can consume a total of 5.4 million liters of water, including 700,000 liters of scope-1 onsite water consumption.",
+   "quote": "we show that training GPT-3 in Microsoft’s U.S. datacenters can consume a total of 5.4 million liters of water, including 700,000 liters of scope-1 onsite water consumption.",
    "derived": "Table 1 U.S. Average: onsite 0.708 + offsite 4.731 = 5.439 million L; onsite share 0.708 / 5.439 = 13%.",
-   "status": "partly"
+   "status": "partly",
+   "limit": "A modeled estimate of operational water only for training GPT-3 in Microsoft's US data centers; the training location is not public (Table 1 spans 2.3 to 15.3 million liters across locations), and the source states no data year, so the 2023 here is the paper's era and not a measured year."
   },
   {
    "id": "tr-017",
@@ -1347,7 +1348,7 @@
     "title": "United States Data Center Energy Usage Report: 2025 Update",
     "publisher": "Lawrence Berkeley National Laboratory (hosted by U.S. Department of Energy)",
     "url": "https://energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
-    "published": "2026-06-16",
+    "published": "2026-06-18",
     "kind": "agency"
    },
    "quote": "The continued deployment of GPU- and ASIC- accelerated servers, with ever-increasing computing capabilities and power consumption, led to a 14% increase in U.S. data center electricity use between 2023 and 2024.",
@@ -1368,7 +1369,7 @@
     "title": "United States Data Center Energy Usage Report: 2025 Update",
     "publisher": "Lawrence Berkeley National Laboratory (hosted by U.S. Department of Energy)",
     "url": "https://energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
-    "published": "2026-06-16",
+    "published": "2026-06-18",
     "kind": "agency"
    },
    "quote": "Infrastructure consumes 36% of total data center electricity in 2018, declining to 31% in 2024 as the national average PUE improves from 1.55 to 1.45.",

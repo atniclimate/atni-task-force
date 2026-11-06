@@ -117,7 +117,7 @@ const COUNTED = { dc: 1, adds: 2, whole: 4 };
 const ACTIVITY = ['chat', 'video', 'short'];
 const STREAM_ONLY = 'The streaming setting moves the video rows, not this one.';
 const CHAT_ONLY = 'The chat settings move the chat row, not this one.';
-const TOP_DOWN = 'The top-down average spreads all data center energy over all bytes. It is an upper bound of an unsettled allocation, not a literal share of this hour.';
+const TOP_DOWN = 'The top-down average spreads all data center energy over all bytes. It is a scenario at the top of an unsettled allocation, not a literal share of this hour.';
 const KIND_RANGE = { medium_prompt: { low: KIND.medium_prompt, high: KIND.medium_prompt }, reasoning: { low: k_r_low, high: k_r_high }, high_reasoning: { low: k_h_low, high: k_h_high } };
 
 // Receipts for these settings, beyond the row's.

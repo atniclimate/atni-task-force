@@ -12,18 +12,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: every entry in the file, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: every entry in the file, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-002",
@@ -34,18 +34,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries marked Tribal-specific: by, for, or specifically about Tribal Nations or Indigenous Peoples, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries marked Tribal-specific: by, for, or specifically about Tribal Nations or Indigenous Peoples, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. Tribal-specific is the library's own label for a source; it does not mean any Nation reviewed or endorsed that source."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. Tribal-specific is the library's own label for a source; it does not mean any Nation reviewed or endorsed that source. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-003",
@@ -56,18 +56,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries not marked Tribal-specific, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries not marked Tribal-specific, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. Tribal-specific is the library's own label for a source; it does not mean any Nation reviewed or endorsed that source."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. Tribal-specific is the library's own label for a source; it does not mean any Nation reviewed or endorsed that source. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-004",
@@ -78,18 +78,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type resolution marked as core sources, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type resolution marked as core sources, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A core source is the library's own mark."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A core source is the library's own mark. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-005",
@@ -100,18 +100,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries marked as core sources, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries marked as core sources, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-006",
@@ -122,18 +122,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries with two or more areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries with two or more areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's areas are the library's own labels."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's areas are the library's own labels. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-011",
@@ -144,18 +144,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries that list energy feasibility among their areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries that list energy feasibility among their areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-012",
@@ -166,18 +166,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries that list data centers among their areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries that list data centers among their areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-013",
@@ -188,18 +188,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries that list artificial intelligence among their areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries that list artificial intelligence among their areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-014",
@@ -210,18 +210,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries that list summit among their areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries that list summit among their areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-015",
@@ -232,18 +232,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries that list cross-cutting among their areas, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries that list cross-cutting among their areas, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry can list several areas, so area counts add to more than the whole. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-021",
@@ -254,18 +254,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type resolution, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type resolution, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-022",
@@ -276,18 +276,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type report, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type report, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-023",
@@ -298,18 +298,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type policy, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type policy, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-024",
@@ -320,18 +320,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type legislation, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type legislation, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-025",
@@ -342,18 +342,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type article, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type article, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-026",
@@ -364,18 +364,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type academic research, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type academic research, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-027",
@@ -386,18 +386,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type dataset, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type dataset, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-028",
@@ -408,18 +408,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type tool, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type tool, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-029",
@@ -430,18 +430,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type website, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type website, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-030",
@@ -452,18 +452,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries of type news, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries of type news, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. An entry's type is the library's own label. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-041",
@@ -474,18 +474,18 @@
    "high": null,
    "unit": "entry",
    "year": 2026,
-   "boundary": "Counted: entries dated 2027, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries dated 2027, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-042",
@@ -496,18 +496,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries dated 2026, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries dated 2026, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-043",
@@ -518,18 +518,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries dated 2025, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries dated 2025, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-044",
@@ -540,18 +540,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries dated 2024, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries dated 2024, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-045",
@@ -562,18 +562,18 @@
    "high": null,
    "unit": "entries",
    "year": 2026,
-   "boundary": "Counted: entries dated before 2024, in library.json on 11/05/2026. Not counted: sources the library does not hold.",
+   "boundary": "Counted: entries dated before 2024, in the edition of library.json updated 11/05/2026, the file this release ships. Not counted: sources the library does not hold.",
    "source": {
-    "title": "ATNI Energy Task Forces library: public dataset (library.json)",
+    "title": "ATNI Energy Task Forces library: public dataset (library.json, updated 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/library.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
    "quote": "\"updated\": \"2026-11-05\"",
    "derived": "Count of those entries in library.json, updated 11/05/2026.",
    "status": "partly",
-   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date."
+   "limit": "A count of a curated file on its stated date: what this library holds, not all that is published. A year comes from the date on each entry, which may be a publication date, a latest update, or an event's own date. The stated date is the file's own update date, not a date of publication. Until this edition is published, the file's live address serves the earlier 10/29/2026 edition."
   },
   {
    "id": "lc-051",
@@ -672,15 +672,15 @@
    "high": null,
    "unit": "year",
    "year": 2025,
-   "boundary": "Counted: the convention Resolution #2026-034 names for Resolution #25-41. The adopted text of Resolution #25-41 is not yet posted, so its own date was not read.",
+   "boundary": "Counted: the year of the Annual Convention named in the certification of the adopted text of Resolution #25-41, as ATNI posts it (10/12/2025 through 10/16/2025, Suquamish, Washington). Not counted: any later action on the resolution.",
    "source": {
-    "title": "Resolution #2026-034: Endorsement of the Tiered Sovereign Data Framework (TSDF)",
+    "title": "Resolution #2025-41: Establishing an Affiliated Tribes of Northwest Indians (ATNI) Task Force on Data Centers",
     "publisher": "Affiliated Tribes of Northwest Indians",
-    "url": "https://atniclimate.github.io/atni-task-force/library/resolutions/atni-res-2026-034-tiered-sovereign-data-framework.pdf",
-    "published": "2026-09-17",
+    "url": "https://atnitribes.org/wp-content/uploads/2025/11/20251016_25-41_TASK%20FORCE%20DATA%20CENTERS.pdf",
+    "published": "2025-10",
     "kind": "organization"
    },
-   "quote": "Resolution #25-41 (For the Development of an ATNI Task Force on Data Centers, 2025 Annual Convention)",
+   "quote": "The foregoing Resolution was adopted at the Affiliated Tribes of Northwest Indians 2025 Annual Convention held at the Suquamish Clearwater Casino Resort in Suquamish, Washington on October 12-16, 2025, with a quorum present.",
    "derived": null,
    "status": "verified"
   }

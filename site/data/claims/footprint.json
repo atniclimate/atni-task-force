@@ -1487,13 +1487,13 @@
   {
    "id": "fp-067",
    "entity": "CogVideoX (newer version), 5-second 16 fps video",
-   "metric": "GPU energy per video",
+   "metric": "energy per video, measured with CodeCarbon",
    "value": 944,
    "low": null,
    "high": null,
    "unit": "Wh/video",
    "year": 2025,
-   "boundary": "GPU energy measured by Hugging Face with CodeCarbon on an open model on a data center GPU. The magazine's headline figure carries no doubling for non-GPU energy. Not a commercial video service; no network or device.",
+   "boundary": "Energy measured by Hugging Face researcher Sasha Luccioni with the CodeCarbon tool on an open model, as MIT Technology Review reports it. MIT's video paragraph says only that she 'tested the energy required to generate videos with the model using a tool called Code Carbon'; its method paragraph says researchers measure the H100 GPU's energy for open models, so the graphics-chip reading rests on that paragraph, and the Hugging Face paper on video models (fp-068) counts GPU, CPU and RAM with CodeCarbon, so the figure may include more than the GPU. The headline figure carries no doubling for other equipment. Not a commercial video service; no network or device.",
    "source": {
     "title": "We did the math on AI's energy footprint (repackaged feature, October 2025 PDF)",
     "publisher": "MIT Technology Review",
@@ -2864,7 +2864,7 @@
    "status": "partly"
   },
   {
-   "limit": "The high end is a top-down, all-workload average multiplied by a streaming data rate. It exceeds the whole-chain figures of BBC (65.7 Wh) and Ofcom (113 Wh with the device), so it cannot be a literal per-hour data center share; it is an upper bound of an unsettled allocation.",
+   "limit": "The high end is a top-down, all-workload average multiplied by a streaming data rate. It exceeds the whole-chain figures of BBC (65.7 Wh) and Ofcom (113 Wh with the device), so it cannot be a literal per-hour data center share; it is the top of an unsettled allocation range, a scenario and not a bound.",
    "id": "fp-150",
    "entity": "Video streaming, data center segment per viewing hour (labeled range)",
    "metric": "labeled range of data center energy per viewing hour at 3.5 GB per hour; allocation unsettled",

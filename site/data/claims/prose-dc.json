@@ -202,13 +202,13 @@
   {
    "id": "pdc-023",
    "entity": "Yakama Nation recommendations to Washington on data centers",
-   "metric": "number of recommendations filed",
+   "metric": "number of recommendations proposed",
    "value": 36,
    "low": null,
    "high": null,
    "unit": "recommendations",
    "year": 2025,
-   "boundary": "The report is dated November 10, 2025 and is addressed to the governor and legislature of Washington.",
+   "boundary": "The Nation's own report, dated November 10, 2025 on its cover and addressed to the governor and legislature of Washington. The statement that the Nation was the only sovereign on the Workgroup is the Nation's own, from its executive summary (page 5). The topics (peak loads, reliability, transmission and siting, water, consumers, tax incentives) are the report's own headings and recommendations.",
    "source": {
     "title": "Yakama Nation Data Center Findings and Recommendations",
     "publisher": "Yakama Nation",
@@ -216,9 +216,10 @@
     "published": "2025-11-10",
     "kind": "agency"
    },
-   "quote": "November 10, 2025 | We are providing our own findings and recommendations to the State of Washington on issues that are essential to protect the Yakama Nation’s resources and culture. | The Yakama Nation has proposed 36 recommendations that address conditions for new data centers and actions to:",
+   "quote": "November 10, 2025 | The Yakama Nation was the only sovereign on the Workgroup. We are providing our own findings and recommendations to the State of Washington on issues that are essential to protect the Yakama Nation’s resources and culture. | The Yakama Nation has proposed 36 recommendations that address conditions for new data centers and actions to: 1) protect salmon and other tribal resources; 2) meet the region’s energy needs; 3) promote clean energy; 4) improve transmission and energy siting, 5) protect water supplies for salmon and municipal water systems; and 6) shield consumers from higher electricity costs. | Electric energy supply and reliability | Develop energy efficiency standards to reduce data center energy and peak loads. | Any continuation of the tax incentives must be conditioned on data centers meeting the conditions in this report",
    "derived": null,
    "status": "verified",
+   "limit": "The date is the report's cover date; the report does not say when or how it reached the state, so the page says 'a report dated', not 'filed'.",
    "date": "2025-11-10",
    "date_us": "11/10/2025"
   },
@@ -1175,7 +1176,8 @@
    },
    "quote": "In 2012, the tech giant used 12% of The Dalles water supply.",
    "derived": null,
-   "status": "verified"
+   "status": "partly",
+   "limit": "OPB's prose figure for 2012, with no denominator stated. The city table OPB published gives 10.8 percent of the city's total water consumption for 2012 (104,337,000 of 967,752,000 gallons; claim pdc-062), 1.2 points lower."
   },
   {
    "id": "pdc-012",
@@ -1225,7 +1227,7 @@
   {
    "id": "pdc-017",
    "entity": "Northwest Power and Conservation Council, Ninth Power Plan timeline",
-   "metric": "staff's working target for the final plan",
+   "metric": "final-plan meeting that goes with a December second draft on staff's timeline slide",
    "value": null,
    "low": null,
    "high": null,
@@ -1239,10 +1241,10 @@
     "published": "2026-10-23",
     "kind": "agency"
    },
-   "quote": "Staff is working towards this timeline for now | December Draft 2 Release | December 15-16 Meeting | 60-day | Mid-February | Use the March and April Meetings | April 13-14 meeting",
+   "quote": "Staff is working towards this timeline for now | December Draft 2 Release | December 15-16 Meeting | 60-day | Mid-February | Use the March and April Meetings | April 13-14 meeting | January Draft 2 Release | January 12-13 Meeting | 45-day | Late February | Use the March and April, and maybe May Meetings | April or May Meeting",
    "derived": "Meeting dates 04/13/2027 to 04/14/2027.",
    "status": "partly",
-   "limit": "A staff planning timeline that can move: the slide prints April 13-14 without a year (2027 follows from a December 2026 second draft and a 60-day comment period), and it lists later second-draft options that would push the final plan back.",
+   "limit": "A staff planning timeline that can move: the slide prints April 13-14 without a year (2027 follows from a December 2026 second draft and a 60-day comment period). The slide sets out three schedules by second-draft month; April 13-14 goes only with the December draft, a January draft goes with 'April or May Meeting', and a February draft with 'May 11-12 Meeting'. A call-out box on the slide marks the December column, the one that ends with the April 13-14 meeting, as the timeline staff is working towards for now; the January and February columns are the later options.",
    "date": "2027-04-13",
    "date_us": "04/13/2027"
   },
@@ -1266,7 +1268,7 @@
    "quote": "In just 10 days, more than 2,500 signed up to read 200,000+ phrases, providing over 300 hours of labeled speech data, which was used to build and train the te reo Māori ASR models.",
    "derived": null,
    "status": "partly",
-   "limit": "Reported by the toolkit vendor's blog, not by Te Hiku Media; credit belongs to Te Hiku Media, and this page does not speak for it."
+   "limit": "Reported by the toolkit vendor's blog, not by Te Hiku Media; credit belongs to Te Hiku Media, and this page does not speak for it. The blog gives the eight A100 graphics processors as a remark by a Te Hiku Media representative about 'our ... building' and says the work aims 'to maintain data sovereignty for the Māori people'; it does not say who holds title to the building or the hardware, so no ownership is claimed."
   },
   {
    "id": "pdc-060",
@@ -1311,6 +1313,74 @@
    "quote": "Proceedings of the 20th International Conference on Artificial Intelligence and Statistics, PMLR 54:1273-1282, 2017.",
    "derived": "Publication year 2017.",
    "status": "verified"
+  },
+  {
+   "id": "pdc-062",
+   "entity": "Google data centers, The Dalles, Oregon",
+   "metric": "share of the city's total water consumption, 2012, from the city's own table",
+   "value": 10.8,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2012,
+   "boundary": "Google water consumption divided by the city's total water consumption for calendar year 2012, both columns of the city's table, which the city gave OPB on 12/24/2025 and which is headed 'Current as of January 10, 2025'.",
+   "source": {
+    "title": "The Dalles’ mayor called OPB’s data center story inaccurate. Here are the facts",
+    "publisher": "Oregon Public Broadcasting",
+    "url": "https://www.opb.org/article/2026/01/23/the-dalles-mayor-data-center-google/",
+    "published": "2026-01-23",
+    "kind": "press"
+   },
+   "quote": "A spreadsheet illustrating how much water Google used annually in The Dalles, and the city's total water consumption every year, provided by The Dalles on Dec. 24, 2025, in response to OPB's public records request. | Table image, read by eye: City of The Dalles, Google and City Water Consumption (gallons), Current as of January 10, 2025. 2012: Total Water Consumption 967,752,000; Google Water Consumption 104,337,000.",
+   "derived": "104,337,000 / 967,752,000 = 0.10781, printed as 10.8 percent (our arithmetic).",
+   "status": "verified",
+   "limit": "The table is an image in the article, read by eye on 11/05/2026 and recomputed. 'Consumption' is the table's word, not a share of supply or of treated water. OPB's prose for 2012 says 12 percent of the water supply (claim pdc-011) with no denominator stated."
+  },
+  {
+   "id": "pdc-063",
+   "entity": "Google data centers, The Dalles, Oregon",
+   "metric": "share of the city's total water consumption, 2024, from the city's own table",
+   "value": 32.5,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2024,
+   "boundary": "Google water consumption divided by the city's total water consumption for calendar year 2024, both columns of the city's table, which the city gave OPB on 12/24/2025 and which is headed 'Current as of January 10, 2025'.",
+   "source": {
+    "title": "The Dalles’ mayor called OPB’s data center story inaccurate. Here are the facts",
+    "publisher": "Oregon Public Broadcasting",
+    "url": "https://www.opb.org/article/2026/01/23/the-dalles-mayor-data-center-google/",
+    "published": "2026-01-23",
+    "kind": "press"
+   },
+   "quote": "A spreadsheet illustrating how much water Google used annually in The Dalles, and the city's total water consumption every year, provided by The Dalles on Dec. 24, 2025, in response to OPB's public records request. | Table image, read by eye: City of The Dalles, Google and City Water Consumption (gallons), Current as of January 10, 2025. 2024: Total Water Consumption 1,335,854,130; Google Water Consumption 434,428,540.",
+   "derived": "434,428,540 / 1,335,854,130 = 0.32521, printed as 32.5 percent (our arithmetic). OPB's prose gives 'a third' for 2024 (claim pdc-012).",
+   "status": "verified",
+   "limit": "The table is an image in the article, read by eye on 11/05/2026 and recomputed. 'Consumption' is the table's word, not a share of supply or of treated water."
+  },
+  {
+   "id": "pdc-064",
+   "entity": "City of The Dalles v. Rogoway and Advance Local Media LLC, Wasco County Circuit Court No. 21CV42306",
+   "metric": "years of annual water-use figures the city agreed to disclose in its settlement",
+   "value": null,
+   "low": 2012,
+   "high": 2021,
+   "unit": "calendar years",
+   "year": 2022,
+   "boundary": "A settlement agreement effective 12/13/2022, filed with a stipulated judgment of dismissal dated 12/14/2022, in a suit the City of The Dalles brought as plaintiff against Michael Rogoway and Advance Local Media LLC (dba Oregonian Media Group) after the city denied their records request of 09/24/2021. The agreement defines 'Annual Water Usage' as the aggregate of all meter readings for accounts associated with Design LLC, an industrial water user, disclosed as one annual number.",
+   "source": {
+    "title": "City of The Dalles v. Advance Local Media: stipulated judgment of dismissal and settlement agreement",
+    "publisher": "Circuit Court of the State of Oregon for the County of Wasco, as hosted by the Reporters Committee for Freedom of the Press",
+    "url": "https://www.rcfp.org/wp-content/uploads/2022/12/City-of-The-Dalles-v.-Advance-Local-Media-Settlement-and-dismissal.pdf",
+    "published": "2022-12-14",
+    "kind": "filing"
+   },
+   "quote": "In the Matter of: CITY OF THE DALLES, an Oregon municipal corporation, Plaintiff, vs. MICHAEL ROGOWAY and ADVANCE LOCAL MEDIA LLC (dba “Oregonian Media Group”) Defendants. | This Settlement Agreement (“Agreement”) is entered into this 13th day of December, 2022 | The City denied the Request. | 1.2 Disclosure of Historical Data. At any time prior to the Effective Date but no later than one day after the Effective Date of this Agreement, the City will disclose to ALM the total Annual Water Usage for each of the following calendar years: 2012 through 2021.",
+   "derived": "Years 2012 through 2021 as printed; agreement effective 12/13/2022.",
+   "status": "verified",
+   "limit": "The agreement names Design LLC, not Google. That the records are Google's water use rests on the Reporters Committee case page (counsel for the newspaper: 'records concerning Google's local water usage') and on OPB's reporting. The filing is hosted by the Reporters Committee, counsel for the defendants.",
+   "date": "2022-12-13",
+   "date_us": "12/13/2022"
   }
  ]
 }

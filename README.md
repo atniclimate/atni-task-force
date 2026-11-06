@@ -3,8 +3,8 @@
 Public library and coordination site for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI). It serves Tribal leaders, Tribal staff, and partners working on three task forces and one gathering:
 
 - **Tribal Energy Feasibility:** builds on the ATNI Offshore Wind Task Force (Resolution #2024-23) and the call for Tribal leadership in grid governance and transmission planning (Resolution #2024-35).
-- **Data Centers:** called for in Resolution #25-41, "For the Development of an ATNI Task Force on Data Centers," as cited in Resolution #2026-034. Its adopted text is not yet in hand.
-- **Artificial Intelligence:** established by Resolution #2026-039 under the ATNI Energy Committee, with Resolutions #2026-051 (youth and AI in schools) and #2026-034 (the Tiered Sovereign Data Framework).
+- **Data Centers:** called for in Resolution #25-41, "Establishing an Affiliated Tribes of Northwest Indians (ATNI) Task Force on Data Centers," adopted at the 2025 Annual Convention, which resolves that ATNI "establish a limited-duration task force immediately" ([adopted text, PDF](https://atnitribes.org/wp-content/uploads/2025/11/20251016_25-41_TASK%20FORCE%20DATA%20CENTERS.pdf)). Resolution #2026-034 cites it as "For the Development of an ATNI Task Force on Data Centers."
+- **Artificial Intelligence:** called for by Resolution #2026-039, with Resolutions #2026-051 (youth and AI in schools) and #2026-034 (the Tiered Sovereign Data Framework).
 - **Tribal Energy Summit and Working Group:** a two-day working session proposed for March 2027; dates and venue to be confirmed.
 
 The site is meant to be published at <https://atniclimate.github.io/atni-task-force/>. Every page is in place, most content slots are filled from public drafts, and "In development" blocks remain where content waits on a confirmation (see `docs/CONTENT-SLOTS.md`).

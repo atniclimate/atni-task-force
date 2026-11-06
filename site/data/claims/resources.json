@@ -614,7 +614,7 @@
     "kind": "company-report"
    },
    "quote": "Market-based 456,119 429,405 288,029 393,134 259,090 2,707,428",
-   "derived": "2,707,428 / 259,090 = 10.4x the FY24 value",
+   "derived": "2,707,428 / 259,090 = 10.4498, shown as 10.4 times the FY24 value",
    "status": "verified",
    "series": {
     "2020": 456119,
@@ -744,13 +744,13 @@
   {
    "id": "rs-027",
    "entity": "Microsoft",
-   "metric": "spot EAC discontinuation (explains FY25 Scope 2 market-based step)",
+   "metric": "treatment of spot energy attribute certificates (EACs) in Scope 2 market-based emissions from FY25",
    "value": null,
    "low": null,
    "high": null,
    "unit": null,
    "year": 2025,
-   "boundary": "Fiscal year July to June, operational-control boundary: Microsoft-owned and leased datacenters, offices and other real estate. Scope 3 reported for categories 1 to 7, 9 and 11 to 13 (8, 10, 14 and 15 not listed in Table 1A).",
+   "boundary": "Fiscal year July to June, operational-control boundary: Microsoft-owned and leased datacenters, offices and other real estate. Scope 3 reported for categories 1 to 7, 9 and 11 to 13 (8, 10, 14 and 15 not listed in Table 1A). The fact sheet defines 'spot EACs' as unbundled EACs that are (1) not utility-contracted and (2) are acquired under short-term agreements, where the final delivery of the total contracted EAC volume occurs within two years of contract execution.",
    "source": {
     "title": "Microsoft 2026 Environmental Data Fact Sheet (FY25)",
     "publisher": "Microsoft",

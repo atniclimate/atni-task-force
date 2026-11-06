@@ -7,7 +7,7 @@
  "default": "chat",
  "eyebrow": "Scale, 2025 to 2030",
  "title": "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year; the buildout adds hundreds",
- "subtitle": "The ChatGPT figure stands on a median-prompt floor. Terawatt-hours a year. Dashed and hollow rows are projections.",
+ "subtitle": "The ChatGPT figure is an illustration built on a median-prompt figure. Terawatt-hours a year. Dashed and hollow rows are projections.",
  "inputs": {
   "now": {
    "model": "computed_defaults.scale"
@@ -101,7 +101,7 @@
    "label": "ChatGPT text messages",
    "tag": "07/2025 count, median prompt",
    "unit": "TWh",
-   "boundary": "A text-only floor: it leaves out reasoning, images, video, agents, API traffic, training, and every other chat product.",
+   "boundary": "An illustration, not a bound: it applies text-prompt figures to a count of all consumer-plan messages and leaves out business and API use, the extra energy of reasoning, images, video and agents, training, and every other chat product.",
    "cites": [
     "fp-092",
     "fp-001",
@@ -119,7 +119,7 @@
   {
    "id": "ytdc",
    "label": "YouTube, data center segment",
-   "tag": "2016 hours, a floor",
+   "tag": "2016 hours, illustrative",
    "unit": "TWh",
    "boundary": "Data center serving only, on the setting's Wh per GB.",
    "cites": [

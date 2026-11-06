@@ -1293,10 +1293,11 @@ async function secondVersion() {
   ok(!damageCaption.hidden && text(damageCaption).includes(fam.label) && /not a price/.test(text(damageCaption)), 'and the caption names the family once, and says it is not a price');
   ok(/^\$\S+ \(\S+ to \S+\)$/.test(text(document.querySelector('tr[data-tr="arch.D.hyper"] td[data-c="damage"]'))), 'a cell for each row, on one line');
   eq(text(document.querySelector('tr[data-tr="arch.D.hyper"] td[data-c="usd"]')), V.table('arch.D.hyper').usd, 'never in the price cell');
-  setDamage('epa_2017_domestic');
+  setDamage('epa_2019_domestic');
   ok(/no central in the source/.test(text(line.querySelector('.x-damage-figures'))), 'a family with no central invents none');
-  setDamage('uba');
-  ok(/2020 EUR/.test(text(line.querySelector('.x-damage-figures'))) && !/\$/.test(text(line.querySelector('.x-damage-figures'))), 'euros stay euros');
+  setDamage('uba_4');
+  const ubaFigures = text(line.querySelector('.x-damage-figures'));
+  ok(/2025 EUR/.test(ubaFigures) && !/\$/.test(ubaFigures) && /no central in the source/.test(ubaFigures), 'euros stay euros, in their own year, and neither time-preference case is called central');
   setDamage('ec_2019');
   eq(text(line.querySelector('.x-damage-head')), `${D.carbon_damage.column_avoidance}, as of ${D.carbon_damage.as_of}`, 'an avoidance cost never wears the damage head');
   ok(/^Not a price\./.test(text(line.querySelector('.caption'))) && /an avoidance cost:/.test(text(line.querySelector('.x-damage-figures'))), 'and its note opens by saying it is not a price');
@@ -1349,7 +1350,7 @@ async function secondVersion() {
   setField(window, document.getElementById('e-exit_tb'), 25);
   setField(window, reading('node_w'), 62);
   rule('federated');
-  setDamage('uba');
+  setDamage('uba_4');
   await settle(); // the typed figures redraw,
   await settle(); // then the address follows
   eq(window.location.search, '?device=laptop', 'the address holds the global selector, and nothing else');
@@ -1389,7 +1390,7 @@ async function secondVersion() {
   ok(/Scenario loaded from your own machine\./.test(text(status)) && text(status).includes(label), 'the page says so, and the reading is stamped again');
   eq(text(foot('arch')), `Includes ${label}: AI node idle 62 W (model 40).`, 'by the model, not the file');
   eq(document.querySelector('input[data-custody]:checked').value, 'federated', 'the controls follow');
-  eq(damage.value, 'uba', 'all of them');
+  eq(damage.value, 'uba_4', 'all of them');
   eq(document.getElementById('e-exit_tb').value, '25', 'to the typed fields');
   eq(reading('node_w').value, '62', 'and the readings');
   // A file from another build says so, and a file's own words reach nothing.
@@ -1458,7 +1459,7 @@ async function secondVersion() {
   delete data.carbon_damage;
   const without = await load('', html.replace(/(<script type="application\/json" id="explorer-data">)[\s\S]*?(<\/script>)/, (m, a, b) => a + JSON.stringify(data).replace(/</g, '\\u003c') + b));
   ok(!without.document.querySelector('th[data-damage-col]'), 'without the damage layer no column stands');
-  ok(ex.readScenario(data, JSON.stringify({ kind: ex.SCENARIO_KIND, schema: 1, damage: 'uba' })).problems.length === 1, 'and a file cannot ask for it');
+  ok(ex.readScenario(data, JSON.stringify({ kind: ex.SCENARIO_KIND, schema: 1, damage: 'uba_4' })).problems.length === 1, 'and a file cannot ask for it');
 }
 
 // The home page's instrument: the Explorer's model at its defaults, poured, with its two controls, and every link off the first screen landing where it says -------------

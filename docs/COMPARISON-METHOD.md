@@ -7,6 +7,9 @@ device power, chat data volume, the LED comparator). Four independent reviews at
 lists each item and what was done. The main corrections: the streaming data center figure is a per-GB serving
 intensity, not an allocation of encoding and storage; medians are not multiplied by counts without a floor label;
 the "near 15 Wh" tie and the Meta "order of magnitude" sentence are withdrawn; a project view reaches the decision.
+On 11/05/2026 the floor and upper-bound labels on the chat day, the chat and YouTube totals, and the top-down video
+figure were withdrawn: the chat day and the totals are illustrations (ru-065, ru-066), and the top-down figure is an allocation
+scenario, not a bound (fp-149, fp-150). Section 15 keeps the 11/04/2026 wording as history.
 
 ## 1. The Problem and the Approach
 
@@ -35,7 +38,8 @@ Energy for one hour of activity r on device d, in Wh:
   convention, and always 0 on cellular)
 - `DEVICE(d)` = the device's hourly draw, the same whichever app is open
 
-Per person per day (data center only): `chat = M x e_prompt` (a median times a mean count, so a floor; also run at
+Per person per day (data center only): `chat = M x e_prompt` (a per-prompt figure for other products and boundaries
+times a mean count, so an illustration and not a floor or a bound, ru-066; also run at
 the 0.34 average-class figure); `video = minutes/60 x 1.0 GB x i_dc` (phone); `short = minutes/60 x 0.39 x i_dc`, high
 case `min(minutes/60 x 13.9, 15.1)`; Meta's 15.1 Wh is printed on its own boundary and never ratioed. Heavy AI:
 `prompts = Wh / e_prompt`, and streaming hours on three yardsticks, all printed: the view 1 video hour for the
@@ -52,7 +56,7 @@ every input's low and high through the same equations with the settings fixed; t
 | Wh per text prompt, data center | 0.30 | 0.24 to 0.60; average-class 0.34 | measured median (Google 0.24, which reports the median because the mean is skewed by a few heavy prompts); modeled median (Joule 0.31, interquartile 0.16 to 0.60); Jegham GPT-4o short prompt 0.42; OpenAI 0.34 "average query", no method; Epoch 0.6 including a development share | fp-001, fp-017, fp-021, fp-012, fp-015 |
 | Kind of chat, Wh per prompt | short text 0.30 | medium prompt 1.215; reasoning 3.91 (2.15 to 7.05); high reasoning 17.15 | modeled (Jegham preprint, which Joule says overstates production figures 4 to 20 times; Joule test-time scaling) | fp-021, fp-019, fp-025, fp-020 |
 | KB of data per prompt and reply | 50 | 5 to 500 | modeled from one phone-app test (several KB; 62 KB for a web-search prompt) | fp-134 |
-| Streaming data center, Wh per GB served | 0.45 | 0.171 to 55, allocation unsettled | modeled from measured hours (DIMPACT 1.3 Wh per hour over Carbon Trust's 2.88 GB hour; Carbon Trust 1 Wh). Low: the DESNZ follow-up of 07/28/2026, 0.6 Wh per viewing hour, 0.171 Wh per GB by our division. High: Sustainable Web Design's top-down 55, an upper bound and not a literal share. One operator measured 1.15. The DESNZ first report's 19.6 is retired by its authors | fp-122, fp-130, fp-037, fp-141, fp-142, sv-048, ec-024, fp-147, fp-149, fp-150 |
+| Streaming data center, Wh per GB served | 0.45 | 0.171 to 55, allocation unsettled | modeled from measured hours (DIMPACT 1.3 Wh per hour over Carbon Trust's 2.88 GB hour; Carbon Trust 1 Wh). Low: the DESNZ follow-up of 07/28/2026, 0.6 Wh per viewing hour, 0.171 Wh per GB by our division. High: Sustainable Web Design's top-down 55, an allocation scenario and not a literal share or a bound (fp-150). One operator measured 1.15. The DESNZ first report's 19.6 is retired by its authors | fp-122, fp-130, fp-037, fp-141, fp-142, sv-048, ec-024, fp-147, fp-149, fp-150 |
 | Short-video data center ceiling, Wh per hour | 13.9 | 9.06 over 100 minutes | modeled bound: Meta's 15.1 Wh per daily active person per day over 65 minutes; the feed's own serving energy is GB x the intensity above, and ranking compute is unmeasured | fp-059, fp-055, fp-097 |
 | Fixed network, Wh per GB, average | 1.6 | 1.6 to 6.5 | modeled (DESNZ 2024 extrapolation; Carbon Trust 2020) | fp-127, fp-124 |
 | Mobile network, Wh per GB, average | 25 | 25 to 183 | modeled (DESNZ 2024; Carbon Trust 2020 100; ENGIE 2022 183) | fp-128, fp-125, fp-053 |
@@ -69,7 +73,7 @@ every input's low and high through the same equations with the settings fixed; t
 | US household, Wh per day | 28,740 | | reported (EIA 2025) | fp-075 |
 | Streaming hour, published whole chain | 188 | 53.7 to 263.1 | modeled (Carbon Trust 2020 Europe 188; Preist 2016 YouTube 53.7; BBC 2024 65.7; DESNZ follow-up 2026 low, medium, high 118.7, 192.3, 263.1); the ends are the sources' own extremes | fp-035, fp-120, fp-041, fp-143 |
 | Heavy AI units, Wh | see section 7 | | measured (open models, no PUE) and modeled (Joule, Jegham, scaling laws, token logs) | fp-019 to fp-025, fp-031, fp-032, fp-065 to fp-070 |
-| Totals: ChatGPT 2.5 billion messages per day (07/2025, consumer plans); YouTube 1 billion hours per day (2016 floor) | | | reported | fp-092, fp-050 |
+| Totals: ChatGPT 2.5 billion messages per day (07/2025, consumer plans); YouTube 1 billion hours per day (reported for 2016; not shown to be a floor, ru-065) | | | reported | fp-092, fp-050 |
 | Totals: IEA 415, 485, 945 TWh (2024, 2025, 2030); LBNL 192, 649 (521 to 843) TWh (2024, 2030); Council data centers 2,020 aMW in 2030 (1,302 to 4,429); region 22,000 aMW | | | modeled (agencies) | dem-046, dem-040, dem-048, dem-028, dem-029, dem-030, dem-075, dem-058 |
 | Site water, L per kWh (project view) | the applicant's | 0.27 to 1.15, consumption basis | reported (Microsoft 0.27; LBNL 0.36, rising to 0.45 to 0.48 after 2023; Google 1.15); Meta 0.19 is withdrawal and not on the same bar | tr-028, tr-009, fp-006, tr-025 |
 
@@ -83,7 +87,7 @@ every input's low and high through the same equations with the settings fixed; t
 | Connection | Wi-Fi | Wi-Fi, cellular | cellular uses the mobile intensity and has no home router |
 | Network accounting | average | average, marginal | published figures differ 10 to 50 times (fp-053, fp-129); the IEA and Carbon Trust say networks draw about the same energy whatever the traffic |
 | Home router | by time | by time, by data, excluded | by time charges a shared always-on device's full draw to one person's hour, by data charges an HD hour seven times the router's real draw and a chat hour nothing (fp-126), excluded follows BBC |
-| Streaming data center intensity | measured delivery, 0.45 Wh/GB | measured delivery; DESNZ follow-up, 0.171 Wh/GB; top-down average, 55 Wh/GB | an unsettled allocation about 320 times wide at the extremes (fp-149). The DESNZ first report's 19.6 Wh/GB, 45 times the measured figure, was retired by its authors on 07/28/2026 after they clarified what it counted (fp-144). The top-down reading spreads all data center energy over all bytes, so it is an upper bound and not a literal share (fp-150) |
+| Streaming data center intensity | measured delivery, 0.45 Wh/GB | measured delivery; DESNZ follow-up, 0.171 Wh/GB; top-down average, 55 Wh/GB | an unsettled allocation about 320 times wide at the extremes (fp-149). The DESNZ first report's 19.6 Wh/GB, 45 times the measured figure, was retired by its authors on 07/28/2026 after they clarified what it counted (fp-144). The top-down reading spreads all data center energy over all bytes, so it is an allocation scenario and not a literal share or a bound (fp-150) |
 | Wh per prompt | 0.30 | 0.24 to 0.60 | the measured and modeled spread for a text prompt |
 | Battery voltage | 3.85 V | fixed | plain assumption to turn Greenspector mAh rates into Wh; not a claim |
 
@@ -108,15 +112,15 @@ excluded 5.00, 4.05, 2.80; cellular 5.01, 27.4 (network 25.0), 11.9; marginal ne
 (12.7); 60 prompts put chat's data center at 18.0 and its total at 30.0. Measured segments: chat data center (Google
 only), the per-hour figures behind the delivery intensity, phone during video, the 5.88 Wh router. Everything else
 is modeled and says so. The widest spread in the table is now on the chat side (kind of chat, 3.00 to 172 Wh for ten
-prompts), with the video data center second (0.029 to 165 across devices and intensities, the top end an upper bound).
+prompts), with the video data center second (0.029 to 165 across devices and intensities, the top end a top-down allocation scenario and not a bound).
 
 ## 6. View 2: Inside the Data Center Only, Per Person Per Day
 
 | Row | Wh per day | Range | Basis |
 |---|---|---|---|
-| Average weekly ChatGPT user, 3.67 prompts, text inference only | 1.10 | 0.86 (3.57 x 0.24) to 4.80 (8 x 0.60; the count is unsourced); 1.25 at the 0.34 average | median prompt x mean count over days of non-use: a floor; a per-active-day figure would be higher |
+| Average weekly ChatGPT user, 3.67 prompts, text inference only | 1.10 | 0.86 (3.57 x 0.24) to 4.80 (8 x 0.60; the count is unsourced); 1.25 at the 0.34 average | median prompt x mean count over days of non-use: an illustration and not a floor or a bound, since the per-prompt figures describe other products (ru-066); a per-active-day figure would be higher |
 | Meta, per daily active person, all products, AI training and offices | 15.1 | fleet average | reported; another boundary, population and denominator; printed, not ratioed |
-| YouTube, 88 minutes on a phone at 1 GB per hour | 0.66 | 0.25 at the DESNZ follow-up; 80.7 at the top-down average, an upper bound | modeled |
+| YouTube, 88 minutes on a phone at 1 GB per hour | 0.66 | 0.25 at the DESNZ follow-up; 80.7 at the top-down average, an allocation scenario and not a bound (fp-150) | modeled |
 | Instagram, 100 minutes at 0.39 GB per hour | 0.29 | 0.11 at the DESNZ follow-up; capped at 15.1, Meta's whole day (9.06 Wh per hour over 100 minutes) | modeled bound; ranking and recommendation compute unmeasured |
 
 Against the household's 28,740 Wh per day, the chat day is 0.0038 percent and Meta's per-person figure 0.053 percent
@@ -143,29 +147,32 @@ the data-center-only yardstick is like for like but rests on an unsettled alloca
 | Sora 2 Pro, 8-second clip, modeled estimate, the paper's mean (fp-137) | 418.5 (315.1 to 534.4) | 1,395 | 29.8 | 2.23 | |
 | Wan2.1 1.3B, open model on one H100, no PUE (fp-068) | 90.5 | 302 | 6.44 | 28.9 minutes | |
 | Wan2.1 14B, same rig (fp-069) | 415.1 | 1,384 | 29.5 | 2.21 | |
-| CogVideoX, research rig, GPU energy only (fp-067) | 944 | 3,147 | 67.2 | 5.02 (3.59 to 17.6) | 2,098 (5,520) |
+| CogVideoX, research rig, measured with CodeCarbon (fp-067) | 944 | 3,147 | 67.2 | 5.02 (3.59 to 17.6) | 2,098 (5,520) |
 | Claude Code, one typed prompt, one heavy user's logs (fp-031) | 150 (60 to 290) | 500 | 10.7 | 0.8 | |
 | Claude Code, median session, same user (fp-032) | 600 (250 to 1,200) | 2,000 | 42.7 | 3.19 | |
 | Claude Code, average day, same user (fp-032) | 3,000 (1,200 to 5,900) | 10,000 | 214 | 16.0 | |
 
 Overhead differs by row and the page labels it: the image row doubles GPU energy; the Wan rows are GPU, CPU and
-RAM on one card with no PUE or idle; CogVideoX is GPU energy alone; Veo and Sora are modeled from machine power;
+RAM on one card with no PUE or idle; CogVideoX is measured with CodeCarbon, and MIT's video passage does not say which
+parts it counts, so it may include more than the GPU (fp-067); Veo and Sora are modeled from machine power;
 the agent rows are one self-described heavy user. The full list (o3, DeepSeek-R1, long-context GPT-4o, the 2023
 open-model image) is in the JSON. Read: a text prompt is seconds to minutes of streaming depending on the yardstick;
-an AI video clip is minutes to hours depending on the model (Veo 3 about ten minutes of the published hour, CogVideoX
-five hours); an agent session is hours of streaming on every yardstick.
+the AI video clips are two examples on different boundaries, about ten minutes of the published hour (Veo 3) and
+about five hours (CogVideoX), two points and not a range for AI video; an agent session is hours of streaming on every yardstick.
 
 ## 8. View 4: Per-Person Smallness Against Total Growth
 
 - ChatGPT's 2.5 billion messages a day (07/2025, consumer plans, up from about 1 billion in 12/2024) at 0.30 Wh are
-  0.27 TWh a year (0.22 at 0.24; 0.31 at the 0.34 average; 0.55 at 0.60), a text-only floor built on a median: 0.056
+  0.27 TWh a year (0.22 at 0.24; 0.31 at the 0.34 average; 0.55 at 0.60), an illustration and not a floor or a bound,
+  since it applies text-prompt figures for other products to all consumer-plan messages (ru-066): 0.056
   percent of the IEA's 485 TWh for all data centers in 2025 (0.11 percent at 0.60) and 0.14 percent of LBNL's 192 TWh
   for the United States in 2024, or 31.2 aMW worldwide. It excludes reasoning, images, video, agents, API traffic, and
   training, and other chat products; if one message in ten ran at the 3.91 Wh reasoning figure the mean would be about
   0.66 Wh, above the slider's top. The IEA's own bound: every web search done as a simple AI query would be under 4 TWh
   (dem-045).
-- YouTube's 1 billion hours a day (a 2016 figure, so a floor) at 2.88 GB an hour are 0.47 TWh a year on measured
-  delivery, 0.18 TWh at the DESNZ follow-up, and 57.8 TWh at the top-down average, an upper bound; the published whole chain gives 68.6 TWh (19.6 to 96.0), the low end
+- YouTube's 1 billion hours a day (a figure reported for 2016, not shown to be a floor or a bound, ru-065) at 2.88 GB
+  an hour are 0.47 TWh a year on measured delivery, 0.18 TWh at the DESNZ follow-up, and 57.8 TWh at the top-down
+  average, an allocation scenario and not a bound (fp-150); the published whole chain gives 68.6 TWh (19.6 to 96.0), the low end
   reproducing Preist's own 19.6 TWh total, most of it in homes.
 - Growth is of another order: the IEA adds 460 TWh worldwide from 2025 to 2030 and LBNL 457 TWh in the United States
   from 2024 to 2030 (reference case); AI-focused data centers grew 50 percent in 2025 (dem-043). Text queries are not
@@ -232,10 +239,10 @@ Supported at the defaults: "On the same phone for the same hour, what the activi
 text prompts add about 3 Wh in the data center, an hour of video adds about 2 Wh in the data center and network, and
 the screen and router add 12 Wh to each row whichever app is open." "Inside the data center, ten text prompts cost
 2.4 to 6 Wh; a phone hour of streaming costs about half a watt-hour on measured delivery figures and about 0.2 Wh on
-the DESNZ follow-up, and the allocation is unsettled, up to 55 Wh on a top-down average that is an upper bound; ten reasoning prompts cost 39 Wh and ten high-reasoning prompts 172." "A text
-prompt is seconds to minutes of streaming depending on the yardstick; an AI video clip is minutes to hours depending
-on the model; an agent session is hours of streaming on every yardstick." "Chat at ChatGPT's scale is a few tenths
-of a terawatt-hour a year on a text-only, median-prompt floor, about 31 aMW; the buildout adds hundreds of
+the DESNZ follow-up, and the allocation is unsettled, up to 55 Wh on a top-down average, an allocation scenario and not a bound; ten reasoning prompts cost 39 Wh and ten high-reasoning prompts 172." "A text
+prompt is seconds to minutes of streaming depending on the yardstick; two AI video clips on different boundaries come to
+about ten minutes and about five hours, two points and not a range; an agent session is hours of streaming on every yardstick." "Chat at ChatGPT's scale is a few tenths
+of a terawatt-hour a year, about 31 aMW, an illustration and not a floor or a bound; the buildout adds hundreds of
 terawatt-hours."
 
 Not supported: "a ten-prompt chat and an hour of video both land near 15 Wh" (the tie was the default prompt count
@@ -266,7 +273,8 @@ use (Anthropic publishes none, fp-033); "AI uses ten times a search" (2009 basis
 ## 14. Known Weaknesses
 
 - Medians times counts: the chat day, the chat total and the aMW figure multiply a median prompt by a count; Google
-  says the mean is higher and reports none, so these are floors, and the only average-class figure (0.34) has no method.
+  says the mean is higher and reports none, but the per-prompt figures describe other products and boundaries, so
+  these are illustrations and not floors or bounds (ru-066), and the only average-class figure (0.34) has no method.
 - The per-user denominator is weekly users over all days; Meta's is daily active people; the two rows are printed,
   not compared.
 - The router by time charges a shared always-on device's full draw to one person's hour, the same on every row; the

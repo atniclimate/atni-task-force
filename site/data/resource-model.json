@@ -2468,7 +2468,7 @@
     }
    },
    "label": "Streaming data center energy per GB served",
-   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an upper bound and not a literal share (fp-150). The allocation is unsettled (fp-149)."
+   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an allocation scenario and not a literal share (fp-150). The allocation is unsettled (fp-149)."
   },
   "device": {
    "default": "phone",
@@ -3121,7 +3121,7 @@
     "ml": "chat_kind"
    },
    "rate": "10 per hour (reader)",
-   "note": "Median, not mean: any count times 0.30 is a floor, and the mean-class figure (0.34) prints beside count-scaled rows. The kind-of-chat setting spans 0.30 to 17 Wh a prompt. Per-token figures are one vendor framework's defaults (au-008, au-009, partly). A Tribal-language prompt can cost up to 179 times English (au-026).",
+   "note": "Median, not mean: any count times 0.30 is an illustration, not a bound, and the mean-class figure (0.34) prints beside count-scaled rows. The kind-of-chat setting spans 0.30 to 17 Wh a prompt. Per-token figures are one vendor framework's defaults (au-008, au-009, partly). A Tribal-language prompt can cost up to 179 times English (au-026).",
    "per_m_output": {
     "wh": 1000.0,
     "usd": 13.3333
@@ -8405,7 +8405,7 @@
     }
    },
    "wins": "License price (0); working without broadband (24 percent on Tribal lands lack it, sf-056); custody; carbon only as a declared clean feed (9 kg a year on hydro against the cloud's 32 kg on the same grid, gf-035, gf-001), with the local embodied line (130 kg a year, 54 at the low drive figure) printed beside on the local side only.",
-   "loses": "Energy: 434 against 110 kWh a year on the data center alone and 260 with the cloud's sync watts; the spread reaches a tie at 10 W of sync draw, a 30 W server, or 6.6 kWh a seat-year, so the page prints the range and never a ratio. Price whenever hours are paid: $10,616 against $9,840 at 60 dollars an hour ($4,736 at 25; $536 unpaid), with 2 assumed cloud admin hours a month against 14 local (labor was the largest line in Schleswig-Holstein, sf-003, sf-004, lf-057). Compatibility (about 20 percent of desks still needed Microsoft, lf-056; the ArtCraft apps are labeled in development, px-060, sf-057, lf-054; Munich reversed, sf-006). Redundancy: one box; 867 kWh with a second.",
+   "loses": "Energy: 434 against 110 kWh a year on the data center alone and 260 with the cloud's sync watts. Against the 260, the two tie at 4.3 W of sync draw (the input runs 1 to 10 W), at 5.7 kWh a seat-year for the cloud seat (2.2 to 6.6), or at a 27 W server, which is below the server's 30 to 60 W range, each with the other inputs at their defaults; so the page prints the range and never a ratio. Price whenever hours are paid: $10,616 against $9,840 at 60 dollars an hour ($4,736 at 25; $536 unpaid), with 2 assumed cloud admin hours a month against 14 local (labor was the largest line in Schleswig-Holstein, sf-003, sf-004, lf-057). Compatibility (about 20 percent of desks still needed Microsoft, lf-056; the ArtCraft apps are labeled in development, px-060, sf-057, lf-054; Munich reversed, sf-006). Redundancy: one box; 867 kWh with a second.",
    "note": "LibreOffice, Nextcloud, and ArtCraft are named as what the projects say they are (sv-044, sv-045, sv-043). No vendor is endorsed. The vendor's own 210 g per user-month is 96 percent Scope 3 on another boundary (sf-017, sf-018)."
   },
   "B": {
@@ -9358,7 +9358,7 @@
     }
    },
    "wins": "When the link out is slow, metered, or down, and when many people watch the same thing (sf-030, sf-031). The embedded cache wins on energy (19 against 2,050 Wh per 1,000 views), an upper bound the platform places.",
-   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box uses more energy per view than the platform at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year), or at the DESNZ follow-up's lower one, and at these settings no audience size closes the gap, though one change to the inputs puts the crossover at 170,000 to 310,000 views a year; at 100,000 only the top-down average, an upper bound, would reverse it. The embedded cache loses on control.",
+   "loses": "Idle floor at low views (77 of 78 Wh per view at 1,000 views a year); paid hours ($789 a year, $69 unpaid); one box on one link against a global network with redundancy; on the same network the local box uses more energy per view than the platform at the measured intensity (3,471 against 2,050 Wh per 1,000 views at 100,000 a year), or at the DESNZ follow-up's lower one, and at these settings no audience size closes the gap, though one change to the inputs puts the crossover at 170,000 to 310,000 views a year; at 100,000 only the top-down average, an allocation scenario, would reverse it. The embedded cache loses on control.",
    "note": "A network credit, charging the Nation's own network at marginal cost against the platform's average, is a convention and prints as one."
   },
   "C": {
@@ -10734,7 +10734,7 @@
       "g": "grid_dc",
       "ml": "e_prompt"
      },
-     "note": "The block at the mean-class prompt (0.34 Wh) prints beside; the median is a floor for totals."
+     "note": "The block at the mean-class prompt (0.34 Wh) prints beside; a median times a count is an illustration, not a bound."
     },
     {
      "key": "arch.D.hyper_same_grid",
@@ -12607,7 +12607,7 @@
      }
     },
     "hyper_at_mean_prompt_wh": {
-     "label": "The block at the mean-class prompt, 0.34 Wh; the median is a floor for totals",
+     "label": "The block at the mean-class prompt, 0.34 Wh; a median times a count is an illustration, not a bound",
      "value": 340.0,
      "low": 340.0,
      "high": 340.0,
@@ -12783,7 +12783,7 @@
      }
     }
    },
-   "wins": "A laptop that is on anyway wins on energy per answer it can give (24 against 300 Wh, 110 with the cloud share), with a smaller model whose answers are not equal, and a machine bought for the work would carry its idle energy, as the node rows do. A node keeps the data with the Nation, which no row prices, and can run a model for a language the cloud does not serve. On one grid the node catches the hyperscaler on energy and carbon only above 2,761,361 prompts a year (a declared hydro feed moves the carbon crossover to 79,643, and 504,154 with embodied carbon on both sides); these print as ranges.",
+   "wins": "A laptop that is on anyway wins on energy per answer it can give (24 against 300 Wh, 110 with the cloud share), with a smaller model whose answers are not equal, and a machine bought for the work would carry its idle energy, as the node rows do. A node keeps the data with the Nation, which no row prices, and can run a model for a language the cloud does not serve. On one grid the node catches the hyperscaler on energy and carbon only above about 2,800,000 prompts a year (880,000 to 17,000,000, or never); a declared hydro feed moves the carbon crossover to about 80,000 (38,000 to 15,000,000), and to about 500,000 with embodied carbon on both sides (120,000 to 4,100,000); each is a range from one input or setting at a time, not a forecast.",
    "loses": "Energy at 100,000 prompts a year (4,015 against 300 Wh per 1,000, 3,854 of it idle) and at 1,000,000 (546); carbon on one grid at both counts; price against a like-class model ($2.89 at 1,000,000 against $0.20 at Haiku list, not the $4.00 frontier list); local hardware is 1.4 to 1.5 times less efficient per watt for the same model (sf-036, lf-012); cost per million tokens swings 73 times with how busy one GPU is (sf-041); a 7B model is a different product from a frontier one (sf-037, lf-013); water under the reservoir convention on hydro power; and the queries the local model cannot answer go to the cloud anyway (sf-035).",
    "note": "The token chain would put the hyperscaler at 447 Wh; the measured median is used where one exists. Hydro 21 g is a life-cycle factor and eGRID rates count combustion only; the same-grid rows avoid mixing them. Crossovers print as ranges, never as one count."
   },
@@ -18023,7 +18023,7 @@
    "Most data center electricity is not AI today, on two definitions that must not be mixed: AI-focused facilities were 155 of 485 TWh worldwide in 2025 (32 percent, lf-001, IEA) and AI workloads 15 to 25 percent (lf-002, second-hand). The growth is AI: AI-focused facilities are 310 of the 460 TWh the IEA adds by 2030 (67 percent, lf-001), and in LBNL's US reference case AI servers reach 55 percent of data center energy in 2030 (lf-003); training is 20 to 35 percent of AI server draw (lf-004).",
    "AI can run outside a data center: the place profile moves 1,000 prompts from 300 Wh in a hyperscaler to 24 Wh on laptops that are on anyway, at a cost in quality, and 11 to 29 percent of queries go to the cloud regardless (sf-035). A busy data center has the lowest energy per answer at equal model size because its hardware sits idle least; that is arithmetic about utilization, not a reason to site one, and a dedicated local node catches up only above about 2.8 million prompts a year on one grid.",
    "Data centers run things that are not AI: the video, storage, office, and search rows.",
-   "One person's chat is not the buildout: all of ChatGPT's text chat is about 0.27 TWh a year on Google's median prompt (0.22 to 0.55 across the median figures), text only, a floor for one product against the IEA's 485 TWh global total. A proposed building is a question for the project scale panel and the Questions for Tribal Leaders, and hosting a building does not supply a Nation's own computing: those are separate decisions."
+   "One person's chat is not the buildout: ChatGPT's consumer-plan messages come to about 0.27 TWh a year at 0.30 Wh a text prompt (0.22 to 0.55), an illustration for one product, not a bound, against the IEA's 485 TWh global total. A proposed building is a question for the project scale panel and the Questions for Tribal Leaders, and hosting a building does not supply a Nation's own computing: those are separate decisions."
   ],
   "rebound": "Rebound is outside the unit: per-task energy falls 10 times a year (ec-057; Google 33 times, fp-009) while totals rise (Google plus 37 percent, rs-003), price elasticity sits near one at the provider level (ec-044), and the IEA says so (ec-058). The page prints the per-unit number and the count beside it, and this pair as the reason a per-unit saving is not a total one."
  },
@@ -29169,7 +29169,7 @@
   "default": "off",
   "column": "illustrative damage, not a price, not federal policy",
   "column_avoidance": "illustrative avoidance cost, not a damage estimate, not a price, not federal policy",
-  "as_of": "11/04/2026",
+  "as_of": "11/05/2026",
   "federal_status": "It is no longer federal policy to keep one estimate of these damages (mv-005, 05/05/2025). Each figure below is someone's published estimate, in that source's own currency and year; none is converted here.",
   "never": "No dollar on water, health, fish, places, or culture.",
   "tonnes_first": "A project shows its tonnes first, and any dollar beside them.",
@@ -29204,33 +29204,33 @@
     "spread": "Near-term discount rate of 2.5, 2.0, and 1.5 percent.",
     "limit": "Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved."
    },
-   "uba": {
-    "label": "Umweltbundesamt (Germany), Methodenkonvention 3.1",
-    "low": 195,
-    "central": 195,
-    "high": 680,
-    "unit": "2020 EUR per tonne CO2e",
+   "uba_4": {
+    "label": "Umweltbundesamt (Germany), Methodenkonvention 4.0",
+    "low": 345,
+    "central": null,
+    "high": 990,
+    "unit": "2025 EUR per tonne CO2e",
     "claims": [
-     "ex-010",
-     "ex-011"
+     "ex-018",
+     "ex-019"
     ],
     "kind": "damage estimate, global",
-    "spread": "How future generations count: its recommended rate of 1 percent pure time preference, and 0 percent, which it asks readers to run beside it.",
-    "limit": "Euro, not dollars. A newer edition exists and was not opened."
+    "spread": "How future generations count, for emissions in 2025: 345 at a 1 percent pure rate of time preference and 990 at 0 percent. The handbook recommends each for its own weighting of future generations and also recommends a sensitivity analysis with the other value, so it names no central value.",
+    "limit": "Euro of 2025, not dollars and not the 2020 euros of the earlier edition. That edition, Methodenkonvention 3.1 of 12/2020, gave 195 and 680 euros of 2020 for emissions in 2020 (ex-010, ex-011); those figures are kept as history and are not used here."
    },
-   "epa_2017_domestic": {
-    "label": "EPA 2017 interim values, domestic damages only, CO2 emitted in 2030",
+   "epa_2019_domestic": {
+    "label": "EPA 2019 interim values, domestic damages only, CO2 emitted in 2030",
     "low": 1,
     "central": null,
-    "high": 7,
-    "unit": "2011 USD per metric ton CO2",
+    "high": 8,
+    "unit": "2016 USD per metric ton CO2",
     "claims": [
-     "ex-008",
-     "ex-009"
+     "ex-016",
+     "ex-017"
     ],
     "kind": "damage estimate, domestic only",
-    "spread": "7 and 3 percent discount rates. The source gives no central value. This is the low end of the published record.",
-    "limit": "The last published table in this frame, not a 2026 value. Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved."
+    "spread": "7 and 3 percent discount rates. The source gives no central value.",
+    "limit": "A 06/2019 table in 2016 dollars, not a 2026 value. Which table, if any, a federal analysis uses today is a question for counsel. Applied here to CO2e; the source's figure is per tonne of CO2, so the gas mix is not resolved. EPA's earlier table of 10/2017 gave $1 and $7 in 2011 dollars (ex-008, ex-009); those figures are kept as history and are not used here."
    },
    "ec_2019": {
     "label": "European Commission Handbook 2019, up to 2030",
@@ -29335,7 +29335,7 @@
   "fp-142": "Our division of a report total by the report's data volume; the report prints the totals but not a per-GB figure, and its inputs are consultant assumptions, not measurements.",
   "fp-147": "A poster abstract that reuses a published factor (Sustainable Web Design); it adds no independent reading of data center energy per GB.",
   "fp-149": "A range of four readings with different boundaries: two are consultant or top-down assumptions, one is participants' self-assessment, one is a single measured operator. It is a range with the allocation unsettled, not a point value.",
-  "fp-150": "The high end is a top-down, all-workload average multiplied by a streaming data rate. It exceeds the whole-chain figures of BBC (65.7 Wh) and Ofcom (113 Wh with the device), so it cannot be a literal per-hour data center share; it is an upper bound of an unsettled allocation.",
+  "fp-150": "The high end is a top-down, all-workload average multiplied by a streaming data rate. It exceeds the whole-chain figures of BBC (65.7 Wh) and Ofcom (113 Wh with the device), so it cannot be a literal per-hour data center share; it is the top of an unsettled allocation range, a scenario and not a bound.",
   "fp-151": "US panel of 5,000 opted-in ChatGPT users who were active in 2026, unweighted, with survivorship bias; it counts prompts in a conversation, not minutes in a session.",
   "fp-154": "US panel of 5,000 opted-in ChatGPT users who were active in 2026, unweighted, with survivorship bias; it counts prompts in a conversation, not minutes in a session.",
   "gf-033": "A literature median read by column position from a fact sheet, average and not place-specific.",
@@ -29371,7 +29371,7 @@
   "lf-074": "Our sums of client plus server lower bound, without the paper's device idle-wait term; one compute-heavy music-matching task; server side is a best-case lower bound; sign depends on phone generation.",
   "lf-076": "Software power counters, not wall power; values read from the PDF text layer of one figure (12.6 against 9.1 Wh per 1,000 tokens); cooling excluded; one bench, not several organizations.",
   "lf-078": "Modeled defaults (PUE 1.58, 50 percent utilization from hyperscale); page undated; flatters a small local server.",
-  "mv-003": "A UK regulator's reading dated 01/28/2025; AWS has since moved its time limit from 60 to 180 days outside the EU, so check each program's current terms.",
+  "mv-003": "A UK regulator's reading dated 07/31/2025, in its final decision; the provisional appendix of 01/28/2025 is replaced. Outside the EU, AWS's blog update of 10/08/2026 (mv-001) gives 180 days to complete a move, where this appendix recorded 60 days for AWS (paragraph N.24(b)), so check each program's current terms.",
   "px-019": "Token charges of sessions routed through one service over thirty days; it excludes energy, network, and device.",
   "px-035": "All Meta Family revenue spread over time in one app, so it overstates any one app, and Meta publishes no time spent; revenue, not a cost.",
   "px-039": "A ceiling: ad revenue from all viewing over TV hours only; revenue, not a cost.",

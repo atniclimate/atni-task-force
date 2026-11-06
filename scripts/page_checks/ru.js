@@ -47,7 +47,8 @@ async function content() {
   // Every old link target is still on the page, or was replaced by a claim's source.
   const hrefs = new Set([...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')));
   const gone = [...new Set([...before.querySelectorAll('main a[href^="https"]')].map((a) => a.getAttribute('href')))].filter((u) => !hrefs.has(u));
-  const replaced = ['https://arxiv.org/abs/2304.03271', 'https://sustainability.aboutamazon.com/2025-aws-summary.pdf'];
+  // The Google blog's machine-learning share gave way to the paper that states its one-week basis (ru-040, N3 11/05/2026).
+  const replaced = ['https://arxiv.org/abs/2304.03271', 'https://sustainability.aboutamazon.com/2025-aws-summary.pdf', 'https://research.google/blog/good-news-about-the-carbon-footprint-of-machine-learning-training'];
   eq(gone.filter((u) => !replaced.includes(u)).join(' '), '', 'no other old source link is lost');
   // Subjects that must survive (a quoted source stays verbatim), and filler the plan cuts.
   for (const s of ['monitoring data', 'queue', '"a stressed water system,"', 'turnover', 'network measurements', 'Workload', '500-milliliter', 'Tribal government']) {

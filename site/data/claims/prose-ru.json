@@ -147,7 +147,7 @@
     "kind": "company-report"
    },
    "quote": "Gartner estimates AI-optimized server adoption will account for 31% of data center power consumption in 2026, and that by 2027 their power consumption will surpass that of conventional servers (see Figure 1).",
-   "derived": null,
+   "derived": "100 less Gartner's 31 percent for 2026 = 69 percent: the rest of data center power consumption by Gartner's definition, including the cooling and networking that also serve AI-optimized servers, so not 'non-AI' electricity (our arithmetic).",
    "status": "verified",
    "date": "2026-06-10",
    "date_us": "06/10/2026"
@@ -196,14 +196,14 @@
   },
   {
    "id": "ru-010",
-   "entity": "Global data centers, Gartner",
+   "entity": "Global data centers, Gartner (November 2025 forecast)",
    "metric": "electricity consumption, 2030",
    "value": 980,
    "low": null,
    "high": null,
    "unit": "TWh",
    "year": 2030,
-   "boundary": "Gartner's November 2025 forecast; its June 2026 release restates 2025 at 447 TWh and gives 565 TWh for 2026.",
+   "boundary": "Gartner's November 2025 forecast for 2030; its 06/10/2026 release restates 2025 at 447 TWh, gives 565 TWh for 2026, and puts 2030 at over 1,200 TWh (ru-121).",
    "source": {
     "title": "Gartner Says Electricity Demand for Data Centers to Grow 16% in 2025 and Double by 2030",
     "publisher": "Gartner",
@@ -217,14 +217,14 @@
   },
   {
    "id": "ru-011",
-   "entity": "Data center electricity not in accelerated or AI-optimized servers",
+   "entity": "Data center electricity outside accelerated servers, IEA, 2024 (complement)",
    "metric": "share of data center electricity, derived",
-   "value": null,
-   "low": 69,
-   "high": 85,
+   "value": 85,
+   "low": null,
+   "high": null,
    "unit": "percent",
    "year": 2024,
-   "boundary": "Two sources and two years: the IEA's 15 percent is for 2024 and Gartner's 31 percent is a forecast for 2026. The remainder includes conventional servers, storage, networking, and cooling.",
+   "boundary": "100 less the IEA's 15 percent for accelerated servers in 2024 (ru-005) is 85 percent. The remainder holds everything else in a data center, including conventional servers, storage, networking, and the cooling and other infrastructure that also serve the accelerated servers. Gartner's complement for 2026 (100 less 31 is 69 percent, a forecast with Gartner's own definition) sits on Gartner's claim, ru-007.",
    "source": {
     "title": "Energy and AI",
     "publisher": "International Energy Agency",
@@ -233,9 +233,9 @@
     "kind": "agency"
    },
    "quote": "Accelerated servers accounted for 24% of server electricity demand and 15% of total data centre demand in 2024.",
-   "derived": "100 less the IEA's 15 percent (2024) = 85 percent; 100 less Gartner's 31 percent (2026) = 69 percent.",
+   "derived": "100 less the IEA's 15 percent (2024) = 85 percent.",
    "status": "partly",
-   "limit": "Subtracts an IEA share for 2024 and a Gartner forecast for 2026 from 100, so it mixes two sources and two years; both count AI servers differently."
+   "limit": "A share of electricity by type of equipment, not by service, and not 'non-AI' electricity, because shared cooling and infrastructure sit in it. Gartner's complement for 2026 (69 percent, ru-007) has another year and another definition, so the two are not one range."
   },
   {
    "id": "ru-012",
@@ -303,7 +303,7 @@
   {
    "id": "ru-015",
    "entity": "Netflix hour in 2019, IEA",
-   "metric": "central estimate of electricity per streamed hour",
+   "metric": "typical electricity per hour of Netflix streaming, 2019, as the IEA analysis suggests",
    "value": 0.077,
    "low": null,
    "high": null,
@@ -690,7 +690,7 @@
    "high": null,
    "unit": "USD billion",
    "year": null,
-   "boundary": "The announced investment, as the state's release states it; not a cost audit.",
+   "boundary": "The investment as announced on 12/04/2024, as the state's release states it; not a cost audit. Meta's 07/13/2026 post puts its later expansion of the site at more than $50 billion (claim ru-126) and gives no acreage, so the 2,250 acres (ru-032) belong to the 2024 announcement.",
    "source": {
     "title": "Meta Selects Northeast Louisiana as Site of $10 Billion Artificial Intelligence Optimized Data Center",
     "publisher": "Louisiana Economic Development",
@@ -809,14 +809,14 @@
   },
   {
    "id": "ru-039",
-   "entity": "US GPU-accelerated AI servers, LBNL",
+   "entity": "US GPU-accelerated AI servers, LBNL 2024 Report estimate",
    "metric": "electricity use, 2023",
    "value": null,
    "low": 40,
    "high": null,
    "unit": "TWh",
    "year": 2023,
-   "boundary": "Modeled by LBNL from shipments; a lower bound ('more than').",
+   "boundary": "Modeled by LBNL from shipments; a lower bound ('more than'). This is the 2024 Report's estimate. LBNL's June 2026 Update revised its estimates of total electricity use in prior years slightly lower (ru-122) and gives no revised 2023 figure for this category in its text.",
    "source": {
     "title": "2024 United States Data Center Energy Usage Report",
     "publisher": "Lawrence Berkeley National Laboratory",
@@ -831,21 +831,21 @@
   {
    "id": "ru-040",
    "entity": "Google, machine learning",
-   "metric": "share of Google's total energy use, each year",
+   "metric": "share of Google's total energy use, one week of April in each of 2019, 2020 and 2021",
    "value": null,
    "low": 10,
    "high": 15,
    "unit": "percent",
    "year": 2021,
-   "boundary": "Company-reported, for the three years to early 2022 (2019 to 2021); training and inference together, split three-fifths inference and two-fifths training.",
+   "boundary": "Company-reported by Google and UC Berkeley researchers: one week of April in each of 2019, 2020 and 2021, not a full-year share. All machine learning energy (research, development, testing and production), training and inference together, split about three-fifths inference and two-fifths training across the three years.",
    "source": {
-    "title": "Good News About the Carbon Footprint of Machine Learning Training",
-    "publisher": "Google Research",
-    "url": "https://research.google/blog/good-news-about-the-carbon-footprint-of-machine-learning-training",
-    "published": "2022-02-15",
-    "kind": "company-report"
+    "title": "The Carbon Footprint of Machine Learning Training Will Plateau, Then Shrink",
+    "publisher": "Patterson, Gonzalez, Hölzle, Le, Liang, Munguia, Rothchild, So, Texier and Dean (Google; UC Berkeley)",
+    "url": "https://arxiv.org/abs/2204.05149",
+    "published": "2022-04-11",
+    "kind": "preprint"
    },
-   "quote": "Our data shows that ML training and inference are only 10%–15% of Google’s total energy use for each of the last three years, each year split ⅗ for inference and ⅖ for training.",
+   "quote": "We retroactively performed these calculations based on data for one week of April in 2019, 2020, and 2021. Each time the ML portion was 10% to 15% of Google's total energy consumption for that week | Across all three years, about ⅗ of ML energy use is for inference and ⅖ for training.",
    "derived": null,
    "status": "verified"
   },
@@ -887,9 +887,10 @@
     "published": "2024",
     "kind": "company-report"
    },
-   "quote": "In all regions’ downstream traffic, Video is the biggest traffic category for volume, with percentages ranging between 41% and 48%.",
-   "derived": null,
-   "status": "verified"
+   "quote": "In all regions’ downstream traffic, Video is the biggest traffic category for volume, with percentages ranging between 41% and 48%. | Top App Categories by Downstream Volume 2023 - Europe: 1 Video 49% 2.847 GB",
+   "derived": "Regional downstream video shares in Sandvine's tables: Americas 48%, APAC 41%, Europe 49%; the summary sentence gives 41% to 48%.",
+   "status": "partly",
+   "limit": "Sandvine's summary sentence says 41% to 48%; its own regional tables give 41% (APAC), 48% (Americas) and 49% (Europe), so the report disagrees with itself by one point at the top. The page prints the summary's range and names the Europe table's 49."
   },
   {
    "id": "ru-043",
@@ -1058,7 +1059,7 @@
     "kind": "company-report"
    },
    "quote": "Total electricity consumption 7,170,000 9,420,839 11,508,131 15,325,314 18,423,634",
-   "derived": "18,423,634 MWh / 8,760 hours = 2,103 MW = 2.1 GW.",
+   "derived": "18,423,634 MWh / 8,784 hours (2024 had 366 days) = 2,097 MW = 2.1 GW; over 8,760 hours it would be 2,103 MW, also 2.1 GW.",
    "status": "verified"
   },
   {
@@ -1259,7 +1260,7 @@
    "high": 91,
    "unit": "TWh",
    "year": 2023,
-   "boundary": "Top-down: a global range scaled by an assumed 38 percent US share. EIA later discontinued the emergency survey behind its facility count.",
+   "boundary": "Top-down: the Cambridge index's (CBECI) 2023 global range of 67 to 240 TWh for Bitcoin mining, scaled by an assumed US share of about 38 percent (the January 2022 share, 37.8 percent, held constant); Bitcoin only, not other cryptocurrencies. EIA has since discontinued the emergency collection for its Form EIA-862 cryptocurrency mining survey.",
    "source": {
     "title": "Tracking electricity consumption from U.S. cryptocurrency mining operations",
     "publisher": "U.S. Energy Information Administration",
@@ -1267,7 +1268,7 @@
     "published": "2024-02-01",
     "kind": "agency"
    },
-   "quote": "we estimate electricity usage from Bitcoin mining based in the United States to range from 25 TWh to 91 TWh.",
+   "quote": "The CBECI estimates that global electricity usage associated with Bitcoin mining ranged from 67 TWh to 240 TWh in 2023, with a point estimate of 120 TWh. | Assuming the share of global activity in the United States remains approximately 38%, we estimate electricity usage from Bitcoin mining based in the United States to range from 25 TWh to 91 TWh. | EIA has discontinued the emergency collection of data for Form EIA-862, Cryptocurrency Mining Operations Survey.",
    "derived": null,
    "status": "verified"
   },
@@ -1295,13 +1296,13 @@
   {
    "id": "ru-062",
    "entity": "US cryptocurrency mining facilities, EIA cross-check",
-   "metric": "electricity use at 80 percent utilization of identified capacity",
+   "metric": "electricity use per year at 80 percent utilization of the identified capacity",
    "value": 70,
    "low": null,
    "high": null,
    "unit": "TWh",
-   "year": 2023,
-   "boundary": "Bottom-up cross-check from 137 identified facilities and an assumed utilization; approximate.",
+   "year": null,
+   "boundary": "Bottom-up cross-check from the 101 of 137 identified cryptocurrency mining facilities with an estimated maximum use (10,275 MW; the source gives no maximum use for the other 36), at an assumed 80 percent utilization based on information from a few facilities. All cryptocurrency mining, not Bitcoin only. The source says 'per year' and states no data year; the facility list is the one identified to date in the 02/01/2024 article. Approximate.",
    "source": {
     "title": "Tracking electricity consumption from U.S. cryptocurrency mining operations",
     "publisher": "U.S. Energy Information Administration",
@@ -1309,8 +1310,9 @@
     "published": "2024-02-01",
     "kind": "agency"
    },
-   "quote": "If we suppose that they operate at 80% utilization, an approximate estimate based on information we have received from a few mining facilities, of the 10,275 MW of capacity that support them, their electricity usage would be about 70 TWh per year, or close to the high end of the range in our top-down estimate.",
-   "derived": null,
+   "quote": "Of the 137 facilities identified, we have identified maximum electricity use at 101 of those facilities, which we estimate to be 10,275 MW. | If we suppose that they operate at 80% utilization, an approximate estimate based on information we have received from a few mining facilities, of the 10,275 MW of capacity that support them, their electricity usage would be about 70 TWh per year, or close to the high end of the range in our top-down estimate.",
+   "derived": "10,275 MW of maximum use at an assumed 80 percent utilization: 10,275 x 0.80 x 8,760 hours = 72,007,200 MWh, or 72.0 TWh a year; EIA states about 70 TWh per year.",
+   "limit": "The maximum use and the 70 TWh cover the 101 of 137 identified facilities that have a maximum-use estimate; the other 36 are not in them.",
    "status": "verified"
   },
   {
@@ -1322,7 +1324,7 @@
    "high": null,
    "unit": "Wh/GB",
    "year": 2020,
-   "boundary": "DIMPACT participants' 1.3 Wh per streaming hour (fp-122) over Carbon Trust's modeled 2.88 GB per hour (fp-130). Our division, not a measured intensity.",
+   "boundary": "Carbon Trust's 1.3 Wh per streaming hour for data centres and content delivery (section 3.2: from a selection of DIMPACT members, measured data in 2020; the same figure as fp-122) over Carbon Trust's modeled European average of 2.88 GB per hour (page 48; ru-120, fp-130). Our division, not a measured intensity.",
    "source": {
     "title": "Carbon impact of video streaming",
     "publisher": "Carbon Trust (with DIMPACT)",
@@ -1330,10 +1332,10 @@
     "published": "2021-06",
     "kind": "company-report"
    },
-   "quote": "and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix. | found that data centres used 1.3Wh per hour of streaming.",
+   "quote": "and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix. | the energy consumption related to data centres is estimated with an energy intensity per viewing hour of 1.3Wh/hour, which is derived from a selection of DIMPACT members based on measured data in 2020.",
    "derived": "1.3 Wh per hour / 2.88 GB per hour = 0.451 Wh/GB, printed as 0.45.",
    "status": "partly",
-   "limit": "Our division of one participant-reported energy figure by an average data volume; not a measured energy per gigabyte."
+   "limit": "Our division of one figure taken from a selection of DIMPACT members' 2020 data by a modeled average data volume for a 2020 European device mix; an allocation scenario, not a measured energy per gigabyte."
   },
   {
    "id": "ru-064",
@@ -1344,7 +1346,7 @@
    "high": null,
    "unit": "hours/day",
    "year": 2016,
-   "boundary": "Company-reported, announced 02/27/2017 for the year before ('last year'), so a floor for later years.",
+   "boundary": "Company-reported, announced 02/27/2017 for the year before ('last year').",
    "source": {
     "title": "You know what's cool? A billion hours",
     "publisher": "YouTube",
@@ -1365,7 +1367,7 @@
    "high": 57.8,
    "unit": "TWh",
    "year": 2016,
-   "boundary": "1 billion hours a day for 365 days times 2.88 GB an hour times the data center energy per gigabyte on three bases: DIMPACT participants' reported 1.3 Wh per hour over 2.88 GB, 0.45 Wh/GB (value; our division, not a measured intensity), the UK follow-up 0.171 Wh/GB (low), and a top-down average 55 Wh/GB (high).",
+   "boundary": "1 billion hours a day for 365 days times Carbon Trust's modeled 2.88 GB an hour (ru-120) times the data center energy per gigabyte on three bases: 0.45 Wh/GB from DIMPACT-member data (value; ru-063, our division, not a measured intensity), the UK follow-up's 0.171 Wh/GB (low; fp-142), and the Sustainable Web Design top-down average of 55 Wh/GB (high; ec-024). The hours are YouTube's reported figure for the year before its 02/27/2017 post (ru-064).",
    "source": {
     "title": "You know what's cool? A billion hours",
     "publisher": "YouTube",
@@ -1373,10 +1375,10 @@
     "published": "2017-02-27",
     "kind": "company-report"
    },
-   "quote": "people around the world are now watching a billion hours of YouTube’s incredible content every single day! | and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix.",
+   "quote": "people around the world are now watching a billion hours of YouTube’s incredible content every single day!",
    "derived": "365 billion hours x 2.88 GB x 0.451 Wh/GB = 0.474 TWh, printed as 0.47; x 0.171 = 0.180 TWh, printed as 0.18; x 55 = 57.8 TWh.",
    "status": "partly",
-   "limit": "2016 viewing hours times an allocation of data center energy that is unsettled; the high end is an upper bound and not a literal share."
+   "limit": "Reported 2016 viewing hours times a 2020 European modeled data rate and three unsettled allocations of data center energy: an illustration of scale, not a measured YouTube figure. Neither the hours nor the energies are shown to be a floor or a bound."
   },
   {
    "id": "ru-066",
@@ -1387,7 +1389,7 @@
    "high": 0.55,
    "unit": "TWh",
    "year": 2025,
-   "boundary": "2.5 billion messages a day (July 2025) for 365 days at 0.30 Wh a text prompt (value), 0.24 Wh (Google's measured median, low), or 0.6 Wh (Epoch's figure with a share of model development, high). Leaves out reasoning, images, video, agents, and training.",
+   "boundary": "More than 2.5 billion messages a day on ChatGPT consumer plans (Free, Plus, Pro; July 2025; fp-092) for 365 days at 0.30 Wh a text prompt (value; Epoch AI's estimate for a typical GPT-4o query, fp-014), 0.24 Wh (Google's measured median Gemini Apps text prompt, low; fp-001), or 0.6 Wh (Epoch AI's figure for a 100-word message to a free chatbot, including a share of model development, high; fp-015). Three products and accounting boundaries applied to one message count. The count leaves out business, enterprise, education and API use.",
    "source": {
     "title": "How People Use ChatGPT",
     "publisher": "OpenAI, Duke University and Harvard University (Chatterji et al.)",
@@ -1395,10 +1397,10 @@
     "published": "2025-09-15",
     "kind": "preprint"
    },
-   "quote": "By July 2025, ChatGPT had been used weekly by more than 700 million users, who were collectively sending more than 2.5 billion messages per day, or about 29,000 messages per second. | we find the median Gemini Apps text prompt consumes 0.24 Wh of energy | We find that typical ChatGPT queries using GPT-4o likely consume roughly 0.3 watt-hours | 0.6 watt-hours (Wh) of energy to generate your response, including a share of the upfront energy cost of developing the model",
+   "quote": "By July 2025, ChatGPT had been used weekly by more than 700 million users, who were collectively sending more than 2.5 billion messages per day, or about 29,000 messages per second.",
    "derived": "2.5 billion x 365 = 912.5 billion prompts; x 0.30 Wh = 0.274 TWh, printed as 0.27; x 0.24 Wh = 0.219 TWh, printed as 0.22; x 0.6 Wh = 0.548 TWh, printed as 0.55.",
    "status": "partly",
-   "limit": "A floor: it counts text messages only, from a count that says 'more than' 2.5 billion, at per-prompt figures drawn from three sources on different boundaries."
+   "limit": "An illustration, not a floor or a bound: it applies per-prompt figures for other products and boundaries (a Gemini median, a GPT-4o estimate that Epoch AI calls relatively pessimistic, and a figure that includes a share of model development) to a count of all consumer-plan messages, which the paper gives as 'more than' 2.5 billion and which is not limited to text. Business, enterprise, education and API use are not in the count."
   },
   {
    "id": "ru-067",
@@ -1432,7 +1434,7 @@
    "high": null,
    "unit": "percent",
    "year": 2025,
-   "boundary": "0.474 TWh for YouTube at measured delivery and 0.274 TWh for chat, each over the IEA's 485 TWh.",
+   "boundary": "0.474 TWh for YouTube (2016 hours at the DIMPACT-based 0.45 Wh/GB, ru-065) and 0.274 TWh for chat (July 2025 consumer-plan messages at 0.30 Wh, ru-066), each over the IEA's 485 TWh estimate for 2025. At the other settings (YouTube 0.18 TWh; chat 0.22 to 0.55 TWh) the shares are 0.04 percent and 0.05 to 0.11 percent.",
    "source": {
     "title": "Key Questions on Energy and AI",
     "publisher": "International Energy Agency",
@@ -1441,9 +1443,9 @@
     "kind": "agency"
    },
    "quote": "Our updated projections see electricity consumption from data centres roughly doubling from 485 TWh in 2025 to 950 TWh in 2030, accounting for around 3% of global electricity demand by that date.",
-   "derived": "0.474 TWh / 485 TWh = 0.098 percent; 0.274 TWh / 485 TWh = 0.056 percent; both under 1 percent.",
+   "derived": "0.474 TWh / 485 TWh = 0.098 percent; 0.274 TWh / 485 TWh = 0.056 percent; both under 1 percent. At the chat high setting, 0.5475 / 485 = 0.113 percent, also under 1 percent.",
    "status": "partly",
-   "limit": "Both numerators are floors on unsettled allocations, so under 1 percent holds only on the measured-delivery figures."
+   "limit": "Illustrative scenarios, not bounds: the YouTube numerator uses 2016 hours and the chat numerator July 2025 messages against a 2025 total, and neither is a floor. Under 1 percent holds at every setting except the 55 Wh/GB top-down average (ru-069)."
   },
   {
    "id": "ru-069",
@@ -1454,7 +1456,7 @@
    "high": null,
    "unit": "percent",
    "year": 2025,
-   "boundary": "57.8 TWh at 55 Wh per GB over the IEA's 485 TWh; an upper bound, not a literal share.",
+   "boundary": "57.8 TWh (ru-065's 55 Wh/GB top-down scenario) over the IEA's 485 TWh estimate for 2025.",
    "source": {
     "title": "Key Questions on Energy and AI",
     "publisher": "International Energy Agency",
@@ -1465,7 +1467,7 @@
    "quote": "Our updated projections see electricity consumption from data centres roughly doubling from 485 TWh in 2025 to 950 TWh in 2030, accounting for around 3% of global electricity demand by that date.",
    "derived": "57.8 TWh / 485 TWh = 11.9 percent, printed as 12 percent.",
    "status": "partly",
-   "limit": "An upper bound that multiplies a top-down, all-workload average by streaming volume; it is not a measured share."
+   "limit": "An illustrative scenario that spreads all data center energy over all bytes and applies it to YouTube's reported 2016 hours; not a measured share and not a bound."
   },
   {
    "id": "ru-070",
@@ -1497,7 +1499,7 @@
    "high": 124,
    "unit": "trillion hours a year",
    "year": 2025,
-   "boundary": "161.67 TWh over a data center energy per viewing hour of 3.1 Wh (the UK follow-up's high case, low end of the hours) to 1.3 Wh (DIMPACT, high end).",
+   "boundary": "161.67 TWh (ru-070) over a data center energy per viewing hour of 3.1 Wh (the UK follow-up's high case, Table 5.8, fp-141; low end of the hours) to 1.3 Wh (Carbon Trust's figure from DIMPACT members, ru-063 and fp-122; high end).",
    "source": {
     "title": "Key Questions on Energy and AI",
     "publisher": "International Energy Agency",
@@ -1505,9 +1507,10 @@
     "published": "2026-04-16",
     "kind": "agency"
    },
-   "quote": "Our updated projections see electricity consumption from data centres roughly doubling from 485 TWh in 2025 to 950 TWh in 2030, accounting for around 3% of global electricity demand by that date. | found that data centres used 1.3Wh per hour of streaming. | IT electricity (data centres) 0.0003 0.0005 0.0021 Non-IT electricity (data centres) 0.0000 0.0001 0.0010",
+   "quote": "Our updated projections see electricity consumption from data centres roughly doubling from 485 TWh in 2025 to 950 TWh in 2030, accounting for around 3% of global electricity demand by that date.",
    "derived": "161.67 TWh / 3.1 Wh per hour = 52.2 trillion hours; 161.67 TWh / 1.3 Wh per hour = 124.4 trillion hours. An earlier 41 trillion used 3.9 Wh, which the follow-up's Table 5.8 does not give: its high case is 0.0021 + 0.0010 = 0.0031 kWh = 3.1 Wh.",
-   "status": "verified"
+   "status": "partly",
+   "limit": "A derived scenario test: one-third of the IEA's 485 TWh is the page's threshold, not a finding, and the IEA quote holds only the 485 TWh. The two energy-per-hour inputs sit in other claims (fp-141, fp-122) at different boundaries."
   },
   {
    "id": "ru-072",
@@ -1563,18 +1566,18 @@
    "high": null,
    "unit": "Wh/hour",
    "year": null,
-   "boundary": "55 Wh per GB (top-down average, fp-149) times 2.88 GB per hour (fp-130).",
+   "boundary": "55 Wh per GB (Sustainable Web Design Version 4, ec-024: 290 TWh of data center energy from IEA 2022 over 5.29 ZB of traffic from ITU 2023) times Carbon Trust's modeled 2.88 GB per hour (ru-120, fp-130). Read 11/05/2026; the page's metadata gives first publication 10/07/2021 and last modification 06/27/2024.",
    "source": {
     "title": "Estimating digital emissions (Sustainable Web Design Model)",
     "publisher": "Sustainable Web Design",
     "url": "https://sustainablewebdesign.org/estimating-digital-emissions",
-    "published": "2022",
+    "published": null,
     "kind": "company-report"
    },
-   "quote": "Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB | and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix.",
+   "quote": "Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB",
    "derived": "55 Wh/GB x 2.88 GB per hour = 158.4 Wh, printed as 158 Wh.",
    "status": "partly",
-   "limit": "An upper bound that multiplies a top-down, all-workload average by streaming volume; it is not a literal per-hour share."
+   "limit": "A top-down, all-workload average multiplied by a streaming data rate: an illustrative scenario, not a literal per-hour share and not a bound. The method says its results 'will either under or over estimate'; it mixes 2022 energy, 2023 traffic and a 2020 European data rate."
   },
   {
    "id": "ru-075",
@@ -1585,18 +1588,18 @@
    "high": null,
    "unit": "trillion hours a year",
    "year": 2025,
-   "boundary": "161.67 TWh over 158.4 Wh per hour.",
+   "boundary": "161.67 TWh (ru-070: one-third of the IEA's 485 TWh estimate for 2025) over 158.4 Wh per hour (ru-074).",
    "source": {
     "title": "Estimating digital emissions (Sustainable Web Design Model)",
     "publisher": "Sustainable Web Design",
     "url": "https://sustainablewebdesign.org/estimating-digital-emissions",
-    "published": "2022",
+    "published": null,
     "kind": "company-report"
    },
-   "quote": "Our updated projections see electricity consumption from data centres roughly doubling from 485 TWh in 2025 to 950 TWh in 2030, accounting for around 3% of global electricity demand by that date. | Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB",
-   "derived": "161.67 TWh (about 162) / 158.4 Wh (about 158) per hour = 1.02 trillion hours, printed as 1 trillion.",
+   "quote": "Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB",
+   "derived": "161.67 TWh (about 162) / 158.4 Wh (about 158) per hour = 1.0206 trillion hours, printed as 1 trillion.",
    "status": "partly",
-   "limit": "An upper bound that rests on a top-down average data center energy per hour."
+   "limit": "A scenario at the top-down average, not a bound. Hours needed fall as the assumed energy per hour rises, so a higher assumed energy per hour gives fewer hours, not more. The 0.055 kWh/GB rests on 2022 data center energy and 2023 traffic and is applied to 2025."
   },
   {
    "id": "ru-076",
@@ -1607,18 +1610,18 @@
    "high": null,
    "unit": "minutes per person per day",
    "year": 2025,
-   "boundary": "About 1 trillion hours over 8 billion people over 365 days.",
+   "boundary": "About 1 trillion hours (ru-075; 1.0206 trillion unrounded) over 8 billion people (ru-072, the UN's 2022 milestone, a round figure) over 365 days.",
    "source": {
     "title": "Estimating digital emissions (Sustainable Web Design Model)",
     "publisher": "Sustainable Web Design",
     "url": "https://sustainablewebdesign.org/estimating-digital-emissions",
-    "published": "2022",
+    "published": null,
     "kind": "company-report"
    },
-   "quote": "Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB | On 15 November 2022, the world’s population reached 8 billion people",
-   "derived": "1.02 trillion hours / 8 billion people / 365 days = 0.35 hours = 21 minutes (1 trillion hours gives 20.5 minutes).",
+   "quote": "Operational energy intensity data centers = (290 × 10 ⁹ (kWh)) / (5.29 × 10 ¹² (GB)) = 0.055 kWh/GB",
+   "derived": "1.0206 trillion hours / 8 billion people / 365 days = 0.3495 hours = 20.97 minutes, printed as 21 (1 trillion hours gives 20.55 minutes).",
    "status": "partly",
-   "limit": "An upper bound that rests on a top-down average and a round population figure."
+   "limit": "A scenario at the top-down average and a round 2022 population figure, not a bound: it assumes every one of the 8 billion people watches this much every day, and the time falls as the assumed energy per hour rises."
   },
   {
    "id": "ru-077",
@@ -1692,7 +1695,7 @@
    "high": null,
    "unit": "seconds",
    "year": 2026,
-   "boundary": "The clip length behind the 30.8 Wh estimate for Veo 3 (fp-070): a single 8-second 720p video.",
+   "boundary": "The clip length behind the 30.8 Wh estimate for Veo 3 (fp-070): a single 8-second 720p video. The study's energy scope is data center accelerators: its measurements count GPU energy only, and its Veo 3 estimate is tied to Veo 3's reported TPU deployment; it is not whole-service generation energy.",
    "source": {
     "title": "Energy and carbon footprint of text-to-video generation (Jegham, Gamazaychikov, Luccioni)",
     "publisher": "arXiv",
@@ -1700,7 +1703,7 @@
     "published": "2026-07-05",
     "kind": "preprint"
    },
-   "quote": "Our estimations show that the energy cost of generating a single 8-second 720p video can span over an order of magnitude between models",
+   "quote": "Our estimations show that the energy cost of generating a single 8-second 720p video can span over an order of magnitude between models | We only account for GPU energy consumption in our experiments, since this accounts for the majority of the energy footprint in predominantly compute-bound processes.",
    "derived": null,
    "status": "verified"
   },
@@ -1755,7 +1758,7 @@
    "high": null,
    "unit": "percent per year",
    "year": 2030,
-   "boundary": "IEA Base Case projection.",
+   "boundary": "IEA Base Case projection for servers worldwide. The IEA states 2024 to 2030 for the 15 percent a year of total data centre growth in the sentence before; the sentence with the 30 percent does not repeat the interval. 'Almost half' is accelerated servers' share of the net increase in global data centre electricity consumption.",
    "source": {
     "title": "Energy demand from AI",
     "publisher": "International Energy Agency",
@@ -1763,7 +1766,7 @@
     "published": "2025-04-09",
     "kind": "agency"
    },
-   "quote": "Electricity consumption in accelerated servers, which is mainly driven by AI adoption, is projected to grow by 30% annually in the Base Case, while conventional server electricity consumption growth is slower at 9% per year.",
+   "quote": "From 2024 to 2030, data centre electricity consumption grows by around 15% per year | Electricity consumption in accelerated servers, which is mainly driven by AI adoption, is projected to grow by 30% annually in the Base Case, while conventional server electricity consumption growth is slower at 9% per year. | Accelerated servers account for almost half of the net increase in global data centre electricity consumption",
    "derived": null,
    "status": "verified"
   },
@@ -1896,14 +1899,14 @@
   },
   {
    "id": "ru-090",
-   "entity": "GPT-3 in Microsoft's US data centers (Li et al.)",
+   "entity": "GPT-3 in Microsoft's data centers, by location and time (Li et al.)",
    "metric": "volume of water per 10 to 50 medium-length responses",
    "value": 500,
    "low": null,
    "high": null,
    "unit": "milliliters",
    "year": null,
-   "boundary": "The bottle size the paper states; the range of 10 to 50 responses is claim tr-018.",
+   "boundary": "The bottle size the paper states, for roughly 10 to 50 medium-length responses depending on when and where the model is deployed (the range is claim tr-018; Table 1 spans 10.5 to 70.4 responses per 500 ml across Microsoft's locations, not only the US). A modeled operational estimate for GPT-3, not a measurement.",
    "source": {
     "title": "Making AI Less 'Thirsty'",
     "publisher": "Communications of the ACM 68(7) (Li, Yang, Islam, Ren)",
@@ -1924,7 +1927,7 @@
    "high": 1.3,
    "unit": "milliliters",
    "year": 2025,
-   "boundary": "Google's measured 0.26 mL on site (fp-006) plus 0.24 Wh = 0.00024 kWh times national-average power-plant water of 3.142 to 4.52 liters per kWh (tr-016, tr-005).",
+   "boundary": "Google's measured 0.26 mL of water on site (fp-006) plus its 0.24 Wh per prompt = 0.00024 kWh times two outside power-plant water factors: 3.142 L/kWh, the US average Li and colleagues use (claim ru-123), and 4.52 L/kWh, LBNL's figure for the grid mix at US data center locations (claim tr-005). The two factors describe different populations; LBNL's US overall average in the same report is 4.35 L/kWh.",
    "source": {
     "title": "Measuring the environmental impact of delivering AI at Google Scale",
     "publisher": "Google (Elsworth et al.)",
@@ -1932,10 +1935,10 @@
     "published": "2025-08-21",
     "kind": "company-report"
    },
-   "quote": "a median Gemini Apps text prompt generates 0.03 gCO2e and consumes 0.26 mL of water when measured comprehensively | we find the median Gemini Apps text prompt consumes 0.24 Wh of energy | datacenters can consume a total of 5.4 million liters of water, including 700,000 liters of scope-1 onsite water consumption. | In 2023, energy consumption by a data center translates to national average of 4.52 L/kWh of indirect water consumption, along with 0.34 kg/ kWh emissions.",
-   "derived": "0.00024 kWh x 3.142 L/kWh = 0.75 mL and x 4.52 L/kWh = 1.09 mL; 0.26 + 0.75 = 1.01 mL and 0.26 + 1.09 = 1.35 mL, printed as 1.0 to 1.3 mL.",
+   "quote": "a median Gemini Apps text prompt generates 0.03 gCO2e and consumes 0.26 mL of water when measured comprehensively | we find the median Gemini Apps text prompt consumes 0.24 Wh of energy",
+   "derived": "0.24 Wh = 0.00024 kWh. 0.00024 x 3.142 L/kWh = 0.000754 L = 0.754 mL and 0.00024 x 4.52 L/kWh = 0.001085 L = 1.085 mL. 0.26 + 0.754 = 1.014 mL and 0.26 + 1.085 = 1.345 mL, printed to one decimal as 1.0 to 1.3 mL.",
    "status": "partly",
-   "limit": "Adds Google's measured on-site water to a national-average power-plant factor from other studies; it is not a measurement of any facility."
+   "limit": "An illustrative sum of Google's measured on-site water and two outside US electricity-water factors that describe different populations (Li and colleagues' US average and LBNL's data center grid mix); it is not a measurement of Gemini's total water footprint or of any facility."
   },
   {
    "id": "ru-092",
@@ -1946,7 +1949,7 @@
    "high": 10,
    "unit": "percent",
    "year": 2025,
-   "boundary": "Company-reported, one quarter, two campuses; overhead over IT energy.",
+   "boundary": "Company-reported, one quarter (fourth quarter of 2025), three data center campuses in The Dalles (endnote 80: quarterly PUEs 1.06, 1.07 and 1.10); overhead is PUE minus 1, so 6 to 10 percent. Google says the efficiency is made possible in part by its water cooling.",
    "source": {
     "title": "2026 Environmental Report",
     "publisher": "Google",
@@ -1954,7 +1957,7 @@
     "published": "2026-06-30",
     "kind": "company-report"
    },
-   "quote": "During the fourth quarter of 2025, these sites required only 6% to 10% of additional energy for overhead—such as cooling and power distribution—relative to the energy used by their IT equipment, far lower than the 54% industry average.",
+   "quote": "During the fourth quarter of 2025, these sites required only 6% to 10% of additional energy for overhead—such as cooling and power distribution—relative to the energy used by their IT equipment, far lower than the 54% industry average. | In the fourth quarter of 2025, the Quarterly PUEs for our three data center campuses in The Dalles were 1.06, 1.07, and 1.10. | This efficiency is made possible in part due to our water cooling",
    "derived": null,
    "status": "verified"
   },
@@ -1967,7 +1970,7 @@
    "high": null,
    "unit": "percent",
    "year": 2025,
-   "boundary": "Google's comparison figure; the report does not give its source or year here.",
+   "boundary": "Google's comparison figure of 54 percent. Its endnote 80 takes it from the Uptime Institute's 2025 Global Data Center Survey, a global average PUE of 1.54 in 2025 (claim ru-125), expressed as overhead (PUE minus 1).",
    "source": {
     "title": "2026 Environmental Report",
     "publisher": "Google",
@@ -1975,10 +1978,10 @@
     "published": "2026-06-30",
     "kind": "company-report"
    },
-   "quote": "During the fourth quarter of 2025, these sites required only 6% to 10% of additional energy for overhead—such as cooling and power distribution—relative to the energy used by their IT equipment, far lower than the 54% industry average.",
+   "quote": "During the fourth quarter of 2025, these sites required only 6% to 10% of additional energy for overhead—such as cooling and power distribution—relative to the energy used by their IT equipment, far lower than the 54% industry average. | A data center’s “overhead” is the energy it uses beyond what is needed to power IT equipment, calculated as (PUE - 1). | For comparison, the Uptime Institute’s 2025 Global Data Center Survey reported a global average PUE of 1.54 in 2025.",
    "derived": null,
    "status": "partly",
-   "limit": "Google states the industry average without a source in the sentence, so it is Google's characterization."
+   "limit": "A survey-respondent average, not all data centers: the Uptime Institute figure is the weighted average of respondents' annual PUE (681 respondents, claim ru-125), while Google's 6 to 10 percent is one quarter at three campuses, so the two cover different periods and populations. The sentence names no source; Google's endnote 80 does."
   },
   {
    "id": "ru-094",
@@ -2010,7 +2013,7 @@
    "high": null,
    "unit": "percent",
    "year": null,
-   "boundary": "A study the Columbia River Inter-Tribal Fish Commission cites; 'may use', for Oregon overall, not any one place.",
+   "boundary": "What the Columbia River Inter-Tribal Fish Commission's slide says a study noted ('may use'), for Oregon overall and not any one place. The slide gives no year or basis; those are in claim ru-124 (a 2033 projection of withdrawals for Oregon and Washington against Oregon's total).",
    "source": {
     "title": "Data Centers and the Columbia River: presentation to the Oregon Department of Energy",
     "publisher": "Columbia River Inter-Tribal Fish Commission",
@@ -2031,7 +2034,7 @@
    "high": null,
    "unit": "MW (over)",
    "year": 2032,
-   "boundary": "Generation capacity in the draft plan's proposed resource strategy for 2027 to 2032; the draft was released 08/13/2026 and may change.",
+   "boundary": "Generation capacity in the draft plan's proposed resource strategy for 2027 to 2032 (the announcement says the region will need it by 2032); the draft was released 08/13/2026 and may change. The announcement also says data centers are expected to be a major near-term driver of growth.",
    "source": {
     "title": "Draft Ninth Power Plan identifies cost-effective resource portfolio to meet Northwest's energy needs by 2032",
     "publisher": "Northwest Power and Conservation Council",
@@ -2039,7 +2042,7 @@
     "published": "2026-08-13",
     "kind": "agency"
    },
-   "quote": "the region will need to expand its power system by adding a diverse mix of over 11,000 megawatts (MW) of new generation capacity | the draft of the Council’s Ninth Power Plan, which was released to the public on August 13.",
+   "quote": "To meet the growing need for energy in the Pacific Northwest by 2032, the region will need to expand its power system by adding a diverse mix of over 11,000 megawatts (MW) of new generation capacity | the draft of the Council’s Ninth Power Plan, which was released to the public on August 13. | Major drivers of future growth are expected to be data centers in the near term",
    "derived": null,
    "status": "verified",
    "date": "2026-08-13",
@@ -2173,14 +2176,14 @@
   },
   {
    "id": "ru-103",
-   "entity": "Google water delivered by The Dalles, 2023",
-   "metric": "water delivered to Google",
+   "entity": "Google water use in The Dalles, 2023, city records",
+   "metric": "water Google used, as the city's records label it (water consumption)",
    "value": 383.9,
    "low": null,
    "high": null,
    "unit": "million gallons",
    "year": 2023,
-   "boundary": "City records provided to OPB; water delivered, not consumed.",
+   "boundary": "City of The Dalles records provided to OPB, labeled water consumption by the city; OPB's wording ('used') is kept. Whether the figures are metered delivery or consumptive use is not stated. The city's table header reads 'Current as of January 10, 2025'; OPB says the city provided it on Dec. 24, 2025.",
    "source": {
     "title": "The Dalles mayor and Google data center water use",
     "publisher": "Oregon Public Broadcasting",
@@ -2194,14 +2197,14 @@
   },
   {
    "id": "ru-104",
-   "entity": "Google water delivered by The Dalles, 2024",
-   "metric": "water delivered to Google",
+   "entity": "Google water use in The Dalles, 2024, city records",
+   "metric": "water Google used, as the city's records label it (water consumption)",
    "value": 434.4,
    "low": null,
    "high": null,
    "unit": "million gallons",
    "year": 2024,
-   "boundary": "City records provided to OPB; water delivered, not consumed.",
+   "boundary": "City of The Dalles records provided to OPB, labeled water consumption by the city; OPB's wording ('used') is kept. Whether the figures are metered delivery or consumptive use is not stated. The city's table header reads 'Current as of January 10, 2025'; OPB says the city provided it on Dec. 24, 2025.",
    "source": {
     "title": "The Dalles mayor and Google data center water use",
     "publisher": "Oregon Public Broadcasting",
@@ -2349,7 +2352,7 @@
    "high": 224.8,
    "unit": "kilotons per year",
    "year": 2030,
-   "boundary": "Servers only, on a six-year lifespan assumption; the Perspective piece recalibrates Wang et al.'s estimate.",
+   "boundary": "Global AI servers only, on the five-year lifespan the article adopts 'for the remainder of this article' (the six-year figure it discusses is a different calculation). A bounded range of calculated lower and upper bounds with no central estimate, twice the article's 2029 range (65.5 to 112.4 million kg), whose final values depend on how chip-packaging (CoWoS) capacity is allocated. A Perspective piece that recalibrates Wang et al.'s estimate.",
    "source": {
     "title": "Recalibrating global artificial intelligence e-waste estimates",
     "publisher": "Resources, Conservation and Recycling (de Vries-Gao)",
@@ -2357,8 +2360,8 @@
     "published": "2026-04-01",
     "kind": "peer-reviewed"
    },
-   "quote": "By 2030, AI servers could generate 131.0–224.8 kilotons of e-waste per year.",
-   "derived": "224.8 kilotons printed as 225 thousand tonnes.",
+   "quote": "By 2030, AI servers could generate 131.0–224.8 kilotons of e-waste per year. | AI systems may contribute less to global e-waste than previously anticipated. | For the remainder of this article it will therefore be assumed that AI servers have a lifespan of five years, aligned with general server lifetimes. | The shaded area represents calculated lower and upper bounds for estimated AI server e-waste generation; no central estimate is implied. Final values depend on actual CoWoS capacity allocation.",
+   "derived": "The article's body gives million kilograms (Conclusion: 'at most between 131.0 and 224.8 million kilograms'); 1 million kg = 1,000 tonnes = 1 kiloton, so 131.0 to 224.8 kilotons; 224.8 kilotons printed as 225 thousand tonnes. The range is twice the 2029 five-year range: 2 x 65.5 = 131.0 and 2 x 112.4 = 224.8.",
    "status": "verified"
   },
   {
@@ -2508,6 +2511,226 @@
    "derived": "800 billion liters / 66 billion liters = 12.1, printed as about 12 times.",
    "status": "partly",
    "limit": "'Nearly 800' over 66 gives about 12; the ratio rests on grid-average water factors and not on any one facility."
+  },
+  {
+   "id": "ru-119",
+   "entity": "Google's share of The Dalles water consumption, 2024",
+   "metric": "Google's share of the city's total water consumption",
+   "value": 32.5,
+   "low": null,
+   "high": null,
+   "unit": "percent",
+   "year": 2024,
+   "boundary": "OPB's statement that Google uses a third of the overall water consumed by the city; the 32.5 percent is our division of the two 2024 figures in the city's own table (Google 434,428,540 gallons of 1,335,854,130 total), which OPB published as an image. The table's 2023 row gives 383,948,170 of 1,238,560,470 gallons (31.0 percent).",
+   "source": {
+    "title": "The Dalles mayor and Google data center water use",
+    "publisher": "Oregon Public Broadcasting",
+    "url": "https://www.opb.org/article/2026/01/23/the-dalles-mayor-data-center-google",
+    "published": "2026-01-23",
+    "kind": "press"
+   },
+   "quote": "OPB’s reporting showed how Google uses a third of the overall water consumed by the city.",
+   "derived": "434,428,540 / 1,335,854,130 = 0.3252 = 32.5 percent (2024); 383,948,170 / 1,238,560,470 = 0.3100 = 31.0 percent (2023).",
+   "status": "partly",
+   "limit": "OPB's words are 'a third'; the 32.5 percent is our division of two figures in the city's table, which the article shows only as an image."
+  },
+  {
+   "id": "ru-120",
+   "entity": "Video streaming, average hour in Europe (Carbon Trust model)",
+   "metric": "data volume of an average streamed hour, modeled",
+   "value": 2.88,
+   "low": null,
+   "high": null,
+   "unit": "GB/hour",
+   "year": 2020,
+   "boundary": "Carbon Trust's modeled European average bitrate, 6.40 Mbps, for 2020 across an assumed representative mix of end-user devices (about 70 percent TV). A model figure, not a measurement of any one service. fp-130 gives the same value, but its recorded quote is the 3 GB/hr HD line and the 2.88 average sits only in its note.",
+   "source": {
+    "title": "Carbon impact of video streaming",
+    "publisher": "Carbon Trust (with DIMPACT)",
+    "url": "https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf",
+    "published": "2021-06",
+    "kind": "company-report"
+   },
+   "quote": "and the modelled average bitrate (6.40Mbps or 2.88GB/hour) based on the representative device mix.",
+   "derived": "6.40 Mbps x 3,600 s / 8 = 2,880 MB = 2.88 GB per hour.",
+   "status": "verified"
+  },
+  {
+   "id": "ru-121",
+   "entity": "Global data centers, Gartner (June 2026 release)",
+   "metric": "electricity consumption, 2030",
+   "value": null,
+   "low": 1200,
+   "high": null,
+   "unit": "TWh",
+   "year": 2030,
+   "boundary": "Gartner's 06/10/2026 estimate of worldwide data center electricity consumption in 2030, stated as 'over' 1,200 TWh, so a lower bound. Later than the 980 TWh of its 11/17/2025 release (ru-010). The release's table covers 2025 to 2027 only.",
+   "source": {
+    "title": "Gartner Says Data Center Electricity Consumption to Grow 26% in 2026",
+    "publisher": "Gartner",
+    "url": "https://www.gartner.com/en/newsroom/press-releases/2026-06-10-gartner-says-data-center-electricity-demand-to-grow-26-percent-in-2026",
+    "published": "2026-06-10",
+    "kind": "company-report"
+   },
+   "quote": "With data center power electricity consumption estimated to reach over 1,200TWh by 2030",
+   "derived": null,
+   "status": "verified",
+   "date": "2026-06-10",
+   "date_us": "06/10/2026"
+  },
+  {
+   "id": "ru-122",
+   "entity": "US data centers, LBNL 2025 Update, revision of earlier years",
+   "metric": "revision of earlier years' total data center electricity use",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": null,
+   "year": null,
+   "boundary": "Total US data center electricity use in years before 2024, not the GPU-accelerated server category. The Update's text gives no revised 2023 figure for that category (its text was searched for TWh figures on 11/05/2026). Stated causes: fewer reported GPU shipments for 2023 and 2024, and revised power assumptions for AI inference servers.",
+   "source": {
+    "title": "United States Data Center Energy Usage Report: 2025 Update",
+    "publisher": "Lawrence Berkeley National Laboratory (hosted by U.S. Department of Energy)",
+    "url": "https://energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
+    "published": "2026-06",
+    "kind": "agency"
+   },
+   "quote": "revised estimates of electricity use in prior years falling slightly below 2024 Report estimates. The change in historical values is primarily due to a reduction in reported shipments of GPUs for 2023 and 2024, along with revised assumptions for the power consumption parameters of AI inference servers",
+   "derived": null,
+   "status": "verified",
+   "date": "2026-06",
+   "date_us": "06/2026"
+  },
+  {
+   "id": "ru-123",
+   "entity": "US average power-plant water factor, as Li and colleagues apply it",
+   "metric": "water consumed per kWh of electricity generated (off-site water intensity factor, EWIF), US average",
+   "value": 3.142,
+   "low": null,
+   "high": null,
+   "unit": "L/kWh",
+   "year": null,
+   "boundary": "The US average factor Li and colleagues take from Reig and colleagues for the off-site water of a data center's electricity, applied in their GPT-3 estimate. Their text rounds it to 3.14 and calls it lower than the 4.35 L/kWh in the LBNL 2024 report; LBNL's 4.52 L/kWh describes the grid mix at US data center locations (claim tr-005), a different population. The paper states no data year. The quote's second part is Table 1's U.S. Average row as printed, in its column order: PUE, Onsite WUE (L/kWh), Offsite EWIF (L/kWh).",
+   "source": {
+    "title": "Making AI Less 'Thirsty'",
+    "publisher": "Communications of the ACM 68(7) (Li, Yang, Islam, Ren)",
+    "url": "https://dl.acm.org/doi/10.1145/3724499",
+    "published": "2025-07-01",
+    "kind": "peer-reviewed"
+   },
+   "quote": "a large number of Microsoft’s datacenters are located in the U.S., where the average EWIF provided by Reig et al. is 3.14L/kWh and significantly lower than 4.35L/kWh noted by the recent report. | U.S. Average 1.170 0.550 3.142",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ru-124",
+   "entity": "Data centers in Oregon and Washington, PAE study for CRITFC and CTUIR",
+   "metric": "projected 2033 data center water withdrawal with evaporative cooling, as a share of Oregon's total annual water withdrawal",
+   "value": null,
+   "low": 0.1,
+   "high": 0.2,
+   "unit": "percent",
+   "year": 2033,
+   "boundary": "A consultant's projection, not measured use: 4 billion gallons a year of 2033 data center withdrawal with evaporative cooling, for projected growth in both Oregon and Washington, set against Oregon's total withdrawal alone (1,825 to 3,650 billion gallons a year). The study's text says 'less than 0.2%' while its table prints 0.2% and 0.1%; 4 over 1,825 is 0.22 percent and 4 over 3,650 is 0.11 percent. A scale comparison, not Oregon's sector share or an assessment of local impact.",
+   "source": {
+    "title": "The Energy & Water Use Impacts of Building System Design for Data Centers: Design Considerations for Oregon & Washington",
+    "publisher": "PAE Engineers, for the Columbia River Inter-Tribal Fish Commission and the Confederated Tribes of the Umatilla Indian Reservation",
+    "url": "https://critfc.org/wp-content/uploads/2025/03/data-center-report.pdf",
+    "published": "2025-02-14",
+    "kind": "company-report"
+   },
+   "quote": "When this is compared to the projected data center growth for both Oregon and Washington, even with the higher water use associated evaporative cooling, data centers will equate to less than 0.2% of the overall water use of just the state of Oregon. | TOTAL OREGON WATER WITHDRAWAL MINIMUM MAXIMUM | Total Withdrawal BILLION GALS/YR 1,825 3,650 | 2033 Projected Data Center Withdrawal with Evaporative Cooling BILLION GALS/YR 4 4 | Data Center Compared to Total BILLION GALS/YR 0.2% 0.1%",
+   "derived": "4 / 1,825 = 0.219 percent and 4 / 3,650 = 0.110 percent; the study prints these as 0.2% and 0.1%.",
+   "status": "partly",
+   "limit": "A projection of withdrawal (not consumption) in 2033 for Oregon and Washington together, set against Oregon's withdrawal alone; the study's text says 'less than 0.2%' and its table prints 0.2% and 0.1%, though the table's own figures give 0.219 and 0.110 percent (4 over 1,825 and 4 over 3,650), so 0.1 to 0.2 percent is a rounded range."
+  },
+  {
+   "id": "ru-125",
+   "entity": "Data center operators responding to the Uptime Institute 2025 Global Data Center Survey",
+   "metric": "weighted-average annual PUE of respondents' data centers",
+   "value": 1.54,
+   "low": null,
+   "high": null,
+   "unit": "PUE",
+   "year": 2025,
+   "boundary": "The weighted average of survey respondents' own reports of the annual PUE of their data center (681 responses), not a measurement of all data centers. Google's 2026 Environmental Report cites it as a global average PUE of 1.54 and expresses the excess over 1.0 as a 54 percent overhead (claim ru-093).",
+   "source": {
+    "title": "Uptime Institute Global Data Center Survey 2025 (Keynote Report 180)",
+    "publisher": "Uptime Institute",
+    "url": "https://datacenter.uptimeinstitute.com/rs/711-RIA-145/images/2025.Annual.Survey.Report.pdf?version=0",
+    "published": "2025-07",
+    "kind": "company-report"
+   },
+   "quote": "In 2025, respondents' annual PUE had a weighted average of 1.54 (see Figure 2) | What is the average annual PUE for your data center? (n=681)",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ru-126",
+   "entity": "Meta data center, Richland Parish, Louisiana, expansion",
+   "metric": "investment represented by the expansion, in the Richland Parish region",
+   "value": 50,
+   "low": null,
+   "high": null,
+   "unit": "USD billion (more than)",
+   "year": null,
+   "boundary": "Meta's own statement of 07/13/2026 about its expansion of the site to 5 GW, for the Richland Parish region; a company statement, not a cost audit. The post gives no acreage, so the 2,250 acres of the 12/04/2024 announcement (ru-032) are not restated for the expansion.",
+   "source": {
+    "title": "Deepening our investment in Richland Parish, Louisiana",
+    "publisher": "Meta",
+    "url": "https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana",
+    "published": "2026-07-13",
+    "kind": "company-report"
+   },
+   "quote": "This expansion represents an investment of more than $50 billion in the Richland Parish region",
+   "derived": null,
+   "status": "verified",
+   "date": "2026-07-13",
+   "date_us": "07/13/2026"
+  },
+  {
+   "id": "ru-127",
+   "entity": "One 5-second clip from an open video model, against Carbon Trust's streamed hour",
+   "metric": "hours of streaming with the same energy, derived",
+   "value": 5,
+   "low": null,
+   "high": null,
+   "unit": "hours of streaming",
+   "year": null,
+   "boundary": "MIT Technology Review's 3.4 million joules (944 Wh, fp-067) for one 5-second clip from an open model, measured with the CodeCarbon tool, over Carbon Trust's 188 Wh for a whole streamed hour in Europe in 2020 (fp-035), which counts the device, home router, network and data center. The two count different things, so this is a point of scale, not a range for AI video.",
+   "source": {
+    "title": "We did the math on AI's energy footprint (repackaged feature, October 2025 PDF)",
+    "publisher": "MIT Technology Review",
+    "url": "https://wp.technologyreview.com/wp-content/uploads/2025/10/Re-packaged-Content_October-2025_final_v2-1.pdf",
+    "published": "2025-05-20",
+    "kind": "press"
+   },
+   "quote": "The new model uses more than 30 times more energy on each 5-second video: about 3.4 million joules",
+   "derived": "3.4 million J / 3,600 s per hour = 944.4 Wh; 944.4 Wh / 188 Wh per hour = 5.02 hours, printed as about 5 hours.",
+   "status": "partly",
+   "limit": "Our division of one clip's energy, measured with one research tool on an open model, by a modeled whole-chain streamed hour; the two count different things, so it is a point of scale, not a measurement of AI video."
+  },
+  {
+   "id": "ru-128",
+   "entity": "One 8-second 720p Veo 3 clip, against Carbon Trust's streamed hour",
+   "metric": "minutes of streaming with the same energy, derived",
+   "value": 9.8,
+   "low": 6.3,
+   "high": 13.9,
+   "unit": "minutes of streaming",
+   "year": null,
+   "boundary": "The study's modeled 30.8 (19.8 to 43.4) Wh of data center accelerator energy for one 8-second 720p Veo 3 clip (fp-070) over Carbon Trust's 188 Wh for a whole streamed hour in Europe in 2020 (fp-035), which counts the device, home router, network and data center. The two count different things, so this is a point of scale, not a range for AI video.",
+   "source": {
+    "title": "Lights, Camera, Carbon: Architectural Scaling Laws for Video Generation Energy Consumption",
+    "publisher": "Jegham, Gamazaychikov, Luccioni (arXiv)",
+    "url": "https://arxiv.org/html/2607.04553v1",
+    "published": "2026-07-05",
+    "kind": "preprint"
+   },
+   "quote": "Veo 3 consumes 19.8–43.4 Wh (mean 30.8 Wh)",
+   "derived": "30.8 Wh / 188 Wh per hour x 60 = 9.83 minutes, printed as about 10 minutes; 19.8 / 188 x 60 = 6.32 and 43.4 / 188 x 60 = 13.85 minutes.",
+   "status": "partly",
+   "limit": "Our division of a modeled estimate from a preprint, which counts data center accelerator energy only, by a modeled whole-chain streamed hour; the two count different things, so it is a point of scale, not a measurement of AI video."
   }
  ]
 }

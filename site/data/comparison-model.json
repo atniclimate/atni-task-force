@@ -24,7 +24,7 @@
     "fp-015"
    ],
    "segment": "data center",
-   "note": "Text prompts only. 0.24 and 0.31 are medians: Google reports the median because the per-prompt distribution is skewed and the arithmetic mean is pulled up by a few heavy prompts, so any count times 0.30 is a floor. mean (0.34) is the only average-class figure in the record and carries no boundary; sums are also run at it. Reasoning, long-context, image, video and agent work are in heavy_ai and in the chat_kind setting."
+   "note": "Text prompts only. 0.24 and 0.31 are medians: Google reports the median because the per-prompt distribution is skewed and the arithmetic mean is pulled up by a few heavy prompts, so any count times 0.30 is an illustration, not a bound. mean (0.34) is the only average-class figure in the record and carries no boundary; sums are also run at it. Reasoning, long-context, image, video and agent work are in heavy_ai and in the chat_kind setting."
   },
   "chat_kb_per_prompt": {
    "value": 50,
@@ -56,7 +56,7 @@
     "fp-150"
    ],
    "segment": "data center",
-   "note": "The spread is an unsettled allocation, not a measurement error (fp-149). The DESNZ first report's 19.6 Wh per GB is retired by its authors (fp-144), so it is no longer a reading here. The high end cannot be a literal per-hour share: at 3.5 GB an hour it is above whole-chain figures (fp-150), so it is shown only as an upper bound. Every video row is GB times this intensity; the reader-chosen setting is video_dc_intensity."
+   "note": "The spread is an unsettled allocation, not a measurement error (fp-149). The DESNZ first report's 19.6 Wh per GB is retired by its authors (fp-144), so it is no longer a reading here. The high end cannot be a literal per-hour share: at 3.5 GB an hour it is above whole-chain figures (fp-150), so it is shown only as a scenario at the top of the allocation range, not as a bound. Every video row is GB times this intensity; the reader-chosen setting is video_dc_intensity."
   },
   "short_dc_ceiling_wh_per_hour": {
    "value": 13.9,
@@ -516,12 +516,12 @@
     "claims": [
      "fp-092"
     ],
-    "note": "One product; Gemini, Claude, Copilot and API traffic are not counted, so the chat total is a floor."
+    "note": "One product; Gemini, Claude, Copilot and API traffic are not counted, so the chat total is an illustration for one product, not a bound."
    },
    "youtube_hours_per_day": {
     "value": 1000000000.0,
     "unit": "viewing hours per day",
-    "basis": "reported for 2016 (as used by Preist et al.); a floor for today",
+    "basis": "reported for 2016 (as used by Preist et al.); a dated volume input, not a bound for today",
     "claims": [
      "fp-050",
      "fp-120"
@@ -875,7 +875,7 @@
    },
    "unit": "Wh per GB served",
    "label": "Streaming data center energy per GB served",
-   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an upper bound and not a literal share (fp-150). The allocation is unsettled (fp-149)."
+   "why": "measured_delivery is DIMPACT participants' 1.3 Wh per streaming hour over Carbon Trust's 2.88 GB average hour (fp-122, fp-130). desnz_followup is the DESNZ follow-up study of 07/28/2026: 0.6 Wh per viewing hour (fp-141), or 0.171 Wh per GB by our division (fp-142). It replaced the first report's 19.6 Wh per GB, which its authors retired after clarifying what the figure counted (fp-144). top_down is Sustainable Web Design's 55 Wh per GB, all data center energy over all internet bytes (ec-024, fp-147), an allocation scenario and not a literal share (fp-150). The allocation is unsettled (fp-149)."
   },
   "chat_wh_per_prompt": {
    "default": 0.3,
@@ -958,7 +958,7 @@
     "short_day"
    ],
    "equations": {
-    "chat_day": "chat_messages_per_day x chat_wh_per_prompt (a median times a mean count: a floor; chat_day_mean uses the 0.34 average-class figure; low is the low count times the low prompt)",
+    "chat_day": "chat_messages_per_day x chat_wh_per_prompt (a median times a mean count: an illustration, not a bound; chat_day_mean uses the 0.34 average-class figure; low is the low count times the low prompt)",
     "meta_person": "meta_wh_per_person_day (a fleet average on another boundary and another denominator; printed, not compared as a ratio)",
     "video_day": "video_minutes_per_day / 60 x video_gb_per_hour[phone] x video_dc_intensity (Similarweb minutes are Android app minutes)",
     "short_day": "short_minutes_per_day / 60 x short_gb_per_hour x video_dc_intensity; high case min(minutes / 60 x short_dc_ceiling_wh_per_hour, 15.1)",
@@ -979,7 +979,7 @@
   "scale": {
    "title": "Per-person smallness against total growth",
    "equations": {
-    "chat_twh_per_year": "chatgpt_messages_per_day x 365 x chat_wh_per_prompt / 1e12 (text-only floor, median prompt, July 2025 count; also run at the 0.34 mean)",
+    "chat_twh_per_year": "chatgpt_messages_per_day x 365 x chat_wh_per_prompt / 1e12 (text-only illustration, median prompt, July 2025 count; also run at the 0.34 mean)",
     "chat_amw": "chatgpt_messages_per_day x chat_wh_per_prompt / 24 h / 1e6",
     "youtube_dc_twh_per_year": "youtube_hours_per_day x 365 x video_gb_per_hour[mix] x video_dc_intensity / 1e12",
     "youtube_whole_chain_twh_per_year": "youtube_hours_per_day x 365 x stream_whole_chain_wh_per_hour / 1e12",

@@ -1181,7 +1181,7 @@
    "high": null,
    "unit": "announced cuts",
    "year": 2026,
-   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm, with a reason of 'Artificial Intelligence' assigned by the firm; announcements, not realized separations; a company-chosen reason can be a pretext; not a government count",
+   "boundary": "Layoff plans announced by U.S.-based employers and tallied by one outplacement firm, with a reason of 'Artificial Intelligence' assigned by the firm; announcements, not realized separations; a company-chosen reason can be a pretext; not a government count. This is Challenger's September report (10/01/2026). Its October report (11/05/2026) gives 121,401 AI-cited cuts so far in 2026 and says Market/Economic Conditions has overtaken AI as the leading reason, so the quote's 'it remains the leading reason year-to-date' describes the September report only.",
    "source": {
     "title": "Job Cuts Fall in September; Hiring Plans Up 3% Over 2025",
     "publisher": "Challenger, Gray and Christmas",

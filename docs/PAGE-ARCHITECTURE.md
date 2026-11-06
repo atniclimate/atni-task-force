@@ -106,11 +106,11 @@ adds (data center plus network) | whole hour}, default whole hour; `prompts_per_
 every stored cross-boundary ratio (fp-077 to fp-082, fp-084, fp-085); the Greenspector chat device uplift (fp-086, fp-087, set aside by the method); any "chat is X times video" sentence; a carbon view (no
 Pacific Northwest grid factor in the record). Projection: none. Fixed foot line: "This comparison does not decide a proposal", linking to DC `#questions`.
 
-**`ai-per-day`** (AI Energy). Question: inside the data center, what does one person's day cost? Title: "An average weekly ChatGPT user's text prompts cost about 1 Wh a day in the data center, a floor; Meta
+**`ai-per-day`** (AI Energy). Question: inside the data center, what does one person's day cost? Title: "An average weekly ChatGPT user's text prompts cost about 1 Wh a day in the data center, an illustration and not a floor; Meta
 reports 15 Wh per daily person for all its products, on another boundary (2024 to 2025)". Data: view `per_person_day`: chat day 3.67 x 0.30 = 1.10 (fp-034, fp-001; low 0.86, high 4.80 with the count of 8 marked
-unsourced, fp-094); at the 0.34 average 1.25 (fp-012); YouTube 88 minutes on a phone 0.66, 0.25 at the DESNZ follow-up, 80.7 at the top-down upper bound (fp-098); Instagram 100 minutes 0.29, 0.11 at the DESNZ follow-up, capped at 15.1 (fp-097); Meta per daily active
+unsourced, fp-094); at the 0.34 average 1.25 (fp-012); YouTube 88 minutes on a phone 0.66, 0.25 at the DESNZ follow-up, 80.7 at the top-down average, an allocation scenario and not a bound (fp-098, fp-150); Instagram 100 minutes 0.29, 0.11 at the DESNZ follow-up, capped at 15.1 (fp-097); Meta per daily active
 person 15.1 (fp-059, fp-060) in its own group "another boundary: all products, training, offices". Form: horizontal bars, linear Wh, two groups with a rule between (a bar chart because the values span 0.3 to 15
-on one basis per group); hollow where modeled. Controls: `chat_messages_per_day` {3.67 | 8, unsourced}, `video_dc_intensity`, `chat_wh_per_prompt`. Detail: the arithmetic (median times mean, labeled a floor),
+on one basis per group); hollow where modeled. Controls: `chat_messages_per_day` {3.67 | 8, unsourced}, `video_dc_intensity`, `chat_wh_per_prompt`. Detail: the arithmetic (median times mean, labeled an illustration and not a floor or a bound, ru-066),
 the household share (fp-075: 0.0038 percent), receipts. Reading: "{row}: about {value} Wh a day inside the data center ({basis}); {share} percent of a household's 28,740 Wh. {evidence}, {year}." Table: row, Wh
 per day, low, high, basis, boundary, claims. Excluded: fp-058 (wrong at source), the withdrawn 53 percent rise, fp-084 as a ratio, fp-026 as a mean. Projection: none.
 
@@ -124,8 +124,8 @@ prompt equivalents, hours of the chosen yardstick, the overhead sentence, receip
 low, high, prompts, hours by each yardstick, overhead, claims. Excluded: fp-071, fp-072 (2009 search); fp-030 (test conditions); fp-065 (2023 image, older method); any Anthropic chat figure (fp-033 records
 none). Projection: none.
 
-**`ai-scale`** (AI Energy). Question: is chat the growth? Title: "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year on a median-prompt floor; the buildout adds hundreds (2025 to 2030)".
-Data: ChatGPT 2.5 billion messages a day x 0.30 Wh = 0.27 TWh, 0.22 to 0.55 (fp-092, fp-001); YouTube 1 billion hours a day, a 2016 floor (fp-050): 0.47 on measured delivery, 0.18 at the DESNZ follow-up, 57.8 at the top-down upper bound, whole chain 68.6
+**`ai-scale`** (AI Energy). Question: is chat the growth? Title: "All of ChatGPT's text messages are a few tenths of a terawatt-hour a year; the buildout adds hundreds (2025 to 2030)", with the ChatGPT figure called an illustration (ru-066).
+Data: ChatGPT 2.5 billion messages a day x 0.30 Wh = 0.27 TWh, 0.22 to 0.55, an illustration and not a bound (fp-092, fp-001, ru-066); YouTube 1 billion hours a day, reported for 2016 and not shown to be a floor (fp-050, ru-065): 0.47 on measured delivery, 0.18 at the DESNZ follow-up, 57.8 at the top-down average, an allocation scenario and not a bound (fp-150), whole chain 68.6
 with 19.6 to 96 (fp-035, fp-120, fp-143); IEA bound for all searches as AI queries, under 4 TWh (dem-045); IEA 2025 485 (dem-040); LBNL US 2024 192 (dem-028); Council data centers 2030 17.7 TWh, 11.4 to 38.8
 (new derived claim from dem-075); IEA 2030 945 (dem-048) and LBNL 2030 649, 521 to 843 (dem-029, dem-030) as projections. Form: log ladder, TWh a year, 0.1 to 1,000; squares with range lines; projection rows
 hollow with a dashed range line and "2030, projected" in the label. Controls: `chat_wh_per_prompt` {0.24 | 0.30 | 0.34 | 0.60}; `video_dc_intensity`. Detail: the arithmetic, the exclusions (reasoning, images,
@@ -166,9 +166,9 @@ share, partly); tr-033, tr-034 duplicates. Projection: 2026 on, dashed.
 
 **`dc-forecast-check`** (DC Growth; replaces `dc-forecast-misses`, retired 11/05/2026 after a method review found none of its 11 claims paired a forecast with a realized value). Question: how far off were
 earlier projections, where the record holds both a projection and what came after? Title: "Whether an outlook ran high or low depends on its target: 15 editions of 18 put 2023 US electricity sales above what
-happened, and 7 editions of 8 put commercial sales below it". Rule: same target year and same boundary on each row. Data: ruler EIA total sales: 2023 realized 3,874.25 (dem-113) against AEO2013 to AEO2021,
+happened, and 7 editions of 9 put commercial sales below it". Rule: same target year and same boundary on each row. Data: ruler EIA total sales: 2023 realized 3,874.25 (dem-113) against AEO2013 to AEO2021,
 every second edition (dem-119 to dem-123); 2019 realized 3,811.15 (dem-112) against AEO2009 to AEO2017 (dem-114 to dem-118); counts over every edition 15 of 18 and 12 of 14 (dem-133, dem-132). Ruler EIA
-commercial sales: 2023 realized 1,408.11 (dem-125) against AEO2015 to AEO2021 (dem-128 to dem-131); 2019 realized 1,360.88 (dem-124) against AEO2015 and AEO2017 (dem-126, dem-127); count 7 of 8 (dem-134). Ruler
+commercial sales: 2023 realized 1,408.11 (dem-125) against AEO2015 to AEO2021 (dem-128 to dem-131); 2019 realized 1,360.88 (dem-124) against AEO2015 and AEO2017 (dem-126, dem-127); count 7 of 9 over AEO2014 to AEO2022 (dem-134). Ruler
 LBNL, US data centers, 2020: 73 projected (dem-039) against about 105 and about 103, both read from charts (dem-103, dem-104), differences dem-108 to dem-111; context row, the 2014 base 70 (dem-038) restated
 about 60 (dem-105), with growth 4 percent projected and about 75 estimated (dem-106, dem-107). Ruler Northwest utility plans, growth to 2014: five utilities, base forecast against observed (dem-135 to dem-144).
 Form: ladder with four groups, two by two, as rows and not a drawing, so print, no scripts, ghost rows, and keys are the kit's. A hollow diamond is a projection; a filled circle is reported after the target year;

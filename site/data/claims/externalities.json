@@ -159,12 +159,12 @@
    "high": null,
    "unit": "2011 USD per metric ton CO2",
    "year": 2030,
-   "boundary": "US-domestic damages only; 3 percent constant discount rate (2003 Circular A-4). This is the framing EO 14154 points to ('consistent with ... Circular A-4 of September 17, 2003'); no current official table has been issued, so this is the last published one in that frame, not a 2026 value.",
+   "boundary": "US-domestic damages only; 3 percent constant discount rate (2003 Circular A-4). This is the framing EO 14154 points to ('consistent with ... Circular A-4 of September 17, 2003'). A 2017 table in 2011 dollars, not a 2026 value; EPA's 06/2019 analysis gives $8 at 3 percent for 2030 in 2016 dollars (ex-016). Which table, if any, a federal analysis uses today is a question for counsel.",
    "source": {
     "title": "Regulatory Impact Analysis for the Review of the Clean Power Plan: Proposal",
     "publisher": "US EPA",
     "url": "https://www.epa.gov/sites/default/files/2017-10/documents/ria_proposed-cpp-repeal_2017-10_0.pdf",
-    "published": "2017-10-10",
+    "published": "2017-10",
     "kind": "agency"
    },
    "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $7 per metric ton of CO2 emissions (2011$), using a 7 and 3 percent discount rate, respectively.",
@@ -180,12 +180,12 @@
    "high": null,
    "unit": "2011 USD per metric ton CO2",
    "year": 2030,
-   "boundary": "As ex-008 at 7 percent.",
+   "boundary": "As ex-008 at 7 percent; EPA's 06/2019 analysis gives $1 at 7 percent for 2030 in 2016 dollars (ex-017).",
    "source": {
     "title": "Regulatory Impact Analysis for the Review of the Clean Power Plan: Proposal",
     "publisher": "US EPA",
     "url": "https://www.epa.gov/sites/default/files/2017-10/documents/ria_proposed-cpp-repeal_2017-10_0.pdf",
-    "published": "2017-10-10",
+    "published": "2017-10",
     "kind": "agency"
    },
    "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $7 per metric ton of CO2 emissions (2011$), using a 7 and 3 percent discount rate, respectively.",
@@ -201,12 +201,12 @@
    "high": null,
    "unit": "2020 EUR per tonne CO2e",
    "year": 2020,
-   "boundary": "Global damages, with a 1 percent pure rate of time preference (welfare today weighted above future generations); UBA's recommended central rate in Methodenkonvention 3.1. A newer Methodenkonvention 4.0 exists on the UBA site and was not opened.",
+   "boundary": "Global damages, with a 1 percent pure rate of time preference (welfare today weighted above future generations). Methodenkonvention 3.1 recommends this value and the 0 percent value (ex-011) side by side and asks for a sensitivity analysis with the other; it names neither as central. Table 1 gives 2020, 2030 and 2050 columns in 2020 euros. A later edition, Methodenkonvention 4.0, gives 345 and 990 euros of 2025 per tonne for emissions in 2025 (ex-018, ex-019).",
    "source": {
     "title": "Methodenkonvention 3.1 zur Ermittlung von Umweltkosten: Kostensaetze",
     "publisher": "Umweltbundesamt",
     "url": "https://www.umweltbundesamt.de/system/files/medien/1410/publikationen/2020-12-21_methodenkonvention_3_1_kostensaetze.pdf",
-    "published": "2020-12-21",
+    "published": "2020-12",
     "kind": "agency"
    },
    "quote": "Tabelle 1: UBA-Empfehlung zu den Klimakosten in €2020 / t CO2 äq ... 1% reine Zeitpräferenzrate 195 215 250",
@@ -222,12 +222,12 @@
    "high": null,
    "unit": "2020 EUR per tonne CO2e",
    "year": 2020,
-   "boundary": "As ex-010 with equal weight on current and future generations.",
+   "boundary": "As ex-010 with equal weight on current and future generations. Methodenkonvention 4.0 gives 990 euros of 2025 per tonne for emissions in 2025 (ex-019).",
    "source": {
     "title": "Methodenkonvention 3.1 zur Ermittlung von Umweltkosten: Kostensaetze",
     "publisher": "Umweltbundesamt",
     "url": "https://www.umweltbundesamt.de/system/files/medien/1410/publikationen/2020-12-21_methodenkonvention_3_1_kostensaetze.pdf",
-    "published": "2020-12-21",
+    "published": "2020-12",
     "kind": "agency"
    },
    "quote": "0% reine Zeitpräferenzrate 680 700 765",
@@ -280,22 +280,23 @@
    "id": "ex-014",
    "entity": "Bilal and Kaenzig, macroeconomic damage estimate of the social cost of carbon",
    "metric": "social cost of carbon dioxide from an estimated (reduced-form then structural) damage function",
-   "value": 1200,
+   "value": 1207,
    "low": 399,
    "high": 2015,
-   "unit": "USD per metric ton CO2 (year of dollars not stated in the abstract)",
+   "unit": "2024 international dollars per ton CO2",
    "year": 2026,
-   "boundary": "One research team's estimate: damage functions estimated from global temperature variability, then used in a neoclassical growth model. 'In excess of' 1,200; the low and high are the stated 95 percent confidence interval. Working paper, revised 01/2026; not federal and not the consensus.",
+   "boundary": "One research team's estimate: damage functions estimated from global temperature variability, then used in a neoclassical growth model. The paper's headline says 'in excess of' $1,200 per ton; its text gives $1,207 with a 95 percent confidence interval of $399 to $2,015, reported in 2024 international dollars (not US dollars). NBER working paper 32450, revised 01/2026. Not federal and not the consensus.",
    "source": {
     "title": "The Macroeconomic Impact of Climate Change: Global vs. Local Temperature",
     "publisher": "NBER Working Paper 32450",
-    "url": "https://www.nber.org/papers/w32450",
-    "published": "2026-01-13",
+    "url": "https://www.nber.org/system/files/working_papers/w32450/w32450.pdf",
+    "published": "2026-01",
     "kind": "preprint"
    },
-   "quote": "Business-as-usual warming implies a present welfare loss of more than 30%, and a Social Cost of Carbon in excess of $1,200 per ton. ... The 95% confidence interval for the SCC ranges from $399 per ton to $2,015 per ton.",
+   "quote": "The SCC, which we report in 2024 international dollars, is defined in equation (7) ... We obtain a SCC of $1,207 per ton. This value is more than six times larger than the $185 per ton value in Rennert et al. (2022). The 95% confidence interval for the SCC ranges from $399 per ton to $2,015 per ton.",
    "derived": null,
-   "status": "partly"
+   "status": "partly",
+   "limit": "One team's estimate from one model, not a consensus value. The dollars are 2024 international dollars, not US dollars, and the paper says 'per ton' without saying metric. Read in the NBER working paper revised 01/2026; the published Quarterly Journal of Economics version (volume 141, issue 2, 2026) was not opened here."
   },
   {
    "id": "ex-015",
@@ -317,6 +318,90 @@
    "quote": "The CFs in this method range from 0.1 to 100 and can be applied to calculate water scarcity footprints. A CF value of 1 corresponds to regions with a remaining water availability per area over time that aligns with the world average",
    "derived": null,
    "status": "partly"
+  },
+  {
+   "id": "ex-016",
+   "entity": "EPA 2019 interim domestic SC-CO2, emissions year 2030, 3% discount rate",
+   "metric": "domestic-only social cost of carbon dioxide under 2003 Circular A-4 rates",
+   "value": 8,
+   "low": null,
+   "high": null,
+   "unit": "2016 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "US-domestic damages only; 3 percent constant discount rate (2003 Circular A-4), the same frame as ex-008 in a later table and in 2016 dollars. A 2019 table, not a 2026 value. Which table, if any, a federal analysis uses today is a question for counsel.",
+   "source": {
+    "title": "Regulatory Impact Analysis for the Repeal of the Clean Power Plan, and the Emission Guidelines for Greenhouse Gas Emissions from Existing Electric Utility Generating Units",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/sites/default/files/2019-06/documents/utilities_ria_final_cpp_repeal_and_ace_2019-06.pdf",
+    "published": "2019-06",
+    "kind": "agency"
+   },
+   "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $8 per metric ton of CO2 emissions (2016$), using a 7 and 3 percent discount rate, respectively.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-017",
+   "entity": "EPA 2019 interim domestic SC-CO2, emissions year 2030, 7% discount rate",
+   "metric": "domestic-only social cost of carbon dioxide under 2003 Circular A-4 rates",
+   "value": 1,
+   "low": null,
+   "high": null,
+   "unit": "2016 USD per metric ton CO2",
+   "year": 2030,
+   "boundary": "As ex-016 at 7 percent.",
+   "source": {
+    "title": "Regulatory Impact Analysis for the Repeal of the Clean Power Plan, and the Emission Guidelines for Greenhouse Gas Emissions from Existing Electric Utility Generating Units",
+    "publisher": "US EPA",
+    "url": "https://www.epa.gov/sites/default/files/2019-06/documents/utilities_ria_final_cpp_repeal_and_ace_2019-06.pdf",
+    "published": "2019-06",
+    "kind": "agency"
+   },
+   "quote": "For emissions occurring in the year 2030, the two domestic SC-CO2 estimates are $1 and $8 per metric ton of CO2 emissions (2016$), using a 7 and 3 percent discount rate, respectively.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-018",
+   "entity": "Umweltbundesamt (Germany) climate cost rate, Methodenkonvention 4.0, 1% pure time preference, emissions year 2025",
+   "metric": "climate cost per tonne CO2 equivalent",
+   "value": 345,
+   "low": null,
+   "high": null,
+   "unit": "2025 EUR per tonne CO2e",
+   "year": 2025,
+   "boundary": "Global damages from emissions in 2025, with a 1 percent pure rate of time preference (welfare today weighted above future generations). Methodenkonvention 4.0 recommends this value and the 0 percent value (ex-019) side by side and asks for a sensitivity analysis with the other; it names neither as central. In euros of 2025, so not comparable with ex-010 (2020 euros, emissions in 2020) without a price-year and emission-year change.",
+   "source": {
+    "title": "Handbuch Umweltkosten - Methodenkonvention 4.0",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/14437/publikationen/2026-10/MK_4_0_Kostens%C3%A4tze_final2.pdf",
+    "published": "2026-02",
+    "kind": "agency"
+   },
+   "quote": "Wir empfehlen die Verwendung eines Kostensatzes von 990 €2025/t für Emissionen von CO2-Äquivalenten (CO2-Äq) im Jahr 2025, wenn das Wohlergehen der heutigen und zukünftigen Generationen gleich gewichtet wird (0% Reine Zeitpräferenzrate). Bei einer stärkeren Gewichtung des Wohlergehens der heutigen gegenüber dem der zukünftigen Generationen (1% Reine Zeitpräferenzrate) empfehlen wir einen Kostensatz von 345 €2025 / t CO2-Äq ... Darüber hinaus empfehlen wir eine Sensitivitätsanalyse mit dem jeweils anderen Wert.",
+   "derived": null,
+   "status": "verified"
+  },
+  {
+   "id": "ex-019",
+   "entity": "Umweltbundesamt (Germany) climate cost rate, Methodenkonvention 4.0, 0% pure time preference, emissions year 2025",
+   "metric": "climate cost per tonne CO2 equivalent",
+   "value": 990,
+   "low": null,
+   "high": null,
+   "unit": "2025 EUR per tonne CO2e",
+   "year": 2025,
+   "boundary": "As ex-018 with equal weight on current and future generations.",
+   "source": {
+    "title": "Handbuch Umweltkosten - Methodenkonvention 4.0",
+    "publisher": "Umweltbundesamt",
+    "url": "https://www.umweltbundesamt.de/system/files/medien/14437/publikationen/2026-10/MK_4_0_Kostens%C3%A4tze_final2.pdf",
+    "published": "2026-02",
+    "kind": "agency"
+   },
+   "quote": "Wir empfehlen die Verwendung eines Kostensatzes von 990 €2025/t für Emissionen von CO2-Äquivalenten (CO2-Äq) im Jahr 2025, wenn das Wohlergehen der heutigen und zukünftigen Generationen gleich gewichtet wird (0% Reine Zeitpräferenzrate).",
+   "derived": null,
+   "status": "verified"
   }
  ]
 }

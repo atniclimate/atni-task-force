@@ -58,7 +58,7 @@ const closeWalk = (stored, fresh, where) => {
 const TABS = ['overview', 'energy', 'economics', 'companies', 'working-with-ai', 'youth-education', 'data-sovereignty', 'policy-watch'];
 // The words each first plate moves under itself: the kit keeps one paragraph in the claim zone, and no word leaves the page.
 const PROSE = {
-  'ai-same-hour': ['The first question most readers bring', 'each segment labeled measured or modeled', 'Resolution #2026-039 set up this task force', 'This comparison does not decide a proposal', 'Treaty-reserved rights', 'What a building would run'],
+  'ai-same-hour': ['The first question most readers bring', 'each segment labeled measured or modeled', 'Resolution #2026-039 calls for this task force', 'This comparison does not decide a proposal', 'Treaty-reserved rights', 'What a building would run'],
   'ai-company-money': ['one scale for all seven', 'share a scale', 'Seven large companies sit at the center', 'Fiscal years differ (Microsoft June, Apple September, NVIDIA January)'],
 };
 
@@ -265,7 +265,7 @@ async function sameHourPlate() {
   ok(p.chips().includes('fp-141'), 'and its receipt shows');
   await pick(window, p.radio('video_dc_intensity', 'top_down'));
   ok(holds(p.reading.textContent, ['69 Wh']) && holds(p.facts.textContent, ['55']), `top-down: ${p.reading.textContent}`);
-  ok(/upper bound/.test(p.facts.textContent), 'the top-down reading says it is an upper bound');
+  ok(/a scenario at the top of an unsettled allocation/.test(p.facts.textContent), 'the top-down reading says it is a scenario, not a bound');
   ok(p.chips().includes('fp-150'), 'and its limit has a receipt');
   await pick(window, p.radio('video_dc_intensity', 'measured_delivery'));
   key(window, p.plot, 'Home');
@@ -507,7 +507,7 @@ async function otherPlates() {
   await pick(window, pd.radio('day_intensity', 'desnz_followup'));
   ok(pd.reading.textContent.includes('0.25'), `DESNZ follow-up day: ${pd.reading.textContent}`);
   await pick(window, pd.radio('day_intensity', 'top_down'));
-  ok(holds(pd.reading.textContent, ['81']) && /upper bound/.test(pd.facts.textContent), `top-down day: ${pd.reading.textContent}`);
+  ok(holds(pd.reading.textContent, ['81']) && /a scenario at the top of an unsettled allocation/.test(pd.facts.textContent), `top-down day: ${pd.reading.textContent}`);
   await pick(window, pd.radio('day_intensity', 'measured_delivery'));
   fire(window, pd.row('chat').querySelector('.ladder-label'), 'click');
   await slide(window, pd.root.querySelector('[data-param="day_wh"] input[type=range]'), 0.6);

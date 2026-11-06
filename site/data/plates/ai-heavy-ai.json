@@ -287,12 +287,12 @@
   {
    "id": "cog",
    "label": "CogVideoX, 5-second clip",
-   "tag": "GPU energy only, research rig",
+   "tag": "Measured with CodeCarbon, research rig",
    "claim": "fp-067",
    "modeled": false,
-   "detail": "Measured GPU energy on a research rig, with no doubling for overhead.",
+   "detail": "Energy measured with CodeCarbon on a research rig; MIT's video passage does not say which parts it counts. No doubling for overhead.",
    "cols": {
-    "overhead": "GPU energy only, research rig"
+    "overhead": "Measured with CodeCarbon, research rig"
    }
   },
   {

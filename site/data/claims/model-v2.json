@@ -56,16 +56,16 @@
    "year": 2025,
    "boundary": "A regulator's reading of three programs as they stood in its 2024 and 2025 evidence: leaving all data or one whole service, pre-approval, deleting what remains or closing the account, a time limit, and the vendor's right to change the program.",
    "source": {
-    "title": "Appendix N: Egress fees, free switching programmes",
+    "title": "Appendix N: Egress fees, free switching programmes (final decision)",
     "publisher": "UK Competition and Markets Authority",
-    "url": "https://assets.publishing.service.gov.uk/media/67976be7419bdbc8514fde5d/.Appendix_N.pdf",
-    "published": "2025-01-28",
+    "url": "https://assets.publishing.service.gov.uk/media/688b8169fc784fa12a089071/Appendix_N_-_Egress_fees___free_switching_programmes.pdf",
+    "published": "2025-07-31",
     "kind": "agency"
    },
-   "quote": "On 13 March 2024, Microsoft announced that it also offers free egress globally for customers leaving Azure when taking their data out of the Azure infrastructure via the internet to switch to another cloud provider or an on-premises.",
+   "quote": "on 13 March 2024, Microsoft announced that it also offers free egress globally for customers leaving Azure when taking their data out of the Azure infrastructure via the internet to switch to another cloud provider or an on-premises.",
    "derived": null,
    "status": "partly",
-   "limit": "A UK regulator's reading dated 01/28/2025; AWS has since moved its time limit from 60 to 180 days outside the EU, so check each program's current terms."
+   "limit": "A UK regulator's reading dated 07/31/2025, in its final decision; the provisional appendix of 01/28/2025 is replaced. Outside the EU, AWS's blog update of 10/08/2026 (mv-001) gives 180 days to complete a move, where this appendix recorded 60 days for AWS (paragraph N.24(b)), so check each program's current terms."
   },
   {
    "id": "mv-004",
@@ -78,16 +78,16 @@
    "year": 2026,
    "boundary": "Modeled, data center only. The low and high are the model's input extremes for one median coding session, each over the 0.30 Wh median text prompt, so this is a spread and not a measurement of any session.",
    "source": {
-    "title": "Resource Use Explorer model (resource-model.json)",
+    "title": "Resource Use Explorer model (resource-model.json, built 11/05/2026)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/resource-model.json",
-    "published": "2026-11-05",
+    "published": null,
     "kind": "dataset"
    },
-   "quote": "\"key\": \"catalog.coding_session\", \"energy_wh\": {\"value\": 36.1937, \"low\": 8.98192, \"high\": 871.411}",
+   "quote": "\"key\": \"catalog.chat_prompt\", \"label\": \"Chat, one median text prompt\", ... \"energy_wh\": {\"value\": 0.3, \"low\": 0.24, \"high\": 0.6} ... \"key\": \"catalog.coding_session\", \"label\": \"Coding session, median (typical; a floor for totals)\", ... \"basis\": \"Modeled: published token counts times one framework's default factors. The cache-read share is an assumption. Not a meter reading.\", \"energy_wh\": {\"value\": 36.1937, \"low\": 8.98192, \"high\": 871.411}",
    "derived": "8.98192 Wh / 0.30 Wh = 29.9, printed as 30; 871.411 Wh / 0.30 Wh = 2,905, printed as 2,900.",
    "status": "partly",
-   "limit": "Modeled: a ratio of two modeled extremes from this site's open-book model, not a measurement of any coding session."
+   "limit": "Modeled: a ratio of two modeled extremes from this site's open-book model, not a measurement of any coding session. The cited file is this release's own and is not served at its address until the site is published; the figures were read in the branch copy built 11/05/2026. That date, in the title, is the file's own build date, not a date of publication."
   },
   {
    "id": "mv-005",

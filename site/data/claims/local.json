@@ -67,7 +67,7 @@
     "title": "United States Data Center Energy Usage Report: 2025 Update",
     "publisher": "Lawrence Berkeley National Laboratory, US DOE",
     "url": "https://www.energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
-    "published": "2026-06-16",
+    "published": "2026-06-18",
     "kind": "agency"
    },
    "quote": "In the Reference Case, AI servers account for 84% of total server energy use and 55% of total data center energy use.",
@@ -113,7 +113,7 @@
     "title": "United States Data Center Energy Usage Report: 2025 Update",
     "publisher": "Lawrence Berkeley National Laboratory, US DOE",
     "url": "https://www.energy.gov/documents/united-states-data-center-energy-usage-report-2025-update",
-    "published": "2026-06-16",
+    "published": "2026-06-18",
     "kind": "agency"
    },
    "quote": "AI inference utilization is assumed to follow the levels of conventional servers in enterprise data centers from the 2024 Report, reaching 20% by 2030.",

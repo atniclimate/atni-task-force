@@ -219,7 +219,7 @@ async function forecastCheck() {
   const p = parts(document, 'dc-forecast-check');
   const data = forecastData(document);
   const title = p.root.querySelector('.plate-title').textContent;
-  ok(holds(title, ['15 editions of 18', '2023', '7 editions of 8']), `the title carries the two counts: ${title}`);
+  ok(holds(title, ['15 editions of 18', '2023', '7 editions of 9']), `the title carries the two counts: ${title}`);
   ok(!/missed|forecasts? miss/i.test(`${title} ${p.root.querySelector('.plate-claim').textContent}`), 'the claim zone does not say forecasts miss');
   ok(!/forecast-misses|missed in both directions/.test(html), 'the retired plate and its verdict are gone from the page');
   eq(document.querySelectorAll('[data-plate="dc-forecast-misses"]').length, 0, 'no old plate');
@@ -364,7 +364,7 @@ async function forecastProvenance() {
     if (a.key.startsWith('n-')) ok(before.derived.includes(`${a.fields.diff.replace('+', '')} percentage points`) || before.derived.includes(`= ${a.fields.diff} percentage points`), `${name}: ${a.fields.diff} points is the receipt's own arithmetic`);
   }
   // Counts over every edition, recounted from the rows each receipt lists.
-  for (const [id, want, sign] of [['dem-132', 14, '-'], ['dem-133', 18, '-'], ['dem-134', 8, '+']]) {
+  for (const [id, want, sign] of [['dem-132', 14, '-'], ['dem-133', 18, '-'], ['dem-134', 9, '+']]) {
     const listed = [...CLAIMS[id].derived.matchAll(/AEO\d{4} [\d,.]+ \(([+-])[\d,.]+\)/g)];
     eq(listed.length, want, `${id} lists every edition`);
     eq(listed.filter((m) => m[1] === sign).length, CLAIMS[id].value, `${id} is the count of those rows`);

@@ -46,7 +46,7 @@ def test_counts_match_a_recount_of_the_files():
 def test_a_count_says_its_file_and_date_and_a_curated_one_has_a_limit():
     for c in SHIPPED:
         if c["id"] == "lc-071":
-            assert c["status"] == "verified" and "Resolution #25-41" in c["quote"] and str(c["value"]) in c["quote"]
+            assert c["status"] == "verified" and "Resolution #25-41" in c["entity"] and str(c["value"]) in c["quote"]
             continue
         assert c["status"] == "partly" and c["limit"].strip(), c["id"]
         assert re.search(r"\d\d/\d\d/\d{4}", c["boundary"]), f"{c['id']}: its boundary states its date"

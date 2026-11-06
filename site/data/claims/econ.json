@@ -614,7 +614,7 @@
    "high": null,
    "unit": "kWh per GB",
    "year": 2022,
-   "boundary": "Total data center energy (290 TWh, IEA 2022) over total internet data transfer (5.29 ZB, ITU 2023). Networks 0.059 and user devices 0.080 kWh per GB on the same method; embodied added separately.",
+   "boundary": "Sustainable Web Design Model, Version 4: total data center energy (290 TWh, IEA 2022) over total internet data transfer (5.29 ZB, ITU 2023). Networks 0.059 and user devices 0.080 kWh per GB on the same method; embodied added separately. The page gives no date for Version 4; its metadata gives first publication 10/07/2021 and last modification 06/27/2024 (read 11/05/2026).",
    "segments": [
     "data center",
     "network",
@@ -626,7 +626,7 @@
     "title": "Estimating Digital Emissions, Sustainable Web Design",
     "publisher": "Sustainable Web Design (Green Web Foundation, Mightybytes, Wholegrain Digital)",
     "url": "https://sustainablewebdesign.org/estimating-digital-emissions",
-    "published": "2021-10-07",
+    "published": null,
     "kind": "model"
    },
    "quote": "Operational energy intensity data centers = (290 × 10 ⁹  (kWh)) / (5.29 × 10 ¹²  (GB)) = 0.055 kWh/GB",

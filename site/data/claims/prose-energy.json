@@ -125,15 +125,16 @@
    "year": 2026,
    "boundary": "Two Grants.gov forecast records, PIH-2600-DC-0023 (posted 10/06/2026) and PIH-2600-DC-0034 (posted 05/18/2026), both titled for the Community Development Block Grant Program for Indian Tribes and Alaska Native Villages and both open to federally recognized Tribal governments. Records read on 11/05/2026. The 10/29/2026 scan kept three forecast records in all (claim ef-010), and these two are among them (energy-funding.json lists PIH-2600-DC-0023 and PIH-2600-DC-0034 under program id hud_icdbg); this count is of the records as read on 11/05/2026, not of the scan. A forecast is not an open application.",
    "source": {
-    "title": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages (forecast notices PIH-2600-DC-0023, linked, and PIH-2600-DC-0034)",
+    "title": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages (forecast notice PIH-2600-DC-0023)",
     "publisher": "Grants.gov, U.S. Department of Housing and Urban Development",
     "url": "https://simpler.grants.gov/opportunity/7ac1671e-c51b-4985-a308-704e8a4ef08d",
     "published": "2026-10-06",
     "kind": "agency"
    },
-   "quote": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages",
-   "derived": "Count of 2: PIH-2600-DC-0023 and PIH-2600-DC-0034 carry the same title.",
-   "status": "verified"
+   "quote": "Community Development Block Grant Program for Indian Tribes and Alaska Native Villages | Forecasted | Funding opportunity number: PIH-2600-DC-0023 | Forecast posted date: October 6, 2026",
+   "derived": "Count of 2: PIH-2600-DC-0023 (this record's source, quoted above) and PIH-2600-DC-0034 (claim pe-008, its own source).",
+   "status": "partly",
+   "limit": "This record's source shows one of the two forecasts, PIH-2600-DC-0023. The second, PIH-2600-DC-0034, is held by claim pe-008 with its own source, so the count of two is our arithmetic across two sources. A forecast is not an open application."
   },
   {
    "id": "pe-007",
@@ -154,6 +155,27 @@
    },
    "quote": "Indian Housing Block Grant Competitive Program (IHBG-COMP) for FY 2026",
    "derived": "Count of 1: PIH-2600-DC-0048.",
+   "status": "verified"
+  },
+  {
+   "id": "pe-008",
+   "entity": "Grants.gov forecast records read on 11/05/2026",
+   "metric": "forecasted notice for the HUD Indian Community Development Block Grant program, second record",
+   "value": 1,
+   "low": null,
+   "high": null,
+   "unit": "notice",
+   "year": 2026,
+   "boundary": "One Grants.gov forecast record, PIH-2600-DC-0034 (posted 05/18/2026), titled for the Community Development Block Grant Program for Indian Tribes and Alaska Native Villages and open to federally recognized Tribal governments. Record read on 11/05/2026. It is the second of the two ICDBG forecast records counted in pe-006; the first, PIH-2600-DC-0023, is pe-006's own source. A forecast is not an open application.",
+   "source": {
+    "title": "HUD Funding Opportunities (Notice of Funding Opportunities, last updated 09/17/2026)",
+    "publisher": "U.S. Department of Housing and Urban Development",
+    "url": "https://www.hud.gov/hud-partners/grants-info-funding-opps",
+    "published": "2026-09-17",
+    "kind": "agency"
+   },
+   "quote": "PIH-2600-DC-0034 | Community Development Block Grant Program for Indian Tribes and Alaska Native Villages | PIH | Forecasted",
+   "derived": "Count of 1: PIH-2600-DC-0034.",
    "status": "verified"
   }
  ]

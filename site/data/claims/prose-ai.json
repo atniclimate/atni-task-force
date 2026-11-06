@@ -12,7 +12,7 @@
    "high": null,
    "unit": "",
    "year": 2026,
-   "boundary": "The convention dates as the resolution's own certification states them. A fact about the document, not a separate count of convention days.",
+   "boundary": "The convention dates as the resolution's own certification states them. A fact about the document, not a separate count of convention days. The dates do not support what the resolution decides; the resolve clause is claim pa-037.",
    "source": {
     "title": "Resolution #2026-039: The Affiliated Tribes of Northwest Indians (ATNI) Energy Committee Supports the Formation of a Task Force on Artificial Intelligence (AI)",
     "publisher": "Affiliated Tribes of Northwest Indians",
@@ -232,7 +232,7 @@
    "high": null,
    "unit": "tasks",
    "year": 2025,
-   "boundary": "A self-reported survey. The paper reports an association, not a cause.",
+   "boundary": "A self-reported survey: the workers' own perceptions of when they used critical thinking, not a test of it. The paper reports an association, not a cause. 936 is the number of examples the paper retains and uses throughout (374 + 303 + 259 = 936); its cleaning text starts from 957 examples and removes 11 and then 11, which gives 935, a one-example discrepancy inside the paper that this record does not resolve.",
    "source": {
     "title": "The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects From a Survey of Knowledge Workers",
     "publisher": "Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems (ACM)",
@@ -253,7 +253,7 @@
    "high": null,
    "unit": "organizations",
    "year": 2025,
-   "boundary": "The free or consumer versions of ChatGPT, Copilot, Perplexity, and Gemini, asked news and current-affairs questions by the participating organizations; an audit of news answers, not of classroom or Tribal tasks. ",
+   "boundary": "The free or consumer versions of ChatGPT, Copilot, Perplexity, and Gemini, asked news and current-affairs questions by the participating organizations; an audit of news answers, not of classroom or Tribal tasks. The 22 organizations include the BBC; one of them (Yle) ran two language sets, so the report counts 23 evaluations.",
    "source": {
     "title": "News Integrity in AI Assistants",
     "publisher": "BBC and European Broadcasting Union",
@@ -446,7 +446,7 @@
    "high": null,
    "unit": "percent",
    "year": 2025,
-   "boundary": "A Pew Research Center online survey of U.S. teens and their parents, fielded 09/25/2025 to 10/09/2025 with Ipsos. It measures what teens say they do, and measures no learning. ",
+   "boundary": "A Pew Research Center online survey of U.S. teens and their parents, fielded 09/25/2025 to 10/09/2025 with Ipsos. The teen findings represent U.S. teens ages 13 to 17 who live with their parents (claim pa-039). It measures what teens say they do, and measures no learning. ",
    "source": {
     "title": "How Teens Use and View AI",
     "publisher": "Pew Research Center",
@@ -700,7 +700,7 @@
    "high": null,
    "unit": "",
    "year": 2026,
-   "boundary": "The report published 10/01/2026 says 'through September' and 'so far this year'; January as the start is the calendar-year reading of that. Layoff plans announced by U.S.-based employers, not realized job losses; the firm assigns the reason.",
+   "boundary": "The report published 10/01/2026 says 'through September' and 'so far this year'; January as the start is the calendar-year reading of that. Layoff plans announced by U.S.-based employers, not realized job losses; the firm assigns the reason. This is the September report. Challenger's next report, published 11/05/2026, gives 121,401 AI-cited cuts so far in 2026 through October (approximately 20% of all cuts) and says Market/Economic Conditions has overtaken AI as the leading reason for 2026, so the quote's closing clause, 'it remains the leading reason year-to-date', describes the September report only.",
    "source": {
     "title": "Job Cuts Fall in September; Hiring Plans Up 3% Over 2025 On Weak Early Seasonal Hiring",
     "publisher": "Challenger, Gray and Christmas",
@@ -723,7 +723,7 @@
    "high": null,
    "unit": "",
    "year": 2020,
-   "boundary": "The fixed-network trend is a regression model from Aslan and colleagues (2018) over 2000 to 2015, extrapolated by the Carbon Trust to 2020, as the UK DESNZ study describes it. The quote is that fixed-network sentence. For mobile networks, DESNZ says the Carbon Trust used regression analysis on Finnish operator data (Pihkola and colleagues, 2018) to estimate the intensity for 2020, so both network types are 2020 regression estimates. DESNZ then extrapolated both to 2024.",
+   "boundary": "The fixed-network trend is a regression model from Aslan and colleagues (2018) over 2000 to 2015, extrapolated by the Carbon Trust to 2020, as the UK DESNZ study describes it; the 2020 figure is an extrapolation of that fit, not a regression on 2020 data. The quote is that fixed-network sentence. For mobile networks, DESNZ says the Carbon Trust used regression analysis on Finnish operator data (Pihkola and colleagues, 2018) to estimate the intensity for 2020. DESNZ then extrapolated both to 2024 at the same rate of annual improvement (claim pa-035).",
    "source": {
     "title": "Impact of growth of data centres on energy consumption",
     "publisher": "Europe Economics for UK DESNZ",
@@ -779,6 +779,72 @@
    "derived": null,
    "status": "verified",
    "date": "2016"
+  },
+  {
+   "id": "pa-037",
+   "entity": "ATNI Resolution #2026-039",
+   "metric": "where the resolution places the AI task force: under the ATNI Energy Committee, or as an addition to an existing ATNI task force",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "",
+   "year": 2026,
+   "boundary": "The operative resolve clause as the resolution words it; its grammar is loose ('establish a task force, operating under the ATNI energy committee or add to the AI Law & Policy Development Initiative to an existing ATNI Task Force (e.g. data centers)'). A statement of what ATNI's membership resolved on 09/13/2026 to 09/17/2026, not a record of which option was taken or of a task force's later membership or work.",
+   "source": {
+    "title": "Resolution #2026-039: The Affiliated Tribes of Northwest Indians (ATNI) Energy Committee Supports the Formation of a Task Force on Artificial Intelligence (AI)",
+    "publisher": "Affiliated Tribes of Northwest Indians",
+    "url": "https://atnitribes.org/wp-content/uploads/2026/09/20260917_26-39_FORMATION%20OF%20A%20TASK%20FORCE%20ON%20AI.pdf",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "THEREFORE, BE IT RESOLVED, that ATNI establish a task force, operating under the ATNI energy committee or add to the AI Law & Policy Development Initiative to an existing ATNI Task Force (e.g. data centers), to identify common interests of its member Tribes as they relate to Artificial Intelligence (AI) technologies, laws, and policies and propose a plan to engage in outreach and education efforts, and support Tribal consultation with federal, state, and local governments and AI companies on these issues; and",
+   "derived": null,
+   "status": "verified",
+   "date": "2026-09-13 to 2026-09-17",
+   "date_us": "09/13/2026 to 09/17/2026"
+  },
+  {
+   "id": "pa-038",
+   "entity": "BBC and European Broadcasting Union audit of AI assistants' news answers",
+   "metric": "the BBC's role: partnered with the European Broadcasting Union for the second research phase",
+   "value": null,
+   "low": null,
+   "high": null,
+   "unit": "",
+   "year": 2025,
+   "boundary": "The report's introduction describes the project as a second research phase after the BBC's own study of 02/2025; the BBC is also one of the 22 participating organizations (Appendix 1). A description of the partnership, not a finding about assistants.",
+   "source": {
+    "title": "News Integrity in AI Assistants",
+    "publisher": "BBC and European Broadcasting Union",
+    "url": "https://www.ebu.ch/files/live/sites/ebu/files/Publications/Intelligence/open/EBU-Intelligence-BBC_News_Integrity_in_AI_Assistants_Report_2025.pdf",
+    "published": null,
+    "kind": "organization"
+   },
+   "quote": "Following the publication of the BBC report, the BBC partnered with the European Broadcasting Union (EBU) for a second research phase. This project included 22 Public Service Media organizations (PSM), representing 18 countries and 14 languages.",
+   "derived": null,
+   "status": "verified",
+   "date": "2025"
+  },
+  {
+   "id": "pa-039",
+   "entity": "U.S. teens, Pew Research Center",
+   "metric": "age range of the teens the survey's findings represent (those who live with their parents)",
+   "value": null,
+   "low": 13,
+   "high": 17,
+   "unit": "years of age",
+   "year": 2025,
+   "boundary": "Pew's teen findings represent U.S. teens ages 13 to 17 who live with their parents; the teens were recruited through their parents, who were members of an Ipsos panel. Teens who do not live with a parent are outside it. An online survey fielded 09/25/2025 to 10/09/2025.",
+   "source": {
+    "title": "How Teens Use and View AI",
+    "publisher": "Pew Research Center",
+    "url": "https://www.pewresearch.org/internet/2026/02/24/how-teens-use-and-view-ai/",
+    "published": "2026-02-24",
+    "kind": "organization"
+   },
+   "quote": "Findings about teens’ views and experiences represent the views of all U.S. teens ages 13 to 17 who live with their parents.",
+   "derived": null,
+   "status": "verified"
   }
  ]
 }

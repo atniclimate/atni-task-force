@@ -11,7 +11,7 @@
  "title": "An hour of chat and an hour of video overlap: about {now[chat][total]:.0f} and {now[video][total]:.0f} Wh, {fixed} Wh of each your own screen and router",
  "subtitle": "Energy for one hour, in watt-hours, one boundary at a time.",
  "text": [
-  "The first question most readers bring is whether their own chat use is the problem, so the page starts there. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled. Resolution #2026-039 set up this task force to identify what member Tribes hold in common on AI."
+  "The first question most readers bring is whether their own chat use is the problem, so the page starts there. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled. Resolution #2026-039 calls for this task force to identify what member Tribes hold in common on AI."
  ],
  "inputs": {
   "now": {
@@ -289,7 +289,7 @@
  "reading": "{label}, counted at this boundary: {boundary}. About {display} for the hour. {evidence}",
  "details": [
   "The router and the device are the same on every row, so they never explain a difference between rows.",
-  "The data center share of a streamed hour is unsettled: current readings run from about 0.6 to about 190 Wh at 3.5 GB an hour, with the bottom-up ones near 1 to 4 Wh. The high end is a top-down average spread over all bytes, an upper bound and not a literal share.",
+  "The data center share of a streamed hour is unsettled: current readings run from about 0.6 to about 190 Wh at 3.5 GB an hour, with the bottom-up ones near 1 to 4 Wh. The high end is a top-down average spread over all bytes, an allocation scenario and not a literal share.",
   "An AI chat app drew 0.7 to 3.3 W on one iPhone, the same order as the phone here, so chat is not lighter on the device. No source measures a chat app and a video app on one phone and one network."
  ],
  "rows": [

@@ -37,7 +37,7 @@ SAY = {
     "network_mode": {"average": "average network accounting", "marginal": "marginal network accounting"},
     "router_allocation": {"by_time": "router by time", "by_data": "router by data", "excluded": "router excluded"},
     "chat_kind": {"short_text": "median text prompt", "medium_prompt": "medium prompt", "reasoning": "long reasoning query", "high_reasoning": "high reasoning query"},
-    "video_dc_intensity": {"measured_delivery": "measured delivery intensity", "desnz_followup": "DESNZ follow-up intensity", "top_down": "top-down average intensity, an upper bound"},
+    "video_dc_intensity": {"measured_delivery": "measured delivery intensity", "desnz_followup": "DESNZ follow-up intensity", "top_down": "top-down average intensity, an illustrative scenario"},
     "dc_generation_water": {"us": "US generation average", "ercot": "ERCOT generation average"},
     "hydro_convention": {"columbia": "Columbia convention", "excluded": "reservoir evaporation excluded", "primary_purpose": "primary-purpose convention"},
     "hydro_share": {"nwpp": "NWPP hydro share", "bpa": "BPA hydro share"},
@@ -110,7 +110,7 @@ USE_ROWS = {
 }
 USE_NOTES = {
     "screen": ("The device and the home router, charged by time, once. With the router charged by data its share moves to the activity rows; with it excluded, or on cellular, it draws none.", ["fp-049", "fp-126", "fp-132"], "The phone's line is battery energy; the wall figure prints in the detail (lf-022). A television alone is many times the phone's line."),
-    "chat": ("The data center and network terms of each prompt. No device or router term, so time is counted once.", ["fp-001", "fp-017", "fp-134", "fp-127", "px-003", "px-004"], "A median prompt: any count times it is a floor, and the mean-class prompt prints in the catalog. The kind of chat moves this row most."),
+    "chat": ("The data center and network terms of each prompt. No device or router term, so time is counted once.", ["fp-001", "fp-017", "fp-134", "fp-127", "px-003", "px-004"], "A median prompt: any count times it is an illustration, not a bound, and the mean-class prompt prints in the catalog. The kind of chat moves this row most."),
     "coding": ("The data center and network terms of an hour of agentic coding at the setting's mean turns.", ["au-043", "au-038", "au-008", "au-009", "px-003", "px-004"], "Modeled from token counts and one framework's defaults; the cache-read energy is an assumption with no measurement. Treat it as low-side for long, agentic work."),
     "images": ("The data center term of each image. Image traffic is not in the record.", ["fp-138", "fp-066", "fp-065", "px-027"], "The energy is an open model's and the price another vendor's list, so the two describe different models and are not one product's cost."),
     "clips": ("The data center term of each clip. Clip traffic is not in the record.", ["fp-070", "px-028"], "The energy is a Veo 3 estimate from scaling laws and the price another model's list, so the two are never paired."),
@@ -128,7 +128,7 @@ CROSS = {
     "prompts_carbon_on_hydro_vs_hyper_us": ("Scenario: node on a declared hydro feed, hyperscaler on the US grid", ["gf-035", "gf-007", "au-027"], "A scenario: the node must be physically behind that meter and the other side must not be. Hydro already committed elsewhere is not clean new supply."),
     "prompts_carbon_on_hydro_with_embodied": ("Scenario: the same, embodied carbon on both sides", ["gf-035", "gf-007", "sf-023", "au-011"], "A scenario, with the machine's embodied carbon spread over the count and the accelerator's lower-bound share on the other side."),
     "views_measured_same_network": ("Local box beats the platform's serving energy, measured intensity, same network", ["sf-042", "lf-033", "fp-122", "fp-130"], "The stream's own watts sit above the measured serving intensity, so at the default it never crosses; one change can make it cross."),
-    "views_desnz_same_network": ("Local box beats the platform's serving energy, DESNZ follow-up intensity, same network", ["sf-042", "lf-033", "fp-141", "fp-142"], "The DESNZ follow-up's serving intensity sits below the measured one, so the stream's own watts stay above it. Only the top-down average, an upper bound, would reach them."),
+    "views_desnz_same_network": ("Local box beats the platform's serving energy, DESNZ follow-up intensity, same network", ["sf-042", "lf-033", "fp-141", "fp-142"], "The DESNZ follow-up's serving intensity sits below the measured one, so the stream's own watts stay above it. Only the top-down average, an allocation scenario, would reach them."),
     "views_measured_network_credit": ("Local box with a network credit, measured intensity", ["sf-042", "fp-127", "fp-129"], "A convention: it charges the Nation's own network at marginal cost against the platform's average."),
     "views_desnz_network_credit": ("Local box with a network credit, DESNZ follow-up intensity", ["sf-042", "fp-141", "fp-142", "fp-127", "fp-129"], "The same convention at the follow-up's intensity."),
 }

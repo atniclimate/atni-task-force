@@ -768,6 +768,9 @@ def test_damage_is_off_by_default_and_never_one_number(world):
         assert family["low"] <= (family["central"] if family["central"] is not None else family["low"]) <= family["high"], name
         assert family["claims"] and all(c.startswith("ex-") and index[c]["status"] in ("verified", "partly") for c in family["claims"]), name
         assert all(str(family[k]) in json.dumps([index[c]["quote"] for c in family["claims"]]) for k in ("low", "high")), name
+        # one edition per family: its claims share the family's currency and price year, and one emission year
+        assert {index[c]["unit"] for c in family["claims"]} == {family["unit"]} and len({index[c]["year"] for c in family["claims"]}) == 1, name
+    assert not {"ex-008", "ex-009", "ex-010", "ex-011"} & {c for f in spec["families"].values() for c in f["claims"]}, "owner ruling of 11/05/2026: the newer editions set the figures; the earlier ones are history"
     assert "mv-005" in spec["federal_status"]
 
 
@@ -780,7 +783,7 @@ def test_damage_reproduces_the_note_and_stays_in_its_own_column(world):
     assert coding["column"] == doc["carbon_damage"]["column"] and coding["unit"] == epa["unit"] and coding["claims"] == epa["claims"] and coding["as_of"]
     project = rm.carbon_damage(306600e6, epa)
     assert (project["low"], project["central"], project["high"]) == (pytest.approx(36.792e6), pytest.approx(58.254e6), pytest.approx(104.244e6))
-    assert rm.carbon_damage(1e6, doc["carbon_damage"]["families"]["epa_2017_domestic"])["central"] is None, "no invented midpoint"
+    assert rm.carbon_damage(1e6, doc["carbon_damage"]["families"]["epa_2019_domestic"])["central"] is None, "no invented midpoint"
     assert "price_usd" not in coding and "usd" not in coding
     flat = rm.flatten(world["tree"])
     assert not [k for k in flat if "damage" in k], "compute never reads it, so no price or ranking can"

@@ -42,8 +42,8 @@ row:
   CO2e, and water printed for the same hour. This is the hour the same-hour comparison already uses (view 1); the Explorer extends it to coding, search, office, and local
   systems. The device is the same on every hour row (the device setting), so the router and screen are an identical band and the activity is the difference.
 - **Coefficient level:** each row's natural unit (prompt, token, image, clip, GB, hour-view, seat-month, TB-year, query), reaching the hour through a stated rate the
-  reader can change (prompts per hour, turns per hour, GB per hour). Anything scaled by a count uses a mean where the record has one; a median row is labeled "typical, a
-  floor for totals" (the chat prompt, the coding session).
+  reader can change (prompts per hour, turns per hour, GB per hour). Anything scaled by a count uses a mean where the record has one, and the median rows say so: any
+  count times the median chat prompt is an illustration, not a bound (its mean-class figure prints beside), and the coding session is labeled "typical, a floor for totals".
 - **Stored data has no hour:** a shared dataset is a holding, so comparison C reports terabyte-years with the replication factor stated (ec-030) and never sits on the
   hour axis. Architecture comparisons use one organization-year.
 - **A million tokens is kept beneath the hour** as the AI-only cross-vendor unit (AI rows also print "per million output tokens", because people ask), with the warning
@@ -106,7 +106,7 @@ Full equations, per layer L in {data center or node, network, router, device} an
 | Video delivery, one hour-view | 1 GB served | 2.05 | 0.060 | 0.72 | 9.4 | DC + network; retail delivery list (px-053) |
 
 Read: the router and screen are 12 Wh of every phone hour (the phone's 2 Wh is battery energy; 6.2 at the wall, lf-022) and the activity adds 0.8 to 3 Wh; a coding
-session is anywhere from 30 to 2,900 median prompts (9 to 871 Wh, mv-004), and the coding hour (54 to 878 Wh) is the one row where the server passes the device. The chat and
+session, in this model, has data-center energy from 30 to 2,900 median text prompts (9 to 871 Wh, mv-004), a modeled spread and not a measured range of sessions, and the coding hour (54 to 878 Wh) is the one row where the server passes the device. The chat and
 video hours reorder with the router rule and the kind of chat, so no ratio between hours prints. The seat-month is illustrative and is the first row to replace with a
 field measurement.
 
@@ -137,8 +137,13 @@ field measurement.
   significance test and revenue is nominal.
 - **Illustrative carbon damage, one reader-set control, off by default** (`carbon_damage` in the parameters; `carbon_damage()` and `damage_column()` in the script; ECONOMETRIC-NOTE.md
   section 5). The reader picks a published family and sees its low, central, and high, never one number, in each source's own currency and year: EPA 2023 for CO2 emitted in 2020 ($120,
-  $190, $340) or 2030 ($140, $230, $380), ex-001 to ex-006; Umweltbundesamt (195 and 680 euro), ex-010, ex-011; the European Commission Handbook's avoidance cost (60, 100, 189 euro up to
-  2030; 156, 269, 498 from 2040 to 2060), ex-012, ex-013, which is not a damage estimate and says so; and EPA's 2017 domestic values ($1 and $7, no central), ex-008, ex-009, the low end.
+  $190, $340) or 2030 ($140, $230, $380), ex-001 to ex-006; Umweltbundesamt Methodenkonvention 4.0 (345 and 990 euro of 2025 for emissions in 2025, at a 1 and a 0 percent pure rate of time preference,
+  each recommended for its own weighting of future generations, so no central), ex-018, ex-019; the European Commission Handbook's avoidance cost (60, 100, 189 euro up to
+  2030; 156, 269, 498 from 2040 to 2060), ex-012, ex-013, which is not a damage estimate and says so; and EPA's 06/2019 domestic values for CO2 emitted in 2030 ($1 and $8 in 2016 dollars,
+  at 7 and 3 percent, no central), ex-016, ex-017, the lowest family here. Each family is one edition: its price year and emission year move together, and nothing is converted
+  between currencies or price years, so no conversion claim is needed. Under the owner's ruling of 11/05/2026 the earlier editions, Methodenkonvention 3.1 (195 and 680 euro of
+  2020 for emissions in 2020, ex-010, ex-011) and EPA's 10/2017 table ($1 and $7 in 2011 dollars, ex-008, ex-009), are dated history: each new family's limit names them, so
+  they stay in Sources, and they set no figure.
   Its own column reads "illustrative damage, not a price, not federal policy", dated; OMB M-25-27 is its receipt for that last word (mv-005). It is never added to the price column or
   ranked against a price basis, and `compute()` never reads it. The EPA families are per tonne of CO2 and the rows are CO2e, an unresolved gap the family states. Project scale shows
   tonnes first. No dollar on water, health, fish, places, or culture. At $190 a 73 g coding hour is 1.4 cents ($0.0088 to $0.025) and a 100 MW year at 350 g is $58 million ($37 million to
@@ -169,7 +174,7 @@ the server's own grid, 537 L (381 L on the Northwest mix); the vendor's own 210 
 Local-first, an open-source suite on one 45 W server (gf-054 high) with the work done on the devices: 434 kWh (263 to 788); $10,616 at 14 paid hours a month and $60,
 $4,736 at $25, $536 if staff time is already paid, a tie at $55 an hour; 125 kg at NWPP, 9.1 kg as a declared hydro feed, plus 130 kg a year embodied (54 on sf-025);
 1,347 L on the Columbia convention, 206 L without reservoir evaporation, 0 on site. Local over cloud energy prints as a spread, never a ratio: 0.8 to 7.2 times on the data
-center alone and 0.2 to 4.9 with sync watts; the two tie at 4.3 W of sync draw, a 30 W server, or 6.6 kWh a seat-year. Local loses on energy (idle hardware), on carbon on
+center alone and 0.2 to 4.9 with sync watts; against the 260 kWh figure the two tie, one input at a time, at 4.3 W of sync draw (input 1 to 10), a 27 W server (below its 30 to 60 W range), or 5.7 kWh a seat-year (input 2.2 to 6.6). Local loses on energy (idle hardware), on carbon on
 one grid (125 against 32 kg), on price whenever hours are paid (labor was the largest line in Schleswig-Holstein, sf-003, sf-004, lf-057), on compatibility (about 20
 percent of desks still needed Microsoft, lf-056; the ArtCraft apps are labeled in development, px-060, sf-057, lf-054; Munich reversed, sf-006), and on redundancy (867
 kWh with a second box). It wins on license price (0), on working without broadband (24 percent on Tribal lands lack it, sf-056), on custody, and on carbon only as a
@@ -306,8 +311,8 @@ mixed: AI-focused facilities were 155 of 485 TWh worldwide in 2025 (32 percent, 
 draw (lf-004). (3) AI can run outside a data center: the place profile moves 1,000 prompts from 300 Wh in a hyperscaler to 24 Wh on laptops that are on anyway, at a cost
 in quality, and 11 to 29 percent of queries go to the cloud regardless (sf-035, whose derived line shows the rounding and the 50 percent of a 4B model, the top of this row's spread); a busy data center has the lowest energy per answer at equal model size because its
 hardware sits idle least, which is arithmetic about utilization and not a reason to site one, and a dedicated local node catches up only above about 2.8 million prompts a
-year on one grid. (4) Data centers run things that are not AI: the video, storage, office, and search rows. (5) One person's chat is not the buildout: all of ChatGPT's text
-chat is about 0.27 TWh a year on Google's median prompt (0.22 to 0.55 across the median figures), text only, a floor for one product against the IEA's 485 TWh global
+year on one grid. (4) Data centers run things that are not AI: the video, storage, office, and search rows. (5) One person's chat is not the buildout: ChatGPT's consumer-plan
+messages come to about 0.27 TWh a year at 0.30 Wh a text prompt (0.22 to 0.55), an illustration for one product, not a bound, against the IEA's 485 TWh global
 total; a proposed building is a question for the project scale panel and the Questions for Tribal Leaders, and hosting a building does not supply a Nation's own
 computing.
 

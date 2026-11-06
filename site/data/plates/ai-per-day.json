@@ -6,7 +6,7 @@
  "model": "comparison-model",
  "default": "chat",
  "eyebrow": "Per person per day, 2024 to 2025",
- "title": "An average weekly ChatGPT user's text prompts cost about {now[chat_day]:.0f} Wh a day in the data center, a floor",
+ "title": "An average weekly ChatGPT user's text prompts cost about {now[chat_day]:.0f} Wh a day in the data center, an illustration",
  "subtitle": "Meta reports {now[meta_person]:.0f} Wh per daily person for all its products, on another boundary. Watt-hours a day inside the data center. Each group keeps its own boundary and its own ruler.",
  "inputs": {
   "now": {
@@ -122,7 +122,7 @@
     "high": "now.chat_day_high"
    },
    "equation": "Prompts a day x Wh per prompt",
-   "detail": "A median prompt times a mean count over days of non-use, so a floor. At the 0.34 Wh average-class figure the same count gives 1.2 Wh. The high end uses a count of 8, which is unsourced."
+   "detail": "A median prompt times a mean count over days of non-use: an illustration, not a bound. At the 0.34 Wh average-class figure the same count gives 1.2 Wh. The high end uses a count of 8, which is unsourced."
   },
   {
    "id": "yt",
