@@ -284,7 +284,8 @@ plate.register('dc-climate-counties', {
         const key = node.dataset.row;
         const { base, fut } = of(key);
         node.hidden = pick === 'dc' ? !m.dc.includes(key) : !key.endsWith(`-${pick}`);
-        ctx.setRow(key, { frac: at(base[1]), x2: at(fut[1]), lo: Math.min(at(base[1]), at(fut[1])), hi: Math.max(at(base[1]), at(fut[1])), text: `${fig3(...base.slice(1))} and ${fig3(...fut.slice(1))} ${meta.unit}` });
+        // One line a county, the finding first, "87 F, from 84": the ranges are in the readout and the facts beside the plot.
+        ctx.setRow(key, { frac: at(fut[1]), x2: at(base[1]), lo: Math.min(at(base[1]), at(fut[1])), hi: Math.max(at(base[1]), at(fut[1])), text: `${plate.fig(fut[1])} ${meta.unit}, from ${plate.fig(base[1])}` });
       }
       const chosen = ctx.plot.querySelector(`.ladder-row[data-row="${ctx.key}"]`);
       if (chosen?.hidden) requestAnimationFrame(() => ctx.plot.querySelector('.ladder-row:not([hidden])')?.click()); // a filter hid the selected county, so the first one shown takes over
@@ -292,10 +293,9 @@ plate.register('dc-climate-counties', {
     const label = ctx.data.rows.find((r) => r.key === ctx.key)?.label;
     const { base, fut } = of(ctx.key);
     const [b, f] = [fig3(...base.slice(1)), fig3(...fut.slice(1))];
-    ctx.reading(`${label}, ${m.scenarios[ctx.state.cc_scenario]}: the ${meta.words} averages about ${f} ${meta.unit} in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against ${b} ${meta.unit} in 1995 to 2014. A county mean on a quarter-degree grid; research data, not siting guidance. Limit: ${ctx.data.receipts[fut[0]].limit}`);
+    ctx.reading(`${label}, ${m.scenarios[ctx.state.cc_scenario]}: the ${meta.words} averages about ${f} ${meta.unit} in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against ${b} ${meta.unit} in 1995 to 2014. A county mean on a quarter-degree grid. Limit: ${ctx.data.receipts[fut[0]].limit}`);
     ctx.readout(f, meta.unit);
-    ctx.fact(`1995 to 2014, historical run: ${b} ${meta.unit}`);
-    ctx.fact(`2040 to 2059, median of seven models: ${f} ${meta.unit}`);
+    for (const r of ctx.rows) r.display = `${r.series.startsWith('2040') ? f : b} ${meta.unit}`; // the facts list beside the plot names this measure's figures, not the build's
   },
 });
 

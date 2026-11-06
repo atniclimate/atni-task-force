@@ -640,7 +640,8 @@ async function climateLand() {
   const d = m.metrics.days_95;
   eq(c.plot.querySelector('.ladder-group-label').textContent, d.axis, 'the ruler says what it measures');
   eq(c.plot.querySelector('.ladder-axis').lastChild.textContent, String(d.domain[1]), 'and runs to its own top');
-  near(place(row(c.root, 'walla-walla-wa'), 'x2'), (ww.days_95.ssp245[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'the 2040 to 2059 mark stands at its figure');
+  near(place(row(c.root, 'walla-walla-wa'), 'x'), (ww.days_95.ssp245[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'the 2040 to 2059 mark stands at its figure');
+  near(place(row(c.root, 'walla-walla-wa'), 'x2'), (ww.days_95.baseline[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'and the 1995 to 2014 mark at its own');
   ok(c.facts.textContent.includes(`${ww.days_95.baseline[1]} (`), 'the facts follow the measure');
   moves(window, c, () => setRadio(window, c.radio('cc_scenario', 'ssp370')), (t) => t.includes('SSP3-7.0') && t.includes(`about ${ww.days_95.ssp370[1]} (`), 'scenario');
   setRadio(window, c.radio('cc_state', 'mt'));

@@ -106,7 +106,7 @@ LAT_CUT = 38.0
 W = 720
 PAD = 8
 TOL_STATE, TOL_COUNTY = 0.9, 0.7
-MARK, GAP = 4.2, 5.2
+MARK, GAP = 6, 7  # about 7px at a 1440 screen; 7 units put squares outside crowded counties, and tests/test_projects.py holds every square inside its county
 KIND_KEY = {"data center": "dc", "generation": "gs", "storage": "gs", "transmission": "tx", "substation": "tx"}
 
 
@@ -267,7 +267,9 @@ def build_svg(proj, counties):
             continue
         ps = sorted({p["id"]: p for p in have[c["fips"]]}.values(), key=lambda p: p["id"])
         n = len(ps)
-        cols = math.ceil(math.sqrt(n))
+        ring = max(c["pr"], key=len)
+        wide = (max(x for x, _ in ring) - min(x for x, _ in ring)) / max(1e-9, max(y for _, y in ring) - min(y for _, y in ring))
+        cols = max(1, min(n, round(math.sqrt(n * wide))))  # the grid takes the county's shape, so a long, low county gets a long, low row of squares
         rows = math.ceil(n / cols)
         cx, cy = tf(c["ip"])
         for i, p in enumerate(ps):
@@ -277,7 +279,7 @@ def build_svg(proj, counties):
             y = cy + (r - (rows - 1) / 2) * GAP - MARK / 2
             hollow = not (p["mw_claim"] and p["mw_claim"]["status"] == "verified")
             mark_pos[(p["id"], c["fips"])] = (round(x, 1), round(y, 1))
-            marks.append(f'<rect class="m{" h" if hollow else ""}" data-id="{p["id"]}" data-row="{rows_of[p["id"]]}" data-kind="{KIND_KEY[p["kind"]]}" '
+            marks.append(f'<rect class="m{" h" if hollow else ""}" data-id="{p["id"]}" data-fips="{c["fips"]}" data-row="{rows_of[p["id"]]}" data-kind="{KIND_KEY[p["kind"]]}" '
                          f'x="{x:.1f}" y="{y:.1f}" width="{MARK}" height="{MARK}"/>')
     pm = ".project-map "
     css = (f"<style>{pm}.s{{fill:none;stroke:currentColor;stroke-opacity:.4;stroke-width:.8;stroke-linejoin:round}}"
@@ -285,8 +287,8 @@ def build_svg(proj, counties):
            f"{pm}.c1{{fill-opacity:.1}}{pm}.c2{{fill-opacity:.2}}{pm}.c3{{fill-opacity:.32}}{pm}.c4{{fill-opacity:.45}}"
            f"{pm}.m{{fill:var(--mark,#FF914C);stroke:var(--mark-edge,#010B13);stroke-width:.6}}"
            f"{pm}.m.h{{fill:none;stroke:var(--mark,#FF914C);stroke-width:1.3}}"
-           f"{pm}.m.is-selected{{stroke:currentColor;stroke-width:1.5}}{pm}.m.is-dim{{opacity:.2}}</style>")
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" class="plate-svg project-map" viewBox="0 0 {W} {H}" aria-hidden="true" focusable="false">{css}'
+           f"{pm}.m.is-selected{{stroke:currentColor;stroke-width:1.5}}{pm}.m.is-dim{{opacity:.45}}</style>")
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" class="project-map" viewBox="0 0 {W} {H}" aria-hidden="true" focusable="false">{css}'
            f'<g class="s"><path d="{"".join(outlines)}"/></g><g class="k">{"".join(cpaths)}</g><g class="mk">{"".join(marks)}</g></svg>')
     return svg, mark_pos
 
@@ -311,15 +313,16 @@ def records_html(proj):
         items = []
         for p in by_state.get(st, []):
             mw = (f'<a class="cr" data-claim="{pj[p["id"]]}" href="#src-{pj[p["id"]]}">{p["mw"]:,g} MW</a> as filed' if p["mw_claim"] else "no MW stated by the sources read")
-            where = "; ".join(f'{e(c["name"])} County, {c["state"]}' for c in p["counties"]) or "no county named by the sources read"
-            land = e(classes[p["land"]["class"]].split(",")[0].split(";")[0])
+            where = "; ".join(f'{e(c["name"])} County, {c["state"]}' for c in p["counties"]) or "No county named by the sources read"
+            land = classes[p["land"]["class"]].split(",")[0].split(";")[0]
+            land = e(land if land.startswith("Land") else "Land: " + re.sub(r"^(A|The) ", lambda x: x.group(1).lower() + " ", land))
             if p["land"].get("as_stated"):
                 land += f' (“{e(p["land"]["as_stated"])}”)'
             parcels = "".join(f' Parcel {e(x["id"])}, as the county notice prints it.' for x in p["land"]["parcels"])
             quotes = "".join(f'<blockquote><p>“{e(t["text"])}”</p><p class="caption">{e(t["attribution"])}.</p></blockquote>' for t in p["tribal_context"] or [])
             links = "; ".join(f'<a href="{e(s["url"])}">{e(s["title"])}</a> ({e(s["publisher"])}{", " + us(s["date"]) if s.get("date") else ""})' for s in p["sources"])
             items.append(f'<li id="rec-{e(p["id"].lower())}"><p><strong>{e(p["name"])}</strong>, {KIND_SAY[p["kind"]]}: {mw}. Status: {e(p["status"])}, {us(p["status_date"])}. '
-                         f'{where}. Land: {land}.{parcels} Developer as filed: {e(p["developer_as_filed"] or "not named by the sources read")}.</p>{quotes}'
+                         f'{where}. {land}.{parcels} Developer as filed: {e(p["developer_as_filed"] or "not named by the sources read")}.</p>{quotes}'
                          f'<p class="caption">Sources: {links}.</p></li>')
         if items:
             out.append(f'<details class="disclosure" id="records-{st.lower()}"><summary><h3>{name}</h3><span>The named proposals whose filings sit in {name}, '

@@ -105,10 +105,10 @@ def plate(ld, members):
         "text": ["A request or an application is not an approval. Each bar counts proposals whose public filing states that kind of land; a filing that says nothing is counted as not stated."],
         "controls": [{"type": "segmented", "name": "kind", "label": "Kind", "default": "all", "options": [{"value": s[0], "label": s[1]} for s in STOPS]}],
         "by": "kind",
-        "plot": {"type": "ladder", "groups": [{"id": "land", "label": "Named proposals", "mark": "bar", "domain": [0, -(-(top + 1) // 10) * 10]}]},
+        "plot": {"type": "ladder", "units": {"projects": ""}, "groups": [{"id": "land", "label": "Named proposals", "mark": "bar", "domain": [0, -(-(top + 1) // 10) * 10]}]},
         "default": "federal-blm",
-        "boundary": "What public filings say about where a proposal sits. Not a title record, not an ownership finding, and nothing about any Nation's land.",
-        "reading": ("{label}: {display} among the named proposals, kind {kind}, by the public documents read on 11/05/2026. The class is the filing's own wording, "
+        "boundary": "What public filings say about where a proposal sits. Not a title record and not an ownership finding; on Tribal or Trust land, only the source's own words.",
+        "reading": ("{label}: {display} of the named proposals read ({kind}), by the public documents read on 11/05/2026. The class is the filing's own wording, "
                     "not a title search; a request or an application is not an approval."),
         "not_counted": "None of the named proposals read sits here",
         "details": ["The one parcel number a public notice prints is in the record list; no outline is drawn until a county's parcel file is captured and its terms allow it.",

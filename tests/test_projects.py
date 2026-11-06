@@ -61,11 +61,12 @@ def rings_of(d):
     return out
 
 
-def test_walla_walla_square_sits_in_walla_walla_county():
-    county = re.search(r'<path class="c\d" data-fips="53071"[^>]* d="([^"]+)"', SVG).group(1)
-    x, y = (float(v) for v in re.search(r'data-id="WA-DC-01"[^>]* x="([\d.]+)" y="([\d.]+)"', SVG).groups())
-    centre = (x + bpm.MARK / 2, y + bpm.MARK / 2)
-    assert any(bpm.inside(centre, ring) for ring in rings_of(county))
+def test_every_square_sits_in_its_county():
+    counties = {f: rings_of(d) for f, d in re.findall(r'<path class="c\d" data-fips="(\d{5})"[^>]* d="([^"]+)"', SVG)}
+    marks = re.findall(r'data-id="([A-Z]{2}-[A-Z]+-\d+)" data-fips="(\d{5})"[^>]* x="([\d.]+)" y="([\d.]+)"', SVG)
+    assert ("WA-DC-01", "53071") in {(i, f) for i, f, _x, _y in marks}  # Walla Walla's own square
+    out = [(i, f) for i, f, x, y in marks if not any(bpm.inside((float(x) + bpm.MARK / 2, float(y) + bpm.MARK / 2), ring) for ring in counties[f])]
+    assert not out, f"squares outside their county: {out}"
 
 
 def test_projection_puts_walla_walla_inside_washington():

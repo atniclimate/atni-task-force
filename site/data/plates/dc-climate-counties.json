@@ -8,7 +8,7 @@
  "title": "Walla Walla County's May to September daytime high averages about {c[cp-518][value]:.0f} F in 2040 to 2059, up from {c[cp-517][value]:.0f} F",
  "subtitle": "County means on NASA's quarter-degree grid from seven global models; the figures in parentheses are the lowest and highest model.",
  "text": [
-  "The first view lists the counties where public filings name a data center proposal of fifty megawatts or more. Pick a state for every county with a named proposal on the Land tab."
+  "The first view lists the counties where public filings name a data center proposal of fifty megawatts or more. Pick a state for the other counties that the proposals on the Land tab name."
  ],
  "boundary": "County means from a global downscaled dataset. They say nothing about any site, any Nation's land, or what should be built.",
  "controls": [
@@ -60,11 +60,15 @@
    "options": [
     {
      "value": "dc",
-     "label": "Data center proposals"
+     "label": "Data centers"
     },
     {
-     "value": "ca",
-     "label": "CA"
+     "value": "wa",
+     "label": "WA"
+    },
+    {
+     "value": "or",
+     "label": "OR"
     },
     {
      "value": "id",
@@ -79,12 +83,8 @@
      "label": "NV"
     },
     {
-     "value": "or",
-     "label": "OR"
-    },
-    {
-     "value": "wa",
-     "label": "WA"
+     "value": "ca",
+     "label": "CA"
     }
    ]
   }
@@ -99,435 +99,26 @@
   "axis_label": "Degrees F, May to September daytime high, county mean"
  },
  "default": "walla-walla-wa",
- "reading_group": "{label}: the May to September daytime high averages about {fut} F in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against {base} F in 1995 to 2014. A county mean on a quarter-degree grid; research data, not siting guidance.",
+ "reading_group": "{label}: the May to September daytime high averages about {fut} F in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against {base} F in 1995 to 2014. A county mean on a quarter-degree grid.",
  "rows": [
-  {
-   "id": "ada-id",
-   "label": "Ada County, ID",
-   "tag": "ID",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-013",
-      "ssp370": "cp-013"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-014",
-      "ssp370": "cp-015"
-     }
-    }
-   ],
-   "cites": [
-    "cp-016",
-    "cp-017",
-    "cp-018",
-    "cp-019",
-    "cp-020",
-    "cp-021",
-    "cp-022",
-    "cp-023",
-    "cp-024"
-   ]
-  },
-  {
-   "id": "bannock-id",
-   "label": "Bannock County, ID",
-   "tag": "ID",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-025",
-      "ssp370": "cp-025"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-026",
-      "ssp370": "cp-027"
-     }
-    }
-   ],
-   "cites": [
-    "cp-028",
-    "cp-029",
-    "cp-030",
-    "cp-031",
-    "cp-032",
-    "cp-033",
-    "cp-034",
-    "cp-035",
-    "cp-036"
-   ]
-  },
-  {
-   "id": "elmore-id",
-   "label": "Elmore County, ID",
-   "tag": "ID",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-049",
-      "ssp370": "cp-049"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-050",
-      "ssp370": "cp-051"
-     }
-    }
-   ],
-   "cites": [
-    "cp-052",
-    "cp-053",
-    "cp-054",
-    "cp-055",
-    "cp-056",
-    "cp-057",
-    "cp-058",
-    "cp-059",
-    "cp-060"
-   ]
-  },
-  {
-   "id": "silver-bow-mt",
-   "label": "Silver Bow County, MT",
-   "tag": "MT",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-157",
-      "ssp370": "cp-157"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-158",
-      "ssp370": "cp-159"
-     }
-    }
-   ],
-   "cites": [
-    "cp-160",
-    "cp-161",
-    "cp-162",
-    "cp-163",
-    "cp-164",
-    "cp-165",
-    "cp-166",
-    "cp-167",
-    "cp-168"
-   ]
-  },
-  {
-   "id": "yellowstone-mt",
-   "label": "Yellowstone County, MT",
-   "tag": "MT",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-181",
-      "ssp370": "cp-181"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-182",
-      "ssp370": "cp-183"
-     }
-    }
-   ],
-   "cites": [
-    "cp-184",
-    "cp-185",
-    "cp-186",
-    "cp-187",
-    "cp-188",
-    "cp-189",
-    "cp-190",
-    "cp-191",
-    "cp-192"
-   ]
-  },
-  {
-   "id": "lyon-nv",
-   "label": "Lyon County, NV",
-   "tag": "NV",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-193",
-      "ssp370": "cp-193"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-194",
-      "ssp370": "cp-195"
-     }
-    }
-   ],
-   "cites": [
-    "cp-196",
-    "cp-197",
-    "cp-198",
-    "cp-199",
-    "cp-200",
-    "cp-201",
-    "cp-202",
-    "cp-203",
-    "cp-204"
-   ]
-  },
-  {
-   "id": "storey-nv",
-   "label": "Storey County, NV",
-   "tag": "NV",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-217",
-      "ssp370": "cp-217"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-218",
-      "ssp370": "cp-219"
-     }
-    }
-   ],
-   "cites": [
-    "cp-220",
-    "cp-221",
-    "cp-222",
-    "cp-223",
-    "cp-224",
-    "cp-225",
-    "cp-226",
-    "cp-227",
-    "cp-228"
-   ]
-  },
-  {
-   "id": "crook-or",
-   "label": "Crook County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-253",
-      "ssp370": "cp-253"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-254",
-      "ssp370": "cp-255"
-     }
-    }
-   ],
-   "cites": [
-    "cp-256",
-    "cp-257",
-    "cp-258",
-    "cp-259",
-    "cp-260",
-    "cp-261",
-    "cp-262",
-    "cp-263",
-    "cp-264"
-   ]
-  },
-  {
-   "id": "jefferson-or",
-   "label": "Jefferson County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-289",
-      "ssp370": "cp-289"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-290",
-      "ssp370": "cp-291"
-     }
-    }
-   ],
-   "cites": [
-    "cp-292",
-    "cp-293",
-    "cp-294",
-    "cp-295",
-    "cp-296",
-    "cp-297",
-    "cp-298",
-    "cp-299",
-    "cp-300"
-   ]
-  },
-  {
-   "id": "morrow-or",
-   "label": "Morrow County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-337",
-      "ssp370": "cp-337"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-338",
-      "ssp370": "cp-339"
-     }
-    }
-   ],
-   "cites": [
-    "cp-340",
-    "cp-341",
-    "cp-342",
-    "cp-343",
-    "cp-344",
-    "cp-345",
-    "cp-346",
-    "cp-347",
-    "cp-348"
-   ]
-  },
-  {
-   "id": "umatilla-or",
-   "label": "Umatilla County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-373",
-      "ssp370": "cp-373"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-374",
-      "ssp370": "cp-375"
-     }
-    }
-   ],
-   "cites": [
-    "cp-376",
-    "cp-377",
-    "cp-378",
-    "cp-379",
-    "cp-380",
-    "cp-381",
-    "cp-382",
-    "cp-383",
-    "cp-384"
-   ]
-  },
-  {
-   "id": "washington-or",
-   "label": "Washington County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-409",
-      "ssp370": "cp-409"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-410",
-      "ssp370": "cp-411"
-     }
-    }
-   ],
-   "cites": [
-    "cp-412",
-    "cp-413",
-    "cp-414",
-    "cp-415",
-    "cp-416",
-    "cp-417",
-    "cp-418",
-    "cp-419",
-    "cp-420"
-   ]
-  },
   {
    "id": "benton-wa",
    "label": "Benton County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-421",
-      "ssp370": "cp-421"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-422",
       "ssp370": "cp-423"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-421",
+      "ssp370": "cp-421"
      }
     }
    ],
@@ -546,22 +137,21 @@
   {
    "id": "chelan-wa",
    "label": "Chelan County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-433",
-      "ssp370": "cp-433"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-434",
       "ssp370": "cp-435"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-433",
+      "ssp370": "cp-433"
      }
     }
    ],
@@ -580,22 +170,21 @@
   {
    "id": "cowlitz-wa",
    "label": "Cowlitz County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-457",
-      "ssp370": "cp-457"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-458",
       "ssp370": "cp-459"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-457",
+      "ssp370": "cp-457"
      }
     }
    ],
@@ -614,22 +203,21 @@
   {
    "id": "klickitat-wa",
    "label": "Klickitat County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-469",
-      "ssp370": "cp-469"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-470",
       "ssp370": "cp-471"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-469",
+      "ssp370": "cp-469"
      }
     }
    ],
@@ -648,22 +236,21 @@
   {
    "id": "spokane-wa",
    "label": "Spokane County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-505",
-      "ssp370": "cp-505"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-506",
       "ssp370": "cp-507"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-505",
+      "ssp370": "cp-505"
      }
     }
    ],
@@ -682,22 +269,21 @@
   {
    "id": "walla-walla-wa",
    "label": "Walla Walla County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-517",
-      "ssp370": "cp-517"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-518",
       "ssp370": "cp-519"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-517",
+      "ssp370": "cp-517"
      }
     }
    ],
@@ -714,806 +300,419 @@
    ]
   },
   {
-   "id": "humboldt-ca",
-   "label": "Humboldt County, CA",
-   "tag": "CA",
+   "id": "crook-or",
+   "label": "Crook County, OR",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-001",
-      "ssp370": "cp-001"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-002",
-      "ssp370": "cp-003"
+      "ssp245": "cp-254",
+      "ssp370": "cp-255"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-253",
+      "ssp370": "cp-253"
      }
     }
    ],
    "cites": [
-    "cp-004",
-    "cp-005",
-    "cp-006",
-    "cp-007",
-    "cp-008",
-    "cp-009",
-    "cp-010",
-    "cp-011",
-    "cp-012"
+    "cp-256",
+    "cp-257",
+    "cp-258",
+    "cp-259",
+    "cp-260",
+    "cp-261",
+    "cp-262",
+    "cp-263",
+    "cp-264"
    ]
   },
   {
-   "id": "cassia-id",
-   "label": "Cassia County, ID",
-   "tag": "ID",
+   "id": "jefferson-or",
+   "label": "Jefferson County, OR",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-037",
-      "ssp370": "cp-037"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-038",
-      "ssp370": "cp-039"
+      "ssp245": "cp-290",
+      "ssp370": "cp-291"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-289",
+      "ssp370": "cp-289"
      }
     }
    ],
    "cites": [
-    "cp-040",
-    "cp-041",
-    "cp-042",
-    "cp-043",
-    "cp-044",
-    "cp-045",
-    "cp-046",
-    "cp-047",
-    "cp-048"
+    "cp-292",
+    "cp-293",
+    "cp-294",
+    "cp-295",
+    "cp-296",
+    "cp-297",
+    "cp-298",
+    "cp-299",
+    "cp-300"
    ]
   },
   {
-   "id": "gooding-id",
-   "label": "Gooding County, ID",
-   "tag": "ID",
+   "id": "morrow-or",
+   "label": "Morrow County, OR",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-061",
-      "ssp370": "cp-061"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-062",
-      "ssp370": "cp-063"
+      "ssp245": "cp-338",
+      "ssp370": "cp-339"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-337",
+      "ssp370": "cp-337"
      }
     }
    ],
    "cites": [
-    "cp-064",
-    "cp-065",
-    "cp-066",
-    "cp-067",
-    "cp-068",
-    "cp-069",
-    "cp-070",
-    "cp-071",
-    "cp-072"
+    "cp-340",
+    "cp-341",
+    "cp-342",
+    "cp-343",
+    "cp-344",
+    "cp-345",
+    "cp-346",
+    "cp-347",
+    "cp-348"
    ]
   },
   {
-   "id": "jerome-id",
-   "label": "Jerome County, ID",
-   "tag": "ID",
+   "id": "umatilla-or",
+   "label": "Umatilla County, OR",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-073",
-      "ssp370": "cp-073"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-074",
-      "ssp370": "cp-075"
+      "ssp245": "cp-374",
+      "ssp370": "cp-375"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-373",
+      "ssp370": "cp-373"
      }
     }
    ],
    "cites": [
-    "cp-076",
-    "cp-077",
-    "cp-078",
-    "cp-079",
-    "cp-080",
-    "cp-081",
-    "cp-082",
-    "cp-083",
-    "cp-084"
+    "cp-376",
+    "cp-377",
+    "cp-378",
+    "cp-379",
+    "cp-380",
+    "cp-381",
+    "cp-382",
+    "cp-383",
+    "cp-384"
    ]
   },
   {
-   "id": "lincoln-id",
-   "label": "Lincoln County, ID",
-   "tag": "ID",
+   "id": "washington-or",
+   "label": "Washington County, OR",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-085",
-      "ssp370": "cp-085"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-086",
-      "ssp370": "cp-087"
+      "ssp245": "cp-410",
+      "ssp370": "cp-411"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-409",
+      "ssp370": "cp-409"
      }
     }
    ],
    "cites": [
-    "cp-088",
-    "cp-089",
-    "cp-090",
-    "cp-091",
-    "cp-092",
-    "cp-093",
-    "cp-094",
-    "cp-095",
-    "cp-096"
+    "cp-412",
+    "cp-413",
+    "cp-414",
+    "cp-415",
+    "cp-416",
+    "cp-417",
+    "cp-418",
+    "cp-419",
+    "cp-420"
    ]
   },
   {
-   "id": "twin-falls-id",
-   "label": "Twin Falls County, ID",
-   "tag": "ID",
+   "id": "ada-id",
+   "label": "Ada County, ID",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-097",
-      "ssp370": "cp-097"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-098",
-      "ssp370": "cp-099"
+      "ssp245": "cp-014",
+      "ssp370": "cp-015"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-013",
+      "ssp370": "cp-013"
      }
     }
    ],
    "cites": [
-    "cp-100",
-    "cp-101",
-    "cp-102",
-    "cp-103",
-    "cp-104",
-    "cp-105",
-    "cp-106",
-    "cp-107",
-    "cp-108"
+    "cp-016",
+    "cp-017",
+    "cp-018",
+    "cp-019",
+    "cp-020",
+    "cp-021",
+    "cp-022",
+    "cp-023",
+    "cp-024"
    ]
   },
   {
-   "id": "custer-mt",
-   "label": "Custer County, MT",
-   "tag": "MT",
+   "id": "bannock-id",
+   "label": "Bannock County, ID",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-109",
-      "ssp370": "cp-109"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-110",
-      "ssp370": "cp-111"
+      "ssp245": "cp-026",
+      "ssp370": "cp-027"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-025",
+      "ssp370": "cp-025"
      }
     }
    ],
    "cites": [
-    "cp-112",
-    "cp-113",
-    "cp-114",
-    "cp-115",
-    "cp-116",
-    "cp-117",
-    "cp-118",
-    "cp-119",
-    "cp-120"
+    "cp-028",
+    "cp-029",
+    "cp-030",
+    "cp-031",
+    "cp-032",
+    "cp-033",
+    "cp-034",
+    "cp-035",
+    "cp-036"
    ]
   },
   {
-   "id": "fallon-mt",
-   "label": "Fallon County, MT",
-   "tag": "MT",
+   "id": "elmore-id",
+   "label": "Elmore County, ID",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-121",
-      "ssp370": "cp-121"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-122",
-      "ssp370": "cp-123"
+      "ssp245": "cp-050",
+      "ssp370": "cp-051"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-049",
+      "ssp370": "cp-049"
      }
     }
    ],
    "cites": [
-    "cp-124",
-    "cp-125",
-    "cp-126",
-    "cp-127",
-    "cp-128",
-    "cp-129",
-    "cp-130",
-    "cp-131",
-    "cp-132"
+    "cp-052",
+    "cp-053",
+    "cp-054",
+    "cp-055",
+    "cp-056",
+    "cp-057",
+    "cp-058",
+    "cp-059",
+    "cp-060"
    ]
   },
   {
-   "id": "glacier-mt",
-   "label": "Glacier County, MT",
-   "tag": "MT",
+   "id": "silver-bow-mt",
+   "label": "Silver Bow County, MT",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-133",
-      "ssp370": "cp-133"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-134",
-      "ssp370": "cp-135"
+      "ssp245": "cp-158",
+      "ssp370": "cp-159"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-157",
+      "ssp370": "cp-157"
      }
     }
    ],
    "cites": [
-    "cp-136",
-    "cp-137",
-    "cp-138",
-    "cp-139",
-    "cp-140",
-    "cp-141",
-    "cp-142",
-    "cp-143",
-    "cp-144"
+    "cp-160",
+    "cp-161",
+    "cp-162",
+    "cp-163",
+    "cp-164",
+    "cp-165",
+    "cp-166",
+    "cp-167",
+    "cp-168"
    ]
   },
   {
-   "id": "rosebud-mt",
-   "label": "Rosebud County, MT",
-   "tag": "MT",
+   "id": "yellowstone-mt",
+   "label": "Yellowstone County, MT",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-145",
-      "ssp370": "cp-145"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-146",
-      "ssp370": "cp-147"
+      "ssp245": "cp-182",
+      "ssp370": "cp-183"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-181",
+      "ssp370": "cp-181"
      }
     }
    ],
    "cites": [
-    "cp-148",
-    "cp-149",
-    "cp-150",
-    "cp-151",
-    "cp-152",
-    "cp-153",
-    "cp-154",
-    "cp-155",
-    "cp-156"
+    "cp-184",
+    "cp-185",
+    "cp-186",
+    "cp-187",
+    "cp-188",
+    "cp-189",
+    "cp-190",
+    "cp-191",
+    "cp-192"
    ]
   },
   {
-   "id": "toole-mt",
-   "label": "Toole County, MT",
-   "tag": "MT",
+   "id": "lyon-nv",
+   "label": "Lyon County, NV",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-169",
-      "ssp370": "cp-169"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-170",
-      "ssp370": "cp-171"
+      "ssp245": "cp-194",
+      "ssp370": "cp-195"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-193",
+      "ssp370": "cp-193"
      }
     }
    ],
    "cites": [
-    "cp-172",
-    "cp-173",
-    "cp-174",
-    "cp-175",
-    "cp-176",
-    "cp-177",
-    "cp-178",
-    "cp-179",
-    "cp-180"
+    "cp-196",
+    "cp-197",
+    "cp-198",
+    "cp-199",
+    "cp-200",
+    "cp-201",
+    "cp-202",
+    "cp-203",
+    "cp-204"
    ]
   },
   {
-   "id": "mineral-nv",
-   "label": "Mineral County, NV",
-   "tag": "NV",
+   "id": "storey-nv",
+   "label": "Storey County, NV",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-205",
-      "ssp370": "cp-205"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
-      "ssp245": "cp-206",
-      "ssp370": "cp-207"
+      "ssp245": "cp-218",
+      "ssp370": "cp-219"
      }
-    }
-   ],
-   "cites": [
-    "cp-208",
-    "cp-209",
-    "cp-210",
-    "cp-211",
-    "cp-212",
-    "cp-213",
-    "cp-214",
-    "cp-215",
-    "cp-216"
-   ]
-  },
-  {
-   "id": "white-pine-nv",
-   "label": "White Pine County, NV",
-   "tag": "NV",
-   "pair": [
+    },
     {
      "id": "base",
      "name": "1995 to 2014, historical run",
      "claims": {
-      "ssp245": "cp-229",
-      "ssp370": "cp-229"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-230",
-      "ssp370": "cp-231"
+      "ssp245": "cp-217",
+      "ssp370": "cp-217"
      }
     }
    ],
    "cites": [
-    "cp-232",
-    "cp-233",
-    "cp-234",
-    "cp-235",
-    "cp-236",
-    "cp-237",
-    "cp-238",
-    "cp-239",
-    "cp-240"
-   ]
-  },
-  {
-   "id": "baker-or",
-   "label": "Baker County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-241",
-      "ssp370": "cp-241"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-242",
-      "ssp370": "cp-243"
-     }
-    }
-   ],
-   "cites": [
-    "cp-244",
-    "cp-245",
-    "cp-246",
-    "cp-247",
-    "cp-248",
-    "cp-249",
-    "cp-250",
-    "cp-251",
-    "cp-252"
-   ]
-  },
-  {
-   "id": "gilliam-or",
-   "label": "Gilliam County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-265",
-      "ssp370": "cp-265"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-266",
-      "ssp370": "cp-267"
-     }
-    }
-   ],
-   "cites": [
-    "cp-268",
-    "cp-269",
-    "cp-270",
-    "cp-271",
-    "cp-272",
-    "cp-273",
-    "cp-274",
-    "cp-275",
-    "cp-276"
-   ]
-  },
-  {
-   "id": "hood-river-or",
-   "label": "Hood River County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-277",
-      "ssp370": "cp-277"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-278",
-      "ssp370": "cp-279"
-     }
-    }
-   ],
-   "cites": [
-    "cp-280",
-    "cp-281",
-    "cp-282",
-    "cp-283",
-    "cp-284",
-    "cp-285",
-    "cp-286",
-    "cp-287",
-    "cp-288"
-   ]
-  },
-  {
-   "id": "klamath-or",
-   "label": "Klamath County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-301",
-      "ssp370": "cp-301"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-302",
-      "ssp370": "cp-303"
-     }
-    }
-   ],
-   "cites": [
-    "cp-304",
-    "cp-305",
-    "cp-306",
-    "cp-307",
-    "cp-308",
-    "cp-309",
-    "cp-310",
-    "cp-311",
-    "cp-312"
-   ]
-  },
-  {
-   "id": "linn-or",
-   "label": "Linn County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-313",
-      "ssp370": "cp-313"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-314",
-      "ssp370": "cp-315"
-     }
-    }
-   ],
-   "cites": [
-    "cp-316",
-    "cp-317",
-    "cp-318",
-    "cp-319",
-    "cp-320",
-    "cp-321",
-    "cp-322",
-    "cp-323",
-    "cp-324"
-   ]
-  },
-  {
-   "id": "malheur-or",
-   "label": "Malheur County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-325",
-      "ssp370": "cp-325"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-326",
-      "ssp370": "cp-327"
-     }
-    }
-   ],
-   "cites": [
-    "cp-328",
-    "cp-329",
-    "cp-330",
-    "cp-331",
-    "cp-332",
-    "cp-333",
-    "cp-334",
-    "cp-335",
-    "cp-336"
-   ]
-  },
-  {
-   "id": "multnomah-or",
-   "label": "Multnomah County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-349",
-      "ssp370": "cp-349"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-350",
-      "ssp370": "cp-351"
-     }
-    }
-   ],
-   "cites": [
-    "cp-352",
-    "cp-353",
-    "cp-354",
-    "cp-355",
-    "cp-356",
-    "cp-357",
-    "cp-358",
-    "cp-359",
-    "cp-360"
-   ]
-  },
-  {
-   "id": "sherman-or",
-   "label": "Sherman County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-361",
-      "ssp370": "cp-361"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-362",
-      "ssp370": "cp-363"
-     }
-    }
-   ],
-   "cites": [
-    "cp-364",
-    "cp-365",
-    "cp-366",
-    "cp-367",
-    "cp-368",
-    "cp-369",
-    "cp-370",
-    "cp-371",
-    "cp-372"
-   ]
-  },
-  {
-   "id": "union-or",
-   "label": "Union County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-385",
-      "ssp370": "cp-385"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-386",
-      "ssp370": "cp-387"
-     }
-    }
-   ],
-   "cites": [
-    "cp-388",
-    "cp-389",
-    "cp-390",
-    "cp-391",
-    "cp-392",
-    "cp-393",
-    "cp-394",
-    "cp-395",
-    "cp-396"
-   ]
-  },
-  {
-   "id": "wasco-or",
-   "label": "Wasco County, OR",
-   "tag": "OR",
-   "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-397",
-      "ssp370": "cp-397"
-     }
-    },
-    {
-     "id": "fut",
-     "name": "2040 to 2059, median of seven models",
-     "claims": {
-      "ssp245": "cp-398",
-      "ssp370": "cp-399"
-     }
-    }
-   ],
-   "cites": [
-    "cp-400",
-    "cp-401",
-    "cp-402",
-    "cp-403",
-    "cp-404",
-    "cp-405",
-    "cp-406",
-    "cp-407",
-    "cp-408"
+    "cp-220",
+    "cp-221",
+    "cp-222",
+    "cp-223",
+    "cp-224",
+    "cp-225",
+    "cp-226",
+    "cp-227",
+    "cp-228"
    ]
   },
   {
    "id": "clark-wa",
    "label": "Clark County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-445",
-      "ssp370": "cp-445"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-446",
       "ssp370": "cp-447"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-445",
+      "ssp370": "cp-445"
      }
     }
    ],
@@ -1532,22 +731,21 @@
   {
    "id": "skagit-wa",
    "label": "Skagit County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-481",
-      "ssp370": "cp-481"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-482",
       "ssp370": "cp-483"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-481",
+      "ssp370": "cp-481"
      }
     }
    ],
@@ -1566,22 +764,21 @@
   {
    "id": "skamania-wa",
    "label": "Skamania County, WA",
-   "tag": "WA",
    "pair": [
-    {
-     "id": "base",
-     "name": "1995 to 2014, historical run",
-     "claims": {
-      "ssp245": "cp-493",
-      "ssp370": "cp-493"
-     }
-    },
     {
      "id": "fut",
      "name": "2040 to 2059, median of seven models",
      "claims": {
       "ssp245": "cp-494",
       "ssp370": "cp-495"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-493",
+      "ssp370": "cp-493"
      }
     }
    ],
@@ -1596,13 +793,772 @@
     "cp-503",
     "cp-504"
    ]
+  },
+  {
+   "id": "baker-or",
+   "label": "Baker County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-242",
+      "ssp370": "cp-243"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-241",
+      "ssp370": "cp-241"
+     }
+    }
+   ],
+   "cites": [
+    "cp-244",
+    "cp-245",
+    "cp-246",
+    "cp-247",
+    "cp-248",
+    "cp-249",
+    "cp-250",
+    "cp-251",
+    "cp-252"
+   ]
+  },
+  {
+   "id": "gilliam-or",
+   "label": "Gilliam County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-266",
+      "ssp370": "cp-267"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-265",
+      "ssp370": "cp-265"
+     }
+    }
+   ],
+   "cites": [
+    "cp-268",
+    "cp-269",
+    "cp-270",
+    "cp-271",
+    "cp-272",
+    "cp-273",
+    "cp-274",
+    "cp-275",
+    "cp-276"
+   ]
+  },
+  {
+   "id": "hood-river-or",
+   "label": "Hood River County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-278",
+      "ssp370": "cp-279"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-277",
+      "ssp370": "cp-277"
+     }
+    }
+   ],
+   "cites": [
+    "cp-280",
+    "cp-281",
+    "cp-282",
+    "cp-283",
+    "cp-284",
+    "cp-285",
+    "cp-286",
+    "cp-287",
+    "cp-288"
+   ]
+  },
+  {
+   "id": "klamath-or",
+   "label": "Klamath County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-302",
+      "ssp370": "cp-303"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-301",
+      "ssp370": "cp-301"
+     }
+    }
+   ],
+   "cites": [
+    "cp-304",
+    "cp-305",
+    "cp-306",
+    "cp-307",
+    "cp-308",
+    "cp-309",
+    "cp-310",
+    "cp-311",
+    "cp-312"
+   ]
+  },
+  {
+   "id": "linn-or",
+   "label": "Linn County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-314",
+      "ssp370": "cp-315"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-313",
+      "ssp370": "cp-313"
+     }
+    }
+   ],
+   "cites": [
+    "cp-316",
+    "cp-317",
+    "cp-318",
+    "cp-319",
+    "cp-320",
+    "cp-321",
+    "cp-322",
+    "cp-323",
+    "cp-324"
+   ]
+  },
+  {
+   "id": "malheur-or",
+   "label": "Malheur County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-326",
+      "ssp370": "cp-327"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-325",
+      "ssp370": "cp-325"
+     }
+    }
+   ],
+   "cites": [
+    "cp-328",
+    "cp-329",
+    "cp-330",
+    "cp-331",
+    "cp-332",
+    "cp-333",
+    "cp-334",
+    "cp-335",
+    "cp-336"
+   ]
+  },
+  {
+   "id": "multnomah-or",
+   "label": "Multnomah County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-350",
+      "ssp370": "cp-351"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-349",
+      "ssp370": "cp-349"
+     }
+    }
+   ],
+   "cites": [
+    "cp-352",
+    "cp-353",
+    "cp-354",
+    "cp-355",
+    "cp-356",
+    "cp-357",
+    "cp-358",
+    "cp-359",
+    "cp-360"
+   ]
+  },
+  {
+   "id": "sherman-or",
+   "label": "Sherman County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-362",
+      "ssp370": "cp-363"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-361",
+      "ssp370": "cp-361"
+     }
+    }
+   ],
+   "cites": [
+    "cp-364",
+    "cp-365",
+    "cp-366",
+    "cp-367",
+    "cp-368",
+    "cp-369",
+    "cp-370",
+    "cp-371",
+    "cp-372"
+   ]
+  },
+  {
+   "id": "union-or",
+   "label": "Union County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-386",
+      "ssp370": "cp-387"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-385",
+      "ssp370": "cp-385"
+     }
+    }
+   ],
+   "cites": [
+    "cp-388",
+    "cp-389",
+    "cp-390",
+    "cp-391",
+    "cp-392",
+    "cp-393",
+    "cp-394",
+    "cp-395",
+    "cp-396"
+   ]
+  },
+  {
+   "id": "wasco-or",
+   "label": "Wasco County, OR",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-398",
+      "ssp370": "cp-399"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-397",
+      "ssp370": "cp-397"
+     }
+    }
+   ],
+   "cites": [
+    "cp-400",
+    "cp-401",
+    "cp-402",
+    "cp-403",
+    "cp-404",
+    "cp-405",
+    "cp-406",
+    "cp-407",
+    "cp-408"
+   ]
+  },
+  {
+   "id": "cassia-id",
+   "label": "Cassia County, ID",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-038",
+      "ssp370": "cp-039"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-037",
+      "ssp370": "cp-037"
+     }
+    }
+   ],
+   "cites": [
+    "cp-040",
+    "cp-041",
+    "cp-042",
+    "cp-043",
+    "cp-044",
+    "cp-045",
+    "cp-046",
+    "cp-047",
+    "cp-048"
+   ]
+  },
+  {
+   "id": "gooding-id",
+   "label": "Gooding County, ID",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-062",
+      "ssp370": "cp-063"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-061",
+      "ssp370": "cp-061"
+     }
+    }
+   ],
+   "cites": [
+    "cp-064",
+    "cp-065",
+    "cp-066",
+    "cp-067",
+    "cp-068",
+    "cp-069",
+    "cp-070",
+    "cp-071",
+    "cp-072"
+   ]
+  },
+  {
+   "id": "jerome-id",
+   "label": "Jerome County, ID",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-074",
+      "ssp370": "cp-075"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-073",
+      "ssp370": "cp-073"
+     }
+    }
+   ],
+   "cites": [
+    "cp-076",
+    "cp-077",
+    "cp-078",
+    "cp-079",
+    "cp-080",
+    "cp-081",
+    "cp-082",
+    "cp-083",
+    "cp-084"
+   ]
+  },
+  {
+   "id": "lincoln-id",
+   "label": "Lincoln County, ID",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-086",
+      "ssp370": "cp-087"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-085",
+      "ssp370": "cp-085"
+     }
+    }
+   ],
+   "cites": [
+    "cp-088",
+    "cp-089",
+    "cp-090",
+    "cp-091",
+    "cp-092",
+    "cp-093",
+    "cp-094",
+    "cp-095",
+    "cp-096"
+   ]
+  },
+  {
+   "id": "twin-falls-id",
+   "label": "Twin Falls County, ID",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-098",
+      "ssp370": "cp-099"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-097",
+      "ssp370": "cp-097"
+     }
+    }
+   ],
+   "cites": [
+    "cp-100",
+    "cp-101",
+    "cp-102",
+    "cp-103",
+    "cp-104",
+    "cp-105",
+    "cp-106",
+    "cp-107",
+    "cp-108"
+   ]
+  },
+  {
+   "id": "custer-mt",
+   "label": "Custer County, MT",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-110",
+      "ssp370": "cp-111"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-109",
+      "ssp370": "cp-109"
+     }
+    }
+   ],
+   "cites": [
+    "cp-112",
+    "cp-113",
+    "cp-114",
+    "cp-115",
+    "cp-116",
+    "cp-117",
+    "cp-118",
+    "cp-119",
+    "cp-120"
+   ]
+  },
+  {
+   "id": "fallon-mt",
+   "label": "Fallon County, MT",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-122",
+      "ssp370": "cp-123"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-121",
+      "ssp370": "cp-121"
+     }
+    }
+   ],
+   "cites": [
+    "cp-124",
+    "cp-125",
+    "cp-126",
+    "cp-127",
+    "cp-128",
+    "cp-129",
+    "cp-130",
+    "cp-131",
+    "cp-132"
+   ]
+  },
+  {
+   "id": "glacier-mt",
+   "label": "Glacier County, MT",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-134",
+      "ssp370": "cp-135"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-133",
+      "ssp370": "cp-133"
+     }
+    }
+   ],
+   "cites": [
+    "cp-136",
+    "cp-137",
+    "cp-138",
+    "cp-139",
+    "cp-140",
+    "cp-141",
+    "cp-142",
+    "cp-143",
+    "cp-144"
+   ]
+  },
+  {
+   "id": "rosebud-mt",
+   "label": "Rosebud County, MT",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-146",
+      "ssp370": "cp-147"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-145",
+      "ssp370": "cp-145"
+     }
+    }
+   ],
+   "cites": [
+    "cp-148",
+    "cp-149",
+    "cp-150",
+    "cp-151",
+    "cp-152",
+    "cp-153",
+    "cp-154",
+    "cp-155",
+    "cp-156"
+   ]
+  },
+  {
+   "id": "toole-mt",
+   "label": "Toole County, MT",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-170",
+      "ssp370": "cp-171"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-169",
+      "ssp370": "cp-169"
+     }
+    }
+   ],
+   "cites": [
+    "cp-172",
+    "cp-173",
+    "cp-174",
+    "cp-175",
+    "cp-176",
+    "cp-177",
+    "cp-178",
+    "cp-179",
+    "cp-180"
+   ]
+  },
+  {
+   "id": "mineral-nv",
+   "label": "Mineral County, NV",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-206",
+      "ssp370": "cp-207"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-205",
+      "ssp370": "cp-205"
+     }
+    }
+   ],
+   "cites": [
+    "cp-208",
+    "cp-209",
+    "cp-210",
+    "cp-211",
+    "cp-212",
+    "cp-213",
+    "cp-214",
+    "cp-215",
+    "cp-216"
+   ]
+  },
+  {
+   "id": "white-pine-nv",
+   "label": "White Pine County, NV",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-230",
+      "ssp370": "cp-231"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-229",
+      "ssp370": "cp-229"
+     }
+    }
+   ],
+   "cites": [
+    "cp-232",
+    "cp-233",
+    "cp-234",
+    "cp-235",
+    "cp-236",
+    "cp-237",
+    "cp-238",
+    "cp-239",
+    "cp-240"
+   ]
+  },
+  {
+   "id": "humboldt-ca",
+   "label": "Humboldt County, CA",
+   "pair": [
+    {
+     "id": "fut",
+     "name": "2040 to 2059, median of seven models",
+     "claims": {
+      "ssp245": "cp-002",
+      "ssp370": "cp-003"
+     }
+    },
+    {
+     "id": "base",
+     "name": "1995 to 2014, historical run",
+     "claims": {
+      "ssp245": "cp-001",
+      "ssp370": "cp-001"
+     }
+    }
+   ],
+   "cites": [
+    "cp-004",
+    "cp-005",
+    "cp-006",
+    "cp-007",
+    "cp-008",
+    "cp-009",
+    "cp-010",
+    "cp-011",
+    "cp-012"
+   ]
   }
  ],
  "details": [
   "Climate scenarios used were from the NEX-GDDP-CMIP6 dataset, prepared by the Climate Analytics Group and NASA Ames Research Center using the NASA Earth eXchange (NEX) and distributed by the NASA Center for Climate Simulation (NCCS).",
   "NASA's own words on use: “This dataset is intended for use in scientific research only, and use of this dataset for other purposes, such as commercial applications, and engineering or design studies is not recommended without consultation with a qualified expert.”",
   "Seven global models: ACCESS-ESM1-5, CNRM-ESM2-1, EC-Earth3, GFDL-ESM4, GISS-E2-1-G, MIROC6, and MRI-ESM2-0. An eighth planned model, MPI-ESM1-2-HR, was left out to fit a download cap.",
-  "At 2040 to 2059 the two scenarios barely differ, and in some counties the higher-emissions median is the cooler of the two.",
+  "At 2040 to 2059 the two scenarios barely differ, and in about half the counties the higher-emissions median is the lower of the two.",
   "Each county's figure is the plain mean of the grid cells whose centres fall inside it, after each cell's own count or mean is taken. Checked against NOAA's 1991 to 2020 station normals in two counties, the 1995 to 2014 daytime highs ran warmer than the station, and precipitation ran drier in one county and wetter in the other."
  ],
  "foot": [
@@ -1670,26 +1626,268 @@
    "ssp370": "SSP3-7.0, higher emissions"
   },
   "dc": [
+   "benton-wa",
+   "chelan-wa",
+   "cowlitz-wa",
+   "klickitat-wa",
+   "spokane-wa",
+   "walla-walla-wa",
+   "crook-or",
+   "jefferson-or",
+   "morrow-or",
+   "umatilla-or",
+   "washington-or",
    "ada-id",
    "bannock-id",
    "elmore-id",
    "silver-bow-mt",
    "yellowstone-mt",
    "lyon-nv",
-   "storey-nv",
-   "crook-or",
-   "jefferson-or",
-   "morrow-or",
-   "umatilla-or",
-   "washington-or",
-   "benton-wa",
-   "chelan-wa",
-   "cowlitz-wa",
-   "klickitat-wa",
-   "spokane-wa",
-   "walla-walla-wa"
+   "storey-nv"
   ],
   "rows": {
+   "benton-wa": {
+    "tmax_summer": {
+     "baseline": "cp-421",
+     "ssp245": "cp-422",
+     "ssp370": "cp-423"
+    },
+    "tmax_annual": {
+     "baseline": "cp-424",
+     "ssp245": "cp-425",
+     "ssp370": "cp-426"
+    },
+    "days_95": {
+     "baseline": "cp-427",
+     "ssp245": "cp-428",
+     "ssp370": "cp-429"
+    },
+    "pr_annual": {
+     "baseline": "cp-430",
+     "ssp245": "cp-431",
+     "ssp370": "cp-432"
+    }
+   },
+   "chelan-wa": {
+    "tmax_summer": {
+     "baseline": "cp-433",
+     "ssp245": "cp-434",
+     "ssp370": "cp-435"
+    },
+    "tmax_annual": {
+     "baseline": "cp-436",
+     "ssp245": "cp-437",
+     "ssp370": "cp-438"
+    },
+    "days_95": {
+     "baseline": "cp-439",
+     "ssp245": "cp-440",
+     "ssp370": "cp-441"
+    },
+    "pr_annual": {
+     "baseline": "cp-442",
+     "ssp245": "cp-443",
+     "ssp370": "cp-444"
+    }
+   },
+   "cowlitz-wa": {
+    "tmax_summer": {
+     "baseline": "cp-457",
+     "ssp245": "cp-458",
+     "ssp370": "cp-459"
+    },
+    "tmax_annual": {
+     "baseline": "cp-460",
+     "ssp245": "cp-461",
+     "ssp370": "cp-462"
+    },
+    "days_95": {
+     "baseline": "cp-463",
+     "ssp245": "cp-464",
+     "ssp370": "cp-465"
+    },
+    "pr_annual": {
+     "baseline": "cp-466",
+     "ssp245": "cp-467",
+     "ssp370": "cp-468"
+    }
+   },
+   "klickitat-wa": {
+    "tmax_summer": {
+     "baseline": "cp-469",
+     "ssp245": "cp-470",
+     "ssp370": "cp-471"
+    },
+    "tmax_annual": {
+     "baseline": "cp-472",
+     "ssp245": "cp-473",
+     "ssp370": "cp-474"
+    },
+    "days_95": {
+     "baseline": "cp-475",
+     "ssp245": "cp-476",
+     "ssp370": "cp-477"
+    },
+    "pr_annual": {
+     "baseline": "cp-478",
+     "ssp245": "cp-479",
+     "ssp370": "cp-480"
+    }
+   },
+   "spokane-wa": {
+    "tmax_summer": {
+     "baseline": "cp-505",
+     "ssp245": "cp-506",
+     "ssp370": "cp-507"
+    },
+    "tmax_annual": {
+     "baseline": "cp-508",
+     "ssp245": "cp-509",
+     "ssp370": "cp-510"
+    },
+    "days_95": {
+     "baseline": "cp-511",
+     "ssp245": "cp-512",
+     "ssp370": "cp-513"
+    },
+    "pr_annual": {
+     "baseline": "cp-514",
+     "ssp245": "cp-515",
+     "ssp370": "cp-516"
+    }
+   },
+   "walla-walla-wa": {
+    "tmax_summer": {
+     "baseline": "cp-517",
+     "ssp245": "cp-518",
+     "ssp370": "cp-519"
+    },
+    "tmax_annual": {
+     "baseline": "cp-520",
+     "ssp245": "cp-521",
+     "ssp370": "cp-522"
+    },
+    "days_95": {
+     "baseline": "cp-523",
+     "ssp245": "cp-524",
+     "ssp370": "cp-525"
+    },
+    "pr_annual": {
+     "baseline": "cp-526",
+     "ssp245": "cp-527",
+     "ssp370": "cp-528"
+    }
+   },
+   "crook-or": {
+    "tmax_summer": {
+     "baseline": "cp-253",
+     "ssp245": "cp-254",
+     "ssp370": "cp-255"
+    },
+    "tmax_annual": {
+     "baseline": "cp-256",
+     "ssp245": "cp-257",
+     "ssp370": "cp-258"
+    },
+    "days_95": {
+     "baseline": "cp-259",
+     "ssp245": "cp-260",
+     "ssp370": "cp-261"
+    },
+    "pr_annual": {
+     "baseline": "cp-262",
+     "ssp245": "cp-263",
+     "ssp370": "cp-264"
+    }
+   },
+   "jefferson-or": {
+    "tmax_summer": {
+     "baseline": "cp-289",
+     "ssp245": "cp-290",
+     "ssp370": "cp-291"
+    },
+    "tmax_annual": {
+     "baseline": "cp-292",
+     "ssp245": "cp-293",
+     "ssp370": "cp-294"
+    },
+    "days_95": {
+     "baseline": "cp-295",
+     "ssp245": "cp-296",
+     "ssp370": "cp-297"
+    },
+    "pr_annual": {
+     "baseline": "cp-298",
+     "ssp245": "cp-299",
+     "ssp370": "cp-300"
+    }
+   },
+   "morrow-or": {
+    "tmax_summer": {
+     "baseline": "cp-337",
+     "ssp245": "cp-338",
+     "ssp370": "cp-339"
+    },
+    "tmax_annual": {
+     "baseline": "cp-340",
+     "ssp245": "cp-341",
+     "ssp370": "cp-342"
+    },
+    "days_95": {
+     "baseline": "cp-343",
+     "ssp245": "cp-344",
+     "ssp370": "cp-345"
+    },
+    "pr_annual": {
+     "baseline": "cp-346",
+     "ssp245": "cp-347",
+     "ssp370": "cp-348"
+    }
+   },
+   "umatilla-or": {
+    "tmax_summer": {
+     "baseline": "cp-373",
+     "ssp245": "cp-374",
+     "ssp370": "cp-375"
+    },
+    "tmax_annual": {
+     "baseline": "cp-376",
+     "ssp245": "cp-377",
+     "ssp370": "cp-378"
+    },
+    "days_95": {
+     "baseline": "cp-379",
+     "ssp245": "cp-380",
+     "ssp370": "cp-381"
+    },
+    "pr_annual": {
+     "baseline": "cp-382",
+     "ssp245": "cp-383",
+     "ssp370": "cp-384"
+    }
+   },
+   "washington-or": {
+    "tmax_summer": {
+     "baseline": "cp-409",
+     "ssp245": "cp-410",
+     "ssp370": "cp-411"
+    },
+    "tmax_annual": {
+     "baseline": "cp-412",
+     "ssp245": "cp-413",
+     "ssp370": "cp-414"
+    },
+    "days_95": {
+     "baseline": "cp-415",
+     "ssp245": "cp-416",
+     "ssp370": "cp-417"
+    },
+    "pr_annual": {
+     "baseline": "cp-418",
+     "ssp245": "cp-419",
+     "ssp370": "cp-420"
+    }
+   },
    "ada-id": {
     "tmax_summer": {
      "baseline": "cp-013",
@@ -1844,268 +2042,290 @@
      "ssp370": "cp-228"
     }
    },
-   "crook-or": {
+   "clark-wa": {
     "tmax_summer": {
-     "baseline": "cp-253",
-     "ssp245": "cp-254",
-     "ssp370": "cp-255"
+     "baseline": "cp-445",
+     "ssp245": "cp-446",
+     "ssp370": "cp-447"
     },
     "tmax_annual": {
-     "baseline": "cp-256",
-     "ssp245": "cp-257",
-     "ssp370": "cp-258"
+     "baseline": "cp-448",
+     "ssp245": "cp-449",
+     "ssp370": "cp-450"
     },
     "days_95": {
-     "baseline": "cp-259",
-     "ssp245": "cp-260",
-     "ssp370": "cp-261"
+     "baseline": "cp-451",
+     "ssp245": "cp-452",
+     "ssp370": "cp-453"
     },
     "pr_annual": {
-     "baseline": "cp-262",
-     "ssp245": "cp-263",
-     "ssp370": "cp-264"
+     "baseline": "cp-454",
+     "ssp245": "cp-455",
+     "ssp370": "cp-456"
     }
    },
-   "jefferson-or": {
+   "skagit-wa": {
     "tmax_summer": {
-     "baseline": "cp-289",
-     "ssp245": "cp-290",
-     "ssp370": "cp-291"
+     "baseline": "cp-481",
+     "ssp245": "cp-482",
+     "ssp370": "cp-483"
     },
     "tmax_annual": {
-     "baseline": "cp-292",
-     "ssp245": "cp-293",
-     "ssp370": "cp-294"
+     "baseline": "cp-484",
+     "ssp245": "cp-485",
+     "ssp370": "cp-486"
     },
     "days_95": {
-     "baseline": "cp-295",
-     "ssp245": "cp-296",
-     "ssp370": "cp-297"
+     "baseline": "cp-487",
+     "ssp245": "cp-488",
+     "ssp370": "cp-489"
     },
     "pr_annual": {
-     "baseline": "cp-298",
-     "ssp245": "cp-299",
-     "ssp370": "cp-300"
+     "baseline": "cp-490",
+     "ssp245": "cp-491",
+     "ssp370": "cp-492"
     }
    },
-   "morrow-or": {
+   "skamania-wa": {
     "tmax_summer": {
-     "baseline": "cp-337",
-     "ssp245": "cp-338",
-     "ssp370": "cp-339"
+     "baseline": "cp-493",
+     "ssp245": "cp-494",
+     "ssp370": "cp-495"
     },
     "tmax_annual": {
-     "baseline": "cp-340",
-     "ssp245": "cp-341",
-     "ssp370": "cp-342"
+     "baseline": "cp-496",
+     "ssp245": "cp-497",
+     "ssp370": "cp-498"
     },
     "days_95": {
-     "baseline": "cp-343",
-     "ssp245": "cp-344",
-     "ssp370": "cp-345"
+     "baseline": "cp-499",
+     "ssp245": "cp-500",
+     "ssp370": "cp-501"
     },
     "pr_annual": {
-     "baseline": "cp-346",
-     "ssp245": "cp-347",
-     "ssp370": "cp-348"
+     "baseline": "cp-502",
+     "ssp245": "cp-503",
+     "ssp370": "cp-504"
     }
    },
-   "umatilla-or": {
+   "baker-or": {
     "tmax_summer": {
-     "baseline": "cp-373",
-     "ssp245": "cp-374",
-     "ssp370": "cp-375"
+     "baseline": "cp-241",
+     "ssp245": "cp-242",
+     "ssp370": "cp-243"
     },
     "tmax_annual": {
-     "baseline": "cp-376",
-     "ssp245": "cp-377",
-     "ssp370": "cp-378"
+     "baseline": "cp-244",
+     "ssp245": "cp-245",
+     "ssp370": "cp-246"
     },
     "days_95": {
-     "baseline": "cp-379",
-     "ssp245": "cp-380",
-     "ssp370": "cp-381"
+     "baseline": "cp-247",
+     "ssp245": "cp-248",
+     "ssp370": "cp-249"
     },
     "pr_annual": {
-     "baseline": "cp-382",
-     "ssp245": "cp-383",
-     "ssp370": "cp-384"
+     "baseline": "cp-250",
+     "ssp245": "cp-251",
+     "ssp370": "cp-252"
     }
    },
-   "washington-or": {
+   "gilliam-or": {
     "tmax_summer": {
-     "baseline": "cp-409",
-     "ssp245": "cp-410",
-     "ssp370": "cp-411"
+     "baseline": "cp-265",
+     "ssp245": "cp-266",
+     "ssp370": "cp-267"
     },
     "tmax_annual": {
-     "baseline": "cp-412",
-     "ssp245": "cp-413",
-     "ssp370": "cp-414"
+     "baseline": "cp-268",
+     "ssp245": "cp-269",
+     "ssp370": "cp-270"
     },
     "days_95": {
-     "baseline": "cp-415",
-     "ssp245": "cp-416",
-     "ssp370": "cp-417"
+     "baseline": "cp-271",
+     "ssp245": "cp-272",
+     "ssp370": "cp-273"
     },
     "pr_annual": {
-     "baseline": "cp-418",
-     "ssp245": "cp-419",
-     "ssp370": "cp-420"
+     "baseline": "cp-274",
+     "ssp245": "cp-275",
+     "ssp370": "cp-276"
     }
    },
-   "benton-wa": {
+   "hood-river-or": {
     "tmax_summer": {
-     "baseline": "cp-421",
-     "ssp245": "cp-422",
-     "ssp370": "cp-423"
+     "baseline": "cp-277",
+     "ssp245": "cp-278",
+     "ssp370": "cp-279"
     },
     "tmax_annual": {
-     "baseline": "cp-424",
-     "ssp245": "cp-425",
-     "ssp370": "cp-426"
+     "baseline": "cp-280",
+     "ssp245": "cp-281",
+     "ssp370": "cp-282"
     },
     "days_95": {
-     "baseline": "cp-427",
-     "ssp245": "cp-428",
-     "ssp370": "cp-429"
+     "baseline": "cp-283",
+     "ssp245": "cp-284",
+     "ssp370": "cp-285"
     },
     "pr_annual": {
-     "baseline": "cp-430",
-     "ssp245": "cp-431",
-     "ssp370": "cp-432"
+     "baseline": "cp-286",
+     "ssp245": "cp-287",
+     "ssp370": "cp-288"
     }
    },
-   "chelan-wa": {
+   "klamath-or": {
     "tmax_summer": {
-     "baseline": "cp-433",
-     "ssp245": "cp-434",
-     "ssp370": "cp-435"
+     "baseline": "cp-301",
+     "ssp245": "cp-302",
+     "ssp370": "cp-303"
     },
     "tmax_annual": {
-     "baseline": "cp-436",
-     "ssp245": "cp-437",
-     "ssp370": "cp-438"
+     "baseline": "cp-304",
+     "ssp245": "cp-305",
+     "ssp370": "cp-306"
     },
     "days_95": {
-     "baseline": "cp-439",
-     "ssp245": "cp-440",
-     "ssp370": "cp-441"
+     "baseline": "cp-307",
+     "ssp245": "cp-308",
+     "ssp370": "cp-309"
     },
     "pr_annual": {
-     "baseline": "cp-442",
-     "ssp245": "cp-443",
-     "ssp370": "cp-444"
+     "baseline": "cp-310",
+     "ssp245": "cp-311",
+     "ssp370": "cp-312"
     }
    },
-   "cowlitz-wa": {
+   "linn-or": {
     "tmax_summer": {
-     "baseline": "cp-457",
-     "ssp245": "cp-458",
-     "ssp370": "cp-459"
+     "baseline": "cp-313",
+     "ssp245": "cp-314",
+     "ssp370": "cp-315"
     },
     "tmax_annual": {
-     "baseline": "cp-460",
-     "ssp245": "cp-461",
-     "ssp370": "cp-462"
+     "baseline": "cp-316",
+     "ssp245": "cp-317",
+     "ssp370": "cp-318"
     },
     "days_95": {
-     "baseline": "cp-463",
-     "ssp245": "cp-464",
-     "ssp370": "cp-465"
+     "baseline": "cp-319",
+     "ssp245": "cp-320",
+     "ssp370": "cp-321"
     },
     "pr_annual": {
-     "baseline": "cp-466",
-     "ssp245": "cp-467",
-     "ssp370": "cp-468"
+     "baseline": "cp-322",
+     "ssp245": "cp-323",
+     "ssp370": "cp-324"
     }
    },
-   "klickitat-wa": {
+   "malheur-or": {
     "tmax_summer": {
-     "baseline": "cp-469",
-     "ssp245": "cp-470",
-     "ssp370": "cp-471"
+     "baseline": "cp-325",
+     "ssp245": "cp-326",
+     "ssp370": "cp-327"
     },
     "tmax_annual": {
-     "baseline": "cp-472",
-     "ssp245": "cp-473",
-     "ssp370": "cp-474"
+     "baseline": "cp-328",
+     "ssp245": "cp-329",
+     "ssp370": "cp-330"
     },
     "days_95": {
-     "baseline": "cp-475",
-     "ssp245": "cp-476",
-     "ssp370": "cp-477"
+     "baseline": "cp-331",
+     "ssp245": "cp-332",
+     "ssp370": "cp-333"
     },
     "pr_annual": {
-     "baseline": "cp-478",
-     "ssp245": "cp-479",
-     "ssp370": "cp-480"
+     "baseline": "cp-334",
+     "ssp245": "cp-335",
+     "ssp370": "cp-336"
     }
    },
-   "spokane-wa": {
+   "multnomah-or": {
     "tmax_summer": {
-     "baseline": "cp-505",
-     "ssp245": "cp-506",
-     "ssp370": "cp-507"
+     "baseline": "cp-349",
+     "ssp245": "cp-350",
+     "ssp370": "cp-351"
     },
     "tmax_annual": {
-     "baseline": "cp-508",
-     "ssp245": "cp-509",
-     "ssp370": "cp-510"
+     "baseline": "cp-352",
+     "ssp245": "cp-353",
+     "ssp370": "cp-354"
     },
     "days_95": {
-     "baseline": "cp-511",
-     "ssp245": "cp-512",
-     "ssp370": "cp-513"
+     "baseline": "cp-355",
+     "ssp245": "cp-356",
+     "ssp370": "cp-357"
     },
     "pr_annual": {
-     "baseline": "cp-514",
-     "ssp245": "cp-515",
-     "ssp370": "cp-516"
+     "baseline": "cp-358",
+     "ssp245": "cp-359",
+     "ssp370": "cp-360"
     }
    },
-   "walla-walla-wa": {
+   "sherman-or": {
     "tmax_summer": {
-     "baseline": "cp-517",
-     "ssp245": "cp-518",
-     "ssp370": "cp-519"
+     "baseline": "cp-361",
+     "ssp245": "cp-362",
+     "ssp370": "cp-363"
     },
     "tmax_annual": {
-     "baseline": "cp-520",
-     "ssp245": "cp-521",
-     "ssp370": "cp-522"
+     "baseline": "cp-364",
+     "ssp245": "cp-365",
+     "ssp370": "cp-366"
     },
     "days_95": {
-     "baseline": "cp-523",
-     "ssp245": "cp-524",
-     "ssp370": "cp-525"
+     "baseline": "cp-367",
+     "ssp245": "cp-368",
+     "ssp370": "cp-369"
     },
     "pr_annual": {
-     "baseline": "cp-526",
-     "ssp245": "cp-527",
-     "ssp370": "cp-528"
+     "baseline": "cp-370",
+     "ssp245": "cp-371",
+     "ssp370": "cp-372"
     }
    },
-   "humboldt-ca": {
+   "union-or": {
     "tmax_summer": {
-     "baseline": "cp-001",
-     "ssp245": "cp-002",
-     "ssp370": "cp-003"
+     "baseline": "cp-385",
+     "ssp245": "cp-386",
+     "ssp370": "cp-387"
     },
     "tmax_annual": {
-     "baseline": "cp-004",
-     "ssp245": "cp-005",
-     "ssp370": "cp-006"
+     "baseline": "cp-388",
+     "ssp245": "cp-389",
+     "ssp370": "cp-390"
     },
     "days_95": {
-     "baseline": "cp-007",
-     "ssp245": "cp-008",
-     "ssp370": "cp-009"
+     "baseline": "cp-391",
+     "ssp245": "cp-392",
+     "ssp370": "cp-393"
     },
     "pr_annual": {
-     "baseline": "cp-010",
-     "ssp245": "cp-011",
-     "ssp370": "cp-012"
+     "baseline": "cp-394",
+     "ssp245": "cp-395",
+     "ssp370": "cp-396"
+    }
+   },
+   "wasco-or": {
+    "tmax_summer": {
+     "baseline": "cp-397",
+     "ssp245": "cp-398",
+     "ssp370": "cp-399"
+    },
+    "tmax_annual": {
+     "baseline": "cp-400",
+     "ssp245": "cp-401",
+     "ssp370": "cp-402"
+    },
+    "days_95": {
+     "baseline": "cp-403",
+     "ssp245": "cp-404",
+     "ssp370": "cp-405"
+    },
+    "pr_annual": {
+     "baseline": "cp-406",
+     "ssp245": "cp-407",
+     "ssp370": "cp-408"
     }
    },
    "cassia-id": {
@@ -2372,290 +2592,26 @@
      "ssp370": "cp-240"
     }
    },
-   "baker-or": {
+   "humboldt-ca": {
     "tmax_summer": {
-     "baseline": "cp-241",
-     "ssp245": "cp-242",
-     "ssp370": "cp-243"
+     "baseline": "cp-001",
+     "ssp245": "cp-002",
+     "ssp370": "cp-003"
     },
     "tmax_annual": {
-     "baseline": "cp-244",
-     "ssp245": "cp-245",
-     "ssp370": "cp-246"
+     "baseline": "cp-004",
+     "ssp245": "cp-005",
+     "ssp370": "cp-006"
     },
     "days_95": {
-     "baseline": "cp-247",
-     "ssp245": "cp-248",
-     "ssp370": "cp-249"
+     "baseline": "cp-007",
+     "ssp245": "cp-008",
+     "ssp370": "cp-009"
     },
     "pr_annual": {
-     "baseline": "cp-250",
-     "ssp245": "cp-251",
-     "ssp370": "cp-252"
-    }
-   },
-   "gilliam-or": {
-    "tmax_summer": {
-     "baseline": "cp-265",
-     "ssp245": "cp-266",
-     "ssp370": "cp-267"
-    },
-    "tmax_annual": {
-     "baseline": "cp-268",
-     "ssp245": "cp-269",
-     "ssp370": "cp-270"
-    },
-    "days_95": {
-     "baseline": "cp-271",
-     "ssp245": "cp-272",
-     "ssp370": "cp-273"
-    },
-    "pr_annual": {
-     "baseline": "cp-274",
-     "ssp245": "cp-275",
-     "ssp370": "cp-276"
-    }
-   },
-   "hood-river-or": {
-    "tmax_summer": {
-     "baseline": "cp-277",
-     "ssp245": "cp-278",
-     "ssp370": "cp-279"
-    },
-    "tmax_annual": {
-     "baseline": "cp-280",
-     "ssp245": "cp-281",
-     "ssp370": "cp-282"
-    },
-    "days_95": {
-     "baseline": "cp-283",
-     "ssp245": "cp-284",
-     "ssp370": "cp-285"
-    },
-    "pr_annual": {
-     "baseline": "cp-286",
-     "ssp245": "cp-287",
-     "ssp370": "cp-288"
-    }
-   },
-   "klamath-or": {
-    "tmax_summer": {
-     "baseline": "cp-301",
-     "ssp245": "cp-302",
-     "ssp370": "cp-303"
-    },
-    "tmax_annual": {
-     "baseline": "cp-304",
-     "ssp245": "cp-305",
-     "ssp370": "cp-306"
-    },
-    "days_95": {
-     "baseline": "cp-307",
-     "ssp245": "cp-308",
-     "ssp370": "cp-309"
-    },
-    "pr_annual": {
-     "baseline": "cp-310",
-     "ssp245": "cp-311",
-     "ssp370": "cp-312"
-    }
-   },
-   "linn-or": {
-    "tmax_summer": {
-     "baseline": "cp-313",
-     "ssp245": "cp-314",
-     "ssp370": "cp-315"
-    },
-    "tmax_annual": {
-     "baseline": "cp-316",
-     "ssp245": "cp-317",
-     "ssp370": "cp-318"
-    },
-    "days_95": {
-     "baseline": "cp-319",
-     "ssp245": "cp-320",
-     "ssp370": "cp-321"
-    },
-    "pr_annual": {
-     "baseline": "cp-322",
-     "ssp245": "cp-323",
-     "ssp370": "cp-324"
-    }
-   },
-   "malheur-or": {
-    "tmax_summer": {
-     "baseline": "cp-325",
-     "ssp245": "cp-326",
-     "ssp370": "cp-327"
-    },
-    "tmax_annual": {
-     "baseline": "cp-328",
-     "ssp245": "cp-329",
-     "ssp370": "cp-330"
-    },
-    "days_95": {
-     "baseline": "cp-331",
-     "ssp245": "cp-332",
-     "ssp370": "cp-333"
-    },
-    "pr_annual": {
-     "baseline": "cp-334",
-     "ssp245": "cp-335",
-     "ssp370": "cp-336"
-    }
-   },
-   "multnomah-or": {
-    "tmax_summer": {
-     "baseline": "cp-349",
-     "ssp245": "cp-350",
-     "ssp370": "cp-351"
-    },
-    "tmax_annual": {
-     "baseline": "cp-352",
-     "ssp245": "cp-353",
-     "ssp370": "cp-354"
-    },
-    "days_95": {
-     "baseline": "cp-355",
-     "ssp245": "cp-356",
-     "ssp370": "cp-357"
-    },
-    "pr_annual": {
-     "baseline": "cp-358",
-     "ssp245": "cp-359",
-     "ssp370": "cp-360"
-    }
-   },
-   "sherman-or": {
-    "tmax_summer": {
-     "baseline": "cp-361",
-     "ssp245": "cp-362",
-     "ssp370": "cp-363"
-    },
-    "tmax_annual": {
-     "baseline": "cp-364",
-     "ssp245": "cp-365",
-     "ssp370": "cp-366"
-    },
-    "days_95": {
-     "baseline": "cp-367",
-     "ssp245": "cp-368",
-     "ssp370": "cp-369"
-    },
-    "pr_annual": {
-     "baseline": "cp-370",
-     "ssp245": "cp-371",
-     "ssp370": "cp-372"
-    }
-   },
-   "union-or": {
-    "tmax_summer": {
-     "baseline": "cp-385",
-     "ssp245": "cp-386",
-     "ssp370": "cp-387"
-    },
-    "tmax_annual": {
-     "baseline": "cp-388",
-     "ssp245": "cp-389",
-     "ssp370": "cp-390"
-    },
-    "days_95": {
-     "baseline": "cp-391",
-     "ssp245": "cp-392",
-     "ssp370": "cp-393"
-    },
-    "pr_annual": {
-     "baseline": "cp-394",
-     "ssp245": "cp-395",
-     "ssp370": "cp-396"
-    }
-   },
-   "wasco-or": {
-    "tmax_summer": {
-     "baseline": "cp-397",
-     "ssp245": "cp-398",
-     "ssp370": "cp-399"
-    },
-    "tmax_annual": {
-     "baseline": "cp-400",
-     "ssp245": "cp-401",
-     "ssp370": "cp-402"
-    },
-    "days_95": {
-     "baseline": "cp-403",
-     "ssp245": "cp-404",
-     "ssp370": "cp-405"
-    },
-    "pr_annual": {
-     "baseline": "cp-406",
-     "ssp245": "cp-407",
-     "ssp370": "cp-408"
-    }
-   },
-   "clark-wa": {
-    "tmax_summer": {
-     "baseline": "cp-445",
-     "ssp245": "cp-446",
-     "ssp370": "cp-447"
-    },
-    "tmax_annual": {
-     "baseline": "cp-448",
-     "ssp245": "cp-449",
-     "ssp370": "cp-450"
-    },
-    "days_95": {
-     "baseline": "cp-451",
-     "ssp245": "cp-452",
-     "ssp370": "cp-453"
-    },
-    "pr_annual": {
-     "baseline": "cp-454",
-     "ssp245": "cp-455",
-     "ssp370": "cp-456"
-    }
-   },
-   "skagit-wa": {
-    "tmax_summer": {
-     "baseline": "cp-481",
-     "ssp245": "cp-482",
-     "ssp370": "cp-483"
-    },
-    "tmax_annual": {
-     "baseline": "cp-484",
-     "ssp245": "cp-485",
-     "ssp370": "cp-486"
-    },
-    "days_95": {
-     "baseline": "cp-487",
-     "ssp245": "cp-488",
-     "ssp370": "cp-489"
-    },
-    "pr_annual": {
-     "baseline": "cp-490",
-     "ssp245": "cp-491",
-     "ssp370": "cp-492"
-    }
-   },
-   "skamania-wa": {
-    "tmax_summer": {
-     "baseline": "cp-493",
-     "ssp245": "cp-494",
-     "ssp370": "cp-495"
-    },
-    "tmax_annual": {
-     "baseline": "cp-496",
-     "ssp245": "cp-497",
-     "ssp370": "cp-498"
-    },
-    "days_95": {
-     "baseline": "cp-499",
-     "ssp245": "cp-500",
-     "ssp370": "cp-501"
-    },
-    "pr_annual": {
-     "baseline": "cp-502",
-     "ssp245": "cp-503",
-     "ssp370": "cp-504"
+     "baseline": "cp-010",
+     "ssp245": "cp-011",
+     "ssp370": "cp-012"
     }
    }
   }
