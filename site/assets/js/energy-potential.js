@@ -205,10 +205,8 @@ function typesPlate(figure, pick) {
       node.querySelector('.ladder-track').append(bar);
       node.classList.toggle('is-zero', !row.value);
     }
-    const key = document.createElement('div');
-    key.className = 'plate-under';
-    key.innerHTML = `<ul class="legend plate-legend" aria-label="Most advanced stage found">${Object.values(STAGE_KEYS).map((label, i) => `<li><i class="plate-square stage-${4 - i} energy-key"></i>${esc(label)}</li>`).join('')}</ul>`;
-    ctx.plot.after(key);
+    // The key leads the row the kit keeps under the plot for Read as a table; a second row of its own would lie over that one.
+    figure.querySelector(':scope > .plate-under').insertAdjacentHTML('afterbegin', `<ul class="legend plate-legend" aria-label="Most advanced stage found">${Object.values(STAGE_KEYS).map((label, i) => `<li><i class="plate-square stage-${4 - i} energy-key"></i>${esc(label)}</li>`).join('')}</ul>`);
     // The figures the build wrote as sentences stand large; a sentence stays one sentence aloud.
     for (const p of figure.querySelectorAll('.plate-claim > p:not([class])')) {
       const match = /^([\d,]+) (.+)$/.exec(p.textContent);

@@ -1,6 +1,12 @@
 /* The Council Briefing: a rail of ticks at left and, at right, the packet, which is the printed document itself. Sizes, inks, and marks are the foundation's.
    A section not chosen is not laid out, so its plate draws when it is ticked. Without scripts every section shows and the rail is a jump list. */
 .has-js .packet-page:not(.is-chosen) { display: none; }
+/* briefing.js sets has-js before the first paint, so what it shows or hides holds its final place from the start and nothing moves when it runs: the ticks,
+   the packet's buttons, and their notes take their room, unseen until the form is wired, and the cover opens as an empty packet. Without scripts none of
+   them shows, the rail is a jump list, and the cover lists every section. */
+html:not(.has-js) .briefing-rail [data-js], html:not(.has-js) [data-empty] { display: none; }
+.has-js .briefing-rail form:not(.is-live) [data-js] { visibility: hidden; }
+.has-js .packet-cover:not(.is-filled) [data-filled], .has-js .packet-cover.is-filled [data-empty] { display: none; }
 
 .briefing { display: grid; gap: 24px; padding-block: 8px 48px; align-items: start; }
 .briefing > * { min-width: 0; }
@@ -19,7 +25,7 @@
 .rail-items { list-style: none; margin: 0; padding: 0; }
 .rail-item { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; align-items: center; min-height: 32px; margin: 0; padding-block: 2px; }
 .rail-item > :is(a, label) { grid-column: 2; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); text-decoration-color: var(--control); cursor: pointer; }
-.rail-item > a { grid-column: 1 / -1; }
+html:not(.has-js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the link stands where its label will, beside the tick */
 .rail-from, .rail-asks { grid-column: 2; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 /* The square: unticked, a 2px outline in the control ink, since --rule is 1.2 to 1 on this ground and a control's edge needs 3 to 1. Ticked, the fill with a check in its ink. */
 .rail-item input { -webkit-appearance: none; appearance: none; position: relative; width: 24px; height: 24px; margin: 0; background: var(--atni-ground-base); border: 2px solid var(--control); border-radius: 0; cursor: pointer; }

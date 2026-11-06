@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const count = (n, one_, many) => `${n.toLocaleString('en-US')} ${n === 1 ? one_ : many}`;
   const list = (items) => new Intl.ListFormat('en-US').format(items);
 
-  for (const node of all('[data-js]', form)) node.hidden = false;
+  form.classList.add('is-live'); // the ticks and buttons held their place, unseen, since the first paint (briefing.css)
   for (const box of boxes) { // the jump link becomes the tick's label
     const link = box.nextElementSibling;
     const label = Object.assign(document.createElement('label'), { htmlFor: box.id, textContent: link.textContent });
@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     one('[data-modeled]').textContent = models.length ? `${modeled[0].toUpperCase()}${modeled.slice(1)}.` : 'None on the chosen plates.';
     chosenLine(reads);
     for (const item of all('[data-contents] > li')) item.hidden = !on.has(item.dataset.for);
-    one('[data-empty]').hidden = on.size > 0;
-    one('[data-filled]').hidden = on.size === 0;
+    one('.packet-cover').classList.toggle('is-filled', on.size > 0); // CSS shows the empty line or the contents, so the first paint is already the empty packet
     // A link to a section not chosen goes to its home page instead of to nothing.
     for (const a of all('a[data-home]', packet)) a.setAttribute('href', one(a.dataset.here)?.closest('.packet-page').classList.contains('is-chosen') ? a.dataset.here : a.dataset.home);
     for (const box of boxes.filter((b) => b.dataset.asks)) {

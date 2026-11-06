@@ -90,9 +90,12 @@ async function structure() {
   // Every id is one id; every link in the copies still reaches something (the validator walks them).
   const every = [...document.querySelectorAll('[id]')].map((n) => n.id);
   eq(new Set(every).size, every.length, 'no id twice');
-  // Without scripts the rail is a jump list and nothing that needs a script shows.
-  ok([...document.querySelectorAll('.rail-item')].every((n) => n.querySelector('a[href^="#"]') && n.querySelector('input').hidden), 'jump links, with the ticks hidden');
-  ok(document.querySelector('.rail-buttons').hidden, 'and the buttons');
+  // Without scripts the rail is a jump list and nothing that needs a script shows. With them, what the script shows holds its place from the first
+  // paint, unseen until the form is wired, and the cover opens empty, so nothing moves when the script runs (briefing.css).
+  const css = read('site/assets/css/briefing.css');
+  ok([...document.querySelectorAll('.rail-item')].every((n) => n.querySelector('a[href^="#"]') && n.querySelector('input').matches('[data-js]:not([hidden])')), 'jump links, with ticks for scripts only');
+  ok(document.querySelector('.rail-buttons').matches('[data-js]:not([hidden])') && css.includes('html:not(.has-js) .briefing-rail [data-js]') && css.includes('.has-js .briefing-rail form:not(.is-live) [data-js] { visibility: hidden; }'), 'and the buttons, which hold their place');
+  ok(!document.querySelector('[data-empty]').hidden && css.includes('.has-js .packet-cover:not(.is-filled) [data-filled]'), 'the cover opens empty with scripts and lists every section without them');
   eq(document.querySelector('.page-band-figures .figure-num').textContent, String(offered.length), 'the band counts the plates on offer, from the manifest');
 }
 
@@ -101,16 +104,17 @@ async function rail() {
   const cover = document.getElementById('packet-cover');
   ok(document.documentElement.classList.contains('has-js'), 'a section not chosen is not laid out');
   eq(chosen(document).join(), 'packet-cover', 'a new page holds the cover alone');
-  ok(!document.querySelector('[data-empty]').hidden && document.querySelector('[data-empty]').textContent.startsWith('Nothing chosen yet.'), 'and says what to do');
-  ok(document.querySelector('[data-filled]').hidden, 'and nothing else');
+  ok(document.querySelector('[data-empty]').textContent.startsWith('Nothing chosen yet.'), 'and says what to do');
+  ok(!cover.classList.contains('is-filled'), 'and nothing else');
   eq(document.documentElement.dataset.modelCheck, 'passed', 'the AI page\'s model runs here and agrees with itself');
   const boxes = [...document.querySelectorAll('.briefing-rail input[type="checkbox"]')];
   eq(boxes.length, offered.length + 8, 'a tick for each');
-  ok(boxes.every((b) => !b.hidden && b.nextElementSibling.tagName === 'LABEL' && b.nextElementSibling.htmlFor === b.id), 'each with its own label');
-  ok(!document.querySelector('.rail-buttons').hidden, 'the buttons show');
+  ok(boxes.every((b) => b.nextElementSibling.tagName === 'LABEL' && b.nextElementSibling.htmlFor === b.id), 'each with its own label');
+  ok(document.querySelector('.briefing-rail form').classList.contains('is-live'), 'the ticks and buttons show');
   // A tick shows the plate and its Sources, and they say what they are.
   tick(window, document, 'dc-project');
   eq(chosen(document).join(), 'packet-cover,packet-dc-project,sources-dc-project', 'a plate and its Sources');
+  ok(cover.classList.contains('is-filled'), 'and the cover lists them');
   ok(document.querySelector('[data-packet-status]').textContent.includes('1 plate'), 'a screen reader hears the count');
   const section = document.getElementById('packet-dc-project');
   eq(section.querySelector('.packet-settings').textContent, 'Settings: defaults', 'the settings line at the defaults');

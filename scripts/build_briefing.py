@@ -112,7 +112,7 @@ def plate_sections(entry, block, data, claims, from_name):
 
 
 def rail_item(name, value, label, extra="", note=""):
-    return (f'<li class="rail-item"><input type="checkbox" id="pick-{value}" name="{name}" value="{value}"{extra} data-js hidden><a href="#{value}">{escape(label)}</a>{note}</li>')
+    return (f'<li class="rail-item"><input type="checkbox" id="pick-{value}" name="{name}" value="{value}"{extra} data-js><a href="#{value}">{escape(label)}</a>{note}</li>')
 
 
 def compose(site):
@@ -162,7 +162,7 @@ def compose(site):
     contents = "\n".join(f'<li data-for="{e["id"]}"><a href="#{e["id"]}"><span data-title="{e["id"]}">{escape(e["title"])}</span></a></li>' for e in entries) + "\n" + "\n".join(checklist_contents)
     cover = page_section("packet-cover is-chosen", 'id="packet-cover"', (
         '<h2 class="packet-title">Council Briefing</h2>\n<p class="packet-assembled">Assembled<span data-assembled></span> from the ATNI Energy Task Forces site.</p>\n'
-        f'<p class="packet-empty" data-empty hidden>{EMPTY}</p>\n<div data-filled>\n<dl class="packet-rows">\n'
+        f'<p class="packet-empty" data-empty>{EMPTY}</p>\n<div data-filled>\n<dl class="packet-rows">\n'
         f'<dt>Measured</dt><dd data-measured>{len(receipts):,} figures read from a source and cited by claim id; {partly:,} of them partly verified, each with its limit printed.</dd>\n'
         f'<dt>Modeled</dt><dd><span data-modeled>{escape(", ".join(models + ["formula rows"]).capitalize())}.</span> {MODELED}</dd>\n'
         '<dt>Chosen by the reader</dt><dd data-chosen>Every plate at its defaults.</dd>\n</dl>\n'

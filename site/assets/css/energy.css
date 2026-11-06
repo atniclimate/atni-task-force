@@ -91,7 +91,7 @@
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) { min-height: 0; }
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-plot { min-height: 0; }
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) .plate-view { position: static; }
-  :is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-detail { grid-column: 1 / -1; margin-top: 12px; }
+  .plate:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-detail { grid-column: 1 / -1; margin-top: 12px; } /* .plate outranks the kit's .has-under, which sends the detail to a third column these plates do not have */
   /* The title runs the plate's width; the figures keep the left column beside the plot, with the button under them. */
   [data-plate^="energy-types"] { --row-min: 26px; }
   .is-live[data-plate^="energy-types"] { grid-template-columns: minmax(8.5rem, 24fr) minmax(0, 76fr); grid-template-rows: repeat(9, auto) 1fr; }
@@ -112,7 +112,9 @@
   [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-states { grid-column: 2; grid-row: 1 / span 3; align-content: start; border-top: 0; padding-top: 0; }
   [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .plate-foot { grid-column: 2; grid-row: 4; }
   [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-tribes { grid-column: 1 / -1; }
-  .plate[data-plate^="energy-deadlines"] { grid-template-columns: minmax(0, 1fr); }
+  /* One column: each zone in it, in source order, title, strip, Read as a table, then the panel; the kit's .has-under rows would send them to columns it lacks. */
+  .plate[data-plate^="energy-deadlines"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .plate[data-plate^="energy-deadlines"] > :is(.plate-claim, .plate-switch, .plate-plot, .plate-under, .plate-detail) { grid-area: auto; }
   .plate.is-live[data-plate^="energy-deadlines"] > .plate-claim { padding-top: 0; row-gap: 4px; }
   .plate-pair > .plate { align-self: start; align-content: start; } /* the shorter plate keeps its own rows rather than stretching them to its neighbor's height */
   /* The band: a title that must not wrap, beside figures that may. */

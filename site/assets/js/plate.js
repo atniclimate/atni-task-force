@@ -129,7 +129,8 @@ function initTabs(strip) {
   if (!fromHash()) show(0);
 }
 
-const grouped = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(v);
+const GROUPED = new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }); // one formatter: building one per call cost the Briefing and AI pages over four seconds
+const grouped = (v) => GROUPED.format(v);
 // A computed figure: two significant figures, three at 99.5 and up, as the Explorer rounds, so one row prints one number everywhere. A row's digits override.
 const sig = (v, d) => (blank(v) ? v : +Number(v).toPrecision(d || (Math.abs(v) >= 99.5 ? 3 : 2)));
 // The one rule for a figure's words: no trailing zero, 3 (2.4 to 6), never 3.0 (2.4 to 6.0). A template's own {x:.1f} is its author's choice.
@@ -695,7 +696,8 @@ function bindBars(p) {
   const lines = all(p.root, '.plate-table tbody tr');
   const stops = p.data.setting?.find((c) => c.name === p.data.by)?.options || {};
   const panel = (r) => cfg.panels?.find((x) => x.id === r.panel)?.label;
-  const words = (r) => [r.display, r.text, blank(r.value) ? null : grouped(r.value)];
+  const wordsOf = new Map(p.tableRows.map((r) => [r, [r.display, r.text, blank(r.value) ? null : grouped(r.value)]])); // once a row, not once a row a cell
+  const words = (r) => wordsOf.get(r);
   lines.forEach((tr, i) => {
     const said = new Set([...tr.children].map((n) => n.textContent.trim()));
     const own = lines.length === p.tableRows.length ? p.tableRows[i] : null; // a line per row, as lineClaims reads them
@@ -1028,7 +1030,10 @@ function aid(root, plot, id, toTable, form = 'rows') {
   const press = h('button', { type: 'button', class: 'plate-to-table', text: 'Read as a table' });
   on(press, 'click', () => {
     toTable();
-    root.querySelector('.plate-view[data-view="table"] .table-scroll')?.focus();
+    const table = root.querySelector('.plate-view[data-view="table"] .table-scroll');
+    const shut = table?.closest('details:not([open])'); // a page may keep the panel in a closed disclosure (util.js closedDetail)
+    if (shut) shut.open = true;
+    table?.focus();
   });
   let under = root.querySelector(':scope > .plate-under');
   if (!under) plot.after(under = h('div', { class: 'plate-under' }));

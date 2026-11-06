@@ -73,6 +73,7 @@ async function typesPlate() {
   eq(row(plate, 'efficiency').querySelector('.stack-bar').getAttribute('aria-hidden'), 'true', 'the row\'s words carry it aloud');
   ok(row(plate, 'marine').classList.contains('is-zero') && !row(plate, 'marine').querySelector('.stack-bar i'), 'a zero row draws nothing');
   eq(plate.querySelectorAll('.plate-legend li').length, 4, 'a key for the stages');
+  ok(plate.querySelectorAll(':scope > .plate-under').length === 1 && plate.querySelector(':scope > .plate-under > .plate-legend + .plate-to-table'), 'in the one row under the plot, before Read as a table, so neither lies over the other');
   eq(plate.querySelector('.ladder-needle .needle-label').textContent, 'Efficiency, 32 Tribes', 'the needle names the row');
   eq(plot.style.getPropertyValue('--stack-at'), String(32 / 40), 'and stands at its total');
   ok(reading(plate).includes('8 installed or operating, 15 planned or funded, 2 assessed or sited, 7 goal or interest'), 'the Reading gives the stages');
@@ -93,6 +94,10 @@ async function typesPlate() {
   ok(settings(window).includes('energy-types-by-stage=solar'), 'and the address');
   eq(plate.querySelector('a.button').getAttribute('href'), 'potential/?type=solar#tribes', 'Read it Tribe by Tribe goes to that filter');
   ok(!panel(document.getElementById('energy-deadlines')).open, 'the other plate\'s panel stays closed');
+  const deadlines = document.getElementById('energy-deadlines');
+  fire(window, deadlines.querySelector('.plate-to-table'), 'click');
+  ok(panel(deadlines).open && deadlines.querySelector('.plate-views input[value="table"]').checked, 'Read as a table opens a closed panel on its Table view');
+  eq(document.activeElement, deadlines.querySelector('.plate-view[data-view="table"] .table-scroll'), 'and focus goes to the table');
   panel(plate).open = false;
   plot.focus();
   key(window, plot, 'Tab');

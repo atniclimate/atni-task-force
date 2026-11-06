@@ -767,22 +767,8 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 }
 @media (min-width: 1600px) { .plate { gap: 32px; } }
 @media (pointer: fine) { .plate .segmented label { min-height: 32px; } }
-/* After the first plate of a run, a plate skips its layout and paint until the reader nears it, and so does a Sources list (content-visibility, Baseline
-   2025; a browser without it renders everything, as before). Until it is first drawn it holds its form's height as measured in Chrome: stacked at 1024
-   by 768 the forms' medians ran 1,210 to 1,530px, so one height serves; in three zones at 1440 by 900, the medians below. auto then keeps the drawn
-   height, and a live plate's min-height still floors it. A plate or list holding focus drops the containment, whose paint clip would cut the focus ring
-   of a control at its edge. Screen only: paper shows everything. */
-@media screen {
-  .plate ~ .plate { contain-intrinsic-block-size: auto 1300px; }
-  .plate-sources { contain-intrinsic-block-size: auto 900px; } /* the page's own lists ran 79 to 5,718px; a plate's opens on screen */
-  .plate ~ .plate:not(:focus-within), .plate-sources:not(:focus-within) { content-visibility: auto; }
-}
-@media screen and (min-width: 1100px) {
-  .plate ~ .plate { contain-intrinsic-block-size: auto 650px; } /* bars, ladder, and multiples ran 648 to 672px */
-  .plate ~ .plate[data-kind="lines"] { contain-intrinsic-block-size: auto 740px; }
-  .plate ~ .plate[data-kind="matrix"] { contain-intrinsic-block-size: auto 720px; }
-  .plate ~ .plate[data-kind="instrument"] { contain-intrinsic-block-size: auto 880px; }
-}
+/* No content-visibility on plates or Sources lists (tried at bbc8680): a link to a plate lower on the page landed on placeholder heights and jumped as much as
+   565px while the plates above it drew. Without it the page lays out once, at about 0.15 to 0.25 s more script time on Data Centers. */
 
 /* A workbench panel sits on the base ground and its h2 is compact, so the plate starts on the first screen. */
 .panel, main > .panel:nth-of-type(n) { padding-block: 0 24px; background: none; }
@@ -1047,11 +1033,12 @@ a.cr:is(:hover, :focus-visible)::after { content: attr(data-claim) ", " attr(dat
 .stack-bar { display: flex; gap: 2px; height: min(24px, 80%); }
 .stack-bar > i { flex: none; width: calc(var(--w) * 100%); background: var(--stage); }
 
-/* Two plates side by side, half a window each: claim and plot in two zones, the detail panel under them. */
+/* Two plates side by side, half a window each: claim and plot in two zones, the detail panel under them. Every live plate has a row under its plot
+   (.has-under, for Read as a table), whose placement spans the detail down the rows beside the plot; here it takes a row of its own under them. */
 @media screen and (min-width: 1100px) {
   .plate-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 56px; }
   .plate-pair > .plate { grid-template-columns: minmax(8rem, 24fr) minmax(0, 76fr); }
-  .plate-pair > .plate > .plate-detail { grid-column: 1 / -1; }
+  .plate-pair > .plate > .plate-detail { grid-column: 1 / -1; grid-row: auto; }
 }
 
 /* The ATNI Climate voice, in the three places the direction names and nowhere else: never on a plate, a tab, or a button. The 2px rule is Red Element on the base ground only;
