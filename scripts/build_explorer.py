@@ -350,6 +350,7 @@ def inline_data(pub):
         **({"carbon_damage": pub["carbon_damage"]} if "carbon_damage" in pub else {}),  # the damage layer lifts out with the model's own block
         "hash": hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()[:8],
         "inputs": inputs, "sel": sel, "scenario": pub["scenario"], "from_sel": pub["scenario_from_selectors"], "names": names, "words": WORDS, "line": LINE, "fields": fields,
+        "input_claims": {k: pub["inputs"][k]["claims"] for k in swept if pub["inputs"][k]["claims"]},  # what moves it most names each range's claims; the build ships their receipts
         "rows": row_meta(pub), "boards": boards(pub), "check": check,
         "first": {"use": "use.screen", "where": "where.prompt.hyper", "arch": "arch.A.cloud", "lever": "lever.route_small", "cross": "cross.prompts_energy_vs_hyper", "catalog": "catalog.chat_hour"},
     }
@@ -665,7 +666,7 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
                 + '</div>'
                 f'<p class="reading" data-d="reading">{escape(d["reading"])}</p>'
                 f'<div class="x-damage" data-d="damage" hidden></div>')
-        modeled = (f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p>'
+        modeled = (f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p>'
                    f'<p class="caption">Price: <span data-d="price-tag">{escape(d["priceTag"])}</span>. CO2e: <span data-d="co2-tag">{escape(d["co2Tag"])}</span>. Water: <span data-d="water-basis">{escape("; ".join(w["tag"] for w in d["water"]))}</span>.</p>'
                    f'<div class="x-tokens" data-d="tokens" hidden></div>')
     else:
@@ -673,11 +674,29 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
     actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button button-secondary" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
     tally = '<button type="button" class="plate-tally" data-tally hidden></button>'
     more = f'<details class="plate-more x-modeled" open><summary>How this is modeled</summary>{modeled}<div data-d="note" class="x-note-slot" data-js hidden></div></details>'
+    drivers = (f'<details class="plate-more x-drivers" open><summary>{MOVES["head"]}</summary><table class="data-table plate-drivers"><caption>{escape(MOVES["intro"])}</caption>'
+               f'<thead><tr><th scope="col">Input</th><th scope="col">Low end to high end</th></tr></thead><tbody data-d="moves">{moves_html(st["moves"][name])}</tbody></table></details>') if kind == "row" else ""
     # The Reading is plain text; the kit's polite output, in the page from the start, speaks it after a pause (explorer.js), never on a hover.
-    return (f'{views}<div class="plate-view" data-view="reading">{body}{lead}{more}{also}{actions}{tally}</div>'
+    return (f'{views}<div class="plate-view" data-view="reading">{body}{lead}{drivers}{more}{also}{actions}{tally}</div>'
             f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
             f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>'
             '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>')
+
+
+MOVES = {"head": "What moves it most", "intro": "Each row shows how far this result moves when one input goes from its low end to its high end, with the others held where they are.",
+         "none": "No input's stated range moves this figure at these settings."}  # the voice lead's words (E4); explorer.js prints "none" live
+
+
+def moves_html(rows):
+    """What moves it most at the defaults, as explorer.js draws it live: the input, the figure at its low end to its high end with the bar under it, and the range's claims."""
+    if not rows:
+        return f'<tr><td colspan="2">{escape(MOVES["none"])}</td></tr>'
+    out = []
+    for r in rows:
+        ids = ", ".join(f'<a class="x-c" href="#src-{c}">{c}</a>' for c in r["claims"]) or "no source, an assumption"
+        out.append(f'<tr style="--l:{r["l"]};--c:{r["c"]};--h:{r["h"]};--z:{r["z"]}"><th scope="row">{escape(r["name"])}</th>'
+                   f'<td>{escape(r["ends"])}<span class="plate-driver-bar" aria-hidden="true"><i></i></span><span class="caption">{ids}</span></td></tr>')
+    return "".join(out)
 
 
 def rows_table(data, keys, st, caption, group=None, cites=None):

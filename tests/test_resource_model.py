@@ -907,6 +907,20 @@ def test_fit_idle_refuses_a_bad_file_without_a_traceback(tmp_path, capsys, monke
     assert "0 to 1" in capsys.readouterr().err
 
 
+def test_what_moves_it_most_names_each_ranges_claims_and_ships_their_receipts():
+    """The Explorer's ranking (owner ruling 31) sets each input with a stated range to its low end and its high end, and names that range's claims: the page's
+    data holds them for every such input, an input with none says it is an assumption, and each named claim has its receipt on the page."""
+    model = json.loads((ROOT / "site" / "data" / "resource-model.json").read_text(encoding="utf-8"))
+    page = (ROOT / "site" / "explorer" / "index.html").read_text(encoding="utf-8")
+    data = json.loads(re.search(r'<script type="application/json" id="explorer-data">(.*?)</script>', page, re.S)[1])
+    ranged = {k: v["claims"] for k, v in model["inputs"].items() if v["low"] != v["value"] or v["high"] != v["value"]}
+    assert data["input_claims"] == {k: ids for k, ids in ranged.items() if ids}, "rerun python scripts/build_explorer.py"
+    assert all(k in data["names"] for k in ranged), "every ranged input has words for its row"
+    receipts = set(re.findall(r'<li id="src-([a-z]+-\d{3})"', page))
+    assert not {c for ids in ranged.values() for c in ids} - receipts, "a claim the ranking can name has no receipt on the page"
+    assert "What moves it most" in page and "with the others held where they are." in page
+
+
 def test_field_protocol_says_what_it_must():
     text = (ROOT / "docs" / "FIELD-PROTOCOL.md").read_text(encoding="utf-8")
     assert "never leaves your machine through this site" in text and "that Nation's decision" in text and "fit_idle.py" in text

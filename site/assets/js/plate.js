@@ -416,6 +416,8 @@ function sharedOf(p, key) {
   return rows.length > 1 ? { rows, low, high } : null;
 }
 const figureOf = (r, v) => fig(v, r.digits);
+// A formula row's starting point: its figure at the plate's defaults, when a setting has moved it off that figure. v0 is the build's default, kept fresh whenever the plate stands at its defaults.
+const startOf = (r) => (r.f && !blank(r.v0) && !blank(r.value) && fig(r.value, r.digits) !== fig(r.v0, r.digits) ? r.v0 : null);
 const shortName = (r) => { const name = r.label.split(',')[0]; return /^[A-Z]{2}/.test(name) ? name : name[0].toLowerCase() + name.slice(1); };
 function sharedSentence(p, key) {
   const s = sharedOf(p, key);
@@ -470,6 +472,8 @@ function readingAt(p, key, own) {
   const group = p.data.readings?.[[key, cfg.panels ? hl : '', p.state[p.data.by] || ''].join('|')];
   const said = (group ? [group] : speak.map((r) => r.reading)).filter(Boolean);
   let text = own || (said.length ? [...said, p.data.tail].filter(Boolean).join(' ') : `${label}: ${lead ? lead.display : p.data.not_counted}.`);
+  const was = lead && startOf(lead);
+  if (!blank(was)) text += ` From a starting point of ${`${fig(was, lead.digits)} ${lead.unit || ''}`.trim()}.`; // the faint mark behind a moved row, in words
   for (const r of speak) if (r.limit && !text.includes(r.limit)) text += ` Limit: ${r.limit}`;
   const overlap = sharedSentence(p, key);
   return overlap ? `${text} ${overlap}` : text;
@@ -558,6 +562,8 @@ function paint(p) {
   if (p.setting) p.setting.textContent = `Setting shown: ${p.data.setting.map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'blank'}`).join('; ')}.`;
   if (NO_ADDRESS && p.shown === p.selected) p.title.textContent = titleAt(p);
   if (p.svgOut) p.svgOut.hidden = !p.plot.querySelector('.plate-svg');
+  const picked = new Set(focusOf(p, rowsAt(p, p.selected)).filter((r) => !hl || !r.series || r.series === hl)); // the Table's bars: orange for the selection, as the facts list marks it, never a preview
+  for (const { cell, r } of p.bars) cell.classList.toggle('is-on', picked.has(r));
 }
 // The title is the finding at the defaults. Moved off them, it is the Reading's first sentence, which the settings have already rewritten. A packet or a printed sheet may not state a figure the plot beside it has left.
 const titleAt = (p) => (changed(p) ? p.reading.textContent.split(/(?<=\.) /)[0].replace(/\.$/, '') : p.title0);
@@ -612,6 +618,7 @@ function drawRulers(p) {
     node?.classList.toggle('is-neg', sign < 0);
     node?.classList.toggle('is-ghost', !a); // this stop does not count the row: it keeps its place, with no mark and the words
     node?.classList.toggle('is-yard', !!cfg.yard?.includes(key));
+    startMark(p, node, a && !b && !cfg.off_ruler?.includes(key) ? a : null);
   }
   p.plot.classList.toggle('has-yard', !!cfg.yard?.length);
   for (const m of cfg.marks || []) {
@@ -625,12 +632,98 @@ function drawRulers(p) {
     if (m.f) node.firstElementChild.textContent = `${m.label}, ${m.text || ''} ${m.unit || ''}`.trim();
   }
 }
+// The starting point behind a moved row: a hollow mark where its figure stood at the defaults, on today's ruler, named on the selected row. aria-hidden: the Reading says it.
+function startMark(p, node, r) {
+  const s = r ? startOf(r) : null;
+  const axis = r && axisOf(p, r);
+  const [d0, d1] = axis?.domain || [];
+  const on = !!node && !blank(s) && !!axis.domain && (axis.scale !== 'log' || s > 0) && s >= Math.min(d0, d1) && s <= Math.max(d0, d1); // off today's ruler it has no place
+  node?.classList.toggle('has-start', on);
+  if (!on) return;
+  const g = fracOn(axis, s);
+  const mark = node.querySelector('.start-mark') || node.querySelector('.ladder-track').appendChild(h('i', { class: 'start-mark', 'aria-hidden': 'true' }, h('span', { text: 'Starting point' })));
+  node.style.setProperty('--s', g);
+  mark.classList.toggle('is-flip', r.frac > g ? g > 0.15 : g > 0.85); // its name reads away from the row's own mark, while the ruler has room
+}
+// Small multiples print each cell's own figure beside the needle, so the cells compare at a glance. The words are the row's own, as the facts list prints them,
+// placed by the square the drawing set at that year, and shown as it is: on the selection and on a hover's preview.
+function needleFigures(p) {
+  const cfg = p.data.plot;
+  if (cfg.select === 'point') return;
+  const cells = [...(p.plot.querySelector('.plate-svg')?.children || [])]; // one group per panel, in order
+  cfg.panels.forEach((panel, i) => {
+    const label = cells[i]?.querySelector('.m-needle-label');
+    for (const band of label ? cells[i].querySelectorAll('[data-row]') : []) {
+      const rows = current(p).filter((r) => r.key === band.dataset.row && r.panel === panel.id && !blank(r.value));
+      const r = cfg.highlight ? rows.find((x) => x.series === cfg.highlight) : rows.length === 1 && rows[0];
+      const dot = r && band.querySelector(cfg.highlight ? '.m-dot.is-lead' : '.m-dot');
+      if (!dot) continue;
+      const [x, y, s] = ['x', 'y', 'width'].map((name) => +dot.getAttribute(name));
+      const flip = +band.dataset.nx > label.getAttribute('data-end') * 0.6; // as the needle's own name turns back
+      const below = y - 6 < +label.getAttribute('y') + 22; // under the square where the year at the needle's top would meet it
+      add(band, 'text', { class: 'm-value', x: flip ? x - 6 : x + s + 6, y: below ? y + s + 18 : y - 6, 'text-anchor': flip ? 'end' : 'start', 'aria-hidden': 'true', text: r.display });
+    }
+  });
+}
 function autoDraw(p) {
   const cfg = p.data.plot;
   if (cfg.type === 'matrix') return;
   if (draw[cfg.type]) {
-    if (p.plot.clientWidth) draw[cfg.type](p.plot, current(p), cfg);
+    if (!p.plot.clientWidth) return;
+    draw[cfg.type](p.plot, current(p), cfg);
+    if (cfg.type === 'multiples') needleFigures(p);
   } else drawRulers(p);
+}
+// The Table view as a chart: under each figure a thin bar on the plate's own ruler, from its zero, or a square where that ruler is a log one, which carries
+// no bars, and the band of a range-only row; under 3:1 on purpose, since the cell prints the figure, and orange for the selection. A cell is bound to its row
+// once: by its data-cell, or by its words where a line holds one row, or, in a table that pivots rows into columns, by its words and its line's.
+function bindBars(p) {
+  const cfg = p.data.plot;
+  p.bars = [];
+  if (cfg.type === 'matrix') return;
+  const heads = all(p.root, '.plate-table thead th').map((n) => n.textContent.trim());
+  const lines = all(p.root, '.plate-table tbody tr');
+  const stops = p.data.setting?.find((c) => c.name === p.data.by)?.options || {};
+  const panel = (r) => cfg.panels?.find((x) => x.id === r.panel)?.label;
+  const words = (r) => [r.display, r.text, blank(r.value) ? null : grouped(r.value)];
+  lines.forEach((tr, i) => {
+    const said = new Set([...tr.children].map((n) => n.textContent.trim()));
+    const own = lines.length === p.tableRows.length ? p.tableRows[i] : null; // a line per row, as lineClaims reads them
+    const taken = new Set();
+    [...tr.children].forEach((cell, j) => {
+      if (!j) return; // the row's name
+      const [k, when, field] = (cell.dataset.cell || '').split('|');
+      const text = cell.textContent.trim();
+      // Where a line holds several rows, each word of a row that the line or the column's head says counts for it and each it does not, against.
+      const fit = (x) => [x.label, x.series, x.year, x.end, panel(x), stops[x.when]].reduce((n, v) => (blank(v) ? n : n + (said.has(String(v)) || heads[j] === String(v) ? 1 : -1)), 0);
+      const best = (list) => list.reduce((a, x) => (fit(x) > (a ? fit(a) : 0) ? x : a), null);
+      const r = cell.dataset.cell ? /^(display|text|value)$/.test(field) && p.tableRows.find((x) => x.key === k && (x.when || '') === when)
+        : own ? words(own).includes(text) && own : best(p.tableRows.filter((x) => !taken.has(x) && words(x).includes(text)));
+      if (r && !taken.has(r)) {
+        taken.add(r);
+        p.bars.push({ cell, r });
+      }
+    });
+  });
+}
+function placeBars(p) {
+  const cfg = p.data.plot;
+  for (const { cell, r } of p.bars) {
+    const axis = r.axis || cfg.panels?.find((x) => x.id === r.panel) || axisOf(p, r);
+    const [d0, d1] = axis.domain || [];
+    const at = (v) => (blank(v) || !axis.domain ? null : fracOn(axis, v));
+    const x = blank(r.frac) ? at(r.value) : r.frac;
+    const zero = axis.scale !== 'log' && Math.min(d0, d1) <= 0 && Math.max(d0, d1) >= 0 ? at(0) : null;
+    let ends = null;
+    if (!blank(x) && !cfg.off_ruler?.includes(r.key)) ends = blank(zero) ? [x, x] : [Math.min(x, zero), Math.max(x, zero)];
+    else if (blank(x) && !blank(r.lo) && !blank(r.hi)) ends = [r.lo, r.hi];
+    cell.classList.toggle('has-bar', !!ends);
+    cell.classList.toggle('is-dot', !!ends && !blank(x) && blank(zero));
+    if (ends) {
+      cell.style.setProperty('--b0', ends[0].toFixed(4));
+      cell.style.setProperty('--bw', (ends[1] - ends[0]).toFixed(4));
+    }
+  }
 }
 // A ladder's second view: one square per unit, in rows of 25 so a block can be counted, at the largest size at which every row fits.
 // A row past the cap draws none and says so, so no two rows can look alike by being cut off. A page's countParts may split a row's squares.
@@ -710,6 +803,7 @@ function update(p, reason) {
   const auto = () => {
     if (reason === 'select') return;
     compute(p);
+    if (!changed(p)) for (const r of p.data.rows) if (r.f) r.v0 = r.value; // at its defaults: today's figures are the starting point
     autoDraw(p);
   };
   if (p.render) {
@@ -731,6 +825,7 @@ function update(p, reason) {
       td.textContent = typeof v === 'number' ? fig(v, r.digits) : v ?? '';
     }
     for (const item of all(p.root, '.plate-legend [data-series]')) item.firstElementChild.classList.toggle('is-on', item.dataset.series === cfg.highlight);
+    placeBars(p);
   }
   paint(p);
   if (reason === 'state' && p.open) openReceipt(p, firstClaim(p)); // a setting can change whose figure this is
@@ -979,6 +1074,7 @@ function initPlate(root) {
   const find = (selector) => root.querySelector(selector);
   const data = JSON.parse(document.getElementById(`plate-data-${id}`).textContent);
   delete data.cites;
+  for (const r of data.rows) if (r.f) r.v0 = r.value; // the build pours each formula row at the plate's defaults
   const tableRows = data.rows; // the Table lists them all, whatever the plot draws
   // data-rows draws a plate's rows in part on another page: the same data, not a second chart.
   const only = root.dataset.rows?.split(',');
@@ -994,6 +1090,7 @@ function initPlate(root) {
     moreChips: find('.plate-chips').appendChild(h('button', { type: 'button', class: 'plate-chip-more', hidden: '' })),
   };
   p.rowNodes = new Map(all(p.plot, '.ladder-row, .instrument-row').map((node) => [node.dataset.row, node]));
+  bindBars(p); // before the first update rewrites a live cell, while every cell holds the build's words
   plates.set(id, p);
   all(root, '[data-param]').forEach((box) => addControl(p, box));
   readState(p);

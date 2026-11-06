@@ -1053,6 +1053,98 @@ async function access() {
   ok(!sources.hidden && catalog.querySelector('.plate-views input[value="sources"]').checked && catalog.dataset.view === 'sources', 'a match in Sources opens it, radio and all');
 }
 
+// The owner's chart ideas (ruling 31) in the Explorer: what moves it most in every row plate's detail, and the starting point behind a moved bar ----------
+const INTRO = 'Each row shows how far this result moves when one input goes from its low end to its high end, with the others held where they are.'; // the voice lead's words, E4
+async function charts() {
+  const { window, document } = await load();
+  const ex = window.explorer;
+  const still = new JSDOM(html).window.document;
+  const ranked = (doc, name) => [...doc.querySelectorAll(`[data-plate-x="${name}"] [data-d="moves"] > tr`)];
+  for (const name of ['use', 'where', 'arch', 'catalog']) {
+    for (const doc of [still, document]) {
+      const box = doc.querySelector(`[data-plate-x="${name}"] .x-drivers`);
+      ok(box && box.tagName === 'DETAILS' && text(box.querySelector('summary')) === 'What moves it most' && box.closest('.plate-view').dataset.view === 'reading', `${name}: what moves it most stands in the detail, under the Reading`);
+      eq(text(box.querySelector('caption')), INTRO, `${name}: its intro is the table's caption, word for word`);
+      eq([...box.querySelectorAll('thead th')].map(text).join('|'), 'Input|Low end to high end', `${name}: a table, so its rows read as rows`);
+      const rows = ranked(doc, name);
+      ok(rows.length >= 1 && rows.length <= 5, `${name}: up to five inputs`);
+      for (const tr of rows) {
+        ok(tr.querySelector('th[scope="row"]') && /^\$?[\d.,]+ to \$?[\d.,]+( \S.*)?$/.test(text(tr.querySelector('td').firstChild)), `${name}: ${text(tr)} names the input and the figure at its two ends`);
+        const ids = [...tr.querySelectorAll('td a.x-c')].map((a) => a.getAttribute('href').slice(5));
+        ok(ids.length ? ids.every((id) => doc.getElementById(`src-${id}`)) : /no source, an assumption/.test(text(tr)), `${name}: ${text(tr.querySelector('th'))} names its range's claims, each with a receipt, or says it is an assumption`);
+        const bar = tr.querySelector('.plate-driver-bar');
+        const v = (n) => +tr.style.getPropertyValue(n);
+        ok(bar.getAttribute('aria-hidden') === 'true' && [v('--l'), v('--c'), v('--h'), v('--z')].every((x) => x >= 0 && x <= 1) && v('--l') <= v('--c') && v('--c') <= v('--h'), `${name}: the bar is the same figure drawn, out of the reading order`);
+      }
+    }
+    eq(text(ranked(document, name)[0].parentElement), text(ranked(still, name)[0].parentElement), `${name}: static and live say the same at the defaults`);
+    ok(!document.querySelector(`[data-plate-x="${name}"] .x-drivers`).open && still.querySelector(`[data-plate-x="${name}"] .x-drivers`).open, `${name}: one folded line with scripts, open without them`);
+  }
+  // The model's own procedure: each input at its low end and its high end, the others where the reader has them, the largest swing first.
+  const of = (key, m) => (t) => ex.view.at(ex.view.at(t, key), m);
+  const top = (key, m) => ex.view.run.drivers(of(key, m)).filter((e) => e.type === 'input');
+  const named = (e) => { const n = ex.data.names[e.name]; return `${n[0].toUpperCase()}${n.slice(1)}`; };
+  const first = top('use.screen', 'wh')[0];
+  const f = ex.figure(ex.view.val('use.screen', 'wh'), first.at_low * ex.view.count('use.screen'), first.at_high * ex.view.count('use.screen'), 'wh');
+  eq(`${text(ranked(document, 'use')[0].querySelector('th'))} ${text(ranked(document, 'use')[0].querySelector('td').firstChild)}`, `${named(first)} ${f.tag.slice(1, -1)} ${f.unit}`, 'the first row is the model\'s largest swing, at the figure it computes');
+  ok(top('use.screen', 'wh').every((e, i, all) => !i || all[i - 1].swing >= e.swing), 'largest first');
+  eq(ranked(document, 'use').map((tr) => [...tr.querySelectorAll('a.x-c')].map((a) => text(a)).join()).join('|'), ranked(document, 'use').map((tr) => (ex.data.input_claims[top('use.screen', 'wh').find((e) => named(e) === text(tr.querySelector('th'))).name] || []).join()).join('|'), 'each row\'s claims are its input\'s, as the model lists them');
+  setRadio(window, setting(document, 'device', 'laptop'));
+  ok(ranked(document, 'use').some((tr) => text(tr.querySelector('th')) === named(top('use.screen', 'wh')[0])) && /Laptop watts/.test(text(ranked(document, 'use')[0].parentElement)), 'a setting moves the ranking: the others are held where the reader has them');
+  setRadio(window, setting(document, 'device', 'phone'));
+  setRadio(window, measure(document, 'use', 'usd'));
+  fire(window, row(document, 'use.chat'), 'click');
+  ok(ranked(document, 'use').every((tr) => /^\$/.test(text(tr.querySelector('td').firstChild))), 'it follows the measure: a price ranks in dollars');
+  setRadio(window, measure(document, 'catalog', 'ml'));
+  const basins = ranked(document, 'catalog').map((tr) => text(tr.querySelector('th')));
+  ok(basins.length && basins.every((n) => /basin/.test(n)), `water ranks basin by basin and never sums them: ${basins.join(' / ')}`);
+  setRadio(window, measure(document, 'catalog', 'wh'));
+  setRadio(window, measure(document, 'use', 'wh'));
+  const link = ranked(document, 'use')[0].querySelector('a.x-c');
+  fire(window, link, 'click');
+  ok(!document.querySelector('[data-plate-x="use"] [data-d="receipt"]').hidden && document.querySelector('[data-plate-x="use"] .plate-view[data-view="sources"]').hidden === false, 'a claim in the ranking opens its receipt in Sources');
+  setRadio(window, document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]'));
+  fire(window, document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]'), 'change');
+
+  // The starting point: nothing at the defaults; a typed count leaves the row's default bar behind it, faint, named on the selected row and said in its Reading.
+  eq(document.querySelectorAll('.has-start').length, 0, 'no starting point at the defaults');
+  const was = text(still.querySelector('[data-row="use.coding"] .ladder-num'));
+  setField(window, document.querySelector('input[data-field="coding"]'), 3);
+  await settle();
+  const coding = row(document, 'use.coding');
+  eq([...document.querySelectorAll('[data-board="use"] .has-start')].map((n) => n.dataset.row).join(), 'use.coding', 'the row the count moved, and no other');
+  const mark = coding.querySelector('.start-mark');
+  eq(mark.getAttribute('aria-hidden'), 'true', 'the mark is out of the list box');
+  eq(text(mark), 'Starting point', 'and its name is the voice lead\'s');
+  const wallAt = parseFloat(mark.style.left);
+  const close = (a, b, message) => ok(Math.abs(a - b) < 0.02, `${message}: ${a} against ${b}`); // both printed to a hundredth of a percent
+  close(parseFloat(mark.style.width), (parseFloat(coding.querySelector('.wall-needle').style.left) - wallAt) / 3, 'a third of the bar three hours draw, from the wall: one hour, the default');
+  close(wallAt, ex.view.layout(ex.view.boardKeys('use', 'wh'), 'wh', false, ex.view.boardScale('use', 'wh')).wall * 100, 'standing at the wall, where the row\'s bar begins');
+  fire(window, coding, 'click');
+  const reading = document.querySelector('[data-plate-x="use"] [data-d="reading"]');
+  ok(text(reading).endsWith(`From a starting point of ${was} Wh.`), `the Reading says the default figure, the static page's own: ${text(reading).slice(-60)}`);
+  await wait(600);
+  eq(document.querySelector('[data-plate-x="use"] .plate-detail > output').textContent, text(reading), 'and the polite output speaks it');
+  fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click');
+  await wait(50);
+  ok(window.copied.includes(`From a starting point of ${was} Wh.`), 'Copy Reading carries it');
+  setField(window, document.querySelector('input[data-field="screen"]'), 14);
+  await settle();
+  ok(row(document, 'use.screen').classList.contains('has-start') && row(document, 'use.screen').querySelector('.start-mark').classList.contains('is-left') && row(document, 'use.screen').querySelector('.start-mark').classList.contains('is-below'), 'the reader\'s side ends at its left, and the first row\'s name stands under its bar, where the plot would cut it');
+  setRadio(window, measure(document, 'use', 'usd'));
+  eq(document.querySelectorAll('[data-board="use"] .has-start').length, 0, 'a price draws no bar, so it leaves no starting point');
+  ok(!/starting point/.test(text(reading)), 'nor says one');
+  setRadio(window, measure(document, 'use', 'g'));
+  ok(coding.classList.contains('has-start') && /From a starting point of [\d.,]+ g CO2e\.$/.test(text(reading)), 'carbon leaves one in its own unit');
+  setRadio(window, measure(document, 'use', 'wh'));
+  fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
+  await settle();
+  eq(document.querySelectorAll('.has-start').length, 0, 'Reset clears every one');
+  const css = read('site/assets/css/site.css');
+  ok(/\.wall-track > \.start-mark \{ z-index: 4; top: calc\(50% - \(var\(--bar\) \+ 10px\) \/ 2\); height: var\(--bar\); \}/.test(css), 'on the Wall it is the default bar\'s outline, at the bar\'s own height');
+  ok(/\.plate-driver-bar::before \{[^}]*var\(--atni-text-secondary\)/.test(css) && /\.plate-driver-bar::after \{[^}]*var\(--series-context\)/.test(css) && !/plate-driver[^{]*\{[^}]*energy/.test(css), 'the ranking\'s two greys, and no orange: nothing in it is the selection');
+}
+
 // Comparison E, the custody setting, a reader's own reading, the damage control, and the scenario file ------------------
 async function secondVersion() {
   const { window, document } = await load();
@@ -1826,4 +1918,4 @@ async function homeBand() {
   eq([...still.querySelectorAll('.home-figures .figure')].filter((n) => !n.querySelector('.figure-claims')).length, 0, 'every figure carries a claim');
 }
 
-module.exports = { groups: { staticRules, noScript, homeBand, behavior, access, secondVersion, measuredOracle, everyOption, cases } };
+module.exports = { groups: { staticRules, noScript, homeBand, behavior, access, charts, secondVersion, measuredOracle, everyOption, cases } };

@@ -44,6 +44,29 @@ for (const [id, spec] of Object.entries(D.boards)) {
   }
 }
 for (const name of ['use', 'where', 'arch', 'catalog']) out.details[name] = V.detailOf(D.first[name]);
+// What moves it most, at the defaults: the same rows explorer.js's movesOf draws live, line for line (the Explorer page check holds the two equal).
+function movesOf(key, m) {
+  const r = V.at(V.t, key);
+  const k = V.count(key);
+  const places = m === 'ml' && r?.ml_by_place ? Object.keys(r.ml_by_place).sort() : [null];
+  const top = places.flatMap((place) => {
+    const of = (t) => { const x = V.at(t, key); return place ? x?.ml_by_place?.[place] : x?.[m]; };
+    const v = of(V.t);
+    return ex.blank(v) ? [] : V.run.drivers(of).filter((e) => e.type === 'input').map((e) => ({ ...e, place, v: v * k, a: e.at_low * k, b: e.at_high * k }));
+  }).sort((x, y) => y.swing - x.swing).map((e) => ({ ...e, f: ex.figure(e.v, e.a, e.b, m) })).filter((e) => e.f.tag).slice(0, 5);
+  const all = top.flatMap((e) => [e.a, e.b, e.v]);
+  const [lo, hi] = [Math.min(...all), Math.max(...all)];
+  const x = (v) => ((v - lo) / (hi - lo || 1)).toFixed(4);
+  return top.map((e) => {
+    const [a, b] = [Math.min(e.a, e.b), Math.max(e.a, e.b)];
+    const name = D.names[e.name] || e.name;
+    return {
+      name: `${name[0].toUpperCase()}${name.slice(1)}${places.length > 1 ? `, ${D.words.basin[e.place] || 'basin not stated'}` : ''}`,
+      ends: `${e.f.tag.slice(1, -1)}${e.f.unit ? ` ${e.f.unit}` : ''}`, claims: D.input_claims[e.name] || [], l: x(a), c: x(Math.min(b, Math.max(a, e.v))), h: x(b), z: x(e.v),
+    };
+  });
+}
+out.moves = Object.fromEntries(['use', 'where', 'arch', 'catalog'].map((name) => [name, movesOf(D.first[name], 'wh')]));
 out.readings = {};
 for (const [letter, opts] of Object.entries(V.t.arch)) for (const k of Object.keys(ex.flatten(opts.readings))) out.readings[`arch.${letter}.readings.${k}`] = V.reading(`arch.${letter}.readings.${k}`);
 out.paybacks = Object.fromEntries(Object.keys(V.t.arch.E.payback).map((k) => [k, V.payback(k)]));

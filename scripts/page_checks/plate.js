@@ -1062,6 +1062,106 @@ async function needleLabel() {
   eq(errors.join() + lines.errors.join() + inst.errors.join(), '', 'no script errors');
 }
 
+// The owner's three chart ideas (ruling 31), as the kit draws two of them: the starting point behind a moved row, and the figure at every needle of
+// small multiples with a thin bar under each figure of the Table view. The Explorer's page check holds the third, what moves it most.
+async function charts() {
+  const { window, document, errors } = await load('#hour');
+  const p = parts(document, 'hour-demo');
+  const chat = row(p.root, 'chat');
+  const at = chat.style.getPropertyValue('--x');
+  const fact = (r) => r.querySelector('.start-mark');
+  eq(p.root.querySelectorAll('.has-start').length, 0, 'at the defaults no row has a starting point');
+  ok(!/starting point/i.test(p.reading.textContent), 'and the Reading names none');
+  const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
+  num.value = '30';
+  fire(window, num, 'input');
+  ok(chat.classList.contains('has-start') && fact(chat), 'a setting that moves a row leaves its starting point');
+  eq(+chat.style.getPropertyValue('--s'), +at, 'where the row stood at the defaults, on the same ruler');
+  ok(+chat.style.getPropertyValue('--x') > +at, 'while the row\'s own mark moves on');
+  eq([...p.root.querySelectorAll('.has-start')].map((n) => n.dataset.row).join(), 'chat', 'only the row the setting moved');
+  eq(fact(chat).getAttribute('aria-hidden'), 'true', 'the mark is out of the list box');
+  eq(fact(chat).textContent, 'Starting point', 'its name, which shows on the selected row');
+  ok(fact(chat).classList.contains('is-flip'), 'and reads away from the row\'s own mark, to its left');
+  ok(p.reading.textContent.endsWith(' From a starting point of 15 Wh.'), `the Reading says the figure in words: ${p.reading.textContent}`);
+  await wait(600);
+  ok(p.live.textContent.endsWith('From a starting point of 15 Wh.'), 'and the polite output says it after a pause');
+  fire(window, row(p.root, 'video').querySelector('.ladder-label'), 'click');
+  ok(!/starting point/.test(p.reading.textContent), 'a row the setting did not move says none');
+  fire(window, p.root.querySelector('[data-reset]'), 'click');
+  eq(p.root.querySelectorAll('.has-start').length, 0, 'Reset clears it');
+  ok(!/starting point/i.test(p.reading.textContent), 'from the Reading too');
+  const css = read('site/assets/css/site.css');
+  ok(/\.start-mark \{ display: none;[^}]*border: 1px solid var\(--series-context\)/.test(css) && !/\.start-mark[^{]*\{[^}]*energy/.test(css), 'a hollow mark in context ink, never orange');
+  ok(/\.is-on > \* > \.start-mark > span \{ display: block; \}/.test(css), 'named on the selected row alone');
+  ok(/@media \(forced-colors: active\)[^@]*\.start-mark, \.plate-driver-bar/.test(css), 'and kept in its own ink under High Contrast');
+  // An instrument's rows leave theirs too.
+  const inst = await load('#project');
+  const q = parts(inst.document, 'project-demo');
+  const mw = q.root.querySelector('[data-param="mw"] input[type=number]');
+  mw.value = String(+mw.value * 2);
+  fire(inst.window, mw, 'input');
+  ok(row(q.root, 'amw').classList.contains('has-start') && row(q.root, 'twh').classList.contains('has-start'), 'the rows the megawatts move');
+  ok(/ From a starting point of [\d.,]+ aMW\.$/.test(q.reading.textContent), 'and the selected one says it');
+
+  // The Table view as a chart.
+  const bars = (r) => [...r.root.querySelectorAll('.plate-table .has-bar')];
+  const on = (r) => bars(r).filter((c) => c.classList.contains('is-on'));
+  const latest = await load('#spending');
+  const b = parts(latest.document, 'capital-latest');
+  eq(bars(b).length, b.root.querySelectorAll('.plate-table tbody tr').length, 'a bar under every figure of a bars plate');
+  ok(bars(b).every((c) => !c.classList.contains('is-dot') && c.style.getPropertyValue('--b0') === '0.0000'), 'each from the ruler\'s zero');
+  for (const cell of bars(b)) {
+    const name = cell.parentElement.querySelector('th').textContent.trim();
+    const mark = [...b.plot.querySelectorAll('.ladder-row')].find((n) => n.querySelector('.ladder-label').textContent.trim() === name);
+    eq(+cell.style.getPropertyValue('--bw'), +(+mark.style.getPropertyValue('--x')).toFixed(4), `${name}: as long as its bar on the plot`);
+  }
+  eq(on(b).length, 1, 'the selection\'s alone is orange');
+  ok(on(b)[0].parentElement.textContent.includes(b.plot.querySelector('[aria-selected="true"] .ladder-label').textContent.trim()), 'and it is the selected row\'s');
+  key(latest.window, b.plot, 'Home');
+  ok(on(b)[0].parentElement.textContent.includes(b.plot.querySelector('[aria-selected="true"] .ladder-label').textContent.trim()), 'it follows the arrows');
+  const log = await load('#hour');
+  const l = parts(log.document, 'hour-demo');
+  ok(bars(l).length >= 5 && bars(l).every((c) => c.classList.contains('is-dot')), 'a log ruler carries squares, never bars, in the table too');
+  const off = await load('#hour', { source: withData('hour-demo', (d) => { d.plot.fit = 'data'; d.plot.off_ruler = ['household']; }) });
+  const o = parts(off.document, 'hour-demo');
+  const home = (r) => [...r.root.querySelectorAll('.plate-table tbody tr')].find((tr) => tr.textContent.includes('28,740'));
+  ok(home(l)?.querySelector('.has-bar') && !home(o).querySelector('.has-bar'), 'a row off the ruler, which prints its figure in words, gets none in the table either');
+  const lnum = l.root.querySelector('[data-param="prompts"] input[type=number]');
+  const chatCell = l.root.querySelector('[data-cell="chat|whole|display"]');
+  const was = chatCell.style.getPropertyValue('--b0');
+  lnum.value = '30';
+  fire(log.window, lnum, 'input');
+  ok(chatCell.style.getPropertyValue('--b0') !== was, 'a live cell\'s mark moves with the setting');
+  const money = await load('#money');
+  const m = parts(money.document, 'money-demo');
+  eq(bars(m).length, 3 * m.root.querySelectorAll('.plate-table tbody tr').length, 'a table that pivots rows into columns: a bar under each panel\'s figure');
+  eq(on(m).length, 3, 'the picked company\'s year, across the panels');
+  ok(on(m).every((c) => c.parentElement.querySelector('th').textContent === 'Amazon'), 'on its own line');
+  ok(/\.plate-table \.has-bar::after \{[^}]*opacity: 0\.4;/.test(css) && /\.plate-table \.has-bar\.is-on::after \{ background: var\(--energy-mark\); opacity: 1; \}/.test(css), 'under 3:1 on purpose, as the range band is; orange for the selection');
+
+  // The figure at every needle of small multiples.
+  const figs = () => [...m.plot.querySelectorAll('.is-on > .m-value')];
+  eq(figs().length, 3, 'one figure in each cell, at the needle');
+  eq(figs().map((n) => n.textContent).join('|'), [...m.facts.querySelectorAll('.plate-values li strong')].map((n) => n.textContent).join('|'), 'the facts list\'s own words, so the two never disagree');
+  ok(figs().every((n) => n.getAttribute('aria-hidden') === 'true'), 'aria-hidden: the one option says them all');
+  ok(m.plot.querySelectorAll('.m-value').length > 3, 'each year carries its own, shown on the selection');
+  key(money.window, m.plot, 'ArrowLeft');
+  eq(figs().map((n) => n.textContent).join('|'), [...m.facts.querySelectorAll('.plate-values li strong')].map((n) => n.textContent).join('|'), 'they follow the arrows');
+  const other = [...m.plot.querySelectorAll('[data-row]')].find((n) => !n.classList.contains('is-on')).dataset.row;
+  money.window.under = m.plot.querySelector(`[data-row="${other}"] .m-hit`);
+  fire(money.window, m.plot, 'pointermove');
+  await frame();
+  ok(figs().length >= 1 && figs().every((n) => n.parentElement.dataset.row === other), 'and a hover\'s preview');
+  ok(/\.plate-svg \.is-on > \.m-value \{ display: inline; \}/.test(css), 'shown as the selection\'s square is');
+  const history = await load('#history');
+  const h = parts(history.document, 'capital-history');
+  fire(history.window, history.document.querySelector('a[href="#history"]'), 'click');
+  history.window.observers.forEach((cb) => cb());
+  await frame();
+  eq(h.plot.querySelectorAll('.is-on > .m-value').length, 4, 'one series a cell: each prints its own');
+  eq(errors.join() + inst.errors.join() + latest.errors.join() + log.errors.join() + off.errors.join() + money.errors.join() + history.errors.join(), '', 'no script errors');
+}
+
 // plot.switch: a control that is part of the picture sits over the plot; the key sits under it. Neither is inside the list box.
 async function arranged() {
   const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => { d.plot.switch = 'edge'; }) });
@@ -1493,4 +1593,4 @@ async function aids() {
   eq(errors.join(), '', 'no script errors');
 }
 
-module.exports = { groups: { fragment, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address } };
+module.exports = { groups: { charts, fragment, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address } };

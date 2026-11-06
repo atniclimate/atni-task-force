@@ -11,6 +11,8 @@ const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls)
 const D = JSON.parse($('#explorer-data').textContent);
 const V = Views(D);
 const S = V.fresh();
+const V0 = Views(D); // the model at its defaults: where a moved bar started
+V0.set(V0.fresh());
 window.explorer = { ...window.resourceModel, view: V, state: S, data: D };
 const plateOf = (name) => $(`.x-plate[data-plate-x="${name}"]`);
 const rowNodes = new Map($$('.plate-plot [data-row]').map((n) => [n.dataset.row, n]));
@@ -59,6 +61,34 @@ function byPhase(board, groups, keys, wordsOnly) { // a move row is one time and
     return here;
   });
 }
+// The starting point: a Wall row's figure at the model's defaults, drawn faint behind its bar once the reader has moved it, and said in its Reading. A price draws
+// no bar, so it leaves none; water is said by basin, never summed.
+const BOARD = new Map(Object.entries(D.boards).flatMap(([id, b]) => (b.kind === 'wall' ? b.rows.map((key) => [key, id]) : [])));
+const said = (W, key, m) => (m === 'ml' ? W.water(key).map((w) => `${plainFig(w.v, 'ml')} (${D.words.basin[w.place] || 'basin not stated'})`).join(' and ') : plainFig(W.val(key, m), m));
+const moved = (key, m = S.m) => m !== 'usd' && BOARD.has(key) && V0.boardKeys(BOARD.get(key), m).includes(key) && said(V, key, m) !== said(V0, key, m);
+const spoken = (key, r = detailFor(key)) => V.copied(`${r.reading}${moved(key) ? ` From a starting point of ${said(V0, key, S.m)}.` : ''}`, key);
+const rulerScale = (lay, m) => { // the Wall's scale, read off the first row it draws with a length
+  for (const [k, item] of Object.entries(lay.items)) {
+    const p = V.parts(k, m);
+    if (p.net + p.dc > 0) return (item.end - lay.wall) / (p.net + p.dc);
+    if (p.dev + p.rou > 0) return (lay.wall - item.dev[0]) / (p.dev + p.rou);
+  }
+  return 0;
+};
+function startMark(n, key, m, lay, sc, first) {
+  const mark = $('.start-mark', n);
+  const on = sc > 0 && !!lay.items[key] && moved(key, m);
+  n.classList.toggle('has-start', on);
+  if (!on) return;
+  const p = V0.parts(key, m);
+  const [left, right] = [p.dev + p.rou, p.net + p.dc];
+  const [from, to] = [lay.wall - left * sc, lay.wall + right * sc];
+  mark.classList.toggle('is-left', !right && left > 0); // all on the reader's side: its end is the far left
+  mark.classList.toggle('is-off', right ? to > 1 : from < 0);
+  mark.classList.toggle('is-below', first);
+  mark.style.left = pct(Math.max(0, from));
+  mark.style.width = pct(Math.min(1, to) - Math.max(0, from));
+}
 const feedGrid = (f) => (f === 'hydro' ? V.p.grid_hydro : V.p[FEED[f][0]]);
 const oneGrid = (key) => (V.at(V.t, key).feeds || []).every((f) => feedGrid(f) === V.p.grid_local);
 const ghostWords = (key) => { // the model's reason, to its first clause: the list under the plate keeps the whole sentence
@@ -101,11 +131,14 @@ function paintWall(id) {
     for (const tag of TAGS) seg($(`.w-${tag}`, n), null);
     $('.wall-range', n).hidden = true;
     $('.wall-needle', n).hidden = true;
+    n.classList.remove('has-start');
     $('.ladder-value', n).replaceChildren(el('span', 'x-ghost-words', ghostWords(key)));
   }
   if (scenario.length) { $('.wall-group[data-scenario]', board).style.order = 5000; scenario.forEach((key, i) => { rowNodes.get(key).style.order = 5001 + i; }); }
   const lay = V.layout(m === 'usd' ? [] : visible.filter((key) => !wordsOnly.includes(key)), m, spec.plain, at);
   board.style.setProperty('--wall', lay.wall.toFixed(4));
+  const sc = rulerScale(lay, m);
+  const top = order.find((key) => lay.items[key]); // the first row drawn: a starting point's name goes under its bar, where the plot's top would cut it
   for (const key of visible) {
     const n = rowNodes.get(key);
     const item = lay.items[key];
@@ -122,6 +155,7 @@ function paintWall(id) {
     const needle = $('.wall-needle', n);
     needle.hidden = !item;
     if (item) needle.style.left = pct(item.end);
+    startMark(n, key, m, lay, sc, key === top);
     const oneLine = id === 'arch.E' && m === 'usd' && key.startsWith('arch.E.move_'); // the group head names the move's price basis once, so the figure and its spread share a line
     n.classList.toggle('is-one-line', oneLine);
     const f = oneLine ? figure(V.val(key, 'usd'), ...V.spread(key, 'usd'), 'usd') : V.cell(key, m, at);
@@ -289,6 +323,50 @@ const damageNodes = (key) => {
   return [el('p', 'x-damage-head', `${c.column}, as of ${c.as_of}`), el('p', 'x-damage-figures', V.damageWords(c)), note];
 };
 
+// What moves it most: each input with a stated range set to its low end and to its high end, the others held where the reader has them, by the model's own
+// drivers; the five that move the figure most, in the measure shown, water basin by basin. scripts/explorer_static.js prints the same rows at the defaults.
+function movesOf(key, m) {
+  const r = V.at(V.t, key);
+  const k = V.count(key);
+  const places = m === 'ml' && r?.ml_by_place ? Object.keys(r.ml_by_place).sort() : [null];
+  const top = places.flatMap((place) => {
+    const of = (t) => { const x = V.at(t, key); return place ? x?.ml_by_place?.[place] : x?.[m]; };
+    const v = of(V.t);
+    return blank(v) ? [] : V.run.drivers(of).filter((e) => e.type === 'input').map((e) => ({ ...e, place, v: v * k, a: e.at_low * k, b: e.at_high * k }));
+  }).sort((x, y) => y.swing - x.swing).map((e) => ({ ...e, f: figure(e.v, e.a, e.b, m) })).filter((e) => e.f.tag).slice(0, 5); // ends that print alike move nothing a reader sees
+  const all = top.flatMap((e) => [e.a, e.b, e.v]);
+  const [lo, hi] = [Math.min(...all), Math.max(...all)];
+  const x = (v) => ((v - lo) / (hi - lo || 1)).toFixed(4);
+  return top.map((e) => {
+    const [a, b] = [Math.min(e.a, e.b), Math.max(e.a, e.b)];
+    const name = D.names[e.name] || e.name;
+    return {
+      name: `${name[0].toUpperCase()}${name.slice(1)}${places.length > 1 ? `, ${D.words.basin[e.place] || 'basin not stated'}` : ''}`,
+      ends: `${e.f.tag.slice(1, -1)}${e.f.unit ? ` ${e.f.unit}` : ''}`, claims: D.input_claims[e.name] || [], l: x(a), c: x(Math.min(b, Math.max(a, e.v))), h: x(b), z: x(e.v),
+    };
+  });
+}
+function movesInto(body, key) { // a table, so its rows read as rows; the bar under each figure is the same figure drawn, and aria-hidden
+  const rows = movesOf(key, S.m);
+  const none = el('tr');
+  none.append(Object.assign(el('td', '', 'No input\'s stated range moves this figure at these settings.'), { colSpan: 2 }));
+  body.replaceChildren(...(rows.length ? rows.map((r) => {
+    const tr = el('tr');
+    Object.entries({ '--l': r.l, '--c': r.c, '--h': r.h, '--z': r.z }).forEach(([name, v]) => tr.style.setProperty(name, v));
+    const th = el('th', '', r.name);
+    th.scope = 'row';
+    const bar = el('span', 'plate-driver-bar');
+    bar.setAttribute('aria-hidden', 'true');
+    bar.append(el('i'));
+    const ids = el('span', 'caption', r.claims.length ? '' : 'no source, an assumption');
+    ids.append(...r.claims.flatMap((id, i) => { const a = el('a', 'x-c', id); a.href = `#src-${id}`; return i ? [', ', a] : [a]; }));
+    const td = el('td', '', r.ends);
+    td.append(bar, ids);
+    tr.append(th, td);
+    return tr;
+  }) : [none]));
+}
+
 const priceWord = (key) => (blank(V.val(key, 'usd')) ? D.rows[key].pn || D.words.price.none : D.rows[key].pt || D.words.price[V.basis(key)]);
 const basinWord = (tag) => tag.slice(0, tag.lastIndexOf(',')); // the model writes "basin, convention", and a convention has no comma
 
@@ -302,7 +380,7 @@ function detail(name, key) {
   const long = () => d('value').parentElement.classList.toggle('is-long', d('value').textContent.length >= 9);
   const big = (node, f) => { node.replaceChildren(el('span', '', f.num), ' ', el('span', 'x-big-unit', f.unit)); return node; };
   const r = detailFor(key);
-  text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), V.copied(r.reading, key), r.value);
+  text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), spoken(key, r), r.value);
   if (key.startsWith('lever.')) d('lines').replaceChildren(...r.lines.map((line) => el('li', '', line)));
   else if (key.startsWith('cross.')) text('ends', r.ends);
   else {
@@ -310,7 +388,7 @@ function detail(name, key) {
     d('water').replaceChildren(...(r.water.length ? r.water.map((w) => { const s = el('span', 'x-figure'); s.append(big(el('strong', 'x-big'), w), el('span', 'caption', basinWord(w.tag))); return s; }) : [el('span', 'caption', 'No water figure: the record holds no generation water for this feed.')]));
     text('water-basis', r.water.map((w) => w.tag).join('; ') || 'no figure');
     d('layers').replaceChildren(...r.layers.map((l) => { const li = el('li'); li.append(el('span', `plate-square w-key-${l.tag}${l.on ? '' : ' is-hollow'}`), el('strong', '', l.text), el('span', '', l.label)); return li; }));
-    text('spread', r.spread); text('moves', r.moves);
+    text('spread', r.spread); movesInto(d('moves'), key);
     const hours = d('hours');
     if (hours) { // a move's paid hours stand with its figures, since the comparison's title is about them
       const h = key.startsWith('arch.E.move_') ? V.t.upkeep.E[key.split('.').pop()].admin_h : null;
@@ -638,7 +716,7 @@ function announce(plate) {
   const out = plate && $('.plate-detail > output', plate);
   if (!out) return; // a plate with no Reading
   clearTimeout(out.timer);
-  out.timer = setTimeout(() => { const key = S.sel[plate.dataset.plateX]; out.textContent = V.copied(detailFor(key).reading, key); }, 500);
+  out.timer = setTimeout(() => { out.textContent = spoken(S.sel[plate.dataset.plateX]); }, 500);
 }
 const shownPlate = () => $('[role="tabpanel"]:not([hidden]) .x-plate'); // a setting in the drawer reaches every tab; the open one says what it changed
 function onClick(e) {
@@ -678,7 +756,7 @@ function wirePlot(plot) {
     choose(plate, key);
     rowNodes.get(key).scrollIntoView({ block: 'nearest' }); // the arrows are the keyboard's scroll here, so the row they reach must come into view
   });
-  const holding = () => $$('[data-d="note"], [data-d="chips"], [data-d="receipt"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
+  const holding = () => $$('[data-d="note"], [data-d="chips"], [data-d="receipt"], [data-d="moves"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
   on(plot, 'pointerover', (e) => { const row = e.target.closest('[data-row]:not(.is-ghost)'); if (row && !holding()) detail(name, row.dataset.row); });
   on(plot, 'pointerleave', () => { if (!holding()) detail(name, S.sel[name]); });
 }
@@ -692,6 +770,10 @@ for (const n of $$('.x-plate .plate-more[open]')) n.open = false; // open withou
 for (const n of $$('.wall-row')) {
   const track = $('.wall-track', n);
   for (const cls of [...TAGS.map((tag) => `w w-${tag}`), 'wall-range', 'wall-needle']) if (!$(`.${cls.split(' ').pop()}`, track)) { const part = el('i', cls); part.hidden = true; track.append(part); }
+  const start = el('i', 'start-mark'); // the starting point: aria-hidden, since the Reading says its figure
+  start.setAttribute('aria-hidden', 'true');
+  start.append(el('span', '', 'Starting point'));
+  track.append(start);
 }
 for (const n of $$('[data-board^="cross."] .ladder-row')) {
   if (!$('.x-or-never', n)) { const word = el('i', 'x-or-never', D.words.orNever); word.setAttribute('aria-hidden', 'true'); $('.ladder-track', n).append(word); }

@@ -1200,6 +1200,49 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bench-reading { max-width: var(--measure-wide); margin: 0 0 4px; }
 .bench-link { margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; }
 
+/* The starting point: where a moved figure stood at the defaults, a hollow 1px mark in context ink, never orange, behind the figure's own mark. Its name stands
+   at its end on the selected row only, and the Reading gives its figure. A ruler of squares gets a square, a bar ruler and the Explorer's Wall the bar's outline,
+   whose end tick shows past a bar that has grown over it. The Wall's geometry follows its bar (--bar, in explorer.css). */
+.start-mark { display: none; position: absolute; z-index: 1; box-sizing: border-box; border: 1px solid var(--series-context); pointer-events: none; }
+.has-start .start-mark { display: block; }
+.ladder-track > .start-mark { left: calc(var(--s) * 100%); top: 50%; width: var(--mark); height: var(--mark); transform: translate(-50%, -50%); }
+:is([data-form="bar"] .ladder-track, .wall-track) > .start-mark::after { content: ""; position: absolute; top: -5px; bottom: -5px; right: -1px; width: 2px; background: var(--series-context); }
+[data-form="bar"] .ladder-track > .start-mark { left: calc(min(var(--s), var(--z, 0)) * 100%); width: calc((max(var(--s), var(--z, 0)) - min(var(--s), var(--z, 0))) * 100%); height: min(24px, 56%); transform: translateY(-50%); }
+.wall-track > .start-mark { z-index: 4; top: calc(50% - (var(--bar) + 10px) / 2); height: var(--bar); }
+.wall-track > .start-mark.is-left::after { right: auto; left: -1px; }
+.wall-track > .start-mark.is-off { border-right-width: 0; }
+.wall-track > .start-mark.is-left.is-off { border-right-width: 1px; border-left-width: 0; }
+.wall-track > .start-mark.is-off::after { display: none; } /* an end past the ruler has no place on it */
+.start-mark > span { display: none; position: absolute; bottom: calc(100% + 4px); left: 0; padding-inline: 4px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-secondary); background: var(--plot-ground); }
+.is-on > * > .start-mark > span { display: block; }
+.start-mark.is-flip > span { left: auto; right: 0; }
+:is([data-form="bar"] .ladder-track, .wall-track) > .start-mark > span { bottom: calc(100% + 1px); left: auto; right: 4px; } /* inward from its end, over the gap above the bar */
+.wall-track > .start-mark.is-left > span { right: auto; left: 4px; }
+.wall-track > .start-mark.is-below > span { bottom: auto; top: calc(100% + 12px); } /* the first row's: under its spread, where the plot's top would cut it */
+
+/* The Table view as a chart: a thin bar under each figure on the plate's ruler, from its zero, or a square on a log ruler; under 3:1 on purpose, as the range
+   band is, because the cell prints the figure. plate.js sets --b0 and --bw. */
+.plate-table .has-bar { position: relative; padding-bottom: 10px; }
+.plate-table .has-bar::after { content: ""; position: absolute; left: calc(8px + var(--b0) * (100% - 16px)); bottom: 3px; width: calc(var(--bw) * (100% - 16px)); min-width: 2px; height: 4px; background: var(--series-context); opacity: 0.4; }
+.plate-table .has-bar.is-dot::after { bottom: 2px; width: 6px; height: 6px; margin-left: -3px; }
+.plate-table .has-bar.is-on::after { background: var(--energy-mark); opacity: 1; }
+
+/* Small multiples: each cell's figure beside the needle, in heading ink with a ground halo, on the selection and on a hover's preview only. */
+.plate-svg .m-value { display: none; font-variant-numeric: tabular-nums; fill: var(--atni-text-heading); paint-order: stroke; stroke: var(--plot-ground); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+.plate-svg .is-on > .m-value { display: inline; }
+
+/* What moves it most: one input a row, the figure at the input's low end to its high end, its claims under. The figure's own place is a 1px neutral zero;
+   the part of the swing under it takes one grey and the part over it the other, as the kit reads a sign. The words carry every figure. */
+.plate-drivers { margin-top: 8px; }
+.plate-drivers th[scope="row"] { width: 45%; }
+.plate-drivers td { text-align: left; }
+.plate-drivers .caption { display: block; font-size: 0.875rem; }
+.plate-driver-bar { position: relative; display: block; height: 8px; margin: 6px 0; }
+.plate-driver-bar::before, .plate-driver-bar::after { content: ""; position: absolute; top: 0; bottom: 0; }
+.plate-driver-bar::before { left: calc(var(--l) * 100%); width: calc((var(--c) - var(--l)) * 100%); background: var(--atni-text-secondary); }
+.plate-driver-bar::after { left: calc(var(--c) * 100%); width: calc((var(--h) - var(--c)) * 100%); background: var(--series-context); }
+.plate-driver-bar > i { position: absolute; top: -4px; bottom: -4px; left: calc(var(--z) * 100%); width: 1px; background: var(--baseline); }
+
 @media print {
   .plate-controls, .plate-switch, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows, .plate-to-table { display: none !important; }
   .plate-view[hidden] { display: grid !important; }
@@ -1432,7 +1475,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 @media (forced-colors: active) {
   .segmented span, :is(.toc, .section-strip) :is(a, [role="tab"]), .site-nav a { border-bottom-color: Canvas; }
   .segmented input:checked + span, :is(.toc, .section-strip) :is(a[aria-current], [aria-selected="true"]), .site-nav a[aria-current] { border-bottom-color: Highlight; }
-  .ladder-mark, .ladder-range, .ladder-bar, .ladder-shared, .ladder-needle, .needle, .plate-seg, .plate-square, .plate-key, .strip-mark, .slider input[type="range"], .lockup { forced-color-adjust: none; }
+  .ladder-mark, .ladder-range, .ladder-bar, .ladder-shared, .ladder-needle, .needle, .plate-seg, .plate-square, .plate-key, .strip-mark, .start-mark, .plate-driver-bar, .slider input[type="range"], .lockup { forced-color-adjust: none; }
   .lockup-on-dark { background: #010B13; } /* a logo drawn for one ground keeps that ground on any other */
   .lockup-on-light { background: #FFFFFF; }
   [data-row].is-on { outline: 2px solid Highlight; outline-offset: -2px; }
