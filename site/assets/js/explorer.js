@@ -2,6 +2,7 @@
 (function () {
 'use strict';
 const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario, typedOk, typedWords } = window.resourceModel;
+const { address, conceal, aid } = window.plate; // the kit's address in the fragment, its findable hiding, and a plot's spoken instruction and Table button
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -292,6 +293,7 @@ const priceWord = (key) => (blank(V.val(key, 'usd')) ? D.rows[key].pn || D.words
 const basinWord = (tag) => tag.slice(0, tag.lastIndexOf(',')); // the model writes "basin, convention", and a convention has no comma
 
 // The detail zone reads the same on every plate: the energy large, then price, carbon, and water at their bases, then the sentence. How it is modeled folds up; receipts live in Sources.
+const detailFor = (key) => (key.startsWith('lever.') ? V.leverDetail(key, S.m) : key.startsWith('cross.') ? V.crossDetail(key, D.boards[`cross.${S.opts.crossover}`].noun) : V.detailOf(key, S.m));
 function detail(name, key) {
   const plate = plateOf(name);
   const d = (k) => $(`[data-d="${k}"]`, plate);
@@ -299,18 +301,11 @@ function detail(name, key) {
   const noteId = D.rows[key]?.note;
   const long = () => d('value').parentElement.classList.toggle('is-long', d('value').textContent.length >= 9);
   const big = (node, f) => { node.replaceChildren(el('span', '', f.num), ' ', el('span', 'x-big-unit', f.unit)); return node; };
-  const readout = (r) => { text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), V.copied(r.reading, key), r.value); };
-  if (key.startsWith('lever.')) {
-    const r = V.leverDetail(key, S.m);
-    readout(r);
-    d('lines').replaceChildren(...r.lines.map((line) => el('li', '', line)));
-  } else if (key.startsWith('cross.')) {
-    const r = V.crossDetail(key, D.boards[`cross.${S.opts.crossover}`].noun);
-    readout(r);
-    text('ends', r.ends);
-  } else {
-    const r = V.detailOf(key, S.m);
-    readout(r);
+  const r = detailFor(key);
+  text('value', r.value); text('unit', r.unit); text('qual', r.qual); window.plate.readingInto(d('reading'), V.copied(r.reading, key), r.value);
+  if (key.startsWith('lever.')) d('lines').replaceChildren(...r.lines.map((line) => el('li', '', line)));
+  else if (key.startsWith('cross.')) text('ends', r.ends);
+  else {
     text('price', r.price); text('price-word', priceWord(key)); text('price-tag', r.priceTag); big(d('co2'), r.co2); text('co2-tag', r.co2Tag);
     d('water').replaceChildren(...(r.water.length ? r.water.map((w) => { const s = el('span', 'x-figure'); s.append(big(el('strong', 'x-big'), w), el('span', 'caption', basinWord(w.tag))); return s; }) : [el('span', 'caption', 'No water figure: the record holds no generation water for this feed.')]));
     text('water-basis', r.water.map((w) => w.tag).join('; ') || 'no figure');
@@ -426,23 +421,23 @@ function syncControls() {
 }
 const fieldDefault = (k) => (k === 'gb' && S.mode === 'office' ? D.inputs.seat_gb[0] : D.fields[k]);
 // The address carries the global selectors and nothing else: never wage, tariff, office size, a project's load, or a typed number, so a shared link cannot carry a Nation's figures.
+// They ride in the fragment, after the tab, as on every plate page, so not even a menu choice reaches the server.
 const LINKED = Object.keys(D.sel).filter((name) => name !== 'wage' && name !== 'tariff');
 let addressTimer; // as on a plate: a quarter second after the last change, and a throttled replaceState is let go
 function writeQuery() {
   clearTimeout(addressTimer);
   addressTimer = setTimeout(flushQuery, 250);
 }
-function flushQuery() { // Copy Reading calls it too, so a copy within a quarter second of a change carries the new address
-  if (!addressTimer) return;
+function flushQuery(now) { // Copy Reading and a jump within the page write it at once, so the address carries the settings shown
+  if (!addressTimer && !now) return;
   clearTimeout(addressTimer);
   addressTimer = 0;
   const q = new URLSearchParams();
   for (const name of LINKED) if (S.settings[name] !== D.sel[name].def) q.set(name, S.settings[name]);
-  const text = q.toString();
-  try { history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`); } catch { /* the next change writes it */ } // replace, never push: Back leaves the page, not a trail of radio clicks
+  address.write(address.read().anchor, q); // replace, never push: Back leaves the page, not a trail of radio clicks
 }
 function readQuery() { // a link is untrusted: only a named selector, only one of its own options
-  const q = new URLSearchParams(location.search);
+  const q = address.read().params;
   for (const name of LINKED) S.settings[name] = Object.hasOwn(D.sel[name].opts, q.get(name) ?? '') ? q.get(name) : D.sel[name].def;
 }
 function selfCheck() {
@@ -544,12 +539,12 @@ async function loadScenario(input) {
 }
 function setView(plate, name) {
   plate.dataset.view = name;
-  $$('.plate-view', plate).forEach((n) => { n.hidden = n.dataset.view !== name; });
+  $$('.plate-view', plate).forEach((n) => conceal(n, n.dataset.view !== name)); // a word found in a closed view brings it forward (its beforematch, below)
   $$('.plate-views input', plate).forEach((n) => { n.checked = n.value === name; });
 }
 async function copyReading(plate) {
   commit(); // a typed figure not yet drawn, then the address it brings
-  flushQuery();
+  flushQuery(true);
   const reading = $('[data-d="reading"]', plate);
   const status = $('.plate-status', plate);
   const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => $('.plate-source-title', document.getElementById(chip.getAttribute('href').slice(1))).textContent);
@@ -590,28 +585,31 @@ function soon(draw) { clearTimeout(typing); typed = draw; typing = setTimeout(co
 function commit() { clearTimeout(typing); const draw = typed; typed = null; draw?.(); }
 function onInput(e) {
   const t = e.target;
-  if (t.dataset.setting) { S.settings[t.dataset.setting] = t.value; refresh('settings'); }
-  else if (t.dataset.opt === 'm') { S.m = t.value; refresh(); }
+  const said = () => announce(t.closest('.x-plate') || shownPlate()); // its sentence is made when spoken, after a typed figure has redrawn
+  if (t.dataset.setting) { S.settings[t.dataset.setting] = t.value; refresh('settings'); said(); }
+  else if (t.dataset.opt === 'm') { S.m = t.value; refresh(); said(); }
   else if (t.dataset.opt === 'mode') {
     const was = fieldDefault('gb');
     S.mode = t.value;
     if (S.fields.gb === was) S.fields.gb = fieldDefault('gb');
     refresh();
+    said();
   } else if (t.dataset.opt) {
     S.opts[t.dataset.opt] = t.value;
     refresh();
+    said();
     if (t.dataset.opt === 'waffle') $('[data-waffle-status]').textContent = $('.x-waffle:not([hidden]) figcaption strong').textContent; // no Reading on this plate says what changed
   } else if (t.dataset.field) { // the model's one rule for a typed figure, the same a scenario file meets, so nothing typed can overflow
     const name = t.dataset.field === 'seats' ? 'seats' : 'field';
     const bad = t.value === '' || !typedOk(D, name, +t.value);
     t.setAttribute('aria-invalid', bad);
     $('[data-why]').textContent = bad ? `Enter ${typedWords(D, name)}. The Wall keeps the last good value.` : t.dataset.whyText;
-    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; soon(() => refresh()); }
+    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; soon(() => refresh()); said(); }
   } else if (t.dataset.input) {
     const bad = t.value === '' || !typedOk(D, t.dataset.input, +t.value);
     t.setAttribute('aria-invalid', bad);
     $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? `Enter ${typedWords(D, t.dataset.input)}. The figures keep the last good value.` : '';
-    if (!bad) { S.inputs[t.dataset.input] = +t.value; soon(() => refresh('settings')); }
+    if (!bad) { S.inputs[t.dataset.input] = +t.value; soon(() => refresh('settings')); said(); }
   } else if (t.dataset.measured) {
     const why = $('[data-measured-why]');
     try {
@@ -619,19 +617,30 @@ function onInput(e) {
       else Object.assign(S.measured, applyMeasured(D, { [t.dataset.measured]: t.value }).values);
       t.removeAttribute('aria-invalid');
       soon(() => { refresh('settings'); if (!t.hasAttribute('aria-invalid')) why.textContent = V.measuredLine(); }); // a bad value typed since keeps its own words
+      said();
     } catch (error) { // the model says what it allows; the figures keep the last good value
       t.setAttribute('aria-invalid', true);
       why.textContent = `${error.message}. The figures keep the last good value.`;
     }
-  } else if (t.dataset.custody !== undefined) { S.custody = t.value; refresh(); }
-  else if (t.dataset.damage !== undefined) { S.damage = t.value; refresh(); project(); }
+  } else if (t.dataset.custody !== undefined) { S.custody = t.value; refresh(); said(); }
+  else if (t.dataset.damage !== undefined) { S.damage = t.value; refresh(); project(); said(); }
   else if (t.dataset.pf) project();
 }
 function choose(plate, key) { // a reader's own selection: the figure they asked for shows at the top of the detail
   picked = key;
   setView(plate, 'reading');
   selectRow(plate.dataset.plateX, key);
+  announce(plate);
 }
+// As on every plate of the kit: the plate's one hidden output speaks the selected row's Reading half a second after the last selection or setting, so an arrow
+// speaks its row and then the sentence once. A hover rewrites the visible Reading only, and the sentence is made when it is spoken, so a hover cannot change it.
+function announce(plate) {
+  const out = plate && $('.plate-detail > output', plate);
+  if (!out) return; // a plate with no Reading
+  clearTimeout(out.timer);
+  out.timer = setTimeout(() => { const key = S.sel[plate.dataset.plateX]; out.textContent = V.copied(detailFor(key).reading, key); }, 500);
+}
+const shownPlate = () => $('[role="tabpanel"]:not([hidden]) .x-plate'); // a setting in the drawer reaches every tab; the open one says what it changed
 function onClick(e) {
   const t = e.target;
   const hit = (selector) => t.closest?.(selector);
@@ -642,7 +651,7 @@ function onClick(e) {
   else if (hit('[data-tally]')) { setView(hit('.x-plate'), 'sources'); $('.plate-views input[value="sources"]', hit('.x-plate')).focus(); } // the button leaves with its view, so focus goes to the view switch
   else if (hit('[data-about]')) { e.preventDefault(); const about = $(hit('[data-about]').getAttribute('href')); about.open = true; $('summary', about).focus(); } // folded with scripts, and a link to a details does not open it
   else if (hit('[data-copy]')) copyReading(hit('.x-plate'));
-  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('[data-measured-why]').textContent = ''; $('[data-scenario-status]').textContent = ''; $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
+  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('[data-measured-why]').textContent = ''; $('[data-scenario-status]').textContent = ''; $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; announce(hit('.x-plate')); }
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
   else if (hit('[data-example]')) { for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`).value = t.dataset[k]; project(); }
   else if (hit('[data-outputs]')) window.plate.save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv'); // the kit's: made in the browser, sent nowhere, its blob URL let go
@@ -656,6 +665,7 @@ function wirePlot(plot) {
   const name = plate.dataset.plateX;
   plot.tabIndex = 0;
   plot.setAttribute('role', 'listbox');
+  aid(plate, plot, `how-${name}`, () => setView(plate, 'table'));
   $$('ol, .wall-group', plot).forEach((n) => n.setAttribute('role', 'none'));
   $$('.wall-key, .x-lever-note', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the detail's layer list, and the claim zone says each row has its own ruler
   on(plot, 'keydown', (e) => {
@@ -702,6 +712,7 @@ for (const zone of $$('.x-plate.is-live > :is(.plate-claim, .plate-detail, .plat
   zone.setAttribute('aria-label', zone.matches('.plate-claim') ? 'Finding and settings' : zone.matches('.plate-detail') ? 'Detail' : 'Plot');
 }
 $$('.x-plate').forEach((plate) => { if ($('.plate-views', plate)) { setView(plate, 'reading'); listSources(plate); } });
+$$('.x-plate .plate-view').forEach((n) => on(n, 'beforematch', () => setView(n.closest('.x-plate'), n.dataset.view)));
 $$('[data-d="tokens"]').forEach((slot) => slot.append(...$('#x-tokens').cloneNode(true).children));
 for (const name of Object.keys(painters)) { const foot = el('p', 'plate-foot x-measured-line'); foot.dataset.measuredLine = ''; foot.hidden = true; plateOf(name).append(foot); }
 $('[data-scenario-warning]').textContent = SCENARIO_WARNING;
@@ -735,14 +746,19 @@ on(document, 'keydown', (e) => {
   if (!$('#settings').hidden) closeDrawer();
   else $$('[data-d="receipt"]:not([hidden])').forEach((box) => closeReceipt(box));
 });
-// Back within the page: the address holds the truth for the selectors, and with no hash the first tab shows, which plate.js does not do by itself.
+// Back within the page: an address that names a selector holds the truth for them all, and with no tab named the first tab shows, which plate.js does not do by itself.
+// One that names none came from a link within the page (Method, a claim), which takes the whole fragment: the settings stay, and the address takes them back.
 on(window, 'popstate', () => {
-  const was = JSON.stringify(S.settings);
-  readQuery();
-  if (JSON.stringify(S.settings) !== was) refresh('settings');
-  window.dispatchEvent(new Event('hashchange')); // Chrome fires no hashchange when the query differs too, which would leave the tab behind the address
+  const { params } = address.read();
+  if (!LINKED.some((name) => params.has(name))) flushQuery(true);
+  else {
+    const was = JSON.stringify(S.settings);
+    readQuery();
+    if (JSON.stringify(S.settings) !== was) refresh('settings');
+  }
+  window.dispatchEvent(new Event('hashchange')); // so the tab follows the address on every Back, whatever the browser fired
 });
-on(window, 'hashchange', () => { if (!location.hash) $('[role="tab"]').click(); });
+on(window, 'hashchange', () => { if (!address.read().anchor) $('[role="tab"]').click(); });
 $$('.x-plot').forEach(wirePlot);
 let opened = [];
 on(window, 'beforeprint', () => { opened = $$('details:not([open])'); opened.forEach((n) => { n.open = true; }); });
@@ -754,5 +770,5 @@ fit();
 refresh('settings');
 selfCheck();
 project();
-if (location.hash === '#settings') openDrawer($('[data-open-settings]'));
+if (address.read().anchor === 'settings') openDrawer($('[data-open-settings]'));
 }());

@@ -2,7 +2,7 @@
 
 A local server's energy use rests mostly on one question: how much power does it draw while it waits? The Resource Use Explorer answers that question with published figures from other people's machines, and no published figure covers the idle term as it applies to a Nation's own hardware. A plug meter on the actual box replaces that assumption with a reading.
 
-This protocol serves Tribal IT staff, energy staff, and independent researchers who want to test the model against a machine they control. The reading belongs to whoever took it. **The public site receives nothing, and any release is that Nation's decision.**
+This protocol serves Tribal IT staff, energy staff, and independent researchers who want to test the model against a machine they control. The reading belongs to whoever took it. **It never leaves your machine through this site, and any release is that Nation's decision.**
 
 ## What It Takes
 
@@ -67,4 +67,4 @@ Watts are not answers. A small model on a quiet box can draw less and answer les
 
 ## Who Holds the Readings
 
-A meter log can show when an office works and what it runs, so it is the Nation's data from the moment it exists. This script reads a local file and sends nothing anywhere. The public site has no form, no upload, and no account, so it receives nothing. Any release of a figure, and the wording of that release, is that Nation's decision.
+A meter log can show when an office works and what it runs, so it is the Nation's data from the moment it exists. This script reads a local file and sends nothing anywhere. The site has no form, no upload, and no account, so no reading reaches it. Any release of a figure, and the wording of that release, is that Nation's decision.

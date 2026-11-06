@@ -1,4 +1,4 @@
-// Plate kit: tabs, selection, detail, receipts, controls, query state, and formulas over the HTML from build_plates.py.
+// Plate kit: tabs, selection, detail, receipts, controls, the address, and formulas over the HTML from build_plates.py.
 // Page scripts load after it and call plate.register(id, options). Text by textContent only.
 (function () {
 const plates = new Map();
@@ -27,9 +27,39 @@ const { add, scale } = draw;
 // The briefing keeps nothing in the address: a staff member's typed megawatts are the case the Explorer's link rule protects. <html data-address="none">.
 const NO_ADDRESS = document.documentElement.dataset.address === 'none';
 
-// The first plate on the screen runs to the window's foot; others keep the height CSS gives them.
+// Settings ride in the fragment, #anchor&name=value, since a browser never sends a fragment to the server (owner ruling 29). The anchor, when there is one, comes
+// first and names an element. An old link's ?query is read as part of the address, and moves into the fragment once theme.js has read the deep link.
+const parse = (raw) => {
+  const first = raw.split('&')[0];
+  const anchor = first.includes('=') ? '' : first;
+  return { anchor, params: new URLSearchParams(anchor ? raw.slice(first.length + 1) : raw) };
+};
+function readAddress() {
+  const at = parse(location.hash.slice(1));
+  for (const [name, value] of new URLSearchParams(location.search)) if (!at.params.has(name)) at.params.append(name, value);
+  return at;
+}
+function writeAddress(anchor, params) {
+  const hash = [anchor, params.toString()].filter(Boolean).join('&');
+  try { history.replaceState(null, '', `${location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
+}
+if (!NO_ADDRESS) {
+  on(document, 'DOMContentLoaded', () => { if (location.search) { const { anchor, params } = readAddress(); writeAddress(anchor, params); } });
+  // A link within the page (#id) takes the whole fragment: the settings it held come back after it, so a reload or a copied link keeps them.
+  on(window, 'hashchange', (e) => {
+    const now = readAddress();
+    const was = e.oldURL ? parse(new URL(e.oldURL).hash.slice(1)).params : null;
+    if (was?.toString() && !now.params.toString()) writeAddress(now.anchor, was);
+  });
+}
+// A closed tab panel or view stays findable where the browser can reveal one: find-in-page or a link opens it, and its beforematch listener brings its tab or
+// view forward. Safari has no such reveal, and gets plain hidden.
+const FINDABLE = 'onbeforematch' in document.documentElement;
+const conceal = (node, off) => (off ? node.setAttribute('hidden', FINDABLE ? 'until-found' : '') : node.removeAttribute('hidden'));
+
+// The first plate on the screen runs to the window's foot; others keep the height CSS gives them. A panel kept for find-in-page still has a box, so hidden is asked too.
 function fitFirst() {
-  const first = all(document, '[data-plate]').find((node) => node.offsetParent);
+  const first = all(document, '[data-plate]').find((node) => node.offsetParent && !node.closest('[hidden]'));
   if (!first || innerWidth < 1100) return;
   const top = first.getBoundingClientRect().top + scrollY;
   if (top < innerHeight * 0.6) first.style.setProperty('--plate-h', `${Math.round(Math.max(544, innerHeight - top - 16))}px`);
@@ -49,23 +79,26 @@ function initTabs(strip) {
   const show = (n) => {
     tabs.forEach((a, i) => {
       set(a, { 'aria-selected': i === n, tabindex: i === n ? 0 : -1 });
-      panels[i].hidden = i !== n;
+      conceal(panels[i], i !== n);
+      panels[i].tabIndex = i === n ? 0 : -1; // a closed panel kept for find-in-page is still a box, so it leaves the Tab order
     });
     strip.classList.toggle('is-sticky', panels[n].offsetHeight > innerHeight);
     fitFirst();
   };
+  panels.forEach((panel, i) => on(panel, 'beforematch', () => show(i))); // find-in-page or a link reached a closed panel: its tab comes with it
   const go = (n, e) => {
     e.preventDefault();
     show(n);
     panels[n].classList.add('is-entering'); // a tab change counts as a touch; CSS takes it to 0ms under reduced motion
     setTimeout(() => panels[n].classList.remove('is-entering'), 200);
-    try { history.replaceState(null, '', `#${panels[n].id}`); } catch { /* throttled: the tab still changed */ }
+    writeAddress(panels[n].id, readAddress().params); // the tab is the anchor, and the settings stay beside it
   };
   const fromHash = () => {
-    const target = document.getElementById(location.hash.slice(1));
+    const { anchor } = readAddress();
+    const target = document.getElementById(anchor);
     const n = panels.findIndex((panel) => panel.contains(target));
     if (n >= 0) show(n);
-    if (location.hash === '#checklists') target?.querySelector('details')?.setAttribute('open', '');
+    if (anchor === 'checklists') target?.querySelector('details')?.setAttribute('open', '');
     if (n >= 0 && target !== panels[n]) target.scrollIntoView();
     return n >= 0;
   };
@@ -237,13 +270,13 @@ function compute(p) {
 }
 
 function readState(p) {
-  const query = new URLSearchParams(location.search);
+  const { params } = readAddress();
   for (const [name, c] of p.params) {
     // With no address to keep, a link may still name a stop; a typed figure is the reader's to enter here.
-    p.state[name] = c.parse(NO_ADDRESS && !c.stop ? '' : query.get(name) ?? '') ?? c.def;
+    p.state[name] = c.parse(NO_ADDRESS && !c.stop ? '' : params.get(name) ?? '') ?? c.def;
     c.write(p.state[name]);
   }
-  p.selected = p.keys.includes(query.get(p.id)) ? query.get(p.id) : p.data.default;
+  p.selected = p.keys.includes(params.get(p.id)) ? params.get(p.id) : p.data.default;
   p.shown = p.selected;
 }
 // The address follows a quarter second after the last change, so a dragged slider writes it once, and a browser that throttles replaceState can never stop a redraw.
@@ -257,12 +290,11 @@ function flushQuery(p) {
   if (!p.queryTimer) return;
   clearTimeout(p.queryTimer);
   p.queryTimer = 0;
-  const query = new URLSearchParams(location.search);
-  const put = (name, value, def) => (value === def ? query.delete(name) : query.set(name, value));
+  const { anchor, params } = readAddress();
+  const put = (name, value, def) => (value === def ? params.delete(name) : params.set(name, value));
   for (const [name, c] of p.params) put(name, p.state[name], c.def);
   put(p.id, p.selected, p.data.default);
-  const text = query.toString();
-  try { history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`); } catch { /* throttled: the next change writes it */ }
+  writeAddress(anchor, params);
 }
 function announce(p) {
   clearTimeout(p.liveTimer);
@@ -312,7 +344,7 @@ function addControl(p, box) {
 
 function setView(p, name) {
   p.root.dataset.view = name;
-  for (const view of all(p.root, '.plate-view')) view.hidden = view.dataset.view !== name;
+  for (const view of all(p.root, '.plate-view')) conceal(view, view.dataset.view !== name);
   for (const radio of all(p.root, '.plate-views input')) radio.checked = radio.value === name;
 }
 // A chip the reader pressed sends focus to what it opened, in view, and Escape comes back to the chip; on load or on a selection nothing takes focus.
@@ -726,8 +758,8 @@ function reset(p) {
 async function copyReading(p) {
   const titles = unique(claimsOf(focusOf(p, rowsAt(p, p.selected))).map((claim) => p.data.receipts[claim].title)).join('; ');
   flushQuery(p);
-  const url = new URL(location.href);
-  url.hash = p.id;
+  const url = new URL(location.pathname, location.href);
+  url.hash = [p.id, readAddress().params.toString()].filter(Boolean).join('&'); // this plate first, then every setting on the page
   try {
     await navigator.clipboard.writeText(`${p.reading.textContent}${NO_ADDRESS ? '' : `\n${url}`}${titles ? `\nSources: ${titles}` : ''}`);
     p.status.textContent = NO_ADDRESS ? 'Copied with its sources.' : 'Copied with its link and sources.';
@@ -878,6 +910,22 @@ function wirePlot(p) {
   }).observe(plot);
 }
 
+// A plot says once how it is used, as its description, and the Table is one press away, under it, with focus taken there (the screen-reader report, R3 and R4).
+// The Explorer's plots use this too.
+const HOW = 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.';
+function aid(root, plot, id, toTable) {
+  plot.setAttribute('aria-describedby', id);
+  root.append(h('p', { id, hidden: '', text: HOW }));
+  const press = h('button', { type: 'button', class: 'plate-to-table', text: 'Read as a table' });
+  on(press, 'click', () => {
+    toTable();
+    root.querySelector('.plate-view[data-view="table"] .table-scroll')?.focus();
+  });
+  let under = root.querySelector(':scope > .plate-under');
+  if (!under) plot.after(under = h('div', { class: 'plate-under' }));
+  under.append(press);
+  root.classList.add('has-under');
+}
 // With scripts the parts move to where a reader wants them; without scripts they stay where the build wrote them, and everything shows.
 function arrange(p) {
   const { root, plot, data: { plot: cfg, receipts } } = p;
@@ -904,7 +952,7 @@ function arrange(p) {
   p.note = cfg.fit === 'data' ? all(root, '.plate-claim > .caption').find((n) => n.textContent.startsWith('Each mark is ten times')) : null;
   const under = [p.note, root.querySelector('.plate-claim .plate-legend')].filter(Boolean);
   if (under.length) plot.after(h('div', { class: 'plate-under' }, ...under));
-  root.classList.toggle('has-under', !!control || under.length > 0);
+  aid(root, plot, `${p.id}-how`, () => setView(p, 'table'));
   if (cfg.needle && cfg.type === 'instrument') plot.querySelector('.instrument').prepend(h('li', { class: 'needle', role: 'none', 'aria-hidden': 'true' }));
   moveProse(root);
 }
@@ -954,9 +1002,10 @@ function initPlate(root) {
   // Each plate's table region is a landmark, so each needs its own name.
   for (const region of all(root, '.table-scroll[role="region"]')) region.setAttribute('aria-label', `Table of values: ${find('.plate-title')?.textContent ?? id}`);
   arrange(p);
-  // ?ID-view=sources opens a plate on that view, from a link on another page.
-  const asked = new URLSearchParams(location.search).get(`${id}-view`);
+  // ID-view=sources in the address opens a plate on that view, from a link on another page.
+  const asked = readAddress().params.get(`${id}-view`);
   setView(p, asked === 'sources' || asked === 'table' ? asked : 'reading');
+  for (const view of all(root, '.plate-view')) on(view, 'beforematch', () => setView(p, view.dataset.view)); // a word found in a closed view brings it forward, radio and all
   on(root, 'change', (e) => { if (e.target.closest('.plate-views')) setView(p, e.target.value); });
   on(root, 'click', (e) => {
     const chip = e.target.closest('.receipt');
@@ -1099,6 +1148,7 @@ function read(id) {
   const settings = (p.data.setting || []).map((c) => ({ name: c.name, label: c.label, word: c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set', changed: p.state[c.name] !== p.params.get(c.name).def }));
   return { id, title: p.title.textContent, state: { ...p.state }, selected: p.selected, changed: changed(p), settings, receipts: p.data.receipts };
 }
-// fig is the one rounding for a computed figure, and today the one date in house style, for the page scripts that print either.
-window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()) };
+// fig is the one rounding for a computed figure, and today the one date in house style, for the page scripts that print either. The Explorer shares the address,
+// the findable hiding, and a plot's aids.
+window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()), address: { read: readAddress, write: writeAddress }, conceal, aid };
 })();

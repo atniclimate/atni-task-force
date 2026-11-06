@@ -1,4 +1,4 @@
-"""Fit the idle term of one machine from plug-meter readings. Nothing leaves this machine; the public site receives nothing, and any release is that Nation's decision.
+"""Fit the idle term of one machine from plug-meter readings. Nothing leaves this machine through the site; any release is that Nation's decision.
 
 Reads a CSV of wall watts at measured utilization, fits watts = P_idle + (P_max - P_idle) x utilization by least squares, and prints the idle fraction a = P_idle / P_max,
 the utilization U, and the Resource Use Explorer's energy multiplier at that a and U, each with its error and beside the model's default. docs/FIELD-PROTOCOL.md says how to take the readings.
@@ -189,7 +189,7 @@ def load_inputs(path):
 
 
 CLOSING = ("To try these in the Explorer, type them into its measured fields. Every row they move carries the label: your measurement, not verified by ATNI.",
-           "These readings stay with you. The public site receives nothing, and any release is that Nation's decision.")
+           "These readings stay with you. They never leave your machine through this site, and any release is that Nation's decision.")
 
 
 def report(text, inputs, compare="node_w"):
@@ -231,7 +231,7 @@ def self_test():
     results = [x for x in lines if not x.startswith("Warning") and x not in CLOSING]
     assert len(results) == 6 and all(x.endswith(LIMIT) for x in results), lines
     assert any("Idle fraction a" in x and "model 0.11 (0.11 to 0.36)" in x for x in lines) and any("Energy per unit of work" in x for x in lines)
-    assert close(idle_mult(0.5, r["a"]), 1.0) and "The public site receives nothing" in lines[-1]
+    assert close(idle_mult(0.5, r["a"]), 1.0) and "never leave your machine through this site" in lines[-1]
     assert any("No model file" in x for x in report(FIXTURE, None))
     # readings the fit cannot use say what to do
     for bad, word in (("watts\n1\n", "utilization"), ("utilization,watts\n0.5,10\n0.5,20\n0.5,30\n", "one utilization"), ("utilization,watts\n0,1\n1,2\n", "at least 3"), ("utilization,watts\n50,10\n", "0 to 1"),

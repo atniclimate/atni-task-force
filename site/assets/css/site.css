@@ -185,7 +185,9 @@ strong { font-weight: 700; }
 a { color: var(--atni-text-link); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; }
 :focus-visible { outline: 3px solid var(--atni-text-link); outline-offset: 3px; }
-[hidden] { display: none !important; }
+[hidden]:not([hidden="until-found"]) { display: none !important; }
+/* A closed tab panel or view that find-in-page can open (plate.js): the browser skips what it holds, and its own box takes no room until a match opens it. */
+@media screen { [hidden="until-found"] { margin: 0 !important; padding: 0 !important; border: 0 !important; } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 /* The page track is the window: tight gutters, no max width below 2560px. Measures limit running text only. */
@@ -856,9 +858,10 @@ main > .panel + .panel { border-top: 0; }
 .plate-tally { justify-self: start; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; text-align: left; text-wrap: balance; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
 .plate-tally:hover { text-decoration-thickness: 2px; }
 .plate-out { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 0 16px; }
-.plate-out button { min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
-.plate-out button:hover { text-decoration-thickness: 2px; }
-@media (pointer: coarse) { .plate-out button { min-height: 44px; } }
+/* Read as a table stands under the plot in the same quiet words, the plot's own way to its Table view. */
+.plate-out button, .plate-to-table { min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline; text-decoration-color: var(--control); text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
+.plate-out button:hover, .plate-to-table:hover { text-decoration-thickness: 2px; }
+@media (pointer: coarse) { .plate-out button, .plate-to-table { min-height: 44px; } }
 .plate-link-note { max-width: none; }
 .plate-print-head, .plate-print-foot { display: none; }
 .plate-facts { display: grid; gap: 8px; }
@@ -1198,8 +1201,9 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bench-link { margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; }
 
 @media print {
-  .plate-controls, .plate-switch, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows { display: none !important; }
+  .plate-controls, .plate-switch, .plate-views, .plate-actions, .plate-chips, .plate-receipt, .count-rows, .plate-to-table { display: none !important; }
   .plate-view[hidden] { display: grid !important; }
+  [hidden="until-found"] { content-visibility: visible; } /* the browser's own rule skips what a findable panel or view holds; paper shows it all */
   .ladder-groups[hidden] { display: flex !important; }
   .plate-views ~ .plate-view > .label { display: block !important; }
   .plate { padding: 12pt; border: 1px solid var(--rule); }

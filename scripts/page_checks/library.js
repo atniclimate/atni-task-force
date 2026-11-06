@@ -1,6 +1,6 @@
 // The library page, with library.js running on the real data: every bar's printed count is what its filter returns, chips filter and keep focus,
 // the field shows the filter, and a short feed on another page keeps its markup. jsdom does not run modules, so the script is loaded with its import resolved.
-const { JSDOM, ok, eq, wait, read, open, fire, figures } = require('./lib');
+const { JSDOM, ok, eq, wait, read, open, fire, figures, settings } = require('./lib');
 
 const html = read('site/library/index.html');
 const data = JSON.parse(read('site/data/library.json'));
@@ -53,7 +53,7 @@ const groups = {
       eq(bar.getAttribute('aria-current'), 'true', 'the bar says it is on');
       eq(document.querySelectorAll('.comp-row[aria-current]').length, 1, 'and only that one');
       eq(TOTAL - out(document), Number(printed(bar)), 'the field keeps that many squares');
-      ok(window.location.search.includes(`${bar.dataset.filter}=${bar.dataset.value}`), 'the view can be linked');
+      ok(settings(window).includes(`${bar.dataset.filter}=${bar.dataset.value}`), 'the view can be linked');
       fire(window, bar, 'click');
       eq(field.value, '', 'pressing it again clears it');
       eq(bar.hasAttribute('aria-current'), false, 'and the bar says so');

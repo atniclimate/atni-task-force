@@ -886,7 +886,7 @@ def test_fit_idle_prints_its_limit_beside_every_result():
     lines = fit.report(fit.FIXTURE, fit.FAKE_MODEL)
     results = [x for x in lines if not x.startswith("Warning") and x not in fit.CLOSING]
     assert results and all(x.endswith("Limit: one device's readings do not generalize.") for x in results)
-    assert fit.CLOSING[-1] == "These readings stay with you. The public site receives nothing, and any release is that Nation's decision."
+    assert fit.CLOSING[-1] == "These readings stay with you. They never leave your machine through this site, and any release is that Nation's decision."
     assert "your measurement, not verified by ATNI" in fit.CLOSING[0]
 
 
@@ -909,7 +909,8 @@ def test_fit_idle_refuses_a_bad_file_without_a_traceback(tmp_path, capsys, monke
 
 def test_field_protocol_says_what_it_must():
     text = (ROOT / "docs" / "FIELD-PROTOCOL.md").read_text(encoding="utf-8")
-    assert "The public site receives nothing" in text and "that Nation's decision" in text and "fit_idle.py" in text
+    assert "never leaves your machine through this site" in text and "that Nation's decision" in text and "fit_idle.py" in text
+    assert "receives nothing" not in text, "GitHub, which hosts the site, logs each visitor's IP address, so the protocol scopes its promise to the readings"
     assert "your measurement, not verified by ATNI" in text and "do not generalize" in text
     assert chr(0x2014) not in text and " -- " not in text
     assert not re.search(r"[A-Za-z]:[/\\][A-Za-z]", text)

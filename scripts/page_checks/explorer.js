@@ -4,7 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const { JSDOM, ROOT, count, ok, eq, wait, settle, read, fixture, open, fire, key } = require('./lib');
+const { JSDOM, ROOT, count, ok, eq, wait, settle, settings, read, fixture, open, fire, key } = require('./lib');
 
 const PAGE = 'http://localhost/site/explorer/index.html';
 const html = read('site/explorer/index.html');
@@ -197,8 +197,12 @@ function noScript() {
   ok(document.querySelector('.x-lever-note').classList.contains('caption'), 'set as a caption');
 
   // The second version, without scripts: every word a reader needs is on the page, and no control pretends to work.
-  ok(/The public site receives nothing\./.test(text(document.querySelector('.x-band'))), 'the band says the public site receives nothing, on every tab');
-  ok(/The public site receives nothing you type or load\./.test(text(document.getElementById('method'))), 'and so does Method');
+  // The GitHub report, Part 1: GitHub logs each visitor's IP address, so the page promises what this page sends, and names the host for what it sees.
+  ok(/Nothing you type or choose leaves this page\. GitHub, which hosts the site, logs each visitor's IP address\./.test(text(document.querySelector('.x-band'))), 'the band says nothing typed or chosen leaves the page, and what GitHub logs, on every tab');
+  ok(/Nothing you type or choose is sent anywhere: the site has no form, no upload, and no account/.test(text(document.getElementById('method'))) && /GitHub, which hosts the site, logs each visitor's IP address, as its own documentation states\./.test(text(document.getElementById('method'))), 'and so does Method');
+  ok(document.querySelector('#method a[href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection"]'), 'with GitHub\'s own page a press away');
+  ok(/these readings never leave your machine through this site/.test(text(document.getElementById('settings'))), 'the readings say what this site can promise of them');
+  ok(!/receives nothing/.test(text(document.body)), 'and no sentence says the site receives nothing');
   for (const file of ['docs/FIELD-PROTOCOL.md', 'scripts/fit_idle.py']) {
     ok(fs.existsSync(path.join(ROOT, file)), `${file} is in the repository`);
     eq(document.querySelectorAll(`#method a[href$="${file}"], #settings a[href$="${file}"]`).length, 2, `${file} is reachable from Method and from Settings`);
@@ -540,7 +544,7 @@ async function behavior() {
   fire(window, row(document, 'use.streaming'), 'click');
   ok(row(document, 'use.streaming').classList.contains('is-on'), 'click selects');
   await settle();
-  eq(window.location.search, '', 'a selection stays off the address');
+  eq(settings(window), '', 'a selection stays off the address');
   fire(window, row(document, 'use.coding'), 'pointerover');
   ok(/coding/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'hover previews');
   fire(window, plot, 'pointerleave');
@@ -579,7 +583,7 @@ async function behavior() {
   setRadio(window, setting(document, 'device', 'laptop'));
   ok(!drawer.hidden, 'a setting keeps the drawer open');
   await settle();
-  ok(/device=laptop/.test(window.location.search), 'settings live in the query string');
+  ok(/device=laptop/.test(settings(window)), 'settings live in the fragment, which no browser sends');
   ok(/^Laptop, Wi-Fi/.test(text(document.querySelector('[data-setting-line]'))), 'the setting line follows');
   ok(/laptop/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-label'))), 'row labels follow the device');
   key(window, drawer, 'Escape');
@@ -594,7 +598,7 @@ async function behavior() {
   for (const n of document.querySelectorAll('#settings input[data-setting]')) setRadio(window, n);
   for (const name of Object.keys(ex.data.sel)) setRadio(window, setting(document, name, ex.data.sel[name].def));
   await settle();
-  eq(window.location.search, '', 'defaults leave the address');
+  eq(settings(window), '', 'defaults leave the address');
 
   // Your Use: fields, time counted once, three price lines, water by basin.
   const screen = row(document, 'use.screen');
@@ -606,7 +610,7 @@ async function behavior() {
   ok(/14 hours/.test(text(screen)), 'the screen row counts');
   ok(/14 screen hours/.test(text(document.querySelector('[data-title="use"]'))), 'the claim sentence refills');
   await settle();
-  eq(window.location.search, '', 'a typed number stays off the address');
+  eq(settings(window), '', 'a typed number stays off the address');
   setField(window, hours, -3);
   eq(hours.getAttribute('aria-invalid'), 'true', 'a bad field says so');
   ok(/Enter a number from 0 to 1,000,000,000\./.test(text(document.querySelector('[data-why]'))), 'and how to fix it, in the model\'s one rule for a typed figure');
@@ -650,7 +654,7 @@ async function behavior() {
   const w = ex.view.week();
   near(w.added, ['chat', 'coding', 'images', 'clips', 'searches', 'social', 'streaming', 'seat'].reduce((s, k) => s + ex.view.val(`use.${k}`, 'wh'), 0), 'the activities exclude the storage row in Office');
   await settle();
-  eq(window.location.search, '', 'an office and its size stay off the address');
+  eq(settings(window), '', 'an office and its size stay off the address');
   setRadio(window, document.querySelector('input[data-opt="mode"][value="person"]'));
   ok(row(document, 'use.seat').hidden, 'One person drops the seat row');
   eq(ex.state.fields.gb, 0, 'and the storage default returns');
@@ -717,7 +721,7 @@ async function behavior() {
   ok(document.querySelector('#settings input[data-setting="wage"][value="25"]').checked, 'and the drawer agrees');
   ok(/\$25 an hour/.test(text(document.querySelector('[data-setting-line]'))), 'and the setting line');
   await settle();
-  eq(window.location.search, '', 'and the wage stays off the address');
+  eq(settings(window), '', 'and the wage stays off the address');
   setRadio(window, setting(document, 'wage', '60'));
 
   // The two admin hours: a visible input, off the address, with the flip beside it.
@@ -732,7 +736,7 @@ async function behavior() {
   await settle();
   ok(ex.view.t.arch.A.cloud.usd > ex.view.t.arch.A.local.usd, 'by the printed flip the local suite is the cheaper');
   await settle(); // the address follows the redraw
-  eq(window.location.search, '', 'the typed hours stay off the address');
+  eq(settings(window), '', 'the typed hours stay off the address');
   ok(/tie at about 3\.1 hours/.test(text(document.querySelector('.x-admin-note'))), 'the tie does not depend on the hours typed');
   setRadio(window, document.querySelector('input[name="arch-wage"][value="25"]'));
   ok(/cheaper at any number of cloud hours/.test(text(document.querySelector('.x-admin-note'))), 'where no tie exists the note says so');
@@ -785,7 +789,7 @@ async function behavior() {
   ok(document.querySelector('[data-group="scale:hour"]').hidden && !document.querySelector('[data-group="scale:unit"]').hidden, 'By the unit takes the zone');
   ok(ex.data.boards['catalog.unit'].rows.includes(ex.state.sel.catalog), 'and the selection moves with it');
   await settle();
-  eq(window.location.search, '', 'a view stays off the address');
+  eq(settings(window), '', 'a view stays off the address');
   setRadio(window, document.querySelector('input[name="scale"][value="hour"]'));
   fire(window, row(document, 'catalog.chat_hour'), 'click');
   ok(/scenario/i.test(text(document.querySelector('[data-board="cross.prompts"] .wall-group[data-scenario]'))), 'hydro lines in a scenario group');
@@ -869,22 +873,22 @@ async function behavior() {
   eq(text(document.querySelector('[data-po="co2"]')), 'Choose a feed', 'CO2e waits for a feed');
   eq(text(document.querySelector('[data-po="share"]')), '0.45 percent', 'and the share of the region is the one the home page states');
   await settle();
-  eq(window.location.search, '', 'a project stays off the address');
+  eq(settings(window), '', 'a project stays off the address');
   fire(window, projectReset, 'click');
   blankProject('Reset clears the example');
 
   // Reset, copy, downloads, deep links.
   setRadio(window, setting(document, 'tariff', 'bpa_wholesale'));
   await settle();
-  eq(window.location.search, '', 'the tariff stays off the address');
+  eq(settings(window), '', 'the tariff stays off the address');
   setRadio(window, setting(document, 'device', 'laptop'));
   setField(window, adminField, 9);
   await settle(); // the typed hours redraw,
   await settle(); // then the address follows
-  eq(window.location.search, '?device=laptop', 'only the selector reaches it');
+  eq(settings(window), 'device=laptop', 'only the selector reaches it');
   fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
   await settle();
-  eq(window.location.search, '', 'Reset clears the address');
+  eq(settings(window), '', 'Reset clears the address');
   eq(ex.state.settings.tariff, ex.data.sel.tariff.def, 'and the settings');
   ok(document.querySelector('#settings input[data-setting="tariff"]:checked').value === ex.data.sel.tariff.def, 'and the radios');
   eq(adminField.value, '2', 'and the typed admin hours');
@@ -894,45 +898,57 @@ async function behavior() {
   setRadio(window, setting(document, 'device', 'laptop'));
   fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click'); // inside the address's quarter second
   await wait();
-  ok(window.copied.includes('?device=laptop'), 'Copy Reading right after a change carries the new setting');
+  const copiedLink = window.copied.split('\n')[1];
+  ok(/#[^?]*\bdevice=laptop\b/.test(copiedLink) && !copiedLink.includes('?'), `Copy Reading right after a change carries the new setting, in the fragment: ${copiedLink}`);
   fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
   await settle();
-  eq(window.location.search, '', 'and Reset clears it again');
+  eq(settings(window), '', 'and Reset clears it again');
   fire(window, document.querySelector('[data-outputs]'), 'click');
   ok(window.lastBlob, 'outputs.csv is built in the browser');
   const csv = await window.lastBlob.text();
   ok(/^row,measure,value,low,high,price_basis,settings/.test(csv) && /catalog\.chat_hour,wh,/.test(csv), 'outputs.csv holds every row');
+  // An old link with a ?query still opens; its query moves into the fragment, after the tab, and leaves the request line (owner ruling 29).
   const deep = await load('?device=laptop&grid_dc=nwpp#architectures');
-  ok(!deep.document.getElementById('architectures').hidden, 'a deep link opens its tab');
+  ok(!deep.document.getElementById('architectures').hidden, 'an old deep link opens its tab');
   eq(deep.window.explorer.state.settings.device, 'laptop', 'and its settings');
   ok(deep.document.querySelector('#settings input[data-setting="grid_dc"][value="nwpp"]').checked, 'the radios agree');
   await settle();
-  eq(deep.window.location.search, '?device=laptop&grid_dc=nwpp', 'the address round-trips');
-  eq(deep.window.location.hash, '#architectures', 'with its hash');
+  eq(settings(deep.window), 'device=laptop&grid_dc=nwpp', 'the address round-trips, out of the request line');
+  eq(deep.window.location.hash, '#architectures&device=laptop&grid_dc=nwpp', 'with the tab first and the settings after it');
+  const again = await load(deep.window.location.hash);
+  ok(!again.document.getElementById('architectures').hidden && again.window.explorer.state.settings.grid_dc === 'nwpp' && again.window.explorer.state.settings.device === 'laptop', 'and that fragment opens the same tab and settings');
+  fire(again.window, again.document.querySelector('[role="tab"]'), 'click');
+  eq(again.window.location.hash, '#your-use&device=laptop&grid_dc=nwpp', 'a tab takes the anchor and keeps the settings');
   for (const name of Object.keys(deep.window.explorer.data.sel)) {
     if (name === 'wage' || name === 'tariff') continue;
     const other = Object.keys(deep.window.explorer.data.sel[name].opts).find((o) => o !== deep.window.explorer.data.sel[name].def);
     setRadio(deep.window, setting(deep.document, name, other));
     await settle();
-    ok(new URLSearchParams(deep.window.location.search).get(name) === other, `${name} reaches the address`);
+    ok(new URLSearchParams(settings(deep.window)).get(name) === other, `${name} reaches the address`);
     setRadio(deep.window, setting(deep.document, name, deep.window.explorer.data.sel[name].def));
     await settle();
-    ok(!new URLSearchParams(deep.window.location.search).has(name), `and leaves it at its default`);
+    ok(!new URLSearchParams(settings(deep.window)).has(name), `and leaves it at its default`);
   }
-  // Back within the page: the address holds the truth for the selectors, typed numbers stay as typed, and no hash means the first tab.
+  // Back within the page: an address that names a selector holds the truth for them all, typed numbers stay as typed, and no tab named means the first tab.
   setField(deep.window, deep.document.querySelector('input[data-field="chat"]'), 33);
-  deep.window.history.replaceState(null, '', '?device=tv&grid_dc=__proto__#architectures');
+  deep.window.history.replaceState(null, '', '#architectures&device=tv&grid_dc=__proto__');
   fire(deep.window, deep.window, 'popstate');
   eq(deep.window.explorer.state.settings.device, 'tv', 'Back re-reads the address');
   eq(deep.window.explorer.state.settings.grid_dc, deep.window.explorer.data.sel.grid_dc.def, 'a selector it no longer names returns to its default');
   ok(deep.document.querySelector('#settings input[data-setting="device"][value="tv"]').checked, 'and the radios follow');
   eq(deep.window.explorer.state.fields.chat, 33, 'a typed number is not in the address, so Back leaves it alone');
-  deep.window.history.replaceState(null, '', '?device=tv#levers');
+  deep.window.history.replaceState(null, '', '#levers&device=tv');
   fire(deep.window, deep.window, 'popstate');
-  ok(!deep.document.getElementById('levers').hidden, 'Back moves the tab with the address, and Chrome fires no hashchange when the query differs too');
+  ok(!deep.document.getElementById('levers').hidden, 'Back moves the tab with the address');
+  // A link within the page (the band's Method, a claim) takes the whole fragment, and Chrome and Firefox fire popstate for it: the settings stay, and the address takes them back.
+  deep.window.history.replaceState(null, '', '#method');
+  fire(deep.window, deep.window, 'popstate');
+  ok(!deep.document.getElementById('method').hidden && deep.window.explorer.state.settings.device === 'tv', 'a jump within the page opens its tab and keeps the settings');
+  eq(deep.window.location.hash, '#method&device=tv', 'and the address takes them back, after the anchor');
   deep.window.location.hash = '';
   await wait(20);
-  ok(!deep.document.getElementById('your-use').hidden && deep.document.getElementById('architectures').hidden, 'Back to no hash shows the first tab');
+  ok(!deep.document.getElementById('your-use').hidden && deep.document.getElementById('architectures').hidden, 'no tab named shows the first tab');
+  eq(deep.window.explorer.state.settings.device, 'tv', 'with the settings kept');
   // A link is untrusted: bad options and prototype names do nothing, and no figure of a Nation's rides in on one, or stays in the address.
   const bad = await load('?device=toaster&grid_dc=__proto__&connection=constructor&network_mode=toString&wage=25&tariff=bpa_wholesale&f_chat=40&f_screen=-4&mode=office&seats=12&row_use=use.coding&m=g&comparison=D&cloud_admin_h_month=14&nope=1#levers');
   const badState = bad.window.explorer.state;
@@ -947,7 +963,7 @@ async function behavior() {
   eq(badState.sel.use, 'use.screen', 'nor a selection');
   eq(Object.keys(badState.inputs).length, 0, 'nor a model input');
   await settle();
-  eq(bad.window.location.search, '', 'and the address drops what it did not read');
+  eq(settings(bad.window), '', 'and the address drops what it did not read');
   eq(bad.window.location.hash, '#levers', 'keeping the tab');
   ok(!/\bfunction\b|\bobject\b/.test(text(bad.document.querySelector('[data-setting-line]'))), 'the setting line reads as words');
   // A browser that throttles replaceState throws: the page has already redrawn, and the throw is caught.
@@ -959,6 +975,8 @@ async function behavior() {
   eq(throttled.errors.join(), '', 'and its throw is caught');
   const drawerLink = await load('#settings');
   ok(!drawerLink.document.getElementById('settings').hidden, 'a link to Settings opens the drawer');
+  const drawerWith = await load('#settings&device=laptop');
+  ok(!drawerWith.document.getElementById('settings').hidden && drawerWith.window.explorer.state.settings.device === 'laptop', 'and a link to Settings with a setting opens the drawer at that setting');
 
   // The self-check, true and tampered.
   const box = document.querySelector('[data-plate-x="use"] [data-check]');
@@ -979,6 +997,60 @@ async function behavior() {
   // Print: the content is in the page whichever tab is open.
   ok(document.querySelectorAll('[data-setting-list] li').length === 21, 'the settings list prints');
   ok(document.querySelector('.wall-row .w-dc[style]'), 'print has the Wall');
+}
+
+// The screen-reader report, R2 to R4, and the platform report's finding 4, on the Explorer -------------------------------------------------
+// One hidden output speaks the selected row's Reading after a pause, never on a hover; each plot says how it is used, with its Table one press away; a closed tab or view stays findable.
+async function access() {
+  const { window, document } = await load();
+  const plate = document.querySelector('[data-plate-x="use"]');
+  const plot = plate.querySelector('.plate-plot');
+  const reading = plate.querySelector('[data-d="reading"]');
+  const out = plate.querySelector('.plate-detail > output');
+  ok(reading.tagName === 'P' && reading.closest('[aria-live]') === null, 'the visible Reading is plain text, no live region');
+  ok(out && out.classList.contains('sr-only') && out.getAttribute('aria-live') === 'polite' && out.getAttribute('aria-atomic') === 'true', 'the kit\'s hidden polite output stands in the page from the start');
+  eq(document.querySelectorAll('.x-plate .plate-detail > output').length, 6, 'one for each plate with a Reading');
+  eq(out.textContent, '', 'silent on load');
+  key(window, plot, 'ArrowDown');
+  await wait(300);
+  key(window, plot, 'ArrowDown');
+  eq(out.textContent, '', 'silent while the arrows move');
+  await wait(600);
+  eq(out.textContent, text(reading), 'then the selected row\'s Reading, once, after the pause');
+  const said = out.textContent;
+  fire(window, row(document, 'use.streaming'), 'pointerover');
+  await wait(600);
+  ok(/Streaming/.test(text(reading)) && out.textContent === said, 'a hover previews the visible Reading and speaks nothing');
+  fire(window, plot, 'pointerleave');
+  key(window, plot, 'ArrowUp');
+  const chosen = text(reading);
+  fire(window, row(document, 'use.streaming'), 'pointerover');
+  await wait(600);
+  eq(out.textContent, chosen, 'and a hover inside the pause cannot change what is spoken');
+  fire(window, plot, 'pointerleave');
+  setField(window, document.querySelector('input[data-field="chat"]'), 20); // the Reading names every measure, so a count is what changes its words
+  await wait(600);
+  ok(out.textContent === text(reading) && out.textContent !== chosen && /^Chat, 20 prompts/.test(out.textContent), `a typed count speaks the new Reading the same way, once it has redrawn: ${out.textContent.slice(0, 40)}`);
+  for (const name of ['use', 'where', 'arch', 'lever', 'cross', 'catalog']) {
+    const p = document.querySelector(`[data-plate-x="${name}"]`);
+    const x = p.querySelector('.x-plot');
+    const how = document.getElementById(x.getAttribute('aria-describedby'));
+    ok(how && how.hidden && how.textContent === 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.', `${name}: the plot is described by the instruction, out of view`);
+    ok(p.classList.contains('has-under') && p.querySelector(':scope > .plate-under').previousElementSibling === x && p.querySelector(':scope > .plate-under > .plate-to-table').textContent === 'Read as a table', `${name}: Read as a table stands right under the plot`);
+  }
+  fire(window, plate.querySelector('.plate-to-table'), 'click');
+  ok(!plate.querySelector('.plate-view[data-view="table"]').hidden && plate.querySelector('.plate-view[data-view="reading"]').hidden && plate.querySelector('.plate-views input[value="table"]').checked, 'the button opens the Table view, and the radio follows');
+  eq(document.activeElement, plate.querySelector('.plate-view[data-view="table"] .table-scroll'), 'and focus goes to the table');
+  const found = await load(); // jsdom reveals hidden="until-found", as Chrome and Firefox do
+  const panels = [...found.document.querySelectorAll('[role="tabpanel"]')];
+  ok(panels.slice(1).every((n) => n.getAttribute('hidden') === 'until-found' && n.tabIndex === -1), 'where the browser can reveal one, a closed tab is hidden until found, out of the Tab order');
+  panels[6].dispatchEvent(new found.window.Event('beforematch'));
+  ok(!panels[6].hidden && panels[0].getAttribute('hidden') === 'until-found' && found.document.querySelectorAll('[role="tab"]')[6].getAttribute('aria-selected') === 'true', 'a match in a closed tab opens it and selects its tab');
+  const catalog = found.document.querySelector('[data-plate-x="catalog"]');
+  const sources = catalog.querySelector('.plate-view[data-view="sources"]');
+  eq(sources.getAttribute('hidden'), 'until-found', 'a closed view is hidden until found');
+  sources.dispatchEvent(new found.window.Event('beforematch'));
+  ok(!sources.hidden && catalog.querySelector('.plate-views input[value="sources"]').checked && catalog.dataset.view === 'sources', 'a match in Sources opens it, radio and all');
 }
 
 // Comparison E, the custody setting, a reader's own reading, the damage control, and the scenario file ------------------
@@ -1067,7 +1139,7 @@ async function secondVersion() {
   await settle();
   ok(V.val('arch.E.year_s3', 'usd') > s3Before, 'a typed size recomputes');
   await settle(); // the address follows the redraw
-  eq(window.location.search, '', 'and stays off the address');
+  eq(settings(window), '', 'and stays off the address');
   setField(window, tb, -1);
   eq(tb.getAttribute('aria-invalid'), 'true', 'a bad size says so');
   ok(/Enter a number from 0 to 80 terabytes, the most one four-bay box holds per copy\./.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"] [data-input-why]'))), 'in its own note, with the model\'s limit');
@@ -1111,7 +1183,7 @@ async function secondVersion() {
   rule('node');
   eq(flatNow(), untouched, 'a rule moves no figure');
   await settle();
-  eq(window.location.search, '', 'and stays off the address');
+  eq(settings(window), '', 'and stays off the address');
   for (const letter of Object.keys(D.comparisons)) {
     compare(letter);
     for (const name of Object.keys(D.custody.options)) {
@@ -1200,7 +1272,7 @@ async function secondVersion() {
   eq(text(foot('use')), `${want.line_unused} No row on this plate uses it.`, 'and a plate with no moved row names the reading without saying it includes it');
   ok(/Includes your measurement, not verified by ATNI/.test(text(document.querySelector('[data-measured-why]'))), 'Settings confirms it');
   await settle(); // the address follows the redraw
-  eq(window.location.search, '', 'it stays off the address');
+  eq(settings(window), '', 'it stays off the address');
   eq(document.querySelector('[data-setting-line]').textContent.includes('62'), false, 'and out of the setting line');
   // A setting cannot overwrite it, and a change of settings keeps the label true.
   setRadio(window, setting(document, 'device', 'laptop'));
@@ -1277,7 +1349,7 @@ async function secondVersion() {
   setDamage('epa_2020');
   eq(flatNow(), untouched, 'it moves no figure');
   await settle();
-  eq(window.location.search, '', 'and stays off the address');
+  eq(settings(window), '', 'and stays off the address');
   const line = document.querySelector('[data-plate-x="arch"] [data-d="damage"]');
   ok(!line.hidden, 'the line shows');
   eq(text(line.querySelector('.x-damage-head')), `${D.carbon_damage.column}, as of ${D.carbon_damage.as_of}`, 'it says what it is, dated');
@@ -1353,7 +1425,7 @@ async function secondVersion() {
   setDamage('uba_4');
   await settle(); // the typed figures redraw,
   await settle(); // then the address follows
-  eq(window.location.search, '?device=laptop', 'the address holds the global selector, and nothing else');
+  eq(settings(window), 'device=laptop', 'the address holds the global selector, and nothing else');
   const stateNow = () => JSON.stringify([S.settings, S.fields, S.inputs, S.measured, S.mode, S.seats, S.custody, S.damage]);
   const whole = stateNow();
   const wholeTree = flatNow();
@@ -1370,7 +1442,7 @@ async function secondVersion() {
   eq(file.settings.wage, '25', 'wage travels in the file, where the address never carries it');
   ok(!saved.includes(label), 'no label is written, so none can be read back');
   await settle();
-  eq(window.location.search, '?device=laptop', 'saving changes no address');
+  eq(settings(window), 'device=laptop', 'saving changes no address');
   const choose = async (text_, name = 'scenario.json') => {
     const input = document.querySelector('[data-scenario-load]');
     Object.defineProperty(input, 'files', { configurable: true, value: [new window.File([text_], name, { type: 'application/json' })] });
@@ -1379,14 +1451,14 @@ async function secondVersion() {
   };
   fire(window, document.querySelector('[data-plate-x="arch"] [data-reset]'), 'click');
   await settle();
-  eq(window.location.search, '', 'Reset clears the address');
+  eq(settings(window), '', 'Reset clears the address');
   eq(flatNow(), untouched, 'and the figures');
   ok(foot('arch').hidden, 'and the line');
   await choose(saved);
   eq(stateNow(), whole, 'the file loads back whole');
   eq(flatNow(), wholeTree, 'to the same figures');
   await settle();
-  eq(window.location.search, '?device=laptop', 'the query string keeps the global selectors only');
+  eq(settings(window), 'device=laptop', 'the address keeps the global selectors only');
   ok(/Scenario loaded from your own machine\./.test(text(status)) && text(status).includes(label), 'the page says so, and the reading is stamped again');
   eq(text(foot('arch')), `Includes ${label}: AI node idle 62 W (model 40).`, 'by the model, not the file');
   eq(document.querySelector('input[data-custody]:checked').value, 'federated', 'the controls follow');
@@ -1450,7 +1522,7 @@ async function secondVersion() {
   await choose(JSON.stringify({ kind: ex.SCENARIO_KIND, schema: 1 }));
   eq(S.settings.device, D.sel.device.def, 'a file naming no settings loads the defaults');
   await settle();
-  eq(window.location.search, '', 'and the address follows');
+  eq(settings(window), '', 'and the address follows');
   fire(window, document.querySelector('[data-plate-x="arch"] [data-reset]'), 'click');
   eq(flatNow(), home, 'the figures end where they began');
 
@@ -1754,4 +1826,4 @@ async function homeBand() {
   eq([...still.querySelectorAll('.home-figures .figure')].filter((n) => !n.querySelector('.figure-claims')).length, 0, 'every figure carries a claim');
 }
 
-module.exports = { groups: { staticRules, noScript, homeBand, behavior, secondVersion, measuredOracle, everyOption, cases } };
+module.exports = { groups: { staticRules, noScript, homeBand, behavior, access, secondVersion, measuredOracle, everyOption, cases } };

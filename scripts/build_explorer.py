@@ -571,7 +571,7 @@ def readings_html(pub):
                     f'<input id="m-{key}" type="number" min="{rule["min"]:g}" max="{rule["max"]:g}" step="any" inputmode="decimal" data-measured="{key}" data-js hidden>'
                     f'<span class="caption">Model {spec["value"]:g}{spread}; {claims}. <code>{key}</code></span></li>')
     return (f'<h3 id="readings" tabindex="-1">Your Own Readings</h3><p class="caption">A reading you took yourself stands in for the model\'s figure for as long as this page stays open. Every row it moves carries the label &ldquo;{escape(pub["measured"]["label"])}&rdquo;, '
-            f'through Copy Reading, print, and CSV. It never enters the address or the claims record, and the public site receives nothing. <a href="{REPO}docs/FIELD-PROTOCOL.md">How to take a reading</a>; <a href="{REPO}scripts/fit_idle.py">the fit script</a>.</p>'
+            f'through Copy Reading, print, and CSV. It never enters the address or the claims record, and these readings never leave your machine through this site. <a href="{REPO}docs/FIELD-PROTOCOL.md">How to take a reading</a>; <a href="{REPO}scripts/fit_idle.py">the fit script</a>.</p>'
             f'<div class="caption x-reading-status" role="status" data-measured-why></div><button type="button" class="button button-secondary" data-clear-measured hidden>Clear my readings</button><ul class="x-readings-list">{"".join(rows)}</ul>')
 
 
@@ -663,7 +663,7 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
                 f'<div class="x-water" data-d="water">{water}</div>'
                 + ('<span class="x-figure" data-d="hours" hidden><strong class="x-big" data-d="hours-n"></strong><span class="caption">assumed, no source</span></span>' if name == "arch" else "")  # a move's paid hours, which its title is about
                 + '</div>'
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(d["reading"])}</output>'
+                f'<p class="reading" data-d="reading">{escape(d["reading"])}</p>'
                 f'<div class="x-damage" data-d="damage" hidden></div>')
         modeled = (f'<ul class="plate-values x-layers" data-d="layers">{layers}</ul><p class="caption" data-d="spread">{escape(d["spread"])}</p><p class="caption" data-d="moves">{escape(d["moves"])}</p>'
                    f'<p class="caption">Price: <span data-d="price-tag">{escape(d["priceTag"])}</span>. CO2e: <span data-d="co2-tag">{escape(d["co2Tag"])}</span>. Water: <span data-d="water-basis">{escape("; ".join(w["tag"] for w in d["water"]))}</span>.</p>'
@@ -673,9 +673,11 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
     actions = ('<div class="plate-actions" data-js hidden><button type="button" class="button" data-copy>Copy Reading</button><button type="button" class="button button-secondary" data-reset>Reset</button><span class="caption plate-status" role="status"></span></div>')
     tally = '<button type="button" class="plate-tally" data-tally hidden></button>'
     more = f'<details class="plate-more x-modeled" open><summary>How this is modeled</summary>{modeled}<div data-d="note" class="x-note-slot" data-js hidden></div></details>'
+    # The Reading is plain text; the kit's polite output, in the page from the start, speaks it after a pause (explorer.js), never on a hover.
     return (f'{views}<div class="plate-view" data-view="reading">{body}{lead}{more}{also}{actions}{tally}</div>'
             f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
-            f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>')
+            f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>'
+            '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>')
 
 
 def rows_table(data, keys, st, caption, group=None, cites=None):
@@ -1188,7 +1190,7 @@ def build():
         key = data["first"]["lever"]
         r = st["levers"][key]
         return (readout_html(r["wh"]["ratio_text"], "", "after over before, energy") +
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(r["wh"]["before_text"])} before, {escape(r["wh"]["after_text"])} after, at the same setting. Modeled, not measured; a per-unit saving is not a total one.</output>')
+                f'<p class="reading" data-d="reading">{escape(data["rows"][key]["label"])}: {escape(r["wh"]["before_text"])} before, {escape(r["wh"]["after_text"])} after, at the same setting. Modeled, not measured; a per-unit saving is not a total one.</p>')
 
     def lever_lines():
         r = st["levers"][data["first"]["lever"]]
@@ -1199,7 +1201,7 @@ def build():
         key = data["first"]["cross"]
         c = st["cross"]["cross.prompts"]["items"][key]
         return (readout_html(c["words"]["num"], c["words"]["unit"], c["words"]["tag"][1:-1]) +
-                f'<output class="reading" data-d="reading" aria-live="polite">{escape(data["rows"][key]["label"])}: {escape(c["text"])}. A range from one change at a time, not a forecast.</output>')
+                f'<p class="reading" data-d="reading">{escape(data["rows"][key]["label"])}: {escape(c["text"])}. A range from one change at a time, not a forecast.</p>')
 
     def cross_ends():
         c = st["cross"]["cross.prompts"]["items"][data["first"]["cross"]]

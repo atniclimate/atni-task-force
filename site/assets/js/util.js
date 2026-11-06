@@ -33,30 +33,52 @@ export async function getJSON(path) {
   return response.json();
 }
 
-// Reads the named form fields from the address bar, and returns a function that writes them
-// back, so a filtered view can be linked. Other parameters and the fragment are kept.
+// The address, as plate.js keeps it: #anchor&name=value, since a browser never sends the fragment. An old link's ?query is read too, and the next write moves it.
+const parse = (raw) => {
+  const first = raw.split('&')[0];
+  const anchor = first.includes('=') ? '' : first;
+  return { anchor, params: new URLSearchParams(anchor ? raw.slice(first.length + 1) : raw) };
+};
+function address() {
+  const at = parse(window.location.hash.slice(1));
+  for (const [name, value] of new URLSearchParams(window.location.search)) if (!at.params.has(name)) at.params.append(name, value);
+  return at;
+}
+function writeAddress(anchor, params) {
+  const hash = [anchor, params.toString()].filter(Boolean).join('&');
+  try { window.history.replaceState(null, '', `${window.location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
+}
+// A link within the page (#id) takes the whole fragment: the filters it held come back after it. Added once, however many forms a page links.
+const keep = (e) => {
+  const now = address();
+  const was = e.oldURL ? parse(new URL(e.oldURL).hash.slice(1)).params : null;
+  if (was?.toString() && !now.params.toString()) writeAddress(now.anchor, was);
+};
+
+// Reads the named form fields from the address, and returns a function that writes them back, so a filtered view can be linked. Other settings and the anchor are kept.
 export function linkFilters(form, names) {
-  const params = new URLSearchParams(window.location.search);
+  const { anchor, params } = address();
   for (const name of names) {
     const field = form.elements.namedItem(name);
     if (field && params.has(name)) field.value = params.get(name);
   }
+  writeAddress(anchor, params);
+  window.addEventListener('hashchange', keep);
   return () => {
-    const next = new URLSearchParams(window.location.search);
+    const { anchor: at, params: next } = address();
     for (const name of names) {
       const value = form.elements.namedItem(name)?.value.trim();
       if (value) next.set(name, value);
       else next.delete(name);
     }
-    const query = next.toString();
-    try { window.history.replaceState(null, '', `${query ? `?${query}` : window.location.pathname}${window.location.hash}`); } catch { /* throttled: the next change writes it */ }
+    writeAddress(at, next);
   };
 }
 
-// The element the address's fragment names, or null: a pasted link with a broken escape, such as #%E0, names nothing and stops nothing.
+// The element the address's anchor names, or null: a pasted link with a broken escape, such as #%E0, names nothing and stops nothing.
 export function hashTarget() {
   try {
-    return document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    return document.getElementById(decodeURIComponent(address().anchor));
   } catch {
     return null;
   }
@@ -88,9 +110,9 @@ export function closedDetail(figure) {
   new MutationObserver(sync).observe(reading, { childList: true, characterData: true, subtree: true });
   more.append(line, ...[...panel.children].filter((node) => node.tagName !== 'OUTPUT'));
   panel.prepend(more);
-  const query = new URLSearchParams(window.location.search);
-  const target = document.getElementById(window.location.hash.slice(1));
-  more.open = query.has(id) || query.has(`${id}-view`) || more.contains(target);
+  const { params } = address();
+  const target = hashTarget();
+  more.open = params.has(id) || params.has(`${id}-view`) || more.contains(target);
   if (more.contains(target)) {
     panel.querySelector(`.plate-views input[value="${target.closest('.plate-view').dataset.view}"]`).click();
     target.scrollIntoView();
