@@ -28,11 +28,16 @@ This script checks, and exits non-zero on any problem:
   or partly, and no email; every plate data block in a page names claims that ship, holds only their
   numbers (or a model's, or a formula's over those), and states the limit of a partly claim; every plate
   definition (data/plates/) is T0 and built; a figure poured into a page (data-pour) names a claim that ships;
-  a claim reference in prose (.cr) passes scripts/pour_claim_refs.py.
+  a claim reference in prose (.cr) passes scripts/pour_claim_refs.py, whose figure rule lists rather than fails while in report mode;
+- a bound word in prose (floor, lower or upper bound, at least, at most) about a marked figure states a bound its claim's quote or
+  derived text states the same way (see BOUND_WORDS; listed rather than failed while REFUSE_BOUND_WORDS is False);
+- a claim whose source.published is a day (YYYY-MM-DD) carries source.date_words, the words the source prints for that day: without
+  them a claim id that existed at N10 (DATE_WORDS_BASELINE) is a warning, and any later id fails.
 
 Standard library plus PyMuPDF (imported as fitz, only when PDFs are read, so scripts/build_plates.py can
 reuse these rules with the standard library alone). Run: python scripts/validate_public.py
 """
+from bisect import bisect_right
 from datetime import date
 from html.parser import HTMLParser
 import json
@@ -102,6 +107,19 @@ YEAR_OR_DAY = re.compile(r"\d{4}(?:-\d{2}-\d{2})?")
 # The heat screen is T1 until the owner releases it (docs/ENERGY-FUNDING.md); nothing public may name it.
 HEAT_SCREEN = re.compile(r"(?i)heat[\s_-]*screen")
 CHECKS = {"verified", "needs_review"}
+# Bound words: prose may call a marked figure a floor or a bound, or say "at least" or "at most" of it, only when that claim's quote or derived text states a bound
+# the same way. A phrase is about the nearest .cr mark in its sentence, when BOUND_WINDOW words or fewer lie between them (a tie checks every mark that near).
+BOUND_WORDS = re.compile(r"(?i)\b(?:(?P<lower>floor(?![\s-](?:space|area|plan))|lower[\s-]bounds?|at least)|(?P<upper>upper[\s-]bounds?|at most))\b")
+SAYS_BOUND = {  # each direction's plain equivalents, as a source may write them
+    "lower": re.compile(r"(?i)\b(?:floors?|lower[\s-]bounds?|lower limit|at least|no less than|not less than|minimum|or more|more than|greater than|in excess of)\b"),
+    "upper": re.compile(r"(?i)\b(?:ceilings?|upper[\s-]bounds?|upper limit|at most|no more than|not more than|maximum|up to|or less|or fewer|less than|fewer than)\b"),
+}
+BOUND_WINDOW = 6
+REFUSE_BOUND_WORDS = False  # False (N10 step 2a): list each bound word its claim does not state, and leave the exit code alone; True: each one fails
+# The claim ids in the evidence files when source.date_words came in (N10, 11/06/2026), as prefix:first-last runs. A day-level source.published
+# with no date_words is a warning for these ids and fails for any other.
+DATE_WORDS_BASELINE = ("at:1-2 au:1-62 cp:1-528 dem:1-145 ec:1-62 ef:1-14,21-28,41-43 ep:1-18,21-33,41-42 ex:1-19 fin:1-111 fp:1-107,120-162 gf:1-65 jb:1-117 "
+                       "lc:1-6,11-15,21-30,41-45,51-52,61-62,71 ld:1-26 lf:1-78 mv:1-5 pa:1-39 pdc:1-27,30-64 pe:1-8 pj:1-68 px:1-70 rs:1-80 ru:1-128 sf:1-63 sv:1-66 tr:1-72")
 
 
 def self_test():
@@ -133,6 +151,8 @@ def self_test():
     errors = []
     check_funding_heat({"tier": "T0", "programs": [{"note": "see the heat screen"}]}, "f", errors)
     assert len(errors) == 1, errors
+    assert [m.lastgroup for m in BOUND_WORDS.finditer("a floor, at least, an upper bound, the floor space, floors")] == ["lower", "lower", "upper"]
+    assert baseline_ids("fp:1-2,5") == {"fp-001", "fp-002", "fp-005"}
 
 
 class Page(HTMLParser):
@@ -176,7 +196,7 @@ def parse(path, cache={}):
     return cache[path]
 
 
-VERBATIM_KEYS = {"excerpt", "title", "quote"}  # quoted source text and titles of external works keep their own dashes
+VERBATIM_KEYS = {"excerpt", "title", "quote", "date_words"}  # quoted source text and titles of external works keep their own dashes
 
 
 def our_prose(node, key=None):
@@ -701,6 +721,33 @@ def check_claims(errors):
     return claims
 
 
+def baseline_ids(runs=DATE_WORDS_BASELINE):
+    """The claim ids a prefix:first-last list names ("fp:1-2,5" is fp-001, fp-002, fp-005)."""
+    ids = set()
+    for group in runs.split():
+        prefix, spans = group.split(":")
+        for span in spans.split(","):
+            first, _, last = span.partition("-")
+            ids.update(f"{prefix}-{n:03d}" for n in range(int(first), int(last or first) + 1))
+    return ids
+
+
+def check_date_words(claims, errors):
+    """A source.published that names a day comes with source.date_words, the words the source prints for that day. Reads the shipped claims, which
+    carry each evidence record's source whole, so a clean clone with no work/ runs it too. Returns the baseline ids that lack it (warnings)."""
+    old, missing = baseline_ids(), []
+    for claim_id, claim in sorted(claims.items()):
+        source = claim.get("source") or {}
+        if not iso_day(source.get("published")) or str(source.get("date_words") or "").strip():
+            continue
+        if claim_id in old:
+            missing.append(claim_id)
+        else:
+            errors.append(f"claim {claim_id}: source.published {source['published']} names a day and source.date_words is missing: quote the words the source prints "
+                          f"for that day as date_words in its evidence record and export again, or write only the month or year the source states")
+    return missing
+
+
 def numbers_in(node):
     """Every number a claim holds, so a plate row can be traced back to it."""
     if isinstance(node, dict):
@@ -792,6 +839,58 @@ def check_poured(rel, body, claims, errors):
             errors.append(f"{rel}: data-pour {claim_id} is partly verified; its limit must be on the page: add <span data-pour=\"{claim_id}\" data-field=\"limit\"></span> near the figure, then rebuild the page")
 
 
+def bound_words(body, claims):
+    """Each bound word about a marked figure whose claim's quote and derived text state no bound that way. Reads the visible prose as scripts/number_audit.py
+    does (plate, bench, and claim-list blocks are built from their own definitions and skipped)."""
+    import number_audit as audit  # here, not at the top: it imports this module
+
+    class Walker(audit.Walker):
+        """The audit's walk, with each piece of text tagged with the .cr mark it sits in."""
+
+        def handle_starttag(self, tag, attrs):
+            super().handle_starttag(tag, attrs)
+            if tag == "a" and "cr" in (dict(attrs).get("class") or "").split():
+                self.stack[-1]["claim"] = dict(attrs).get("data-claim")
+
+        def handle_data(self, data):
+            count = len(self.pieces)
+            super().handle_data(data)
+            if len(self.pieces) > count:
+                self.pieces[-1] += (next((entry for entry in reversed(self.stack) if "claim" in entry), None),)
+
+    walker = Walker()
+    walker.feed(body)
+    walker.close()
+    walker.flush()
+    words = lambda text: len(re.findall(r"\w+", text))  # noqa: E731
+    hits = []
+    for pieces in walker.blocks:
+        text, starts = audit.joined(pieces)
+        marks = {}  # one mark: [start, end, claim id]
+        for piece, start in zip(pieces, starts):
+            if piece[-1]:
+                span = marks.setdefault(id(piece[-1]), [start, start, piece[-1]["claim"]])
+                span[1] = start + len(piece[0])
+        if not marks:
+            continue
+        ends = [0, *(m.end() for m in audit.SENTENCE_END.finditer(text)), len(text)]
+        for found in BOUND_WORDS.finditer(text):
+            k = bisect_right(ends, found.start()) - 1
+            gaps = {}
+            for start, end, claim_id in marks.values():
+                if ends[k] <= start < ends[k + 1]:
+                    gap = words(text[found.end():start]) if start >= found.end() else words(text[end:found.start()])
+                    gaps[claim_id] = min(gap, gaps.get(claim_id, gap))
+            nearest = min(gaps.values(), default=BOUND_WINDOW + 1)
+            direction = "lower" if found["lower"] else "upper"
+            for claim_id in sorted(c for c, gap in gaps.items() if gap == nearest <= BOUND_WINDOW):
+                claim = claims.get(claim_id)
+                if claim is not None and not SAYS_BOUND[direction].search(f"{claim.get('quote') or ''} {claim.get('derived') or ''}"):
+                    hits.append(f"{claim_id}: {found[0]!r} names a {direction} bound that the claim's quote and derived text do not state: drop the word, or cite a claim "
+                                f"whose source states it: {' '.join(text[ends[k]:ends[k + 1]].split())}")
+    return hits
+
+
 def check_resource_model(claims, errors):
     """The Explorer's public model and page: the header, every claim id they name ships, and a partly verified one has its public limit."""
     rel = "data/resource-model.json"
@@ -855,10 +954,12 @@ def main():
     import fitz
     import pour_claim_refs
 
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # a reported mark or sentence may hold a character the console's code page lacks
     self_test()
     fitz.TOOLS.mupdf_display_errors(False)
-    errors, slots = [], {}
+    errors, slots, figure_report, bound_report = [], {}, [], []
     claims = check_claims(errors)
+    undated = check_date_words(claims, errors)
     plate_blocks = 0
     files = sorted(p for p in SITE.rglob("*") if p.is_file())
     for path in files:
@@ -893,6 +994,8 @@ def main():
                 check_plate_scripts(rel, body, errors)
                 check_poured(rel, body, claims, errors)
                 errors.extend(pour_claim_refs.check_page(rel, body, claims))
+                figure_report += [f"{rel}: {problem}" for problem in pour_claim_refs.figure_report(body, claims)]
+                (errors if REFUSE_BOUND_WORDS else bound_report).extend(f"{rel}: {hit}" for hit in bound_words(body, claims))
         elif suffix == ".pdf":
             check_pdf(path, rel, errors)
     if not (SITE / ".nojekyll").is_file():
@@ -913,6 +1016,15 @@ def main():
         if f"`{slot}`" not in documented:
             errors.append(f"Slot {slot} ({rel}) is not listed in docs/CONTENT-SLOTS.md: add a row for `{slot}` there")
 
+    notes = [f"figure rule: {line}" for line in figure_report] + [f"bound word: {line}" for line in bound_report]
+    if not pour_claim_refs.REFUSE_FIGURES:
+        notes.append(f"figure rule, report mode: {len(figure_report)} marks print a figure their claim does not hold; they fail once pour_claim_refs.REFUSE_FIGURES is True")
+    if not REFUSE_BOUND_WORDS:
+        notes.append(f"bound words, report mode: {len(bound_report)} name a bound their claim does not state; they fail once REFUSE_BOUND_WORDS is True")
+    if undated:
+        notes.append(f"warning: {len(undated)} claims from before N10 have a day-level source.published and no source.date_words, the words the source prints for that day")
+    for note in notes:
+        print(note)
     if errors:
         print(f"FAILED: {len(errors)} problem(s) in site/")
         for error in errors:
@@ -933,6 +1045,9 @@ def main():
         "claims": len(claims),
         "plates": plates,
         "plate_blocks": plate_blocks,
+        "figure_report": len(figure_report),
+        "bound_word_report": len(bound_report),
+        "date_words_missing": len(undated),
     }))
 
 

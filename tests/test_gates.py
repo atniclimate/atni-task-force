@@ -1,5 +1,6 @@
 """The release gates, each held to a case it once let through: suffix case, the owner's mark, the T1 leak check's reach, receipt dates, external loads,
-local paths, one claim-id pattern, tiers, snapshot order, and three small guards. Scratch folders only; no network, no browser."""
+local paths, one claim-id pattern, tiers, snapshot order, and three small guards; then N10's bound words, date words, and rebuild order.
+Scratch folders only; no network, no browser."""
 import json
 import os
 from pathlib import Path
@@ -20,6 +21,7 @@ import intake_pull as intake  # noqa: E402
 import merge_library  # noqa: E402
 import number_audit  # noqa: E402
 import pour_claim_refs as cr  # noqa: E402
+import rebuild_all as ra  # noqa: E402
 import resource_model as rm  # noqa: E402
 import validate_public as vp  # noqa: E402
 
@@ -214,3 +216,107 @@ def test_a_t1_sentence_in_a_word_document_blocks(tmp_path, capsys):  # 13
 def test_one_copy_of_each_shared_helper_and_list():  # 14
     assert bp.load_claims is cr.load_claims and bp.verbatim is cr.verbatim
     assert merge_library.TYPES is vp.TYPES and merge_library.AREAS is vp.AREAS
+
+
+def cr_mark(claim_id, text):
+    return f'<a class="cr" data-claim="{claim_id}" href="#src-{claim_id}">{text}</a>'
+
+
+BOUND_CLAIMS = {
+    "aa-001": {"quote": "Usage reached 45 percent in 2025.", "derived": None},
+    "aa-002": {"quote": "Each query uses at least 3.1 Wh.", "derived": None},
+    "aa-003": {"quote": "No more than 7 percent of load.", "derived": None},
+    "aa-004": {"quote": "We counted 12 sites.", "derived": "A floor: 12 sites counted; more may exist."},
+}
+SPLIT_MARK = '<span data-pour="aa-001">45</span>%'
+
+
+@pytest.mark.parametrize("prose,flagged", [
+    (f"Use at least {cr_mark('aa-001', '45%')} of it.", ["aa-001"]),
+    (f"Use at least {cr_mark('aa-001', SPLIT_MARK)} of it.", ["aa-001"]),  # one mark, two pieces of text
+    (f"Use at least {cr_mark('aa-002', '3.1 Wh')} a query.", []),  # the quote says it
+    (f"Use at most {cr_mark('aa-003', '7%')} of load.", []),  # "no more than" is its plain equivalent
+    (f"Use at most {cr_mark('aa-002', '3.1 Wh')} a query.", ["aa-002"]),  # the quote's bound runs the other way
+    (f"{cr_mark('aa-004', '12 sites')} is a floor.", []),  # the derived text says it
+    (f"{cr_mark('aa-001', '45%')}, which the survey treats as an upper bound.", ["aa-001"]),  # six words between: about the mark
+    (f"{cr_mark('aa-001', '45%')}, which the survey then treats as an upper bound.", []),  # seven: not
+    (f"{cr_mark('aa-001', '45%')} rose. At least one other did too.", []),  # another sentence
+    (f"From {cr_mark('aa-001', '45%')} the share fell to at least {cr_mark('aa-002', '3.1 Wh')}.", []),  # about the nearer mark, whose claim says it
+    (f"The {cr_mark('aa-001', '45%')} floor space was new.", []),  # floor space is not a bound
+])
+def test_a_bound_word_about_a_marked_figure_needs_its_claim_to_say_it(prose, flagged):  # 15
+    hits = vp.bound_words(f"<main><p>{prose}</p></main>", BOUND_CLAIMS)
+    assert [hit.split(":")[0] for hit in hits] == flagged, hits
+
+
+def scratch_claim(tmp_path, claim_id, published):
+    claim = {"id": claim_id, "status": "verified", "value": 45, "quote": "Usage reached 45 percent.", "source": {"url": "https://x.org", "title": "T", "publisher": "P", "published": published}}
+    (tmp_path / "data" / "claims").mkdir(parents=True)
+    (tmp_path / "data" / "claims" / "a.json").write_text(json.dumps({"schema": 1, "tier": "T0", "claims": [claim]}), encoding="utf-8")
+
+
+def test_a_planted_bound_word_is_listed_in_report_mode_and_fails_once_refused(tmp_path, monkeypatch, capsys):  # 15
+    scratch_claim(tmp_path, "aa-001", "2026-10")
+    (tmp_path / "index.html").write_text(f"<main><p>Use at least {cr_mark('aa-001', '45%')} of it.</p>\n</main>", encoding="utf-8")
+    monkeypatch.setattr(vp, "REFUSE_BOUND_WORDS", False)
+    out = validator_output(tmp_path, monkeypatch, capsys)
+    assert "bound word: index.html: aa-001: 'at least' names a lower bound" in out and "bound words, report mode: 1 name" in out and "  - index.html: aa-001" not in out
+    monkeypatch.setattr(vp, "REFUSE_BOUND_WORDS", True)
+    assert "  - index.html: aa-001: 'at least' names a lower bound" in validator_output(tmp_path, monkeypatch, capsys)
+
+
+def test_a_day_without_its_words_warns_for_an_old_claim_and_fails_a_new_one():  # 16
+    def dated(claim_id, published="2026-10-05", **source):
+        return claim_id, {"id": claim_id, "source": {"url": "https://x.org", "published": published, **source}}
+    claims = dict([dated("fp-001"), dated("fp-110"), dated("fp-999"), dated("fp-998", date_words="Posted October 5, 2026"), dated("fp-997", "2026-10")])
+    errors = []
+    assert vp.check_date_words(claims, errors) == ["fp-001"]
+    assert [error.split(":")[0] for error in errors] == ["claim fp-110", "claim fp-999"], "fp-110 sits in a gap the baseline never held"
+    assert vp.baseline_ids("fp:1-2,5 pdc:30") == {"fp-001", "fp-002", "fp-005", "pdc-030"}
+
+
+def test_date_words_are_the_sources_own_and_the_rule_needs_no_local_files(tmp_path, monkeypatch, capsys):  # 16
+    assert list(vp.our_prose({"source": {"publisher": "P", "date_words": "Updated — 10/05/2026"}})) == ["P"], "a quote keeps its own dashes"
+    scratch_claim(tmp_path, "zz-001", "2026-10-05")  # a scratch site/ beside no work/, as a clean clone has
+    assert "claim zz-001: source.published 2026-10-05 names a day and source.date_words is missing" in validator_output(tmp_path, monkeypatch, capsys)
+
+
+def test_the_rebuild_runs_in_the_documented_order():  # 17
+    order = [" ".join(make) for _, make, _, _ in ra.STEPS]
+    at = lambda command: order.index(f"scripts/{command}")  # noqa: E731  (a step's first run)
+    export = at("build_plates.py --export-claims")
+    assert max(at("energy_claims.py"), at("climate_claims.py"), at("project_claims.py")) < export < at("build_project_map.py") < at("build_plates.py")
+    model = [at(f"resource_model.py{flag}") for flag in (" --self-test", " --export", " --oracle", "")]
+    assert model == sorted(model) and model[-1] < at("build_explorer.py") < at("build_index.py") < at("build_whats_new.py")
+    counts = [n for n, command in enumerate(order) if command == "scripts/site_count_claims.py"]
+    assert counts[0] < at("build_plates.py") and at("build_whats_new.py") < counts[1] < at("pour_claim_refs.py"), "before the pages read the counts, and after the rows it counts"
+    assert at("pour_claim_refs.py") < at("build_share_cards.py") < at("build_briefing.py") < at("build_briefing_pdf.py") < at("add_page_meta.py") == len(order) - 1
+    assert {make[0] for _, make, _, stale_only in ra.STEPS if stale_only} == {"scripts/build_project_map.py", "scripts/build_share_cards.py", "scripts/build_briefing_pdf.py"}
+    assert all((ROOT / make[0]).is_file() for _, make, _, _ in ra.STEPS)
+
+
+def test_the_rebuild_stops_at_the_first_failing_step_with_its_exit_code(monkeypatch):  # 17
+    ran = []
+    monkeypatch.setattr(ra, "run", lambda args: ran.append(" ".join(args)) or (3 if args == ["scripts/build_index.py"] else 0))
+    with pytest.raises(SystemExit) as stop:
+        ra.build()
+    assert stop.value.code == 3 and ran[-1] == "scripts/build_index.py" and "scripts/build_whats_new.py" not in ran
+    assert "scripts/build_project_map.py --check" in ran and "scripts/build_project_map.py" not in ran, "a current map is not rebuilt"
+
+
+def test_a_stale_only_output_is_rebuilt_when_its_check_says_stale(monkeypatch):  # 17
+    ran = []
+    monkeypatch.setattr(ra, "run", lambda args: ran.append(" ".join(args)) or int(args == ["scripts/build_briefing_pdf.py", "--check"]))
+    ra.build()
+    assert "scripts/build_briefing_pdf.py" in ran and "scripts/build_share_cards.py --check" in ran and "scripts/build_share_cards.py" not in ran
+
+
+def test_the_check_runs_every_check_and_no_build_and_names_each_stale_output(monkeypatch, capsys):  # 17
+    ran = []
+    stale = (["scripts/build_index.py", "--check"], ["scripts/build_briefing_pdf.py", "--check"])
+    monkeypatch.setattr(ra, "run", lambda args: ran.append(args) or int(args in stale))
+    with pytest.raises(SystemExit) as stop:
+        ra.check()
+    assert "data/index.json (python scripts/build_index.py --check); Briefing PDF (python scripts/build_briefing_pdf.py --check)" in stop.value.code
+    assert ran == [command for _, _, command, _ in ra.STEPS if command], "each check once, in order, and nothing else"
+    assert "no check of their own: Energy claims and plates, climate claims and plate" in capsys.readouterr().out

@@ -29,13 +29,18 @@ node scripts\page_check.js --all       # jsdom checks of every plate page and th
 At an integration checkpoint, in a browser: `node scripts\a11y_check.js --out DIR --pages ...` and `node scripts\capture.js --out DIR --pages all`.
 `python scripts\number_audit.py` lists prose numbers with no claim id and always exits 0.
 
-After changing plates or claims, rebuild in this order, since later steps copy or count earlier ones:
-`build_plates.py --export-claims`, `build_plates.py` (`--page PATH` for one page), `build_explorer.py`, `build_index.py`, `build_whats_new.py`,
-`build_library_strip.py`, `pour_claim_refs.py`, `build_share_cards.py --check` (without the flag if it names a stale card), `build_briefing.py`, `build_briefing_pdf.py --check` (without the flag if it names a stale PDF; that needs Chrome), `add_page_meta.py`.
-`tests\test_index_briefing.py` fails with the fix if the briefing or the manifest has fallen behind, and `tests\test_briefing_pdf.py` if the PDF has. After changing
-the model, run `python scripts\resource_model.py --self-test`, `--export`, `--oracle`, then `python scripts\build_explorer.py`. Pushing
+After changing plates, claims, the model, or a data file they read, run `python scripts\rebuild_all.py`: it stops at the first step that fails, with that
+step's exit code, and `--check` writes nothing and exits 1 naming each stale output. Its order, since later steps copy or count earlier ones:
+`energy_claims.py`, `climate_claims.py`, `project_claims.py`, `build_plates.py --export-claims`, `site_count_claims.py` (the library and policy counts the
+pages read), `build_project_map.py` (when its `--check` says stale), `build_plates.py` (`--page PATH` by hand for one page), `resource_model.py --self-test`,
+`--export`, `--oracle`, and a plain run, `build_explorer.py`, `build_index.py`, `build_whats_new.py`, `site_count_claims.py` again (it counts What's New's
+rows), `build_library_strip.py`, `pour_claim_refs.py`, `build_share_cards.py` (when its `--check` names a stale card; needs VectorCraft), `build_briefing.py`,
+`build_briefing_pdf.py` (when its `--check` names a stale PDF; needs Chrome), `add_page_meta.py`.
+`tests\test_index_briefing.py` fails with the fix if the briefing or the manifest has fallen behind, and `tests\test_briefing_pdf.py` if the PDF has. Pushing
 to `main` publishes the site through `pages.yml`, so work on a branch. Never push to `main` or enable Pages without an
 explicit owner command in the session.
+
+A day-level `source.published` (YYYY-MM-DD) carries `source.date_words`, the words the source prints for that day; without them `validate_public.py` warns for claims from before N10 and fails newer ones.
 
 ## Data products
 
