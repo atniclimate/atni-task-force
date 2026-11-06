@@ -143,8 +143,8 @@ def test_every_figure_in_a_pages_own_words_is_poured(page):
         for child in node.children:
             if isinstance(child, str):
                 yield child
-            elif child.tag in ("script", "style", "figure") or "data-pour" in child.attrs or "cr" in (child.attrs.get("class") or "").split():
-                continue  # a plate holds its own checks, a poured figure is held to its claim by test_plates, and a claim mark by pour_claim_refs.check_page
+            elif child.tag in ("script", "style", "figure") or "data-pour" in child.attrs or {"cr", "bench-row"} & set((child.attrs.get("class") or "").split()):
+                continue  # a plate holds its own checks, and a bench row is a plate's default Reading built from its claims; a poured figure is held to its claim by test_plates, and a claim mark by pour_claim_refs.check_page
             else:
                 yield from words(child)
 

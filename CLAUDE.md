@@ -52,6 +52,11 @@ explicit owner command in the session.
 | `site/data/claims/anonymized.json` | by hand, never exported: the public wording of `lf-059` under the owner ruling of 11/04/2026, because its local evidence record names the operator and the Nation and `build_plates.py` holds that record back | T0 |
 | `site/data/claims/potential.json`, `funding.json`, `site/data/plates/energy-*.json` | `scripts/energy_claims.py` from the two Energy data files (run it after either changes), then `build_plates.py --export-claims potential funding` and `--page` for the three Energy pages | T0 |
 | `site/data/claims/site-counts.json` | `scripts/site_count_claims.py` (the counts the site states about its own files) | T0 |
+| `site/data/climate-regions.json` | `scripts/climate_regions.py` (numpy; reads the NASA NEX-GDDP-CMIP6 county pull at `H:\raw-data\nex-gddp-cmip6-counties` and `projects.json`) | T0 under NASA's CC BY-SA 4.0 and CC BY 4.0 terms, stated on About |
+| `site/data/claims/climate.json`, `site/data/plates/dc-climate-counties.json` | `scripts/climate_claims.py`, then `build_plates.py --export-claims climate` (evidence in `work/site-refresh/evidence-n56/` until the merge moves it to `evidence/`) | T0 |
+| `site/data/projects.json` | the N6 recheck of every source page under `work/site-refresh/n6/build/`, copied here; rerun it before a push, since the agency pages are live | T0 |
+| `site/data/claims/projects.json`, `site/data/plates/dc-project-land.json` | `scripts/project_claims.py`, then `build_plates.py --export-claims projects` (evidence as for climate) | T0 |
+| Land tab map and record list on `site/data-centers/index.html`, `site/assets/img/maps/projects.svg` | `scripts/build_project_map.py` (Census county file in `work/site-refresh/n6/`; `--check` reports staleness), after `project_claims.py` and before `build_plates.py` and `pour_claim_refs.py` | T0 |
 | `site/data/claims/prose-*.json` | `scripts/build_plates.py --export-claims` from local evidence files, for numbers in prose | T0 |
 | `.cr` marks' status and names, "Claims Cited on This Page" | `scripts/pour_claim_refs.py` (refuses a mark its claim does not hold) | T0 |
 | `site/data/plates/*.json`, plate blocks in pages | definitions by hand or generator; `scripts/build_plates.py` pours numbers from claims | T0 |

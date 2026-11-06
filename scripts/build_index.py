@@ -26,6 +26,7 @@ BUILT_BY = {
     "library.json": "scripts/merge_library.py", "energy-potential.json": "scripts/energy_potential.py", "energy-potential.csv": "scripts/energy_potential.py",
     "energy-funding.json": "scripts/energy_funding.py", "policy-watch.json": "scripts/policy_watch.py", "comparison-model.json": "a local evidence file, copied here by hand",
     "resource-model.json": "scripts/resource_model.py", "resource-model-inputs.csv": "scripts/resource_model.py", "whats-new.json": "scripts/build_whats_new.py",
+    "climate-regions.json": "scripts/climate_regions.py", "projects.json": "a local recheck of every source page, copied here",
 }
 
 

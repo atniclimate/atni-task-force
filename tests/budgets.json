@@ -5,7 +5,7 @@
   "scripts": {
     "site/assets/js/ai.js": 25600,
     "site/assets/js/briefing.js": 10000,
-    "site/assets/js/data-centers.js": 14700,
+    "site/assets/js/data-centers.js": 19300,
     "site/assets/js/energy-funding.js": 19100,
     "site/assets/js/energy-potential.js": 14800,
     "site/assets/js/explorer-band.js": 5900,
@@ -21,8 +21,8 @@
   "pages_gzip_kb": {
     "default": 33,
     "site/ai/index.html": 154,
-    "site/briefing/index.html": 300,
-    "site/data-centers/index.html": 98,
+    "site/briefing/index.html": 345,
+    "site/data-centers/index.html": 210,
     "site/explorer/index.html": 140
   },
   "files_kb": {
@@ -32,9 +32,11 @@
   "reasons": {
     "site/briefing/atni-energy-briefing.pdf": "11/05/2026: about 3 MB is the line set for the Briefing's PDF; its default packet weighed 0.7 MB, and every plate and checklist at its defaults weighed 3.1 MB, which is why the default is the lead set.",
     "site/assets/js/plate.js": "11/05/2026: 42,100 predates the kit's ghost rows, shared ground, needle names, strip, and now print, CSV, and SVG; raised to about 10 percent over its 62.7 KB, since the kit is one file by design.",
-    "site/briefing/index.html": "11/05/2026: it holds a copy of every council plate's built block, so nothing is fetched; about 20 percent over its 250 KB.",
+    "site/briefing/index.html": "11/05/2026: it copies every council plate whole, now with the two Data Centers plates of the Land and Climate tabs; about 10 percent over its 313 KB gzipped.",
     "site/assets/js/explorer.js": "11/05/2026: Explorer v2 adds the exit scenario, custody rule, reader's measurements, damage layer, and scenario files; about 10 percent over its 48.4 KB.",
     "site/assets/js/resource-model.js": "11/05/2026: the same v2 model, which the Python oracle checks case by case; about 10 percent over its 73.1 KB.",
-    "site/explorer/index.html": "11/05/2026: v2 panels and the model's inline data; about 10 percent over its 128.7 KB gzipped."
+    "site/explorer/index.html": "11/05/2026: v2 panels and the model's inline data; about 10 percent over its 128.7 KB gzipped.",
+    "site/assets/js/data-centers.js": "11/05/2026: the county climate plate places four measures with their own rulers and filters counties by state, and the land plate lights the map; about 10 percent over its 17.5 KB.",
+    "site/data-centers/index.html": "11/05/2026: the Land tab (plate, county map, every record by state with its claim marks) and the Climate tab (44 counties, four measures, two scenarios: 528 claims, each a receipt in Sources); about 10 percent over its 188.6 KB gzipped. Trimming each receipt cut 0.4 MB raw but little gzipped, since the rest is unique figures."
   }
 }

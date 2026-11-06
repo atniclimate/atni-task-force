@@ -114,6 +114,7 @@ plate.register('ai-same-hour', { render(ctx) { ctx.inputs.now = compute(ctx.stat
 - `reading_for: {"Series": "template"}` gives one series its own `reading_group` sentence; a row's `cites` then gives its receipt.
 - `ctx.setRow(key, {off: true, text})`: a figure the ruler cannot hold, in words, with no mark and no `.is-gap`.
 - A page script may change a one-ruler plate's axis: assign `scale` and `domain` on `ctx.data.plot`, call `ctx.auto()` again, place non-formula rows with `ctx.setRow`, and rebuild `.ladder-grid` and `.ladder-axis`.
+- `measures` (11/05/2026, `dc-climate-counties`): any JSON a page script needs, copied into the plate's data with every claim id in it turned into `[id, value, low, high]`. Each id must already be a receipt (a row's `claim`, `claims`, or `cites`), so a setting the kit does not know (here the measure) still shows only claimed figures; the build fails otherwise. Without scripts the plate shows its own default, as ever.
 - Script and page budgets live in one place, `tests/budgets.json`. They warn near and over the number and never fail a test.
 
 ## Keyboard, screen readers, print, and the clipped zones (11/04/2026)

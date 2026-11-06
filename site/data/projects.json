@@ -1,0 +1,5004 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "built": "11/05/2026",
+ "thresholds": "data centers of 50 MW or more; generation, storage or transmission of 100 MW or more; filed or proposed since 2023 (older filings kept only where still live, and marked)",
+ "rule": "A record exists only where a public direct-intent filing or an agency, utility, county, city, court or company document names the project; a land purchase alone is not a project; no private individual is named.",
+ "boundaries": {
+  "title": "Cartographic Boundary Files, counties, 1:20,000,000",
+  "publisher": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_county_20m.zip",
+  "vintage": 2024,
+  "retrieved": "11/05/2026",
+  "sha256": "c9a54fd95422436b8822e0b070a45a9bc3de08eb13f943cdba66e7a9c2a135ff"
+ },
+ "projects": [
+  {
+   "id": "WA-DC-01",
+   "name": "Amazon Attalia Data Center Campus (Wallula Gap Business Park)",
+   "developer_as_filed": "Amazon Data Services, Inc (applicant and property owner, per the county notice)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 300,
+   "mw_basis": "press report of expected power capacity; the county notices state no MW",
+   "status": "permitting",
+   "status_date": "2026-08-24",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53071",
+     "name": "Walla Walla",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "Applicant/ Property Owner: Amazon Data Services, Inc",
+    "manager": null,
+    "parcels": [
+     {
+      "id": "310835410003",
+      "county_fips": "53071",
+      "source": 1
+     }
+    ],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Notice of Complete Application: SDP26-01 SEPA26-05 (Determination of Completeness)",
+     "publisher": "Walla Walla County Community Development Department",
+     "url": "https://cms7files.revize.com/wallawallacounty/document_center/commdev/Projects/Amazon/SDP26-01%20SEPA26-05%20Determination%20of%20Completness%202026.08.24.pdf",
+     "date": "2026-08-24",
+     "date_basis": "printed on the page",
+     "quote": "Project Description: Amazon Attalia Data Center Campus. The campus will include three data center buildings, each approximately 220,000 sf.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "SDP26-01 / SEPA26-05 Amazon Attalia Campus NOTICE OF APPLICATION",
+     "publisher": "Walla Walla County Community Development Department",
+     "url": "https://cms7files.revize.com/wallawallacounty/document_center/commdev/Projects/Amazon/SDP26-01%20SEPA26-05%20Notice%20of%20Application%202026.09.12.pdf",
+     "date": null,
+     "date_basis": null,
+     "quote": "Location: The subject property is located generally along Sundance Road, between Dodd and Worden Road, about 1.4 miles east of US-12, on a 134-acre property identified as Assessor Parcel Number (APN) 310835410003.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "AWS proceeds with data center project in Walla Walla, Washington",
+     "publisher": "DatacenterDynamics",
+     "url": "https://www.datacenterdynamics.com/en/news/aws-proceeds-with-data-center-project-in-walla-walla-washington/",
+     "date": "2026-11-02",
+     "date_basis": "page metadata",
+     "quote": "The campus is expected to have a 300MW power capacity.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 2,
+    "quote": "... 300MW power capacity",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 1,
+    "quote": "Date that application was determined to be substantially complete"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-02",
+   "name": "AWS campus at Lewis and Clark Ranch, West Richland (BPA request L0621, 'West Richland Data Center Campus')",
+   "developer_as_filed": "Amazon Web Services (per press, 11/2026); BPA requestor is Benton Rural Electric Association",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 912,
+   "mw_basis": "BPA load request L0621, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-11-03",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "has not received a development application for a data center",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Amazon will build up to 21 data centers in West Richland",
+     "publisher": "Yakima Herald-Republic",
+     "url": "https://www.yakimaherald.com/news/northwest/amazon-will-build-up-to-21-data-centers-in-west-richland-it-paid-264m-for/article_c7506c0d-e989-47ea-bc25-0b50ef2c1b30.html",
+     "date": "2026-11-03",
+     "date_basis": "printed on the page",
+     "quote": "AWS has not yet submitted a site plan to the city of West Richland.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Potential Data Center - Information & FAQs",
+     "publisher": "City of West Richland",
+     "url": "https://www.westrichland.org/303/Potential-Data-Center-Information-FAQs",
+     "date": "2026-09-10",
+     "date_basis": "printed on the page",
+     "quote": "The City of West Richland has not received a development application for a data center.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0621 | request date 2024-09-06 | West Richland Data Center Campus | requestor: Benton Rural Electric Association | county: Benton | status: STUDY | max summer MW: 912 | agreed in-service: 2028-03-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0621"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 2,
+    "quote": "Workbook row values (a table row, not a sentence): L0621 | request date 2024-09-06 | West Richland Data Center Campus | requestor: Benton Rural Electric Association | county: Benton | status: STUDY | max summer MW: 912 | agreed in-service: 2028-03-01",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "AWS has not yet submitted a site plan to the city of West Richland"
+   },
+   "limit": "The MW is BPA's figure for a request named 'West Richland Data Center Campus'; no source read states that the request is the Amazon Web Services campus.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-03",
+   "name": "Atlas Agro data center campus, Horn Rapids, Richland (BPA rows: Atlas Agro; Atlas Agro Data Server Facility, Phases 1 and 2)",
+   "developer_as_filed": "Atlas Agro (named by Columbia Riverkeeper); BPA requestor is City of Richland",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 320,
+   "mw_basis": "advocacy report: the campus 'would need at least 320 MW'",
+   "status": "proposed",
+   "status_date": "2026-02-25",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "Atlas Agro has yet to purchase the land from the county",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "2026.02.25 Data Center Closer Look Report",
+     "publisher": "Columbia Riverkeeper",
+     "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
+     "date": "2026-02-25",
+     "date_basis": "page metadata",
+     "quote": "Swiss fertilizer company Atlas Agro is proposing to build the county’s first data center campus adjacent to the company’s planned “green” fertilizer plant.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0647 | request date 2025-03-18 | Atlas Agro Data Server Facility | requestor: City of Richland, Washington | county: Benton | status: STUDY | max summer MW: 300 | agreed in-service: 2028-12-31 || L0657 | request date 2025-07-10 | Atlas Agro Data Server Facility, Phase 2 | requestor: City of Richland, Washington | county: Benton | status: STUDY | max summer MW: 300 | agreed in-service: 2032-01-02",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0647",
+    "L0657"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The campus would need at least 320 MW to power the facility along with 5 data center buildings on an adjacent campus ...",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Swiss fertilizer company Atlas Agro is proposing to build the county’s first data center campus adjacent to the company’s planned “green” fertilizer plant"
+   },
+   "limit": "BPA's queue lists requests named Atlas Agro Data Server Facility (300 MW) and Phase 2 (300 MW) and an earlier Atlas Agro request (350 MW); this record uses the report's 320 MW.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-04",
+   "name": "ATP TES Data Server (BPA row L0668)",
+   "developer_as_filed": "Requestor: City of Richland (BPA record); end user not stated",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 250,
+   "mw_basis": "BPA load request, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2025-10-07",
+   "status_basis": "request date in the BPA queue; queue status RECEIVED on 11/05/2026",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0668 | request date 2025-10-07 | ATP TES Data Server | requestor: City of Richland, Washington | county: Benton | status: RECEIVED | max summer MW: 250 | agreed in-service: 2027-07-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0668"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0668 | request date 2025-10-07 | ATP TES Data Server | requestor: City of Richland, Washington | county: Benton | status: RECEIVED | max summer MW: 250 | agreed in-service: 2027-07-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0668 | request date 2025-10-07 | ATP TES Data Server | requestor: City of Richland, Washington | county: Benton | status: RECEIVED | max summer MW: 250 | agreed in-service: 2027-07-01"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-05",
+   "name": "DOE Data Center (BPA request L0673, requestor DOE Hanford Field Office)",
+   "developer_as_filed": "Requestor: US Department of Energy - Hanford Field Office (BPA record)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 2750,
+   "mw_basis": "BPA load request, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2025-11-12",
+   "status_basis": "request date in the BPA queue; queue status STUDY on 11/05/2026",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0673 | request date 2025-11-12 | DOE Data Center | requestor: US Department of Energy - Hanford Field Office | county: Benton | status: STUDY | max summer MW: 2750 | agreed in-service: 2027-11-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0673"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0673 | request date 2025-11-12 | DOE Data Center | requestor: US Department of Energy - Hanford Field Office | county: Benton | status: STUDY | max summer MW: 2750 | agreed in-service: 2027-11-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0673 | request date 2025-11-12 | DOE Data Center | requestor: US Department of Energy - Hanford Field Office | county: Benton | status: STUDY | max summer MW: 2750 | agreed in-service: 2027-11-01"
+   },
+   "limit": "The BPA record names the Hanford Field Office as requestor; no source read says the data center would stand on the Hanford Site, so no land class is given.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-06",
+   "name": "STACK IPI Data Center, Goldendale (BPA request L0545)",
+   "developer_as_filed": "STACK (customer), via Klickitat PUD (BPA requestor), per BPA's FOIA letter",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 958,
+   "mw_basis": "BPA load request L0545, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-23",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "STACK IPI (L0545) at the former aluminum smelter about 9 miles southeast of Goldendale",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Department of Energy letter to Goldendale Sentinel, BPA-2026-01807-F (FOIA response)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/foia/foia-2026/202601807F.pdf",
+     "date": "2026-09-28",
+     "date_basis": "printed on the page",
+     "quote": "Knowledgeable SMEs explained that there is no Puget Sound Energy 958 MW STACK data center; L0545 is for Klickitat Public Utility District’s 985 STACK data center. They further explained that L0545 was initially requested for 1,118 MW in 2022.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Six proposed data centers, no county applications",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/six-proposed-data-centers-no-county-applications/article_75565614-043d-4847-b358-b6a6da09c804.html",
+     "date": "2026-09-23",
+     "date_basis": "printed on the page",
+     "quote": "The proposed projects include STACK IPI (L0545) at the former aluminum smelter about 9 miles southeast of Goldendale, the Dallesport Data Center (L0664) and Lakeside Industries (L0690) projects in Dallesport, the Energizer Data Center (L0493 and expanded capacity L0497) along Hoctor Road, Energizer II (L0702) in Goodnoe Hills, and Vines Rest (L0704) near Alderdale.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0545 | request date 2022-12-07 | Stack IPI Data Center | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY | max summer MW: 958 | agreed in-service: 2030-01-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0545"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 2,
+    "quote": "Workbook row values (a table row, not a sentence): L0545 | request date 2022-12-07 | Stack IPI Data Center | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY | max summer MW: 958 | agreed in-service: 2030-01-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 1,
+    "quote": "... Contrary to much public misunderstanding, none of the six data centers proposed in Klickitat County has applied for permits through the county Planning Department"
+   },
+   "limit": "BPA's own FOIA letter prints both 985 and 958 for this request and says it was first requested at 1,118 MW; BPA's separate request L0436 (Harvalum, 160 MW) is not counted here.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-07",
+   "name": "Energizer Data Center and Energizer Data Center Expanded Capacity (Hoctor Road, Klickitat County)",
+   "developer_as_filed": "Shell Energy and its subsidiary Savion are behind the applications, per Washington State Standard; BPA requestor is Klickitat PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 277.5,
+   "mw_basis": "BPA load requests L0493 and L0497, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-23",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "the Energizer Data Center (L0493 and expanded capacity L0497) along Hoctor Road",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Rural Klickitat County faces surge in data center proposals",
+     "publisher": "Washington State Standard",
+     "url": "https://washingtonstatestandard.com/2026/10/07/rural-klickitat-county-faces-surge-in-data-center-proposals",
+     "date": "2026-10-07",
+     "date_basis": "printed on the page",
+     "quote": "The exact locations of the other three data centers are unknown, though documents show Shell Energy and its subsidiary, Savion, a renewable energy developer, are behind the applications.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Six proposed data centers, no county applications",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/six-proposed-data-centers-no-county-applications/article_75565614-043d-4847-b358-b6a6da09c804.html",
+     "date": "2026-09-23",
+     "date_basis": "printed on the page",
+     "quote": "none of the six data centers proposed in Klickitat County has applied for permits through the county Planning Department.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0493 | request date 2021-06-29 | Energizer Data Center | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY COMPLETED | max summer MW: 77.5 | agreed in-service: 2027-12-30 || L0497 | request date 2021-07-29 | Energizer Data Center Expanded Capacity | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY COMPLETED | max summer MW: 200 | agreed in-service: 2027-12-30",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0493",
+    "L0497"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 2,
+    "quote": "Workbook row values (a table row, not a sentence): L0493 | request date 2021-06-29 | Energizer Data Center | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY COMPLETED | max summer MW: 77.5 | agreed in-service: 2027-12-30 || L0497 | request date 2021-07-29 | Energizer Data Center Expanded Capacity | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY COMPLETED | max summer MW: 200 | agreed in-service: 2027-12-30",
+    "derived": "77.5 MW (L0493) + 200 MW (L0497) = 277.5 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 1,
+    "quote": "... Contrary to much public misunderstanding, none of the six data centers proposed in Klickitat County has applied for permits through the county Planning Department"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-08",
+   "name": "Energizer II (Goodnoe Hills, Klickitat County)",
+   "developer_as_filed": "Shell Energy and its subsidiary Savion are behind the applications, per Washington State Standard; BPA requestor Klickitat PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "BPA load request L0702, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-02",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "More data centers possible for county",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/more-data-centers-possible-for-county/article_b656c420-736c-4751-be22-209654a24211.html",
+     "date": "2026-09-02",
+     "date_basis": "printed on the page",
+     "quote": "The projects are identified in the Bonneville Power Administration’s (BPA) transmission interconnection queue as Energizer Data Center (L0493), Energizer II (L0702), and Vines Rest (L0704).",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0702 | request date 2026-06-23 | Energizer II | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1000 | agreed in-service: 2030-12-31",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    },
+    {
+     "title": "Rural Klickitat County faces surge in data center proposals",
+     "publisher": "Washington State Standard",
+     "url": "https://washingtonstatestandard.com/2026/10/07/rural-klickitat-county-faces-surge-in-data-center-proposals",
+     "date": null,
+     "date_basis": null,
+     "quote": "... documents show Shell Energy and its subsidiary, Savion ...",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [
+    "L0702"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "Workbook row values (a table row, not a sentence): L0702 | request date 2026-06-23 | Energizer II | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1000 | agreed in-service: 2030-12-31",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The three requests are separate projects, with proposed electrical loads of 78 megawatts, 1,000 megawatts and 1,000 megawatts ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-09",
+   "name": "Vines Rest (near Alderdale, Klickitat County)",
+   "developer_as_filed": "Shell Energy and its subsidiary Savion are behind the applications, per Washington State Standard; BPA requestor Klickitat PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "BPA load request L0704, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-02",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "More data centers possible for county",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/more-data-centers-possible-for-county/article_b656c420-736c-4751-be22-209654a24211.html",
+     "date": "2026-09-02",
+     "date_basis": "printed on the page",
+     "quote": "The three requests are separate projects, with proposed electrical loads of 78 megawatts, 1,000 megawatts and 1,000 megawatts respectively.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0704 | request date 2026-07-27 | Vines Rest 1000 MW | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1000 | agreed in-service: 2030-12-31",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    },
+    {
+     "title": "Rural Klickitat County faces surge in data center proposals",
+     "publisher": "Washington State Standard",
+     "url": "https://washingtonstatestandard.com/2026/10/07/rural-klickitat-county-faces-surge-in-data-center-proposals",
+     "date": null,
+     "date_basis": null,
+     "quote": "... documents show Shell Energy and its subsidiary, Savion ...",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [
+    "L0704"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "Workbook row values (a table row, not a sentence): L0704 | request date 2026-07-27 | Vines Rest 1000 MW | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1000 | agreed in-service: 2030-12-31",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The three requests are separate projects, with proposed electrical loads of 78 megawatts, 1,000 megawatts and 1,000 megawatts ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-10",
+   "name": "Dallesport Data Center / Dallesport Server Farm (Klickitat County)",
+   "developer_as_filed": "Not stated in the sources read; BPA requestor Klickitat PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "BPA load request L0664, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-23",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "the Dallesport Data Center (L0664) and Lakeside Industries (L0690) projects in Dallesport",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Six proposed data centers, no county applications",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/six-proposed-data-centers-no-county-applications/article_75565614-043d-4847-b358-b6a6da09c804.html",
+     "date": "2026-09-23",
+     "date_basis": "printed on the page",
+     "quote": "The proposed projects include STACK IPI (L0545) at the former aluminum smelter about 9 miles southeast of Goldendale, the Dallesport Data Center (L0664) and Lakeside Industries (L0690) projects in Dallesport",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0664 | request date 2025-08-25 | Dallesport Server Farm | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY | max summer MW: 1000 | agreed in-service: 2029-10-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0664"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "Workbook row values (a table row, not a sentence): L0664 | request date 2025-08-25 | Dallesport Server Farm | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: STUDY | max summer MW: 1000 | agreed in-service: 2029-10-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Contrary to much public misunderstanding, none of the six data centers proposed in Klickitat County has applied for permits through the county Planning Department"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-11",
+   "name": "Lakeside Industries (Dallesport, Klickitat County)",
+   "developer_as_filed": "Not stated in the sources read; BPA requestor Klickitat PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1260,
+   "mw_basis": "BPA load request L0690, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-23",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "the Dallesport Data Center (L0664) and Lakeside Industries (L0690) projects in Dallesport",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Six proposed data centers, no county applications",
+     "publisher": "Goldendale Sentinel",
+     "url": "https://www.goldendalesentinel.com/news/six-proposed-data-centers-no-county-applications/article_75565614-043d-4847-b358-b6a6da09c804.html",
+     "date": "2026-09-23",
+     "date_basis": "printed on the page",
+     "quote": "the Dallesport Data Center (L0664) and Lakeside Industries (L0690) projects in Dallesport",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0690 | request date 2026-03-10 | Lakeside Industries | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1260 | agreed in-service: 2026-12-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0690"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "Workbook row values (a table row, not a sentence): L0690 | request date 2026-03-10 | Lakeside Industries | requestor: Public Utility District No. 1 of Klickitat County | county: Klickitat | status: RECEIVED | max summer MW: 1260 | agreed in-service: 2026-12-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Contrary to much public misunderstanding, none of the six data centers proposed in Klickitat County has applied for permits through the county Planning Department"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-12",
+   "name": "Two 1,200 MW data center load requests (Walla Walla County, BPA L0649 and L0682)",
+   "developer_as_filed": "Not stated; BPA requestor Columbia Rural Electric Association",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 2400,
+   "mw_basis": "two BPA load requests, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2025-04-03",
+   "status_basis": "request date in the BPA queue; queue status STUDY on 11/05/2026",
+   "counties": [
+    {
+     "fips": "53071",
+     "name": "Walla Walla",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0649 | request date 2025-04-03 | 1200 MW Data Center Loads | requestor: Columbia Rural Electric Association | county: Walla Walla | status: STUDY | max summer MW: 1200 | agreed in-service: 2028-04-07 || L0682 | request date 2026-01-15 | Second 1200 MW Data Center Load | requestor: Columbia Rural Electric Association | county: Walla Walla | status: RECEIVED | max summer MW: 1200 | agreed in-service: 2029-01-15",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0649",
+    "L0682"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0649 | request date 2025-04-03 | 1200 MW Data Center Loads | requestor: Columbia Rural Electric Association | county: Walla Walla | status: STUDY | max summer MW: 1200 | agreed in-service: 2028-04-07 || L0682 | request date 2026-01-15 | Second 1200 MW Data Center Load | requestor: Columbia Rural Electric Association | county: Walla Walla | status: RECEIVED | max summer MW: 1200 | agreed in-service: 2029-01-15",
+    "derived": "1,200 MW (L0649) + 1,200 MW (L0682) = 2,400 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0649 | request date 2025-04-03 | 1200 MW Data Center Loads | requestor: Columbia Rural Electric Association | county: Walla Walla | status: STUDY | max summer MW: 1200 | agreed in-service: 2028-04-07 || L0682 | request date 2026-01-15 | Second 1200 MW Data Center Load | requestor: Columbia Rural Electric Association | county: Walla Walla | status: RECEIVED | max summer MW: 1200 | agreed in-service: 2029-01-15"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-13",
+   "name": "TC KERR Data Center (Longview, Cowlitz County)",
+   "developer_as_filed": "Not stated; BPA requestor Cowlitz County PUD",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 240,
+   "mw_basis": "BPA load request L0677, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2025-12-11",
+   "status_basis": "request date in the BPA queue; queue status STUDY on 11/05/2026",
+   "counties": [
+    {
+     "fips": "53015",
+     "name": "Cowlitz",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0677 | request date 2025-12-11 | TC KERR Data Center | requestor: Public Utility District No. 1 of Cowlitz County | county: Cowlitz | status: STUDY | max summer MW: 240 | agreed in-service: 2028-01-01",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0677"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0677 | request date 2025-12-11 | TC KERR Data Center | requestor: Public Utility District No. 1 of Cowlitz County | county: Cowlitz | status: STUDY | max summer MW: 240 | agreed in-service: 2028-01-01",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0677 | request date 2025-12-11 | TC KERR Data Center | requestor: Public Utility District No. 1 of Cowlitz County | county: Cowlitz | status: STUDY | max summer MW: 240 | agreed in-service: 2028-01-01"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-14",
+   "name": "Big Rock / Rock Point Data Center (West Plains, Spokane County)",
+   "developer_as_filed": "Apricus Energy Partners (named by Spokane press)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "press report of the electricity draw described in documents uncovered by activists",
+   "status": "proposed",
+   "status_date": "2026-09-25",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53063",
+     "name": "Spokane",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "Location: potentially just west of the West Plains Park & Ride",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Spokane-area data center proposals, explained",
+     "publisher": "RANGE Media",
+     "url": "https://www.rangemedia.co/spokane-area-data-center-proposals-explained",
+     "date": "2026-09-25",
+     "date_basis": "printed on the page",
+     "quote": "Company: Apricus Energy Partners ... Type: hyperscale data center ... Acreage: 514 ... Electricity draw: 1,000 megawatts ... The company has not applied for building permits.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Planning Commission minutes",
+     "publisher": "Spokane County",
+     "url": "https://www.spokanecounty.gov/AgendaCenter/ViewFile/Minutes/_08272026-3389",
+     "date": "2026-08-27",
+     "date_basis": "printed on the page",
+     "quote": "on August 18, 2026, the Board of County Commissioners acted to pause new data center applications and initiated a zoning text amendment to add data centers/ large load facilities to the Spokane County Zoning Code.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Early documents uncovered by activists describe a 514-acre site for a data center that would eventually draw 1,000 megawatts",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The company has not applied for building permits"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-15",
+   "name": "Avista large-load customer, 500 MW data center developer (unidentified)",
+   "developer_as_filed": "Not identified in the public record (Avista's release does not name the customer)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 500,
+   "mw_basis": "Avista's own release names a 500 MW data center developer",
+   "status": "stalled",
+   "status_date": "2026-06-12",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Avista pauses processing of energy service request from 500 MW data center developer",
+     "publisher": "Avista Corporation",
+     "url": "https://investor.avistacorp.com/news-releases/news-release-details/avista-pauses-processing-energy-service-request-500-mw-data",
+     "date": "2026-06-12",
+     "date_basis": "printed on the page",
+     "quote": "Negotiations concerning energy service to this potential data center are now paused.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Avista agrees to framework to provide single business with power equal to half of all Spokane County customers",
+     "publisher": "The Spokesman-Review",
+     "url": "https://www.spokesman.com/stories/2026/jun/03/avista-working-with-developer-to-provide-massive-a",
+     "date": "2026-06-04",
+     "date_basis": "page metadata",
+     "quote": "“The Customer is seeking an initial load demand of 125 megawatts (MW) starting in 2029, with a pathway to expand to 500 MW by 2032,”",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Avista’s previously announced Memorandum of Understanding (MOU) with the new 500MW data center developer",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Negotiations concerning energy service to this potential data center are now paused"
+   },
+   "limit": "The release does not say where the data center would stand.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-DC-16",
+   "name": "Microsoft Malaga data center campus (Chelan County)",
+   "developer_as_filed": "Microsoft (Chelan PUD names Microsoft as the customer)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 288,
+   "mw_basis": "advocacy report: Chelan PUD 'agreed to supply up to 288 MW to Microsoft over a 15-year period'",
+   "status": "in development",
+   "status_date": "2026-02-25",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "53007",
+     "name": "Chelan",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "Microsoft's new data center campus in Malaga",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Commissioners consider powering data center in a way that protects reliability, rates",
+     "publisher": "Chelan County PUD",
+     "url": "https://www.chelanpud.org/about-us/news/2025/06/03/commissioners-consider-powering-data-center-in-a-way-that-protects-reliability-rates",
+     "date": "2025-06-02",
+     "date_basis": "printed on the page",
+     "quote": "Chelan PUD commissioners Monday considered contract terms that would supply power to Microsoft’s new data center campus in Malaga while protecting reliability and stable, predictable rates for existing customers.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "LPPC Member's Large-Load Projects & Tariffs",
+     "publisher": "Large Public Power Council",
+     "url": "https://cdn.prod.website-files.com/69d01496278ffde976813ce8/6a1ded2bef625343807f66cd_LPPC-LargeLoadProjects-Tariffs_05.26.26.pdf",
+     "date": "2026-05-27",
+     "date_basis": "page metadata",
+     "quote": "Chelan County PUD (Washington) Data Centers Under Construction ... Four active data center projects totaling 1,150 MW at full buildout.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Data Center Closer Look report",
+     "publisher": "Columbia Riverkeeper",
+     "url": "https://www.columbiariverkeeper.org/wp-content/uploads/2026/02/2026.02.26-Data-Center-Closer-Look-Report.pdf",
+     "date": null,
+     "date_basis": null,
+     "quote": "Chelan PUD agreed to supply up to 288 MW to Microsoft ...",
+     "kind": "advocacy-report",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 2,
+    "quote": "Chelan PUD agreed to supply up to 288 MW to Microsoft over a 15-year period",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 2,
+    "quote": "24 MW existing / 288 MW planned ..."
+   },
+   "limit": "The Chelan PUD release of 06/02/2025 gives 'up to 18 megawatts' for its first five-month contract; the LPPC survey lists Chelan PUD data centers as under construction without naming this campus.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-DC-01",
+   "name": "Amazon exascale data center campus near Boardman (Morrow County planning documents)",
+   "developer_as_filed": "Amazon (bought nearly 1,300 acres near Boardman in 03/2026, per press); Johnson Economics wrote the land-use proposal",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "press report of planning documents describing a 'hypothetical' 1 GW facility",
+   "status": "proposed",
+   "status_date": "2026-03-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "Planning documents submitted to Morrow County last year",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Plans call for Oregon’s first ‘exascale’ data center on Amazon site",
+     "publisher": "The Oregonian / OregonLive",
+     "url": "https://www.oregonlive.com/silicon-forest/2026/03/plans-call-for-oregons-first-exascale-data-center-on-amazon-site.html",
+     "date": "2026-03-27",
+     "date_basis": "page metadata",
+     "quote": "Planning documents submitted to Morrow County last year describe a hypothetical 1-gigawatt facility with as many as 20 buildings spread over 4 million square feet.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "search-index excerpt (page blocked to fetch)"
+    },
+    {
+     "title": "Amazon purchases 1,300 acres in Morrow County, Oregon",
+     "publisher": "DatacenterDynamics",
+     "url": "https://www.datacenterdynamics.com/en/news/amazon-purchases-1300-acres-in-morrow-county-oregon/",
+     "date": null,
+     "date_basis": null,
+     "quote": "... 1GW of capacity ...",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 1,
+    "quote": "... planning documents that were submitted to Morrow County last year suggest the project could offer 1GW of capacity, with 20 buildings spread across four million sq ft",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... hasn’t submitted a development application for the site ..."
+   },
+   "limit": "The planning documents describe a hypothetical facility; Amazon says 'development plans are not final'.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-DC-02",
+   "name": "Percheron Data Center Site (Morrow County)",
+   "developer_as_filed": "Not named in the DLCD document",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": null,
+   "mw_basis": null,
+   "status": "approved",
+   "status_date": "2023-09",
+   "status_basis": "the month DLCD gives for the county land use decision",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "This land use decision rezoned 274 acres from exclusive farm use (EFU) to general industrial to allow data center development",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "DLCD One-Page Fact Sheet",
+     "publisher": "Oregon Department of Land Conservation and Development",
+     "url": "https://www.oregon.gov/lcd/Commission/Documents/2026-02Item%209_Exhibit_1.pdf",
+     "date": "2026-02-13",
+     "date_basis": "printed on the page",
+     "quote": "Percheron Data Center Site (County): This land use decision rezoned 274 acres from exclusive farm use (EFU) to general industrial to allow data center development",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "Percheron Data Center Site (County): This land use decision rezoned 274 acres from exclusive farm use (EFU) to general industrial to allow data center development ..."
+   },
+   "limit": "The earlier candidate figure of 300 MW rested on a tracker only and is dropped; DLCD prints no MW.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-DC-03",
+   "name": "Sabey Umatilla data center campus (Wanapa Road, Umatilla)",
+   "developer_as_filed": "Sabey Data Centers",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 150,
+   "mw_basis": "newspaper: 'more than 150 megawatts of capacity'",
+   "status": "under construction",
+   "status_date": "2026-07-15",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41059",
+     "name": "Umatilla",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "The 60-acre campus on Wanapa Road",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "714,000-square-foot data center construction underway in Umatilla",
+     "publisher": "Hermiston Herald",
+     "url": "https://hermistonherald.com/2026/07/15/714000-square-foot-data-center-construction-under-way-in-umatilla",
+     "date": "2026-07-15",
+     "date_basis": "printed on the page",
+     "quote": "The 60-acre campus on Wanapa Road will be designed to support more than 150 megawatts of capacity.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The 714,540-square-foot campus will be designed to support more than 150 megawatts of capacity",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Daniels said work has been going on at the site since spring"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-DC-04",
+   "name": "Charlestown Data Center and Battery Energy Storage System (BLM land near Hermiston)",
+   "developer_as_filed": "Copia (a California-based energy company with an office in Lake Oswego), per press",
+   "kind": "data center",
+   "kind_detail": "data center with battery storage",
+   "mw": null,
+   "mw_basis": null,
+   "status": "permitting",
+   "status_date": "2026-09-29",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41059",
+     "name": "Umatilla",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "on 106 acres of BLM land",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Data centers proposed on federal land in Eastern Oregon, Western states",
+     "publisher": "OPB / Oregon Capital Chronicle",
+     "url": "https://www.opb.org/article/2026/09/29/data-centers-proposed-federal-land-eastern-oregon",
+     "date": "2026-09-29",
+     "date_basis": "printed on the page",
+     "quote": "submitted an application to site the Charlestown Data Center and Battery Energy Storage System in Umatilla County on 106 acres of BLM land.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... the California-based energy company Copia, which has an office in Lake Oswego, submitted an application to site the Charlestown Data Center and Battery Energy Storage System in Umatilla County on 106 acres of BLM land"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-DC-05",
+   "name": "West Hillsboro Data Center Project, Phase 1 (BPA request L0560)",
+   "developer_as_filed": "Requestor: Portland General Electric (BPA record); customer not stated",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1400,
+   "mw_basis": "BPA load request, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2023-05-12",
+   "status_basis": "request date in the BPA queue; queue status STUDY on 11/05/2026",
+   "counties": [
+    {
+     "fips": "41067",
+     "name": "Washington",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0560 | request date 2023-05-12 | West Hillsboro Data Center Project (Phase 1) | requestor: Portland General Electric Company | county: Washington | status: STUDY | max summer MW: 1400 | agreed in-service: 2026-05-22",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0560"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0560 | request date 2023-05-12 | West Hillsboro Data Center Project (Phase 1) | requestor: Portland General Electric Company | county: Washington | status: STUDY | max summer MW: 1400 | agreed in-service: 2026-05-22",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Workbook row values (a table row, not a sentence): L0560 | request date 2023-05-12 | West Hillsboro Data Center Project (Phase 1) | requestor: Portland General Electric Company | county: Washington | status: STUDY | max summer MW: 1400 | agreed in-service: 2026-05-22"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": [
+    "pdc-040"
+   ]
+  },
+  {
+   "id": "OR-DC-06",
+   "name": "Central Oregon data center loads (BPA requests L0658, L0662, L0650)",
+   "developer_as_filed": "Not stated; BPA requestor Central Electric Cooperative",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 700,
+   "mw_basis": "three BPA load requests, maximum summer MW",
+   "status": "proposed",
+   "status_date": "2026-09-05",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41013",
+     "name": "Crook",
+     "state": "OR"
+    },
+    {
+     "fips": "41031",
+     "name": "Jefferson",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Madras Not Entertaining Data Center Proposals, Interim City Administrator Says",
+     "publisher": "Madras Bulletin",
+     "url": "https://www.madrasbulletin.com/madras-not-entertaining-data-center-proposals-interim-city-administrator-says",
+     "date": "2026-09-05",
+     "date_basis": "printed on the page",
+     "quote": "City officials say there is no pending application, no active negotiation, and no formal proposal before the city or county related to data center development.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Bonneville Power Administration Interconnection Request Queue (workbook InterconnectionQueueOutput.xlsx)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx",
+     "date": "2026-11-05",
+     "date_basis": "workbook timestamp",
+     "quote": "Workbook row values (a table row, not a sentence): L0658 | request date 2025-07-15 | 200 MW Data Center Load | requestor: Central Electric Cooperative, Inc. | county: Crook | status: STUDY | max summer MW: 200 | agreed in-service: 2029-01-01 || L0662 | request date 2025-08-01 | 200 MW Data Center, Phase 2 | requestor: Central Electric Cooperative, Inc. | county: Crook | status: STUDY | max summer MW: 200 | agreed in-service: 2028-08-04 || L0650 | request date 2025-04-04 | 300 MW Data Center Load Served from Grizzly | requestor: Central Electric Cooperative, Inc. | county: Jefferson | status: STUDY | max summer MW: 300 | agreed in-service: 2028-04-04",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "workbook downloaded and parsed"
+    }
+   ],
+   "bpa_requests": [
+    "L0658",
+    "L0662",
+    "L0650"
+   ],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "Workbook row values (a table row, not a sentence): L0658 | request date 2025-07-15 | 200 MW Data Center Load | requestor: Central Electric Cooperative, Inc. | county: Crook | status: STUDY | max summer MW: 200 | agreed in-service: 2029-01-01 || L0662 | request date 2025-08-01 | 200 MW Data Center, Phase 2 | requestor: Central Electric Cooperative, Inc. | county: Crook | status: STUDY | max summer MW: 200 | agreed in-service: 2028-08-04 || L0650 | request date 2025-04-04 | 300 MW Data Center Load Served from Grizzly | requestor: Central Electric Cooperative, Inc. | county: Jefferson | status: STUDY | max summer MW: 300 | agreed in-service: 2028-04-04",
+    "derived": "200 MW (L0658) + 200 MW (L0662) + 300 MW (L0650) = 700 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... there is no pending application, no active negotiation, and no formal proposal before the city or county related to data center development"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-DC-01",
+   "name": "Rhea Data Center (BLM land near Blacks Creek exit, I-84)",
+   "developer_as_filed": "Rhea Data, a subsidiary of Arevia Power (Nevada)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 600,
+   "mw_basis": "BLM Four Rivers Field Office manager's estimate to a TV station ('I think')",
+   "status": "permitting",
+   "status_date": "2026-09-21",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "16001",
+     "name": "Ada",
+     "state": "ID"
+    },
+    {
+     "fips": "16039",
+     "name": "Elmore",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "for potential development on BLM‑managed lands south of Boise",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "First data center in Idaho proposed on public lands",
+     "publisher": "KTVB",
+     "url": "https://www.ktvb.com/article/news/local/idaho/first-data-center-idaho-proposed-public-lands-four-times-larger-metas-kuna-facility/277-983271c0-1327-44ed-9f33-145e6116a41b",
+     "date": "2026-09-21",
+     "date_basis": "printed on the page",
+     "quote": "“I think that has a 600-megawatt data processing capacity.”",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Huge data center proposed on federal land south of Boise",
+     "publisher": "BoiseDev",
+     "url": "https://boisedev.com/news/2026/09/21/large-scale-data-center-that-could-dwarf-metas-proposed-on-federal-land-south-of-boise",
+     "date": "2026-09-21",
+     "date_basis": "printed on the page",
+     "quote": "The Rhea Data Center proposal is currently in our application stage for potential development on BLM‑managed lands south of Boise,” a BLM spokesperson told BoiseDev.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Massive data center with power plant planned for public land in Idaho",
+     "publisher": "East Idaho News (Idaho Statesman)",
+     "url": "https://www.eastidahonews.com/2026/09/massive-data-center-with-power-plant-planned-for-public-land-in-idaho/",
+     "date": "2026-09-21",
+     "date_basis": "printed on the page",
+     "quote": "Four Rivers Field Manager Jarod Blades told the Statesman that the office first received an application for a “large-scale data center campus” in August 2025.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... I think that has a 600-megawatt data processing capacity",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 1,
+    "quote": "... The Rhea Data Center proposal is currently in our application stage for potential development on BLM‑managed lands south of Boise ..."
+   },
+   "limit": "Both the 600 MW and a natural gas plant of about 450 MW are press reports of what a BLM field manager said.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-DC-02",
+   "name": "Gemstone Technology Park (Kuna)",
+   "developer_as_filed": "Diode Ventures",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "The potential project is on 620 acres in southeast Kuna",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Gemstone Project Updates",
+     "publisher": "Diode Ventures",
+     "url": "https://www.diodeventures.com/gemstone-project-updates",
+     "date": null,
+     "date_basis": null,
+     "quote": "Gemstone Technology Park is a data center site developed by Diode Ventures, a US-based, employee-owned company. The potential project is on 620 acres in southeast Kuna.",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "The potential project is on 620 acres in southeast Kuna"
+   },
+   "limit": "A court-tracker page was not used: it names a private party in its case title.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-DC-03",
+   "name": "Snake River Energy Data Center / Falcon Data Center (BLM land, Jerome and Lincoln Counties)",
+   "developer_as_filed": "Copia Digital LLC (KIVI-TV)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-10-28",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "16053",
+     "name": "Jerome",
+     "state": "ID"
+    },
+    {
+     "fips": "16063",
+     "name": "Lincoln",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "a roughly 3,000-acre data center on public lands south of Shoshone Butte",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Data center eyed for Jerome, Lincoln desert where Lava Ridge stalled",
+     "publisher": "KIVI-TV",
+     "url": "https://www.kivitv.com/twin-falls/data-center-eyed-for-jerome-lincoln-desert-where-lava-ridge-stalled",
+     "date": "2026-10-28",
+     "date_basis": "page metadata",
+     "quote": "Copia Digital LLC is in pre-application with the BLM for a roughly 3,000-acre data center on public lands south of Shoshone Butte, an area that has opposed development before.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Data centers proposed on federal land in Eastern Oregon, Western states",
+     "publisher": "OPB / Oregon Capital Chronicle",
+     "url": "https://www.opb.org/article/2026/09/29/data-centers-proposed-federal-land-eastern-oregon",
+     "date": "2026-09-29",
+     "date_basis": "printed on the page",
+     "quote": "Copia is also behind the Snake River Energy Data Center proposed on BLM land in Jerome, Lincoln and Gooding Counties in southern Idaho.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... Copia Digital LLC is in pre-application with the BLM for a roughly 3,000-acre data center on public lands south of Shoshone Butte ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-DC-04",
+   "name": "AI data center at the former Hoku site, Pocatello (Lex Developments)",
+   "developer_as_filed": "Lex Developments LLC (applicant and appellant)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 100,
+   "mw_basis": "city agenda staff report: 'Up to 100 megawatts of power will be needed'",
+   "status": "denied",
+   "status_date": "2026-07-16",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "16005",
+     "name": "Bannock",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "voted 4–1 to affirm the Hearing Examiner’s denial of the application",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Agenda Item 14: Appeal of Hearing Examiner Decision Denying CUP26-00003",
+     "publisher": "City of Pocatello",
+     "url": "https://pocatello.gov/AgendaCenter/ViewFile/Item/5666?fileID=15371",
+     "date": "2026-08-28",
+     "date_basis": "page metadata",
+     "quote": "On July 16, 2026, the Council heard the appeal as the final item of its regular meeting and voted 4–1 to affirm the Hearing Examiner’s denial of the application.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "FHBC issues formal opposition to data center development",
+     "publisher": "Shoshone-Bannock Tribes",
+     "url": "https://www.sbtribes.com/fhbc-issues-formal-opposition-to-data-center-development/",
+     "date": "2026-05-27",
+     "date_basis": "printed on the page",
+     "quote": "The resolution was passed during a Council meeting on May 21, 2026, following recent discussions related to a proposed large-scale data center project near the former Hoku site in Pocatello.",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Up to 100 megawatts of power will be needed to run the data center which will not be available immediately",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "On July 16, 2026, the Council heard the appeal as the final item of its regular meeting and voted 4–1 to affirm the Hearing Examiner’s denial of the application"
+   },
+   "limit": "The City of Pocatello agenda item of 08/28/2026 also records a pending reconsideration request.",
+   "tribal_context": [
+    {
+     "text": "... The Fort Hall Business Council of the Shoshone-Bannock Tribes has issued a formal resolution and public statement opposing data center development on the Fort Hall Reservation, as well as any such development within ceded lands, Treaty-protected areas, or locations that could adversely affect the Reservation or its residents",
+     "attribution": "release of the Shoshone-Bannock Tribes' Office of Public Affairs, 05/27/2026, as printed",
+     "source": 1
+    }
+   ],
+   "consistent_with_site_claims": [
+    "pdc-022"
+   ]
+  },
+  {
+   "id": "ID-DC-05",
+   "name": "Idaho National Laboratory AI data center and energy site (DOE solicitation)",
+   "developer_as_filed": "U.S. Department of Energy (site selection); private partners to be invited",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2025-07-24",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "federal-doe",
+    "extent": "whole",
+    "as_stated": "siting on DOE lands",
+    "manager": "U.S. Department of Energy",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "DOE Announces Site Selection for AI Data Center and Energy Infrastructure Development on Federal Lands",
+     "publisher": "U.S. Department of Energy",
+     "url": "https://www.energy.gov/articles/doe-announces-site-selection-ai-data-center-and-energy-infrastructure-development-federal",
+     "date": "2025-07-24",
+     "date_basis": "printed on the page",
+     "quote": "DOE has selected four sites",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "DOE has selected four sites"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": [
+    "pdc-054",
+    "pdc-055"
+   ]
+  },
+  {
+   "id": "MT-DC-01",
+   "name": "Quantica Big Sky Campus (Broadview)",
+   "developer_as_filed": "Quantica Infrastructure, LLC (Big Sky Digital Infrastructure LLC)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1100,
+   "mw_basis": "company release: 1,100 MW campus (a legislative committee slide shows 500 MW initial and 1,000 MW final)",
+   "status": "proposed",
+   "status_date": "2026-05-20",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "30111",
+     "name": "Yellowstone",
+     "state": "MT"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Quantica Files Interconnection Applications to Expand Power Generation for its Big Sky Digital Infrastructure Campus",
+     "publisher": "Quantica Infrastructure (Big Sky Digital)",
+     "url": "https://bigskydigitalinfra.com/2026/05/20/quantica-files-interconnection-applications-to-expand-power-generation-for-its-big-sky-digital-infrastructure-campus",
+     "date": "2026-05-20",
+     "date_basis": "printed on the page",
+     "quote": "filed interconnection applications with NorthWestern Energy to expand power generation for its 1,100 MW Big Sky Campus in Yellowstone County.",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Montana Data Centers (Energy & Technology Interim Committee)",
+     "publisher": "Montana State Legislature",
+     "url": "https://docs.legmt.gov/download-ticket?ticketId=32797b18-bd34-4518-b7b4-6eec609baebb",
+     "date": "2026-07-10",
+     "date_basis": "page metadata",
+     "quote": "Quantica Broadview 500 1,000",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... filed interconnection applications with NorthWestern Energy to expand power generation for its 1,100 MW Big Sky Campus in Yellowstone County",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... filed interconnection applications with NorthWestern Energy to expand power generation for its 1,100 MW Big Sky Campus in Yellowstone County"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "MT-DC-02",
+   "name": "Sabey data center, Montana Connections Industrial Park (Butte)",
+   "developer_as_filed": "Sabey Data Centers",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 250,
+   "mw_basis": "legislative committee slide: 'Final Load (MW)' 250; initial load 50",
+   "status": "stalled",
+   "status_date": "2026-06-01",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "30093",
+     "name": "Silver Bow",
+     "state": "MT"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "606 acres where they planned to build two 500,000 square foot data centers",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Sabey Data Centers officially backs out of Butte agreement",
+     "publisher": "NBC Montana",
+     "url": "https://nbcmontana.com/news/local/sabey-data-centers-officially-backs-out-of-butte-agreement",
+     "date": "2026-06-01",
+     "date_basis": "printed on the page",
+     "quote": "Sabey Data Centers has terminated the buy-sell agreement that had a closing date of Aug. 11 for a land deal for 606 acres where they planned to build two 500,000 square foot data centers.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Proposed Montana Data Centers (committee slide)",
+     "publisher": "Montana State Legislature",
+     "url": "https://docs.legmt.gov/download-ticket?ticketId=32797b18-bd34-4518-b7b4-6eec609baebb",
+     "date": null,
+     "date_basis": null,
+     "quote": "Initial Load (MW) Final Load (MW) Atlas Butte 65 ¹ 150 Quantica Broadview 500 1,000 Sabey Butte 50 250",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "... Initial Load (MW) Final Load (MW) Atlas Butte 65 ¹ 150 Quantica Broadview 500 1,000 Sabey Butte 50 250 ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Sabey Data Centers has terminated the buy-sell agreement that had a closing date of Aug. 11 for a land deal for 606 acres ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "MT-DC-03",
+   "name": "Atlas Power data center expansion (Butte)",
+   "developer_as_filed": "Atlas Power (formerly CryptoWatt)",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 150,
+   "mw_basis": "press: 75 MW beginning in 2026 plus up to 75 MW more",
+   "status": "proposed",
+   "status_date": "2026-02-24",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "30093",
+     "name": "Silver Bow",
+     "state": "MT"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Power drain: A guide to proposed data centers so far in Montana",
+     "publisher": "Missoulian / MSU Exponent",
+     "url": "https://www.msuexponent.com/news/state/power-drain-a-guide-to-proposed-data-centers-so-far-in-montana/article_2c5fca44-9749-5d5b-9fda-3114f3546eff.html",
+     "date": "2026-02-24",
+     "date_basis": "page metadata",
+     "quote": "The energy supply load for the Atlas data center is expected to be 75 megawatts beginning in 2026 with forecasted growth of up to another 75 megawatts in the subsequent three to five years.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The energy supply load for the Atlas data center is expected to be 75 megawatts beginning in 2026 with forecasted growth of up to another 75 megawatts in the subsequent three to five years. That’s a total load of 150 megawatts",
+    "derived": "75 MW + up to 75 MW = 150 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The energy supply load for the Atlas data center is expected to be 75 megawatts beginning in 2026 with forecasted growth of up to another 75 megawatts in the subsequent three to five years"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-DC-01",
+   "name": "Monarch Data Center (Yerington)",
+   "developer_as_filed": "Copia Power Devco, LLC",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 1000,
+   "mw_basis": "Lyon County agenda item: 1,000 MW data center with a 500 MW battery system and a 500 MW natural gas backup",
+   "status": "approved",
+   "status_date": "2026-08-06",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "32019",
+     "name": "Lyon",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "to rezone approximately 505.4 acres to a Planned Unit Development (PUD)",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Lyon County Board of Commissioners agenda, September 3, 2026, item 6.b",
+     "publisher": "Lyon County, Nevada",
+     "url": "https://www.lyon-county.org/AgendaCenter/ViewFile/Agenda/_09032026-2097",
+     "date": "2026-08-28",
+     "date_basis": "page metadata",
+     "quote": "approval of a zone change to Planned Unit Development for the Monarch Data Center, a 4.6 million square foot, 1,000 Megawatt (MW) data center consisting of 8, two-story buildings up to 95 feet tall, a 500-MW battery energy storage system, a 500-MW natural gas backup system, an electrical substation, high voltage power lines and other accessory uses",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "August 6, 2026 Board of County Commissioners Meeting Summary",
+     "publisher": "Lyon County, Nevada",
+     "url": "https://lyon-county.org/m/NewsFlash/Home/Detail/402",
+     "date": "2026-08-07",
+     "date_basis": "printed on the page",
+     "quote": "The approval is for the tentative Planned Unit Development.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... a 4.6 million square foot, 1,000 Megawatt (MW) data center consisting of 8, two-story buildings up to 95 feet tall ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 1,
+    "quote": "... The Lyon County Board of County Commissioners approved, by a 3-1 vote, a request from Copia Power Devco, LLC, to rezone approximately 505.4 acres to a Planned Unit Development (PUD) for the proposed Monarch Data Center"
+   },
+   "limit": "The county agenda for 09/03/2026 says Monarch's transmission lines will need additional land-use review.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-DC-02",
+   "name": "Peru Shelf Technology Park (Tahoe-Reno Industrial Center)",
+   "developer_as_filed": "Tract",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 810,
+   "mw_basis": "press: up to 810 MW of utility capacity at full build-out",
+   "status": "under construction",
+   "status_date": "2026-11-02",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "32029",
+     "name": "Storey",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "spanning 686 acres within the Tahoe-Reno Industrial Center",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Tract breaks ground on 810MW data center park in Reno, Nevada",
+     "publisher": "DatacenterDynamics",
+     "url": "https://www.datacenterdynamics.com/en/news/tract-breaks-ground-on-810mw-data-center-park-in-reno-nevada/",
+     "date": "2026-11-02",
+     "date_basis": "page metadata",
+     "quote": "The Peru Shelf Technology Park, spanning 686 acres within the Tahoe-Reno Industrial Center, will support up to 810MW of utility capacity at full build-out.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The Peru Shelf Technology Park, spanning 686 acres within the Tahoe-Reno Industrial Center, will support up to 810MW of utility capacity at full build-out",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... announced this week it had broken ground on its Peru Shelf Technology Park project in Storey County"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-DC-03",
+   "name": "Tract Silver Springs campus",
+   "developer_as_filed": "Tract",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 700,
+   "mw_basis": "company release: site supports up to 1.6 GW; initial 700 MW under utility study",
+   "status": "approved",
+   "status_date": "2025-09-17",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "32019",
+     "name": "Lyon",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "Following Successful Rezoning and Development Agreement with Lyon County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Tract Expands Its Greater Reno Portfolio, Closing on 1,060 Acres in Silver Springs, Nevada",
+     "publisher": "Tract",
+     "url": "https://www.tract.com/news/tract-expands-its-greater-reno-portfolio-closing-on-1060-acres-in-silver-springs-nevada-following-successful-rezoning-and-development-agreement-with-lyon-county",
+     "date": "2025-09-17",
+     "date_basis": "printed on the page",
+     "quote": "The development site can support up to 1.6 gigawatts (GW) of data center capacity, with an initial 700 megawatts (MW) currently under utility study.",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The development site can support up to 1.6 gigawatts (GW) of data center capacity, with an initial 700 megawatts (MW) currently under utility study",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Tract Expands Its Greater Reno Portfolio, Closing on 1,060 Acres in Silver Springs, Nevada Following Successful Rezoning and Development Agreement with Lyon County ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-DC-04",
+   "name": "Vantage campus near Reno (224 MW)",
+   "developer_as_filed": "Vantage Data Centers",
+   "kind": "data center",
+   "kind_detail": null,
+   "mw": 224,
+   "mw_basis": "Nevada Governor's Office of Energy report",
+   "status": "in development",
+   "status_date": "2026-02-13",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "2025 Status of Energy Report",
+     "publisher": "Nevada Governor’s Office of Energy",
+     "url": "https://epubs.nsla.nv.gov/statepubs/epubs/675157-2025.pdf",
+     "date": "2026-02-13",
+     "date_basis": "page metadata",
+     "quote": "Vantage Data Centers has committed nearly $3 billion to develop a 224-megawatt AI campus just outside Reno",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Vantage Data Centers has committed nearly $3 billion to develop a 224-megawatt AI campus just outside Reno ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Vantage Data Centers has committed nearly $3 billion to develop a 224-megawatt AI campus just outside Reno ..."
+   },
+   "limit": "The report does not name a county; a tracker places it in Storey County, which is not used.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-01",
+   "name": "Mark IV Capital modular natural gas plant and battery storage (Fernley logistics district)",
+   "developer_as_filed": "Mark IV Capital",
+   "kind": "generation",
+   "kind_detail": "natural gas with battery storage",
+   "mw": 324,
+   "mw_basis": "press, quoting city documents",
+   "status": "permitting",
+   "status_date": "2026-10-22",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "32019",
+     "name": "Lyon",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "within the logistics district",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Fernley commissioners step down over power plant brouhaha after lawyers lean in",
+     "publisher": "The Nevada Independent",
+     "url": "https://thenevadaindependent.com/article/fernley-commissioners-step-down-over-power-plant-brouhaha-after-lawyers-lean-in",
+     "date": "2026-10-22",
+     "date_basis": "page metadata",
+     "quote": "Mark IV Capital is seeking city approval to construct a modular natural gas plant and battery energy storage systems capable of producing up to 324 megawatts (MW) of power for businesses within the logistics district",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Mark IV Capital is seeking city approval to construct a modular natural gas plant and battery energy storage systems capable of producing up to 324 megawatts (MW) of power for businesses within the logistics district ...",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Mark IV Capital is seeking city approval to construct a modular natural gas plant and battery energy storage systems capable of producing up to 324 megawatts (MW) of power for businesses within the logistics district ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "CA-DC-01",
+   "name": "Colusa Indian Energy and Strata Expanse AI and energy infrastructure campus",
+   "developer_as_filed": "Colusa Indian Energy and Strata Expanse (partnership announced 03/31/2026)",
+   "kind": "data center",
+   "kind_detail": "AI center of excellence with onsite generation",
+   "mw": 100,
+   "mw_basis": "company release: planned onsite generation 'to more than 100 MW'; not a compute load",
+   "status": "proposed",
+   "status_date": "2026-03-31",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "tribal-as-stated",
+    "extent": "whole",
+    "as_stated": "an AI Center of Excellence (CoE) on Trust land",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Colusa Indian Energy and Strata Expanse Announce Strategic Partnership to Develop AI and Energy Infrastructure Campus on Tribal Lands",
+     "publisher": "Strata Expanse",
+     "url": "https://strataexpanse.com/news/colusa-strata-partnership",
+     "date": "2026-03-31",
+     "date_basis": "printed on the page",
+     "quote": "Colusa Indian Energy and Strata Expanse today announced a strategic partnership to develop energy and digital infrastructure on the land of the Cachil Dehe Band of Wintun Indians of the Colusa Indian Community in northern California",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Tribe-Owned Developer Sees Economic Opportunities in Siting Microgrid-Powered Energy Park for Data Centers",
+     "publisher": "Microgrid Knowledge",
+     "url": "https://www.microgridknowledge.com/community-microgrids/article/55375125/tribe-owned-developer-sees-economic-opportunities-in-siting-microgrid-powered-energy-park-for-data-centers",
+     "date": "2026-05-05",
+     "date_basis": "printed on the page",
+     "quote": "The developer plans to add off-grid generation, ultimately totaling 100 MW",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... plans to expand onsite energy generation capacity to more than 100 MW over the next 18 months to support the CoE",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Colusa Indian Energy and Strata Expanse today announced a strategic partnership to develop energy and digital infrastructure on the land of the Cachil Dehe Band of Wintun Indians of the Colusa Indian Community in northern California"
+   },
+   "limit": "Reported as the release words it. The release names no county.",
+   "tribal_context": [
+    {
+     "text": "... Colusa Indian Energy and Strata Expanse today announced a strategic partnership to develop energy and digital infrastructure on the land of the Cachil Dehe Band of Wintun Indians of the Colusa Indian Community in northern California",
+     "attribution": "Strata Expanse release of 03/31/2026, as printed",
+     "source": 0
+    },
+    {
+     "text": "... Colusa Indian Energy, a tribe-owned microgrid developer, is partnering with Strata Expanse to develop a research facility and energy park for data center operators on tribal land in Northern California",
+     "attribution": "Microgrid Knowledge, 05/05/2026, describing Colusa Indian Energy, as printed",
+     "source": 1
+    }
+   ],
+   "consistent_with_site_claims": [
+    "pdc-034",
+    "pdc-035"
+   ]
+  },
+  {
+   "id": "WA-GEN-01",
+   "name": "Wautoma Solar Project",
+   "developer_as_filed": "Innergex Renewable Development USA, LLC (applicant or certificate holder, per EFSEC)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 470,
+   "mw_basis": "EFSEC maximum generating capacity",
+   "status": "approved",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "to be located on approximately 5,800 acres of land 12.5 miles northeast of Sunnyside",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Wautoma Solar Project | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/wautoma-solar-project",
+     "date": "2025-07-09",
+     "date_basis": "printed on the page",
+     "quote": "Wautoma Solar is a solar project with a battery energy storage system (BESS) to be located on approximately 5,800 acres of land 12.5 miles northeast of Sunnyside. The project will have a capacity of approximately 470 megawatts of power generation. ... The governor approved the project on January 9, 2025.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Max generating capacity 470 megawatts (MW) Wautoma Solar is a solar project with a battery energy storage system (BESS) ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Benton County Facility status Awaiting construction ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-02",
+   "name": "Hop Hill Solar",
+   "developer_as_filed": "HOHI bn, LLC (applicant, per EFSEC)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 500,
+   "mw_basis": "EFSEC project description",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "The proposed solar array is located approximately 11 miles north of",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Hop Hill Solar | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/hop-hill-solar",
+     "date": null,
+     "date_basis": null,
+     "quote": "Hop Hill Solar project proposes a 500 megawatt (MW) solar generation facility coupled with a battery energy storage system (BESS) of up to 500 MW. The proposed solar array is located approximately 11 miles north of Prosser.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Notice of application, Proposed Hop Hill Solar Project",
+     "publisher": "EFSEC (via Benton County)",
+     "url": "https://www.bentoncountywa.gov/Documents/Departments/Community%20Development/Wind%20and%20Solar%20Projects%20EFSEC%20Projects/Hop%20Hill%20Solar%20Project/022324HopHillApplicationNotice1404014922022324PM.pdf",
+     "date": "2023-01-18",
+     "date_basis": "printed on the page",
+     "quote": "On December 22, 2022, the Washington State Energy Facility Site Evaluation Council (EFSEC) received an Application for Site Certification (ASC) from HOHI bn, LLC for a 500-megawatt (MW) solar photovoltaic (PV) generation facility with battery storage located in unincorporated Benton County, Washington.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Hop Hill Solar project proposes a 500 megawatt (MW) solar generation facility coupled with a battery energy storage system (BESS) of up to 500 MW",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Benton County Facility status Application review ..."
+   },
+   "limit": "EFSEC's page lists order 891, finding the project inconsistent with local land use regulations (document date 11-15-23).",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-03",
+   "name": "Carriger Solar",
+   "developer_as_filed": "Not named in the EFSEC page read",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 160,
+   "mw_basis": "EFSEC project description (AC solar; 63 MW of battery storage not counted)",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "The proposed site is located approximately two miles northwest of Goldendale",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Carriger Solar | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/carriger-solar",
+     "date": "2026-05-01",
+     "date_basis": "page metadata",
+     "quote": "Carriger Solar is a proposed solar photovoltaic (PV) electric generating facility with a capacity of 160 megawatts (MW) of alternating current (AC) solar energy and 63 MW of battery energy storage. The proposed site is located approximately two miles northwest of Goldendale.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Carriger Solar is a proposed solar photovoltaic (PV) electric generating facility with a capacity of 160 megawatts (MW) of alternating current (AC) solar energy and 63 MW of battery energy storage",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Klickitat County Facility status Application review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-04",
+   "name": "Goldeneye Battery Storage",
+   "developer_as_filed": "Not named in the EFSEC page read",
+   "kind": "storage",
+   "kind_detail": "battery",
+   "mw": 200,
+   "mw_basis": "EFSEC project description (200 MW / 800 MWh)",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53057",
+     "name": "Skagit",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "The proposed site is east of Sedro-Woolley",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Goldeneye Battery Storage | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/goldeneye-battery-storage",
+     "date": "2026-08-24",
+     "date_basis": "printed on the page",
+     "quote": "Goldeneye is a proposed stand-alone 200-megawatt (MW)/800-megawatt hour (MWh) Battery Energy Storage System (BESS). The proposed site is east of Sedro-Woolley.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Goldeneye is a proposed stand-alone 200-megawatt (MW)/800-megawatt hour (MWh) Battery Energy Storage System (BESS)",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Skagit County Facility status Application review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-05",
+   "name": "Horse Heaven Wind Project",
+   "developer_as_filed": "Horse Heaven Wind Farm LLC (applicant or certificate holder, per EFSEC)",
+   "kind": "generation",
+   "kind_detail": "wind, solar and battery storage",
+   "mw": 1150,
+   "mw_basis": "EFSEC maximum generating capacity",
+   "status": "approved",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "to be located approximately four miles southwest of Kennewick",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Horse Heaven Wind Project | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/horse-heaven-wind-project",
+     "date": "2026-09-13",
+     "date_basis": "printed on the page",
+     "quote": "The Horse Heaven Wind project is a combined wind, solar, and battery energy storage system (BESS) to be located approximately four miles southwest of Kennewick. ... The project is currently under litigation.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Max generating capacity 1,150 megawatts (MW) ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Benton County Facility status Awaiting construction ..."
+   },
+   "limit": "EFSEC's page states 'The project is currently under litigation.'",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-TX-01",
+   "name": "Cascade Renewable Transmission (HVDC, Big Eddy near The Dalles to Harborton in Portland)",
+   "developer_as_filed": "Cascade Renewable Transmission, LLC, a joint enterprise of PB CRTS, LLC (a subsidiary of PowerBridge, LLC) and Sun2o Partners, LLC",
+   "kind": "transmission",
+   "kind_detail": "400 kV HVDC",
+   "mw": 1100,
+   "mw_basis": "EFSEC application description",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "53011",
+     "name": "Clark",
+     "state": "WA"
+    },
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    },
+    {
+     "fips": "53059",
+     "name": "Skamania",
+     "state": "WA"
+    },
+    {
+     "fips": "41065",
+     "name": "Wasco",
+     "state": "OR"
+    },
+    {
+     "fips": "41027",
+     "name": "Hood River",
+     "state": "OR"
+    },
+    {
+     "fips": "41051",
+     "name": "Multnomah",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "route",
+    "as_stated": "constructed primarily within the bed of the Columbia River in both Oregon and Washington",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Cascade Renewable Transmission | EFSEC",
+     "publisher": "Washington Energy Facility Site Evaluation Council",
+     "url": "https://efsec.wa.gov/facilities/cascade-renewable-transmission",
+     "date": "2026-09-22",
+     "date_basis": "printed on the page",
+     "quote": "Cascade Renewable Transmission, LLC, submitted an application for site certification with EFSEC on October 6, 2025, for a proposed 400-kilovolt (kV) high-voltage direct current (HVDC) electric transmission facility with a capacity of approximately 1,100 megawatts (MW).",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "The facility is proposed by Cascade Renewable Transmission, LLC., a joint enterprise of PB CRTS, LLC, a wholly owned subsidiary of PowerBridge, LLC, and Sun2o Partners, LLC. ... Phase: Preliminary Application for Site Certificate ... Completeness review will continue through Q4 2026.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Cascade Transmission Project, 2026 Annual Supplemental Progress Report",
+     "publisher": "WECC filing by Cascade Renewable Transmission, LLC",
+     "url": "https://www.wecc.org/sites/default/files/documents/progress_report/2026/CRTP%202026%20APR.pdf",
+     "date": "2026-01-13",
+     "date_basis": "printed on the page",
+     "quote": "the current development timeline is pointing towards a planned in service date in 2032.",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... submitted an application for site certification with EFSEC on October 6, 2025, for a proposed 400-kilovolt (kV) high-voltage direct current (HVDC) electric transmission facility with a capacity of approximately 1,100 megawatts (MW)",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Clark County, Klickitat County, Skamania County Facility status Application review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-06",
+   "name": "Cascade Advanced Energy Facility (up to 12 Xe-100 small modular reactors, Hanford Site)",
+   "developer_as_filed": "Energy Northwest New Nuclear, LLC with X-energy",
+   "kind": "generation",
+   "kind_detail": "nuclear (small modular reactors)",
+   "mw": 960,
+   "mw_basis": "Energy Northwest: 320 MW first, up to 960 MW when fully built out",
+   "status": "proposed",
+   "status_date": "2026-08-27",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53005",
+     "name": "Benton",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "federal-doe",
+    "extent": "whole",
+    "as_stated": "on the Department of Energy’s Hanford Reservation, at a site adjacent to Columbia Generating Station in Benton County",
+    "manager": "U.S. Department of Energy",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Cascade Advanced Energy Facility (Cascade)",
+     "publisher": "U.S. Nuclear Regulatory Commission",
+     "url": "https://www.nrc.gov/reactors/new-reactors/advanced/who-were-working-with/pre-application-activities/energy-northwest",
+     "date": "2026-08-27",
+     "date_basis": "printed on the page",
+     "quote": "The U.S. Nuclear Regulatory Commission (NRC) is currently engaged in pre-application activities with Energy Northwest regarding a construction permit application for up to 12 Xe-100 small modular reactor (SMR) units on the Department of Energy’s Hanford Reservation, at a site adjacent to Columbia Generating Station in Benton County, Washington",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Energy Northwest Unveils Name, Concept Images for First-Ever Small Modular Reactor Project in the Pacific Northwest",
+     "publisher": "Energy Northwest",
+     "url": "https://www.energy-northwest.com/news-releases/energy-northwest-unveils-name-concept-images-for-first-ever-small-modular-reactor-project-in-the-pacific-northwest/",
+     "date": "2025-10-17",
+     "date_basis": "page metadata",
+     "quote": "Construction is anticipated to begin by the end of the decade, with operations targeted for the 2030s.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 1,
+    "quote": "... is projected to generate 320 megawatts (MW) of carbon-free, reliable energy, and when fully built out, up to 960MW",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... The U.S. Nuclear Regulatory Commission (NRC) is currently engaged in pre-application activities with Energy Northwest regarding a construction permit application for up to 12 Xe-100 small modular reactor (SMR) units on the Department of Energy’s Hanford Reservation ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-GEN-07",
+   "name": "Goldendale Energy Storage Project (pumped storage)",
+   "developer_as_filed": "FFP Project 101, LLC (FERC licensee); Rye Development lists the project",
+   "kind": "storage",
+   "kind_detail": "pumped hydro",
+   "mw": 1200,
+   "mw_basis": "FERC order summary",
+   "status": "approved",
+   "status_date": "2026-01-22",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "53039",
+     "name": "Klickitat",
+     "state": "WA"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "a 1,200-megawatt project located in Klickitat County, Washington",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Summaries | September 2026 Commission Meeting",
+     "publisher": "Federal Energy Regulatory Commission",
+     "url": "https://ferc.gov/news-events/news/summaries-september-2026-commission-meeting",
+     "date": "2026-09-10",
+     "date_basis": "printed on the page",
+     "quote": "The order sustains the Commission’s January 22, 2026, order issuing an original license to FFP Project 101, LLC to construct, operate, and maintain the Goldendale Energy Pumped Storage Hydroelectric Project, a 1,200-megawatt project located in Klickitat County, Washington.",
+     "kind": "court-federal",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Projects",
+     "publisher": "Rye Development",
+     "url": "https://www.ryedevelopment.com/projects.html",
+     "date": null,
+     "date_basis": null,
+     "quote": "Location: Klickitat County, Washington Size: 1,200 MW Storage: 12 hours Commercial Operation Date: 2032 Status: FERC License issued",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Yakama Nation Condemns Pump Storage License Decision",
+     "publisher": "Confederated Tribes and Bands of the Yakama Nation",
+     "url": "https://yakamafish-nsn.gov/sites/default/files/Press%20Release_YN_FERC_License%20%281.23.26%29.pdf",
+     "date": null,
+     "date_basis": null,
+     "quote": "... Yakama Nation Condemns Pump Storage License Decision",
+     "kind": "tribal-government",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... The order sustains the Commission’s January 22, 2026, order issuing an original license to FFP Project 101, LLC to construct, operate, and maintain the Goldendale Energy Pumped Storage Hydroelectric Project, a 1,200-megawatt project located in Klickitat County, Washington",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... The order sustains the Commission’s January 22, 2026, order issuing an original license to FFP Project 101, LLC to construct, operate, and maintain the Goldendale Energy Pumped Storage Hydroelectric Project, a 1,200-megawatt project located in Klickitat County, Washington"
+   },
+   "limit": null,
+   "tribal_context": [
+    {
+     "text": "The order also denies the stay request and addresses Tribal consultation and issues arising under the National Historic Preservation Act, the National Environmental Policy Act, and the Federal Power Act",
+     "attribution": "FERC's summary of its 09/10/2026 order on rehearing, as printed",
+     "source": 0
+    },
+    {
+     "text": "... Yakama Nation Condemns Pump Storage License Decision",
+     "attribution": "headline of the Confederated Tribes and Bands of the Yakama Nation's press release of 01/23/2026, as printed",
+     "source": 2
+    }
+   ],
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-01",
+   "name": "Deschutes Solar and Battery Energy Storage System Facility",
+   "developer_as_filed": "DECH bn, LLC, a wholly owned subsidiary of BrightNight, LLC",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 1000,
+   "mw_basis": "ODOE project description",
+   "status": "permitting",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41065",
+     "name": "Wasco",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 13,626 acres (21.3 square miles) in Wasco County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of approximately 1,000 MW and 1,000 MW of battery storage on up to 13,626 acres (21.3 square miles) in Wasco County. The facility is proposed by DECH bn, LLC, a wholly owned subsidiary of BrightNight, LLC.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of approximately 1,000 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Deschutes Solar and Bess Facility pASC Completeness review Wasco ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-02",
+   "name": "Muddy Creek Energy Park",
+   "developer_as_filed": "Muddy Creek Energy Park LLC, a subsidiary of Hanwha Q Cells USA Corp.",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 199,
+   "mw_basis": "ODOE project description",
+   "status": "permitting",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41043",
+     "name": "Linn",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on to 1,588 acres (2.5 sq. miles) in Linn County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 199 MW and 199 MW of battery storage on to 1,588 acres (2.5 sq. miles) in Linn County. The facility is proposed by Muddy Creek Energy Park LLC, a subsidiary of Hanwha Q Cells USA Corp.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Solar photovoltaic power generation facility with a nominal generating capacity of up to 199 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Muddy Creek Energy Park pASC Completeness review Linn ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-03",
+   "name": "Speedway Energy Facility",
+   "developer_as_filed": "BGTF Speedway Project LLC, a subsidiary of Brookfield Renewable U.S.",
+   "kind": "generation",
+   "kind_detail": "wind and solar with battery storage",
+   "mw": 1800,
+   "mw_basis": "ODOE description: wind plus solar; 1,400 MW of battery storage not counted",
+   "status": "permitting",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41055",
+     "name": "Sherman",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "solar photovoltaic (1,400 MW on 7,819 acres/12.21 sq. miles)",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Combined wind (400 MW with turbine blade tip heights up to 698 feet), solar photovoltaic (1,400 MW on 7,819 acres/12.21 sq. miles) and 1,400 MW of battery storage within Sherman County. The facility is proposed by BGTF Speedway Project LLC, a subsidiary of Brookfield Renewable U.S. ... The Department issued its determination that the pASC was incomplete on September 17, 2026.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Combined wind (400 MW with turbine blade tip heights up to 698 feet), solar photovoltaic (1,400 MW on 7,819 acres/12.21 sq. miles) ...",
+    "derived": "400 MW wind + 1,400 MW solar = 1,800 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Speedway Energy Facility pASC Completeness review Sherman ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-04",
+   "name": "Sunrise Solar and Storage Projects",
+   "developer_as_filed": "PacifiCorp, a wholly-owned subsidiary of Berkshire Hathaway Energy Company",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 800,
+   "mw_basis": "ODOE project description",
+   "status": "proposed",
+   "status_date": "2026-11",
+   "status_basis": "notice of intent stage",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 6,981 acres (21.3 square miles) in Morrow County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a generating capacity of approximately 800 MW and 800 MW of battery storage on up to 6,981 acres (21.3 square miles) in Morrow County. The facility is proposed by PacifiCorp , a wholly-owned subsidiary of Berkshire Hathaway Energy Company. ... The Preliminary Application for Site Certificate must be submitted by February 27, 2027.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Solar photovoltaic power generation facility with a generating capacity of approximately 800 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Sunrise Solar & Storage Projects NOI ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-05",
+   "name": "Heppner Wind Project",
+   "developer_as_filed": "Heppner Lena Wind, LLC, a subsidiary of NextEra Energy Resources, LLC",
+   "kind": "generation",
+   "kind_detail": "wind",
+   "mw": 190,
+   "mw_basis": "ODOE project description",
+   "status": "proposed",
+   "status_date": "2026-11",
+   "status_basis": "notice of intent stage",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "up to 67 wind turbines with a maximum blade-tip height of 640 feet in Morrow County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Wind power generation facility with a nominal generating capacity of 190 MW consisting of up to 67 wind turbines with a maximum blade-tip height of 640 feet in Morrow County. The facility is proposed by Heppner Lena Wind, LLC, a subsidiary of NextEra Energy Resources, LLC. ... The Preliminary Application for Site Certificate must be submitted by March 27, 2027.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Wind power generation facility with a nominal generating capacity of 190 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Heppner Wind Project NOI ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-06",
+   "name": "Buckley Solar Facility",
+   "developer_as_filed": "Buckley Solar, LLC, a subsidiary of Clenera DevCo, LLC",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 1200,
+   "mw_basis": "ODOE project description",
+   "status": "proposed",
+   "status_date": "2026-11",
+   "status_basis": "notice of intent stage",
+   "counties": [
+    {
+     "fips": "41055",
+     "name": "Sherman",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 7,852 acres (12.2 sq. miles) in Sherman County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of 1,200 MW and 1,200 MW of battery storage on up to 7,852 acres (12.2 sq. miles) in Sherman County. The facility is proposed by Buckley Solar, LLC, a subsidiary of Clenera DevCo, LLC. ... The Preliminary Application for Site Certificate must be submitted by August 17, 2027.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of 1,200 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Buckley Solar Facility NOI ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-07",
+   "name": "Klamath Falls Energy Center",
+   "developer_as_filed": "Klamath Falls Energy Center, LLC, a subsidiary of Horsted North America Inc.",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 400,
+   "mw_basis": "ODOE project description",
+   "status": "proposed",
+   "status_date": "2026-11",
+   "status_basis": "notice of intent stage",
+   "counties": [
+    {
+     "fips": "41035",
+     "name": "Klamath",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 8,600 acres (13.4 sq. miles) in Klamath County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 400 MW and 400 MW of battery storage on up to 8,600 acres (13.4 sq. miles) in Klamath County. The facility is proposed by Klamath Falls Energy Center, LLC, a subsidiary of Horsted North America Inc.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 400 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Klamath Falls Energy Center NOI ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-08",
+   "name": "Big River Energy Facility",
+   "developer_as_filed": "Big River Wind Power Project LLC, Big River Energy Storage LLC and Big River Solar Park LLC, all subsidiaries of EDP Renewables North America, LLC",
+   "kind": "generation",
+   "kind_detail": "wind and solar with battery storage",
+   "mw": 500,
+   "mw_basis": "ODOE project description (500 MW combined wind and solar; 500 MW battery not counted)",
+   "status": "proposed",
+   "status_date": "2026-11",
+   "status_basis": "notice of intent stage",
+   "counties": [
+    {
+     "fips": "41021",
+     "name": "Gilliam",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "and 500 MW of battery storage in Gilliam County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Wind (turbine blade tip heights up to 788 feet) and solar photovoltaic (micrositing acreage not yet known) facility with up to 500 MW combined capacity, and 500 MW of battery storage in Gilliam County. The facility is proposed by three limited liability companies: Big River Wind Power Project LLC, Big River Energy Storage LLC and Big River Solar Park LLC. All three are subsidiaries of EDP Renewables North America, LLC.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Wind (turbine blade tip heights up to 788 feet) and solar photovoltaic (micrositing acreage not yet known) facility with up to 500 MW combined capacity ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Big River Energy Facility NOI ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-09",
+   "name": "Umatilla-Morrow County Connect Project",
+   "developer_as_filed": "Umatilla Electric Cooperative (UEC)",
+   "kind": "transmission",
+   "kind_detail": "230 kV",
+   "mw": null,
+   "mw_basis": null,
+   "status": "permitting",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    },
+    {
+     "fips": "41059",
+     "name": "Umatilla",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "route",
+    "as_stated": "230 kV transmission line connecting Umatilla Electric Cooperative",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "230 kV transmission line connecting Umatilla Electric Cooperative’s (UEC) existing Highway 730 Switchyard to their planned Ordnance Switchyard. There are four alternative routes ranging from approximately 13.1 to 14.4 miles. The facility is proposed by UEC.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... Umatilla-Morrow County Connect Project pASC Completeness review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-10",
+   "name": "Sunstone Solar Project",
+   "developer_as_filed": "Oregon Solar 1, LLC, a wholly owned subsidiary of Amazon.com, Inc. (certificate holder)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 1200,
+   "mw_basis": "ODOE project description",
+   "status": "approved",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 9,442 acres (14.75 square miles) in Morrow County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 1,200 MW and 1,200 MW of battery storage on up to 9,442 acres (14.75 square miles) in Morrow County. The certificate holder is Oregon Solar 1, LLC, a wholly owned subsidiary of Amazon.com, Inc. ... Review is currently on hold until further notice from the certificate holder.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 1,200 MW ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Sunstone Solar Project Approved Facility"
+   },
+   "limit": "ODOE lists preconstruction compliance review as on hold until further notice from the certificate holder.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-11",
+   "name": "Wagon Trail Solar Project",
+   "developer_as_filed": "Wagon Trail Energy Center, LLC, a wholly owned subsidiary of NextEra Energy Resources, LLC",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 500,
+   "mw_basis": "ODOE project description",
+   "status": "under construction",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "on up to 7,450 acres (11.6 square miles) in Morrow County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Solar photovoltaic power generation facility with a nominal generating capacity of up to 500 MW and 500 MW of battery storage on up to 7,450 acres (11.6 square miles) in Morrow County. The certificate holder is Wagon Trail Energy Center, LLC, a wholly owned subsidiary of NextEra Energy Resources, LLC. ... Construction has begun for each site, starting with prepping and grading each Phase’s site area.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "A 500 MW solar power generation facility currently under construction ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... currently under construction in Morrow County"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-12",
+   "name": "Nolin Hills Wind Power Project",
+   "developer_as_filed": "Nolin Hills Wind LLC, a subsidiary of Capitol Power Corporation",
+   "kind": "generation",
+   "kind_detail": "wind and solar",
+   "mw": 600,
+   "mw_basis": "ODOE project description",
+   "status": "approved",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41059",
+     "name": "Umatilla",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "in Umatilla County",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "An approved but not yet constructed 600 MW wind and solar power generation facility in Umatilla County. The certificate holder is Nolin Hills Wind LLC, a subsidiary of Capitol Power Corporation. ... Extend the construction commencement deadlines by 3 years, extending from July 29, 2026 to July 29, 2029.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "An approved but not yet constructed 600 MW wind and solar power generation facility ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "An approved but not yet constructed 600 MW wind and solar power generation facility in Umatilla County"
+   },
+   "limit": "A request to extend the construction commencement deadline from 07/29/2026 to 07/29/2029 is on hold, per ODOE.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-13",
+   "name": "Carty Generating Station solar and battery expansion (Amendment 4)",
+   "developer_as_filed": "Portland General Electric",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage (amendment)",
+   "mw": 185,
+   "mw_basis": "ODOE: amendment raising solar from 50 MW to 185 MW",
+   "status": "permitting",
+   "status_date": "2026-10-30",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    },
+    {
+     "fips": "41021",
+     "name": "Gilliam",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "to 185 MW on 849.7 acres (1.32 sq. miles)",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Increase the solar capacity from 50 MW on 315 acres (.49 sq. miles) to 185 MW on 849.7 acres (1.32 sq. miles), add 156 MW of battery storage, increase the site boundary by 252 acres, and amend site certificate conditions, including the beginning construction deadline.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Increase the solar capacity from 50 MW on 315 acres (.49 sq. miles) to 185 MW on 849.7 acres",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Carty Generating Station Amendment #4 pRFA ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-14",
+   "name": "Biglow Canyon solar additions (125 MW solar under construction; Amendment 5 for up to 200 MW more)",
+   "developer_as_filed": "Portland General Electric",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage (amendment)",
+   "mw": 200,
+   "mw_basis": "ODOE: amendment for up to 200 MW more solar",
+   "status": "permitting",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41055",
+     "name": "Sherman",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "state-permitted",
+    "extent": "whole",
+    "as_stated": "Expand the site boundary by 839 acres",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "Expand the site boundary by 839 acres to allow construction and operation of up to 200 MW of photovoltaic solar power generation and related or supporting facilities (including 1,000 MW-hrs of battery energy storage components).",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Expand the site boundary by 839 acres to allow construction and operation of up to 200 MW of photovoltaic solar power generation ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Biglow Canyon Wind Farm Amendment #5 pRFA Completeness review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-TX-01",
+   "name": "Boardman to Hemingway Transmission Line (B2H), Oregon segment",
+   "developer_as_filed": "Idaho Power Company (primary developer; certificate holder)",
+   "kind": "transmission",
+   "kind_detail": "500 kV",
+   "mw": null,
+   "mw_basis": null,
+   "status": "under construction",
+   "status_date": "2026-11",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    },
+    {
+     "fips": "41059",
+     "name": "Umatilla",
+     "state": "OR"
+    },
+    {
+     "fips": "41061",
+     "name": "Union",
+     "state": "OR"
+    },
+    {
+     "fips": "41001",
+     "name": "Baker",
+     "state": "OR"
+    },
+    {
+     "fips": "41045",
+     "name": "Malheur",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": "route",
+    "as_stated": "BLM is the lead agency for this FAST-41 project",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "November EFSC Project Updates",
+     "publisher": "Oregon Department of Energy",
+     "url": "https://www.oregon.gov/energy/facilities/Documents/General/EFSC-Project-Updates.pdf",
+     "date": "2026-11-04",
+     "date_basis": "page metadata",
+     "quote": "500 kV single circuit electrical transmission line approximately 300 miles in length (273 miles in Oregon) in Morrow, Umatilla, Union, Baker and Malheur County in Oregon. The certificate holder is Idaho Power Company (IPC). ... IPC commenced construction on June 24, 2025.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "Construction began in July 2025 and is ongoing until complete"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-15",
+   "name": "Well Springs Solar",
+   "developer_as_filed": "Well Springs Solar, LLC (MN8)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 750,
+   "mw_basis": "Morrow County energy project list (750 MW solar, 500 MW BESS)",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "Permitted locally, see below. EFSC application withdrawn.",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Morrow County Energy Project List",
+     "publisher": "Morrow County, Oregon",
+     "url": "https://www.morrowcountyor.gov/sites/default/files/fileattachments/planning/page/16138/morrow_county_energy_project_list.pdf",
+     "date": "2026-10-06",
+     "date_basis": "page metadata",
+     "quote": "Well Springs Solar 750MW solar | 500 MW BESS | 7,365 ac proposed Applications under review Applications received June 2026; under review ... EFSC application withdrawn; permitting locally.",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... 750MW solar",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Applications received June 2026; under review ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-GEN-16",
+   "name": "Copia battery storage facility near Irrigon",
+   "developer_as_filed": "Sawtooth DevCo LLC, a subsidiary of Copia Power",
+   "kind": "storage",
+   "kind_detail": "battery",
+   "mw": 237,
+   "mw_basis": "OPB report",
+   "status": "permitting",
+   "status_date": "2026-10-29",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "41049",
+     "name": "Morrow",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "a proposed 40-acre battery storage facility",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Company known for building data centers eyes battery farm site in Eastern Oregon",
+     "publisher": "OPB",
+     "url": "https://www.opb.org/article/2026/10/29/data-center-company-battery-farm-site-eastern-oregon",
+     "date": "2026-10-29",
+     "date_basis": "printed on the page",
+     "quote": "The proposed 237-megawatt project in Morrow County comes as the region faces growing electricity demand from data centers.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "The proposed 237-megawatt project in Morrow County comes as the region faces growing electricity demand from data centers",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... the official application wasn’t submitted until late September 2026, which is still under review"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-TX-02",
+   "name": "BPA Big Eddy-Chemawa 230/500 kV Line Upgrade",
+   "developer_as_filed": "Bonneville Power Administration",
+   "kind": "transmission",
+   "kind_detail": "230 kV rebuilt to 500 kV",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-01-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
+     "date": "2026-01-27",
+     "date_basis": "page metadata",
+     "quote": "BPA proposes to rebuild 91 miles of the existing Big Eddy-Chemawa #1 230 kV line to a 500 kV line and re-terminate between BPA’s Big Eddy Substation (The Dalles, OR), Ostrander Substation (Oregon City, OR) and Pearl Substation (Wilsonville, OR). ... Preliminary estimated direct cost: $670 million Estimated completion: 2033 (updated from 2032)",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... BPA proposes to rebuild 91 miles of the existing Big Eddy-Chemawa #1 230 kV line to a 500 kV line ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-TX-03",
+   "name": "BPA Bonanza 115/230/500 kV Substation and La Pine-Bonanza 230 kV Line",
+   "developer_as_filed": "Bonneville Power Administration",
+   "kind": "substation",
+   "kind_detail": "115/230/500 kV substation and 230 kV line",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-01-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
+     "date": "2026-01-27",
+     "date_basis": "page metadata",
+     "quote": "This facility would be a new hub substation in Central Oregon near Prineville, OR. The new 115/230/500 kV Bonanza Substation would be built near BPA’s existing Ponderosa Substation. ... Estimated completion: 2031 (updated from 2030) ... a proposed new 52-mile 230 kV transmission line in Central Oregon between BPA’s La Pine Substation (La Pine, OR) and proposed Bonanza Substation (Prineville, OR).",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... This facility would be a new hub substation in Central Oregon near Prineville, OR"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-TX-04",
+   "name": "BPA Buckley 500 kV Substation Rebuild",
+   "developer_as_filed": "Bonneville Power Administration",
+   "kind": "substation",
+   "kind_detail": "500 kV substation rebuild",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-01-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "41055",
+     "name": "Sherman",
+     "state": "OR"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "in Sherman County, OR",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
+     "date": "2026-01-27",
+     "date_basis": "page metadata",
+     "quote": "This project is a proposed rebuild of BPA’s Buckley Substation in Sherman County, OR. The rebuild would be a new air-insulated 500 kV substation built near the existing gas-insulated substation, which will be retired. ... Estimated completion: 2029",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... This project is a proposed rebuild of BPA’s Buckley Substation in Sherman County, OR"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "WA-TX-02",
+   "name": "BPA Cross Cascades North Upgrades (Schultz-Raver 500 kV reconductor, Paul capacitor, Olympia static VAR compensator)",
+   "developer_as_filed": "Bonneville Power Administration",
+   "kind": "transmission",
+   "kind_detail": "500 kV reconductor and upgrades",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-01-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
+     "date": "2026-01-27",
+     "date_basis": "page metadata",
+     "quote": "BPA proposes upgrading the existing Schultz- Raver #3 and Schultz-Raver #4 500 kV lines to a higher-rated capacity. BPA would reconductor the 77 miles of line (154 miles total) between BPA’s Schultz Substation (Ellensburg, WA) and Raver Substation (Ravensdale, WA). ... Estimated completion: 2032 (updated from 2030)",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "BPA proposes upgrading the existing Schultz- Raver #3 and Schultz-Raver #4 500 kV lines to a higher-rated capacity"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "OR-TX-05",
+   "name": "BPA Portland Area Upgrades (Keeler 230/500 kV transformer, Hillsboro)",
+   "developer_as_filed": "Bonneville Power Administration",
+   "kind": "substation",
+   "kind_detail": "500/230 kV transformer addition",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-01-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Grid Expansion and Reinforcement Portfolio (GERP) 1.0 Project Summaries (updated 1/23/26)",
+     "publisher": "Bonneville Power Administration",
+     "url": "https://www.bpa.gov/-/media/Aep/transmission/grid-expansion-and-reinforcement-portfolio/GERP-10-Project-Summaries.pdf",
+     "date": "2026-01-27",
+     "date_basis": "page metadata",
+     "quote": "... a new 500/230-kV transformer would be added at Keeler Substation",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "Terminating PGE’s new Keeler-Horizon #2 line at BPA’s Keeler Substation (Hillsboro, OR) and a new 500/230-kV transformer would be added at Keeler Substation"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-TX-01",
+   "name": "SWIP-North (Southwest Intertie Project North), Midpoint Substation near Jerome, ID to near Ely, NV",
+   "developer_as_filed": "Idaho Power (owns 250 MW of SWIP-North's south-to-north capacity and has rights to use an additional 250 MW, per its project page)",
+   "kind": "transmission",
+   "kind_detail": "500 kV",
+   "mw": 500,
+   "mw_basis": "Idaho Power: 'could deliver up to 500 megawatts to Idaho Power customers'",
+   "status": "approved",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "16031",
+     "name": "Cassia",
+     "state": "ID"
+    },
+    {
+     "fips": "16083",
+     "name": "Twin Falls",
+     "state": "ID"
+    },
+    {
+     "fips": "16053",
+     "name": "Jerome",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "route",
+    "as_stated": "permitting the construction of SWIP-North across land the agency manages",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "SWIP-North",
+     "publisher": "Idaho Power",
+     "url": "https://idahopower.com/about-us/energy/planning-and-electrical-projects/current-projects/swip-north/",
+     "date": "2025-07-02",
+     "date_basis": "page metadata",
+     "quote": "SWIP-North is a 285-mile, 500-kilovolt (kV) transmission line that will run between eastern Nevada near Ely and Idaho Power’s Midpoint Substation near Jerome, Idaho. ... Mid-2026: Construction begins ... Mid-2028: Expected in-service date",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "When complete, SWIP-North could deliver up to 500 megawatts to Idaho Power customers ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The U.S. Bureau of Land Management has issued a Record of Decision, permitting the construction of SWIP-North across land the agency manages ..."
+   },
+   "limit": "Idaho Power's page lists 'Mid-2026: Construction begins' as a planned date; it does not state that construction has begun.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-TX-02",
+   "name": "Gateway West, Segment E-8 (Hemingway to Midpoint)",
+   "developer_as_filed": "PacifiCorp (project manager) with Idaho Power",
+   "kind": "transmission",
+   "kind_detail": "500 kV",
+   "mw": null,
+   "mw_basis": null,
+   "status": "permitting",
+   "status_date": "2026-07-27",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Idaho Power Company’s Transmission Update for 2nd Quarter 2026",
+     "publisher": "Idaho Power (filed with Oregon PUC)",
+     "url": "https://edocs.puc.state.or.us/efdocs/HAQ/re136haq348127039.pdf",
+     "date": "2026-07-27",
+     "date_basis": "page metadata",
+     "quote": "Current permitting and pre-construction activities are focused on Segment E-8 (“Segment 8”), the section of line between Hemingway and Midpoint substations.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... Current permitting and pre-construction activities are focused on Segment E-8"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-01",
+   "name": "Blacks Creek Solar",
+   "developer_as_filed": "Not named in Idaho Power's update",
+   "kind": "generation",
+   "kind_detail": "solar",
+   "mw": 400,
+   "mw_basis": "Idaho Power RFP update: 2027 resource",
+   "status": "in development",
+   "status_date": "2026-09",
+   "status_basis": "the month of Idaho Power's RFP update",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "2027 IRP RFP Update",
+     "publisher": "Idaho Power",
+     "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
+     "date": "2026-09-03",
+     "date_basis": "page metadata",
+     "quote": "2027 400 MW Solar — Blacks Creek 100 MW Solar + 100 MW BESS - Crimson Orchard",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... 400 MW Solar — Blacks Creek ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... 400 MW Solar — Blacks Creek ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-02",
+   "name": "Crimson Orchard Solar and Battery Storage",
+   "developer_as_filed": "Clenera (company page)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 120,
+   "mw_basis": "company page: 120 MW-DC total and 400 MWh of battery storage",
+   "status": "permitting",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "16039",
+     "name": "Elmore",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "ahead of Elmore County Planning and Zoning's consideration of the application",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Crimson Orchard",
+     "publisher": "Clenera",
+     "url": "https://www.clenera.com/projects/crimsonorchard",
+     "date": null,
+     "date_basis": null,
+     "quote": "MW-DC Total 120 Battery (MWh) 400 Commercial Operation 2027",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... MW-DC Total 120 ...",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Clēnera hosted two neighborhood meetings ahead of Elmore County Planning and Zoning's consideration of the application"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-03",
+   "name": "Bluebird Solar Project (200 MW solar, 100 MW storage)",
+   "developer_as_filed": "Bluebird Solar Project LLC",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 200,
+   "mw_basis": "Idaho PUC notice: a 200 MW solar PPA with a 100 MW battery storage agreement",
+   "status": "permitting",
+   "status_date": "2026-06-19",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Notice of Application, Order No. 37099",
+     "publisher": "Idaho Public Utilities Commission",
+     "url": "https://puc.idaho.gov/Fileroom/PublicFiles/ELEC/IPC/IPCE2620/OrdNotc/20260716Notice_of_Application_Order_No_37099.pdf",
+     "date": "2026-07-16",
+     "date_basis": "printed on the page",
+     "quote": "On June 19, 2026, Idaho Power Company (“Company”) applied to the Idaho Public Utilities Commission (“Commission”) requesting (1) approval of the 20-year Power Purchase Agreement (“PPA”) between Bluebird Solar Project LLC (“Bluebird”) and the Company supplying 200 megawatts (“MW”) of output from the solar powered generation facility to the Company",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... supplying 200 megawatts (“MW”) of output from the solar powered generation facility ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... On June 19, 2026, Idaho Power Company (“Company”) applied to the Idaho Public Utilities Commission (“Commission”) requesting (1) approval of the 20-year Power Purchase Agreement"
+   },
+   "limit": "This is a utility rate filing on a power purchase agreement, not a land-use approval.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-04",
+   "name": "Taurus Wind, Snake River Energy Solar and shared 550 MW battery storage (BLM right-of-way applications)",
+   "developer_as_filed": "Arevia Power",
+   "kind": "generation",
+   "kind_detail": "wind and solar with shared battery storage",
+   "mw": 900,
+   "mw_basis": "press report: peak 500 MW wind (Taurus) plus peak 400 MW solar (Snake River Energy); a shared 550 MW battery not counted",
+   "status": "proposed",
+   "status_date": "2025-01-17",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "16047",
+     "name": "Gooding",
+     "state": "ID"
+    },
+    {
+     "fips": "16053",
+     "name": "Jerome",
+     "state": "ID"
+    },
+    {
+     "fips": "16063",
+     "name": "Lincoln",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "Arevia Power proposes the projects on 53,803 acres of BLM-managed land in Gooding, Jerome and Lincoln counties",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "BLM taking input on wind, solar proposals in south-central Idaho",
+     "publisher": "Capital Press",
+     "url": "https://capitalpress.com/2025/01/17/blm-taking-input-on-wind-solar-proposals-in-south-central-idaho",
+     "date": "2025-01-17",
+     "date_basis": "printed on the page",
+     "quote": "Taurus would occupy about 49,194 acres and generate a peak 500 megawatts of wind energy. Snake River Energy is expected to occupy about 4,609 acres and generate a peak 400 MW of solar energy. The projects would share a 550-MW battery energy storage facility and a transmission line to the Midpoint Substation.",
+     "kind": "press",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... generate a peak 500 megawatts of wind energy ... generate a peak 400 MW of solar energy",
+    "derived": "500 MW + 400 MW = 900 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Arevia Power proposes the projects on 53,803 acres of BLM-managed land ..."
+   },
+   "limit": "Status is as of the 01/17/2025 article about a BLM forum on 01/28/2025; no agency page was found confirming it today.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-05",
+   "name": "Appaloosa Wind and Solar",
+   "developer_as_filed": "Appaloosa Wind and Solar LLC (c/o North Renew Energy Partners, LLC)",
+   "kind": "generation",
+   "kind_detail": "wind and solar with battery storage",
+   "mw": 400,
+   "mw_basis": "Elmore County conditions of approval for CUP-2024-04",
+   "status": "approved",
+   "status_date": "2024-10-24",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "16039",
+     "name": "Elmore",
+     "state": "ID"
+    }
+   ],
+   "land": {
+    "class": "county-permitted",
+    "extent": "whole",
+    "as_stated": "approximately 10,969 acres of private land and 1,359 acres of IDL property",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Board of County Commissioner Staff Report (DA-2024-02)",
+     "publisher": "Elmore County, Idaho",
+     "url": "https://elmorecounty.org/wp-content/uploads/DA-2024-02-Board-Packet.pdf",
+     "date": "2024-12-18",
+     "date_basis": "printed on the page",
+     "quote": "Appaloosa Wind and Solar LLC (“Applicant”) on October 24, 2024 to construct, operate, maintain, and decommission a 400 Megawatt (MW) electricity generation and energy production facilities to include wind turbines, solar arrays, battery storage, and associated facilities (“Project”) on approximately 10,969 acres of private land and 1,359 acres of Idaho Department of Lands (IDL) property",
+     "kind": "county-city",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... to construct a 400 megawatt (MW) electricity generation and production facility that will include wind turbine generators, solar arrays, a battery storage ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "The Elmore County Planning and Zoning Commission (“Commission”) approved a Conditional Use Permit (“CUP-2024-04” or “Project”) with Master Site Plan for Appaloosa Wind and Solar LLC (“Applicant”) on October 24, 2024 ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "ID-GEN-06",
+   "name": "Idaho Power gas additions: Bennett Mountain Expansion (167 MW) and South Hills (222 MW)",
+   "developer_as_filed": "Idaho Power",
+   "kind": "generation",
+   "kind_detail": "natural gas",
+   "mw": 389,
+   "mw_basis": "Idaho Power RFP update, 2028 to 2030 resources",
+   "status": "permitting",
+   "status_date": "2026-09",
+   "status_basis": "the month of Idaho Power's RFP update",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "2027 IRP RFP Update",
+     "publisher": "Idaho Power",
+     "url": "https://docs.idahopower.com/pdfs/AboutUs/PlanningForFuture/irp/2027/2027IRP_RFPupdate.pdf",
+     "date": "2026-09-03",
+     "date_basis": "page metadata",
+     "quote": "Bennett Mountain Expansion (NG - Recips) - 167 MW ... South Hills (NG - Recips) - 222 MW",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "Bennett Mountain Expansion (NG - Recips) - 167 MW ... South Hills (NG - Recips) - 222 MW ...",
+    "derived": "167 MW + 222 MW = 389 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "Bennett Mountain Expansion (NG - Recips) - 167 MW ..."
+   },
+   "limit": "The update's footnotes mark Bennett Mountain as 'CPCN approved by IPUC' and South Hills as 'Filed with IPUC'; one status is given for the pair.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "MT-TX-01",
+   "name": "North Plains Connector (HVDC, Colstrip, MT to North Dakota)",
+   "developer_as_filed": "Not named in the DEQ release read (it names the North Plains Connector Project)",
+   "kind": "transmission",
+   "kind_detail": "525 kV HVDC",
+   "mw": 3000,
+   "mw_basis": "Montana DEQ release",
+   "status": "permitting",
+   "status_date": "2026-08-28",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "30087",
+     "name": "Rosebud",
+     "state": "MT"
+    },
+    {
+     "fips": "30017",
+     "name": "Custer",
+     "state": "MT"
+    },
+    {
+     "fips": "30025",
+     "name": "Fallon",
+     "state": "MT"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": "route",
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "DEQ Issues Final Environmental Review for North Plains Connector Project",
+     "publisher": "Montana Department of Environmental Quality",
+     "url": "https://news.mt.gov/Department-of-Environmental-Quality/DEQ-Issues-Final-Environmental-Review-for-North-Plains-Connector-Project",
+     "date": "2026-08-28",
+     "date_basis": "printed on the page",
+     "quote": "The overhead transmission line would carry 525 kilovolts of high-voltage direct-current and provide 3,000 megawatts connecting the Western electrical grid to Eastern states. When completed, the project would start near Colstrip, traverse Rosebud, Custer and Fallon counties in Montana",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... provide 3,000 megawatts connecting the Western electrical grid to Eastern states",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... has issued a Final Environmental Impact Statement (EIS) for the North Plains Connector Project ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "MT-GEN-01",
+   "name": "Glacier Solar Park",
+   "developer_as_filed": "BHE Montana",
+   "kind": "generation",
+   "kind_detail": "solar",
+   "mw": 120,
+   "mw_basis": "company portfolio page",
+   "status": "in development",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "30035",
+     "name": "Glacier",
+     "state": "MT"
+    },
+    {
+     "fips": "30101",
+     "name": "Toole",
+     "state": "MT"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "will be built on over 1,500 acres of land",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Portfolio",
+     "publisher": "BHE Montana",
+     "url": "https://www.bhemontana.com/portfolio/",
+     "date": "2023-09-11",
+     "date_basis": "page metadata",
+     "quote": "... BHE Montana is developing a 120-megawatt Solar photovoltaic (PV) facility ...",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... BHE Montana is developing a 120-megawatt Solar photovoltaic (PV) facility ...",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... BHE Montana is developing a 120-megawatt Solar photovoltaic (PV) facility in Glacier and Toole Counties in north central Montana"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-TX-01",
+   "name": "Greenlink Nevada North (525 kV, Ely to Yerington)",
+   "developer_as_filed": "NV Energy",
+   "kind": "transmission",
+   "kind_detail": "525 kV",
+   "mw": null,
+   "mw_basis": null,
+   "status": "permitting",
+   "status_date": "2026-10-16",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "federal-blm",
+    "extent": "route",
+    "as_stated": "The Bureau of Land Management has been evaluating right-of-way applications submitted by NV Energy in July 2020",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Greenlink Nevada",
+     "publisher": "NV Energy",
+     "url": "https://www.nvenergy.com/cleanenergy/greenlink-nevada",
+     "date": null,
+     "date_basis": null,
+     "quote": "Greenlink North will be a 525 KV line that spans approximately 235 miles from Ely, NV, to Yerington, NV. Greenlink North is expected to be in service by December 2028.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    },
+    {
+     "title": "Greenlink North 525 kV Transmission Line Project (NEPA register)",
+     "publisher": "Bureau of Land Management",
+     "url": "https://eplanning.blm.gov/eplanning-ui/project/2017033/510",
+     "date": "2026-10-16",
+     "date_basis": "printed on the page",
+     "quote": "The Bureau of Land Management has been evaluating right-of-way applications submitted by NV Energy in July 2020.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 1,
+    "quote": "... NEPA Status In Progress - Analysis & Document Preparation ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-02",
+   "name": "Libra Solar and Storage",
+   "developer_as_filed": "Not named in the BLM notice read (it names the Libra Solar project)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 700,
+   "mw_basis": "BLM record of decision notice (700 MWac solar; 700 MW battery not counted)",
+   "status": "approved",
+   "status_date": "2024-09-10",
+   "status_basis": "date printed in the source",
+   "counties": [
+    {
+     "fips": "32019",
+     "name": "Lyon",
+     "state": "NV"
+    },
+    {
+     "fips": "32021",
+     "name": "Mineral",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "a 5,141-acre solar facility wholly on BLM lands",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Notice of Availability of the Record of Decision for Libra Solar in Lyon and Mineral Counties, NV",
+     "publisher": "Federal Register (BLM)",
+     "url": "https://www.federalregister.gov/documents/2024/09/16/2024-20948/notice-of-availability-of-the-record-of-decision-for-libra-solar-in-lyon-and-mineral-counties-nv",
+     "date": "2024-09-16",
+     "date_basis": "printed on the page",
+     "quote": "The ROD was signed on September 10, 2024 ... a 5,141-acre solar facility wholly on BLM lands with a 24.1-mile-long gen-tie line to connect to the existing Fort Churchill substation near the town of Yerington in Lyon County, Nevada.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... a 700 megawatt (MW) alternating current (MWac) solar photovoltaic power generating facility; (2) a 700 MW battery energy storage system ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... The ROD was signed on September 10, 2024"
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-03",
+   "name": "White Pine Solar",
+   "developer_as_filed": "AMPYR Energy USA (100% owner, per the filing)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 350,
+   "mw_basis": "NV Energy 2026 IRP volume (350 MW solar with 350 MW battery)",
+   "status": "proposed",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [
+    {
+     "fips": "32033",
+     "name": "White Pine",
+     "state": "NV"
+    }
+   ],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": "The facility will be located in White Pine County, Nevada",
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "NV Energy 2026 Integrated Resource Plan, Vol. 27",
+     "publisher": "NV Energy (filed with PUCN)",
+     "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-27.pdf",
+     "date": "2026-05-05",
+     "date_basis": "page metadata",
+     "quote": "The White Pine Solar, LLC project is 350 megawatts of solar accompanied by 350 MW of battery energy storage capacity being developed by AMPYR Energy USA. The facility will be located in White Pine County, Nevada. Its commercial operation date is targeted for December 2028.",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... The White Pine Solar, LLC project is 350 megawatts of solar accompanied by 350 MW of battery energy storage capacity being developed by AMPYR Energy USA",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... The White Pine Solar, LLC project is 350 megawatts of solar accompanied by 350 MW of battery energy storage capacity being developed by AMPYR Energy USA"
+   },
+   "limit": "Part of NV Energy's 2026 integrated resource plan filing with the Public Utilities Commission of Nevada; not a land-use approval.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-04",
+   "name": "Sierra Solar and storage (400 MW solar plus 400 MW storage)",
+   "developer_as_filed": "NV Energy (owned resource)",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 400,
+   "mw_basis": "company investor presentation (400 MW solar plus 400 MW storage)",
+   "status": "under construction",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "2026 Investor Conference Presentation",
+     "publisher": "Berkshire Hathaway Energy",
+     "url": "https://www.brkenergy.com/assets/pdf/fiic-presentations/2026-fiic-presentation.pdf",
+     "date": "2026-03-24",
+     "date_basis": "page metadata",
+     "quote": "NV Energy commenced construction of a 400-MW solar facility with commercial operation expected in 2027, plus 400-MW co-located battery storage facility",
+     "kind": "company",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "press, company or advocacy source only",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... NV Energy commenced construction of a 400-MW solar facility ...",
+    "derived": null,
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... NV Energy commenced construction of a 400-MW solar facility ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-05",
+   "name": "Fort Churchill Additions 1 (natural gas combustion turbines)",
+   "developer_as_filed": "Sierra Pacific Power Company (NV Energy), per its 2026 integrated resource plan",
+   "kind": "generation",
+   "kind_detail": "natural gas",
+   "mw": 401,
+   "mw_basis": "NV Energy 2026 IRP volume",
+   "status": "proposed",
+   "status_date": "2026-11-05",
+   "status_basis": "status shown on the page when read; the page prints no date for it (11/05/2026)",
+   "counties": [],
+   "land": {
+    "class": "not-stated",
+    "extent": null,
+    "as_stated": null,
+    "manager": null,
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "NV Energy 2026 Integrated Resource Plan, Vol. 2",
+     "publisher": "NV Energy (filed with PUCN)",
+     "url": "https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/about-nvenergy/rates-regulatory/recent-regulatory-filings/2026-irp/NPC-SPPC-Volume-2.pdf",
+     "date": "2026-05-05",
+     "date_basis": "page metadata",
+     "quote": "Fort Churchill Additions 1 Project 6/1/2030 CT 401 Sierra Fort Churchill $ 2,006,583",
+     "kind": "utility",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... Fort Churchill Additions 1 Project – 401 MW new simple-cycle aeroderivative gas turbines at the Fort Churchill Generation Station with an in-service date of June 2030 ...",
+    "derived": null,
+    "status": "verified"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... Fort Churchill Additions 1 Project – 401 MW new simple-cycle aeroderivative gas turbines at the Fort Churchill Generation Station with an in-service date of June 2030 ..."
+   },
+   "limit": null,
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "NV-GEN-06",
+   "name": "Jakes Valley Solar (BRP Sandstone) and Lonely Road Solar (Engie): BLM Ely District applications",
+   "developer_as_filed": "BRP Sandstone; Engie Energy",
+   "kind": "generation",
+   "kind_detail": "solar with battery storage",
+   "mw": 1600,
+   "mw_basis": "BLM Ely District manager update: 1,000 MW (Jakes Valley) and 600 MW (Lonely Road)",
+   "status": "proposed",
+   "status_date": "2024-10-08",
+   "status_basis": "date printed in the source",
+   "counties": [],
+   "land": {
+    "class": "federal-blm",
+    "extent": "whole",
+    "as_stated": "constructed on 7,854 acres of the public lands in White River Valley",
+    "manager": "Bureau of Land Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Bureau of Land Management Ely District, District Manager’s Update, October 2024",
+     "publisher": "Bureau of Land Management",
+     "url": "https://www.blm.gov/sites/default/files/docs/2024-10/District%20Manager%20Update_October%202024_0.pdf",
+     "date": "2024-10-08",
+     "date_basis": "printed on the page",
+     "quote": "In September 2024, BRP Sandstone submitted an application proposing a 1000MW solar facility with a Battery Energy Storage System (BESS) on 9,515 acres in Jakes Valley. ... Engie Energy for the proposed Lonely Road Solar Project ... Project proposes a fenced 600MW solar facility with BESS",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": {
+    "source": 0,
+    "quote": "... In September 2024, BRP Sandstone submitted an application proposing a 1000MW solar facility with a Battery Energy Storage System (BESS) on 9,515 acres in Jakes Valley ... The Project proposes a fenced 600MW solar facility with BESS ...",
+    "derived": "1,000 MW + 600 MW = 1,600 MW",
+    "status": "partly"
+   },
+   "status_claim": {
+    "source": 0,
+    "quote": "... In September 2024, BRP Sandstone submitted an application proposing a 1000MW solar facility with a Battery Energy Storage System (BESS) on 9,515 acres in Jakes Valley"
+   },
+   "limit": "Status is as of the BLM update of 10/08/2024; the sources read do not name counties.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  },
+  {
+   "id": "CA-GEN-01",
+   "name": "California North Floating offshore wind lease OCS-P 0562 (Humboldt)",
+   "developer_as_filed": "California North Floating LLC, an affiliate of Vineyard Offshore",
+   "kind": "generation",
+   "kind_detail": "offshore wind (lease)",
+   "mw": null,
+   "mw_basis": null,
+   "status": "proposed",
+   "status_date": "2026-05-21",
+   "status_basis": "publication date of the source, from the page's metadata",
+   "counties": [
+    {
+     "fips": "06023",
+     "name": "Humboldt",
+     "state": "CA"
+    }
+   ],
+   "land": {
+    "class": "federal-offshore",
+    "extent": "whole",
+    "as_stated": "Lease Area OCS-P 0562",
+    "manager": "Bureau of Ocean Energy Management",
+    "parcels": [],
+    "geometry": null
+   },
+   "sources": [
+    {
+     "title": "Semi-Annual Progress Report 2, Lease OCS-P 0562",
+     "publisher": "Bureau of Ocean Energy Management",
+     "url": "https://www.boem.gov/renewable-energy/state-activities/2026-6-01-canf-progress-reportlease-562-1",
+     "date": "2026-05-21",
+     "date_basis": "page metadata",
+     "quote": "California North Floating LLC is the leaseholder of Lease Area OCS-P 0562 (the “Project”). California North Floating is an affiliate of Vineyard Offshore.",
+     "kind": "agency",
+     "read_on": "11/05/2026",
+     "read_via": "extract"
+    }
+   ],
+   "bpa_requests": [],
+   "verification": "primary source read",
+   "mw_claim": null,
+   "status_claim": {
+    "source": 0,
+    "quote": "... California North Floating LLC is the leaseholder of Lease Area OCS-P 0562 (the “Project”)"
+   },
+   "limit": "A lease, not a permit to build; the sources read state no MW. The county shown is the nearest county named in the source, offshore.",
+   "tribal_context": null,
+   "consistent_with_site_claims": []
+  }
+ ],
+ "excluded": {
+  "owner_review_pending": 0,
+  "aggregator_only": 0,
+  "not_a_single_project": 1,
+  "below_threshold": 11,
+  "withdrawn": 6
+ },
+ "land_classes": {
+  "federal-blm": "Bureau of Land Management public land, as the filing states",
+  "federal-doe": "A U.S. Department of Energy site, as the filing states",
+  "federal-offshore": "A federal offshore lease (BOEM)",
+  "state-permitted": "Land under a state siting docket (EFSEC, EFSC, PUC)",
+  "county-permitted": "Land under a county or city land-use action",
+  "tribal-as-stated": "Land the source itself describes as Tribal or Trust land, in the source's words; nothing is added to what the source says",
+  "not-stated": "The sources read do not say"
+ }
+}
