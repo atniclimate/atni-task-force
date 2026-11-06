@@ -93,6 +93,15 @@ protects nothing above, say so and propose removing it.
 Upstream repositories (plan-assessor, TCR Policy Scanner, Policy Sentinel) are read-only from here;
 each has its own owner and active writer.
 
+## Running workflows
+
+- Ask the owner's questions once, before any builder starts, and write the answers to a file the builders read (`work/site-refresh/<session>/OWNER-ANSWERS.json`).
+- Read-only agents (claim-verifier, fidelity-reader, visual-qa) and every workflow subagent return findings as text; the harness refuses report files from
+  subagents, so the conductor writes them to disk.
+- Every verifier returns one verdict per item, and the conductor checks the count against the list before accepting. Use `work/tools/workflows/verify-items.js`
+  (local; it batches the list, keys verdicts by id, asks once more for missing ids, and returns `complete` only when every item has a verdict).
+- New public sentences are drafted or passed by pf-voice-lead when they are written, not in a later pass.
+
 ## Writing
 
 Capitalize Tribe, Tribal, Indigenous, InterTribal. No em dashes in our prose. Do not credit AI tools
