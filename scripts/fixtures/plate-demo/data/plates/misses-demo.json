@@ -1,0 +1,63 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "misses-demo",
+ "eyebrow": "Forecast misses",
+ "title": "{series}: {display} for {year}",
+ "subtitle": "One panel per source, each on its own axis. Superseded editions are hollow.",
+ "plot": {
+  "type": "multiples",
+  "select": "point",
+  "projected_from": 2025,
+  "panels": [
+   {
+    "id": "lbnl",
+    "label": "LBNL, US data centers"
+   },
+   {
+    "id": "bnef",
+    "label": "BNEF, installed capacity"
+   }
+  ]
+ },
+ "default": "lbnl-2024",
+ "reading": "{series}: {display} for {year}.",
+ "boundary": "Each edition on its own axis.",
+ "rows": [
+  {
+   "id": "lbnl-2024",
+   "panel": "lbnl",
+   "series": "2025 edition",
+   "claim": "dem-028"
+  },
+  {
+   "id": "lbnl-2028",
+   "panel": "lbnl",
+   "series": "2025 edition",
+   "claim": "dem-033"
+  },
+  {
+   "id": "lbnl-range",
+   "panel": "lbnl",
+   "series": "2024 edition",
+   "claim": "dem-037",
+   "modeled": true,
+   "note": "Superseded by the 2025 edition."
+  },
+  {
+   "id": "bnef-a",
+   "panel": "bnef",
+   "series": "12/2025 outlook",
+   "claim": "dem-055",
+   "modeled": true,
+   "note": "Superseded by the 07/2026 outlook."
+  },
+  {
+   "id": "bnef-b",
+   "panel": "bnef",
+   "series": "07/2026 outlook",
+   "claim": "dem-054"
+  }
+ ]
+}

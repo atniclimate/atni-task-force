@@ -385,7 +385,7 @@ function paintWeek() {
   }
 }
 function refresh(reason) {
-  if (reason === 'settings') { V.set(S); writeQuery(); }
+  if (reason === 'settings') V.set(S);
   $$('.plate-status').forEach((n) => { n.textContent = ''; }); // what it reported is no longer the state
   const line = V.line();
   $$('[data-setting-line]').forEach((n) => { n.textContent = line; });
@@ -412,6 +412,7 @@ function refresh(reason) {
   paintCustody();
   paintMeasured();
   syncControls();
+  if (reason === 'settings') writeQuery(); // after the redraw, so the address can never stop one
 }
 function syncControls() {
   $$('input[data-setting]').forEach((n) => { n.checked = S.settings[n.dataset.setting] === n.value; });
@@ -426,11 +427,19 @@ function syncControls() {
 const fieldDefault = (k) => (k === 'gb' && S.mode === 'office' ? D.inputs.seat_gb[0] : D.fields[k]);
 // The address carries the global selectors and nothing else: never wage, tariff, office size, a project's load, or a typed number, so a shared link cannot carry a Nation's figures.
 const LINKED = Object.keys(D.sel).filter((name) => name !== 'wage' && name !== 'tariff');
+let addressTimer; // as on a plate: a quarter second after the last change, and a throttled replaceState is let go
 function writeQuery() {
+  clearTimeout(addressTimer);
+  addressTimer = setTimeout(flushQuery, 250);
+}
+function flushQuery() { // Copy Reading calls it too, so a copy within a quarter second of a change carries the new address
+  if (!addressTimer) return;
+  clearTimeout(addressTimer);
+  addressTimer = 0;
   const q = new URLSearchParams();
   for (const name of LINKED) if (S.settings[name] !== D.sel[name].def) q.set(name, S.settings[name]);
   const text = q.toString();
-  history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`); // replace, never push: Back leaves the page, not a trail of radio clicks
+  try { history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`); } catch { /* the next change writes it */ } // replace, never push: Back leaves the page, not a trail of radio clicks
 }
 function readQuery() { // a link is untrusted: only a named selector, only one of its own options
   const q = new URLSearchParams(location.search);
@@ -480,7 +489,12 @@ function closeDrawer() {
 }
 function project() {
   const box = $('[data-plate-x="project"]');
-  const read = (k) => { const n = $(`[data-pf="${k}"]`, box); return n.value === '' || !typedOk(D, 'field', +n.value) ? null : +n.value; }; // past the typed ceiling a figure waits, as for a blank, and never overflows
+  const read = (k) => { // outside the field's own bounds (a load factor of 80 against its max of 1) or past the typed ceiling, a figure waits, as for a blank, and the field says so
+    const n = $(`[data-pf="${k}"]`, box);
+    const bad = !n.checkValidity() || (n.value !== '' && !typedOk(D, 'field', +n.value));
+    n.setAttribute('aria-invalid', bad);
+    return bad || n.value === '' ? null : +n.value;
+  };
   const r = projectScale(...['mw', 'lf', 'wue', 'grid', 'load'].map(read));
   const ask = (say) => (blank(r.mwh) ? '–' : say); // once a year prints, an empty row says what it waits for
   const big = (v, unit, missing) => (blank(v) ? ask(missing) : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
@@ -495,16 +509,10 @@ function project() {
   $('[data-po-damage-row]', box).hidden = !damage;
   if (damage) { $('[data-po-damage-label]', box).textContent = `${damage.column}, as of ${damage.as_of}`; $('[data-po="damage"]', box).textContent = V.damageWords(damage, 'this project\'s CO2e'); }
 }
-function save(name, text, type) { // a file for the reader's own machine, made in the browser; nothing is sent anywhere
-  const a = el('a');
-  a.href = URL.createObjectURL(new Blob([text], { type }));
-  a.download = name;
-  a.click();
-}
 const closeWarning = () => { $('[data-scenario-warn]').hidden = true; $('[data-scenario-save]').focus(); };
 function saveScenario() {
   const now = new Date();
-  save('resource-use-scenario.json', `${JSON.stringify(V.scenarioFile(`${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`), null, 1)}\n`, 'application/json');
+  window.plate.save('resource-use-scenario.json', `${JSON.stringify(V.scenarioFile(`${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`), null, 1)}\n`, 'application/json');
   closeWarning();
   $('[data-scenario-status]').textContent = 'Saved resource-use-scenario.json to this machine. Nothing was sent anywhere.';
 }
@@ -540,6 +548,8 @@ function setView(plate, name) {
   $$('.plate-views input', plate).forEach((n) => { n.checked = n.value === name; });
 }
 async function copyReading(plate) {
+  commit(); // a typed figure not yet drawn, then the address it brings
+  flushQuery();
   const reading = $('[data-d="reading"]', plate);
   const status = $('.plate-status', plate);
   const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => $('.plate-source-title', document.getElementById(chip.getAttribute('href').slice(1))).textContent);
@@ -573,6 +583,11 @@ function openReceipt(chip) {
   chip.setAttribute('aria-expanded', true);
   box.focus(); // the reader goes to it, and Escape comes back
 }
+// A typed figure or reading redraws once the typing pauses, as the library's search does; its change, which a blur or Enter brings, draws it at once.
+let typed = null;
+let typing;
+function soon(draw) { clearTimeout(typing); typed = draw; typing = setTimeout(commit, 250); }
+function commit() { clearTimeout(typing); const draw = typed; typed = null; draw?.(); }
 function onInput(e) {
   const t = e.target;
   if (t.dataset.setting) { S.settings[t.dataset.setting] = t.value; refresh('settings'); }
@@ -591,20 +606,19 @@ function onInput(e) {
     const bad = t.value === '' || !typedOk(D, name, +t.value);
     t.setAttribute('aria-invalid', bad);
     $('[data-why]').textContent = bad ? `Enter ${typedWords(D, name)}. The Wall keeps the last good value.` : t.dataset.whyText;
-    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; refresh(); }
+    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; soon(() => refresh()); }
   } else if (t.dataset.input) {
     const bad = t.value === '' || !typedOk(D, t.dataset.input, +t.value);
     t.setAttribute('aria-invalid', bad);
     $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? `Enter ${typedWords(D, t.dataset.input)}. The figures keep the last good value.` : '';
-    if (!bad) { S.inputs[t.dataset.input] = +t.value; refresh('settings'); }
+    if (!bad) { S.inputs[t.dataset.input] = +t.value; soon(() => refresh('settings')); }
   } else if (t.dataset.measured) {
     const why = $('[data-measured-why]');
     try {
       if (t.value === '') delete S.measured[t.dataset.measured]; // a cleared field goes back to the model's figure
       else Object.assign(S.measured, applyMeasured(D, { [t.dataset.measured]: t.value }).values);
       t.removeAttribute('aria-invalid');
-      refresh('settings');
-      why.textContent = V.measuredLine();
+      soon(() => { refresh('settings'); if (!t.hasAttribute('aria-invalid')) why.textContent = V.measuredLine(); }); // a bad value typed since keeps its own words
     } catch (error) { // the model says what it allows; the figures keep the last good value
       t.setAttribute('aria-invalid', true);
       why.textContent = `${error.message}. The figures keep the last good value.`;
@@ -631,7 +645,7 @@ function onClick(e) {
   else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('[data-measured-why]').textContent = ''; $('[data-scenario-status]').textContent = ''; $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; }
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
   else if (hit('[data-example]')) { for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`).value = t.dataset[k]; project(); }
-  else if (hit('[data-outputs]')) save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv');
+  else if (hit('[data-outputs]')) window.plate.save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv'); // the kit's: made in the browser, sent nowhere, its blob URL let go
   else if (hit('[data-clear-measured]')) { S.measured = {}; refresh('settings'); $('[data-measured-why]').textContent = 'Your readings are cleared, and the model\'s figures are back.'; $('input[data-measured]').focus(); }
   else if (hit('[data-scenario-save]')) { $('[data-scenario-status]').textContent = ''; $('[data-scenario-warn]').hidden = false; $('[data-scenario-confirm]').focus(); } // the warning comes before the file exists
   else if (hit('[data-scenario-confirm]')) saveScenario();
@@ -710,7 +724,7 @@ readQuery();
 on(document, 'input', onInput);
 on(document, 'focusin', (e) => { if (e.target.dataset?.whyText) $('[data-why]').textContent = e.target.dataset.whyText; });
 on(document, 'change', (e) => {
-  if (e.target.dataset.field || e.target.dataset.input || e.target.dataset.measured) { e.target.removeAttribute('aria-invalid'); syncControls(); }
+  if (e.target.dataset.field || e.target.dataset.input || e.target.dataset.measured) { commit(); e.target.removeAttribute('aria-invalid'); syncControls(); }
   if (e.target.dataset.input) $('[data-input-why]', e.target.closest('.x-admin-note')).textContent = '';
   if (e.target.dataset.scenarioLoad !== undefined) loadScenario(e.target);
   if (e.target.closest?.('.plate-views')) setView(e.target.closest('.x-plate'), e.target.value);

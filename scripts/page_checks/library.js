@@ -4,9 +4,8 @@ const { JSDOM, ok, eq, wait, read, open, fire, figures } = require('./lib');
 
 const html = read('site/library/index.html');
 const data = JSON.parse(read('site/data/library.json'));
-const script = read('site/assets/js/library.js')
-  .replace(/^import .*$/m, 'const setFigure = (name, value) => { for (const el of document.querySelectorAll(`[data-figure="${name}"]`)) el.textContent = value; };')
-  .replace('import.meta.url', "'http://localhost/site/assets/js/library.js'");
+const util = read('site/assets/js/util.js').replace(/^export (async function|function|const) /gm, '$1 ').replace('import.meta.url', "'http://localhost/site/assets/js/util.js'");
+const script = read('site/assets/js/library.js').replace(/^import .*$/m, () => util); // a function, so a $ in util.js is never read as a replacement pattern
 const TOTAL = data.entries.length;
 
 async function load(query = '', source = html) {

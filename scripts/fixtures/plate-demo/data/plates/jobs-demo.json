@@ -1,0 +1,65 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "jobs-demo",
+ "eyebrow": "Occupations",
+ "title": "BLS projects {label} at {display} by 2035",
+ "subtitle": "Percent change, 2025 to 2035. Every bar is a projection.",
+ "plot": {
+  "type": "bars",
+  "sort": "order",
+  "signed": true,
+  "projected": true,
+  "axis_label": "Projected percent change, 2025 to 2035",
+  "marks": [
+   {
+    "id": "all",
+    "label": "All occupations",
+    "claim": "jb-010"
+   }
+  ]
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "order",
+   "label": "Sort",
+   "default": "value",
+   "options": [
+    {
+     "value": "value",
+     "label": "By change"
+    },
+    {
+     "value": "tag",
+     "label": "By group"
+    }
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "id": "keyers",
+   "label": "Data entry keyers",
+   "claim": "jb-007"
+  },
+  {
+   "id": "scientists",
+   "label": "Data scientists",
+   "claim": "jb-002"
+  },
+  {
+   "id": "electricians",
+   "label": "Electricians",
+   "claim": "jb-011",
+   "tag": "Buildout trade"
+  },
+  {
+   "id": "linemen",
+   "label": "Line workers",
+   "claim": "jb-013",
+   "tag": "Buildout trade"
+  }
+ ]
+}

@@ -1,0 +1,203 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "project-demo",
+ "fit": true,
+ "eyebrow": "A proposed project",
+ "title": "{mw} MW at a load factor of {lf} uses about {twh[text]} TWh a year, {share[text]} percent of the region's {region} aMW",
+ "subtitle": "An illustration from the reader's inputs.",
+ "inputs": {
+  "region": {
+   "claim": "dem-058"
+  },
+  "ms": {
+   "claim": "tr-028"
+  },
+  "lbnl": {
+   "claim": "tr-009"
+  },
+  "gen": {
+   "claim": "tr-005"
+  }
+ },
+ "controls": [
+  {
+   "type": "range",
+   "name": "mw",
+   "label": "Project size, MW",
+   "min": 10,
+   "max": 2000,
+   "step": 5,
+   "default": 125
+  },
+  {
+   "type": "range",
+   "name": "lf",
+   "label": "Load factor",
+   "min": 0.5,
+   "max": 1,
+   "step": 0.05,
+   "default": 0.8
+  },
+  {
+   "type": "number",
+   "name": "lkwh",
+   "label": "Applicant's liters per kWh",
+   "min": 0,
+   "max": 20,
+   "step": 0.01
+  },
+  {
+   "type": "segmented",
+   "name": "plant",
+   "label": "Count water at the power plant",
+   "default": "off",
+   "options": [
+    {
+     "value": "off",
+     "label": "No"
+    },
+    {
+     "value": "on",
+     "label": "Yes"
+    }
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "cool",
+   "label": "Cooling",
+   "default": "ms",
+   "options": [
+    {
+     "value": "ms",
+     "label": "At Microsoft",
+     "is": "ms"
+    },
+    {
+     "value": "lbnl",
+     "label": "At LBNL",
+     "is": "lbnl"
+    },
+    {
+     "value": "dry",
+     "label": "Closed loop or dry"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "instrument",
+  "groups": [
+   {
+    "id": "context",
+    "label": "For context, fixed"
+   }
+  ]
+ },
+ "reading": "{mw} MW at {lf} load factor is {amw[text]} aMW, about {twh[text]} TWh a year and {share[text]} percent of the region's {region} aMW; site water {site[text]} million liters a year. Modeled from the reader's inputs.",
+ "foot": [
+  {
+   "text": "This comparison does not decide a proposal.",
+   "href": "#sessions",
+   "link": "Read the questions"
+  }
+ ],
+ "details": [
+  "A fleet average cannot describe a stream in a low-flow August."
+ ],
+ "rows": [
+  {
+   "id": "amw",
+   "label": "Average megawatts",
+   "unit": "aMW",
+   "formula": {
+    "value": "mw * lf"
+   },
+   "equation": "aMW = MW x load factor"
+  },
+  {
+   "id": "twh",
+   "label": "Energy a year",
+   "unit": "TWh",
+   "digits": 2,
+   "formula": {
+    "value": "amw * 8.76 / 1000"
+   },
+   "equation": "TWh = aMW x 8.76 / 1000"
+  },
+  {
+   "id": "share",
+   "label": "Share of the region",
+   "unit": "percent",
+   "digits": 2,
+   "formula": {
+    "value": "amw / region * 100"
+   }
+  },
+  {
+   "id": "site",
+   "label": "Site water",
+   "unit": "million liters",
+   "digits": 2,
+   "formula": {
+    "low": "twh * ifblank(lkwh, ms) * 1000",
+    "high": "twh * ifblank(lkwh, lbnl) * 1000"
+   }
+  },
+  {
+   "id": "plantwater",
+   "label": "Water at the power plant",
+   "unit": "million liters",
+   "digits": 2,
+   "formula": {
+    "value": "twh * gen * 1000"
+   },
+   "show": {
+    "plant": "on"
+   },
+   "gap": "Off: the reservoir convention is unstated"
+  },
+  {
+   "id": "cooled",
+   "label": "Water by cooling choice",
+   "unit": "million liters",
+   "digits": 2,
+   "formula": {
+    "value": "twh * cool * 1000"
+   },
+   "gap": "None on site; the energy penalty is not in the public record"
+  },
+  {
+   "id": "naics",
+   "group": "context",
+   "label": "Industry employment",
+   "spark": [
+    "jb-041",
+    "jb-042",
+    "jb-043",
+    "jb-044",
+    "jb-045"
+   ]
+  },
+  {
+   "id": "montana",
+   "group": "context",
+   "label": "Montana direct jobs",
+   "modeled": true,
+   "figures": [
+    {
+     "claim": "jb-028",
+     "name": "at 500 MW",
+     "limit": "A modeled hypothetical, not a built project."
+    },
+    {
+     "claim": "jb-029",
+     "name": "at 1,000 MW",
+     "limit": "A modeled hypothetical, not a built project."
+    }
+   ]
+  }
+ ]
+}

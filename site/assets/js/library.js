@@ -1,9 +1,8 @@
 // Reads data/library.json and fills the library page's list, [data-library-feed] feeds, [data-library-featured] lists, and [data-figure] counts.
 // Each page keeps a plain link to the library, so nothing is lost when this script cannot run.
 
-import { setFigure } from './util.js';
+import { ROOT, esc, href, day, fold, linkFilters, setFigure, addOptions } from './util.js';
 
-const ROOT = new URL('../../', import.meta.url);
 const PAGE_SIZE = 40;
 const FILTERS = ['q', 'area', 'type', 'tribal', 'year'];
 const START = 'start-here'; // the Area filter's first choice: the featured entries
@@ -27,14 +26,10 @@ const TYPES = {
   news: 'News',
 };
 
-const esc = (value) => String(value).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const sortable = (date) => (date.length === 4 ? `${date}-00-00` : date);
 const newestFirst = (a, b) => sortable(b.date).localeCompare(sortable(a.date)) || a.title.localeCompare(b.title);
 const latestAdded = (a, b) => b.added.localeCompare(a.added) || Number(b.featured) - Number(a.featured) || newestFirst(a, b);
 const resolutionsFirst = (a, b) => Number(b.type === 'resolution') - Number(a.type === 'resolution');
-const showDate = (date) => (date.length === 4 ? date : `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(0, 4)}`);
-const absolute = (url) => new URL(url, ROOT).href;
-const fold = (text) => text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 
 function entryHTML(entry, compact = false) {
   const pdf = /\.pdf$/i.test(entry.url) ? '<span class="entry-format"> (PDF)</span>' : '';
@@ -51,8 +46,8 @@ function entryHTML(entry, compact = false) {
   const long = entry.summary.length > 320;
   return `<li class="entry">${compact ? `
 <p class="entry-type">${type}</p>` : ''}
-<h3 class="entry-title"><a href="${esc(absolute(entry.url))}">${esc(entry.title)}${pdf}</a></h3>
-<p class="entry-meta">${compact ? '' : `<span class="entry-type">${type}</span>, `}${esc(entry.publisher)}, <time datetime="${esc(entry.date)}">${esc(showDate(entry.date))}</time></p>
+<h3 class="entry-title"><a href="${href(entry.url)}">${esc(entry.title)}${pdf}</a></h3>
+<p class="entry-meta">${compact ? '' : `<span class="entry-type">${type}</span>, `}${esc(entry.publisher)}, <time datetime="${esc(entry.date)}">${esc(day(entry.date))}</time></p>
 <p class="entry-summary${long ? ' is-clamped' : ''}">${esc(entry.summary)}</p>${long ? '<button type="button" class="entry-more" aria-expanded="false">More</button>' : ''}${tags}
 </li>`;
 }
@@ -69,7 +64,7 @@ function renderFeatured(entries) {
     // On the home page, skip entries the page already links to (the resolutions list).
     const linked = new Set(box.hasAttribute('data-skip-linked') ? [...document.querySelectorAll('main a[href]')].map((a) => a.href) : []);
     const list = entries
-      .filter((e) => e.featured && !linked.has(absolute(e.url)))
+      .filter((e) => e.featured && !linked.has(new URL(e.url, ROOT).href)) // as a.href reports it, unescaped
       .sort((a, b) => resolutionsFirst(a, b) || newestFirst(a, b));
     if (list.length) {
       box.insertAdjacentHTML(
@@ -86,7 +81,7 @@ function renderFeeds(entries) {
     const area = feed.dataset.area;
     const linked = new Set(feed.hasAttribute('data-skip-linked') ? [...document.querySelectorAll('main a[href]')].map((a) => a.href) : []);
     const list = entries
-      .filter((e) => (!area || e.areas.includes(area)) && !linked.has(absolute(e.url)))
+      .filter((e) => (!area || e.areas.includes(area)) && !linked.has(new URL(e.url, ROOT).href))
       .sort(area ? newestFirst : latestAdded)
       .slice(0, Number(feed.dataset.limit) || 6);
     if (list.length) {
@@ -111,23 +106,15 @@ function renderLibrary(entries) {
   const bars = document.querySelectorAll('.comp-row');
 
   const count = (test) => entries.filter(test).length;
-  const addOptions = (name, options) => {
-    field(name).insertAdjacentHTML(
-      'beforeend',
-      options.filter(([, , n]) => n).map(([value, label, n]) => `<option value="${esc(value)}">${esc(label)} (${n})</option>`).join(''),
-    );
-  };
-  addOptions('area', [[START, 'Start here', count((e) => e.featured)], ...Object.keys(AREAS).map((k) => [k, AREAS[k], count((e) => e.areas.includes(k))])]);
-  addOptions('type', Object.keys(TYPES).map((k) => [k, TYPES[k], count((e) => e.type === k)]));
+  addOptions(field('area'), [[START, 'Start here', count((e) => e.featured)], ...Object.keys(AREAS).map((k) => [k, AREAS[k], count((e) => e.areas.includes(k))])]);
+  addOptions(field('type'), Object.keys(TYPES).map((k) => [k, TYPES[k], count((e) => e.type === k)]));
   const years = [...new Set(entries.map((e) => e.date.slice(0, 4)))].sort().reverse();
   // The newest four years stand alone on the strip and the rest share a bar, which the filter offers too.
-  addOptions('year', years.flatMap((y, i) => [
+  addOptions(field('year'), years.flatMap((y, i) => [
     [y, y, count((e) => e.date.startsWith(y))],
     ...(i === 3 ? [[`before-${y}`, `Before ${y}`, count((e) => e.date < y)]] : []),
   ]));
-
-  const params = new URLSearchParams(window.location.search);
-  for (const name of FILTERS) if (params.has(name)) field(name).value = params.get(name);
+  const writeParams = linkFilters(form, FILTERS); // after the options exist, so a linked value can be chosen
 
   let limit = PAGE_SIZE;
   const render = () => {
@@ -157,8 +144,7 @@ function renderLibrary(entries) {
       : 'No entries match. Clear the filters or change the search.';
     more.hidden = shown >= hits.length;
     more.textContent = `Show ${Math.min(PAGE_SIZE, hits.length - shown)} more`;
-    const query = new URLSearchParams(FILTERS.filter((n) => field(n).value.trim()).map((n) => [n, field(n).value.trim()])).toString();
-    window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+    writeParams();
   };
 
   let typing;
@@ -231,7 +217,7 @@ fetch(new URL('data/library.json', ROOT))
     setFigure('library', entries.length.toLocaleString('en-US'));
     setFigure('library-tribal', entries.filter((e) => e.tribal_specific).length);
     setFigure('library-grounding', entries.filter((e) => e.featured && e.type === 'resolution').length);
-    setFigure('library-date', showDate(updated));
+    setFigure('library-date', day(updated));
     renderFeatured(entries);
     renderFeeds(entries);
     renderLibrary(entries);

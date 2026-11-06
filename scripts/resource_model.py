@@ -1652,7 +1652,7 @@ def self_test():
 PUBLIC = ROOT / "site" / "data"
 ORACLE = ROOT / "work" / "site-refresh" / "tmp" / "explorer-oracle.json"
 WEEK_HOURS = 168.0
-CLAIM_ID = r"\b(?:au|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b"
+CLAIM_ID = r"\b[a-z]{2,3}-\d{3}\b"  # validate_public.CLAIM_ID's pattern, held equal by tests/test_gates.py; this file stays standard library only
 # Words addressed to the builders of the page, and the facility the owner has not yet worded, stay out of the public file.
 PUBLIC_WORDS = (
     ("No general field figure; one Tribally owned colocation facility self-reports 1.28 (lf-059 note), inside the range.", "No general field figure."),

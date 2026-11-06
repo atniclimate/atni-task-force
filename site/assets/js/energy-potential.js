@@ -1,7 +1,7 @@
 // Energy types by stage across Tribes (the energy overview and energy/potential/): stacked bars and the alphabetical detail on the plate, then the Tribe-by-Tribe list on the
 // potential page. The plate's static table and the plain links to the JSON and CSV files stay when this script cannot run.
 
-import { esc, href, fold, plural, STATES, getJSON, linkFilters, addOptions, closedDetail } from './util.js';
+import { esc, href, fold, plural, STATES, getJSON, linkFilters, addOptions, closedDetail, hashTarget } from './util.js';
 
 const FILTERS = ['q', 'state', 'type', 'stage', 'check', 'has'];
 const CHECKS = { verified: 'Verified', needs_review: 'Needs review' };
@@ -143,8 +143,7 @@ function renderList(data, rows) {
   render();
   app.hidden = false;
   // The list is drawn after load, so the browser's own jump to a Tribe's #id has nothing to land on yet.
-  const target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-  if (target) target.scrollIntoView();
+  hashTarget()?.scrollIntoView();
 
   return (type) => {
     for (const name of FILTERS) field(name).value = name === 'type' ? type : '';

@@ -25,6 +25,7 @@ from html import escape
 import json
 import math
 import operator
+import os
 from pathlib import Path
 import posixpath
 import re
@@ -35,9 +36,15 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_public as vp  # noqa: E402  (the release rules; it reads no PDF on import)
+from pour_claim_refs import load_claims, verbatim  # noqa: E402,F401  (one copy of each; other builders reach them as bp.verbatim and bp.load_claims)
 
 EVIDENCE = vp.ROOT / "work" / "site-refresh" / "evidence"
-LOCAL_ONLY = {"note", "recheck"}  # working notes and check logs; a public limit travels as "limit"
+# The keys a shipped claim carries; any other evidence-file field (today note and recheck, working notes and check logs) stays local, and a public limit travels as "limit".
+CLAIM_KEYS = {
+    "accounting", "as_of", "basis", "boundary", "date", "date_us", "derived", "entity", "fiscal_period", "high", "id", "layer", "layers", "limit", "low", "metric", "quote", "quote_price",
+    "segment", "segments", "series", "series_after_last_fiscal_year", "series_annual", "series_cover_date_market_cap", "series_fiscal_year_ends", "series_ml", "source", "source_price",
+    "stages", "status", "type_id", "unit", "value", "xbrl_tags", "year",
+}
 # Our own arithmetic with no source quote (ec-055, ec-056), and the one Tribally owned facility the owner has not yet worded (lf-059, lf-070, lf-071, sf-053, sf-054).
 HELD_BACK = {"ec-055", "ec-056", "lf-059", "lf-070", "lf-071", "sf-053", "sf-054"}
 HOUSE_WORDS = re.compile(r"\b(?:tribes?|tribal|indigenous|[iI]ntertribal|treat(?:y|ies))\b")
@@ -80,7 +87,7 @@ def export_claims(evidence=EVIDENCE, out=vp.SITE / "data" / "claims", clusters=N
             raise BuildError(f"no evidence file for cluster {name}")
         source = json.loads((evidence / f"{name}.json").read_text(encoding="utf-8"))
         data = {"schema": 1, "tier": "T0", "cluster": name, "claims": [
-            {k: v for k, v in {**({"limit": limits[claim["id"]]} if claim.get("status") == "partly" and claim["id"] in limits else {}), **claim}.items() if k not in LOCAL_ONLY}
+            {k: v for k, v in {**({"limit": limits[claim["id"]]} if claim.get("status") == "partly" and claim["id"] in limits else {}), **claim}.items() if k in CLAIM_KEYS}
             for claim in source["claims"] if claim.get("status") in vp.CLAIM_STATUS and claim["id"] not in HELD_BACK
         ]}
         rel = f"data/claims/{name}.json"
@@ -98,7 +105,9 @@ def export_claims(evidence=EVIDENCE, out=vp.SITE / "data" / "claims", clusters=N
         raise BuildError("; ".join(errors))
     out.mkdir(parents=True, exist_ok=True)
     for name, text in shipped.items():
-        (out / f"{name}.json").write_bytes(text.encode("utf-8"))
+        tmp = out / f"{name}.json.tmp"  # same folder, so os.replace is atomic; an interrupted export never leaves half a file
+        tmp.write_bytes(text.encode("utf-8"))
+        os.replace(tmp, out / f"{name}.json")
     return {name: len(json.loads(text)["claims"]) for name, text in shipped.items()}
 
 
@@ -108,11 +117,6 @@ def is_cluster(path):
 
 
 # Words and numbers ----------------------------------------------------------------------------------
-
-def verbatim(text):
-    """Source words keep their own dashes, as character references, so the page check still reads our prose."""
-    return escape(str(text)).replace("\u2014", "&#8212;").replace(" -- ", " &#45;- ")
-
 
 def inline_json(data):
     text = json.dumps(data, ensure_ascii=True, separators=(",", ":"))
@@ -1718,15 +1722,6 @@ def pour_figures(page, rel, claims):
         if claims[claim_id].get("status") == "partly" and f'data-pour="{claim_id}" data-field="limit"' not in filled:
             raise BuildError(f'{rel}: data-pour {claim_id} is partly verified, so its limit must be on the page: <span data-pour="{claim_id}" data-field="limit"></span>')
     return filled
-
-
-def load_claims(site):
-    claims = {}
-    for path in sorted((Path(site) / "data" / "claims").glob("*.json")):
-        data = json.loads(path.read_text(encoding="utf-8"))
-        for claim in data.get("claims") or []:
-            claims[claim["id"]] = claim
-    return claims
 
 
 def page_name(page):

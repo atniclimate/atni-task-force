@@ -4,7 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const { JSDOM, ROOT, count, ok, eq, wait, read, fixture, open, fire, key } = require('./lib');
+const { JSDOM, ROOT, count, ok, eq, wait, settle, read, fixture, open, fire, key } = require('./lib');
 
 const PAGE = 'http://localhost/site/explorer/index.html';
 const html = read('site/explorer/index.html');
@@ -25,6 +25,7 @@ async function load(query = '', source = html) {
     window.ResizeObserver = class { observe() {} }; // plate.js watches its strips
     window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id; };
     window.URL.createObjectURL = (blob) => { window.lastBlob = blob; return 'blob:x'; };
+    window.URL.revokeObjectURL = () => {}; // the kit's save lets the URL go a second later, and jsdom has neither
     window.navigator.clipboard = { writeText: async (t) => { window.copied = t; } };
   });
   await wait();
@@ -538,6 +539,7 @@ async function behavior() {
   ok(document.querySelector('[data-plate-x="use"] [data-d="tokens"]').hidden, 'the screen row reads no tokens');
   fire(window, row(document, 'use.streaming'), 'click');
   ok(row(document, 'use.streaming').classList.contains('is-on'), 'click selects');
+  await settle();
   eq(window.location.search, '', 'a selection stays off the address');
   fire(window, row(document, 'use.coding'), 'pointerover');
   ok(/coding/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'hover previews');
@@ -576,6 +578,7 @@ async function behavior() {
   eq(document.activeElement, drawer, 'focus moves in');
   setRadio(window, setting(document, 'device', 'laptop'));
   ok(!drawer.hidden, 'a setting keeps the drawer open');
+  await settle();
   ok(/device=laptop/.test(window.location.search), 'settings live in the query string');
   ok(/^Laptop, Wi-Fi/.test(text(document.querySelector('[data-setting-line]'))), 'the setting line follows');
   ok(/laptop/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-label'))), 'row labels follow the device');
@@ -590,6 +593,7 @@ async function behavior() {
   // Every option of every setting moves through the page without error, and what it changes reaches a row.
   for (const n of document.querySelectorAll('#settings input[data-setting]')) setRadio(window, n);
   for (const name of Object.keys(ex.data.sel)) setRadio(window, setting(document, name, ex.data.sel[name].def));
+  await settle();
   eq(window.location.search, '', 'defaults leave the address');
 
   // Your Use: fields, time counted once, three price lines, water by basin.
@@ -598,8 +602,10 @@ async function behavior() {
   for (const k of ['chat', 'coding', 'images', 'streaming']) ok(row(document, `use.${k}`).querySelector('.w-rou').hidden && row(document, `use.${k}`).querySelector('.w-dev').hidden, `no device or router on ${k}: time is counted once`);
   const hours = document.querySelector('input[data-field="screen"]');
   setField(window, hours, 14);
+  await settle(); // a typed figure redraws once the typing pauses
   ok(/14 hours/.test(text(screen)), 'the screen row counts');
   ok(/14 screen hours/.test(text(document.querySelector('[data-title="use"]'))), 'the claim sentence refills');
+  await settle();
   eq(window.location.search, '', 'a typed number stays off the address');
   setField(window, hours, -3);
   eq(hours.getAttribute('aria-invalid'), 'true', 'a bad field says so');
@@ -643,6 +649,7 @@ async function behavior() {
   ok(row(document, 'use.gb').classList.contains('is-beside') && /printed beside, not added/.test(text(row(document, 'use.gb'))), 'storage prints beside the seats, not added: the seat figure holds it');
   const w = ex.view.week();
   near(w.added, ['chat', 'coding', 'images', 'clips', 'searches', 'social', 'streaming', 'seat'].reduce((s, k) => s + ex.view.val(`use.${k}`, 'wh'), 0), 'the activities exclude the storage row in Office');
+  await settle();
   eq(window.location.search, '', 'an office and its size stay off the address');
   setRadio(window, document.querySelector('input[data-opt="mode"][value="person"]'));
   ok(row(document, 'use.seat').hidden, 'One person drops the seat row');
@@ -709,6 +716,7 @@ async function behavior() {
   eq(ex.state.settings.wage, '25', 'the wage control sets the setting');
   ok(document.querySelector('#settings input[data-setting="wage"][value="25"]').checked, 'and the drawer agrees');
   ok(/\$25 an hour/.test(text(document.querySelector('[data-setting-line]'))), 'and the setting line');
+  await settle();
   eq(window.location.search, '', 'and the wage stays off the address');
   setRadio(window, setting(document, 'wage', '60'));
 
@@ -718,9 +726,12 @@ async function behavior() {
   eq(adminField.value, '2', 'at the model\'s two hours');
   const tie = ex.view.adminTie();
   setField(window, adminField, tie);
+  await settle();
   near(ex.view.t.arch.A.cloud.usd, ex.view.t.arch.A.local.usd, 'at the printed tie the two prices meet');
   setField(window, adminField, 14);
+  await settle();
   ok(ex.view.t.arch.A.cloud.usd > ex.view.t.arch.A.local.usd, 'by the printed flip the local suite is the cheaper');
+  await settle(); // the address follows the redraw
   eq(window.location.search, '', 'the typed hours stay off the address');
   ok(/tie at about 3\.1 hours/.test(text(document.querySelector('.x-admin-note'))), 'the tie does not depend on the hours typed');
   setRadio(window, document.querySelector('input[name="arch-wage"][value="25"]'));
@@ -730,6 +741,7 @@ async function behavior() {
   eq(adminField.getAttribute('aria-invalid'), 'true', 'a bad admin count says so');
   near(ex.view.p.cloud_admin_h_month, 14, 'and keeps the last good value');
   setField(window, adminField, 2);
+  await settle();
   near(ex.view.p.cloud_admin_h_month, 2, 'back to the model');
 
   // Where it runs: a device on the reader's side; the node unpriced.
@@ -772,6 +784,7 @@ async function behavior() {
   setRadio(window, document.querySelector('input[name="scale"][value="unit"]'));
   ok(document.querySelector('[data-group="scale:hour"]').hidden && !document.querySelector('[data-group="scale:unit"]').hidden, 'By the unit takes the zone');
   ok(ex.data.boards['catalog.unit'].rows.includes(ex.state.sel.catalog), 'and the selection moves with it');
+  await settle();
   eq(window.location.search, '', 'a view stays off the address');
   setRadio(window, document.querySelector('input[name="scale"][value="hour"]'));
   fire(window, row(document, 'catalog.chat_hour'), 'click');
@@ -855,17 +868,22 @@ async function behavior() {
   eq(text(document.querySelector('[data-po="water"]')), '315,000,000 liters', 'the water');
   eq(text(document.querySelector('[data-po="co2"]')), 'Choose a feed', 'CO2e waits for a feed');
   eq(text(document.querySelector('[data-po="share"]')), '0.45 percent', 'and the share of the region is the one the home page states');
+  await settle();
   eq(window.location.search, '', 'a project stays off the address');
   fire(window, projectReset, 'click');
   blankProject('Reset clears the example');
 
   // Reset, copy, downloads, deep links.
   setRadio(window, setting(document, 'tariff', 'bpa_wholesale'));
+  await settle();
   eq(window.location.search, '', 'the tariff stays off the address');
   setRadio(window, setting(document, 'device', 'laptop'));
   setField(window, adminField, 9);
+  await settle(); // the typed hours redraw,
+  await settle(); // then the address follows
   eq(window.location.search, '?device=laptop', 'only the selector reaches it');
   fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
+  await settle();
   eq(window.location.search, '', 'Reset clears the address');
   eq(ex.state.settings.tariff, ex.data.sel.tariff.def, 'and the settings');
   ok(document.querySelector('#settings input[data-setting="tariff"]:checked').value === ex.data.sel.tariff.def, 'and the radios');
@@ -873,6 +891,13 @@ async function behavior() {
   fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click');
   await wait();
   ok(/Modeled, not measured/.test(window.copied) && /Sources: /.test(window.copied) && /localhost/.test(window.copied), 'Copy Reading carries the sentence, the link, and the sources');
+  setRadio(window, setting(document, 'device', 'laptop'));
+  fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click'); // inside the address's quarter second
+  await wait();
+  ok(window.copied.includes('?device=laptop'), 'Copy Reading right after a change carries the new setting');
+  fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
+  await settle();
+  eq(window.location.search, '', 'and Reset clears it again');
   fire(window, document.querySelector('[data-outputs]'), 'click');
   ok(window.lastBlob, 'outputs.csv is built in the browser');
   const csv = await window.lastBlob.text();
@@ -881,14 +906,17 @@ async function behavior() {
   ok(!deep.document.getElementById('architectures').hidden, 'a deep link opens its tab');
   eq(deep.window.explorer.state.settings.device, 'laptop', 'and its settings');
   ok(deep.document.querySelector('#settings input[data-setting="grid_dc"][value="nwpp"]').checked, 'the radios agree');
+  await settle();
   eq(deep.window.location.search, '?device=laptop&grid_dc=nwpp', 'the address round-trips');
   eq(deep.window.location.hash, '#architectures', 'with its hash');
   for (const name of Object.keys(deep.window.explorer.data.sel)) {
     if (name === 'wage' || name === 'tariff') continue;
     const other = Object.keys(deep.window.explorer.data.sel[name].opts).find((o) => o !== deep.window.explorer.data.sel[name].def);
     setRadio(deep.window, setting(deep.document, name, other));
+    await settle();
     ok(new URLSearchParams(deep.window.location.search).get(name) === other, `${name} reaches the address`);
     setRadio(deep.window, setting(deep.document, name, deep.window.explorer.data.sel[name].def));
+    await settle();
     ok(!new URLSearchParams(deep.window.location.search).has(name), `and leaves it at its default`);
   }
   // Back within the page: the address holds the truth for the selectors, typed numbers stay as typed, and no hash means the first tab.
@@ -918,9 +946,17 @@ async function behavior() {
   eq(badState.opts.comparison, 'A', 'nor a comparison');
   eq(badState.sel.use, 'use.screen', 'nor a selection');
   eq(Object.keys(badState.inputs).length, 0, 'nor a model input');
+  await settle();
   eq(bad.window.location.search, '', 'and the address drops what it did not read');
   eq(bad.window.location.hash, '#levers', 'keeping the tab');
   ok(!/\bfunction\b|\bobject\b/.test(text(bad.document.querySelector('[data-setting-line]'))), 'the setting line reads as words');
+  // A browser that throttles replaceState throws: the page has already redrawn, and the throw is caught.
+  const throttled = await load();
+  throttled.window.history.replaceState = () => { throw new throttled.window.DOMException('Too many calls to replaceState', 'SecurityError'); };
+  setRadio(throttled.window, setting(throttled.document, 'device', 'laptop'));
+  ok(/^Laptop, Wi-Fi/.test(text(throttled.document.querySelector('[data-setting-line]'))), 'a throttled address stops no redraw');
+  await settle();
+  eq(throttled.errors.join(), '', 'and its throw is caught');
   const drawerLink = await load('#settings');
   ok(!drawerLink.document.getElementById('settings').hidden, 'a link to Settings opens the drawer');
 
@@ -1028,7 +1064,9 @@ async function secondVersion() {
   ok(/no Nation's holdings/.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"]'))) && /have no source: labeled assumptions/.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"]'))), 'and the note says what is assumed');
   const s3Before = V.val('arch.E.year_s3', 'usd');
   setField(window, tb, 20);
+  await settle();
   ok(V.val('arch.E.year_s3', 'usd') > s3Before, 'a typed size recomputes');
+  await settle(); // the address follows the redraw
   eq(window.location.search, '', 'and stays off the address');
   setField(window, tb, -1);
   eq(tb.getAttribute('aria-invalid'), 'true', 'a bad size says so');
@@ -1043,13 +1081,18 @@ async function secondVersion() {
   }
   ok(!OVERFLOW.test(text(document.querySelector('[data-plate-x="arch"]'))), 'and nothing overflowed');
   setField(window, tb, ex.exitTbLimit(D));
+  await settle();
   eq(`${tb.getAttribute('aria-invalid')} ${V.p.exit_tb}`, `false ${ex.exitTbLimit(D)}`, 'the limit itself is taken');
   setField(window, tb, 20);
   setField(window, tb, 10);
+  eq(V.p.exit_tb, ex.exitTbLimit(D), 'typing waits for a pause before it redraws');
   fire(window, tb, 'change');
+  eq(V.p.exit_tb, 10, 'and a change draws it at once');
   setField(window, document.getElementById('e-exit_admin_h'), 80);
+  await settle();
   near(V.val('arch.E.move_s3_node', 'usd'), 900 + 80 * 60, 'hours at the wage, plus list egress');
   setField(window, document.getElementById('e-exit_admin_h'), 40);
+  await settle(); // drawn at the model's 40 before the inputs are cleared, as the figures below expect
   delete S.inputs.exit_tb;
   delete S.inputs.exit_admin_h;
 
@@ -1067,6 +1110,7 @@ async function secondVersion() {
   const untouched = flatNow();
   rule('node');
   eq(flatNow(), untouched, 'a rule moves no figure');
+  await settle();
   eq(window.location.search, '', 'and stays off the address');
   for (const letter of Object.keys(D.comparisons)) {
     compare(letter);
@@ -1139,6 +1183,7 @@ async function secondVersion() {
   const moved = (k) => !!row(document, k).querySelector('.x-measured-tag');
   ok(!moved('arch.D.node_100k'), 'no label before a reading');
   setField(window, reading('node_w'), 62);
+  await settle();
   near(V.p.node_w, 62, 'a reading recomputes');
   ok(moved('arch.D.node_100k'), 'a moved row carries the label');
   eq(text(row(document, 'arch.D.node_100k').querySelector('.x-measured-tag')), label, 'in the model\'s words');
@@ -1154,6 +1199,7 @@ async function secondVersion() {
   }
   eq(text(foot('use')), `${want.line_unused} No row on this plate uses it.`, 'and a plate with no moved row names the reading without saying it includes it');
   ok(/Includes your measurement, not verified by ATNI/.test(text(document.querySelector('[data-measured-why]'))), 'Settings confirms it');
+  await settle(); // the address follows the redraw
   eq(window.location.search, '', 'it stays off the address');
   eq(document.querySelector('[data-setting-line]').textContent.includes('62'), false, 'and out of the setting line');
   // A setting cannot overwrite it, and a change of settings keeps the label true.
@@ -1192,9 +1238,11 @@ async function secondVersion() {
   fire(window, reading('u_room'), 'change');
   // Your Use moves too.
   setField(window, reading('dev_phone'), 3.2);
+  await settle();
   ok(moved('use.screen') && !moved('use.chat'), 'a device reading labels the screen row, and only it');
   // Clearing goes back to the model.
   setField(window, reading('dev_phone'), '');
+  await settle();
   ok(!Object.hasOwn(S.measured, 'dev_phone') && !moved('use.screen'), 'a cleared field goes back to the model');
   const clear = document.querySelector('[data-clear-measured]');
   ok(!clear.hidden, 'a clear button stands while a reading is in use');
@@ -1206,6 +1254,7 @@ async function secondVersion() {
   // A reading equal to the model's figure moves no figure, yet narrows the spread of every row that reads it, so those rows carry the label too (review of 11/05/2026, finding 4).
   compare('E');
   setField(window, reading('nas_w'), 46);
+  await settle();
   eq(flatNow(), untouched, 'an equal reading moves no figure');
   ok(moved('arch.E.year_node') && moved('arch.E.year_federated') && moved('arch.C.federated'), 'yet every row that reads it carries the label');
   ok(!moved('arch.E.year_s3') && !moved('arch.D.node_100k'), 'and no row that does not');
@@ -1213,6 +1262,7 @@ async function secondVersion() {
   fire(window, document.querySelector('[data-outputs]'), 'click');
   ok((await window.lastBlob.text()).split('\n').some((l) => l.startsWith('arch.E.year_node,wh,') && l.endsWith(`,"${label}"`)), 'as the CSV does');
   setField(window, reading('nas_w'), '');
+  await settle();
   ok(foot('arch').hidden && !moved('arch.E.year_node'), 'and clearing it takes the label away');
   compare('D'); // the checks below read comparison D's rows
 
@@ -1226,6 +1276,7 @@ async function secondVersion() {
   fire(window, row(document, 'arch.D.hyper'), 'click');
   setDamage('epa_2020');
   eq(flatNow(), untouched, 'it moves no figure');
+  await settle();
   eq(window.location.search, '', 'and stays off the address');
   const line = document.querySelector('[data-plate-x="arch"] [data-d="damage"]');
   ok(!line.hidden, 'the line shows');
@@ -1299,6 +1350,8 @@ async function secondVersion() {
   setField(window, reading('node_w'), 62);
   rule('federated');
   setDamage('uba');
+  await settle(); // the typed figures redraw,
+  await settle(); // then the address follows
   eq(window.location.search, '?device=laptop', 'the address holds the global selector, and nothing else');
   const stateNow = () => JSON.stringify([S.settings, S.fields, S.inputs, S.measured, S.mode, S.seats, S.custody, S.damage]);
   const whole = stateNow();
@@ -1315,6 +1368,7 @@ async function secondVersion() {
   eq(file.measured.node_w, 62, 'typed values stand under their input names');
   eq(file.settings.wage, '25', 'wage travels in the file, where the address never carries it');
   ok(!saved.includes(label), 'no label is written, so none can be read back');
+  await settle();
   eq(window.location.search, '?device=laptop', 'saving changes no address');
   const choose = async (text_, name = 'scenario.json') => {
     const input = document.querySelector('[data-scenario-load]');
@@ -1323,12 +1377,14 @@ async function secondVersion() {
     await wait(20);
   };
   fire(window, document.querySelector('[data-plate-x="arch"] [data-reset]'), 'click');
+  await settle();
   eq(window.location.search, '', 'Reset clears the address');
   eq(flatNow(), untouched, 'and the figures');
   ok(foot('arch').hidden, 'and the line');
   await choose(saved);
   eq(stateNow(), whole, 'the file loads back whole');
   eq(flatNow(), wholeTree, 'to the same figures');
+  await settle();
   eq(window.location.search, '?device=laptop', 'the query string keeps the global selectors only');
   ok(/Scenario loaded from your own machine\./.test(text(status)) && text(status).includes(label), 'the page says so, and the reading is stamped again');
   eq(text(foot('arch')), `Includes ${label}: AI node idle 62 W (model 40).`, 'by the model, not the file');
@@ -1392,6 +1448,7 @@ async function secondVersion() {
   eq(stateNow(), heldState, 'and changes nothing');
   await choose(JSON.stringify({ kind: ex.SCENARIO_KIND, schema: 1 }));
   eq(S.settings.device, D.sel.device.def, 'a file naming no settings loads the defaults');
+  await settle();
   eq(window.location.search, '', 'and the address follows');
   fire(window, document.querySelector('[data-plate-x="arch"] [data-reset]'), 'click');
   eq(flatNow(), home, 'the figures end where they began');

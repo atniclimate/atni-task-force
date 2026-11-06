@@ -11,6 +11,8 @@ const count = (n = 1) => { checks += n; return checks; };
 const ok = (value, message) => { count(); assert.ok(value, message); };
 const eq = (a, b, message) => { count(); assert.strictEqual(a, b, message); };
 const wait = (ms = 0) => new Promise((resolve) => { setTimeout(resolve, ms); });
+// The kit and the Explorer write the address, and the Explorer redraws a typed figure, 250 ms after the last change: read either after this.
+const settle = () => wait(300);
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const plateFile = (id) => JSON.parse(read(`site/data/plates/${id}.json`));
 
@@ -78,4 +80,4 @@ assert.ok(holds('about 3 Wh and 30', ['3 Wh', '30']) && !holds('2.3 and 30 and 3
 assert.ok(leads('2030, input 2,475.1 MW', ['2030', '2,475.1 MW']) && !leads('In 2029 and 2030', ['2030']) && leads('Amazon: -42 billion', ['Amazon', '-42 billion']));
 assert.ok(wordsOnly('No public guidance') && !wordsOnly('3 Wh') && !wordsOnly(' ') && figures('2,475.1 (1,512.8 to 4,988.7), 2030, CO2').length === 4);
 
-module.exports = { JSDOM, ROOT, count, ok, eq, wait, read, plateFile, fixture, open, fire, key, figures, holds, leads, wordsOnly };
+module.exports = { JSDOM, ROOT, count, ok, eq, wait, settle, read, plateFile, fixture, open, fire, key, figures, holds, leads, wordsOnly };

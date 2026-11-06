@@ -59,7 +59,7 @@ function initTabs(strip) {
     show(n);
     panels[n].classList.add('is-entering'); // a tab change counts as a touch; CSS takes it to 0ms under reduced motion
     setTimeout(() => panels[n].classList.remove('is-entering'), 200);
-    history.replaceState(null, '', `#${panels[n].id}`);
+    try { history.replaceState(null, '', `#${panels[n].id}`); } catch { /* throttled: the tab still changed */ }
   };
   const fromHash = () => {
     const target = document.getElementById(location.hash.slice(1));
@@ -246,14 +246,23 @@ function readState(p) {
   p.selected = p.keys.includes(query.get(p.id)) ? query.get(p.id) : p.data.default;
   p.shown = p.selected;
 }
+// The address follows a quarter second after the last change, so a dragged slider writes it once, and a browser that throttles replaceState can never stop a redraw.
 function writeQuery(p) {
   if (NO_ADDRESS) return;
+  clearTimeout(p.queryTimer);
+  p.queryTimer = setTimeout(() => flushQuery(p), 250);
+}
+// Copy Reading flushes a pending write first, so a copy within a quarter second of a change carries the new address.
+function flushQuery(p) {
+  if (!p.queryTimer) return;
+  clearTimeout(p.queryTimer);
+  p.queryTimer = 0;
   const query = new URLSearchParams(location.search);
   const put = (name, value, def) => (value === def ? query.delete(name) : query.set(name, value));
   for (const [name, c] of p.params) put(name, p.state[name], c.def);
   put(p.id, p.selected, p.data.default);
   const text = query.toString();
-  history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`);
+  try { history.replaceState(null, '', `${text ? `?${text}` : location.pathname}${location.hash}`); } catch { /* throttled: the next change writes it */ }
 }
 function announce(p) {
   clearTimeout(p.liveTimer);
@@ -287,9 +296,9 @@ function addControl(p, box) {
   const apply = (value, typing) => {
     c.write(value, typing);
     p.state[name] = value;
-    writeQuery(p);
     update(p, 'state');
     announce(p);
+    writeQuery(p);
   };
   on(box, 'input', (e) => {
     const value = c.parse(e.target.value);
@@ -716,6 +725,7 @@ function reset(p) {
 }
 async function copyReading(p) {
   const titles = unique(claimsOf(focusOf(p, rowsAt(p, p.selected))).map((claim) => p.data.receipts[claim].title)).join('; ');
+  flushQuery(p);
   const url = new URL(location.href);
   url.hash = p.id;
   try {
@@ -1042,7 +1052,7 @@ function initStrip(root) {
   if (beyond.length) area.after(h('div', { class: 'strip-beyond' }, span('strip-beyond-title', 'Beyond two years'), ...beyond));
   const age = root.querySelector('[data-strip-age]');
   if (age && checked) {
-    const old = -daysUntil(checked);
+    const old = Math.max(0, -daysUntil(checked)); // never "-1 days ago" from a clock behind the check date, nor "-0" on the day itself
     age.textContent = `, ${grouped(old)} ${old === 1 ? 'day' : 'days'} ago`;
     if (old > 30) age.parentElement.prepend('Stale: ');
   }
@@ -1089,5 +1099,6 @@ function read(id) {
   const settings = (p.data.setting || []).map((c) => ({ name: c.name, label: c.label, word: c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set', changed: p.state[c.name] !== p.params.get(c.name).def }));
   return { id, title: p.title.textContent, state: { ...p.state }, selected: p.selected, changed: changed(p), settings, receipts: p.data.receipts };
 }
-window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save };
+// fig is the one rounding for a computed figure, and today the one date in house style, for the page scripts that print either.
+window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()) };
 })();

@@ -1,0 +1,34 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "shift-demo",
+ "eyebrow": "Displacement",
+ "title": "Studies disagree: {label} {display}",
+ "subtitle": "Each row measures a different thing. Signs are printed.",
+ "plot": {
+  "type": "ladder",
+  "signed": true
+ },
+ "rows": [
+  {
+   "id": "stanford",
+   "label": "Payroll study, ages 22 to 25, below trend",
+   "claim": "jb-046",
+   "negate": true
+  },
+  {
+   "id": "pwc",
+   "label": "Job ads, entry level",
+   "claim": "jb-070",
+   "limit": "Job ads, not hires.",
+   "modeled": true
+  },
+  {
+   "id": "yale",
+   "label": "Survey tracker",
+   "claim": "jb-050",
+   "gap": "No connection found"
+  }
+ ]
+}

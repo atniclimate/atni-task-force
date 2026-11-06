@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -161,13 +162,18 @@ def flatten(answers):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--notes", type=Path)
-    p.add_argument("--out", type=Path)
+    p.add_argument("--out", type=Path, help="required: a folder git ignores, such as planning-T1/ai-notes")
     p.add_argument("--hold-terms", type=Path, help="file of names/terms (one per line) that keep a section local")
     p.add_argument("--hold-notes", default="", help="comma-separated note slugs never sent to Jev")
     p.add_argument("--self-test", action="store_true")
     args = p.parse_args()
     if args.self_test:
         return self_test()
+    # The cache and log hold T1 text sent to Jev: they may only land where git ignores them.
+    root = Path(__file__).resolve().parents[1]
+    if args.out is None or subprocess.run(["git", "-C", str(root), "check-ignore", "-q", str(args.out.resolve())]).returncode != 0:
+        sys.exit(f"--out must be a folder git ignores (for example planning-T1/ai-notes); refusing {args.out}: "
+                 "the Jev cache and request log hold T1 text and must never be committable")
     terms = [t.strip() for t in args.hold_terms.read_text(encoding="utf-8").splitlines()
              if t.strip() and not t.startswith("#")] if args.hold_terms else []
     hold_notes = {s for s in args.hold_notes.split(",") if s}

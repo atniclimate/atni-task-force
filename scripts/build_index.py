@@ -86,7 +86,7 @@ def data_files(site):
         if path.name == "index.json":
             continue
         head = json.loads(path.read_text(encoding="utf-8")) if path.suffix == ".json" else {}
-        out.append({"path": path.relative_to(site).as_posix(), "schema": head.get("schema"), "tier": head.get("tier", "T0"), "built_by": BUILT_BY.get(path.name)})  # library.json and the CSVs state their tier per entry or not at all; the validator checks library.json entry by entry
+        out.append({"path": path.relative_to(site).as_posix(), "schema": head.get("schema"), "tier": head.get("tier"), "built_by": BUILT_BY.get(path.name)})  # the file's own word or none: library.json states its tier per entry, which the validator checks one by one, and a CSV states none
     return out
 
 

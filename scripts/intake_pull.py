@@ -156,6 +156,8 @@ def screen(tab, row, library, terms):
         flags.append("public_source is not yes (cannot land)")
     if not row["submitted_by"]:
         flags.append("submitted_by is empty")
+    if tab == "claims" and row["kind"] not in KINDS:
+        flags.append(f"kind {row['kind']!r} is not one of {', '.join(KINDS)}")
     url = row["url"]
     if tab == "library" and merge_library.norm(url) in library:
         flags.append("already in the library: the merge will skip it")
@@ -199,11 +201,17 @@ def claim_candidate(row):
 BUILD = {"library": library_candidate, "news": news_candidate, "claims": claim_candidate}
 
 
+def pull_order(folder):
+    """A pull folder's place: its date, then its -N (a day's first pull has none). A folder's clock moves when a file lands in it, so it is not read."""
+    match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})(?:-(\d+))?", folder.name)
+    return (match[1], int(match[2] or 1)) if match else (folder.name, 0)
+
+
 def earlier(out, tab):
     """The newest earlier record of each row, from the candidates of every pull before this one."""
     seen = {}
     dirs = [d for d in out.parent.iterdir() if d.is_dir() and d != out and (d / f"candidates-{tab}.json").is_file()]
-    for folder in sorted(dirs, key=lambda d: (d.stat().st_mtime, d.name)):
+    for folder in sorted(dirs, key=pull_order):
         for record in json.loads((folder / f"candidates-{tab}.json").read_text(encoding="utf-8")):
             seen[record["key"]] = record
     return seen
@@ -212,10 +220,11 @@ def earlier(out, tab):
 def judged_mark(row, prior, flags):
     """The mark that counts. It needs a report that showed this exact text, so a mark and an edit in one pull land nothing, and the mark itself must then move."""
     mark = row["cleared"]
-    if not mark or mark.startswith("no "):
+    kind = merge_library.mark_of(mark)  # the merge reads the mark the same way
+    if not mark or kind == "declined":
         return mark
-    if not merge_library.CLEARED.fullmatch(mark):
-        flags.append(f"cleared mark not read: {mark!r} (write PF MM/DD/YYYY)")
+    if kind is None:
+        flags.append(f"cleared mark not read: {mark!r} (write PF MM/DD/YYYY, or no PF MM/DD/YYYY to decline)")
     elif prior is None or prior["row_hash"] != row_hash(row):
         flags.append("cleared mark dropped: the last report did not show this exact text. Read this report, then write the mark again")
     elif prior.get("cleared") or prior.get("cleared_on_sheet") != mark:
@@ -229,8 +238,8 @@ def write_report(out, tabs, pulled, terms_note, via):
     lines = [f"# Intake report, pulled {pulled}", "", "> Tier: T1. Local only. Screens flag; they do not clear, and passing one is not a T0 release. Each batch that lands needs a row in `planning-T1/RELEASE-LOG.md`.", "",
              f"Read from: {via}. {terms_note}", ""]
     for tab, rows in tabs.items():
-        cleared = sum(bool(r["cleared"]) and not r["cleared"].startswith("no ") for r in rows)
-        declined = sum(r["cleared"].startswith("no ") for r in rows)
+        cleared = sum(merge_library.mark_of(r["cleared"]) == "cleared" for r in rows)
+        declined = sum(merge_library.mark_of(r["cleared"]) == "declined" for r in rows)
         lines += [f"## {tab.capitalize()}: {len(rows)} rows, {cleared} cleared, {declined} declined, {len(rows) - cleared - declined} undecided, {sum(bool(r['flags']) for r in rows)} flagged", ""]
         if tab == "claims":
             lines += ["Claims stay here: `status` is `unverified`, and the validator keeps an unverified claim out of `site/`. A person moves a claim to the evidence record with `verified` or `partly` and its limit.", ""]
@@ -309,6 +318,11 @@ def self_test():
     assert judged_mark(row, prior, []) == "PF 11/05/2026", "a new mark on text the report showed"
     assert judged_mark(row, {**prior, "cleared_on_sheet": "PF 11/05/2026"}, []) == "", "the old mark after an edit"
     assert judged_mark(row, {**prior, "cleared": "PF 11/05/2026", "cleared_on_sheet": "PF 11/05/2026"}, []) == "PF 11/05/2026"
+    assert sorted(map(Path, ["2026-11-05-10", "2026-11-06", "2026-11-05", "2026-11-05-2"]), key=pull_order) == list(map(Path, ["2026-11-05", "2026-11-05-2", "2026-11-05-10", "2026-11-06"]))
+    base = {"public_source": "yes", "submitted_by": "PF", "url": "http://x.org/a", "kind": "agency", "cleared": "", "landed": ""}  # http: screen stops before any network call
+    assert not any("kind" in f for f in screen("claims", base, set(), []))
+    assert any("kind 'rumor' is not one of" in f for f in screen("claims", {**base, "kind": "rumor"}, set(), [])), "an unknown kind"
+    assert not any("kind" in f for f in screen("news", {**base, "kind": "rumor"}, set(), [])), "kind is a claims column only"
     print("self-test passed")
 
 

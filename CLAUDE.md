@@ -21,7 +21,8 @@ The public repository serves `site/` only. Read `DATA-TIERS.md` before touching 
 python scripts\validate_public.py      # public boundary, schemas, links, house style, claim marks, data/index.json
 python scripts\check_t1_leak.py        # verbatim T1 text in site/ (local only); exit 1 blocks, 3 = review
                                         # derived-doc overlaps (--all lists them; record reviews in planning-T1\leak-allowlist.txt)
-python -m pytest -q tests              # energy-potential, plates, resource model, claim marks, site counts, index and briefing, intake, and helper tests
+python -m pytest -q -rs tests          # energy-potential, plates, resource model, claim marks, site counts, index and briefing, intake, freshness, and helper tests
+                                        # -rs names every skip: a skip here means a local file is missing, not a pass
 node scripts\page_check.js --all       # jsdom checks of every plate page and the briefing (npm ci once; about 4 minutes); --page NAME for one; budgets print warnings, never fail
 ```
 

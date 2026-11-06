@@ -28,7 +28,7 @@ MODEL = vp.SITE / "data" / "resource-model.json"
 LIMITS = bp.EVIDENCE / "claim-limits.json"
 MARKER = re.compile(r"(<!-- explorer:(?P<name>[\w:.-]+) -->)(.*?)(<!-- /explorer:(?P=name) -->)", re.S)
 POUR = re.compile(r'<span data-m="(?P<spec>[^"]+)">[^<]*</span>')
-CLAIM = re.compile(r"\b(?:au|dem|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b")
+CLAIM = vp.CLAIM_ID
 MS = ("wh", "usd", "g", "ml")
 
 SAY = {
@@ -1101,8 +1101,7 @@ def sources_html(ids, claims, limits):
     for claim_id in sorted(ids):
         c = claims[claim_id]
         s = c["source"]
-        when = s.get("published")
-        date = f"{when[5:7]}/{when[8:10]}/{when[:4]}" if when and len(when) >= 10 and when[4] == "-" else (when or "undated")
+        date = escape(bp.us_date(s.get("published")))  # a date with words after it stays as written
         status = f'Partly verified. Limit: {escape(limit_of(claim_id, claims, limits))}' if c["status"] == "partly" else "Verified against the source."
         short = re.split(r"[,(;]", s.get("publisher") or "source")[0].strip()[:26]
         out.append(f'<li id="src-{claim_id}" data-short="{attr(short)}"><a class="plate-source-title" href="{attr(s["url"])}">{bp.verbatim(s.get("title") or s.get("publisher") or claim_id)}</a>'

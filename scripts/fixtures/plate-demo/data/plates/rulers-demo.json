@@ -1,0 +1,62 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "rulers-demo",
+ "eyebrow": "Water",
+ "title": "Two bases, two rulers: {label} reports {display}",
+ "subtitle": "Each ruler states its basis, and the two never share an axis.",
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "L/kWh (withdrawal basis)": "L/kWh"
+  },
+  "groups": [
+   {
+    "id": "use",
+    "label": "Consumption basis: water that evaporates",
+    "domain": [
+     0,
+     1.5
+    ],
+    "mark": "bar"
+   },
+   {
+    "id": "draw",
+    "label": "Withdrawal per IT kWh: water drawn, some returned",
+    "domain": [
+     0,
+     1.5
+    ]
+   }
+  ]
+ },
+ "rows": [
+  {
+   "id": "ms",
+   "group": "use",
+   "label": "Microsoft",
+   "claim": "tr-028"
+  },
+  {
+   "id": "lbnl",
+   "group": "use",
+   "label": "LBNL model",
+   "claim": "tr-009",
+   "range": false
+  },
+  {
+   "id": "meta",
+   "group": "draw",
+   "label": "Meta",
+   "claim": "tr-025"
+  },
+  {
+   "id": "amazon",
+   "group": "draw",
+   "label": "Amazon",
+   "claim": "rs-052",
+   "limit": "Amazon's own definition of its figure."
+  }
+ ]
+}

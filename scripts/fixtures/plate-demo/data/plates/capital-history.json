@@ -1,0 +1,15 @@
+{
+  "schema": 1, "tier": "T0", "id": "capital-history", "page": "index.html",
+  "eyebrow": "Capital spending over time",
+  "title": "{series} spent {display} in fiscal {year}",
+  "subtitle": "Each company on the same axis. Billions of dollars per fiscal year.",
+  "boundary": "Cash paid for property and equipment.",
+  "plot": {"type": "multiples", "units": {"USD billion": "billion dollars"}},
+  "default": 2024,
+  "rows": [
+    {"series": "Amazon", "claim": "fin-003", "points": "series_fiscal_year_ends"},
+    {"series": "Microsoft", "claim": "fin-001", "points": "series_fiscal_year_ends"},
+    {"series": "Alphabet", "claim": "fin-002", "points": "series_fiscal_year_ends"},
+    {"series": "Meta", "claim": "fin-004", "points": "series_fiscal_year_ends"}
+  ]
+}

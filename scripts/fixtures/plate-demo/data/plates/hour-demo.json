@@ -1,0 +1,228 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "hour-demo",
+ "fit": true,
+ "model": "comparison-model",
+ "by": "edge",
+ "eyebrow": "The same hour",
+ "title": "Ten text prompts add about {now[chat][activity_added]:.0f} Wh in the data center (modeled, 11/2026)",
+ "subtitle": "One boundary at a time, on one log ruler.",
+ "inputs": {
+  "now": {
+   "model": "computed_defaults.same_hour.default"
+  },
+  "lo": {
+   "model": "computed_defaults.same_hour.low"
+  },
+  "hi": {
+   "model": "computed_defaults.same_hour.high"
+  },
+  "prompt": {
+   "model": "inputs.chat_wh_per_prompt.value"
+  },
+  "phone": {
+   "model": "computed_defaults.heavy_ai.yardsticks.same_device_total"
+  },
+  "household": {
+   "model": "inputs.household_wh_per_day.value"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "edge",
+   "label": "Boundary",
+   "default": "whole",
+   "options": [
+    {
+     "value": "dc",
+     "label": "Data center only"
+    },
+    {
+     "value": "whole",
+     "label": "Whole hour"
+    }
+   ]
+  },
+  {
+   "type": "range",
+   "name": "prompts",
+   "label": "Prompts in the hour, the reader's assumption",
+   "min": 1,
+   "max": 60,
+   "step": 1,
+   "default": 10,
+   "presets": [
+    2.52,
+    10,
+    30,
+    60
+   ]
+  },
+  {
+   "type": "segmented",
+   "name": "device",
+   "label": "Device",
+   "default": "phone",
+   "more": true,
+   "options": [
+    {
+     "value": "phone",
+     "label": "Phone"
+    },
+    {
+     "value": "laptop",
+     "label": "Laptop"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "ladder",
+  "scale": "log",
+  "domain": [
+   0.01,
+   100000
+  ],
+  "count": {
+   "unit": "prompt",
+   "noun": "text prompt"
+  },
+  "marks": [
+   {
+    "id": "phone-hour",
+    "label": "Phone video hour",
+    "value": "phone",
+    "unit": "Wh",
+    "digits": 3
+   }
+  ],
+  "units": {
+   "Wh per hour": "Wh",
+   "Wh per household per day": "Wh"
+  }
+ },
+ "reading": "{label}: about {display} for the hour, or {prompts_equal} text prompts. {boundary}",
+ "fields": {
+  "prompts_equal": {
+   "formula": "value / prompt",
+   "digits": 3
+  }
+ },
+ "default": "chat",
+ "boundary": "One boundary at a time.",
+ "rows": [
+  {
+   "id": "chat",
+   "label": "Chat, at the prompts set",
+   "unit": "Wh",
+   "cites": [
+    "fp-001",
+    "fp-017"
+   ],
+   "note": "The prompts are the reader's assumption.",
+   "formula": {
+    "dc": {
+     "value": "now.chat.data_center",
+     "low": "lo.chat.data_center",
+     "high": "hi.chat.data_center"
+    },
+    "whole": {
+     "value": "now.chat.total",
+     "low": "lo.chat.total",
+     "high": "hi.chat.total"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.chat.data_center"
+    },
+    {
+     "label": "Network",
+     "value": "now.chat.network",
+     "modeled": true
+    },
+    {
+     "label": "Router",
+     "value": "now.chat.router",
+     "modeled": true
+    },
+    {
+     "label": "Device",
+     "value": "now.chat.device"
+    }
+   ]
+  },
+  {
+   "id": "video",
+   "label": "Streamed video, one hour",
+   "unit": "Wh",
+   "cites": [
+    "fp-122",
+    "fp-130"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.video.data_center",
+     "low": "lo.video.data_center",
+     "high": "hi.video.data_center"
+    },
+    "whole": {
+     "value": "now.video.total",
+     "low": "lo.video.total",
+     "high": "hi.video.total"
+    }
+   }
+  },
+  {
+   "id": "charge",
+   "label": "Phone charge",
+   "claims": {
+    "dc": null,
+    "whole": "fp-073"
+   }
+  },
+  {
+   "id": "household",
+   "label": "Household day",
+   "unit": "Wh",
+   "digits": 4,
+   "cites": [
+    "fp-075"
+   ],
+   "formula": {
+    "dc": null,
+    "whole": {
+     "value": "household"
+    }
+   }
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Boundary",
+    "field": "setting"
+   },
+   {
+    "label": "Wh",
+    "field": "display"
+   },
+   {
+    "label": "Prompts",
+    "field": "prompts_equal"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

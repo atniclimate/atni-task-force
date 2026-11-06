@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const boxes = all('input[type="checkbox"]', form);
   const sectionOf = (id) => one(`.packet-plate[data-packet="${id}"]`);
   const labelOf = (id) => one(`.packet-page[data-packet="${id}"][data-label]`).dataset.label;
-  const usDay = (d) => [d.getMonth() + 1, d.getDate()].map((v) => String(v).padStart(2, '0')).concat(d.getFullYear()).join('/');
   const count = (n, one_, many) => `${n.toLocaleString('en-US')} ${n === 1 ? one_ : many}`;
   const list = (items) => new Intl.ListFormat('en-US').format(items);
 
@@ -102,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return { plates, lists, reads };
   }
   const has = (node, name) => name in node.dataset;
-  const today = () => usDay(new Date());
+  const { today } = plate; // the kit's date, MM/DD/YYYY in the reader's own zone
 
   // A link may ask for plates: ../briefing/?add=dc-project. Nothing else is read from the address but a plate's own stops.
   for (const id of new URLSearchParams(location.search).getAll('add')) {

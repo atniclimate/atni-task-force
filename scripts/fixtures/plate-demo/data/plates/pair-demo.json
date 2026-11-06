@@ -1,0 +1,90 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "pair-demo",
+ "eyebrow": "Spending against cash",
+ "title": "{label}, fiscal {year}: {display}",
+ "subtitle": "One row per company. The line runs between the two marks.",
+ "by": "fy",
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "USD billion": "billion dollars"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "fy",
+   "label": "Fiscal year",
+   "default": "latest",
+   "options": [
+    {
+     "value": "2023",
+     "label": "2023"
+    },
+    {
+     "value": "2024",
+     "label": "2024"
+    },
+    {
+     "value": "latest",
+     "label": "Latest"
+    }
+   ]
+  }
+ ],
+ "reading_group": "{label}, fiscal {year}: capital spending {capex} billion against {cash} billion of cash and marketable securities.",
+ "rows": [
+  {
+   "id": "amazon",
+   "label": "Amazon",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-003",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-037",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  },
+  {
+   "id": "apple",
+   "label": "Apple",
+   "pair": [
+    {
+     "id": "capex",
+     "name": "Capital spending",
+     "claim": "fin-005",
+     "points": "series_fiscal_year_ends"
+    },
+    {
+     "id": "cash",
+     "name": "Cash and securities",
+     "claim": "fin-039",
+     "points": "series_fiscal_year_ends"
+    }
+   ]
+  }
+ ],
+ "table": {
+  "by": [
+   "label",
+   "when",
+   "end"
+  ],
+  "across": "series",
+  "labels": {
+   "label": "Company",
+   "when": "Stop",
+   "end": "Year ends"
+  }
+ }
+}

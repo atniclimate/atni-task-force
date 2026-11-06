@@ -1,0 +1,59 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "cases-demo",
+ "eyebrow": "Servers",
+ "title": "{series} reaches {display} in {year}",
+ "subtitle": "A band from the lowest to the highest case. Dashed is a projection.",
+ "plot": {
+  "type": "lines",
+  "highlight_by": "case",
+  "projected_from": 2026,
+  "band": {
+   "across": "series"
+  },
+  "band_label": "Range of the cases",
+  "units": {
+   "BkWh": "billion kWh"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "case",
+   "label": "Case",
+   "default": "Baseline",
+   "options": [
+    {
+     "value": "Baseline",
+     "label": "Baseline"
+    },
+    {
+     "value": "High demand",
+     "label": "High demand"
+    }
+   ]
+  }
+ ],
+ "reading": "{series}: {display} in {year}; the cases span {band_low} to {band_high}.",
+ "boundary": "Servers only.",
+ "rows": [
+  {
+   "series": "Baseline",
+   "claim": "dem-001",
+   "points": "series"
+  },
+  {
+   "series": "High demand",
+   "claim": "dem-004",
+   "points": "series"
+  }
+ ],
+ "also": [
+  {
+   "claim": "dem-016",
+   "label": "Servers' share of commercial sales"
+  }
+ ]
+}

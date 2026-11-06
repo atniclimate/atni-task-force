@@ -1,7 +1,7 @@
 // The deadlines strip (on the energy overview and the funding page), drawn from its plate's own data so each row keeps its claim, and on energy/funding/ the
 // program catalog, the Grants.gov live layer, and the programs matched to each Tribe's ranked energy types, read from data/energy-funding.json.
 
-import { esc, href, day, usDates, plural, getJSON, linkFilters, setFigure, addOptions, closedDetail } from './util.js';
+import { esc, href, day, usDates, plural, getJSON, linkFilters, setFigure, addOptions, closedDetail, hashTarget } from './util.js';
 
 const ORDER =['open', 'forecasted', 'closed', 'terminated', 'rescinded', 'enjoined', 'unknown'];
 const CATALOG = ['type', 'cooling', 'status'];
@@ -317,8 +317,7 @@ if (document.querySelector('#catalog-app, [data-figure^="fund-"]')) {
       const clearCatalog = renderCatalog(data, labels);
       renderLive(data, labels);
       renderTribes(data, labels, clearCatalog);
-      const target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-      if (target) target.scrollIntoView();
+      hashTarget()?.scrollIntoView();
     })
     .catch((error) => {
       for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;

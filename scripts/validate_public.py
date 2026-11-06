@@ -3,12 +3,17 @@
 GitHub Pages publishes site/ and nothing else, so everything in it must be T0.
 This script checks, and exits non-zero on any problem:
 
-- only allowed public file types, and no private working folders;
-- no local file paths, credential-like strings, T1 locations (planning-T1,
-  files-unsorted), Google Docs or Drive links, @atnitribes.org addresses, or
-  email links in any public file, including PDF text and metadata;
+- only allowed public file types (by suffix in any case), and no private working folders;
+- no local file paths (drive letters, Git Bash, network shares, home and mount folders, %VARIABLE%),
+  local server addresses, credential-like strings, T1 locations (planning-T1, files-unsorted),
+  Google Docs or Drive links, @atnitribes.org addresses, or email links in any public file,
+  including PDF text and metadata;
+- every JSON file that names a top-level tier names T0;
 - no em dashes in published prose (house style);
-- no external scripts, stylesheets, fonts, or frames (no CDNs or trackers);
+- no external scripts, stylesheets, fonts, or frames (no CDNs or trackers): src, srcset, poster,
+  data, and form action on the tags that load, url() and @import in inline styles and SVGs, no
+  javascript: link, and in scripts, inline or in a file, no address outside this site and no beacon,
+  socket, event stream, or XMLHttpRequest;
 - every local link and in-page anchor in the HTML resolves inside site/;
 - data/library.json follows the documented schema (docs/LIBRARY.md): required
   fields and types, enums, real dates, every entry T0, unique ids, https or
@@ -44,8 +49,14 @@ ALLOWED = {".html", ".css", ".js", ".json", ".csv", ".txt", ".pdf", ".woff2", ".
 TEXT = {".html", ".css", ".js", ".json", ".csv", ".txt", ".svg"}
 PRIVATE_DIRS = {".git", "planning-T1", "files-unsorted", "work", "node_modules", "__pycache__"}
 
-LOCAL_PATH = re.compile(r"(?i)(?<![a-z0-9])[a-z]:[\\/]|file:/|[\\/]Users[\\/]|AppData[\\/]")
+LOCAL_PATH = re.compile(
+    r"(?i)(?<![a-z0-9])[a-z]:[\\/]|file:/|[\\/]Users[\\/]|AppData[\\/]"
+    r"|(?<![\w.:/~-])/[a-z]/(?:dev\b|users\b|[\w.-]+/)"  # Git Bash: /c/dev, /c/Users, /i/claude-temp/
+    r"|(?<![\w\\])\\{2,}[\w.$-]{2,}\\+[\w.$-]{2,}"  # a network share, \\host\share
+    r"|(?<![\w~])~[\\/]|(?<![\w.-])/home/|(?<![\w.-])/mnt/[a-z]/|%[a-z_]\w*%[\\/]"  # a home folder, a WSL mount, a Windows variable
+)
 HTTPS_URL = re.compile(r"https://[^\s\"'<>]+")  # a web address may hold /users/ in its own path
+HTTPS_PATH = re.compile(r"(https://[^/\s\"'<>]*)[^\s\"'<>]*")  # a public page may name localhost in its own path, never in its host
 LOCAL_HOST = re.compile(r"(?i)\b(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0)\b|\[::1\]")  # a link made while a page was served from this machine
 EMAIL = re.compile(r"[\w.%+-]+@[\w-]+\.[A-Za-z]{2,}")
 SECRET = re.compile(
@@ -54,16 +65,29 @@ SECRET = re.compile(
 )
 FORBIDDEN = re.compile(r"(?i)planning-T1|files-unsorted|docs\.google\.com|drive\.google\.com|[a-z0-9._%+-]+@atnitribes\.org|mailto:")
 EM_DASH = re.compile("\u2014| -- ")
-EXTERNAL_LOAD_TAGS = {"script", "link", "img", "iframe", "source", "audio", "video", "embed", "object", "track"}
+EXTERNAL_LOAD_TAGS = {"script", "link", "img", "iframe", "source", "audio", "video", "embed", "object", "track", "form", "image", "use", "feimage"}  # a form sends, the rest fetch
+LOAD_ATTRS = ("href", "src", "xlink:href", "poster", "data", "action")  # srcset is read apart: it lists several addresses
+SEND_ATTRS = ("formaction", "ping")  # a button's own submit address, and a link's list of addresses told when it is followed: both send, so an outside one is held to the form rule
+SRCSET_URL = re.compile(r"(?:^|,)\s*([^\s,]\S*)")  # each candidate's address; an address may hold a comma, its descriptor may not
+JSON_TYPES = {"application/json", "application/ld+json"}  # data blocks, which a page's scripts read and nothing runs
 OWN_ORIGIN = "https://atniclimate.github.io/atni-task-force/"
 CSS_EXTERNAL = re.compile(r"(?i)@import|url\(\s*['\"]?(?:https?:)?//")
 JS_EXTERNAL = re.compile(r"(?i)(?:\bfrom\s*|\bimport\s*\(\s*|\bfetch\s*\(\s*)['\"`](?:https?:)?//")
+JS_ADDRESS = re.compile(r"(?i)(?:https?|wss?)://|//[a-z0-9-]+\.[a-z0-9-]")  # the second form is protocol-relative: it takes the page's scheme, so a host with a dot (a bare "//" is a separator)
+JS_NETWORK = re.compile(r"\b(?:sendBeacon|WebSocket|EventSource|XMLHttpRequest)\b")
+# Names that createElementNS and the like read; nothing fetches them.
+XML_NAMESPACES = {"http://www.w3.org/2000/svg", "http://www.w3.org/1999/xhtml", "http://www.w3.org/1999/xlink", "http://www.w3.org/XML/1998/namespace", "http://www.w3.org/2000/xmlns/"}
+JS_QUOTED = re.compile(r"""(["'])((?:\\.|(?!\1)[^\\\n])*)\1""")
+JS_TEMPLATE = re.compile(r"(?:\\.|[^`\\$]|\$(?!\{))*", re.S)
+JS_REGEX = re.compile(r"/(?:\\.|\[(?:\\.|[^\]\\\n])*\]|[^/\\\n\[])+/[a-z]*")
+JS_WORD = re.compile(r"[\w$]+")
+JS_REGEX_AFTER = set("(,=:[!&|?{};+-*%<>~^") | {"return", "typeof", "case", "do", "else", "in", "of", "new", "delete", "void", "throw", "yield", "await", "instanceof"}
 SLOT = re.compile(r"<!--\s*(/?)SLOT(?::([a-z0-9-]+):([a-z0-9-]+))?\s*-->")
 PLATE_BLOCK = re.compile(r'<script type="application/json" id="plate-data-([^"]+)">(.*?)</script>', re.S)
 POURED = re.compile(r'<[a-z][^<>]*\sdata-pour="([^"]+)"[^<>]*>')
 CLAIM_STATUS = {"verified", "partly"}
 LOCAL_PATH_FIX = ": replace it with a path relative to the page, or delete it"
-CLAIM_ID = re.compile(r"\b(?:au|ec|ex|fp|fin|gf|lf|mv|px|rs|sf|sv|tr)-\d{3}\b")
+CLAIM_ID = re.compile(r"\b[a-z]{2,3}-\d{3}\b")  # every claim id's shape; the scripts that find ids in text import this one
 
 TYPES = {"resolution", "report", "policy", "legislation", "article", "academic", "dataset", "tool", "website", "news"}
 AREAS = {"energy-feasibility", "data-centers", "ai", "summit", "cross-cutting"}
@@ -85,7 +109,14 @@ def self_test():
     assert LOCAL_PATH.search(r"C:\Users\someone\file.txt") and LOCAL_PATH.search("I:/climate/x") and LOCAL_PATH.search("file:///x")
     assert not LOCAL_PATH.search("https://atnitribes.org/contact-us/ T1: network")
     assert not LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://agc.org/files/users/u1/a%20(4).pdf")) and LOCAL_PATH.search(HTTPS_URL.sub(" ", "https://x.org C:/Users/me"))
+    assert all(LOCAL_PATH.search(p) for p in ("/c/dev/x", "/c/Users/me", "/i/claude-temp/x/", r"\\host\share", "~/x", "/home/me", "/mnt/c/x", r"%USERPROFILE%\x"))
+    assert not any(LOCAL_PATH.search(p) for p in ("and/or", "Scope 1/2/3", "x.replace(/a/g, '')", "50%/50%", r'"\\d\\s"'))
     assert LOCAL_HOST.search("http://127.0.0.1:52127/data/x.json") and LOCAL_HOST.search("http://localhost/") and not LOCAL_HOST.search("https://atniclimate.github.io/atni-task-force/")
+    assert HTTPS_PATH.sub(r"\1", "see https://localhost:8443/a and https://x.org/docs/localhost") == "see https://localhost:8443 and https://x.org"
+    assert SRCSET_URL.findall("a.png 1x, data:image/png;base64,AA 2x,b.png") == ["a.png", "data:image/png;base64,AA", "b.png"]
+    literals, code = js_scan("// see 'https://a.org'\nx = /[\"']/g.test(s) / 2 + 'b' + `c${ {d: `e`}.d }f`; /* g */ h")
+    assert literals == ["b", "c", "e", "f"] and "https" not in code and " h" in code, (literals, code)
+    assert CLAIM_ID.findall("dem-001 pdc-059 a-1 abcd-001 fp-1411") == ["dem-001", "pdc-059"]
     assert EMAIL.search("write to someone@example.org") and not EMAIL.search("@handle and 3 @ 4.5")
     assert PLATE_BLOCK.findall('<script type="application/json" id="plate-data-a">{"rows":[]}</script>') == [("a", '{"rows":[]}')]
     assert POURED.findall('<span class="x" data-pour="a-1">1</span>') == ["a-1"]
@@ -105,19 +136,36 @@ def self_test():
 
 
 class Page(HTMLParser):
+    """A page's ids, every address it links or loads, and the bodies of its inline styles and scripts (not its JSON data blocks)."""
+
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.ids, self.refs = set(), []
+        self.ids, self.refs, self.styles, self.scripts, self.inline = set(), [], [], [], None
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if attrs.get("id"):
             self.ids.add(attrs["id"])
+        if attrs.get("style"):
+            self.styles.append(attrs["style"])
+        if tag in ("script", "style") and (attrs.get("type") or "").lower() not in JSON_TYPES:
+            self.inline = (tag, [])
         if tag == "link" and attrs.get("rel") == "canonical" and (attrs.get("href") or "").startswith(OWN_ORIGIN):
             return  # it names this page's public address and loads nothing; scripts/add_page_meta.py writes it
-        for key in ("href", "src"):
+        for key in LOAD_ATTRS:
             if attrs.get(key):
                 self.refs.append((tag, attrs[key]))
+        self.refs += [(tag, url.rstrip(",")) for url in SRCSET_URL.findall(attrs.get("srcset") or "")]
+        self.refs += [(f"{tag} {key}", url) for key in SEND_ATTRS for url in (attrs.get(key) or "").split()]
+
+    def handle_data(self, data):
+        if self.inline:
+            self.inline[1].append(data)
+
+    def handle_endtag(self, tag):
+        if self.inline and tag == self.inline[0]:
+            (self.styles if tag == "style" else self.scripts).append("".join(self.inline[1]))
+            self.inline = None
 
 
 def parse(path, cache={}):
@@ -147,21 +195,79 @@ def our_prose(node, key=None):
 def check_text(rel, body, errors):
     if LOCAL_PATH.search(HTTPS_URL.sub(" ", body)):
         errors.append(f"Local path in {rel}")
+    host = LOCAL_HOST.search(HTTPS_PATH.sub(r"\1", body))
+    if host:
+        errors.append(f"Local address in {rel}: {host[0]}: link the public site or a path relative to the page; a page or PDF saved from a local server is saved again from the public site")
     if SECRET.search(body):
         errors.append(f"Credential-like content in {rel}: delete it from the file, then rotate that credential")
     for match in sorted(set(m.group(0) for m in FORBIDDEN.finditer(body))):
         errors.append(f"Forbidden string in {rel}: {match}: delete it; T1 locations, Google Docs or Drive links, private addresses and email links never go in site/")
 
 
+def js_scan(src):
+    """(the text of every string and template literal in a script, the script with its comments blanked). A slash after an operator or a keyword
+    opens a regular expression and after a value divides, as most tools read it. shortcut: no full parser, so an odd line can misread; replace
+    this with one if a flag ever proves false."""
+    literals, kept, i, last, opened, depth = [], [], 0, "(", [], 0  # opened: the brace depth at each template's ${, so its } resumes the template
+    while i < len(src):
+        c, start = src[i], i
+        if src.startswith(("//", "/*"), i):
+            end = src.find("\n" if src[i + 1] == "/" else "*/", i + 2)
+            i = len(src) if end < 0 else end + (1 if src[i + 1] == "/" else 2)
+            kept.append(" ")
+            continue
+        if c in "'\"":
+            match = JS_QUOTED.match(src, i)
+            if match:
+                literals.append(match[2])
+            i, last = (match.end() if match else i + 1), "0"
+        elif c == "`" or (c == "}" and opened and opened[-1] == depth):
+            if c == "}":
+                opened.pop()
+            match = JS_TEMPLATE.match(src, i + 1)
+            literals.append(match[0])
+            i, last = match.end(), "0"
+            if src.startswith("${", i):
+                opened.append(depth)
+                i, last = i + 2, "("
+            else:
+                i += 1
+        elif c == "/" and last in JS_REGEX_AFTER and (match := JS_REGEX.match(src, i)):
+            i, last = match.end(), "0"
+        elif match := JS_WORD.match(src, i):
+            i, last = match.end(), match[0]
+        else:
+            depth += (c == "{") - (c == "}")
+            i, last = i + 1, (last if c.isspace() else c)
+        kept.append(src[start:i])
+    return literals, "".join(kept)
+
+
+def check_js(rel, body, errors):
+    """A script loads and sends nothing outside the site: no import or fetch from elsewhere, no address but the site's own, no beacon or socket."""
+    if JS_EXTERNAL.search(body):
+        errors.append(f"External script or fetch in {rel}: copy the code or data into site/ and load it from there; the site fetches nothing outside itself")
+    literals, code = js_scan(body)
+    for text in sorted({t.strip() for t in literals}):
+        if JS_ADDRESS.match(text) and not text.startswith(OWN_ORIGIN) and text not in XML_NAMESPACES:
+            errors.append(f"External address in {rel}: {text[:80]}: copy what it names into site/ and use a relative path; a link a reader follows belongs in the page's HTML or a data file")
+    for name in sorted(set(JS_NETWORK.findall(code))):
+        errors.append(f"Network call in {rel}: {name}: the site sends nothing and keeps no connection; read its own files with fetch and a relative path")
+
+
 def check_html(path, rel, errors):
+    """Links and loads of an HTML page, or of an SVG, which can load and run as a page does."""
     page = parse(path)
     for tag, url in page.refs:
         parts = urlsplit(url)
         if parts.scheme in {"http", "https"} or url.startswith("//"):
-            if tag in EXTERNAL_LOAD_TAGS:
+            if tag in EXTERNAL_LOAD_TAGS or tag.endswith(tuple(f" {a}" for a in SEND_ATTRS)):
                 errors.append(f"External resource load in {rel}: <{tag}> {url}: copy the file into site/assets/ and load it from there, or delete the tag")
             elif parts.scheme == "http":
                 errors.append(f"Insecure http link in {rel}: {url}: change it to https, or delete the link if the source has no https page")
+            continue
+        if parts.scheme == "javascript":
+            errors.append(f"Script address in {rel}: <{tag}> {url[:60]}: give the element a handler in site/assets/js/; a javascript: address runs code from the markup")
             continue
         if parts.scheme:  # data: and similar inline values load nothing
             continue
@@ -171,8 +277,13 @@ def check_html(path, rel, errors):
         if not target.is_relative_to(SITE.resolve()) or not target.is_file():
             errors.append(f"Broken or escaping local link in {rel}: {url}: point it at a file inside site/, relative to this page")
             continue
-        if parts.fragment and target.suffix == ".html" and parts.fragment not in parse(target).ids:
+        if parts.fragment and target.suffix.lower() == ".html" and parts.fragment not in parse(target).ids:
             errors.append(f"Missing anchor in {rel}: {url}: add id=\"{parts.fragment}\" to the target, or correct the link")
+    for style in page.styles:
+        if CSS_EXTERNAL.search(style):
+            errors.append(f"External stylesheet or font in an inline style in {rel}: copy the file into site/assets/ and load it from there")
+    for script in page.scripts:
+        check_js(f"an inline script in {rel}", script, errors)
 
 
 def check_slots(path, rel, body, seen, errors):
@@ -291,11 +402,9 @@ def check_pdf(path, rel, errors):
     except Exception as error:  # a PDF that will not open must not ship
         errors.append(f"Unreadable PDF {rel}: {error}: replace it with a copy that opens, or delete it")
         return
-    check_text(f"PDF text of {rel}", text, errors)
+    check_text(f"PDF text of {rel}", text, errors)  # its local-address rule covers the text; the links are read below
     if LOCAL_PATH.search(meta):
         errors.append(f"Local path in PDF metadata: {rel}: strip the metadata and save the PDF again")
-    if LOCAL_HOST.search(HTTPS_URL.sub(" ", text)):
-        errors.append(f"Local address in PDF text: {rel}: print the PDF again from the public site's own address")
     for link in sorted(links):  # a PDF printed from a page served on this machine links back to this machine
         if LOCAL_HOST.search(link) or LOCAL_PATH.search(HTTPS_URL.sub(" ", link)):
             errors.append(f"Local address in a PDF link: {rel}: {link}: print the PDF again with its links resolved against the public site")
@@ -705,29 +814,37 @@ def main():
     files = sorted(p for p in SITE.rglob("*") if p.is_file())
     for path in files:
         rel = path.relative_to(SITE).as_posix()
-        if path.name != ".nojekyll" and path.suffix.lower() not in ALLOWED:
+        suffix = path.suffix.lower()  # a server sends index.HTML as a page, so every rule reads it as one
+        if path.name != ".nojekyll" and suffix not in ALLOWED:
             errors.append(f"Unexpected public file type: {rel}: convert it to an allowed type {sorted(ALLOWED)}, or move it out of site/")
         if PRIVATE_DIRS & set(path.relative_to(SITE).parts):
             errors.append(f"Private folder inside site/: {rel}: move it out of site/; nothing private is ever published")
-        if path.suffix in TEXT:
+        if suffix in TEXT:
             body = path.read_text(encoding="utf-8")
             check_text(rel, body, errors)
-            if path.suffix in {".html", ".js"} and EM_DASH.search(body):
+            if suffix in {".html", ".js"} and EM_DASH.search(body):
                 errors.append(f"Em dash or spaced double hyphen in {rel} (house style): rewrite the sentence with a comma, colon, or period")
-            if path.suffix == ".json" and any(EM_DASH.search(s) for s in our_prose(json.loads(body))):
-                errors.append(f"Em dash or spaced double hyphen in {rel} (house style): rewrite the sentence with a comma, colon, or period")
-            if path.suffix == ".css" and CSS_EXTERNAL.search(body):
+            if suffix == ".json":
+                data = json.loads(body)
+                if any(EM_DASH.search(s) for s in our_prose(data)):
+                    errors.append(f"Em dash or spaced double hyphen in {rel} (house style): rewrite the sentence with a comma, colon, or period")
+                if isinstance(data, dict) and "tier" in data and data["tier"] != "T0":
+                    errors.append(f"{rel} says tier {data['tier']}: only T0 is published; move the file out of site/, or set T0 only if the owner released it")
+            if suffix in {".css", ".svg"} and CSS_EXTERNAL.search(body):
                 errors.append(f"External stylesheet or font in {rel}: copy the file into site/assets/ and load it from there")
-            if path.suffix == ".js" and JS_EXTERNAL.search(body):
+            if suffix == ".js":
+                check_js(rel, body, errors)
+            if suffix == ".svg" and JS_EXTERNAL.search(body):
                 errors.append(f"External script or fetch in {rel}: copy the code or data into site/ and load it from there; the site fetches nothing outside itself")
-            if path.suffix == ".html":
+            if suffix in {".html", ".svg"}:
                 check_html(path, rel, errors)
+            if suffix == ".html":
                 check_slots(path, rel, body, slots, errors)
                 plate_blocks += check_plate_blocks(rel, body, claims, errors)
                 check_plate_scripts(rel, body, errors)
                 check_poured(rel, body, claims, errors)
                 errors.extend(pour_claim_refs.check_page(rel, body, claims))
-        elif path.suffix == ".pdf":
+        elif suffix == ".pdf":
             check_pdf(path, rel, errors)
     if not (SITE / ".nojekyll").is_file():
         errors.append("site/.nojekyll is missing: create that empty file")
@@ -754,8 +871,8 @@ def main():
         "passed": True,
         "public_files": len(files),
         "public_bytes": sum(p.stat().st_size for p in files),
-        "html_pages": sum(p.suffix == ".html" for p in files),
-        "pdfs": sum(p.suffix == ".pdf" for p in files),
+        "html_pages": sum(p.suffix.lower() == ".html" for p in files),
+        "pdfs": sum(p.suffix.lower() == ".pdf" for p in files),
         "library_entries": entries,
         "content_slots": len(slots),
         "energy_potential_tribes": tribes,

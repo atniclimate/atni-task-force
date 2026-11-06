@@ -40,6 +40,7 @@ PACKET = re.compile(r"<!-- briefing:packet -->(.*?)<!-- /briefing:packet -->", r
 DATA_PACKET = re.compile(r'<section class="packet-page[^>]*?\sdata-packet="([^"]+)"')
 SHEETS = re.compile(r'<link\b(?=[^>]*\brel="stylesheet")[^>]*\bhref="([^"?#]+)"')
 SCRIPTS = re.compile(r'<script\b[^>]*\bsrc="([^"?#]+)"')
+IMAGES = re.compile(r'<img\b[^>]*\bsrc="(?![a-z]+:)([^"?#]+)"')  # the header lockups
 MARKS = re.compile(r'url\(\s*["\']?([^"\')?#]+\.(?:woff2|svg))')  # photographs behind a header are not printed
 
 
@@ -72,11 +73,11 @@ def default_ids(site=SITE):
 
 
 def drawn_with(site=SITE):
-    """The files the PDF is drawn with, as the Briefing's own page names them: its stylesheets and scripts, and the fonts and marks the stylesheets name."""
+    """The files the PDF is drawn with, as the Briefing's own page names them: its stylesheets, scripts, and images, and the fonts and marks the stylesheets name."""
     base = Path(site) / "briefing"
     page = (base / "index.html").read_text(encoding="utf-8")
     found = set()
-    for ref in [*SHEETS.findall(page), *SCRIPTS.findall(page)]:
+    for ref in [*SHEETS.findall(page), *SCRIPTS.findall(page), *IMAGES.findall(page)]:
         path = (base / ref).resolve()
         found.add(path)
         if path.suffix == ".css" and path.is_file():

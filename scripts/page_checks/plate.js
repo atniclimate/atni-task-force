@@ -1,10 +1,10 @@
 // The plate kit (site/assets/js/plate.js and plate-svg.js) on the demonstration page. The demonstration is a frozen local fixture, so its own
 // sentences and figures are test data and stay exact; only words the kit itself prints were loosened.
-const { JSDOM, count, ok, eq, wait, read, fixture, open, fire, key } = require('./lib');
+const { JSDOM, count, ok, eq, wait, settle, read, fixture, open, fire, key } = require('./lib');
 const assert = require('assert');
 
-const PAGE = 'http://localhost/work/site-refresh/tmp/plate-demo/index.html';
-const html = fixture('work/site-refresh/tmp/plate-demo/index.html', 'Rebuild it with work/site-refresh/tmp/kit_make_demo.py.');
+const PAGE = 'http://localhost/scripts/fixtures/plate-demo/index.html';
+const html = fixture('scripts/fixtures/plate-demo/index.html', 'Rebuild it with scripts/fixtures/kit_make_demo.py.');
 const frame = () => wait(40);
 
 async function load(query = '', { source = html, clipboard = true, wide = false } = {}) {
@@ -139,6 +139,7 @@ async function ladder() {
   eq(row(p.root, 'chat').getAttribute('aria-selected'), 'false', 'old row cleared');
   ok(row(p.root, 'video').classList.contains('is-on'), 'row marked');
   eq(p.plot.getAttribute('aria-activedescendant'), row(p.root, 'video').id, 'active row moves');
+  await settle();
   ok(window.location.search.includes('session-energy=video'), 'selection in the query');
   ok(p.reading.textContent.startsWith('Streamed video, one hour: 70 Wh, 2025.'), 'Reading follows');
   eq(p.plot.style.getPropertyValue('--at'), row(p.root, 'video').style.getPropertyValue('--x'), 'needle at the row');
@@ -159,6 +160,7 @@ async function ladder() {
   key(window, p.plot, 'Escape');
   eq(row(p.root, 'chat').getAttribute('aria-selected'), 'true', 'Escape restores the default');
   ok(p.receipt.hidden, 'restore leaves the receipt closed');
+  await settle();
   ok(!window.location.search.includes('session-energy'), 'default leaves the query');
   key(window, p.plot, 'End');
   eq(row(p.root, 'no-figure').getAttribute('aria-selected'), 'true', 'End');
@@ -192,6 +194,7 @@ async function ladder() {
   full.checked = true;
   fire(window, full, 'input');
   fire(window, full, 'change');
+  await settle();
   ok(window.location.search.includes('boundary=full'), 'setting in the query');
   eq(row(p.root, 'chat').querySelector('.ladder-value').textContent, 'Not counted at this boundary', 'row keeps its place');
   ok(row(p.root, 'chat').querySelector('.ladder-mark').hidden, 'no mark at that boundary');
@@ -216,6 +219,7 @@ async function ladder() {
   range.value = '20';
   fire(window, range, 'input');
   eq(num.value, '20', 'number follows the slider');
+  await settle();
   ok(window.location.search.includes('use=20'), 'slider in the query');
   eq(p.value.textContent, '4.8', 'page script multiplies');
   eq(row(p.root, 'chat').querySelector('.ladder-value').textContent, '4.8 Wh', 'row text follows');
@@ -227,12 +231,14 @@ async function ladder() {
   eq(p.value.textContent, '12', 'number drives the plate');
   num.value = '999';
   fire(window, num, 'input');
+  await settle();
   ok(window.location.search.includes('use=50'), 'bad value ignored');
   fire(window, num, 'change');
   eq(num.value, '50', 'bad value goes back');
 
   // Reset
   fire(window, p.root.querySelector('[data-reset]'), 'click');
+  await settle();
   eq(window.location.search, '', 'Reset clears the query');
   eq(range.value, '1', 'Reset restores the slider');
   eq(p.radio('boundary', 'dc').checked, true, 'Reset restores the radio');
@@ -252,6 +258,7 @@ async function preview() {
   ok(p.reading.textContent.startsWith('Streamed video'), 'hover updates the fixed Reading');
   eq(row(p.root, 'video').getAttribute('aria-selected'), 'false', 'hover does not select');
   ok(row(p.root, 'video').classList.contains('is-on'), 'hover marks the row');
+  await settle();
   eq(window.location.search, '', 'hover leaves the query');
   eq(p.chips()[0].dataset.claim, 'fp-001', 'chips stay with the selection');
   fire(window, p.plot, 'pointerleave');
@@ -491,6 +498,7 @@ async function instrument() {
   eq(value('amw'), '160 aMW', 'slider moves the row');
   eq(value('twh'), '1.4 TWh', 'and the rows after it');
   ok(row(p.root, 'amw').style.getPropertyValue('--x') !== x0, 'the mark moves');
+  await settle();
   ok(window.location.search.includes('mw=200'), 'setting in the query');
   ok(p.reading.textContent.startsWith('200 MW at 0.8 load factor is 160 aMW'), 'the Reading follows');
   eq(p.root.querySelector('[data-param="mw"] input[type=number]').value, '200', 'the typed twin follows');
@@ -503,11 +511,13 @@ async function instrument() {
   const typed = p.root.querySelector('[data-param="lkwh"] input');
   typed.value = '1';
   fire(window, typed, 'input');
+  await settle();
   ok(window.location.search.includes('lkwh=1'), 'typed in the query');
   eq(value('site'), '1,700 million liters', 'one figure, no spread');
   ok(!row(p.root, 'site').querySelector('.ladder-mark').hidden, 'a mark when low meets high');
   typed.value = '';
   fire(window, typed, 'input');
+  await settle();
   ok(!window.location.search.includes('lkwh'), 'blank leaves the query');
   ok(value('site').includes(' to '), 'the spread returns');
   // A toggle turns a row on.
@@ -624,6 +634,7 @@ async function countView() {
   ok(!p.root.querySelector('.plate-setting').textContent.includes('View'), 'the plot view stays out of the setting line');
   view('count');
   ok(p.plot.querySelector('.ladder-groups').hidden, 'the ruler steps aside');
+  await settle();
   ok(window.location.search.includes('hour-demo-plot=count'), 'the view is in the query');
   eq(squares('chat'), 50, 'one square per 0.30 Wh prompt');
   ok(counted('chat').querySelector('.ladder-value').textContent.startsWith('50 text prompts'), 'the count prints');
@@ -651,6 +662,7 @@ async function countView() {
   // Presets.
   fire(window, p.root.querySelector('[data-preset="2.52"]'), 'click');
   eq(num.value, '2.52', 'a preset fills the typed field');
+  await settle();
   ok(window.location.search.includes('prompts=2.52'), 'a preset off the step is in the query');
   eq(value('chat'), '13 (9.3 to 24) Wh', 'a preset moves the row');
   const again = await load('?prompts=2.52#hour');
@@ -910,6 +922,7 @@ async function ghosts() {
   eq(selected(), 'charge', 'and takes a selection');
   pick(window, p.radio('edge', 'dc'));
   eq(selected(), 'chat', 'a selected row that turns to a ghost gives the selection back to the default');
+  await settle();
   ok(!window.location.search.includes('hour-demo=charge'), 'and the address follows');
   // Count holds the same row the same way.
   pick(window, p.radio('hour-demo-plot', 'count'));
@@ -1057,6 +1070,7 @@ async function arranged() {
   ok(p.root.classList.contains('has-switch') && p.root.classList.contains('has-under'), 'the plate knows');
   ok(!p.plot.contains(box), 'outside the list box');
   pick(window, p.radio('edge', 'dc'));
+  await settle();
   ok(window.location.search.includes('edge=dc') && row(p.root, 'chat').querySelector('.ladder-value').textContent.startsWith('3 '), 'and it still drives the plate');
   ok(p.root.querySelector('.plate-under .plate-legend') && !p.root.querySelector('.plate-claim .plate-legend'), 'the key reads under the axis');
   eq(p.root.querySelector('.plate-under').previousElementSibling, p.plot, 'right under it');
@@ -1364,6 +1378,12 @@ async function address() {
   const plain = await load('#hour');
   ok(plain.document.querySelector('#session-energy .plate-link-note').textContent.includes('private figures'), 'a plate with a typed control says what its link carries');
   ok(!plain.document.querySelector('#company-electricity .plate-link-note'), 'one with none has nothing to say');
+  // A browser that throttles replaceState throws: the plate has already redrawn, and the throw is caught, so no script error follows.
+  plain.window.history.replaceState = () => { throw new plain.window.DOMException('Too many calls to replaceState', 'SecurityError'); };
+  typed(plain.document).value = '20';
+  fire(plain.window, typed(plain.document), 'input');
+  await settle();
+  eq(plain.document.querySelector('#session-energy .readout-value').textContent, '4.8', 'a throttled address stops no redraw');
   const source = html.replace(/<html\b/, '<html data-address="none"');
   ok(source !== html, 'the fixture takes the flag');
   const { window, document, errors } = await load('?boundary=full&use=5&session-energy=video', { source });

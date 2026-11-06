@@ -1,0 +1,21 @@
+{
+  "schema": 1, "tier": "T0", "id": "session-energy", "page": "index.html", "fit": true,
+  "eyebrow": "Energy per session",
+  "title": "A session at the default setting: {label} used {display} in {year}",
+  "subtitle": "Log ruler, watt-hours per session. One boundary at a time.",
+  "text": ["Rows hold their place when the chosen boundary has no value, and a row with no public figure says so."],
+  "by": "boundary",
+  "controls": [
+    {"type": "segmented", "name": "boundary", "label": "Boundary", "default": "dc",
+     "options": [{"value": "dc", "label": "Inside the data center"}, {"value": "full", "label": "Whole chain"}]},
+    {"type": "range", "name": "use", "label": "Prompts per hour, the reader's assumption", "min": 1, "max": 200, "step": 1, "default": 1}
+  ],
+  "plot": {"type": "ladder", "scale": "log", "units": {"Wh/hour": "Wh"}},
+  "default": "chat",
+  "rows": [
+    {"id": "chat", "label": "Chat, at the prompts set", "claims": {"dc": "fp-001", "full": null}, "note": "One median text prompt times the prompts per hour set here."},
+    {"id": "video", "label": "Streamed video, one hour", "claims": {"dc": "fp-043", "full": "fp-044"}},
+    {"id": "youtube", "label": "YouTube, one hour, 2016 usage", "claims": {"dc": null, "full": "fp-120"}, "limit": "Derived from a study of the whole service in 2016, so it is a decade old."},
+    {"id": "no-figure", "label": "Claude, first-party figure", "claim": "fp-033", "gap": "No public measurement"}
+  ]
+}

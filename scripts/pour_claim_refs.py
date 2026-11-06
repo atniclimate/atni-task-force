@@ -1,7 +1,7 @@
 """Claim references in prose: a number links to its receipt, with no JS, and the page foot lists every claim it cites.
 
-An author writes <a class="cr" data-claim="fp-141" href="#src-fp-141">3.1 Wh</a>, and this script adds the status and the
-accessible name to each mark and writes "Claims Cited on This Page" before </main>, between the claims-cited markers. An id that
+An author writes <a class="cr" data-claim="fp-141" href="#src-fp-141">3.1 Wh</a> (in either quote mark), and this script adds the status and the
+accessible name to each mark, keeping any other attribute, and writes "Claims Cited on This Page" before </main>, between the claims-cited markers. An id that
 already has a receipt on the page (a src- anchor outside the block) keeps it as its one anchor, and its row here carries no id.
 
 It refuses, and writes nothing, if a mark names a claim that does not ship, is unverified, or is partly verified with no limit, or if
@@ -25,7 +25,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 STATUS = {"verified": "verified", "partly": "partly verified"}
 # Scripts, styles, and comments are matched first so a mark quoted inside one is left alone.
-MARK = re.compile(r'<script\b.*?</script>|<style\b.*?</style>|<!--.*?-->|<a\b(?P<attrs>[^<>]*\sclass="(?P<cls>cr|cr\s[^"]*|[^"]*\scr|[^"]*\scr\s[^"]*)"[^<>]*)>(?P<inner>.*?)</a>', re.S)
+MARK = re.compile(r"""<script\b.*?</script>|<style\b.*?</style>|<!--.*?-->|<a\b(?P<attrs>[^<>]*\sclass=(?P<q>["'])(?P<cls>(?:[^"'<>]*\s)?cr(?:\s[^"'<>]*)?)(?P=q)[^<>]*)>(?P<inner>.*?)</a>""", re.S)
+ATTR = re.compile(r"""\s+([^\s"'<>/=]+)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?""")
+POURED_ATTRS = {"class", "data-claim", "data-status", "href", "aria-label"}  # the pour writes these; any other attribute stays as the author wrote it
 BLOCK = re.compile(r"[ \t]*<!-- claims-cited -->.*?<!-- /claims-cited -->\n?", re.S)
 SRC_ANCHOR = re.compile(r'\sid="src-([^"]+)"')
 NUMBER = re.compile(r"(?<![\w.,])(\d+(?:,\d{3})*(?:\.\d+)?)(?:\s*(thousand|million|billion|trillion)\b)?")
@@ -108,7 +110,7 @@ def pour(body, claims):
     def mark(match):
         if not match["attrs"]:
             return match[0]
-        claim_id = (re.search(r'\sdata-claim="([^"]*)"', match["attrs"]) or [None, ""])[1]
+        claim_id = (re.search(r"""\sdata-claim=(["'])(.*?)\1""", match["attrs"]) or [None, None, ""])[2]
         text = " ".join(unescape(re.sub(r"<[^>]*>", "", match["inner"])).split())
         problem = mark_problem(claim_id, text, claims.get(claim_id))
         if problem:
@@ -117,8 +119,9 @@ def pour(body, claims):
         if claim_id not in ids:
             ids.append(claim_id)
         status = STATUS[claims[claim_id]["status"]]
+        kept = "".join(f" {a[0].strip()}" for a in ATTR.finditer(match["attrs"]) if a[1].lower() not in POURED_ATTRS)
         return (f'<a class="{match["cls"]}" data-claim="{claim_id}" data-status="{status}" href="#src-{claim_id}" '
-                f'aria-label="{escape(text)}, claim {claim_id}, {status}">{match["inner"]}</a>')
+                f'aria-label="{escape(text)}, claim {claim_id}, {status}"{kept}>{match["inner"]}</a>')
 
     poured = BLOCK.sub("", MARK.sub(mark, body))
     if problems or not ids:

@@ -13,3 +13,14 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.claude/settings.local.json
+graphify-out/
+/tmp/
+
+# Jev caches and request logs hold T1 text (scripts/jev_release_screen.py)
+jev-cache/
+.jev-cache/
+jev-requests.log
+
+# Stray PDFs at the root only; site/ PDFs are published and stay tracked
+/*.pdf

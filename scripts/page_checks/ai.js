@@ -2,11 +2,11 @@
 // without scripts.
 const { execSync } = require('child_process');
 const assert = require('assert');
-const { JSDOM, ROOT, count, ok, eq, wait, read, fixture, open, fire, key, figures, holds, leads, wordsOnly } = require('./lib');
+const { JSDOM, ROOT, count, ok, eq, wait, settle, read, fixture, open, fire, key, figures, holds, leads, wordsOnly } = require('./lib');
 
 const PAGE = 'http://localhost/site/ai/index.html';
 const html = read('site/ai/index.html');
-const oracle = JSON.parse(fixture('work/site-refresh/tmp/ai-oracle.json', 'Rebuild it with python work/site-refresh/tmp/ai_oracle.py.'));
+const oracle = JSON.parse(fixture('work/site-refresh/tmp/ai-oracle.json', 'Rebuild it with python scripts/fixtures/ai_oracle.py.'));
 // The last commit before the held slot could have moved: the economics slot stays byte for byte what it was then.
 const SLOT_COMMIT = '9405f13';
 
@@ -276,6 +276,7 @@ async function sameHourPlate() {
   ok(holds(p.reading.textContent, ['30 prompts', '21 Wh']) && holds(p.facts.textContent, ['9']), `slider: ${p.reading.textContent}`);
   eq(p.row('chat').querySelector('.ladder-label').firstChild.nodeValue, 'Chat, 30 prompts', 'the row label follows');
   ok(holds(p.row('chat').querySelector('.ladder-tag').textContent, ['9 Wh']), 'the tag follows');
+  await settle();
   ok(window.location.search.includes('prompts=30'), 'setting in the address');
   await slide(window, num, 60);
   ok(holds(p.reading.textContent, ['60 prompts', '30 Wh']), 'typed field');
@@ -299,7 +300,7 @@ async function sameHourPlate() {
   eq(cell.textContent, value('chat'), 'table cell follows');
   ok(cell.parentElement.children[2].textContent === '172', `segment cell follows: ${cell.parentElement.children[2].textContent}`);
   fire(window, p.root.querySelector('[data-reset]'), 'click');
-  await wait();
+  await settle();
   eq(window.location.search, '', 'Reset clears the address');
   eq(value('chat'), '15 (9.3 to 24) Wh', 'Reset restores');
   ok(holds(p.reading.textContent, ['10 prompts', '15 Wh']), 'Reset restores the Reading');
@@ -314,6 +315,7 @@ async function sameHourPlate() {
   await pick(window, p.radio('boundary', 'dc'));
   ok(p.plot.querySelector('.ladder-row[data-row="bulb"]').classList.contains('is-ghost'), 'at the data center the bulb is a ghost');
   ok(holds(p.reading.textContent, ['10 prompts']), 'and the selection returns to the first row');
+  await settle();
   ok(!window.location.search.includes('ai-same-hour=bulb'), 'the address follows');
   fire(window, p.plot.querySelector('.ladder-row[data-row="bulb"] .ladder-label'), 'click');
   ok(holds(p.reading.textContent, ['10 prompts']), 'a ghost takes no click');
@@ -368,6 +370,7 @@ async function countView() {
   ok(p.plot.querySelector('.ladder-groups').hidden, 'the ruler steps aside');
   ok(!p.plot.querySelector('.count-rows').hidden && !p.plot.querySelector('.count-key').hidden, 'the squares and their key show');
   ok(p.root.querySelector('.plate-under > .caption').hidden, 'the ruler\'s caption goes with the ruler');
+  await settle();
   ok(window.location.search.includes('ai-same-hour-plot=count'), 'the view is in the address');
   eq(squares('chat', 'seg-dc'), 10, 'one square per prompt in the data center');
   eq(squares('chat', 'seg-band'), 34 + 7, 'router and device: 33.3 and 6.67 squares, with their slivers');

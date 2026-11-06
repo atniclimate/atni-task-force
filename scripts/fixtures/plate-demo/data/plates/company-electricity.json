@@ -1,0 +1,13 @@
+{
+  "schema": 1, "tier": "T0", "id": "company-electricity", "page": "index.html", "fit": true,
+  "eyebrow": "Electricity use",
+  "title": "{series} used {display} in {year}",
+  "subtitle": "Megawatt-hours per year, as each company reports it.",
+  "boundary": "Company-wide electricity, as each company reports it.",
+  "plot": {"type": "lines", "highlight": "Google"},
+  "rows": [
+    {"series": "Google", "claim": "rs-001", "points": "series"},
+    {"series": "Microsoft", "claim": "rs-020", "points": "series"},
+    {"series": "Meta", "claim": "rs-033", "points": "series"}
+  ]
+}

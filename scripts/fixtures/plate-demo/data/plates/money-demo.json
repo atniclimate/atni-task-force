@@ -1,0 +1,124 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "money-demo",
+ "fit": true,
+ "eyebrow": "Money",
+ "title": "{series} in fiscal {year}: {display}",
+ "subtitle": "Three panels, each with its own axis. Fiscal years differ.",
+ "plot": {
+  "type": "multiples",
+  "highlight_by": "company",
+  "units": {
+   "USD billion": "billion dollars"
+  },
+  "panels": [
+   {
+    "id": "capex",
+    "label": "Capital spending"
+   },
+   {
+    "id": "ocf",
+    "label": "Operating cash flow"
+   },
+   {
+    "id": "cash",
+    "label": "Cash and securities"
+   }
+  ]
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "company",
+   "label": "Company",
+   "default": "Amazon",
+   "options": [
+    {
+     "value": "Amazon",
+     "label": "Amazon"
+    },
+    {
+     "value": "Microsoft",
+     "label": "Microsoft"
+    },
+    {
+     "value": "Apple",
+     "label": "Apple"
+    }
+   ]
+  }
+ ],
+ "reading_group": "{series}, fiscal {year} (ends {end}): capital spending {capex}, operating cash flow {ocf}, cash and securities {cash}, billion dollars.",
+ "boundary": "SEC filings, cash basis.",
+ "rows": [
+  {
+   "panel": "capex",
+   "series": "Microsoft",
+   "claim": "fin-001",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Amazon",
+   "claim": "fin-003",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "capex",
+   "series": "Apple",
+   "claim": "fin-005",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Microsoft",
+   "claim": "fin-008",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Amazon",
+   "claim": "fin-010",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "ocf",
+   "series": "Apple",
+   "claim": "fin-012",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Microsoft",
+   "claim": "fin-035",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Amazon",
+   "claim": "fin-037",
+   "points": "series_fiscal_year_ends"
+  },
+  {
+   "panel": "cash",
+   "series": "Apple",
+   "claim": "fin-039",
+   "points": "series_fiscal_year_ends"
+  }
+ ],
+ "table": {
+  "by": [
+   "series",
+   "year",
+   "end"
+  ],
+  "across": "panel",
+  "labels": {
+   "series": "Company",
+   "year": "Fiscal year",
+   "end": "Year ends"
+  }
+ }
+}

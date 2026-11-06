@@ -1,5 +1,5 @@
 """Tests for scripts/resource_model.py. The pure equations always run; everything that needs the evidence files
-skips when they are absent, so CI stays green before the pour (work/ is gitignored)."""
+skips when they are absent, so CI stays green before the pour (work/ is gitignored), and fails instead on the owner's machine, where planning-T1/ is."""
 import glob
 import importlib.util
 import json
@@ -18,7 +18,17 @@ fit_spec = importlib.util.spec_from_file_location("fit_idle", ROOT / "scripts" /
 fit = importlib.util.module_from_spec(fit_spec)
 fit_spec.loader.exec_module(fit)
 
-need_files =pytest.mark.skipif(not (rm.OUT.exists() and rm.PARAMS.exists() and rm.COMPARISON.exists()), reason="evidence files absent")
+def need_files(test):
+    """Tests that read the evidence files skip where they and planning-T1/ are both absent (CI, a fresh clone). On the owner's machine, where planning-T1/ is,
+    a missing evidence file fails them: a skip there would hide a pour that never ran."""
+    missing = [p.name for p in (rm.OUT, rm.PARAMS, rm.COMPARISON) if not p.exists()]
+    if not missing or not (ROOT / "planning-T1").is_dir():
+        return pytest.mark.skipif(bool(missing), reason="evidence files absent")(test)
+
+    def fails():
+        pytest.fail(f"planning-T1/ is here, but work/site-refresh/evidence lacks {', '.join(missing)}: restore the evidence folder (work/ is local only), then rerun")
+    fails.__name__ = test.__name__
+    return fails
 
 
 @pytest.fixture(scope="module")
@@ -146,7 +156,7 @@ def test_every_cited_claim_exists_and_is_usable(world):  # (4)
         if isinstance(node.get("claims"), list):
             cited.update(node["claims"])
     text = json.dumps({k: world["out"][k] for k in ("catalog", "architectures", "levers", "qualitative", "places", "custody", "carbon_damage")}, ensure_ascii=False)
-    cited.update(re.findall(r"\b(?:fp|ec|ex|sf|gf|au|px|sv|lf|mv|tr|rs|fin|dem)-\d{3}\b", text))
+    cited.update(re.findall(rm.CLAIM_ID, text))
     assert len(cited) > 100
     for c in sorted(cited):
         assert c in index, c

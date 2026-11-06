@@ -1,5 +1,5 @@
 // The Data Centers page with its real module and data: tabs, deep links, selection, and every control's effect on the Reading.
-const { JSDOM, ok, eq, wait, read, plateFile, open, fire, key, holds, leads, wordsOnly } = require('./lib');
+const { JSDOM, ok, eq, wait, settle, read, plateFile, open, fire, key, holds, leads, wordsOnly } = require('./lib');
 
 const PAGE = 'http://localhost/site/data-centers/index.html';
 const html = read('site/data-centers/index.html');
@@ -311,6 +311,7 @@ async function forecastCheck() {
   ok(holds(p.reading.textContent, ['AEO2015', '1,404.94 TWh', '1,360.88 TWh', '-44.06 TWh', '3.24 percent']), 'commercial at 2019');
   fire(window, row(p.root, 'l-2024').querySelector('.ladder-label'), 'click');
   ok(holds(p.reading.textContent, ['about 105 TWh', '+32 TWh']), 'LBNL stays at 2020 whatever the EIA year');
+  await settle();
   eq(window.location.search, '?fc_target=2019&dc-forecast-check=l-2024', 'a link carries the year and the row');
   fire(window, p.root.querySelector('[data-reset]'), 'click');
   ok(holds(p.reading.textContent, ['AEO2013', '4,075.26 TWh']), 'Reset');

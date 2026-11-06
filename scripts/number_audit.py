@@ -39,7 +39,7 @@ LABELS = {"th", "caption", "figcaption", "legend"}  # a row, column, or figure l
 SKIP_BLOCK = re.compile(r"\s*(/?)(?:plate|bench|claims-cited)(?::\S+)?\s*$")
 MODEL_BLOCK = re.compile(r"\s*(/?)explorer:\S+\s*$")
 AXIS_CLASS = re.compile(r"axis|tick")
-CLAIM_ID = re.compile(r"\b[a-z]{2,3}-\d{3}\b")
+from validate_public import CLAIM_ID  # noqa: E402  one claim-id pattern for every script
 
 MONTH = "January|February|March|April|May|June|July|August|September|October|November|December"
 TOKEN = re.compile(

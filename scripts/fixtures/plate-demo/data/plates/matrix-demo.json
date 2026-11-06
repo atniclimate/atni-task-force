@@ -1,0 +1,79 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "matrix-demo",
+ "eyebrow": "Tradeoffs",
+ "title": "Of two tradeoffs, each has a national figure and an open question",
+ "subtitle": "A filled square is an agency figure; a hollow one is modeled or a preprint.",
+ "plot": {
+  "type": "matrix",
+  "columns": [
+   {
+    "id": "national",
+    "label": "National scale"
+   },
+   {
+    "id": "unit",
+    "label": "Per unit"
+   },
+   {
+    "id": "open",
+    "label": "Open question"
+   }
+  ],
+  "units": {
+   "billion liters (nearly)": "billion liters",
+   "PUE (ratio)": "PUE"
+  }
+ },
+ "default": "water--national",
+ "rows": [
+  {
+   "id": "water",
+   "label": "Water",
+   "cells": {
+    "national": [
+     {
+      "claim": "tr-001",
+      "say": "{display} on site"
+     },
+     {
+      "claim": "tr-004",
+      "say": "about {display} at power plants"
+     }
+    ],
+    "unit": [
+     {
+      "claim": "tr-009",
+      "range": false,
+      "say": "{display} on site"
+     },
+     {
+      "claim": "tr-005",
+      "say": "{display} at the plant"
+     }
+    ],
+    "open": "Watershed and season"
+   }
+  },
+  {
+   "id": "power",
+   "label": "Power",
+   "cells": {
+    "national": [
+     {
+      "claim": "dem-028"
+     }
+    ],
+    "unit": [
+     {
+      "claim": "tr-065",
+      "modeled": true
+     }
+    ],
+    "open": "Workload split, which no operator discloses"
+   }
+  }
+ ]
+}

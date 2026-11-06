@@ -8,7 +8,7 @@ Idempotent: the tags sit between two markers and are replaced on each run, so ru
 The default share card is site/assets/img/share-card.png, 1200 by 630, a one-time render of the ATNI Energy on-dark lockup on #010B13 with vectorcraft-cli convert. A page with a
 lead plate takes that plate's card instead, from scripts/build_share_cards.py, whose alt text is the plate's own sentence.
 """
-from html import escape
+from html import escape, unescape
 import json
 import re
 import sys
@@ -37,7 +37,7 @@ def load_cards(site):
 
 
 def meta_block(title, description, url, eol="\n", card=None):
-    # Title and description come from the page's own HTML, so they are already escaped.
+    # The description comes from an attribute, so it is already escaped for one; apply_meta escapes the title, which was element text.
     image, alt = (card["file"], escape(card["alt"])) if card else (CARD_PATH, CARD_ALT)
     tags = [
         "<!-- page-meta -->",
@@ -63,7 +63,8 @@ def apply_meta(html, rel, cards=None):
     if not title or not description:
         raise ValueError(f"{rel} needs a <title> and a <meta name=\"description\"> on one line")
     eol = "\r\n" if "\r\n" in html else "\n"
-    block = meta_block(" ".join(title.group(1).split()), description.group(1), url_of(rel), eol, (cards or {}).get(PAGE_CARDS.get(rel)))
+    title = escape(unescape(" ".join(title.group(1).split())), quote=True)  # a quote mark is plain text in <title> and would end the attribute
+    block = meta_block(title, description.group(1), url_of(rel), eol, (cards or {}).get(PAGE_CARDS.get(rel)))
     html = BLOCK.sub("", html)
     at = DESCRIPTION.search(html).end()
     return html[:at] + block + html[at:]

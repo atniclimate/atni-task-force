@@ -180,7 +180,7 @@ A row past `data-to` moves to `.strip-beyond`; a passed one moves to the lane, s
 
 **Run order after a plate changes:** `build_plates.py`, `pour_claim_refs.py`, `build_index.py`, `build_share_cards.py` (if a lead plate's title moved), `build_briefing.py`, `build_briefing_pdf.py`, `add_page_meta.py`, then `validate_public.py`. `tests/test_index_briefing.py` fails with the fix if the manifest, a card, or the briefing has fallen behind, and `tests/test_briefing_pdf.py` if the PDF has.
 
-**`site/data/index.json`** lists each plate (id, page, eyebrow, title at its defaults, kind, controls, claim ids, checked date, path), each claims cluster (path, count, verified, partly), and each data file (path, schema, tier, builder). `validate_public.py` fails if a listed path is gone, a listed JSON file does not say T0, or a plate is not listed.
+**`site/data/index.json`** lists each plate (id, page, eyebrow, title at its defaults, kind, controls, claim ids, checked date, path), each claims cluster (path, count, verified, partly), and each data file (path, schema, tier, builder); the tier is the file's own, `null` when the file names none. `validate_public.py` fails if a listed path is gone, a listed JSON file does not say T0, or a plate is not listed.
 
 ## What the real data needs (found building the proof set)
 - `ai-same-hour`: the plan's 0.1 floor clips video's low at the data center (0.0595); use `"domain": [0.01, 100000]`. fp-135 is in W: `"units": {"Wh/hour": "Wh", "W": "Wh"}` on a one-hour row. fp-094 is unverified, so it cannot be cited; print "unsourced" in the label.

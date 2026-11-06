@@ -49,8 +49,17 @@ export function linkFilters(form, names) {
       else next.delete(name);
     }
     const query = next.toString();
-    window.history.replaceState(null, '', `${query ? `?${query}` : window.location.pathname}${window.location.hash}`);
+    try { window.history.replaceState(null, '', `${query ? `?${query}` : window.location.pathname}${window.location.hash}`); } catch { /* throttled: the next change writes it */ }
   };
+}
+
+// The element the address's fragment names, or null: a pasted link with a broken escape, such as #%E0, names nothing and stops nothing.
+export function hashTarget() {
+  try {
+    return document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+  } catch {
+    return null;
+  }
 }
 
 // Fills every [data-figure="name"] element with its value.

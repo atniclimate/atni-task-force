@@ -128,7 +128,10 @@ def compose(site):
     note, lists = checklists_of(sources[CHECKLISTS_PAGE])
     sections = {e["id"]: posixpath.dirname(e["page"]) for e in entries} | {list_id: posixpath.dirname(CHECKLISTS_PAGE) for list_id, _, _ in lists}
     here = set(sections) | {i for block in blocks.values() for i in ID.findall(block)}
-    latest = max((e["checked"] for e in entries if e["checked"]), key=lambda d: (d[6:], d[:5]))
+    dated = [e["checked"] for e in entries if e["checked"]]
+    if not dated:
+        raise bp.BuildError(f"no plate on {', '.join(PAGES)} has a checked date in data/index.json, so the packet cannot say when its sources were checked: run build_plates.py, then build_index.py")
+    latest = max(dated, key=lambda d: (d[6:], d[:5]))
 
     packet, rail, seen = [], {}, {}
     labels = {}

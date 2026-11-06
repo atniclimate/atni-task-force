@@ -6,8 +6,8 @@ const { m: I, a: A, want, k_r_low, k_r_high, k_h_low, k_h_high, over_lo, over_hi
 const VIDEO_DC = A.video_dc_intensity.options;
 const KIND = A.chat_kind.options;
 const BASE = { prompts_per_hour: A.prompts_per_hour.default, device: 'phone', connection: 'wifi', network_mode: 'average', router_allocation: 'by_time', video_dc_intensity: 'measured_delivery', chat_wh_per_prompt: A.chat_wh_per_prompt.default };
-// As the kit rounds a computed figure: two significant figures, three at 99.5 and up. Three digits keep what the reader set and a division of two filings exact.
-const figure = (v, d) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }).format(+Number(v).toPrecision(d || (Math.abs(v) >= 99.5 ? 3 : 2)));
+// The kit's rounding for a computed figure: two significant figures, three at 99.5 and up. Three digits keep what the reader set and a division of two filings exact.
+const figure = plate.fig;
 const prompts = (N) => `${figure(N, 3)} ${N === 1 ? 'prompt' : 'prompts'}`;
 
 // The equations of compare_model.py, the oracle. which picks value, low, or high of every input.

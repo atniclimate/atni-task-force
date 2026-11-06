@@ -63,8 +63,10 @@ From the repository root, run the three checks:
 ```powershell
 python scripts\validate_public.py      # public boundary, schemas, links, house style; must pass
 python scripts\check_t1_leak.py        # verbatim T1 text in site/; exit 0 clean, 1 blocks, 3 lists overlaps to review
-python -m pytest -q tests              # energy potential and helper tests
+python -m pytest -q -rs tests          # energy potential and helper tests; -rs prints why each skipped test skipped
 ```
+
+Tests that need local T1 files skip without them, and `-rs` names each one; the intake template test also needs `openpyxl` (`python -m pip install openpyxl`).
 
 `validate_public.py` needs Python 3.9 or later and PyMuPDF (`python -m pip install pymupdf`). It exits non-zero and lists every problem when it finds: a file type that does not belong in `site/`; a local file path, credential-like string, link to `planning-T1`, Google Docs, or Google Drive, email link, or `@atnitribes.org` address anywhere in `site/` (PDFs included); an em dash in published prose; an external script, stylesheet, or font; a broken local link or anchor; a library entry that breaks the schema or is not T0; an empty or unreadable PDF; a content slot that is unbalanced or missing from `docs/CONTENT-SLOTS.md`; or a data file that fails its light checks: `energy-potential.json` (T0, known types and stages, https citation links that end in `#page=N`), `energy-funding.json` (T0, no heat screen named in any key or string, dated status checks, https links), and `policy-watch.json` with the Policy Sentinel follow files (required fields, https links).
 
@@ -76,7 +78,7 @@ GitHub Pages serves **only `site/`**. The Pages workflow runs the check above an
 
 `planning-T1/`, `files-unsorted/`, and `work/` hold T1 (Community Network) material and local working files. They are excluded by `.gitignore`, never copied into `site/`, and never linked from it. T1 material moves to T0 only by an explicit release decision. See [DATA-TIERS.md](DATA-TIERS.md).
 
-The site loads no analytics, trackers, outside scripts, or outside fonts, and it sets no cookies. Its one use of browser storage is to remember a reader's light or dark theme on that device. Contact routes through <https://atnitribes.org>; the site lists no personal email addresses.
+The site loads no analytics, trackers, outside scripts, or outside fonts, and it sets no cookies. Its browser storage is used for two things, both on that device only and never sent anywhere: a reader's light or dark theme, and, on the home and Library pages, the date of the newest update listed at the last visit, so they can count what is new. Contact routes through <https://atnitribes.org>; the site lists no personal email addresses.
 
 ## License
 

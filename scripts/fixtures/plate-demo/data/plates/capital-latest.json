@@ -1,0 +1,18 @@
+{
+  "schema": 1, "tier": "T0", "id": "capital-latest", "page": "index.html",
+  "eyebrow": "Capital spending",
+  "title": "{label} spent {display} in its latest full fiscal year, {year}",
+  "subtitle": "Cash paid for property and equipment. Fiscal years end on different dates.",
+  "boundary": "Cash paid for property and equipment.",
+  "plot": {"type": "bars", "units": {"USD billion": "billion dollars"}},
+  "default": "amazon",
+  "rows": [
+    {"id": "amazon", "label": "Amazon", "claim": "fin-003"},
+    {"id": "microsoft", "label": "Microsoft", "claim": "fin-001"},
+    {"id": "alphabet", "label": "Alphabet", "claim": "fin-002"},
+    {"id": "meta", "label": "Meta", "claim": "fin-004"},
+    {"id": "apple", "label": "Apple", "claim": "fin-005"},
+    {"id": "tesla", "label": "Tesla", "claim": "fin-007"},
+    {"id": "nvidia", "label": "NVIDIA", "claim": "fin-006"}
+  ]
+}

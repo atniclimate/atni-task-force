@@ -1,6 +1,6 @@
 // The Energy pages with their real scripts and data: stacked bars and the needle, the alphabetical detail, the deadlines strip at fixed dates, and what shows without scripts.
 // jsdom cannot run a module, so each page's modules run here as plain scripts with the imports inlined; nothing else about them changes. The clock is fixed, so no check goes stale.
-const { JSDOM, ok, eq, read, open, fire, key, wait } = require('./lib');
+const { JSDOM, ok, eq, read, open, fire, key, wait, settle } = require('./lib');
 
 const util = read('site/assets/js/util.js').replace(/^export (async function|function|const) /gm, '$1 ').replace('import.meta.url', "'http://localhost/site/assets/js/util.js'");
 const classic = (rel) => read(rel).replace(/^import .*$/m, '');
@@ -89,6 +89,7 @@ async function typesPlate() {
   await wait(0);
   eq(panel(plate).querySelector('summary').textContent, 'Solar energy: 30 Tribes, by the most advanced stage found', 'and its line follows');
   eq(plate.querySelector('.ladder-needle .needle-label').textContent, 'Solar, 30 Tribes', 'selection moves the needle');
+  await settle();
   ok(window.location.search.includes('energy-types-by-stage=solar'), 'and the address');
   eq(plate.querySelector('a.button').getAttribute('href'), 'potential/?type=solar#tribes', 'Read it Tribe by Tribe goes to that filter');
   ok(!panel(document.getElementById('energy-deadlines')).open, 'the other plate\'s panel stays closed');

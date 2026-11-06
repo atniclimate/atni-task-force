@@ -14,6 +14,7 @@ tier T0, so that mark is the human check behind the stamp. The composition strip
 """
 import argparse
 import csv
+from datetime import datetime
 import json
 import re
 import sys
@@ -24,13 +25,23 @@ from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
 import build_library_strip
-from validate_public import FORBIDDEN
+from validate_public import AREAS, FORBIDDEN, TYPES
 
 LIBRARY = Path(__file__).resolve().parents[1] / "site" / "data" / "library.json"
-CLEARED = re.compile(r"(no )?[A-Za-z]{2,5} \d{2}/\d{2}/\d{4}( \S+)?")  # "PF 11/05/2026" lands the row; "no PF 11/05/2026" declines it
-TYPES = {"resolution", "report", "policy", "legislation", "article", "academic", "dataset", "tool", "website", "news"}
-AREAS = {"energy-feasibility", "data-centers", "ai", "summit", "cross-cutting"}
+# "PF 11/05/2026" lands the row and "no PF 11/05/2026", in any case, declines it. Initials never begin with "no", so "Nope 11/05/2026" and
+# "NO 11/05/2026" are neither, and stop the batch for the owner to rewrite.
+CLEARED = re.compile(r"(?:(?i:(no)) )?(?!(?i:no))[A-Za-z]{2,5} (\d{2}/\d{2}/\d{4})(?: \S+)?")
 UA = "ATNI-task-force-library-check (+https://github.com/atniclimate/atni-task-force)"
+
+
+def mark_of(mark):
+    """'cleared', 'declined', or None for a mark that is neither; its date must be a real day."""
+    match = CLEARED.fullmatch(str(mark or "").strip())
+    try:
+        datetime.strptime(match[2], "%m/%d/%Y")
+    except (TypeError, ValueError):  # no match, or a day that does not exist
+        return None
+    return "declined" if match[1] else "cleared"
 
 
 def norm(url):
@@ -92,11 +103,11 @@ def gate(rows):
     kept, problems = [], []
     for row in rows:
         where = f"row {row.get('row', '?')} ({row.get('title') or row.get('url') or 'no title'})"
-        mark = str(row.get("cleared") or "").strip()
+        kind = mark_of(row.get("cleared"))
         text = json.dumps({k: v for k, v in row.items() if k not in ("flags", "submitted_by")}, ensure_ascii=False)
-        if not CLEARED.fullmatch(mark):
+        if kind is None:
             problems.append(f"{where}: not cleared. Read REPORT.md, mark the row on the sheet as PF MM/DD/YYYY or no PF MM/DD/YYYY, and pull again")
-        elif mark.startswith("no "):
+        elif kind == "declined":
             continue
         elif str(row.get("public_source") or "").strip().lower() != "yes":
             problems.append(f"{where}: public_source is not yes, so it cannot be T0. Decline the row, or correct the column and clear it again")
