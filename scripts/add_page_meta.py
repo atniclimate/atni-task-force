@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Writes canonical and link-preview tags into every page's head, and site/robots.txt and site/sitemap.txt.
+"""Writes canonical and link-preview tags and the speculation rules into every page's head, and site/robots.txt and site/sitemap.txt.
 
 Idempotent: the tags sit between two markers and are replaced on each run, so run it again after anyone adds a page or changes a title.
    python scripts/add_page_meta.py          # write
@@ -21,6 +21,17 @@ CARD_PATH = "assets/img/share-card.png"
 CARD_ALT = "The ATNI Energy logo, the ATNI seal beside the words ATNI Energy, on a dark ground."
 PAGE_CARDS = {"index.html": "ai-same-hour", "ai/index.html": "ai-same-hour", "data-centers/index.html": "dc-pnw-load", "energy/index.html": "energy-types-by-stage", "explorer/index.html": "explorer"}
 BLOCK = re.compile(r"[ \t]*<!-- page-meta -->.*?<!-- /page-meta -->\r?\n", re.S)
+# Speculation rules (Chromium reads them; other browsers skip the block): a page this site links is fetched while the pointer rests on its link, and
+# prerendered once the pointer goes down. Only this site's own path, since the origin serves other repositories too, and only an address ending in /
+# or .html, so no data file, PDF, or image; never the Briefing, a 3.5 MB page; and the Library is fetched but not prerendered, since its script
+# records what the reader has seen as it runs. Inline JSON loads nothing from elsewhere.
+OWN = "/atni-task-force/"
+OWN_PAGES = [OWN, f"{OWN}*/", f"{OWN}*.html"]
+NOT_BRIEFING = {"not": {"href_matches": f"{OWN}briefing*"}}
+SPECULATION = json.dumps({
+    "prefetch": [{"where": {"and": [{"href_matches": OWN_PAGES}, NOT_BRIEFING]}, "eagerness": "moderate"}],
+    "prerender": [{"where": {"and": [{"href_matches": OWN_PAGES}, NOT_BRIEFING, {"not": {"href_matches": f"{OWN}library*"}}]}, "eagerness": "conservative"}],
+}, separators=(",", ":"))
 TITLE = re.compile(r"<title>(.*?)</title>", re.S)
 DESCRIPTION = re.compile(r'[ \t]*<meta name="description" content="([^"]*)">\r?\n')
 
@@ -52,6 +63,7 @@ def meta_block(title, description, url, eol="\n", card=None):
         '<meta property="og:image:height" content="630">',
         f'<meta property="og:image:alt" content="{alt}">',
         '<meta name="twitter:card" content="summary_large_image">',
+        f'<script type="speculationrules">{SPECULATION}</script>',
         "<!-- /page-meta -->",
     ]
     return "".join(f"  {tag}{eol}" for tag in tags)

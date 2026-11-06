@@ -1,5 +1,7 @@
 """Link-preview tags: scripts/add_page_meta.py is idempotent, every page carries them, and the public check allows only this site's own canonical address."""
 import importlib.util
+import json
+import re
 import sys
 from pathlib import Path
 
@@ -61,6 +63,23 @@ def test_run_writes_then_has_nothing_left_to_do(tmp_path):
 
 def test_the_real_site_is_up_to_date():
     assert meta.run(check=True) == [], "run python scripts/add_page_meta.py"
+
+
+def test_speculation_rules_name_only_this_sites_pages_and_pass_the_public_check():
+    page = validate.Page()
+    page.feed(meta.apply_meta(PAGE, "ai/index.html"))
+    (script,) = page.scripts
+    errors = []
+    validate.check_js("the rules", script, errors)
+    assert not errors and not page.refs, "inline JSON that loads nothing and names no other address"
+    assert all(p.startswith("/atni-task-force/") for p in re.findall(r'"(/[^"]*)"', script)), "never the origin's root, which serves other repositories"
+    rules = json.loads(script)
+    for action in ("prefetch", "prerender"):
+        (rule,) = rules[action]
+        pages, *unless = rule["where"]["and"]
+        assert all(p.endswith(("/", ".html")) for p in pages["href_matches"]), "pages only: no data file, PDF, or image"
+        assert {"not": {"href_matches": "/atni-task-force/briefing*"}} in unless
+    assert {"not": {"href_matches": "/atni-task-force/library*"}} in rules["prerender"][0]["where"]["and"], "the Library's script records a visit as it runs"
 
 
 def test_validate_allows_only_this_sites_canonical():

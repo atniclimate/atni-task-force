@@ -6,12 +6,21 @@
    needle, marks are grey until selected, and only the detail panel rises off the ground. Nothing on a first screen is under 0.875rem;
    0.8125rem survives in Sources, Table, and print. */
 
-@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/LeagueSpartan-Medium.woff2") format("woff2"); }
-@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/LeagueSpartan-SemiBold.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Regular.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Italic.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/NotoSans-Medium.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/NotoSans-Bold.woff2") format("woff2"); }
+/* Each face is two files, cut by scripts/subset_fonts.py: a Latin core every page loads, and a Latin-extended file the browser fetches only for a page
+   that draws one of its letters, so a Tribal-language name stays in its face. Combining marks are in both, since a letter and its marks are drawn
+   from one file; the extended rule comes second, so its own letters are drawn from it (of two rules whose ranges overlap, the later one is tried first). */
+@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/LeagueSpartan-Medium.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/LeagueSpartan-Medium-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
+@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/LeagueSpartan-SemiBold.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "League Spartan"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/LeagueSpartan-SemiBold-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Regular.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Regular-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
+@font-face { font-family: "Noto Sans"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Italic.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "Noto Sans"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/NotoSans-Italic-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/NotoSans-Medium.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/NotoSans-Medium-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/NotoSans-Bold.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0300-036F, U+2000-22FF; }
+@font-face { font-family: "Noto Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/NotoSans-Bold-LatinExt.woff2") format("woff2"); unicode-range: U+0100-036F, U+1E00-1EFF; }
 
 :root {
   --gutter: clamp(16px, 1.6vw, 28px);
@@ -758,6 +767,22 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 }
 @media (min-width: 1600px) { .plate { gap: 32px; } }
 @media (pointer: fine) { .plate .segmented label { min-height: 32px; } }
+/* After the first plate of a run, a plate skips its layout and paint until the reader nears it, and so does a Sources list (content-visibility, Baseline
+   2025; a browser without it renders everything, as before). Until it is first drawn it holds its form's height as measured in Chrome: stacked at 1024
+   by 768 the forms' medians ran 1,210 to 1,530px, so one height serves; in three zones at 1440 by 900, the medians below. auto then keeps the drawn
+   height, and a live plate's min-height still floors it. A plate or list holding focus drops the containment, whose paint clip would cut the focus ring
+   of a control at its edge. Screen only: paper shows everything. */
+@media screen {
+  .plate ~ .plate { contain-intrinsic-block-size: auto 1300px; }
+  .plate-sources { contain-intrinsic-block-size: auto 900px; } /* the page's own lists ran 79 to 5,718px; a plate's opens on screen */
+  .plate ~ .plate:not(:focus-within), .plate-sources:not(:focus-within) { content-visibility: auto; }
+}
+@media screen and (min-width: 1100px) {
+  .plate ~ .plate { contain-intrinsic-block-size: auto 650px; } /* bars, ladder, and multiples ran 648 to 672px */
+  .plate ~ .plate[data-kind="lines"] { contain-intrinsic-block-size: auto 740px; }
+  .plate ~ .plate[data-kind="matrix"] { contain-intrinsic-block-size: auto 720px; }
+  .plate ~ .plate[data-kind="instrument"] { contain-intrinsic-block-size: auto 880px; }
+}
 
 /* A workbench panel sits on the base ground and its h2 is compact, so the plate starts on the first screen. */
 .panel, main > .panel:nth-of-type(n) { padding-block: 0 24px; background: none; }
