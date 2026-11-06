@@ -645,7 +645,7 @@
    "id": "lc-062",
    "entity": "What's New",
    "metric": "rows in the last ninety days",
-   "value": 41,
+   "value": 42,
    "low": null,
    "high": null,
    "unit": "rows",

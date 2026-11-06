@@ -12,6 +12,13 @@
    "area": "cross-cutting"
   },
   {
+   "date": "2026-11-06",
+   "kind": "data",
+   "title": "Charts updated on the Resource Use page",
+   "url": "data-centers/resource-use/",
+   "area": "data-centers"
+  },
+  {
    "date": "2026-11-05",
    "kind": "library",
    "title": "ISO/IEC 30134-2:2026 Information technology, Data centres key performance indicators, Part 2: Power usage effectiveness (PUE)",
@@ -385,6 +392,10 @@
   "plates/energy-deadlines-catalog.json": "2dba8582ec83",
   "plates/energy-deadlines.json": "fa73c314c2dc",
   "plates/energy-types-by-stage-plans.json": "2baa46d8d682",
-  "plates/energy-types-by-stage.json": "27d3fb086f6a"
+  "plates/energy-types-by-stage.json": "27d3fb086f6a",
+  "plates/ru-boundary.json": "e24c122e3367",
+  "plates/ru-electricity.json": "2410896c0c33",
+  "plates/ru-forecasts.json": "5eac9b897879",
+  "plates/ru-hour.json": "dc29cbc7b8d8"
  }
 }

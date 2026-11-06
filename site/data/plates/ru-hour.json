@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "ru-hour",
+ "page": "data-centers/resource-use/index.html",
+ "default": "ct-dc",
+ "eyebrow": "Energy per streamed hour, whole chain",
+ "title": "One streamed hour: about {c[fp-037][text]} Wh in the data center on one account, {c[fp-141][text]} Wh on another",
+ "subtitle": "The network, router, and screen are nearly all the rest. Wh per viewing hour, one scale on all three rulers. Every bar is a modeled estimate, so every bar is hollow. Each source draws its boundary its own way.",
+ "text": [
+  "On both accounts the data center is a sliver of the hour: about {c[ru-003][value]} percent on Carbon Trust's own reading ({c[fp-037][text]} of {c[fp-035][text]} Wh) and about {c[ru-004][value]} percent on the UK follow-up ({c[fp-141][value]} of {c[fp-143][value]} Wh, derived). Neither is a meter reading of a named service."
+ ],
+ "plot": {
+  "type": "bars",
+  "domain": [0, 280],
+  "units": {"Wh/hour": "Wh"},
+  "groups": [
+   {"id": "ct", "label": "Carbon Trust, Europe, 2020"},
+   {"id": "desnz", "label": "Europe Economics for UK DESNZ follow-up, UK, 2026"},
+   {"id": "more", "label": "Whole chain, three more accounts"}
+  ]
+ },
+ "reading": "{label}, {year}, {source}: {display} for one viewing hour, modeled. {evidence}",
+ "rows": [
+  {"id": "ct-whole", "group": "ct", "label": "Whole chain", "claim": "fp-035", "modeled": true},
+  {"id": "ct-dc", "group": "ct", "label": "Data center", "claim": "fp-037", "modeled": true},
+  {"id": "ct-network", "group": "ct", "label": "Network", "claim": "fp-038", "modeled": true},
+  {"id": "ct-router", "group": "ct", "label": "Home router", "claim": "fp-039", "modeled": true},
+  {"id": "ct-screen", "group": "ct", "label": "Screen", "claim": "fp-040", "modeled": true},
+  {"id": "ct-tv", "group": "ct", "label": "TV peripherals", "claim": "ru-001", "modeled": true},
+  {"id": "desnz-whole", "group": "desnz", "label": "Whole chain", "claim": "fp-143", "modeled": true},
+  {"id": "desnz-dc", "group": "desnz", "label": "Data center", "claim": "fp-141", "modeled": true},
+  {"id": "desnz-rest", "group": "desnz", "label": "Network, router, and television", "tag": "Derived", "claim": "ru-002", "modeled": true},
+  {"id": "iea", "group": "more", "label": "IEA, typical hour", "claim": "fp-046", "modeled": true},
+  {"id": "bbc", "group": "more", "label": "BBC iPlayer, UK", "claim": "fp-041", "modeled": true},
+  {"id": "youtube", "group": "more", "label": "YouTube, worldwide", "claim": "fp-120", "modeled": true}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Part", "field": "label"},
+   {"label": "Source", "field": "source"},
+   {"label": "Year", "field": "year"},
+   {"label": "Wh per viewing hour", "field": "text"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

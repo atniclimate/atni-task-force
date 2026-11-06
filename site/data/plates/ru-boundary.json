@@ -1,0 +1,51 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "ru-boundary",
+ "page": "data-centers/resource-use/index.html",
+ "default": "ct-dc",
+ "eyebrow": "Energy per hour or per task, Wh, log ruler",
+ "title": "Hold one boundary at a time: the data center alone, or the whole chain of a streamed hour",
+ "text": [
+  "Inside the data center, a video hour is near {c[fp-037][text]} Wh on bottom-up accounts and far more on a top-down average, a median text prompt is {c[fp-001][text]} Wh, measured, and an AI video clip is about {c[fp-070][value]} to {c[fp-067][text]} Wh depending on the model.",
+  "With the screen and the network counted, an hour of streaming runs from {c[fp-120][text]} to {c[fp-143][value]} Wh by source, all modeled. No source measures a chat hour on this boundary."
+ ],
+ "plot": {
+  "type": "ladder",
+  "scale": "log",
+  "domain": [0.1, 1000],
+  "units": {"Wh/hour": "Wh", "Wh/image": "Wh", "Wh/video": "Wh"},
+  "groups": [
+   {"id": "dc", "label": "Data center only: what counts as overhead differs by row, and the row says so"},
+   {"id": "whole", "label": "Whole chain: an hour of streaming with the screen and the network"}
+  ]
+ },
+ "reading": "{label}: {display}. {tag}. {evidence}",
+ "rows": [
+  {"id": "ct-dc", "group": "dc", "label": "One video hour, Carbon Trust, 2020", "tag": "Data centers and delivery servers; modeled", "claim": "fp-037", "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "dimpact", "group": "dc", "label": "One video hour, DIMPACT", "tag": "Participants' own assessments; company-reported", "claim": "fp-122", "cols": {"counted": "Data center only"}},
+  {"id": "desnz-dc", "group": "dc", "label": "One video hour, DESNZ follow-up, 2026", "tag": "IT and non-IT energy, with shared processes apportioned across viewers; modeled", "claim": "fp-141", "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "gemini", "group": "dc", "label": "One median Gemini text prompt", "tag": "Accelerators, host machine, idle capacity, data center overhead; measured, in production", "claim": "fp-001", "cols": {"counted": "Data center only"}},
+  {"id": "frontier", "group": "dc", "label": "One median query, frontier-scale models", "tag": "Bottom-up model of H100 servers, interquartile range; modeled", "claim": "fp-017", "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "longer", "group": "dc", "label": "A query 15 times longer", "tag": "Same bottom-up model, interquartile range; modeled", "claim": "fp-019", "cites": ["ru-078"], "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "reasoning", "group": "dc", "label": "A reasoning model, short prompt", "tag": "Infrastructure-aware benchmark of one provider's reasoning model; modeled", "claim": "fp-023", "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "gpt5", "group": "dc", "label": "GPT-5, long high-reasoning query", "tag": "Infrastructure-aware benchmark, server power and data center overhead; modeled", "claim": "fp-136", "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "image", "group": "dc", "label": "One 1024-pixel image", "tag": "Graphics-chip energy measured, doubled for overhead; measured, then estimate", "claim": "fp-138", "cites": ["ru-081"], "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "veo", "group": "dc", "label": "One 8-second Veo 3 clip", "tag": "Scaling laws fitted to open models; modeled", "claim": "fp-070", "cites": ["ru-080"], "modeled": true, "cols": {"counted": "Data center only"}},
+  {"id": "clip", "group": "dc", "label": "One 5-second clip, open research model", "tag": "Energy measured with CodeCarbon; MIT's video passage does not say which parts it counts", "claim": "fp-067", "cites": ["ru-079"], "cols": {"counted": "Data center only"}},
+  {"id": "youtube", "group": "whole", "label": "YouTube, worldwide, 2016", "tag": "Data centers, networks, and devices in use; modeled", "claim": "fp-120", "modeled": true, "cols": {"counted": "Whole chain"}},
+  {"id": "bbc", "group": "whole", "label": "BBC iPlayer, UK, 2024", "tag": "Preparation, distribution, and viewing; modeled", "claim": "fp-041", "modeled": true, "cols": {"counted": "Whole chain"}},
+  {"id": "iea", "group": "whole", "label": "IEA typical hour, 2019", "tag": "Data centers, networks, and devices; modeled", "claim": "fp-046", "modeled": true, "cols": {"counted": "Whole chain"}},
+  {"id": "ct-whole", "group": "whole", "label": "Carbon Trust, Europe, 2020", "tag": "Device, home router, network, data center; modeled", "claim": "fp-035", "modeled": true, "cols": {"counted": "Whole chain"}},
+  {"id": "desnz-whole", "group": "whole", "label": "DESNZ follow-up, UK, 2026", "tag": "Data center, network, television, low to high cases; modeled", "claim": "fp-143", "modeled": true, "cols": {"counted": "Whole chain"}}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Row", "field": "label"},
+   {"label": "Boundary", "field": "counted"},
+   {"label": "Wh", "field": "text"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

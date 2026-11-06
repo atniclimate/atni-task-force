@@ -1,0 +1,41 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "ru-forecasts",
+ "page": "data-centers/resource-use/index.html",
+ "default": "lbnl-2030",
+ "eyebrow": "Data center electricity, TWh a year",
+ "title": "The forecasts for 2030 disagree: {c[dem-051][text]} TWh for the United States in one set of scenarios, {c[dem-030][text]} TWh in another",
+ "subtitle": "The world and the United States sit on separate rulers because they count different scopes. Hollow means modeled; dashed means projected.",
+ "plot": {
+  "type": "ladder",
+  "domain": [0, 1000],
+  "groups": [
+   {"id": "world", "label": "World"},
+   {"id": "us", "label": "United States"}
+  ]
+ },
+ "reading": "{label}: {display}, modeled. {tag}. {evidence}",
+ "rows": [
+  {"id": "iea-2025", "group": "world", "label": "IEA, 2025", "tag": "Last estimated year", "claim": "dem-040", "modeled": true, "cols": {"scope": "World"}},
+  {"id": "iea-2030", "group": "world", "label": "IEA, base case, 2030", "tag": "Projected", "claim": "dem-048", "projected": true, "cols": {"scope": "World"},
+   "also": [{"claim": "dem-041", "label": "The IEA's 2026 text for 2030"}]},
+  {"id": "lbnl-2024", "group": "us", "label": "LBNL, 2024", "tag": "Last historical year", "claim": "dem-028", "modeled": true, "cols": {"scope": "United States"}},
+  {"id": "lbnl-2030", "group": "us", "label": "LBNL, reference case, 2030", "tag": "Projected; uncertainty range", "claim": "dem-029", "range_from": "dem-030", "projected": true, "cols": {"scope": "United States"}},
+  {"id": "epri-2030", "group": "us", "label": "EPRI, 2030", "tag": "Projected; scenario range", "claim": "dem-051", "projected": true, "cols": {"scope": "United States"}}
+ ],
+ "also": [
+  {"claim": "ru-010", "label": "Gartner, 11/2025, for 2030, world, a separate forecast checked 11/05/2026"},
+  {"claim": "ru-121", "label": "Gartner, 06/2026, for 2030, world, a later forecast off the ruler"},
+  {"claim": "ru-089", "label": "IEA 2025 edition, 2030, as LBNL describes it, not the IEA's own table"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Source and year", "field": "label"},
+   {"label": "Scope", "field": "scope"},
+   {"label": "TWh", "field": "text"},
+   {"label": "Note", "field": "tag"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}
