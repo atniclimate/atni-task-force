@@ -1,0 +1,154 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "ru-water",
+ "page": "data-centers/resource-use/index.html",
+ "by": "water",
+ "default": "us-2023",
+ "eyebrow": "Water consumed by US data centers, billion liters",
+ "title": "US data centers consumed {c[tr-001][text]} billion liters on site in 2023, and the power plants serving them nearly {c[tr-004][text]} billion more",
+ "title_template": "{label}, counted {water}: {display}",
+ "answer": "About {site} billion liters on site in 2023, and nearly {plant} billion more at the power plants: about {ratio} times as much.",
+ "subtitle": "One fixed scale. Both parts are modeled from regional grid averages, not metered at any site.",
+ "inputs": {
+  "site": {
+   "claim": "tr-001"
+  },
+  "plant": {
+   "claim": "tr-004"
+  },
+  "site14": {
+   "claim": "tr-002"
+  },
+  "ratio": {
+   "claim": "ru-118"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "water",
+   "label": "Counted",
+   "default": "all",
+   "options": [
+    {
+     "value": "site",
+     "label": "on site only"
+    },
+    {
+     "value": "all",
+     "label": "with the power plant"
+    }
+   ]
+  }
+ ],
+ "not_counted": "No power plant figure for this year",
+ "plot": {
+  "type": "meter",
+  "domain": [
+   0,
+   1000
+  ],
+  "switch": "water"
+ },
+ "reading": "{label}, counted {water}: {display}, modeled. {evidence}",
+ "rows": [
+  {
+   "id": "us-2023",
+   "label": "US data centers, 2023",
+   "unit": "billion liters",
+   "digits": 3,
+   "cites": [
+    "tr-001",
+    "tr-004"
+   ],
+   "formula": {
+    "site": {
+     "value": "site"
+    },
+    "all": {
+     "value": "site + plant"
+    }
+   },
+   "segments": [
+    {
+     "label": "On site",
+     "value": "site",
+     "modeled": true
+    },
+    {
+     "label": "At the power plants",
+     "value": "plant",
+     "modeled": true,
+     "at": [
+      "all"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "us-2014",
+   "label": "US data centers, 2014",
+   "unit": "billion liters",
+   "digits": 3,
+   "cites": [
+    "tr-002"
+   ],
+   "formula": {
+    "site": {
+     "value": "site14"
+    },
+    "all": null
+   },
+   "segments": [
+    {
+     "label": "On site",
+     "value": "site14",
+     "modeled": true
+    }
+   ]
+  }
+ ],
+ "also": [
+  {
+   "claim": "ru-027",
+   "label": "On site in 2023, in gallons"
+  },
+  {
+   "claim": "ru-118",
+   "label": "Power plant water over site water, 2023, derived"
+  },
+  {
+   "claim": "tr-013",
+   "label": "Indirect over direct water, across four studies"
+  },
+  {
+   "claim": "tr-020",
+   "label": "IEA, world: the share from energy supply and electricity generation"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Year",
+    "field": "label"
+   },
+   {
+    "label": "Counted",
+    "field": "setting"
+   },
+   {
+    "label": "Billion liters",
+    "field": "text"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

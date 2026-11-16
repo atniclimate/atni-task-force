@@ -3,45 +3,227 @@
  "tier": "T0",
  "id": "ru-hour",
  "page": "data-centers/resource-use/index.html",
- "default": "ct-dc",
- "eyebrow": "Energy per streamed hour, whole chain",
- "title": "One streamed hour: about {c[fp-037][text]} Wh in the data center on one account, {c[fp-141][text]} Wh on another",
- "subtitle": "The network, router, and screen are nearly all the rest. Wh per viewing hour, one scale on all three rulers. Every bar is a modeled estimate, so every bar is hollow. Each source draws its boundary its own way.",
- "text": [
-  "On both accounts the data center is a sliver of the hour: about {c[ru-003][value]} percent on Carbon Trust's own reading ({c[fp-037][text]} of {c[fp-035][text]} Wh) and about {c[ru-004][value]} percent on the UK follow-up ({c[fp-141][value]} of {c[fp-143][value]} Wh, derived). Neither is a meter reading of a named service."
+ "by": "reach",
+ "default": "ct-whole",
+ "eyebrow": "One streamed hour of video, Wh",
+ "title": "About {c[fp-037][text]} Wh of a {c[fp-035][text]} Wh streamed hour happens in the data center on one account, {c[fp-141][text]} Wh on another",
+ "title_template": "{label}, counted as {reach}: {display}",
+ "answer": "About {ct_dc} Wh of a {ct_whole} Wh hour on Carbon Trust's account, and {desnz_dc} of {desnz_whole} Wh on the UK follow-up.",
+ "subtitle": "Wh for one viewing hour, all modeled, on one fixed scale. The lower ruler draws the data center's part a hundred times larger.",
+ "inputs": {
+  "ct_whole": {
+   "claim": "fp-035"
+  },
+  "ct_dc": {
+   "claim": "fp-037"
+  },
+  "ct_net": {
+   "claim": "fp-038"
+  },
+  "ct_router": {
+   "claim": "fp-039"
+  },
+  "ct_screen": {
+   "claim": "fp-040"
+  },
+  "ct_tv": {
+   "claim": "ru-001"
+  },
+  "desnz_whole": {
+   "claim": "fp-143"
+  },
+  "desnz_whole_lo": {
+   "claim": "fp-143",
+   "field": "low"
+  },
+  "desnz_whole_hi": {
+   "claim": "fp-143",
+   "field": "high"
+  },
+  "desnz_dc": {
+   "claim": "fp-141"
+  },
+  "desnz_dc_lo": {
+   "claim": "fp-141",
+   "field": "low"
+  },
+  "desnz_dc_hi": {
+   "claim": "fp-141",
+   "field": "high"
+  },
+  "desnz_rest": {
+   "claim": "ru-002"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "reach",
+   "label": "Counted",
+   "default": "whole",
+   "options": [
+    {
+     "value": "dc",
+     "label": "Data center only"
+    },
+    {
+     "value": "whole",
+     "label": "Whole hour"
+    }
+   ]
+  }
  ],
+ "not_counted": "Not counted at this setting",
  "plot": {
-  "type": "bars",
-  "domain": [0, 280],
-  "units": {"Wh/hour": "Wh"},
+  "type": "meter",
+  "domain": [
+   0,
+   350
+  ],
+  "switch": "reach",
+  "units": {
+   "Wh/hour": "Wh"
+  },
   "groups": [
-   {"id": "ct", "label": "Carbon Trust, Europe, 2020"},
-   {"id": "desnz", "label": "Europe Economics for UK DESNZ follow-up, UK, 2026"},
-   {"id": "more", "label": "Whole chain, three more accounts"}
+   {
+    "id": "hour",
+    "label": "The whole hour"
+   },
+   {
+    "id": "dc",
+    "label": "The data center's part alone, drawn a hundred times larger",
+    "domain": [
+     0,
+     3.5
+    ],
+    "mark": "bar"
+   }
   ]
  },
- "reading": "{label}, {year}, {source}: {display} for one viewing hour, modeled. {evidence}",
+ "reading": "{label}, counted as {reach}: {display} for one viewing hour. {evidence}",
  "rows": [
-  {"id": "ct-whole", "group": "ct", "label": "Whole chain", "claim": "fp-035", "modeled": true},
-  {"id": "ct-dc", "group": "ct", "label": "Data center", "claim": "fp-037", "modeled": true},
-  {"id": "ct-network", "group": "ct", "label": "Network", "claim": "fp-038", "modeled": true},
-  {"id": "ct-router", "group": "ct", "label": "Home router", "claim": "fp-039", "modeled": true},
-  {"id": "ct-screen", "group": "ct", "label": "Screen", "claim": "fp-040", "modeled": true},
-  {"id": "ct-tv", "group": "ct", "label": "TV peripherals", "claim": "ru-001", "modeled": true},
-  {"id": "desnz-whole", "group": "desnz", "label": "Whole chain", "claim": "fp-143", "modeled": true},
-  {"id": "desnz-dc", "group": "desnz", "label": "Data center", "claim": "fp-141", "modeled": true},
-  {"id": "desnz-rest", "group": "desnz", "label": "Network, router, TV", "tag": "Derived", "claim": "ru-002", "modeled": true},
-  {"id": "iea", "group": "more", "label": "IEA, typical hour", "claim": "fp-046", "modeled": true},
-  {"id": "bbc", "group": "more", "label": "BBC iPlayer, UK", "claim": "fp-041", "modeled": true},
-  {"id": "youtube", "group": "more", "label": "YouTube, worldwide", "claim": "fp-120", "modeled": true}
+  {
+   "id": "ct-whole",
+   "group": "hour",
+   "label": "Carbon Trust, Europe, 2020",
+   "unit": "Wh",
+   "digits": 3,
+   "cites": [
+    "fp-035",
+    "fp-037",
+    "fp-038",
+    "fp-039",
+    "fp-040",
+    "ru-001"
+   ],
+   "formula": {
+    "dc": {
+     "value": "ct_dc"
+    },
+    "whole": {
+     "value": "ct_whole"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "ct_dc",
+     "modeled": true
+    },
+    {
+     "label": "Network",
+     "value": "ct_net",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    },
+    {
+     "label": "Home router, screen, and TV peripherals",
+     "value": "ct_router + ct_screen + ct_tv",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "desnz-whole",
+   "group": "hour",
+   "label": "UK follow-up, 2026",
+   "unit": "Wh",
+   "digits": 4,
+   "cites": [
+    "fp-143",
+    "fp-141",
+    "ru-002"
+   ],
+   "formula": {
+    "dc": {
+     "value": "desnz_dc",
+     "low": "desnz_dc_lo",
+     "high": "desnz_dc_hi"
+    },
+    "whole": {
+     "value": "desnz_whole",
+     "low": "desnz_whole_lo",
+     "high": "desnz_whole_hi"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "desnz_dc",
+     "modeled": true
+    },
+    {
+     "label": "Network, router, and TV, not split",
+     "value": "desnz_rest",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ct-dc",
+   "group": "dc",
+   "label": "Carbon Trust, data center part",
+   "claim": "fp-037",
+   "modeled": true
+  },
+  {
+   "id": "desnz-dc",
+   "group": "dc",
+   "label": "UK follow-up, data center part",
+   "claim": "fp-141",
+   "modeled": true
+  }
  ],
  "table": {
   "columns": [
-   {"label": "Part", "field": "label"},
-   {"label": "Source", "field": "source"},
-   {"label": "Year", "field": "year"},
-   {"label": "Wh per viewing hour", "field": "text"},
-   {"label": "Claims", "field": "claims"}
+   {
+    "label": "Account",
+    "field": "label"
+   },
+   {
+    "label": "Counted",
+    "field": "setting"
+   },
+   {
+    "label": "Wh per viewing hour",
+    "field": "text"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
   ]
  }
 }

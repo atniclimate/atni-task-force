@@ -1,20 +1,13 @@
-/* What Uses Data Center Energy and Water: a long reference page. The 14rem rail and the band come from site.css; this file sets text and figures side by side, draws the page's static
-   figures, and borrows the plate kit's marks so they read the same. Figures sit on the page ground with no box. Orange is the data center itself, or the row in focus.
-   Everything here is CSS: no scripts draw a mark. */
+/* Energy and Water Use (R2, Council Agenda): the brief and the agenda come from site.css, with four faces: three plates and the disclosure list. Below them,
+   six chapters under the 14rem rail, each a heading, a plate where it has one, a line of text, and closed disclosures a reader opens. This file sets the
+   chapters' text beside their figures, the disclosure face, the page's static figures, and the rail's two links out. Orange is the reading only: the plates'
+   selection, never a disclosure marker or a hovered row (DIRECTION-R2 2.2). Everything here is CSS: no script draws a mark. */
 
-/* The band's figures keep to three narrow columns, so the h1 holds one line; the notice is one line under it. */
-.ru-band .page-band-figures { flex-wrap: nowrap; gap: 8px 32px; }
-.ru-band .page-band-figures li { flex: 0 1 12rem; align-content: start; }
-.ru-band .figure-label a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
-@media (max-width: 1399px) { .ru-band .page-band-figures li { flex-basis: 10rem; } }
-@media (max-width: 719px) { .ru-band .page-band-figures { flex-wrap: wrap; } }
-.ru-notice-line { max-width: none; margin: 0; font-size: 1rem; line-height: 1.4; color: var(--atni-text-body); border-bottom: 1px solid var(--grid); }
-.ru-notice-line .wrap { display: block; padding-block: 4px 8px; }
-main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
-
-/* Rail: the marks used on the page sit under the links, so no figure has to explain them from scratch. */
+/* Rail: the chapters, then the two ways out (Sources and Top), then the marks used on the page. */
+.toc-out { display: none; }
 .ru-key { display: none; }
 @media (min-width: 1100px) {
+  .page-body > .toc .toc-out { display: block; margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--rule); }
   .ru-key { display: block; margin-top: 16px; padding: 12px 0 0 14px; border-top: 1px solid var(--rule); }
   .ru-key p { display: flex; gap: 8px; margin: 0 0 8px; font-family: var(--body); font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
   .ru-key .plate-square { margin-top: 0.2em; }
@@ -23,47 +16,54 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
 .ru-key-dash { flex: none; width: 8px; height: 0; margin-top: 0.55em; border-top: 2px dashed var(--series-context); }
 .ru-key-on { flex: none; width: 8px; height: 8px; margin-top: 0.2em; background: var(--energy-mark); }
 
-/* Sections: a compact heading, then text beside figures. The first section is the exception: its figure takes the column, and its text flows in columns under it. */
+/* The disclosure face: what five company reports hold, beside the first question of each set and the way to the meeting sheet. */
+.ru-ask { display: grid; gap: 20px; align-content: start; }
+.ru-ask > * { min-width: 0; }
+.ru-ask .ru-fig { margin: 0; }
+.ru-ask .ru-grid td, .ru-ask .ru-grid th { padding-block: 6px; }
+.ask-firsts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr)); gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.ask-firsts li { display: grid; grid-template-rows: 1fr auto; gap: 6px; margin: 0; padding: 10px 0 12px; border-top: 1px solid var(--rule); }
+.ask-firsts p { margin: 0; font-size: 0.875rem; line-height: 1.4; }
+.ask-set-name { display: block; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; color: var(--atni-text-heading); }
+.ask-firsts .button { justify-self: start; min-height: 32px; padding: 4px 10px; font-size: 0.875rem; }
+.ru-ask-more { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; max-width: none; margin: 16px 0 0; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; }
+
+/* Chapters: a compact heading, the chapter's plate at the column's width, then text beside figures. */
 .content > .ru-section + .ru-section { margin-top: clamp(32px, 3vw, 48px); padding-top: clamp(24px, 2vw, 32px); border-top: 1px solid var(--grid); }
-.ru-section > h2 { margin-bottom: 12px; font-size: 1.5rem; }
+.ru-section > h2 { margin-bottom: 12px; }
 .ru-split { display: grid; gap: 24px; align-items: start; }
 .ru-split > * { min-width: 0; }
-.ru-text > p { max-width: var(--measure-wide); }
-.ru-columns { columns: 26rem 2; column-gap: 48px; margin-top: 24px; }
-.ru-columns > p { margin-top: 0; break-inside: avoid; }
-.ru-columns > .ru-ways { break-inside: avoid; }
+.ru-text > p, .ru-section > p { max-width: var(--measure-wide); }
 .ru-intro { max-width: var(--measure-wide); }
 .ru-subhead { margin: 24px 0 8px; }
 .ru-side > .ru-subhead { margin-top: 32px; }
-.ru-ways { max-width: var(--measure-wide); margin: 16px 0 0; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.4; }
-.ru-ways li { margin: 0; padding-block: 8px; border-top: 1px solid var(--rule); }
-.ru-ways li:last-child { border-bottom: 1px solid var(--rule); }
-.ru-ways a { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; }
 @media (min-width: 1100px) {
-  .ru-split { grid-template-columns: minmax(0, min(44rem, 42%)) minmax(0, 1fr); column-gap: clamp(24px, 2.5vw, 48px); }
+  .ru-split { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); column-gap: clamp(24px, 2.5vw, 48px); }
 }
 
-/* Disclosures: each summary is a plain sentence a reader can skim. A heading in a summary stays visible, so its deep link lands. */
+/* Disclosures: each summary is a plain sentence a reader can skim, and every one starts closed, so the rule is the same everywhere (resource-use-09). A heading
+   in a summary stays visible, so its deep link lands. The marker is ink: orange is the reading's. */
 .ru-details { margin-top: 12px; }
 .ru-detail { border-top: 1px solid var(--rule); }
 .ru-detail:last-child { border-bottom: 1px solid var(--rule); }
 .ru-detail > summary { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); padding-block: 10px; list-style: none; cursor: pointer; }
 .ru-detail > summary::-webkit-details-marker { display: none; }
-.ru-detail > summary::before { content: "+"; grid-row: 1 / span 2; font-family: var(--display); font-weight: 600; font-size: 1.125rem; line-height: 1.25; color: var(--energy-text); }
+.ru-detail > summary::before { content: "+"; grid-row: 1 / span 2; font-family: var(--display); font-weight: 600; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); }
 .ru-detail[open] > summary::before { content: "\2212"; }
-.ru-detail > summary:hover .ru-gist, .ru-detail > summary:hover h3 { color: var(--atni-text-heading); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-.ru-detail h3 { grid-column: 2; margin: 0 0 2px; scroll-margin-top: 16px; }
+.ru-detail > summary:hover .ru-gist, .ru-detail > summary:hover h3 { text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
+.ru-detail h3 { grid-column: 2; margin: 0 0 2px; font-size: 1.125rem; scroll-margin-top: 16px; }
 .ru-gist { grid-column: 2; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-heading); }
 .ru-detail h3 + .ru-gist { font-family: var(--body); font-weight: var(--atni-type-body-weight); font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
-.ru-detail > p { max-width: var(--measure-wide); margin: 0 0 12px 1.25rem; }
-.ru-text > .ru-notice { max-width: var(--measure-wide); margin-top: 16px; }
+.ru-detail > :not(summary) { max-width: var(--measure-wide); margin: 0 0 12px 1.25rem; }
+.ru-detail > .ru-pulls { max-width: none; }
+.ru-section > .ru-notice, .ru-text > .ru-notice { max-width: var(--measure-wide); margin-top: 16px; }
 
 /* How to read: four labels and the units, in rows that use the width. */
-.ru-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 12px 24px; margin: 4px 0 16px; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.45; }
+.ru-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 12px 24px; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.45; }
 .ru-labels li { margin: 0; padding-top: 8px; border-top: 1px solid var(--rule); }
-.ru-labels strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.125rem; color: var(--atni-text-heading); }
-.ru-units { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 12px 16px; margin: 0; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
-.ru-units dt { font-family: var(--display); font-weight: 600; font-size: 1.125rem; line-height: 1.2; color: var(--atni-text-heading); }
+.ru-labels strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; color: var(--atni-text-heading); }
+.ru-units { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 12px 16px; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.ru-units dt { font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.2; color: var(--atni-text-heading); }
 .ru-units dd { margin: 0; }
 
 /* Figures: on the page ground, a claim for a title, and the reader's sentence at the foot. The marks are the plate's, 16 to 26px. */
@@ -73,39 +73,18 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
-.ru-fig a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
 .ru-fig p { max-width: none; }
 .ru-fig figcaption { margin-bottom: 12px; }
 .ru-fig .eyebrow { margin-bottom: 4px; }
 .ru-fig .plate-title { margin: 0 0 4px; }
 .ru-fig .caption { margin: 0; }
 .ru-fig .plate-title, .ru-fig .caption { max-width: 60ch; } /* words keep a measure; the bars under them keep the column */
-.ru-reading { margin: 12px 0 0; }
 .ru-fig .ru-source { margin-top: 8px; font-size: 0.875rem; }
 .ru-sub { margin: 16px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .ru-fig .plate-square, .ru-grid .plate-square { display: inline-block; vertical-align: 0.05em; margin-right: 4px; }
 
-/* Plates on this page whose rows are one- or two-line labels with short values, so they set their own least row height (the kit allows it): at the kit's 56px
-   the hour's twelve rows put its foot under the 1440 fold, and the boundary ruler's sixteen ran 2.7 screens before its words moved to the Reading and the Table. */
-#ru-hour, #ru-boundary { --row-min: 48px; }
-
-/* A stack (the water split): one whole, drawn as outlined parts because each is a modeled estimate. The data center's part is the only solid. */
-.ru-hour-row { display: flex; flex-direction: column; margin-bottom: 12px; }
-.ru-hour-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px; margin: 0 0 2px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); }
-.ru-hour-head strong { font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.ru-stack-line { flex: 1; display: flex; font-size: 0.875rem; }
-.ru-stack-line.has-top { padding-top: 1.45em; }
-.ru-stack-line.has-bottom { padding-bottom: 1.45em; }
-.ru-stack { flex: none; display: flex; gap: 2px; width: calc(var(--total) / var(--max) * 100%); min-height: clamp(44px, 6vh, 96px); max-height: 160px; margin: 0; padding: 0; list-style: none; }
-.ru-seg { position: relative; flex: var(--v) 1 0; display: flex; align-items: center; min-width: 3px; margin: 0; border: 1.5px solid var(--series-context); }
-.ru-seg-label { padding: 2px 6px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
-.ru-seg.is-on { background: var(--atni-text-heading); border-color: var(--atni-text-heading); } /* a chosen part is ink: orange is the reading's (CD 2) */
-.ru-seg.is-on .ru-seg-label { font-weight: 500; color: var(--atni-ground-base); }
-.ru-seg.is-top .ru-seg-label { position: absolute; left: -1.5px; bottom: 100%; padding: 0 0 2px; white-space: nowrap; font-weight: 500; color: var(--atni-text-heading); }
-.ru-seg.is-bottom .ru-seg-label { position: absolute; left: -1.5px; top: 100%; padding: 2px 0 0; white-space: nowrap; color: var(--atni-text-secondary); }
-@media (max-width: 1099px) {
-  .ru-seg.is-bottom:last-child .ru-seg-label { left: auto; right: 0; }
-}
+/* The boundary ruler's sixteen rows are one- or two-line labels with short values, so they set their own least row height (the kit allows it). */
+#ru-boundary { --row-min: 2.75rem; }
 
 /* A table that is the chart: every row is label, marks on a ruler, and the printed value with its source. */
 .ru-chart-wrap { margin-block: 0; }
@@ -125,57 +104,48 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
 .data-table.ru-chart .ru-group-head td { padding: 0 0 4px; vertical-align: bottom; border-bottom-color: var(--control); }
 .ru-ticks { position: relative; display: block; height: 1.25em; }
 .ru-ticks i { position: absolute; left: calc(var(--x) * 100%); transform: translateX(-50%); font-style: normal; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); }
-/* A row is its own hit target: it lifts one step, and its mark takes the orange. On the well, orange marks wear the text step. */
-.ru-chart tbody tr:not(.ru-group-head):is(:hover, :focus-within) { background: var(--tag-bg); }
-.ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark:not(.is-hollow), .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar:not(.is-hollow) { background: var(--energy-text); }
-.ru-chart tbody tr:is(:hover, :focus-within) .ladder-mark.is-hollow, .ru-chart tbody tr:is(:hover, :focus-within) .ladder-bar.is-hollow { border-color: var(--energy-text); }
-.ru-chart tbody tr:is(:hover, :focus-within) .ladder-range:not(.is-proj) { opacity: 1; background: var(--energy-text); }
+/* Hover outlines a row in 1px muted and changes nothing else (DIRECTION-R2 2.5): no wash, no orange. */
+.ru-chart tbody tr:not(.ru-group-head):is(:hover, :focus-within), .ru-grid tbody tr:is(:hover, :focus-within) { outline: 1px solid var(--atni-text-muted); outline-offset: -1px; }
 
 /* Grids of words: who holds what. Squares are the evidence; "is-gap" is a cell with nothing to report. */
 .ru-grid { font-size: 0.9375rem; }
 .ru-grid td { text-align: left; font-size: 0.9375rem; line-height: 1.35; }
 .ru-grid tbody th { line-height: 1.3; }
 .ru-grid .is-gap { color: var(--atni-text-secondary); }
-.ru-grid tbody tr:is(:hover, :focus-within) { background: var(--tag-bg); }
 
-/* Bench rows: a plate's default figure at 1.5rem, its 16 to 26px mark on a thin ruler, and the way to the plate. */
-.ru-bench { --mark: clamp(16px, 1vw + 5px, 26px); margin-bottom: 16px; }
+/* Bench rows: another page's plate, its default figure and Reading, and the whole row is the way there. The kit's ruler under the figure had no scale, so it
+   read as a slider that did nothing; on this page it goes (resource-use-11). */
+.ru-bench { margin-bottom: 16px; }
 .ru-bench .ru-sub { margin-top: 0; }
-.ru-bench .bench-figure { padding-bottom: calc(var(--mark) + 8px); }
+.ru-bench .bench-row { position: relative; }
+.ru-bench .bench-row:hover { outline: 1px solid var(--atni-text-muted); outline-offset: 2px; }
+.ru-bench .bench-ruler { display: none; }
+.ru-bench .bench-figure { padding-bottom: 0; }
 .ru-bench .bench-value { font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .ru-bench .bench-unit { font-size: 1rem; }
-.ru-bench .bench-ruler { bottom: 2px; height: var(--mark); border-bottom: 0; }
-.ru-bench .bench-ruler::before { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--grid); }
-.ru-bench .bench-ruler::after { top: 0; bottom: auto; width: var(--mark); height: var(--mark); margin-left: calc(var(--mark) / -2); }
 .ru-bench .bench-link { font-size: 0.9375rem; }
+.ru-bench .bench-link a::after { content: ""; position: absolute; inset: 0; }
 
-/* Pull figures. */
-.ru-pulls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 16px 24px; }
+/* Pull figures, inside the materials disclosure: small, so a figure never outshouts its sentence. */
+.ru-pulls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 12px 24px; margin-block: 4px 12px; }
 .ru-pulls .pull { margin: 0; }
-.ru-pulls.is-stacked { grid-template-columns: minmax(0, 1fr); }
-.ru-pull-source { font-size: 0.875rem; color: var(--atni-text-heading); text-decoration-color: var(--control); }
+.ru-pulls .pull-value { font-size: 1.5rem; }
+.ru-pull-source { font-size: 0.875rem; color: var(--atni-text-secondary); }
 
-/* Questions: the developer's list takes two columns, the utility and counsel the third. */
-.ru-questions { display: grid; gap: 24px 32px; margin-top: 8px; }
-.ru-questions > * { min-width: 0; }
-.ru-questions h3 { margin: 0 0 8px; }
-.ru-questions-side h3 + ul + h3 { margin-top: 24px; }
-.ru-question-flow { columns: 22rem 2; column-gap: 32px; }
-.ru-question-flow > div { break-inside: avoid; }
-.ru-questions .label { margin: 0 0 4px; color: var(--atni-text-secondary); }
-.ru-questions ul { margin: 0 0 16px; font-size: 0.9375rem; line-height: 1.5; }
-.ru-next { margin-top: 12px; }
-@media (min-width: 1100px) {
-  .ru-questions { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
-}
+/* What companies report: the chart takes the chapter's width, so a row is one or two lines, not six (resource-use K). */
+.ru-companies { max-width: 72rem; margin-top: 24px; }
+.ru-companies > .ru-subhead { margin-top: 0; }
+
+/* The questions: one form, its sets in three columns from 1100px (site.css draws two), the sheet's button after them. */
+.ru-section > .asks { margin-top: 16px; }
+@media (min-width: 1100px) { .ru-section > .asks { grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); column-gap: 32px; } }
+.ru-section > .ru-next { margin-top: 16px; }
 
 /* Print: every part open. */
 @media print {
-  .ru-split, .ru-questions { display: block; }
-  .ru-columns, .ru-intro, .ru-question-flow { columns: auto; }
+  .ru-split, .ru-ask { display: block; }
   .ru-detail > summary::before { content: none; }
   .ru-detail > summary { display: block; }
   .ru-fig { break-inside: avoid; min-height: 0 !important; }
   .ru-chart tbody td:last-child { font-size: 12pt; }
-  .ru-notice-line { border: 0; }
 }
