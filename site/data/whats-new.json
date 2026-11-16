@@ -7,22 +7,64 @@
   {
    "date": "2026-11-16",
    "kind": "data",
-   "title": "Source evidence behind the charts updated",
-   "url": "explorer/sources/",
+   "title": "Source records behind the charts updated",
+   "url": "sources/",
    "area": "cross-cutting"
   },
   {
-   "date": "2026-11-15",
+   "date": "2026-11-16",
    "kind": "data",
-   "title": "Source evidence behind the charts updated",
-   "url": "explorer/sources/",
+   "title": "Charts updated on the AI page",
+   "url": "ai/",
+   "area": "ai"
+  },
+  {
+   "date": "2026-11-16",
+   "kind": "data",
+   "title": "Charts updated on the Data Centers page",
+   "url": "data-centers/",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-16",
+   "kind": "data",
+   "title": "Charts updated on the Resource Use page",
+   "url": "data-centers/resource-use/",
+   "area": "data-centers"
+  },
+  {
+   "date": "2026-11-16",
+   "kind": "data",
+   "title": "Charts updated on the Energy page",
+   "url": "energy/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-16",
+   "kind": "data",
+   "title": "Charts updated on the Energy Funding page",
+   "url": "energy/funding/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-16",
+   "kind": "data",
+   "title": "Charts updated on the What Tribal Plans Say page",
+   "url": "energy/potential/",
+   "area": "energy-feasibility"
+  },
+  {
+   "date": "2026-11-15",
+   "kind": "site",
+   "title": "Each page with charts now has its own Sources page, and the site has a Sources hub",
+   "url": "sources/",
    "area": "cross-cutting"
   },
   {
    "date": "2026-11-06",
    "kind": "data",
-   "title": "Source evidence behind the charts updated",
-   "url": "explorer/#all-sources",
+   "title": "Source records behind the charts updated",
+   "url": "sources/",
    "area": "cross-cutting"
   },
   {
@@ -57,49 +99,49 @@
    "date": "2026-11-05",
    "kind": "library",
    "title": "21 records from U.S. Energy Information Administration added to the library",
-   "url": "library/?q=U.S.%20Energy%20Information%20Administration",
+   "url": "library/#added=2026-11-05&publisher=U.S.%20Energy%20Information%20Administration",
    "area": "data-centers"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "8 records from Green Software Foundation added to the library",
-   "url": "library/?q=Green%20Software%20Foundation",
+   "url": "library/#added=2026-11-05&publisher=Green%20Software%20Foundation",
    "area": "ai"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "8 records from SEC EDGAR added to the library",
-   "url": "library/?q=SEC%20EDGAR",
+   "url": "library/#added=2026-11-05&publisher=SEC%20EDGAR",
    "area": "ai"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "7 records from US EPA added to the library",
-   "url": "library/?q=US%20EPA",
+   "url": "library/#added=2026-11-05&publisher=US%20EPA",
    "area": "data-centers"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "7 records from US EIA added to the library",
-   "url": "library/?q=US%20EIA",
+   "url": "library/#added=2026-11-05&publisher=US%20EIA",
    "area": "data-centers"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "6 records from Netflix added to the library",
-   "url": "library/?q=Netflix",
+   "url": "library/#added=2026-11-05&publisher=Netflix",
    "area": "ai"
   },
   {
    "date": "2026-11-05",
    "kind": "library",
    "title": "5 records from Lawrence Berkeley National Laboratory added to the library",
-   "url": "library/?q=Lawrence%20Berkeley%20National%20Laboratory",
+   "url": "library/#added=2026-11-05&publisher=Lawrence%20Berkeley%20National%20Laboratory",
    "area": "ai"
   },
   {
@@ -112,8 +154,8 @@
   {
    "date": "2026-11-05",
    "kind": "data",
-   "title": "Source evidence behind the charts updated",
-   "url": "explorer/#all-sources",
+   "title": "Source records behind the charts updated",
+   "url": "sources/",
    "area": "cross-cutting"
   },
   {
@@ -176,28 +218,28 @@
    "date": "2026-11-04",
    "kind": "library",
    "title": "48 records from SEC EDGAR (data.sec.gov) added to the library",
-   "url": "library/?q=SEC%20EDGAR%20%28data.sec.gov%29",
+   "url": "library/#added=2026-11-04&publisher=SEC%20EDGAR%20%28data.sec.gov%29",
    "area": "ai"
   },
   {
    "date": "2026-11-04",
    "kind": "library",
    "title": "8 records from U.S. Energy Information Administration added to the library",
-   "url": "library/?q=U.S.%20Energy%20Information%20Administration",
+   "url": "library/#added=2026-11-04&publisher=U.S.%20Energy%20Information%20Administration",
    "area": "data-centers"
   },
   {
    "date": "2026-11-04",
    "kind": "library",
    "title": "8 records from U.S. Bureau of Labor Statistics added to the library",
-   "url": "library/?q=U.S.%20Bureau%20of%20Labor%20Statistics",
+   "url": "library/#added=2026-11-04&publisher=U.S.%20Bureau%20of%20Labor%20Statistics",
    "area": "ai"
   },
   {
    "date": "2026-11-04",
    "kind": "library",
    "title": "5 records from SEC EDGAR added to the library",
-   "url": "library/?q=SEC%20EDGAR",
+   "url": "library/#added=2026-11-04&publisher=SEC%20EDGAR",
    "area": "ai"
   },
   {
@@ -239,56 +281,56 @@
    "date": "2026-10-29",
    "kind": "library",
    "title": "16 records from Affiliated Tribes of Northwest Indians added to the library",
-   "url": "library/?q=Affiliated%20Tribes%20of%20Northwest%20Indians",
+   "url": "library/#added=2026-10-29&publisher=Affiliated%20Tribes%20of%20Northwest%20Indians",
    "area": "ai"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "15 records from U.S. House of Representatives (Congress.gov) added to the library",
-   "url": "library/?q=U.S.%20House%20of%20Representatives%20%28Congress.gov%29",
+   "url": "library/#added=2026-10-29&publisher=U.S.%20House%20of%20Representatives%20%28Congress.gov%29",
    "area": "ai"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "11 records from U.S. Department of Energy, Office of Indian Energy added to the library",
-   "url": "library/?q=U.S.%20Department%20of%20Energy%2C%20Office%20of%20Indian%20Energy",
+   "url": "library/#added=2026-10-29&publisher=U.S.%20Department%20of%20Energy%2C%20Office%20of%20Indian%20Energy",
    "area": "energy-feasibility"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "8 records from U.S. Department of Energy added to the library",
-   "url": "library/?q=U.S.%20Department%20of%20Energy",
+   "url": "library/#added=2026-10-29&publisher=U.S.%20Department%20of%20Energy",
    "area": "data-centers"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "7 records from Northwest Power and Conservation Council added to the library",
-   "url": "library/?q=Northwest%20Power%20and%20Conservation%20Council",
+   "url": "library/#added=2026-10-29&publisher=Northwest%20Power%20and%20Conservation%20Council",
    "area": "data-centers"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "5 records from The White House added to the library",
-   "url": "library/?q=The%20White%20House",
+   "url": "library/#added=2026-10-29&publisher=The%20White%20House",
    "area": "ai"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "5 records from National Congress of American Indians added to the library",
-   "url": "library/?q=National%20Congress%20of%20American%20Indians",
+   "url": "library/#added=2026-10-29&publisher=National%20Congress%20of%20American%20Indians",
    "area": "ai"
   },
   {
    "date": "2026-10-29",
    "kind": "library",
    "title": "5 records from Utility Dive added to the library",
-   "url": "library/?q=Utility%20Dive",
+   "url": "library/#added=2026-10-29&publisher=Utility%20Dive",
    "area": "energy-feasibility"
   },
   {
@@ -333,11 +375,11 @@
   "claims/projects.json": "b7f9dfccc150",
   "claims/prose-ai.json": "32aeabf28373",
   "claims/prose-dc.json": "555b14beeaea",
-  "claims/prose-energy.json": "29b09a7a0f6d",
+  "claims/prose-energy.json": "607b47650433",
   "claims/prose-ru.json": "3215761f4ad6",
   "claims/resources.json": "d37721f0aae3",
   "claims/services.json": "3f60b542e4cb",
-  "claims/site-counts.json": "7cea644eb469",
+  "claims/site-counts.json": "f250f7336396",
   "claims/sovereign.json": "4a01ea106810",
   "claims/tradeoffs.json": "e140d57246dd",
   "follow/0331-AA10": "2026-11-05",
@@ -379,37 +421,39 @@
   "follow/S. 1181 (119th Congress)": "2026-11-05",
   "follow/S. 5050 (119th Congress)": "2026-11-05",
   "follow/S. 5645 (119th Congress)": "2026-11-05",
-  "plates/ai-capex-cash.json": "346c3571681e",
+  "plates/ai-capex-cash.json": "201c287223e4",
   "plates/ai-company-footprint.json": "b13efff0337a",
   "plates/ai-company-money.json": "36bbb9dfcdd2",
   "plates/ai-displacement.json": "5f36ec19fe2c",
   "plates/ai-guidance-2026.json": "0c4f198b07cd",
-  "plates/ai-heavy-ai.json": "a2ddfc74888b",
-  "plates/ai-holdings.json": "cb57c957b41e",
-  "plates/ai-jobs-sector.json": "f9eed56d4eeb",
-  "plates/ai-occupations.json": "5888e11ad6a2",
-  "plates/ai-per-day.json": "97537265cf91",
-  "plates/ai-same-hour.json": "d4a0f76b2e8b",
-  "plates/ai-scale.json": "9c459d3c3e23",
-  "plates/dc-climate-counties.json": "0d4566c21737",
-  "plates/dc-cooling.json": "2e99ed5216d6",
-  "plates/dc-eia-servers.json": "f0a16ef35781",
-  "plates/dc-forecast-check.json": "1a8a913aef7f",
+  "plates/ai-heavy-ai.json": "1d2b95d67766",
+  "plates/ai-holdings.json": "6daaccc97acb",
+  "plates/ai-hour.json": "7ff6c59f9094",
+  "plates/ai-jobs-sector.json": "6d875470a22e",
+  "plates/ai-occupations.json": "6a64df79b946",
+  "plates/ai-per-day.json": "e570e13f24ff",
+  "plates/ai-same-hour.json": "d3fcd7bd76b3",
+  "plates/ai-scale.json": "5527928beeba",
+  "plates/dc-climate-counties.json": "4611ca06a397",
+  "plates/dc-cooling.json": "4d2c98c982c5",
+  "plates/dc-eia-servers.json": "f2525ca39ac9",
+  "plates/dc-forecast-check.json": "602d17740f08",
   "plates/dc-iea-world.json": "50db43e7a192",
-  "plates/dc-jobs-per-mw.json": "5586d6d1fd9f",
+  "plates/dc-jobs-per-mw.json": "03bc3b7823e6",
   "plates/dc-lbnl-us.json": "658ee35405ce",
-  "plates/dc-pnw-load.json": "7596c0f0837e",
-  "plates/dc-project-land.json": "bb05f02fef05",
-  "plates/dc-project.json": "56701eb52152",
+  "plates/dc-pnw-load.json": "111b24203128",
+  "plates/dc-project-land.json": "1b4fd1e38681",
+  "plates/dc-project.json": "69d15712d798",
   "plates/dc-tradeoff-matrix.json": "5f20364373e2",
-  "plates/dc-water-intensity.json": "ae77361cf7da",
-  "plates/energy-deadlines-catalog.json": "2dba8582ec83",
-  "plates/energy-deadlines.json": "fa73c314c2dc",
-  "plates/energy-types-by-stage-plans.json": "2baa46d8d682",
-  "plates/energy-types-by-stage.json": "27d3fb086f6a",
-  "plates/ru-boundary.json": "38d43365f212",
+  "plates/dc-water-intensity.json": "0e6cc9b50d8e",
+  "plates/energy-deadlines-catalog.json": "850c379965a9",
+  "plates/energy-deadlines.json": "115c62243ca3",
+  "plates/energy-types-by-stage-plans.json": "498ffca23a5d",
+  "plates/energy-types-by-stage.json": "59d0f87c1dc2",
+  "plates/ru-boundary.json": "75502a4a3d2d",
   "plates/ru-electricity.json": "2410896c0c33",
-  "plates/ru-forecasts.json": "5eac9b897879",
-  "plates/ru-hour.json": "3088862e1393"
+  "plates/ru-forecasts.json": "737addd26407",
+  "plates/ru-hour.json": "acaae09408ea",
+  "plates/ru-water.json": "e311949c9ed5"
  }
 }

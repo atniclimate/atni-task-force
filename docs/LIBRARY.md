@@ -1,6 +1,6 @@
 # Library Data
 
-The library at `site/library/` and the short lists on the home and task force pages are rendered in the browser from one file, `site/data/library.json`. This document is its schema. `scripts/validate_public.py` enforces it before every release.
+The library at `site/library/`, the Summit's reading list, and the short lists on the home and task force pages all come from one file, `site/data/library.json`. This document is its schema. `scripts/validate_public.py` enforces it before every release.
 
 Every entry is public (T0) material. A source that is not public, or whose tier is uncertain, does not go in the file (see `DATA-TIERS.md`).
 
@@ -33,18 +33,23 @@ All twelve fields below are required. The only other field allowed is the option
 | `date` | string | `YYYY` or `YYYY-MM-DD`. ATNI resolutions use the closing day of the convention that adopted them. Websites and repositories use the latest update observed when the entry was added, or the year when no update date is shown. The site displays dates as MM/DD/YYYY. |
 | `type` | string | One of `resolution`, `report`, `policy` (policies, standards, and governance frameworks), `legislation`, `article`, `academic`, `dataset`, `tool`, `website`, `news`. |
 | `areas` | array of strings | One or more of `energy-feasibility`, `data-centers`, `ai`, `summit`, `cross-cutting`, without repeats, main area first: the library page inks an entry's square by its first area. Each task force page lists the entries tagged with its area. |
-| `tribal_specific` | boolean | `true` when the source is by, for, or specifically about Tribal Nations or Indigenous Peoples. Drives the "Tribal focus" filter. |
+| `tribal_specific` | boolean | `true` when the source is by, for, or specifically about Tribal Nations or Indigenous Peoples. Drives the Tribal-specific shelf and filter. |
 | `summary` | string | One to three sentences on what the source says or does, in the house style. Describe; do not argue. A summary is not an ATNI position unless the source is an ATNI resolution. |
 | `tier` | string | Always `T0`. |
 | `added` | string | The date the entry joined the library, `YYYY-MM-DD`. The home page shows the most recently added entries. |
-| `featured` | boolean | Marks a core source. The library page's "Start here" row lists the featured entries, resolutions first. Among entries added on the same day, featured entries are listed first on the home page. |
+| `featured` | boolean | Marks a core source. The library's Start here shelf lists the featured entries: the resolutions first, then the rest grouped by first area. Among entries added on the same day, featured entries are listed first on the home page. |
 
 ## How the Site Uses the File
 
-- **Library page:** newest first by `date`; search covers title, publisher, summary, type, and areas; filters for area, type, Tribal focus, and year; 40 entries at a time with a "Show more" button. Filter choices are written to the address bar (for example `library/?area=ai`), so a filtered view can be linked. Around the filters, `scripts/build_library_strip.py` writes the composition strip from this file: above them one square per entry, inked by its first area, and below them a bar for "Start here" and for each area, type, recent year, and Tribal focus. "Start here" is the Area filter's first choice (`library/?area=start-here`); its list prints on the unfiltered page. Each bar and each chip on an entry sets a filter.
+- **Library page (R2):** a reading room of shelves, a list, and the selected entry's preview.
+  - **Shelves:** Start here (the default), Tribal-specific newest first, What changed (the What's New log at the page's foot), Company filings (entries whose publisher is the SEC's EDGAR system; `FILINGS` in `scripts/build_library_strip.py` and `library.js`), and Browse all, newest first by `date`, with search over title, publisher, summary, type, and areas and filters for area, type, Tribal-specific, and year. A filter choice the others leave empty cannot be chosen. 40 rows at a time; "Show more" appends.
+  - **Preview:** the selected row's whole summary, its areas as filter chips, where the site cites it (the claims whose source is the entry, on each page with a Sources page, each linking `PAGE/sources/#src-ID`), and "Open the document".
+  - **Address:** `#name=value` in the fragment, never a query: `shelf=all`, `entry=ID`, the filters, and `added=YYYY-MM-DD&publisher=NAME` from a What's New burst row. An unknown value is named in a notice; an old `?area=start-here` opens Start here.
+  - **Built into the page:** `scripts/build_library_strip.py` writes, between markers, the Start here shelf and its first entry's preview, 25 Tribal-specific entries for a reader without scripts (40 entries in all), each select's choices, the citations (`script#library-cites`, keyed by an entry's place in this file), and Explore the collection: one square per entry inked by its first area, a bar per area, type, recent year, and Tribal focus, each count a claim mark (`lc-`). `library.js` reads this file only when a reader reaches for more than the first view.
+- **Summit page:** the grounding resolutions, then the entries with the `summit` area, newest first, with years only (`build_library_strip.py`, the `summit-reading` markers): a day printed there would read as the Summit's own.
 - **Task force pages:** up to six entries for the page's area, newest first.
-- **Home page:** up to four of the most recently added entries that the page does not already link to, and What's New (below).
-- **Without JavaScript:** each page keeps a plain link to the library, and the library page keeps its counts and the composition strip and links to the raw `data/library.json`.
+- **Home page:** up to four of the most recently added entries that the page does not already link to, leaving company filings to their shelf, and What's New (below).
+- **Without JavaScript:** each page keeps a plain link to the library; the library page shows its 40 entries, the first entry's preview, its counts and the field, and links to the raw `data/library.json`.
 
 ## Adding an Entry
 
@@ -67,15 +72,15 @@ Named managers add rows to an Intake sheet, kept as T1 working space. The site n
 
 ## What's New
 
-`site/data/whats-new.json` (`tier` T0, `schema` 1) has one writer, `scripts/build_whats_new.py`, which also pours the rows into `site/index.html` and `site/library/index.html`, so they read without scripts and in print. Run it after a merge, a Policy Watch refresh, or a plate build. `--check` writes nothing and exits 1 if a page does not match the file.
+`site/data/whats-new.json` (`tier` T0, `schema` 1) has one writer, `scripts/build_whats_new.py`, which also pours the rows into `site/index.html` and `site/library/index.html`, so they read without scripts and in print. Run it after a merge, a Policy Watch refresh, or a plate build. `--check` writes nothing and exits 1 if a page does not match the file. `--keep-ledger --skip-home` rebuilds the rows without dating anyone's chart changes and pours the Library page only, for a lane that does not own the home page.
 
 | Key | Holds |
 |---|---|
 | `generated`, `window_days` | The build date, and the 90 days the Library page shows. |
-| `items` | Newest first. Each has `date`, `kind` (`news`, `policy`, `library`, `data`), `title`, `url` (https, or a path relative to `site/`), and `area`. |
+| `items` | Newest first. Each has `date`, `kind` (`news`, `policy`, `library`, `data`, `site`), `title`, `url` (https, or a path relative to `site/`), and `area`. |
 | `ledger` | A hash per plate and claims file, and each followed policy item. No such file holds a build date, so a change dates a new row on the day the script sees it. |
 
-**Sources.** Library `added` dates; `policy-watch.json`'s check date and any followed item's newest document in the window; News rows the owner cleared; and the ledger. News and data rows live only in this file, so a rebuild carries them forward. A News row's one line stays in the T1 record.
+**Sources.** Library `added` dates; `policy-watch.json`'s check date and any followed item's newest document in the window; News rows the owner cleared; the ledger; and `SITE_ROWS`, changes to the site itself that no data file records (the Sources pages, 11/15/2026). News and data rows live only in this file, so a rebuild carries them forward. A News row's one line stays in the T1 record. A change to `claims/site-counts.json` makes no row: those are the site's counts of its own files, and one of them counts this feed, so every build changed it (the 11/15 and 11/16/2026 rows it made are retracted in `RETRACTED`). A changed claims file reads "Source records behind the charts updated" and links the Sources hub.
 
 **Ranking.** Records from one publisher in one day become one row from five up, so a burst of SEC XBRL records reads as one line. A day shows its top three other sources, featured first and then by type, and one row for the rest. An entry that singles out a Nation gets no row of its own, and is counted in that last row. The home page shows six rows: at most two of a kind from one day and three of a kind in all, then the newest if that leaves room.
 

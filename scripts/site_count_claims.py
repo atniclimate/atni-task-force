@@ -82,10 +82,11 @@ def policy_claims(data):
 
 
 def checklist_claim(page, built):
-    block = re.search(r'id="checklists">(.*?)<!-- /SLOT -->', page, re.S)
+    """The checklists: disclosures before R2, and since R2 the question sets of the page's meeting-sheet form (form.asks#checklists > fieldset.ask-set#q-*)."""
+    block = re.search(r'id="checklists"[^>]*>(.*?)(?:</form>|<!-- /SLOT -->)', page, re.S)
     if not block:
         raise SystemExit("site/data-centers/index.html has lost its checklists block, so it cannot be counted.")
-    lists = re.findall(r'<details class="disclosure" id="q-[a-z]+"', block[1])
+    lists = re.findall(r'<(?:details class="disclosure"|fieldset class="ask-set") id="q-[a-z]+"', block[1])
     quote = re.search(r'<p class="dc-wide-note">([^<(]*?)\s*\(', page)
     source = {"title": "Data Centers, Questions: the checklists", "publisher": "ATNI Energy Task Forces", "url": f"{vp.OWN_ORIGIN}data-centers/#checklists", "published": built, "kind": "organization"}
     return own("lc-061", "Data Centers page", "checklists", len(lists), "checklists", f"Counted: the checklists in the Questions panel of the Data Centers page on {ec.us(built)}.", source, quote[1], f"Count of the checklist sections in the page, on {ec.us(built)}.",

@@ -226,7 +226,7 @@ def burst(n):
 def test_a_burst_of_records_is_one_row_and_cannot_fill_the_home_feed():
     rows = feed.library_items(burst(48))
     assert [row["title"] for row in rows] == ["48 records from SEC EDGAR (data.sec.gov) added to the library"]
-    assert rows[0]["url"] == "library/?q=SEC%20EDGAR%20%28data.sec.gov%29"
+    assert rows[0]["url"] == "library/#added=2026-11-05&publisher=SEC%20EDGAR%20%28data.sec.gov%29"  # R2 library-summit-about-08: a burst links exactly its records
     others = [feed.item("2026-11-04", kind, f"{kind} {n}", "library/", "ai") for kind in ("policy", "data", "library") for n in range(3)]
     picked = feed.home_rows(feed.order([*rows, *others]))
     assert len(picked) == 6 and sum("SEC EDGAR" in row["title"] for row in picked) == 1

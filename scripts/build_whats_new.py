@@ -8,7 +8,10 @@ changed. Run it after a merge, a Policy Watch refresh, or a plate build:
     python scripts/build_whats_new.py --check      # write nothing; exit 1 if a page does not match the file
 
 The file keeps what cannot be rebuilt: News rows and the data rows (no plate or claims file holds a build date, so the ledger keeps a hash of each and a change
-dates a new row on the day it is seen). Library and policy rows are worked out again each run. A burst stays one row: see library_items and home_rows.
+dates a new row on the day it is seen). Library and policy rows are worked out again each run, and SITE_ROWS, the changes to the site itself, come from here.
+A burst stays one row: see library_items and home_rows. A lane that must not date other lanes' work, or write a page it does not own, runs
+
+    python scripts/build_whats_new.py --keep-ledger --skip-home   # no new chart rows, the ledger as it is, and only the Library page poured
 """
 import argparse
 from collections import Counter
@@ -32,7 +35,14 @@ WINDOW = 90
 HOME_ROWS = 6
 BURST = 5  # this many records from one publisher in one day read as one row
 DAY_TOP = 3  # the single sources a day may show; the rest of the day is one row
-KIND_WORDS = {"news": "News", "policy": "Policy", "library": "Library", "data": "Data"}  # also the order within a day
+KIND_WORDS = {"news": "News", "policy": "Policy", "library": "Library", "data": "Data", "site": "Site"}  # also the order within a day
+EVIDENCE = "Source records behind the charts updated"  # a claims file changed: the source, quote, status, or limit behind some figure
+SELF_COUNTS = {"claims/site-counts.json"}  # the site's counts of its own files: lc-062 counts this feed's rows, so every build changed it and dated a row
+# Rows an earlier build wrote that said more than happened: on 11/15 and 11/16/2026 only claims/site-counts.json changed (SELF_COUNTS).
+RETRACTED = {("2026-11-15", "Source evidence behind the charts updated"), ("2026-11-16", "Source evidence behind the charts updated")}
+OLD_EVIDENCE = "Source evidence behind the charts updated"  # the wording before 11/16/2026; those rows now read EVIDENCE and link the Sources hub
+# Changes to the site itself, which no data file records.
+SITE_ROWS = [{"date": "2026-11-15", "kind": "site", "title": "Each page with charts now has its own Sources page, and the site has a Sources hub", "url": "sources/", "area": "cross-cutting"}]
 TYPE_ORDER = ["resolution", "legislation", "policy", "report", "dataset", "academic", "tool", "news", "article", "website"]
 PAGES = {"ai/": ("AI", "ai"), "data-centers/": ("Data Centers", "data-centers"), "data-centers/resource-use/": ("Resource Use", "data-centers"), "energy/": ("Energy", "energy-feasibility"),
          "energy/funding/": ("Energy Funding", "energy-feasibility"), "energy/potential/": ("What Tribal Plans Say", "energy-feasibility"), "explorer/": ("Explorer", "cross-cutting"), "summit/": ("Summit", "summit")}
@@ -60,7 +70,8 @@ def library_items(entries):
         for publisher, n in count.most_common():
             if n >= BURST:
                 area = Counter(e["areas"][0] for e in batch if e["publisher"] == publisher).most_common(1)[0][0]
-                rows.append(item(day, "library", f"{n} records from {publisher} added to the library", f"library/?q={quote(publisher)}", area))
+                # The link opens exactly those records: added that day, from that publisher (library-summit-about-08), not a word search.
+                rows.append(item(day, "library", f"{n} records from {publisher} added to the library", f"library/#added={day}&publisher={quote(publisher)}", area))
         rest = len(singles) - len(shown)
         if rest:
             rows.append(item(day, "library", f"{rest} more {'source' if rest == 1 else 'sources'} added to the library", "library/", "cross-cutting"))
@@ -100,6 +111,8 @@ def ledger_items(ledger, watch, today):
             if ledger.get(key) == now:
                 continue
             ledger[key] = now
+            if key in SELF_COUNTS:
+                continue
             day = last_commit_day(path, today) if first else today
             if folder == "claims":
                 days_evidence.add(day)
@@ -107,7 +120,7 @@ def ledger_items(ledger, watch, today):
                 page = json.loads(path.read_text(encoding="utf-8")).get("page") or "index.html"
                 days_pages.add((day, page.removesuffix("index.html") or "./"))
     for day in sorted(days_evidence):
-        rows.append(item(day, "data", "Source evidence behind the charts updated", "explorer/sources/", "cross-cutting"))
+        rows.append(item(day, "data", EVIDENCE, "sources/", "cross-cutting"))
     for day, page in sorted(days_pages):
         label, area = PAGES.get(page, ("Home", "cross-cutting"))
         rows.append(item(day, "data", f"Charts updated on the {label} page", page, area))
@@ -192,19 +205,20 @@ def library_block(feed, areas):
     return f"""<!-- whats-new:library -->
       <p class="whats-new-since" data-whats-new-since hidden></p>
       <details class="whats-new-all" id="whats-new">
-        <summary>What’s New, the last ninety days</summary>
+        <summary>What changed in the last ninety days</summary>
         {rows_html(rows, "../", areas)}
         <p class="caption">{build_library_strip.mark("lc-062", str(len(rows)))} rows, where a burst of records from one publisher is one row. Built from <a href="../data/whats-new.json">whats-new.json</a>, updated {feed["generated"][5:7]}/{feed["generated"][8:10]}/{feed["generated"][:4]}.</p>
       </details>
       <!-- /whats-new:library -->"""
 
 
-def pour_pages(feed, check=False):
-    """Writes both pages from the file, and returns the names of any that changed. With check, writes nothing."""
+def pour_pages(feed, check=False, home=True):
+    """Writes both pages from the file, and returns the names of any that changed. With check, writes nothing; without home, leaves the home page alone."""
     areas = build_library_strip.words("AREAS", (SITE / "assets" / "js" / "library.js").read_text(encoding="utf-8"))
     changed = []
-    for rel, pattern, block in (("index.html", r"<!-- SLOT:home:whats-new -->.*?<!-- /SLOT -->", home_block(feed, areas)),
-                                ("library/index.html", r"<!-- whats-new:library -->.*?<!-- /whats-new:library -->", library_block(feed, areas))):
+    pages = (("index.html", r"<!-- SLOT:home:whats-new -->.*?<!-- /SLOT -->", home_block(feed, areas)),
+             ("library/index.html", r"<!-- whats-new:library -->.*?<!-- /whats-new:library -->", library_block(feed, areas)))
+    for rel, pattern, block in pages[0 if home else 1:]:
         path = SITE / rel
         before = path.read_bytes().decode("utf-8")
         after, found = re.subn(pattern, lambda _: block, before, count=1, flags=re.S)
@@ -217,19 +231,25 @@ def pour_pages(feed, check=False):
     return changed
 
 
-def build(today, news=()):
-    """The feed: what the file already holds, what the data says now, and any newly landed News."""
+def carried(items):
+    """The rows the file keeps from earlier builds, less any retracted, with older evidence rows in today's words."""
+    kept = [row for row in items if (row["kind"] in ("news", "data") or row["title"].startswith("Now following")) and (row["date"], row["title"]) not in RETRACTED]
+    return [{**row, "title": EVIDENCE, "url": "sources/"} if row["kind"] == "data" and row["title"] == OLD_EVIDENCE else row for row in kept]
+
+
+def build(today, news=(), keep_ledger=False, home=True):
+    """The feed: what the file already holds, what the data says now, and any newly landed News. keep_ledger: no new chart rows and the ledger as it is,
+    for a run that must not date another writer's work in progress."""
     path = SITE / "data" / "whats-new.json"
     prior = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"items": [], "ledger": {}}
     entries = json.loads((SITE / "data" / "library.json").read_text(encoding="utf-8"))["entries"]
     watch = json.loads((SITE / "data" / "policy-watch.json").read_text(encoding="utf-8"))
     ledger = dict(prior["ledger"])
-    kept = [row for row in prior["items"] if row["kind"] in ("news", "data") or row["title"].startswith("Now following")]
-    new = ledger_items(ledger, watch, today)
-    items = order([*news_items(news, today), *kept, *new, *library_items(entries), *policy_items(watch, today)])
+    new = [] if keep_ledger else ledger_items(ledger, watch, today)
+    items = order([*news_items(news, today), *carried(prior["items"]), *new, *library_items(entries), *policy_items(watch, today), *SITE_ROWS])
     feed = {"schema": 1, "tier": "T0", "generated": today, "window_days": WINDOW, "items": items, "ledger": dict(sorted(ledger.items()))}
     path.write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    pour_pages(feed)
+    pour_pages(feed, home=home)
     return feed
 
 
@@ -241,6 +261,11 @@ def self_test():
     entries.append({"added": "2026-11-05", "publisher": "Other", "title": "Examplename Nation plan", "url": "https://y.org/", "areas": ["ai"], "type": "report", "featured": True, "summary": "s"})
     rows = library_items(entries)
     assert [r["title"] for r in rows] == ["9 records from Filer added to the library", "1 more source added to the library"], rows
+    assert rows[0]["url"] == "library/#added=2026-11-05&publisher=Filer", "a burst links exactly its records"
+    old = [item("2026-11-16", "data", OLD_EVIDENCE, "explorer/sources/", "cross-cutting"), item("2026-11-06", "data", OLD_EVIDENCE, "explorer/#all-sources", "cross-cutting"),
+           item("2026-11-05", "news", "n", "https://x.org/", "ai"), item("2026-11-05", "library", "t", "library/", "ai")]
+    assert carried(old) == [item("2026-11-06", "data", EVIDENCE, "sources/", "cross-cutting"), item("2026-11-05", "news", "n", "https://x.org/", "ai")], carried(old)
+    assert all(row["kind"] in KIND_WORDS for row in SITE_ROWS) and SELF_COUNTS == {"claims/site-counts.json"}
     print("self-test passed")
 
 
@@ -249,16 +274,18 @@ def main():
     p.add_argument("--news", action="append", type=Path, default=[], help="candidates-news.json from an Intake pull; every row needs the owner's mark")
     p.add_argument("--today", default=date.today().isoformat())
     p.add_argument("--check", action="store_true", help="write nothing; exit 1 if a page does not match the file")
+    p.add_argument("--keep-ledger", action="store_true", help="add no chart rows and keep the ledger as it is: another writer's work is not dated by this run")
+    p.add_argument("--skip-home", action="store_true", help="pour the Library page only; the home page waits for the next full run")
     p.add_argument("--self-test", action="store_true")
     a = p.parse_args()
     if a.self_test:
         return self_test()
     if a.check:
-        stale = pour_pages(json.loads((SITE / "data" / "whats-new.json").read_text(encoding="utf-8")), check=True)
+        stale = pour_pages(json.loads((SITE / "data" / "whats-new.json").read_text(encoding="utf-8")), check=True, home=not a.skip_home)
         if stale:
             sys.exit(f"build_whats_new: out of date: {stale}. Run python scripts/build_whats_new.py")
         return print("nothing to do")
-    feed = build(a.today, a.news)
+    feed = build(a.today, a.news, keep_ledger=a.keep_ledger, home=not a.skip_home)
     print(f"{len(feed['items'])} items, {len(recent(feed['items'], a.today))} in the last {WINDOW} days")
 
 

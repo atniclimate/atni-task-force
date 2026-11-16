@@ -1,162 +1,213 @@
-/* Summit, Library, and About at the full window. Loads after site.css and holds only what the kit does not say. */
+/* Library, Summit, and About (DIRECTION-R2 4, P-pages). Loads after site.css and holds only what the kit does not say: the kit draws the brief, the track,
+   the stair, the asks, and What's New rows. Orange marks one thing here, the Library's selected entry; every other chosen state is heading ink. */
 
-/* A photograph slot is its hollow-square label and its consent sentence, as Tradeoffs prints "Photograph to come": honestly empty, with no frame to read as a broken image. */
-.photo-slot p { margin: 0 0 4px; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
+/* A word tag says a state in words, in a 1px frame: "To be confirmed", "Not open", "In development" (library-summit-about-16). The kit's hollow square
+   stays with the controls that open, and numbers with the steps of a sequence. */
+.word-tag, .photo-slot .slot-label { display: inline-flex; align-items: center; margin: 0; padding: 2px 8px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-heading); border: 1px solid var(--control-edge); }
+.photo-slot .slot-label::before { content: none; }
+.photo-slot { display: grid; justify-items: start; gap: 8px; }
+.photo-slot p:not(.slot-label) { margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); }
 
-/* Sections on the one ground, a hairline apart, tighter than the kit's section so more of the page reaches the first screen. */
-.pages-section { padding-block: 16px 20px; border-top: 1px solid var(--grid); }
+/* Sections on the one ground, a rule apart. Prose sits in bands of up to 36rem, as many as fit, left-aligned. */
+.pages-section { padding-block: var(--section-pad); border-top: 1px solid var(--rule); }
 .pages-section > :last-child { margin-bottom: 0; }
+.pages-section .section-head { margin-bottom: 20px; }
+.pages-section .section-head > p { margin: 0; color: var(--atni-text-secondary); }
+.prose-bands { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 36rem)); gap: 32px 48px; align-items: start; }
+.prose-bands > * { min-width: 0; }
+.prose-bands > .prose > :last-child { margin-bottom: 0; }
+.prose-bands h2 { font-size: 1.375rem; }
 
-/* Summit: the photograph slot ends the band's right third, right-aligned, and the figures sit under the lead. */
-.summit-band .page-band-figures { margin-top: 16px; }
-.summit-band .photo-slot { margin: 0; }
-@media (min-width: 1100px) {
-  .summit-band { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
-  .summit-band .photo-slot { text-align: right; }
-  .summit-band .photo-slot p { max-width: none; } /* the page's measure would stop it short of the band's end at 1920 */
-  .summit-band .slot-label { justify-content: flex-end; }
+/* Library ------------------------------------------------------------------------------------------------------------------------------------------ */
+
+/* The reading room: shelves, the list, and the selected entry beside it. The first view is in the page, so nothing waits for the data or moves when it
+   comes (library-summit-about-01). Below 1100px the shelves run above the list, each row shows its summary, and the preview steps aside. */
+.library-room { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px clamp(24px, 1.8vw, 48px); align-items: start; padding-block: 8px var(--section-pad); }
+.shelves ul { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+.shelves li { margin: 0; }
+.shelves a { display: grid; gap: 2px; padding: 10px 0 10px 13px; color: var(--atni-text-heading); text-decoration: none; border-left: 3px solid transparent; }
+.shelves a[aria-current] { border-left-color: var(--atni-text-heading); }
+.shelves a[aria-current] .shelf-name { font-weight: 600; }
+.shelves a:hover .shelf-name { text-decoration: underline; text-decoration-color: var(--control-edge); text-underline-offset: 0.2em; }
+.shelf-name { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; }
+.shelf-note { font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
+@media (max-width: 1099px) { .shelf-note { display: none; } }
+
+.shelf { min-width: 0; }
+.lib-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px; margin: 0 0 4px; }
+.lib-filters .field { flex: none; min-width: 0; }
+.lib-filters .field-search { flex: 1 1 16rem; max-width: 28rem; }
+.lib-filters .field select { width: auto; max-width: 100%; } /* each as wide as its longest choice, so no chosen value is cut off or stretched (-04) */
+.lib-filters .button { width: auto; min-height: 44px; }
+.lib-try { flex-basis: 100%; max-width: none; margin: 0; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.lib-try button { min-height: 32px; padding: 4px 6px; font: inherit; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; cursor: pointer; }
+.lib-try button:hover { text-decoration-color: currentColor; }
+.shelf > .notice { margin: 12px 0 0; }
+.shelf-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px; margin-top: 16px; padding-bottom: 8px; }
+.shelf-head h2 { margin: 0; font-size: 1.375rem; }
+.shelf-head .library-status { max-width: 44rem; margin: 0; font-weight: 400; font-size: 0.9375rem; line-height: 1.4; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.entry-group { max-width: none; margin: 16px 0 0; padding-bottom: 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+
+/* Rows: a title, its type, publisher and date, and a Tribal-specific tag in words. The selected row carries the page's one orange, a 3px rule. */
+:is(.library-room, .reading-list) .entries { grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr)); column-gap: 32px; margin: 0; }
+:is(.library-room, .reading-list) .entry { display: block; padding: 10px 12px 12px 15px; border-bottom: 0; border-top: 1px solid var(--rule); }
+.library-room .entry { cursor: pointer; }
+.library-room .entry:hover { outline: 1px solid var(--atni-text-muted); outline-offset: -1px; }
+.library-room .entry[aria-current] { box-shadow: inset 3px 0 0 var(--energy-mark); }
+:is(.library-room, .reading-list) .entry-title { margin: 0 0 2px; font-size: 1.0625rem; line-height: 1.3; }
+:is(.library-room, .reading-list) .entry-meta { margin: 0; line-height: 1.4; }
+:is(.library-room, .reading-list) .entry-type { margin: 0; font-size: inherit; }
+.entry-tribal { display: inline-flex; align-items: center; gap: 6px; margin-left: 12px; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); white-space: nowrap; }
+.entry-tribal::before { content: ""; width: 8px; height: 8px; background: currentColor; } /* ink, not orange (CD 2) */
+.library-room .entry-summary { max-width: 48rem; margin: 6px 0 0; font-size: 0.9375rem; line-height: 1.5; }
+.library-room mark { color: inherit; background: var(--control-on); }
+.lib-more { margin: 16px 0 0; }
+.shelf-static { margin-top: 32px; }
+.shelf-static h2 { font-size: 1.375rem; }
+.shelf-static .caption { margin-top: 12px; }
+.js .shelf-static:not([data-shown]) { display: none; } /* the rows a reader without scripts gets in place of the other shelves */
+
+/* The selected entry, on the window: the one raised surface on the page. */
+.entry-preview { min-width: 0; padding: 20px 24px 24px; background: var(--window); box-shadow: var(--window-ring); }
+.preview-title { margin: 0 0 6px; font-size: 1.375rem; line-height: 1.2; color: var(--atni-text-heading); text-wrap: balance; }
+.entry-preview .entry-meta { margin: 0; }
+.preview-summary { margin: 14px 0 16px; line-height: 1.6; }
+.preview-facts { display: grid; gap: 14px; margin: 0; padding-top: 14px; border-top: 1px solid var(--rule); }
+.preview-facts dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.preview-facts dd { margin: 6px 0 0; }
+.preview-cites { margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.45; }
+.preview-cites li { margin: 0 0 4px; }
+.preview-go { margin: 20px 0 0; }
+.entry-preview .tags li { padding: 0; background: none; }
+.entry-preview .tags a { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 8px; color: var(--atni-text-heading); text-decoration: none; background: var(--tag-bg); }
+.entry-preview .tags a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.entry-preview .tags .tag-tribal::before { content: none; }
+.entry-preview .tags .tag-tribal a::before { content: ""; flex: none; width: 8px; height: 8px; background: currentColor; }
+
+@media screen and (min-width: 1100px) {
+  .library-room { grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr) clamp(22rem, 26vw, 34rem); }
+  .shelves { position: sticky; top: 16px; }
+  .shelves ul { display: block; }
+  .shelves li + li { border-top: 1px solid var(--rule); }
+  .entry-preview { position: sticky; top: 16px; }
+  .js .library-room .entry-summary { display: none; } /* the preview carries it */
 }
+@media screen and (max-width: 1099px) { .entry-preview { display: none; } }
 
-/* The two-day flow: a rail for each day, a 24px square at each stop. No numbers and no needle, since nothing on it is set yet.
-   Side by side, the rail breaks for 24px between the days, so two days do not read as one sequence. On a phone it stands upright. */
-.flow-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 16px; margin-bottom: 4px; }
-.flow-head > * { margin-bottom: 4px; }
-.flow { display: grid; gap: 24px; }
-.flow-day h3 { margin-bottom: 12px; font-size: 1.5rem; line-height: 1.15; color: var(--atni-text-heading); }
-.flow-stops { display: grid; margin: 0; padding: 0; list-style: none; }
-.flow-stops li { position: relative; margin: 0; padding: 0 0 16px 40px; }
-.flow-stops li::before { content: ""; position: absolute; z-index: 1; left: 0; top: 0; width: 24px; height: 24px; background: var(--series-context); outline: 2px solid var(--atni-ground-base); }
-.flow-stops li::after { content: ""; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--baseline); }
-.flow-stops strong { display: block; margin-bottom: 4px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); }
-.flow-stops p { margin: 0; }
-@media (min-width: 720px) {
-  .flow-stops { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .flow-stops li { padding: 36px 24px 0 0; }
-  .flow-stops li::after { left: 0; right: 0; top: 11px; bottom: auto; width: auto; height: 2px; }
-}
-@media (min-width: 1100px) {
-  .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .flow-stops li { padding-right: 20px; } /* each of the six stops gives up 4px to that break, and gets it back here, so no sentence re-wraps */
-}
-
-.summit-work { display: grid; gap: 0 48px; }
-.summit-work > p { margin-bottom: 8px; }
-.summit-contact > p { margin: 0; }
-.summit-contact .actions { margin-top: 12px; }
-@media (min-width: 720px) { .summit-work { grid-template-columns: repeat(2, minmax(0, 1fr)); } .summit-work > h2 { grid-column: 1 / -1; } }
-@media (min-width: 1100px) { .summit-work { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-/* Four summaries in a row at this width: each is a heading and one sentence, and an open one takes the row. */
-.details-grid { grid-template-columns: minmax(0, 1fr); margin-block: 16px 0; }
-@media (min-width: 720px) { .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) { .details-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.details-grid > .disclosure > summary > h2 { margin-bottom: 2px; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); }
-.details-grid > .disclosure > summary:hover > h2 { color: var(--atni-text-link-hover); }
-
-/* Library: the page's picture, then the filters with their count at the row's right end, then the bars, then entries in three columns. */
-.library-band .lead { max-width: 60rem; } /* longer than the kit's measure: three lines, not four, since the entries are the page */
-.library-page { padding-block: 0 48px; }
-.comp { padding-block: 16px 20px; } /* What's New above it already closes with a rule */
-.comp-head { display: grid; gap: 8px 32px; margin-bottom: 16px; }
+/* Explore the collection: the field with its key, then a row of bars per facet. Every bar is a filter, and every count is a claim mark that opens its
+   record. With filters on, a bar's darker part is the share of that row the filters keep, and the field dims what they leave out (-03, -19). */
+.explore { padding-block: var(--section-pad); border-top: 1px solid var(--rule); }
+.explore > h2 { margin-bottom: 4px; }
+.explore-figures { margin: 8px 0 12px; }
+.explore-how { margin: 0 0 16px; }
+.explore-body { display: grid; gap: 24px 48px; align-items: start; }
+.comp-field-wrap { display: grid; gap: 8px; }
 .comp-field { max-width: calc(100 * (var(--unit) + var(--unit-gap)) - var(--unit-gap)); }
-.comp-head > p { max-width: var(--measure-wide); margin: 0; font-size: 0.875rem; }
-.comp-note { margin: 12px 0 0; font-size: 0.875rem; } /* in the bars' shortest column, where it adds no height */
-.comp .a1 { --unit-ink: var(--atni-color-chart-1); }
-.comp .a2 { --unit-ink: var(--atni-color-chart-2); }
-.comp .a3 { --unit-ink: var(--atni-color-chart-3); }
-.comp .a4 { --unit-ink: var(--atni-color-chart-4); }
-.comp .a5 { --unit-ink: var(--atni-color-chart-5); }
+.comp-field-wrap > p { max-width: var(--measure-wide); margin: 0; font-size: 0.875rem; }
+.comp-key-group .comp-bars { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); column-gap: 24px; }
+.comp-note { margin: 12px 0 0; font-size: 0.875rem; }
+.explore .a1 { --unit-ink: var(--atni-color-chart-1); }
+.explore .a2 { --unit-ink: var(--atni-color-chart-2); }
+.explore .a3 { --unit-ink: var(--atni-color-chart-3); }
+.explore .a4 { --unit-ink: var(--atni-color-chart-4); }
+.explore .a5 { --unit-ink: var(--atni-color-chart-5); }
 .comp-field .is-out { background: var(--grid); } /* a square the current filters leave out */
-.comp-groups { display: grid; gap: 16px 24px; }
-.comp-group h3 { margin-bottom: 4px; }
+.comp-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 16px 24px; }
+.comp-group h3 { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .comp-bars { display: grid; margin: 0; padding: 0; list-style: none; }
 .comp-bars li { position: relative; margin: 0; }
+.comp-group-wide { grid-column: span 2; }
 .comp-group-wide .comp-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: 24px; }
 .comp-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: baseline; min-height: 32px; padding-top: 4px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.2; color: var(--atni-text-secondary); text-decoration: none; }
 .comp-row:hover, .comp-row[aria-current] { color: var(--atni-text-heading); }
 .comp-row:focus-visible { outline-offset: 0; }
-.comp-name { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding-right: 5ch; } /* room for the count, its own link at the row's right end */
+.comp-name { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.comp-hit { padding-right: 5.5ch; font-family: var(--body); font-weight: 400; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); } /* room for the count, its own link at the row's right end */
 .comp-key { flex: none; width: var(--unit); height: var(--unit); background: var(--unit-ink); }
 a.comp-n { position: absolute; top: 4px; right: 0; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
-a.comp-n:is(:hover, :focus-visible)::after { left: auto; right: 0; } /* its label opens leftward, into the column */
-.comp-track { grid-column: 1 / -1; display: block; height: 7px; margin-top: 2px; border-bottom: 1px solid var(--grid); } /* the hairline is the whole library, on every bar; a bar sits on the page ground, where every ink clears 3:1 */
+.comp-track { position: relative; grid-column: 1 / -1; display: block; height: 7px; margin-top: 2px; border-bottom: 1px solid var(--grid); } /* the hairline is the whole library, on every bar */
 .comp-track > i { display: block; width: calc(var(--w) * 100%); min-width: 2px; height: 100%; background: var(--unit-ink, var(--series-context)); }
-.comp-row[aria-current] .comp-track > i { background: var(--unit-ink, var(--energy-mark)); }
+.comp-track > b { position: absolute; left: 0; top: 0; width: calc(var(--h, 0) * 100%); height: 100%; background: var(--atni-text-heading); }
 .comp-row[aria-current]::before { content: ""; position: absolute; left: -8px; top: 2px; bottom: 0; width: 2px; background: var(--energy-mark); }
-@media (min-width: 720px) {
-  .comp-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .comp-group-wide { grid-column: span 2; }
-}
-@media (min-width: 1100px) { .comp-groups { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-@media (min-width: 1200px) { .comp-head { grid-template-columns: auto minmax(0, 1fr); align-items: start; } }
 @media (pointer: coarse) { .comp-row { min-height: 44px; } }
-
-/* Start Here is a legend row on screen. Its list is for paper, which cannot press a row. */
-.start-here { display: none; margin: 0; }
-
-/* The count's column is fixed, so typing a search never resizes the fields, and the form is in the page before the list loads, so the bars never jump. */
-.library-controls { display: grid; gap: 8px 24px; margin-bottom: 16px; }
-.library-controls .library-status { min-height: 1.35em; margin: 0; font-size: 0.9375rem; line-height: 1.35; font-variant-numeric: tabular-nums; }
-@media (scripting: none) { .library-controls { display: none; } } /* the filters need the script, and the noscript note says so */
-@media (min-width: 1280px) {
-  .library-controls { grid-template-columns: minmax(0, 1fr) 14rem; align-items: end; }
-  .library-controls .filters { grid-template-columns: minmax(15rem, 1.4fr) 1.4fr 1.2fr minmax(8.25rem, 1fr) minmax(7.25rem, 0.9fr) auto; } /* wide enough for the search label on one line and "All entries" and "All years" whole; the rest by each select's longest choice */
-  .library-controls .library-status { display: flex; align-items: center; justify-content: flex-end; min-height: 44px; text-align: right; }
+@media (min-width: 1600px) {
+  .explore-body { grid-template-columns: calc(100 * (var(--unit) + var(--unit-gap)) - var(--unit-gap)) minmax(0, 1fr); }
+  .explore-body > .comp-field-wrap { grid-column: 1; grid-row: 1; }
+  .explore-body > .comp-key-group { grid-column: 1; grid-row: 2; }
+  .explore-body > .comp-groups { grid-column: 2; grid-row: 1 / span 2; }
 }
 
-.library-page .entries { margin-bottom: 16px; }
-@media (min-width: 1100px) { .library-page .entries { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 2200px) { .library-page .entries { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.library-page .entry { display: flex; flex-direction: column; padding-block: 16px; }
-.library-page .entry-title { font-size: 1.125rem; line-height: 1.25; }
-.library-page .entry-type { margin: 0; }
-.library-page .entry-more { align-self: flex-start; }
-.library-page .entry .tags { margin-top: auto; padding-top: 4px; } /* chips line up along each row of entries */
-.library-page .tags li { padding: 0; background: none; }
-.library-page .tags a { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 8px; color: var(--atni-text-secondary); text-decoration: none; background: var(--tag-bg); }
-.library-page .tags a:hover { color: var(--atni-text-heading); text-decoration: underline; text-underline-offset: 0.2em; }
-.library-page .tags .tag-tribal::before { content: none; }
-.library-page .tags .tag-tribal a { color: var(--atni-text-heading); }
-.library-page .tags .tag-tribal a::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--atni-text-heading); } /* ink, not orange (CD 2) */
+/* What changed: the feed's rows in one column, newest first, so the dates read in order (-09); at the page's foot, so opening it moves nothing above. */
+.lib-changes { padding-block: 0 var(--section-pad); }
+.lib-changes .whats-new-all .whats-new-rows { columns: auto; }
+@media screen and (min-width: 1100px) {
+  .lib-changes .whats-new-all .whats-new-rows li { grid-template-columns: 6rem 4rem minmax(0, 48rem) 12rem; }
+  .lib-changes .whats-new-all .whats-new-area { grid-column: auto; }
+}
+.library-notes { padding-block: 0 48px; }
 
-/* About: the lockup in the band's right cell, a ruled row of figures, then three columns. A column runs to its own end, so nothing floats mid-column. */
-.about-band { align-items: start; } /* the h1 stays where every other page has it, whatever the lockup's height */
-.band-lockup { width: clamp(320px, 320px + (100vw - 1440px) / 4.8, 420px); max-width: 100%; height: auto; vertical-align: bottom; }
-.about-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 12px 48px; padding-block: 12px; border-block: 1px solid var(--grid); }
-.page-band-figures.about-figures li { align-content: start; max-width: none; }
-.about-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px 48px; padding-block: 24px 48px; }
-.about-col { display: grid; align-content: start; gap: 32px; }
-.about-grid section > :last-child { margin-bottom: 0; }
-.about-rule { padding-top: 24px; border-top: 1px solid var(--grid); }
-.about-license ul { margin-top: 0; }
-.about-climate { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; align-items: start; }
+/* Summit ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* Where planning stands: four facts as words, never as a figure or a date (the Summit names no day until ATNI confirms one). */
+.summit-status { padding-block: 0 8px; }
+.status-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); gap: 16px 32px; max-width: none; margin: 0; padding-block: 14px; border-top: 1px solid var(--rule); } /* the next section's rule closes it */
+.status-row dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.status-row dd { margin: 6px 0 0; }
+.status-note { display: block; margin-top: 6px; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.summit-path h2, .summit-prepare h2, .summit-reading h2 { margin-bottom: 12px; }
+.track-when { font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
+:is(.summit-track .track-detail, .about-track .track-detail, .about-stair .stair-detail) { max-width: 72rem; } /* wider than the kit's 44rem: the shared cell is as tall as its longest step, so short columns keep it low */
+@supports selector(:has(*)) {
+  @media screen and (min-width: 720px) {
+    .summit-track .track-step:nth-of-type(3)::before { right: auto; width: 2rem; } /* the rail breaks between the days, so two days do not read as one run */
+  }
+}
+.summit-prepare .section-note, .summit-reading .section-note { margin: 0 0 16px; }
+.summit-reading .entry-group { margin-top: 8px; }
+.reading-more { margin: 16px 0 0; }
+.summit-next { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 36rem)); gap: 12px 48px; align-items: start; padding-top: 24px; border-top: 1px solid var(--rule); }
+.summit-next > h2, .summit-next > p:first-of-type { grid-column: 1; margin: 0; }
+.summit-next > h2 { font-size: 1.375rem; }
+.summit-actions { grid-column: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 4px 0 0; }
+.summit-next > .photo-slot { grid-column: 2; grid-row: 1 / span 3; }
+@media (max-width: 1099px) { .summit-next > .photo-slot { grid-column: 1; grid-row: auto; } }
+
+/* About -------------------------------------------------------------------------------------------------------------------------------------------- */
+
+.about-years { margin: 0; }
+.rule-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 40rem), 1fr)); column-gap: 48px; max-width: none; margin: 0; }
+.rule-rows > div { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 4px 24px; padding-block: 12px; border-top: 1px solid var(--rule); }
+.rule-rows dt { font-family: var(--display); font-weight: 500; font-size: 1rem; line-height: 1.35; color: var(--atni-text-heading); }
+.rule-rows dd { max-width: 36rem; margin: 0; }
+@media (max-width: 719px) { .rule-rows > div { grid-template-columns: minmax(0, 1fr); } }
+.about-climate { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; align-items: start; margin-bottom: 20px; }
 .about-climate .climate-lockup { margin: 0; }
 .about-climate p { margin: 0; }
-.about-grid .prose > .about-climate { margin-bottom: 0.875rem; }
+.about-who h3 { margin-top: 0; }
+.about-terms { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px 48px; align-items: start; }
+@media (min-width: 1100px) { .about-terms { grid-template-columns: minmax(0, 44rem) minmax(0, 36rem); } }
+.about-license .lead-ins { max-width: none; }
+.about-nasa { margin: 10px 0 0; }
+.about-nasa > summary { display: list-item; cursor: pointer; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; color: var(--atni-text-heading); }
+.about-nasa > p { margin: 8px 0 0; font-size: 0.9375rem; }
 .about-credits { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
 .about-credits li { margin: 0; }
-@media (min-width: 720px) { .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) {
-  .about-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .about-license { grid-column: span 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; align-content: start; }
-  .about-license > h2 { grid-column: 1 / -1; }
-}
 
 /* High Contrast: marks drawn as backgrounds keep their own ink, and a logo drawn for one ground keeps that ground. */
 @media (forced-colors: active) {
-  .comp-field > i, .comp-key, .comp-track > i, .comp-row[aria-current]::before, .flow-stops li::before, .flow-stops li::after { forced-color-adjust: none; }
-  .comp-row[aria-current] { outline: 2px solid Highlight; outline-offset: 0; }
+  .comp-field > i, .comp-key, .comp-track > :is(i, b), .comp-row[aria-current]::before, .entry-tribal::before { forced-color-adjust: none; }
+  .comp-row[aria-current], .library-room .entry[aria-current], .shelves a[aria-current] { outline: 2px solid Highlight; outline-offset: -2px; }
   .climate-on-dark { background: #010B13; }
   .climate-on-light { background: #FFFFFF; }
 }
 
-/* Print: linear, with the marks kept. The large lockup prints once, as the page header site.css writes. */
+/* Print: the current shelf as a list with every summary and the brief's source line (-14); the filters, the preview, the bars and the log stay on screen.
+   The track and the stair print every step, as the kit lays them out on paper. */
 @media print {
-  .band-lockup { display: none !important; }
-  a.comp-n { position: static; display: block; } /* on paper it carries its claim id, too long to sit beside a name */
-  .comp, .flow-stops li { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .about-grid, .about-col, .about-license, .summit-work, .details-grid { display: block; }
-  .about-grid > *, .about-col > * { margin-bottom: 16pt; }
-  .summit-band .photo-slot { margin-top: 12pt; }
-  .start-here:not([hidden], .is-filtered) { display: block; margin-bottom: 16pt; } /* a filtered page prints only what it shows */
+  .shelves, .lib-filters, .entry-preview, .explore, .lib-changes, .lib-more, .library-notes { display: none !important; }
+  .library-room { display: block; padding: 0; }
+  .library-room .entry-summary { display: block !important; }
+  .library-room .entry[aria-current] { box-shadow: none; }
+  .prose-bands, .summit-next, .about-terms, .rule-rows, .status-row { display: block; }
+  .prose-bands > *, .rule-rows > div, .status-row > div { margin-bottom: 12pt; break-inside: avoid; }
 }
