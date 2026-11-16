@@ -8,7 +8,7 @@
  "by": "boundary",
  "default": "chat",
  "eyebrow": "The same hour, modeled 11/2026",
- "title": "An hour of chat and an hour of video overlap: about {now[chat][total]:.0f} and {now[video][total]:.0f} Wh, {fixed} Wh of each your own screen and router",
+ "title": "An hour of chat and an hour of video overlap, at about {now[chat][total]:.0f} and {now[video][total]:.0f} Wh; {fixed} Wh of each is your own screen and router",
  "subtitle": "Energy for one hour, in watt-hours, one boundary at a time.",
  "text": [
   "This is the hour from the first question at the top of the page, with every assumption open to change. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled."
@@ -672,5 +672,5 @@
   ]
  },
  "more": "Change the assumptions",
- "title_template": "{boundary}: an hour of chat is about {chat} Wh and an hour of streamed video about {video} Wh"
+ "title_template": "An hour of chat is about {chat} Wh and an hour of streamed video about {video} Wh (counted: {boundary})"
 }

@@ -37,6 +37,10 @@
 .ladder-group-label { max-width: none; }
 .plate:not(#ai-same-hour) .ladder-row { padding-block: 4px; } /* a row of three lines still reads apart from the next; the comparison plate shares out its own height */
 
+/* The hour face's link to its assumptions reads at the window's foot (ai.js moves it there); hidden in the claim zone from the first paint, so nothing jumps. */
+.js #ai-hour > .plate-claim > .plate-foot { display: none; }
+#ai-hour > .plate-detail > .plate-foot { margin: 8px 0 0; }
+
 /* Each ruler's columns, from what its rows print at 1440. */
 #ai-same-hour { --l: clamp(9.5rem, 24%, 14rem); --v: clamp(7rem, 17%, 11rem); } /* 9.5rem holds "Television, one hour" on one line at 1280 */
 #ai-hour { --l: clamp(9.25rem, 22%, 11rem); --v: clamp(5.5rem, 13%, 7.5rem); } /* four short names and "15 Wh (9.3 to 24)": the fixed scale keeps the width */
@@ -171,16 +175,27 @@
 .tier-rule strong { font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
 .tier-rule a { margin-left: 8px; }
 
-/* Youth: the evidence by strength, each finding under its rating; the steps for schools, colleges, and families beside it. */
+/* Youth: the evidence by strength, each finding under its rating, on the right; the resolution's words, then what it asks and the steps for schools, colleges,
+   and families, on the left, so neither column leaves the other an empty ground. */
+@media (min-width: 1100px) {
+  .youth-band { grid-template-rows: auto 1fr; }
+  .youth-band > .youth-evidence { grid-column: 2; grid-row: 1 / span 2; }
+  .youth-band > .youth-do { grid-column: 1; grid-row: 2; }
+}
+.youth-do { display: grid; gap: 8px; align-content: start; min-width: 0; }
 .youth-evidence > .caption { max-width: none; margin: 0 0 8px; }
 .youth-evidence > h3:first-child { margin-top: 16px; }
 .youth-evidence > .disclosure { margin: 0; padding-block: 10px; border-top: 1px solid var(--rule); }
 .evidence-rows { display: grid; margin: 0; padding: 0; list-style: none; }
 .evidence-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 4px 16px; align-items: start; margin: 0; padding-block: 12px; border-top: 1px solid var(--rule); }
-.evidence-meter { display: flex; gap: 2px; padding-top: 4px; }
-.evidence-meter i { display: block; width: 18px; height: 18px; background: var(--atni-text-heading); }
-.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: none; border: 2px solid var(--series-context); }
-.is-other .evidence-meter i { background: none; border: 2px solid var(--series-context); }
+/* A rating is rising bars, three for Strong, so it never borrows the filled and hollow squares that mean verified, measured, and modeled elsewhere. A position
+   (Advocacy, Record) is a flat line: it is not on the same scale. */
+.evidence-meter { display: flex; align-items: flex-end; gap: 3px; height: 18px; margin-top: 4px; }
+.evidence-meter i { display: block; width: 6px; height: 8px; background: var(--atni-text-heading); print-color-adjust: exact; }
+.evidence-meter i:nth-child(2) { height: 13px; }
+.evidence-meter i:nth-child(3) { height: 18px; }
+.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: var(--grid); }
+.is-other .evidence-meter i { width: 24px; height: 2px; margin-bottom: 8px; background: var(--atni-text-secondary); }
 .evidence-name { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
 .evidence-name strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.1875rem; line-height: 1.2; color: var(--atni-text-heading); }
 .evidence-finds { grid-column: 2; display: grid; }

@@ -385,4 +385,26 @@ plate.register('ai-guidance-2026', {
     if (ctx.reason !== 'select') ctx.setRow('tesla', { frac: ctx.frac(tesla.low), text: tesla.display });
   },
 });
+
+// The hour face's link to its assumptions sits at the window's foot and lands on their disclosure, open, focus on its summary (3.8). Without scripts: claim zone, plate.
+// shortcut: the kit has no window-foot place for a foot line; drop this when build_plates.py writes one there.
+const assumptions = document.querySelector('#ai-same-hour .plate-claim details.plate-more');
+if (assumptions) assumptions.id ||= 'ai-same-hour-more';
+const hourFoot = document.querySelector('#ai-hour > .plate-claim > .plate-foot');
+if (hourFoot && assumptions) {
+  hourFoot.querySelector('a[href="#ai-same-hour"]')?.setAttribute('href', `#${assumptions.id}`);
+  document.querySelector('#ai-hour > .plate-detail').append(hourFoot);
+}
+const toAssumptions = () => {
+  let anchor = '';
+  try { anchor = decodeURIComponent(window.siteAddress.read().anchor); } catch { return; } // a broken escape names nothing
+  if (!assumptions || anchor !== assumptions.id) return;
+  assumptions.open = true;
+  assumptions.querySelector('summary').focus({ preventScroll: true });
+};
+window.addEventListener('hashchange', toAssumptions);
+document.addEventListener('DOMContentLoaded', toAssumptions);
+// The first preset is WildChat's mean prompts per conversation (fp-095), so it says so.
+const meanTalk = document.querySelector(`#ai-same-hour [data-preset="${A.prompts_per_hour.presets[0]}"]`);
+if (meanTalk) meanTalk.textContent = `Average conversation, ${meanTalk.textContent}`;
 }());

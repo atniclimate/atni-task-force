@@ -106,8 +106,9 @@ async function agenda() {
   eq(qs.map((a) => a.textContent).join('|'), 'Is everyday AI use the problem?|Who is paying for the buildout?|How does a Tribe keep control of its data?', 'three questions');
   eq(qs.map((a) => a.getAttribute('aria-controls')).join(), 'face-hour,face-buildout,face-tiers', 'each controls its face');
   const answer = (i) => box.querySelectorAll('.agenda-a')[i].textContent;
-  eq(answer(0), 'Whole hour: chat with ten prompts is about 15 Wh, streamed video 14 Wh, a short-video feed 13 Wh, and agentic coding 211 Wh.', 'the hour answer, from the meter at its start');
-  ok(leads(answer(1), ['Amazon', '131.82 billion dollars', '12/31/2025']), `the buildout answer: ${answer(1)}`);
+  eq(answer(0), 'In an hour, ten chat prompts come to about 15 Wh, beside 14 Wh for streamed video and 13 Wh for a short-video feed; agentic coding is 211 Wh (counted: Whole hour).', 'the hour answer, from the meter at its start, with what is counted last');
+  ok(leads(answer(1), ['Amazon', '132 billion dollars', '12/31/2025']), `the buildout answer, in whole billions as the title prints them: ${answer(1)}`);
+  ok(document.querySelector('section.agenda > h2.sr-only'), 'the agenda has its heading, so face titles sit under an h2');
   ok(/most protective/.test(answer(2)), 'the tiers answer is fixed words');
   ok(!document.getElementById('face-hour').hidden && document.getElementById('face-buildout').hidden, 'the first face shows');
   // The hour meter: one fixed linear scale, the needle moving under it from stop to stop.
@@ -122,22 +123,38 @@ async function agenda() {
     await pick(window, h.radio('counted', stop));
     eq(axis(), start, `the axis holds at ${stop}`);
     eq(h.value.textContent, chat, `the needle reads ${chat} at ${stop}`);
-    ok(answer(0).includes(`chat with ten prompts is about ${chat} Wh, streamed video ${video} Wh`), `the answer follows at ${stop}: ${answer(0)}`);
-    ok(!/\(/.test(answer(0)), 'the answer prints figures, not spreads');
+    ok(answer(0).includes(`ten chat prompts come to about ${chat} Wh, beside ${video} Wh for streamed video`), `the answer follows at ${stop}: ${answer(0)}`);
+    ok(!/^(Data center|Whole hour)/.test(answer(0)), 'the answer opens on its figures, not a control label');
+    ok(!/\(\d/.test(answer(0)), 'the answer prints figures, not spreads');
   }
   await pick(window, h.radio('counted', 'dc'));
   ok(h.plot.querySelector('.meter-part.is-ghost'), 'what a stop leaves out stays as a ghost');
-  ok(/^Data center only/.test(h.root.querySelector('.plate-title').textContent), `the title follows the stop: ${h.root.querySelector('.plate-title').textContent}`);
-  eq(h.root.querySelector('.plate-foot a[href="#ai-same-hour"]').textContent, 'Change the assumptions on the Energy tab', 'the assumptions are a link away, on the Energy plate');
+  ok(/^An hour of chat is about 3 Wh.*\(counted: Data center only\)$/.test(h.root.querySelector('.plate-title').textContent), `the title follows the stop: ${h.root.querySelector('.plate-title').textContent}`);
+  // The way to the assumptions stands at the window's foot, and lands on their disclosure, open, with focus on its summary.
+  const toMore = h.root.querySelector('.plate-detail > .plate-foot a[href="#ai-same-hour-more"]');
+  eq(toMore?.textContent, 'Change the assumptions on the Energy tab', 'the assumptions are a link away, at the foot of the window');
+  ok(!h.root.querySelector('.plate-claim > .plate-foot'), 'and not a line of the claim zone');
   // A face keeps its state; the second face starts when shown.
   fire(window, qs[1], 'click');
   await wait(30);
   ok(!document.getElementById('face-buildout').hidden && document.getElementById('face-hour').hidden, 'the second face shows');
-  ok(answer(0).startsWith('Data center only'), 'and the first keeps its state');
+  ok(answer(0).endsWith('(counted: Data center only).'), 'and the first keeps its state');
   const cc = plateOf(document, 'ai-capex-cash');
   await pick(window, cc.radio('fy', '2022'));
-  ok(leads(answer(1), ['Amazon', '63.65 billion dollars', '12/31/2022']), `the buildout answer follows the year: ${answer(1)}`);
+  ok(leads(answer(1), ['Amazon', '64 billion dollars', '12/31/2022']), `the buildout answer follows the year: ${answer(1)}`);
   ok(leads(cc.root.querySelector('.plate-title').textContent, ['Amazon', '2022']), 'and so does the title');
+  // NVIDIA has no capital spending for FY2021, only cash: the answer names Amazon's spending, so it never prints cash as spending.
+  await pick(window, cc.radio('fy', '2021'));
+  fire(window, cc.row('nvidia'), 'click');
+  await wait(30);
+  ok(leads(answer(1), ['Amazon', '61 billion dollars', '12/31/2021']), `a company with no spending that year leaves the answer on Amazon's: ${answer(1)}`);
+  // Followed, the hour face's link opens the assumptions on the Energy tab and focuses their summary.
+  window.location.hash = 'ai-same-hour-more';
+  window.dispatchEvent(new window.HashChangeEvent('hashchange'));
+  await wait(30);
+  const more = document.getElementById('ai-same-hour-more');
+  ok(more?.matches('#ai-same-hour .plate-claim details.plate-more') && more.open && document.activeElement === more.querySelector('summary'), 'the link opens the assumptions and focuses their summary');
+  ok(!document.getElementById('energy').hidden, 'on the Energy tab');
   // The stair, the kit's fieldset.stair: four radios rising from open to restricted, the most protective chosen, each step's detail after its label.
   const stair = document.querySelector('#face-tiers fieldset.stair#tier-grid');
   ok(stair, 'the stair keeps the old tier anchor');
@@ -358,6 +375,7 @@ async function sameHourPlate() {
   ok(!settings(window).includes('prompts='), 'a dragged figure stays out of the address (owner ruling 29)');
   await slide(window, num, 60);
   ok(holds(p.reading.textContent, ['60 prompts', '30 Wh']), 'typed field');
+  eq(p.root.querySelector('[data-preset="2.52"]').textContent, 'Average conversation, 2.52', 'the first preset says what it is');
   fire(window, p.root.querySelector('[data-preset="2.52"]'), 'click');
   await wait();
   ok(holds(p.reading.textContent, ['2.52 prompts']), 'preset');
@@ -769,7 +787,7 @@ async function noScripts() {
   for (const plate of document.querySelectorAll('[data-plate]')) {
     ok(plate.querySelector('.reading').textContent.length > 10, `${plate.id} has a default Reading`);
     ok(plate.querySelector('.plate-title').textContent.length <= 120, `${plate.id}: a title of at most 120 characters, four lines at 1440`);
-    ok(plate.querySelector('.plate-controls') === null || plate.querySelector('.plate-controls').hidden, `${plate.id} controls wait for scripts`);
+    ok(plate.querySelector('.plate-controls') === null || plate.querySelector('.plate-controls').matches('[data-js]'), `${plate.id} controls wait for scripts (html:not(.js) [data-js] hides them)`);
     ok(plate.querySelectorAll('table.plate-table tbody tr').length > 0, `${plate.id} has its table`);
     ok(plate.querySelector(`.plate-sources-link a[href="sources/#${plate.id}"]`) && !plate.querySelector('ol.plate-sources'), `${plate.id} links its sources, and keeps no list`);
     ok([...plate.querySelectorAll('.plate-table a')].every((a) => a.getAttribute('href').startsWith(`sources/#${plate.id}-source-`)), `${plate.id}: its Table links reach its receipts`);
@@ -786,7 +804,7 @@ async function noScripts() {
   eq(document.querySelectorAll('#youth-education .slot').length, 1, 'Youth: one Coming line');
   // The brief, and the agenda under it; without scripts the faces stack, whole, and the questions are jump links.
   const brief = document.querySelector('main > header.brief.photo-ai');
-  eq(brief.querySelector('.brief-name').textContent, 'Artificial Intelligence Task Force', 'the name line');
+  eq(brief.querySelector('.brief-name').textContent, 'AI', 'the name line, as the nav names the page');
   eq(brief.querySelector('h1').textContent, 'Who an AI tool serves, what it uses, and whether the Tribe controls it', 'the h1 says what the page settles');
   ok(brief.querySelector('.brief-lead').textContent.split(/(?<=[.?]) /).length <= 2, 'a lead of two sentences at most');
   eq(brief.querySelector('.brief-meta .figure-num + .figure-label').textContent, 'Sources checked', 'the date and its label');
@@ -837,7 +855,9 @@ async function noScripts() {
   ok(read('site/ai/sources/index.html').includes('id="policy-sentinel"'), 'where they stand');
   // A tier is a category: no sequential ramp on it, and the squares carry the state. The rating's key is on the page for print.
   ok(!/--stage-|--tier/.test(read('site/assets/css/ai.css')), 'no stage ramp on a tier');
-  ok(holds(document.querySelector('.youth-evidence > .caption').textContent, ['Three filled squares, Strong', 'two, Moderate', 'one, Early', 'hollow square, Advocacy or Record']), 'the three-square rating has its key');
+  ok(holds(document.querySelector('.youth-evidence > .caption').textContent, ['Three bars, Strong', 'two, Moderate', 'one, Early', 'a flat line, Advocacy or Record']), 'the rating has its key');
+  ok(document.querySelector('#youth-education .ai-band.youth-band > .youth-do') && !document.querySelector('#youth-education .ai-band.youth-do'), 'what the resolution asks shares the band, under the lede, beside the evidence');
+  ok(!/\.evidence-meter[^{]*\{[^}]*border/.test(read('site/assets/css/ai.css')), 'a rating draws bars, never the hollow squares that mean modeled');
   for (const id of ['ai-occupations', 'ai-jobs-sector']) eq(document.querySelector(`#${id} .plate-legend`).textContent, 'Dashed outline: BLS projection, 2025 to 2035', `${id}: the dashes are named without scripts`);
   eq(document.querySelector('#ai-holdings .plate-legend').textContent, 'As the filing states itComputed here from a filing: its share count times a closing price', 'the holdings key says what a hollow bar is');
   for (const name of ['atni-climate-lockup-on-dark.svg', 'atni-climate-lockup.svg']) ok(read(`site/assets/img/${name}`).startsWith('<'), `${name} is on the site`);

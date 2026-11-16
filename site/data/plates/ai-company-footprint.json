@@ -7,7 +7,8 @@
  "eyebrow": "Footprint",
  "gap": "none reported",
  "title": "Google's electricity rose {c[rs-003][value]} percent in 2025 to {display}",
- "subtitle": "Location-based Scope 2 rose at every company that reports more than one year of it. Company reports, each row on its own boundary. Fiscal years differ: Microsoft July to June, Apple to September, NVIDIA to January.",
+ "title_template": "{foot_co}: electricity, water, and emissions from the electricity it used, by year, from its own reports",
+ "subtitle": "Emissions from the electricity each company used, counted at the average rate of the grids that supplied it (location-based Scope 2), rose at every company that reports more than one year of them. Company reports, each row on its own boundary. Fiscal years differ: Microsoft July to June, Apple to September, NVIDIA to January.",
  "controls": [
   {
    "type": "segmented",

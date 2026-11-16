@@ -8,8 +8,8 @@
  "default": "chat",
  "eyebrow": "One hour on one phone, modeled 11/2026",
  "title": "Counted to the screen, an hour of chat is about {now[chat][whole][value]:.0f} Wh, streamed video {now[video][whole][value]:.0f}, and agentic coding {now[coding][whole][value]:.0f}",
- "title_template": "{counted}: chat about {chat} Wh, streamed video {video} Wh, agentic coding {coding} Wh",
- "answer": "{counted}: chat with ten prompts is about {chat} Wh, streamed video {video} Wh, a short-video feed {short} Wh, and agentic coding {coding} Wh.",
+ "title_template": "An hour of chat is about {chat} Wh, streamed video {video}, and agentic coding {coding} (counted: {counted})",
+ "answer": "In an hour, ten chat prompts come to about {chat} Wh, beside {video} Wh for streamed video and {short} Wh for a short-video feed; agentic coding is {coding} Wh (counted: {counted}).",
  "subtitle": "Watt-hours for one hour on a phone over Wi-Fi, on one fixed scale.",
  "inputs": {
   "now": {
@@ -54,7 +54,7 @@
   ],
   "switch": "counted"
  },
- "reading": "{label}, counted as {counted}: about {display} for the hour.",
+ "reading": "{label}: about {display} for the hour.",
  "rows": [
   {
    "id": "chat",
@@ -99,7 +99,8 @@
      "at": [
       "adds",
       "whole"
-     ]
+     ],
+     "word": "modeled"
     },
     {
      "label": "Your router and phone",
@@ -107,7 +108,8 @@
      "modeled": true,
      "at": [
       "whole"
-     ]
+     ],
+     "word": "modeled"
     }
    ]
   },
@@ -154,7 +156,8 @@
      "at": [
       "adds",
       "whole"
-     ]
+     ],
+     "word": "modeled"
     },
     {
      "label": "Your router and phone",
@@ -162,7 +165,8 @@
      "modeled": true,
      "at": [
       "whole"
-     ]
+     ],
+     "word": "modeled"
     }
    ]
   },
@@ -209,7 +213,8 @@
      "at": [
       "adds",
       "whole"
-     ]
+     ],
+     "word": "modeled"
     },
     {
      "label": "Your router and phone",
@@ -217,7 +222,8 @@
      "modeled": true,
      "at": [
       "whole"
-     ]
+     ],
+     "word": "modeled"
     }
    ]
   },

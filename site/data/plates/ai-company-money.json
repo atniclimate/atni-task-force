@@ -7,6 +7,7 @@
  "eyebrow": "Paying for it",
  "gap": "not reported",
  "title": "In nine months, capital spending passed operating cash flow at Amazon: {c[fin-089][value]:.0f} billion dollars against {c[fin-090][value]:.0f}",
+ "title_template": "{company}: capital spending against operating cash flow, with debt, buybacks, revenue, and cash, by fiscal year, from SEC filings",
  "subtitle": "Nine months to 09/30/2026. Alphabet's capital spending also passed its operating cash flow, {c[fin-087][value]:.0f} against {c[fin-088][value]:.0f}. The chart shows full fiscal years.",
  "text": [
   "The first panel divides capital spending by operating cash flow, on one scale for all seven. The six under it are billion dollars by fiscal year, from SEC filings on a cash basis; capital spending and operating cash flow share a scale.",
