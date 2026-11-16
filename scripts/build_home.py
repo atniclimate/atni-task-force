@@ -5,7 +5,8 @@ page that builds it, and the Data Center page's question sets with their first q
 A face is the plate's block as build_plates.py wrote it into its own page, between <!-- home:face:ID --> and <!-- /home:face:ID --> here, in an element
 marked data-copy-of="DIR/#ID": pour_claim_refs.py, validate_public.py, and build_index.py leave a copy to the page it comes from. A link in a copy is
 rewritten to reach from the site root what it reached from that page (the collar's Sources link lands on that page's Sources page); an id the copy holds
-stays. Every id on the page and every address name (a plate, its view, its settings) must be unique, or the build stops. The figures home's own words name
+stays. Words that send the reader to a tab name the tab's page, since home has none, and a face's caption marks its term (CAPTION_TERMS); no figure
+changes. Every id on the page and every address name (a plate, its view, its settings) must be unique, or the build stops. The figures home's own words name
 sit in <span data-m="..."> and are poured from what the copies hold. The agenda's answers (data-answer) are build_plates.py's.
 
 Re-running changes nothing. Run after build_plates.py, and before build_index.py and pour_claim_refs.py:
@@ -37,6 +38,14 @@ ASK_FIRSTS = re.compile(r'<ul class="ask-firsts"[^>]*>(.*?)</ul>', re.S)
 ADD_BUTTON = re.compile(r'\s*<button\b[^>]*\sdata-sheet-add="(q-[a-z0-9-]+)"[^>]*>.*?</button>', re.S)
 ASK_SET = re.compile(r'<fieldset class="ask-set"[^>]*\sid="(q-[a-z0-9-]+)"[^>]*>\s*<legend[^>]*>(.*?)</legend>', re.S)
 WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve")
+# Home has no tabs, so a copy's "on the Energy tab" names its page as the nav does: "on the AI page's Energy tab" (critic-home 10).
+PAGE_NAMES = {"ai": "AI", "data-centers": "Data Centers", "energy": "Tribal Energy"}
+TAB = re.compile(r"\bon the ([A-Z][\w-]*(?: [A-Z][\w-]*)*) tab\b")
+# A face's answer must stay plain text, so its caption carries the term's first use on home: linked to the hub's glossary as pour_claim_refs.py links a
+# page's own terms, and that script gives a copy's terms to the prose tip (DIRECTION-R2 3.9; critic-system 13). A caption that no longer holds the word,
+# or already marks a term, is left as its page built it.
+CAPTION_TERMS = {"ai-hour": ("wh", "Watt-hours"), "dc-project": ("amw", "aMW")}
+SUBTITLE = re.compile(r'<p class="caption">(.*?)</p>', re.S)
 
 
 def number_words(n):
@@ -81,6 +90,17 @@ def plate_face(plate_id, site):
     rel = definition["page"]
     source_dir = posixpath.dirname(rel)
     block = rehome(block_of((site / rel).read_text(encoding="utf-8"), plate_id, rel), source_dir)
+
+    def page_tab(match):
+        if source_dir not in PAGE_NAMES:
+            raise BuildError(f"{plate_id} names a tab of site/{rel}: add that page's nav name to PAGE_NAMES in scripts/build_home.py")
+        return f"on the {PAGE_NAMES[source_dir]} page's {match[1]} tab"
+    block = TAB.sub(page_tab, block)
+    subtitle = SUBTITLE.search(block)
+    if plate_id in CAPTION_TERMS and subtitle and 'class="term"' not in subtitle[1]:
+        key, word = CAPTION_TERMS[plate_id]
+        marked = re.sub(rf"\b{re.escape(word)}\b", f'<a class="term" data-term="{key}" href="sources/#term-{key}">{word}</a>', subtitle[1], count=1)
+        block = block[:subtitle.start(1)] + marked + block[subtitle.end(1):]
     names = [plate_id, f"{plate_id}-view", *(c["name"] for c in definition.get("controls") or [])]
     return f'<div class="home-copy" data-copy-of="{source_dir}/#{plate_id}">\n{block}\n</div>', names
 

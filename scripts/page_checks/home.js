@@ -98,7 +98,7 @@ async function homeLive() {
   pick(window, hour.querySelector('input[name="counted"][value="dc"]'));
   eq(axis(), ticks, 'the axis holds across stops');
   ok(+plot.style.getPropertyValue('--at') < at, 'the needle moves down to what the stop counts');
-  ok(answer.textContent !== first && /^Data center only/.test(answer.textContent), `the answer follows the plate: ${answer.textContent}`);
+  ok(answer.textContent !== first && /Data center only/.test(answer.textContent), `the answer follows the plate: ${answer.textContent}`);  // the answer opens on its figures and names the stop
   fire(window, hour.querySelector('[data-reset]'), 'click');
   eq(answer.textContent, first, 'back at the starting point, so is the answer');
 

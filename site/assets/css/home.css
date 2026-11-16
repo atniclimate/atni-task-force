@@ -6,6 +6,13 @@
 .home-go { align-items: center; row-gap: 8px; margin-top: 4px; }
 .home-go .paper { min-height: 40px; padding-block: 8px; }
 
+/* The photograph's credit stands at the foot of the title's column, in the room the lead and the ways out leave under a one-line h1, instead of a 36px
+   row of its own between the brief and the agenda (critic-home 3). It sizes nothing (inline-size containment), so the column stays the h1's width, and it
+   keeps its place, hidden, in the light theme, so the brief is one height in both. */
+@media screen and (min-width: 1100px) and (forced-colors: none) {
+  .brief.photo-home > .photo-credit { grid-area: title; align-self: end; contain: inline-size; margin: 12px 0 0; font-size: 0.8125rem; line-height: 1.35; }
+}
+
 /* A face holds its copy one element deeper than a page's own face does. */
 .agenda-faces .home-copy > .plate { margin-bottom: 0; }
 
@@ -64,6 +71,10 @@
   .home-part > :last-child { grid-column: 3 / span 2; }
 }
 
+/* On paper the ways out are buttons nobody can press, and a feed row's address runs five lines: the plates' collars carry their Sources addresses, and
+   Take Part keeps its line naming atnitribes.org (critic-home 8). */
 @media print {
   .force { break-inside: avoid; }
+  .home-go, .home-asks-go, .home-part .actions { display: none; }
+  .whats-new-rows a::after { content: none; }
 }

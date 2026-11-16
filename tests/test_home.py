@@ -40,6 +40,21 @@ def test_the_agenda_asks_four_questions_and_each_face_holds_its_answer():
     answers = {a.attrs.get("data-answer"): a.text() for a in agenda.all("p", "agenda-a")}
     for plate_id in bh.FACES:
         assert answers.get(plate_id), f"{plate_id}: the answer is poured from the plate (build_plates.py --page index.html)"
+    heading = agenda.one("h2")
+    assert agenda.attrs.get("aria-labelledby") == heading.attrs["id"] and "sr-only" in heading.attrs["class"], "an h2 between the h1 and the faces' titles"
+
+
+def test_a_copy_names_the_page_of_any_tab_it_sends_the_reader_to_and_marks_its_captions_term():
+    agenda = page().one("section", "agenda")
+    assert not re.search(r"\bon the [A-Z][\w-]* tab\b", agenda.text()), "home has no tabs: a copy names the tab's page"
+    assert "Change the assumptions on the AI page's Energy tab" in agenda.text()
+    tip = json.loads(page().one("script", id="cr-data").text())["terms"]
+    for plate_id, (term, word) in bh.CAPTION_TERMS.items():
+        caption = agenda.one("figure", id=plate_id).one("div", "plate-claim").one("p", "caption")
+        if word in caption.text():
+            link = caption.one("a", "term")
+            assert (link.attrs["data-term"], link.attrs["href"], link.text()) == (term, f"sources/#term-{term}", word), f"{plate_id}: {word} opens its definition"
+            assert term in tip, f"{plate_id}: the prose tip carries {term} (python scripts/pour_claim_refs.py --page site/index.html)"
 
 
 def test_the_question_sets_face_is_the_data_center_pages_without_its_sheet():
