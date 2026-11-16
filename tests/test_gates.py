@@ -97,9 +97,10 @@ def test_a_research_record_the_library_lists_is_released_and_its_neighbors_stay_
 def test_a_receipt_prints_a_partial_date_as_written():  # 4
     source = {"url": "https://x.org", "title": "T", "publisher": "P", "kind": "agency", "published": "2026-10 (update to the 07/22/2026 paper; day not stated)"}
     claim = {"status": "verified", "quote": "q", "boundary": "b", "source": source}
-    html = be.sources_html({"xx-001"}, {"xx-001": claim}, {})
+    listed = lambda c: be.bp.documents_html("explorer", be.receipts_of({"xx-001"}, {"xx-001": c}, {}), {"xx-001": c}, set())  # noqa: E731  (the Explorer's Sources page)
+    html = listed(claim)
     assert "(u/" not in html and "2026-10 (update to the 07/22/2026 paper; day not stated)" in html
-    assert ", 10/05/2026." in be.sources_html({"xx-001"}, {"xx-001": {**claim, "source": {**source, "published": "2026-10-05"}}}, {})
+    assert "published 10/05/2026." in listed({**claim, "source": {**source, "published": "2026-10-05"}})
 
 
 def test_every_way_a_page_or_script_could_load_or_send_is_refused(tmp_path, monkeypatch, capsys):  # 5

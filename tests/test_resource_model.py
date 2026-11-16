@@ -916,8 +916,9 @@ def test_what_moves_it_most_names_each_ranges_claims_and_ships_their_receipts():
     ranged = {k: v["claims"] for k, v in model["inputs"].items() if v["low"] != v["value"] or v["high"] != v["value"]}
     assert data["input_claims"] == {k: ids for k, ids in ranged.items() if ids}, "rerun python scripts/build_explorer.py"
     assert all(k in data["names"] for k in ranged), "every ranged input has words for its row"
-    receipts = set(re.findall(r'<li id="src-([a-z]+-\d{3})"', page))
-    assert not {c for ids in ranged.values() for c in ids} - receipts, "a claim the ranking can name has no receipt on the page"
+    receipts = set(re.findall(r'id="src-([a-z]+-\d{3})"', (ROOT / "site" / "explorer" / "sources" / "index.html").read_text(encoding="utf-8")))
+    assert not {c for ids in ranged.values() for c in ids} - receipts, "a claim the ranking can name has no receipt on the Explorer's Sources page"
+    assert not {c for ids in ranged.values() for c in ids} - set(data["receipts"]), "and its card's words ride in the page's data"
     assert "What moves it most" in page and "with the others held where they are." in page
 
 

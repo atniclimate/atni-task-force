@@ -8,13 +8,14 @@ import gzip
 import importlib.util
 import json
 from pathlib import Path
+import posixpath
 import re
 import sys
 import warnings
 
 import pytest
 
-from dom import numbers, parse
+from dom import Node, numbers, parse
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -49,8 +50,29 @@ def reading(doc):
     return doc.one(cls="reading").text()
 
 
-def receipt(doc, claim_id):
-    return doc.one("li", id=f"sample-source-{claim_id}").text()
+def sources(tmp_path):
+    """The sample page's Sources page, parsed."""
+    return parse((tmp_path / "site" / "sources" / "index.html").read_text(encoding="utf-8"))
+
+
+def receipt_index(doc):
+    """Every receipt on a Sources page by its id, as (its document's entry, its words): a document's own entry, or a claim's row with the lines its run and its
+    document share."""
+    out = {}
+    for entry in doc.all("li"):
+        if "-source-" in (entry.attrs.get("id") or ""):
+            out[entry.attrs["id"]] = (entry, entry.text())
+        shared = [node.text() for node in entry.children if isinstance(node, Node) and node.tag in ("p", "blockquote")]
+        for run in entry.all("tbody"):
+            heads = run.texts("tr", "source-run")
+            out.update((row.attrs["id"], (entry, " ".join([*shared, *heads, row.text()]))) for row in run.all("tr", id=True))
+    return out
+
+
+def receipt(doc, claim_id, plate="sample"):
+    found = receipt_index(doc).get(f"{plate}-source-{claim_id}")
+    assert found, f"no receipt {plate}-source-{claim_id} on the Sources page"
+    return found[1]
 
 
 def rejected(tmp_path, match, plate=None, claims=None):
@@ -76,7 +98,7 @@ def test_self_test():
 
 def test_build_writes_between_the_markers_and_is_idempotent(tmp_path):
     site = bp.sample_site(tmp_path / "site")
-    assert bp.build(site)["pages_written"] == ["page.html"]
+    assert bp.build(site)["pages_written"] == ["page.html", "sources/index.html"]
     page = (site / "page.html").read_text(encoding="utf-8")
     assert page.startswith("<main>before\n<!-- plate:sample -->") and page.endswith("<!-- /plate:sample -->\nafter</main>") and parse(page).one("figure")
     assert "\nold\n" not in page
@@ -139,7 +161,8 @@ def test_a_partly_limit_reaches_reading_sources_receipt_and_data(tmp_path):
     page, data, _ = built(tmp_path, bp.sample_plate(default="b"))
     doc = parse(page)
     assert all(part in reading(doc) for part in ("Row B", "12 Wh", "2025", limit))
-    assert limit in receipt(doc, "s-2") and "s-2" in receipt(doc, "s-2") and "partly" in receipt(doc, "s-2").lower() and "partly" not in receipt(doc, "s-1").lower()
+    listed = sources(tmp_path)
+    assert limit in receipt(listed, "s-2") and "s-2" in receipt(listed, "s-2") and "partly" in receipt(listed, "s-2").lower() and "partly" not in receipt(listed, "s-1").lower()
     row = next(r for r in data["rows"] if r["key"] == "b")
     assert row["limit"] == limit and limit in row["reading"] and data["receipts"]["s-2"]["limit"] == limit
     assert any("partly" in cell.lower() for cell in doc.one(cls="plate-table").texts("td"))
@@ -148,7 +171,7 @@ def test_a_partly_limit_reaches_reading_sources_receipt_and_data(tmp_path):
 def test_a_limit_on_the_claim_itself_is_used(tmp_path):
     claims = [bp.sample_claim("s-1", status="partly", limit="Stated on the claim.")]
     page, _, _ = built(tmp_path, bp.sample_plate(rows=[{"id": "a", "label": "A", "claim": "s-1"}]), claims)
-    assert "Stated on the claim." in receipt(parse(page), "s-1")
+    assert "Stated on the claim." in receipt(sources(tmp_path), "s-1")
 
 
 def test_a_custom_reading_cannot_drop_the_limit(tmp_path):
@@ -183,7 +206,7 @@ def test_a_row_can_convert_a_unit_with_its_arithmetic_on_the_receipt(tmp_path):
     plate = bp.sample_plate(plot={"type": "lines"}, default=None, title="{series}", rows=[{"series": "A", "claim": "s-1", "points": "series", "convert": {"times": 3.78541, "to": "megaliters"}}, {"series": "B", "claim": "s-2", "points": "series"}])
     page, data, _ = built(tmp_path, plate, claims)
     assert [(r["value"], r["display"]) for r in data["rows"] if r["series"] == "A"] == [(378.541, "378.5 megaliters"), (757.082, "757.1 megaliters")]
-    assert data["plot"]["unit"] == "megaliters" and "14,689 million gallons x 3.78541 = 55,603 megaliters" in receipt(parse(page), "s-1")
+    assert data["plot"]["unit"] == "megaliters" and "14,689 million gallons x 3.78541 = 55,603 megaliters" in receipt(sources(tmp_path), "s-1")
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
     rejected(tmp_path / "x", "needs its arithmetic", plate, [bp.sample_claim("s-1", 1, unit="million gallons", series={"2024": 1}), claims[1]])
@@ -209,16 +232,18 @@ def test_plot_rules(tmp_path, plot, match):
 def test_our_prose_keeps_the_house_style_and_source_words_stay_verbatim(tmp_path):
     rejected(tmp_path, "em dash", bp.sample_plate(title="A \u2014 B"))
     page, data, claims = built(tmp_path)
-    assert "\u2014" not in page and " -- " not in page and "\u2014" in claims["s-1"]["quote"]
-    assert "The figure &#8212; as stated &#45;- is &lt;b&gt;0.24&lt;/b&gt; Wh" in page
-    assert "quote" not in data["receipts"]["s-1"] and data["receipts"]["s-1"]["title"] == claims["s-1"]["source"]["title"], "the Sources list holds the words once"
+    listed = (tmp_path / "site" / "sources" / "index.html").read_text(encoding="utf-8")
+    assert "\u2014" not in page + listed and " -- " not in page + listed and "\u2014" in claims["s-1"]["quote"]
+    assert "The figure &#8212; as stated &#45;- is &lt;b&gt;0.24&lt;/b&gt; Wh" in listed
+    assert "quote" not in data["receipts"]["s-1"] and data["receipts"]["s-1"]["title"] == claims["s-1"]["source"]["title"], "the Sources page holds the words once"
 
 
 def test_source_words_cannot_break_out_of_the_data_block(tmp_path):
     claims = [bp.sample_claim("s-1", quote="</script><script>alert(1)</script> <!-- x")]
     page, data, _ = built(tmp_path, bp.sample_plate(rows=[{"id": "a", "label": "A <b>", "claim": "s-1"}]), claims)
-    assert page.count("<script") == 1 and "alert(1)</script>" not in page and "<b>" not in page
-    assert "&lt;/script&gt;&lt;script&gt;alert(1)" in page
+    listed = (tmp_path / "site" / "sources" / "index.html").read_text(encoding="utf-8")
+    assert page.count("<script") == 1 and "alert(1)</script>" not in page + listed and "<b>" not in page and "<script" not in listed
+    assert "&lt;/script&gt;&lt;script&gt;alert(1)" in listed
 
 
 def test_lines_read_a_claims_series_and_every_point_keeps_its_claim(tmp_path):
@@ -670,7 +695,7 @@ def test_a_row_can_cite_more_claims_and_every_receipt_ships(tmp_path):
     page, data, _ = built(tmp_path, plate, claims)
     assert data["rows"][0]["cites"] == ["s-2", "s-3"] and sorted(data["receipts"]) == ["s-1", "s-2", "s-3", "s-4"]
     doc = parse(page)
-    assert data["receipts"]["s-3"]["limit"] == "Only one quarter." and "Only one quarter." in receipt(doc, "s-3")
+    assert data["receipts"]["s-3"]["limit"] == "Only one quarter." and "Only one quarter." in receipt(sources(tmp_path), "s-3")
     assert sorted(node.attrs["data-claim"] for node in doc.all(data_claim=True)) == ["s-1", "s-2", "s-3", "s-4"]
     errors = []
     assert vp.check_plate_blocks("page", page, bp.load_claims(tmp_path / "site"), errors) == 1 and not errors, errors
@@ -777,7 +802,7 @@ def test_a_pair_is_a_ghost_at_a_stop_it_names_no_claim_for(tmp_path):
 
 def test_a_table_can_give_one_line_per_pair(tmp_path):
     page, data, _ = built(tmp_path, *checked_plate())
-    cells = [[cell.text() for cell in row.walk()] for row in parse(page).one("tbody").all("tr")]
+    cells = [[cell.text() for cell in row.children if isinstance(cell, Node)] for row in parse(page).one("tbody").all("tr")]
     assert len(cells) == 5 and cells[0] == ["A", "110.5 TWh", "100.25 TWh", "-10.25 TWh", "10.22 percent", "p-23, r-23"]
     assert cells[3] == ["C", "2.6 (1.2 to 3.1) percent per year", "0.2 percent per year", "-2.4 points", "not computed", "g-p, g-o"]
     assert cells[4][-1] == "m-p, m-r, m-d, m-e", "every claim behind the line"
@@ -801,8 +826,10 @@ def test_a_verified_figure_prints_the_limit_it_carries(tmp_path):
     claims = [bp.sample_claim("s-1", 1, limit="History is revised later."), bp.sample_claim("s-2", 2)]
     page, data, _ = built(tmp_path, plate, claims)
     doc = parse(page)
-    assert "Verified against the source. Limit: History is revised later." in receipt(doc, "s-1") and "Limit:" not in receipt(doc, "s-2")
-    assert "limit" not in data["receipts"]["s-1"], "scripts need no copy of it"
+    listed = sources(tmp_path)
+    assert "Verified against the source. Limit: History is revised later." in receipt(listed, "s-1") and "Limit:" not in receipt(listed, "s-2")
+    assert data["receipts"]["s-1"]["limit"] == "History is revised later.", "the plate's own card prints it, so its data carries it"
+    assert data["receipts"]["s-1"]["url"].startswith("https://") and "quote" not in data["receipts"]["s-1"], "the card links its source; the quote stays on the Sources page"
     assert "History is revised later." not in reading(doc), "a verified figure's Reading stays as written"
 
 
@@ -915,6 +942,7 @@ def two_pages(tmp_path):
     site = bp.sample_site(tmp_path / "site")
     (site / "other").mkdir()
     (site / "other" / "index.html").write_text("<!-- plate:second --><!-- /plate:second -->", encoding="utf-8")
+    bp.sources_shell(site / "other" / "sources" / "index.html")
     second = bp.sample_plate(id="second", page="other/index.html")
     (site / "data" / "plates" / "second.json").write_text(json.dumps(second), encoding="utf-8")
     return site
@@ -923,8 +951,62 @@ def two_pages(tmp_path):
 @pytest.mark.parametrize("name", ["other/index.html", "site/other/index.html", "./other/index.html", "other\\index.html"])
 def test_page_builds_one_page(tmp_path, name):
     site = two_pages(tmp_path)
-    assert bp.build(site, name) == {"plates": 1, "pages_written": ["other/index.html"]}
+    assert bp.build(site, name) == {"plates": 1, "pages_written": ["other/index.html", "other/sources/index.html"]}, "with its Sources page"
     assert "old" in (site / "page.html").read_text(encoding="utf-8"), "the other page is left alone"
+    assert "<!-- sources:plates -->\n<!-- /sources:plates -->" in (site / "sources" / "index.html").read_text(encoding="utf-8"), "and so is its Sources page"
+
+
+# Sources pages (owner ruling 39) --------------------------------------------------------------------
+
+def test_a_plate_keeps_a_line_and_a_link_and_its_receipts_go_to_the_sources_page(tmp_path):
+    page, data, _ = built(tmp_path)
+    figure = parse(page).one("figure")
+    view = figure.one(cls="plate-view", data_view="sources")
+    assert not figure.all("ol", "plate-sources") and not figure.all(id="sample-source-s-1"), "no list on the plate"
+    assert view.one("p", "plate-source-line").text() == "3 sources from 1 document: 2 verified and 1 partly verified."
+    link = view.one("p", "plate-sources-link").one("a")
+    assert link.attrs["href"] == "sources/#sample" and link.attrs["data-url"] == f"{vp.OWN_ORIGIN}sources/#sample", "its address prints on paper"
+    listed = sources(tmp_path)
+    assert listed.one("section", "sources-plate", id="sample").one("a", href="../page.html#sample"), "the section links back to its plate"
+    assert [node.attrs["id"] for node in listed.all(id=True) if node.attrs["id"].startswith("src-")] == ["src-s-1", "src-s-3", "src-s-2"], "each claim has one src- anchor"
+
+
+def test_the_table_links_each_claim_to_its_receipt_and_keeps_its_words(tmp_path):
+    plate = bp.sample_plate(table={"columns": [{"label": "Row", "field": "label"}, {"label": "Claims", "field": "claims"}, {"label": "Source", "field": "source"}]},
+                            rows=[{"id": "a", "label": "A", "claim": "s-1", "cites": ["s-3"]}, {"id": "b", "label": "B", "claim": "s-2", "limit": "Old."}])
+    page, _, _ = built(tmp_path, plate)
+    table = parse(page).one(cls="plate-table")
+    assert table.texts("td") == ["s-1, s-3", "Example Agency", "s-2", "Example Agency, partly verified"], "the words csvOf and lineClaims read are the same"
+    assert [a.attrs["href"] for a in table.all("a")] == ["sources/#sample-source-s-1", "sources/#sample-source-s-3", "sources/#sample-source-s-1", "sources/#sample-source-s-2", "sources/#sample-source-s-2"]
+    listed = sources(tmp_path)
+    assert all(listed.all(id=a.attrs["href"].split("#")[1]) for a in table.all("a")), "every link lands on a receipt"
+
+
+def test_a_documents_claims_share_one_entry_and_rows_share_their_runs(tmp_path):
+    claims = [bp.sample_claim(f"s-{i}", i, boundary=f"Counted: county {i % 2}.") for i in range(1, 11)]
+    plate = bp.sample_plate(title="{label}", default="r1", rows=[{"id": f"r{i}", "label": f"R{i}", "claim": f"s-{i}"} for i in range(1, 11)])
+    built(tmp_path, plate, claims)
+    listed = sources(tmp_path)
+    [entry] = listed.all("li", "source-doc")
+    assert entry.one("p", "plate-source-title").one("a", href="https://example.org/files/users/report.pdf") and entry.one("blockquote", "plate-quote"), "title, link, and quote once"
+    assert entry.one("details", "source-more").one("summary").text() == "10 claims from this source", "past eight claims, a disclosure"
+    runs = entry.all("tbody")
+    assert [run.one("tr", "source-run").text() for run in runs] == ["Boundary: Counted: county 1.", "Boundary: Counted: county 0."], "each boundary said once"
+    assert sorted(row.attrs["id"] for run in runs for row in run.all("tr", id=True)) == sorted(f"sample-source-s-{i}" for i in range(1, 11))
+    assert "Verified against the source." in entry.texts("p") and "Value year 2025. Agency figure." in entry.one("p", "caption").text(), "status and kind said once"
+
+
+def test_a_page_with_plates_needs_its_own_sources_page(tmp_path):
+    site = bp.sample_site(tmp_path / "site")
+    (site / "sources" / "index.html").unlink()
+    with pytest.raises(bp.BuildError, match="needs a Sources page at sources/index.html"):
+        bp.build(site)
+    site = two_pages(tmp_path / "two")
+    second = bp.sample_plate(id="third", page="third.html")
+    (site / "third.html").write_text("<!-- plate:third --><!-- /plate:third -->", encoding="utf-8")
+    (site / "data" / "plates" / "third.json").write_text(json.dumps(second), encoding="utf-8")
+    with pytest.raises(bp.BuildError, match="would share the Sources page sources/index.html"):
+        bp.build(site)
 
 
 def test_page_build_ignores_another_builders_broken_plate(tmp_path):
@@ -1294,28 +1376,66 @@ def test_every_poured_figure_on_a_shipped_page_matches_its_claim(shipped):
 
 
 def test_every_claim_a_shipped_plate_uses_keeps_its_receipt(shipped):
+    """On the Sources page the plate links to (the Briefing's copies reach their page's): every receipt, with its claim id, its link, its quote, and a partly
+    figure's limit; and on the plate no list of its own."""
     pages, claims = shipped
+    docs = {name: doc for name, _, doc in pages}
+    indexes, words_of = {}, {}
     wrong, seen = [], 0
     for name, text, doc in pages:
         for figure, data in plates(doc, text):
             plate_id = figure.attrs["id"]
             used = {claim_id for row in data["rows"] for claim_id in [row.get("claim"), *(row.get("cites") or [])] if claim_id}
             wrong += [f"{name} {plate_id}: {claim_id} has no receipt" for claim_id in used - set(data.get("receipts") or {})]
+            if figure.all("ol", "plate-sources") or any("-source-" in node.attrs["id"] for node in figure.all(id=True)):
+                wrong.append(f"{name} {plate_id}: the plate still holds its own source list")
+            href = figure.one("p", "plate-sources-link").one("a").attrs["href"]
+            where = posixpath.normpath(posixpath.join(posixpath.dirname(name), href.split("#")[0], "index.html"))
+            if where not in docs or href.split("#")[1] != plate_id:
+                wrong.append(f"{name} {plate_id}: its Sources link {href} reaches no section for it")
+                continue
+            index = indexes.setdefault(where, receipt_index(docs[where]))
             for claim_id in data.get("receipts") or {}:
                 seen += 1
-                claim, found = claims[claim_id], figure.all("li", id=f"{plate_id}-source-{claim_id}")
+                claim, found = claims[claim_id], index.get(f"{plate_id}-source-{claim_id}")
                 if not found:
-                    wrong.append(f"{name} {plate_id}: no Sources entry for {claim_id}")
+                    wrong.append(f"{name} {plate_id}: no entry on {where} for {claim_id}")
                     continue
-                words = found[0].text()
-                if claim_id not in words or not found[0].all("a", href=claim["source"]["url"]) or " ".join(claim["quote"].split()) not in words:
-                    wrong.append(f"{name} {plate_id}: the Sources entry for {claim_id} lost its id, its link, or its quote")
+                entry, words = found
+                whole = words_of.setdefault(id(entry), entry.text())
+                if claim_id not in words or not entry.all("a", href=claim["source"]["url"]) or " ".join(claim["quote"].split()) not in whole:
+                    wrong.append(f"{name} {plate_id}: the entry for {claim_id} on {where} lost its id, its link, or its quote")
                 if claim["status"] == "partly" and not ("partly" in words.lower() and (data["receipts"][claim_id].get("limit") or "?") in words):
-                    wrong.append(f"{name} {plate_id}: the Sources entry for {claim_id} lost its limit")
+                    wrong.append(f"{name} {plate_id}: the entry for {claim_id} on {where} lost its limit")
             for node in figure.all(data_claim=True):
                 if node.attrs["data-claim"] not in claims:
                     wrong.append(f"{name} {plate_id}: data-claim names unknown claim {node.attrs['data-claim']}")
-    assert seen and not wrong, wrong
+    assert seen and not wrong, wrong[:20]
+
+
+def test_no_main_page_keeps_a_source_list_and_each_points_to_its_sources_page(shipped):
+    """Ruling 39: a main page keeps no Claims Cited block and no full list; a page with plates or claim marks links its Sources page under its title and in its
+    footer, and that page holds a src- anchor for every claim its text marks. Every page links the hub."""
+    pages, claims = shipped
+    texts = {name: text for name, text, _ in pages}
+    checked = 0
+    for name, text, doc in pages:
+        if name.endswith("sources/index.html"):
+            continue
+        assert "<!-- claims-cited -->" not in text and not doc.all("ol", "plate-sources") and not doc.all("section", "claims-cited"), f"{name} keeps a source list"
+        footer = doc.one("footer")
+        assert footer.all("a", href=posixpath.relpath("sources/", posixpath.dirname(name) or ".") + "/"), f"{name}: the footer links the Sources hub"
+        own = posixpath.join(posixpath.dirname(name), "sources", "index.html")
+        marks = [node.attrs["data-claim"] for node in doc.all("a", "cr")]
+        if own not in texts:
+            assert not marks or name == "briefing/index.html", f"{name} marks claims and has no Sources page"
+            continue
+        checked += 1
+        assert doc.one("a", href="sources/", data_sources=True) and (footer.all("a", href="sources/") or name == "index.html"), f"{name}: a line under its title and its footer link its Sources page"
+        anchors = set(re.findall(r'id="src-([a-z]{2,3}-\d{3})"', texts[own]))
+        assert set(marks) <= anchors, f"{own} lacks receipts for {sorted(set(marks) - anchors)[:5]}"
+        assert all(node.attrs["href"] == f"sources/#src-{node.attrs['data-claim']}" for node in doc.all("a", "cr")), f"{name}: every mark links its Sources page"
+    assert checked >= 9, "every page with plates or marks, the Library, and the Explorer"
 
 
 def test_figures_printed_in_a_shipped_plate_match_a_fresh_build(shipped):

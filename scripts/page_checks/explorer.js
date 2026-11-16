@@ -4,10 +4,15 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const { JSDOM, ROOT, count, ok, eq, wait, settle, settings, read, fixture, open, fire, key } = require('./lib');
+const { JSDOM, ROOT, count, ok, eq, wait, settle, settings, read, receiptsOn, fixture, open, fire, key } = require('./lib');
 
 const PAGE = 'http://localhost/site/explorer/index.html';
 const html = read('site/explorer/index.html');
+// The page's receipts are on its Sources page (owner ruling 39), one entry per source document: a claim's receipt by its src- id, its words whitespace-folded.
+const listed = read('site/explorer/sources/index.html');
+const onSources = receiptsOn('site/explorer/sources/index.html');
+const receipt = (id) => (onSources(id) ?? '').replace(/\s+/g, ' ').trim();
+const claimOf = (a) => a.getAttribute('href').split('#src-')[1];
 const oracle = JSON.parse(fixture('work/site-refresh/tmp/explorer-oracle.json', 'Rebuild it with python scripts/resource_model.py --oracle.'));
 const near = (a, b, message) => { count(); assert.ok(Math.abs(a - b) <= 1e-9 * Math.max(1e-6, Math.abs(b)) + 1e-12, `${message}: ${a} against ${b}`); };
 // The same shape as Python's answer, every number within the tolerance and every word exact.
@@ -68,7 +73,8 @@ function staticRules() {
   near(scale.co2, 306600, 'project scale, tonnes');
   near(scale.share, 0.438, 'project scale, share');
   eq(pure.projectScale(null, 1, 0.36, 350, 2000000).water, null, 'a blank in leaves its outputs blank');
-  ok(!/https?:\/\/[^"']*\.(js|css|woff2?)/.test(html.replace(/<li id="src-[\s\S]*?<\/li>/g, '')), 'no external script, stylesheet, or font');
+  // The data block names sources by their addresses (a .json one among them) for the receipt card; a name in data loads nothing, so it is left out here.
+  ok(!/https?:\/\/[^"']*\.(js|css|woff2?)/.test(html.replace(/<script type="application\/json" id="explorer-data">[\s\S]*?<\/script>/, '')), 'no external script, stylesheet, or font');
   ok(!/<iframe|<script[^>]+src="http|<link(?![^>]+rel="canonical")[^>]+href="http/.test(html), 'no outside load'); // a canonical link names this page and loads nothing
   ok(!/\u2014| -- /.test(html) && !/\u2014| -- /.test(js + model), 'no em dash');
   const css = read('site/assets/css/explorer.css');
@@ -78,7 +84,7 @@ function staticRules() {
   ok(!/font-size: 0\.(75|8125)rem/.test(css), 'nothing on a first screen is under the floor');
   ok(!/--atni-color-chart|--stage-|#2F7FC1/i.test(css), 'the Wall carries no chromatic ink but the selection');
   ok(/@container \(max-width: 120px\) \{ \.wall-axis-left span \{ display: none; \}/.test(css), 'a left side under 120px drops its ticks, by a container query that needs no script');
-  ok(/@media print[\s\S]*\.x-plate \[data-d="sources"\] \{ display: none; \}/.test(css), 'every receipt prints once, under All Sources');
+  ok(/@media print[\s\S]*\.x-plate \[data-d="sources"\] \{ display: none; \}/.test(css), 'every receipt prints once, on the Sources page');
   ok(!/\.section-strip > \.wrap \{ flex-wrap: nowrap/.test(css), 'on a phone the Settings button wraps under the tabs and never lies over them');
   ok(/prefers-reduced-motion/.test(read('site/assets/css/site.css')), 'reduced motion takes transitions to zero');
   const site = read('site/assets/css/site.css');
@@ -125,7 +131,7 @@ function noScript() {
     'and say what a seat includes (owner ruling 23, 11/05/2026), as an assumption, with 14 not read as the tie');
   ok(!/Potawatomi|Data Holdings/.test(html), 'the facility is anonymized');
   ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('where-it-runs'))), 'and its figure attributed to its public source');
-  ok(/Partly verified\. Limit: One operator/.test(text(document.getElementById('src-lf-059'))) && /sustainability report/i.test(text(document.getElementById('src-lf-059'))), 'with its receipt, status, and limit');
+  ok(/Partly verified\. Limit: One operator/.test(receipt('src-lf-059')) && /sustainability report/i.test(receipt('src-lf-059')), 'with its receipt, status, and limit');
   ok(document.querySelectorAll('[data-row]').length > 80, 'rows print');
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) ok(text(r.querySelector('.ladder-value')).length > 0, `${r.dataset.row} shows a value without scripts`);
   ok(document.querySelectorAll('.wall-row .w:not([hidden])').length > 40, 'the Wall is drawn without scripts');
@@ -135,8 +141,9 @@ function noScript() {
   ok(document.querySelectorAll('tr[data-tr]').length > 80, 'tables hold every row');
   ok(document.getElementById('settings') && !document.getElementById('settings').hidden, 'settings read as a list');
   ok(document.querySelectorAll('#settings input[data-setting]').length >= 60, 'every option prints');
-  ok(document.querySelectorAll('.x-sources > li').length > 80, 'receipts print');
-  for (const a of document.querySelectorAll('a[href^="#src-"]')) ok(document.getElementById(a.getAttribute('href').slice(1)), `receipt for ${a.getAttribute('href')}`);
+  ok((listed.match(/ id="src-/g) || []).length > 80 && document.querySelector('#all-sources a[href="sources/"]'), 'receipts print on the Sources page, which the page points to');
+  ok(!document.querySelector('a[href^="#src-"], .x-sources'), 'and the page keeps no list of its own');
+  for (const a of document.querySelectorAll('a[href^="sources/#src-"]')) ok(receipt(`src-${claimOf(a)}`), `receipt for ${a.getAttribute('href')}`);
   ok(document.querySelectorAll('.x-waffle').length === 4, 'all four waffles print');
   ok(document.querySelectorAll('.x-place').length === 5, 'the place strip prints');
   // The direction's first screen, and that nothing waits on a script: four inputs in the grid, all nine in the page, every disclosure of the plate open.
@@ -151,8 +158,8 @@ function noScript() {
   eq(bandFigures.length, 3, 'three figures in the band');
   for (const li of bandFigures) {
     ok(li.querySelector('.figure-num [data-m]') && li.querySelector('.figure-label'), 'poured, with a label');
-    const ids = [...li.querySelectorAll('.figure-label a[href^="#src-"]')].map((a) => a.getAttribute('href').slice(1));
-    ok(ids.length > 1 && ids.every((id) => document.getElementById(id)), `${text(li.querySelector('.figure-num'))} in the band carries its claims, each with a receipt`);
+    const ids = [...li.querySelectorAll('.figure-label a[href^="sources/#src-"]')].map(claimOf);
+    ok(ids.length > 1 && ids.every((id) => receipt(`src-${id}`)), `${text(li.querySelector('.figure-num'))} in the band carries its claims, each with a receipt`);
   }
   ok(!document.querySelector('.x-band').closest('.x-plate') && !document.querySelector('.key-facts, .x-facts'), 'the band has no box, and the notice is one line');
   ok(document.querySelector('[data-d="week"]').closest('.plate-view').dataset.view === 'table', 'the week across the rows moves to the Table view');
@@ -179,7 +186,7 @@ function noScript() {
   const exampleNote = text(document.querySelector('#project-scale .plate-plot .x-start'));
   ok(exampleNote.includes(`${demand.value.toLocaleString('en-US')} aMW`) && exampleNote.includes(`${(demand.value * 8760).toLocaleString('en-US')} MWh`) && /dem-058: verified against the source/.test(exampleNote) && demand.status === 'verified', 'its sentence shows the arithmetic, the claim, and its status');
   ok(/not a proposal/.test(exampleNote) && /picks no feed/.test(exampleNote), 'and says it is no proposal and picks no feed');
-  ok(document.querySelector('#project-scale .x-start a[href="#src-dem-058"]') && /Verified against the source/.test(text(document.getElementById('src-dem-058'))), 'with its receipt');
+  ok(document.querySelector('#project-scale .x-start a[href="sources/#src-dem-058"]') && /Verified against the source/.test(receipt('src-dem-058')), 'with its receipt');
   // Method: the first sentence is the bold one, and the words stay the model's.
   eq(text(document.querySelector('.x-disclaimer')), model.disclaimer.replace(/\s+/g, ' ').trim(), 'the disclaimer is word for word');
   eq(text(document.querySelector('.x-disclaimer strong')), `${model.disclaimer.split('. ')[0]}.`, 'and only its first sentence is bold');
@@ -233,8 +240,8 @@ function noScript() {
   ok(document.querySelector('[data-scenario-save]').closest('[data-js]').hidden, 'the scenario file waits on a script');
   ok(/Illustrative Carbon Damage, Off by Default/.test(text(document.getElementById('method'))) && /not a damage estimate/.test(text(document.getElementById('method'))), 'the damage families print in Method, each saying what it is');
   ok(document.querySelector('[data-damage]').closest('[data-js]').hidden && document.querySelector('[data-d="damage"]').hidden, 'and the control and its line wait on a script');
-  ok(document.getElementById('src-mv-001') && document.getElementById('src-ex-002') && document.getElementById('src-mv-005'), 'the second version\'s receipts ship');
-  ok(document.querySelector('a[href="#src-mv-004"]') && /sf-035/.test(text(document.querySelector('#not-the-building .x-picture:last-child'))), 'the spread of a session and the cloud share name their claims');
+  ok(receipt('src-mv-001') && receipt('src-ex-002') && receipt('src-mv-005'), 'the second version\'s receipts ship');
+  ok(document.querySelector('a[href="sources/#src-mv-004"]') && /sf-035/.test(text(document.querySelector('#not-the-building .x-picture:last-child'))), 'the spread of a session and the cloud share name their claims');
   ok(!/twenty watts|a hundred watts|about three times|doubles the coding/.test(text(document.getElementById('method'))), 'the sentences the rerun overturned are gone');
   ok(/halves at 19 W and doubles at 82 W/.test(text(document.getElementById('method'))) && /misses by 3\.2 times/.test(text(document.getElementById('method'))) && /1\.9 times and the coding hour's 1\.7 times/.test(text(document.getElementById('method'))), 'and their replacements are poured');
   ok(/vendor's app sends its readings to that vendor/.test(text(document.getElementById('method'))), 'and the smart plug says a vendor\'s app sends the readings on');
@@ -515,17 +522,19 @@ async function behavior() {
   ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="reading"] .receipt'), 'and the Reading view holds no chip');
   const useTally = document.querySelector('[data-plate-x="use"] [data-tally]');
   const partlyChips = useChips.filter((c) => c.classList.contains('is-hollow')).length;
-  const plateSources = (name) => new Set([...document.querySelectorAll(`[data-plate-x="${name}"] .plate-plot [data-row]`)].flatMap((r) => [...document.getElementById(ex.data.rows[r.dataset.row].note).querySelectorAll('.receipt')].map((c) => c.getAttribute('href'))));
+  const plateSources = (name) => new Set([...document.querySelectorAll(`[data-plate-x="${name}"] .plate-plot [data-row]`)].flatMap((r) => [...document.getElementById(ex.data.rows[r.dataset.row].note).querySelectorAll('.receipt')].map(claimOf)));
+  const lineOf = (n) => new RegExp(`^${n.toLocaleString('en-US')} sources? from [\\d,]+ documents?: `); // the kit's line, from the data block
   const useSources = plateSources('use');
   ok(useSources.size > useChips.length, 'a plate holds more sources than a row');
   eq(text(useTally), `This row: ${[useChips.length - partlyChips && `${useChips.length - partlyChips} verified`, partlyChips && `${partlyChips} partly verified`].filter(Boolean).join(', ')}; ${useSources.size} sources on the plate`, 'one line counts the row by status and names the plate\'s count');
   eq(text(document.querySelector('[data-plate-x="use"] .plate-views input[value="sources"] + span')), `Sources (${useSources.size})`, 'the same count as the view\'s name');
-  eq(document.querySelectorAll('[data-plate-x="use"] [data-d="sources"] > li').length, useSources.size, 'and the view lists that many');
+  ok(lineOf(useSources.size).test(text(document.querySelector('[data-plate-x="use"] [data-d="sources"]'))), 'and the view counts that many in one line');
+  eq(document.querySelector('[data-plate-x="use"] .plate-sources-link a').getAttribute('href'), 'sources/', 'beside the link to every receipt');
   for (const name of ['where', 'arch', 'lever', 'cross', 'catalog']) {
     const n = plateSources(name).size;
     const plate = document.querySelector(`[data-plate-x="${name}"]`);
     eq(text(plate.querySelector('.plate-views input[value="sources"] + span')), `Sources (${n})`, `${name}: the view's name counts the plate`);
-    eq(plate.querySelectorAll('[data-d="sources"] > li').length, n, `${name}: and it lists them`);
+    ok(lineOf(n).test(text(plate.querySelector('[data-d="sources"]'))), `${name}: and its line counts them`);
     ok(new RegExp(`^This row: .*; ${n} sources on the plate$`).test(text(plate.querySelector('[data-tally]'))), `${name}: and the line says the same`);
   }
   fire(window, useTally, 'click');
@@ -552,12 +561,13 @@ async function behavior() {
   ok(/Instagram or TikTok/.test(text(document.getElementById('f-social').closest('.x-field'))) && /Netflix or YouTube/.test(text(document.getElementById('f-streaming').closest('.x-field'))), 'the fields name the platforms');
   const chip = document.querySelector('[data-plate-x="use"] [data-d="chips"] .receipt');
   fire(window, chip, 'click');
-  const receipt = document.querySelector('[data-plate-x="use"] [data-d="receipt"]');
-  ok(!receipt.hidden && /(Verified against the source|Partly verified)/.test(text(receipt)), 'a chip opens its receipt in place');
-  ok(!receipt.closest('.plate-view').hidden && receipt.closest('.plate-view').dataset.view === 'sources', 'in the Sources view');
-  eq(document.activeElement, receipt, 'with focus in it');
+  const card = document.querySelector('[data-plate-x="use"] [data-d="receipt"]');
+  ok(!card.hidden && /(Verified against the source|Partly verified)/.test(text(card)) && /Claim [a-z]{2,3}-\d{3}\./.test(text(card)), 'a chip opens its receipt in place, from the data block');
+  ok(card.querySelector('.plate-source-title a').href.startsWith('https://') && card.querySelector('.plate-receipt-more a').getAttribute('href') === `sources/#src-${claimOf(chip)}`, 'with its source linked and the way on to the full receipt');
+  ok(!card.closest('.plate-view').hidden && card.closest('.plate-view').dataset.view === 'sources', 'in the Sources view');
+  eq(document.activeElement, card, 'with focus in it');
   key(window, plot, 'Escape');
-  ok(receipt.hidden, 'Escape closes it');
+  ok(card.hidden, 'Escape closes it');
   eq(document.activeElement, chip, 'and focus returns to the chip');
 
   // Views.
@@ -567,7 +577,7 @@ async function behavior() {
   ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="table"]').hidden && document.querySelector('[data-plate-x="use"] .plate-view[data-view="reading"]').hidden, 'Table view');
   views[1].checked = true;
   fire(window, views[1], 'change');
-  ok(document.querySelectorAll('[data-plate-x="use"] [data-d="sources"] li').length > 0, 'Sources view lists the plate\'s sources');
+  ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="sources"]').hidden && /^\d+ sources? from /.test(text(document.querySelector('[data-plate-x="use"] [data-d="sources"]'))), 'Sources view counts the plate\'s sources');
   views[0].checked = true;
   fire(window, views[0], 'change');
 
@@ -802,8 +812,8 @@ async function behavior() {
   eq(text(waffleDetail.querySelector('.readout-value')), '15 to 25', 'with the figure at poster size');
   ok(/Workload class/.test(text(waffleDetail)), 'with its definition');
   ok(/Limit:/.test(text(waffleDetail)), 'a partly claim prints its limit');
-  ok(waffleDetail.querySelector('a.x-c[href="#src-lf-002"]'), 'and its claim id, plain, to its receipt');
-  ok(document.getElementById('src-lf-002'), 'which ships');
+  ok(waffleDetail.querySelector('a.x-c[href="sources/#src-lf-002"]'), 'and its claim id, plain, to its receipt');
+  ok(receipt('src-lf-002'), 'which ships');
   ok(!document.querySelector('[data-plate-x="building"] .plate-detail :is(.receipt, .plate-chips)'), 'no chip box on this panel');
   const waffleClaims = {};
   for (const name of fs.readdirSync(path.join(ROOT, 'site/data/claims'))) for (const c of JSON.parse(read(`site/data/claims/${name}`)).claims || []) waffleClaims[c.id] = c;
@@ -813,7 +823,7 @@ async function behavior() {
   for (const group of document.querySelectorAll('[data-plate-x="building"] .plate-detail [data-group]')) {
     setRadio(window, document.querySelector(`input[name="waffle"][value="${group.dataset.group.split(':')[1]}"]`));
     const line = group.querySelector('.x-this-figure');
-    const id = line.querySelector('a.x-c').getAttribute('href').slice(5);
+    const id = claimOf(line.querySelector('a.x-c'));
     eq(text(line), `This figure: 1 ${waffleClaims[id].status === 'partly' ? 'partly verified' : 'verified'}; ${id}`, `${group.dataset.group}: the line says its status and its id`);
     if (waffleClaims[id].status === 'partly') ok(/Limit:/.test(text(group)), `${group.dataset.group}: with its limit`);
     const about = group.querySelector('details');
@@ -1072,8 +1082,8 @@ async function charts() {
       for (const tr of rows) {
         ok(tr.querySelector('th[scope="row"]') && /^\$?[\d.,]+ to \$?[\d.,]+( \S.*)?$/.test(text(tr.querySelector('td').firstChild)), `${name}: ${text(tr)} names the input and the figure at its two ends`);
         ok(tr.children.length === 3 && !tr.children[1].querySelector('a') && !tr.children[2].querySelector('.plate-driver-bar'), `${name}: ${text(tr.querySelector('th'))}: the figures and the bar in one cell, the claims in the next`);
-        const ids = [...tr.querySelectorAll('td a.x-c')].map((a) => a.getAttribute('href').slice(5));
-        ok(ids.length ? ids.every((id) => doc.getElementById(`src-${id}`)) : /no source, an assumption/.test(text(tr)), `${name}: ${text(tr.querySelector('th'))} names its range's claims, each with a receipt, or says it is an assumption`);
+        const ids = [...tr.querySelectorAll('td a.x-c')].map(claimOf);
+        ok(ids.length ? ids.every((id) => receipt(`src-${id}`)) : /no source, an assumption/.test(text(tr)), `${name}: ${text(tr.querySelector('th'))} names its range's claims, each with a receipt, or says it is an assumption`);
         const bar = tr.querySelector('.plate-driver-bar');
         const v = (n) => +tr.style.getPropertyValue(n);
         ok(bar.getAttribute('aria-hidden') === 'true' && [v('--l'), v('--c'), v('--h'), v('--z')].every((x) => x >= 0 && x <= 1) && v('--l') <= v('--c') && v('--c') <= v('--h'), `${name}: the bar is the same figure drawn, out of the reading order`);
@@ -1452,7 +1462,7 @@ async function secondVersion() {
   const g = V.val('arch.D.hyper', 'g');
   const fam = D.carbon_damage.families.epa_2020;
   eq(text(line.querySelector('.x-damage-figures')), `${fam.label}, an estimate: $${ex.num(g / 1e6 * fam.central)} (${ex.num(g / 1e6 * fam.low)} to ${ex.num(g / 1e6 * fam.high)}), 2020 USD, for this row's CO2e`, 'whose estimate, of what: central, low, and high, never one number, in its own currency and year');
-  ok(line.querySelector('a.x-c[href="#src-ex-001"]') && document.getElementById('src-ex-001'), 'with its receipts');
+  ok(line.querySelector('a.x-c[href="sources/#src-ex-001"]') && receipt('src-ex-001'), 'with its receipts');
   ok(/Applied here to CO2e/.test(text(line)), 'and its limit');
   ok(!document.querySelector('[data-plate-x="arch"] [data-d="price"]').textContent.includes('Low'), 'the price stays the price');
   const damageHead = document.querySelector('#architectures [data-group="comparison:D"] th[data-damage-col]');
@@ -1726,10 +1736,10 @@ async function homeBand() {
   for (const tr of trs) {
     const key = tr.dataset.stop;
     eq([...tr.querySelectorAll('td')].slice(0, 3).map(text).join('|'), ['dc', 'adds', 'whole'].map((s) => `${poured[s].rows[key].num} ${poured[s].rows[key].tag}`).join('|'), `${key}: the table holds every boundary`);
-    const ids = [...tr.querySelectorAll('a[href^="explorer/#src-"]')].map((a) => a.getAttribute('href').slice('explorer/#src-'.length));
+    const ids = [...tr.querySelectorAll('a[href^="explorer/sources/#src-"]')].map(claimOf);
     ok(ids.length > 1, `${key}: carries its claims`);
     for (const id of ids) {
-      ok(/^(verified|partly)$/.test(claims[id].status) && html.includes(`id="src-${id}"`), `${key}: ${id} ships and has its receipt`);
+      ok(/^(verified|partly)$/.test(claims[id].status) && listed.includes(`id="src-${id}"`), `${key}: ${id} ships and has its receipt on the Explorer's Sources page`);
       if (claims[id].status === 'partly') ok(text(tr).includes(`${id}: partly verified. Limit: `), `${key}: ${id} states its limit`);
     }
     ok(/verified against the source/.test(text(tr)) || /partly verified/.test(text(tr)), `${key}: states a status`);

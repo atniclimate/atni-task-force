@@ -7,7 +7,14 @@ the dataviz skill's form table (one axis; emphasis over categorical; diverging f
 
 ## 1. Site Map, Titles, and Tabs
 
-No new subpage. The pages keep their paths and titles: `site/data-centers/` "Data Center Task Force" (DC), `site/data-centers/resource-use/` "What Uses Data Center Energy and Water" (RU), `site/ai/` "Artificial
+**Sources subpages (owner ruling 39, 11/15/2026).** Every page with plates or claim marks has a Sources page beside it, `{folder}/sources/index.html` (AI, Data Centers, Resource
+Use, Energy, Funding, Potential, Explorer, Library), linked from a line under its title (`a[data-sources]`) and from its footer; `site/sources/` is the site-wide hub and the
+home page's own. A Sources page holds each plate's receipts grouped by source document (`#{plate}`, `#{plate}-source-{claim}`, and one `#src-{claim}` per claim), the
+Claims Cited list from its page's marks (`#claims-cited`), and a hand-written Documents list. The main page keeps a one-line stub per plate; old in-page receipt links forward
+through `plate.js` (`movedTo`). The shells are hand-written; `build_plates.py`, `build_explorer.py`, `build_index.py`, and `pour_claim_refs.py` each fill only their own markers.
+The Briefing, About, and Summit have none and link the hub.
+
+Before ruling 39 there was no new subpage. The pages keep their paths and titles: `site/data-centers/` "Data Center Task Force" (DC), `site/data-centers/resource-use/` "What Uses Data Center Energy and Water" (RU), `site/ai/` "Artificial
 Intelligence Task Force" (AI). Changes: DC gets the `.subnav` RU already has (Overview | Energy and Water Use), so RU is reachable from DC's chrome and not only from one notice; RU's main nav loses the stray
 `aria-current="true"` on Energy; AI's footer and Energy tab link to RU. DC and AI become workbenches (spec A3): the old `.toc` is the tab strip, one panel visible at a time, hash deep links. RU is the long
 reference page (spec A5): no tabs, the 14rem rail at left, prose at 44rem, each section's table or bench row in the right column. Every existing h2 id survives inside its panel (the kit opens the panel

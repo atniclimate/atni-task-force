@@ -22,6 +22,20 @@ const settings = (window) => {
 };
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const plateFile = (id) => JSON.parse(read(`site/data/plates/${id}.json`));
+// A page's receipts live on its Sources page (owner ruling 39), one entry per source document. A receipt's words: its document's own entry, or its row with the
+// lines its run and its document share. Missing is null, so a check can name what it lacks.
+function receiptsOn(rel) {
+  const doc = new JSDOM(read(rel)).window.document;
+  return (id) => {
+    const node = doc.getElementById(id);
+    if (!node) return null;
+    const entry = node.closest('li');
+    const run = node.closest('tbody');
+    if (!entry || !run) return (entry || node).textContent; // a document with one claim: the whole entry is its receipt
+    const shared = [...entry.children].filter((n) => /^(P|BLOCKQUOTE)$/.test(n.tagName)).map((n) => n.textContent);
+    return [...shared, ...[...run.querySelectorAll('.source-run')].map((n) => n.textContent), node.closest('tr').textContent].join(' ');
+  };
+}
 
 // A local input that is not in the public repository. Missing is a real failure, and the message names the fix.
 function fixture(rel, fix) {
@@ -87,4 +101,4 @@ assert.ok(holds('about 3 Wh and 30', ['3 Wh', '30']) && !holds('2.3 and 30 and 3
 assert.ok(leads('2030, input 2,475.1 MW', ['2030', '2,475.1 MW']) && !leads('In 2029 and 2030', ['2030']) && leads('Amazon: -42 billion', ['Amazon', '-42 billion']));
 assert.ok(wordsOnly('No public guidance') && !wordsOnly('3 Wh') && !wordsOnly(' ') && figures('2,475.1 (1,512.8 to 4,988.7), 2030, CO2').length === 4);
 
-module.exports = { JSDOM, ROOT, count, ok, eq, wait, settle, settings, read, plateFile, fixture, open, fire, key, figures, holds, leads, wordsOnly };
+module.exports = { JSDOM, ROOT, count, ok, eq, wait, settle, settings, read, plateFile, receiptsOn, fixture, open, fire, key, figures, holds, leads, wordsOnly };

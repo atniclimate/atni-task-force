@@ -901,16 +901,17 @@ def check_resource_model(claims, errors):
         return
     check_header(data, rel, errors)
     errors.extend(f"{rel}: missing {key}: rerun python scripts/resource_model.py --export" for key in ("inputs", "assumptions", "catalog", "architectures", "disclaimer", "limits") if not data.get(key))
-    page = SITE / "explorer" / "index.html"
+    page, sources = SITE / "explorer" / "index.html", SITE / "explorer" / "sources" / "index.html"
     body = page.read_text(encoding="utf-8") if page.is_file() else ""
-    receipts = {m[1]: m[0] for m in re.finditer(r'<li id="src-([^"]+)".*?</li>', body, re.S)}
+    # Its receipts are on its Sources page, one entry per source document: a claim's entry holds its status and limit, said once for the document or by row.
+    receipts = {claim_id: m[0] for m in re.finditer(r"<li\b.*?</li>", sources.read_text(encoding="utf-8") if sources.is_file() else "", re.S) for claim_id in re.findall(r'id="src-([^"]+)"', m[0])}
     named = set(CLAIM_ID.findall(json.dumps(data)))
-    for claim_id in sorted(named | set(re.findall(r'href="#src-([a-z]+-\d{3})"', body))):
+    for claim_id in sorted(named | set(re.findall(r'href="sources/#src-([a-z]+-\d{3})"', body))):
         claim = claims.get(claim_id)
         if claim is None:
             errors.append(f"{rel}: names claim {claim_id}, which does not ship: export it with scripts/build_plates.py --export-claims, or drop it from the model and rerun scripts/resource_model.py --export")
         elif claim_id not in named and claim_id not in receipts:
-            errors.append(f"explorer/index.html: no receipt for {claim_id}: rerun python scripts/build_explorer.py")
+            errors.append(f"explorer/sources/index.html: no receipt for {claim_id}: rerun python scripts/build_explorer.py")
         elif claim.get("status") == "partly" and not (claim.get("limit") or (data.get("limits") or {}).get(claim_id) or "Limit: " in receipts.get(claim_id, "")):
             errors.append(f"{rel}: partly verified claim {claim_id} has no public limit: add one public sentence for it in the model's limits, then rerun scripts/resource_model.py --export and scripts/build_explorer.py")
 
@@ -993,7 +994,7 @@ def main():
                 plate_blocks += check_plate_blocks(rel, body, claims, errors)
                 check_plate_scripts(rel, body, errors)
                 check_poured(rel, body, claims, errors)
-                errors.extend(pour_claim_refs.check_page(rel, body, claims))
+                errors.extend(pour_claim_refs.check_page(rel, body, claims, SITE))
                 figure_report += [f"{rel}: {problem}" for problem in pour_claim_refs.figure_report(body, claims)]
                 (errors if REFUSE_BOUND_WORDS else bound_report).extend(f"{rel}: {hit}" for hit in bound_words(body, claims))
         elif suffix == ".pdf":

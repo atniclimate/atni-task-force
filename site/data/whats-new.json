@@ -1,9 +1,16 @@
 {
  "schema": 1,
  "tier": "T0",
- "generated": "2026-11-06",
+ "generated": "2026-11-15",
  "window_days": 90,
  "items": [
+  {
+   "date": "2026-11-15",
+   "kind": "data",
+   "title": "Source evidence behind the charts updated",
+   "url": "explorer/sources/",
+   "area": "cross-cutting"
+  },
   {
    "date": "2026-11-06",
    "kind": "data",
@@ -323,7 +330,7 @@
   "claims/prose-ru.json": "3215761f4ad6",
   "claims/resources.json": "d37721f0aae3",
   "claims/services.json": "3f60b542e4cb",
-  "claims/site-counts.json": "e8bd4470456e",
+  "claims/site-counts.json": "996608be7211",
   "claims/sovereign.json": "4a01ea106810",
   "claims/tradeoffs.json": "e140d57246dd",
   "follow/0331-AA10": "2026-11-05",

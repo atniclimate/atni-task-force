@@ -1,8 +1,10 @@
-"""Claim references in prose: a number links to its receipt, with no JS, and the page foot lists every claim it cites.
+"""Claim references in prose: a number links to its receipt, with no JS, and a list holds every claim a page cites.
 
 An author writes <a class="cr" data-claim="fp-141" href="#src-fp-141">3.1 Wh</a> (in either quote mark), and this script adds the status and the
-accessible name to each mark, keeping any other attribute, and writes "Claims Cited on This Page" before </main>, between the claims-cited markers. An id that
-already has a receipt on the page (a src- anchor outside the block) keeps it as its one anchor, and its row here carries no id.
+accessible name to each mark, keeping any other attribute, and writes the list between the claims-cited markers, grouped by source document. A page
+with a Sources page beside it (sources/index.html, owner ruling 39) keeps no list: its marks link to sources/#src-ID, and the list goes before that
+page's </main>, under "Claims Cited in the Page's Text". Any other page lists them before its own </main>, unless every mark already lands on a receipt
+on the page. An id that already has a receipt where the list goes (a src- anchor outside the block) keeps it as its one anchor, and its row carries no id.
 
 It refuses, and writes nothing, if a mark names a claim that does not ship, is unverified, or is partly verified with no limit, or if
 a mark holds no digits while its claim holds a number. A word mark stands only on a claim whose value, low, and high hold no number
@@ -133,30 +135,66 @@ def verbatim(text):
     return escape(str(text)).replace("—", "&#8212;").replace(" -- ", " &#45;- ")
 
 
+ON_PAGE = ("Claims Cited on This Page", "Each dotted underline links to its claim here.")
+FROM_PAGE = "Claims Cited in the Text"
+
+
+def status_words(claim):
+    limit = str(claim.get("limit") or "").strip()
+    return f'{"Partly verified." if claim["status"] == "partly" else "Verified against the source."}{f" Limit: {escape(limit)}" if limit else ""}'
+
+
 def row(claim_id, claim, anchored):
     source = claim["source"]
-    limit = str(claim.get("limit") or "").strip()
-    status = "Partly verified." if claim["status"] == "partly" else "Verified against the source."
     title, publisher = verbatim(source.get("title") or source.get("publisher") or claim_id), verbatim(source.get("publisher") or "")
     anchor = "" if anchored else f' id="src-{escape(claim_id)}"'
-    limit_text = f' Limit: {escape(limit)}' if limit else ""
     return (f'          <li{anchor}><a class="plate-source-title" href="{escape(source["url"])}">{title}</a>'
-            f'<span class="caption">{escape(claim_id)}. {publisher}. {status}{limit_text}</span></li>\n')
+            f'<span class="caption">{escape(claim_id)}. {publisher}. {status_words(claim)}</span></li>\n')
 
 
-def block(ids, claims, anchored):
-    rows = "".join(row(claim_id, claims[claim_id], claim_id in anchored) for claim_id in ids)
+def document_row(ids, claims, anchored):
+    """Several claims from one source: its title and publisher once, then a line per claim."""
+    source = claims[ids[0]]["source"]
+    anchor = lambda claim_id: "" if claim_id in anchored else f' id="src-{escape(claim_id)}"'  # noqa: E731
+    lines = "".join(f'<li{anchor(claim_id)}><span class="caption">{escape(claim_id)}. {status_words(claims[claim_id])}</span></li>' for claim_id in ids)
+    return (f'          <li><a class="plate-source-title" href="{escape(source["url"])}">{verbatim(source.get("title") or source.get("publisher") or ids[0])}</a>'
+            f'<span class="caption">{verbatim(source.get("publisher") or "")}.</span><ul class="cited-claims">{lines}</ul></li>\n')
+
+
+def block(ids, claims, anchored, words=(escape(ON_PAGE[0]), escape(ON_PAGE[1]))):
+    """The list, one entry per source document. words: the heading and the caption, as HTML."""
+    docs = {}
+    for claim_id in ids:
+        source = claims[claim_id]["source"]
+        docs.setdefault((source["url"], source.get("title"), source.get("publisher")), []).append(claim_id)
+    rows = "".join(row(group[0], claims[group[0]], group[0] in anchored) if len(group) == 1 else document_row(group, claims, anchored) for group in docs.values())
     return ('    <!-- claims-cited -->\n'
-            '    <section class="wrap section claims-cited" aria-labelledby="claims-cited-title">\n'
-            '      <h2 id="claims-cited-title">Claims Cited on This Page</h2>\n'
-            '      <p class="caption">Each dotted underline links to its claim here.</p>\n'
+            '    <section class="wrap section claims-cited" id="claims-cited" aria-labelledby="claims-cited-title">\n'
+            f'      <h2 id="claims-cited-title">{words[0]}</h2>\n'
+            f'      <p class="caption">{words[1]}</p>\n'
             f'      <ul class="plate-sources">\n{rows}      </ul>\n'
             '    </section>\n'
             '    <!-- /claims-cited -->\n')
 
 
-def pour(body, claims):
-    """Returns (the page as it should stand, problems). The same page in gives the same page out."""
+def is_sources(path):
+    """A Sources page: sources/index.html in a page's folder (the site's own, site/sources/, is the hub and the home page's)."""
+    return Path(path).name == "index.html" and Path(path).parent.name == "sources"
+
+
+def sources_page(path):
+    """The Sources page beside a page, if it has one."""
+    shell = Path(path).parent / "sources" / "index.html"
+    return shell if Path(path).name == "index.html" and not is_sources(path) and shell.is_file() else None
+
+
+def main_of(path):
+    """The page a Sources page serves."""
+    return Path(path).parent.parent / "index.html"
+
+
+def marks_in(body, claims, away=""):
+    """The page with each good mark poured, linking to {away}#src-ID; the problems; and the ids its marks cite, in order."""
     problems, ids = [], []
 
     def mark(match):
@@ -171,23 +209,58 @@ def pour(body, claims):
             ids.append(claim_id)
         status = STATUS[claims[claim_id]["status"]]
         kept = "".join(f" {a[0].strip()}" for a in ATTR.finditer(match["attrs"]) if a[1].lower() not in POURED_ATTRS)
-        return (f'<a class="{match["cls"]}" data-claim="{claim_id}" data-status="{status}" href="#src-{claim_id}" '
+        return (f'<a class="{match["cls"]}" data-claim="{claim_id}" data-status="{status}" href="{away}#src-{claim_id}" '
                 f'aria-label="{escape(text)}, claim {claim_id}, {status}"{kept}>{match["inner"]}</a>')
 
-    poured = BLOCK.sub("", MARK.sub(mark, body))
-    if problems or not ids:
-        return (body if problems else poured), problems
-    foot = poured.rfind("</main>")
+    return MARK.sub(mark, body), problems, ids
+
+
+def cited(body, claims):
+    """The ids a page's good marks cite, in order."""
+    return marks_in(body, claims)[2]
+
+
+def listed(body, ids, claims, words):
+    """The page with the list of these ids before its </main>, in place of any old one, and the problems."""
+    bare = BLOCK.sub("", body)
+    if not ids:
+        return bare, []
+    foot = bare.rfind("</main>")
     if foot < 0:
         return body, ["the page has marks but no </main>, so the block has no place: add the element"]
-    foot = poured.rfind("\n", 0, foot) + 1
-    anchored = set(SRC_ANCHOR.findall(poured))
-    return poured[:foot] + block(ids, claims, anchored) + poured[foot:], []
+    foot = bare.rfind("\n", 0, foot) + 1
+    return bare[:foot] + block(ids, claims, set(SRC_ANCHOR.findall(bare)), words) + bare[foot:], []
 
 
-def check_page(rel, body, claims):
-    """The problems on one page, for scripts/validate_public.py and --check."""
-    poured, problems = pour(body, claims)
+def pour(body, claims, away=""):
+    """Returns (the page as it should stand, problems). The same page in gives the same page out. With away (its Sources page, "sources/"), the marks
+    link there and the page keeps no list; without it, the list stays off a page whose every mark already lands on a receipt there."""
+    poured, problems, ids = marks_in(body, claims, away)
+    if problems:
+        return body, problems
+    poured = BLOCK.sub("", poured)
+    if away or set(ids) <= set(SRC_ANCHOR.findall(poured)):
+        return poured, []
+    return listed(poured, ids, claims, (escape(ON_PAGE[0]), escape(ON_PAGE[1])))
+
+
+def pour_list(sources, main, claims):
+    """A Sources page with its main page's list: every claim the main page's text cites, which its caption links, one folder up."""
+    caption = 'Each dotted underline in <a href="../">the page’s text</a> links to its claim here, grouped by source.'
+    return listed(sources, cited(main, claims), claims, (escape(FROM_PAGE), caption))
+
+
+def check_page(rel, body, claims, site=None):
+    """The problems on one page, for scripts/validate_public.py and --check. With site, a page with a Sources page must link its marks there and keep no
+    list, and a Sources page must hold its main page's list and no mark of its own; without it, every page is checked as one that keeps its own list."""
+    path = Path(site) / rel if site else None
+    if path and is_sources(path):
+        if any(m["attrs"] for m in MARK.finditer(body)):
+            problems = [f"a Sources page holds a claim mark: the marks belong on {main_of(path).relative_to(site).as_posix()}, whose list this page holds"]
+        else:
+            poured, problems = pour_list(body, main_of(path).read_bytes().decode("utf-8") if main_of(path).is_file() else "", claims)
+    else:
+        poured, problems = pour(body, claims, "sources/" if path and sources_page(path) else "")
     if not problems and poured != body:
         problems = ["claim references are stale (a status, a limit, or the list of cited claims changed): run python scripts/pour_claim_refs.py"]
     return [f"{rel}: {problem}" for problem in problems]
@@ -209,12 +282,21 @@ def main():
         marks += sum(1 for m in MARK.finditer(body) if m["attrs"])
         report += [f"{rel}: {problem}" for problem in figure_report(body, claims)]
         if args.check:
-            problems += check_page(rel, body, claims)
+            problems += check_page(rel, body, claims, SITE)
             continue
-        poured, found = pour(body, claims)
+        if is_sources(path):
+            continue  # its list comes from its main page, below
+        shell = sources_page(path)
+        poured, found = pour(body, claims, "sources/" if shell else "")
         problems += [f"{rel}: {problem}" for problem in found]
         if poured != body:
             changed[path] = poured
+        if shell and not found:
+            old = changed.get(shell) or shell.read_bytes().decode("utf-8")
+            new, found = pour_list(old, body, claims)
+            problems += [f"{shell.relative_to(SITE).as_posix()}: {problem}" for problem in found]
+            if new != old:
+                changed[shell] = new
     for line in report:
         print(f"figure rule: {line}")
     if not REFUSE_FIGURES:

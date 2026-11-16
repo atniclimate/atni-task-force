@@ -306,6 +306,7 @@ def records_html(proj):
     """One disclosure per state, one entry per record, in file order. Every MW figure is a claim mark; every other digit is a date or an identifier."""
     e = html.escape
     pj = pc.pj_ids(proj["projects"])
+    away = "sources/" if (PAGE.parent / "sources" / "index.html").is_file() else ""  # a mark links the page's Sources page, as pour_claim_refs.py leaves it (owner ruling 39)
     classes = proj["land_classes"]
     by_state = {}
     for p in proj["projects"]:
@@ -314,7 +315,7 @@ def records_html(proj):
     for st, name in STATE_NAMES.items():
         items = []
         for p in by_state.get(st, []):
-            mw = (f'<a class="cr" data-claim="{pj[p["id"]]}" href="#src-{pj[p["id"]]}">{p["mw"]:,g} MW</a> as filed' if p["mw_claim"] else "no MW stated by the sources read")
+            mw = (f'<a class="cr" data-claim="{pj[p["id"]]}" href="{away}#src-{pj[p["id"]]}">{p["mw"]:,g} MW</a> as filed' if p["mw_claim"] else "no MW stated by the sources read")
             where = "; ".join(f'{e(c["name"])} County, {c["state"]}' for c in p["counties"]) or "No county named by the sources read"
             land = classes[p["land"]["class"]].split(",")[0].split(";")[0]
             land = e(land if land.startswith("Land") else "Land: " + re.sub(r"^(A|The) ", lambda x: x.group(1).lower() + " ", land))

@@ -3,11 +3,12 @@
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const { JSDOM, ROOT, ok, eq, wait, read, plateFile, open, fire, key, holds, leads } = require('./lib');
+const { JSDOM, ROOT, ok, eq, wait, read, plateFile, receiptsOn, open, fire, key, holds, leads } = require('./lib');
 
 const REL = 'site/data-centers/resource-use/index.html';
 const html = read(REL);
 const PAGE = 'http://localhost/site/data-centers/resource-use/index.html';
+const receipt = receiptsOn('site/data-centers/resource-use/sources/index.html');
 // The page as it stood before the refresh: old ids and source links must survive.
 const OLD_COMMIT = '2d8003f';
 const old = execFileSync('git', ['-C', ROOT, 'show', `${OLD_COMMIT}:${REL}`], { encoding: 'utf8' });
@@ -63,8 +64,9 @@ async function content() {
   const { window: { document } } = new JSDOM(html);
   const words = (doc) => doc.querySelector('main').textContent.replace(/\s+/g, ' ');
   const before = new JSDOM(old).window.document;
-  // Every old link target is still on the page, or was replaced by a claim's source.
-  const hrefs = new Set([...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')));
+  // Every old link target is still on the page or on its Sources page (owner ruling 39), or was replaced by a claim's source.
+  const listed = new JSDOM(read('site/data-centers/resource-use/sources/index.html')).window.document;
+  const hrefs = new Set([...document.querySelectorAll('a[href]'), ...listed.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')));
   const gone = [...new Set([...before.querySelectorAll('main a[href^="https"]')].map((a) => a.getAttribute('href')))].filter((u) => !hrefs.has(u));
   // The Google blog's machine-learning share gave way to the paper that states its one-week basis (ru-040, N3 11/05/2026).
   const replaced = ['https://arxiv.org/abs/2304.03271', 'https://sustainability.aboutamazon.com/2025-aws-summary.pdf', 'https://research.google/blog/good-news-about-the-carbon-footprint-of-machine-learning-training'];
@@ -190,7 +192,7 @@ async function plates() {
       const line = lines[i]; // in the plate's order: "Data center" is a row of two accounts
       ok(line.querySelector('th').textContent === spec.label && line.lastElementChild.textContent.split(', ').includes(spec.claim), `${id} ${spec.id}: the Table names ${spec.claim}`);
       for (const claim of [spec.claim, ...(spec.cites || []), ...(spec.range_from ? [spec.range_from] : [])]) {
-        ok(root.querySelector(`#${id}-source-${claim}`), `${id}: ${claim} has its receipt`);
+        ok(receipt(`${id}-source-${claim}`), `${id}: ${claim} has its receipt on the Sources page`);
         eq(data.receipts[claim].status, CLAIMS[claim].status, `${id}: ${claim} keeps its status`);
         if (CLAIMS[claim].status === 'partly') eq(data.receipts[claim].limit, CLAIMS[claim].limit, `${id}: ${claim} carries its limit`);
       }
@@ -346,7 +348,7 @@ async function noScripts() {
     ok(root.querySelector('.reading').textContent.length > 20, `${root.id} default Reading`);
     ok(root.querySelector('table tbody tr'), `${root.id} table`);
     ok(root.querySelector('.plate-plot').firstElementChild, `${root.id} static plot`);
-    ok(root.querySelector('.plate-sources li'), `${root.id} sources`);
+    ok(root.querySelector(`.plate-sources-link a[href="sources/#${root.id}"]`) && !root.querySelector('ol.plate-sources'), `${root.id} links its sources, and keeps no list`);
     eq(root.querySelectorAll('.plate-view[hidden]').length, 0, `${root.id}: every view shows`);
   }
 }

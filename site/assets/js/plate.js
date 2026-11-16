@@ -43,10 +43,18 @@ function writeAddress(anchor, params) {
   const hash = [anchor, params.toString()].filter(Boolean).join('&');
   try { history.replaceState(null, '', `${location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
 }
+// A page's receipts live on its Sources page (owner ruling 39, 11/15/2026): an old link to one here, #src-ID or #PLATE-source-ID, goes on to the same id there.
+const MOVED = /^(?:src-|[a-z0-9-]+-source-)[a-z]{2,3}-\d{3}$/;
+const movedTo = (anchor) => {
+  const link = document.querySelector('a[data-sources]');
+  return link && MOVED.test(anchor) && !document.getElementById(anchor) ? `${link.href.split('#')[0]}#${anchor}` : null;
+};
 // Settings after the anchor leave the browser no element to land on, so the kit lands as the browser does on a plain #id: the anchor in view and focus on it,
 // where Tab and a screen reader then start (a11y A1). A plain #id stays the browser's own; a page that has already taken the reader inside keeps its focus.
 function land(raw) {
   const { anchor } = parse(raw);
+  const moved = movedTo(anchor);
+  if (moved) { location.replace(moved); return; }
   let target = null;
   try { target = anchor && raw !== anchor ? document.getElementById(decodeURIComponent(anchor)) : null; } catch { /* a broken escape names nothing */ }
   if (!target || target.contains(document.activeElement)) return;
@@ -359,11 +367,21 @@ function setView(p, name) {
   for (const view of all(p.root, '.plate-view')) conceal(view, view.dataset.view !== name);
   for (const radio of all(p.root, '.plate-views input')) radio.checked = radio.value === name;
 }
+// A receipt's short card, from the plate's own data: its source, linked; its status, limit, and claim; and the way on to the full receipt (quote, boundary, and date) on the Sources page.
+function receiptNodes(p, claim, more = true) {
+  const r = p.data.receipts[claim];
+  const status = r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.';
+  return [
+    h('p', { class: 'plate-source-title' }, /^https:\/\//.test(r.url || '') ? h('a', { href: r.url, text: r.title }) : r.title),
+    h('p', { class: 'caption', text: `${r.short}. ${status}${r.limit ? ` Limit: ${r.limit}` : ''} Claim ${claim}.` }),
+    ...(more && p.sources ? [h('p', { class: 'caption plate-receipt-more' }, h('a', { href: `${p.sources}#${p.id}-source-${claim}`, text: 'Quote, boundary, and date' }))] : []),
+  ];
+}
 // A chip the reader pressed sends focus to what it opened, in view, and Escape comes back to the chip; on load or on a selection nothing takes focus.
 function openReceipt(p, claim, chip) {
   p.open = claim;
   p.receipt.hidden = !claim;
-  p.receipt.replaceChildren(...(claim ? document.getElementById(`${p.id}-source-${claim}`).cloneNode(true).children : []));
+  p.receipt.replaceChildren(...(claim ? receiptNodes(p, claim) : []));
   for (const each of all(p.root, '.receipt')) each.setAttribute('aria-expanded', each.dataset.claim === claim);
   p.from = chip;
   if (chip && claim) {
@@ -566,8 +584,9 @@ function paint(p) {
     chip.classList.toggle('is-extra', i >= 6);
     chip.lastElementChild.textContent = others.length ? `${publisher}, ${others.length + 1} claims` : p.data.receipts[chip.dataset.claim].short;
   });
+  p.extraChips = groups.size - 6;
   p.moreChips.hidden = groups.size <= 6;
-  p.moreChips.textContent = `${groups.size - 6} more below`;
+  sayMore(p);
   p.tally.hidden = !tally.verified && !tally.partly;
   const whose = cfg.type === 'matrix' ? 'This cell' : /^(lines|multiples)$/.test(cfg.type) ? 'This year' : 'This row';
   const total = Object.keys(p.data.receipts).length; // the same count the Sources tab carries
@@ -577,6 +596,11 @@ function paint(p) {
   if (p.svgOut) p.svgOut.hidden = !p.plot.querySelector('.plate-svg');
   const picked = new Set(focusOf(p, rowsAt(p, p.selected)).filter((r) => !hl || !r.series || r.series === hl)); // the Table's bars: orange for the selection, as the facts list marks it, never a preview
   for (const { cell, r } of p.bars) cell.classList.toggle('is-on', picked.has(r));
+}
+// Past six publishers the chips fold, and one button shows the rest in place or folds them again.
+function sayMore(p) {
+  const open = p.moreChips.parentElement.classList.contains('is-all');
+  set(p.moreChips, { text: open ? 'Show fewer' : `Show ${p.extraChips} more`, 'aria-expanded': open });
 }
 // The title is the finding at the defaults. Moved off them, it is the Reading's first sentence, which the settings have already rewritten. A packet or a printed sheet may not state a figure the plot beside it has left.
 const titleAt = (p) => (changed(p) ? p.reading.textContent.split(/(?<=\.) /)[0].replace(/\.$/, '') : p.title0);
@@ -946,6 +970,9 @@ function printOne(p) {
   const eyebrow = p.root.querySelector('.eyebrow')?.textContent ?? '';
   const head = h('div', { class: 'plate-print-head' }, h('p', { text: [from, eyebrow].filter(Boolean).join(': ') }), h('p', { text: guardLine(p) }));
   const foot = h('p', { class: 'plate-print-foot', text: GUARD_FOOT });
+  // The sheet lists every receipt by title, status, limit, and claim; the quotes and boundaries stay on the Sources page, whose address the stub prints.
+  const list = h('ol', { class: 'plate-sources plate-print-sources' }, ...Object.keys(p.data.receipts).map((claim) => h('li', {}, ...receiptNodes(p, claim, false))));
+  p.root.querySelector('.plate-view[data-view="sources"]').append(list);
   p.root.prepend(head);
   p.root.append(foot);
   p.root.classList.add('is-print-one');
@@ -953,6 +980,7 @@ function printOne(p) {
   addEventListener('afterprint', () => {
     head.remove();
     foot.remove();
+    list.remove();
     p.root.classList.remove('is-print-one');
     delete document.documentElement.dataset.printOne;
     p.title.textContent = words;
@@ -1043,10 +1071,9 @@ function aid(root, plot, id, toTable, form = 'rows') {
 // With scripts the parts move to where a reader wants them; without scripts they stay where the build wrote them, and everything shows.
 function arrange(p) {
   const { root, plot, data: { plot: cfg, receipts } } = p;
-  // Chips, the receipt they open, and the list all go to the Sources view, so the Reading view ends at Copy and Reset and one line of receipts.
-  root.querySelector('.plate-view[data-view="sources"]').prepend(root.querySelector('.plate-chips'), p.receipt);
+  // Chips and the receipt they open go to the Sources view, above its line and link, so the Reading view ends at Copy and Reset and one line of receipts.
+  root.querySelector('.plate-view[data-view="sources"] > .label').after(root.querySelector('.plate-chips'), p.receipt);
   set(p.receipt, { tabindex: -1, role: 'group', 'aria-label': 'Source' });
-  set(p.list, { tabindex: -1, 'aria-label': 'All sources' });
   p.tally = h('button', { type: 'button', class: 'plate-tally', hidden: '' });
   const actions = root.querySelector('.plate-actions');
   actions.after(p.tally);
@@ -1105,8 +1132,9 @@ function initPlate(root) {
   const p = {
     id, root, data, tableRows, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env },
     title: find('.plate-title'), title0: find('.plate-title').textContent, plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
-    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'), list: find('.plate-sources'),
+    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'),
     moreChips: find('.plate-chips').appendChild(h('button', { type: 'button', class: 'plate-chip-more', hidden: '' })),
+    sources: find('.plate-sources-link a')?.getAttribute('href').split('#')[0], // the page's Sources page, as this page reaches it; the Briefing's copy reaches it from there
   };
   p.rowNodes = new Map(all(p.plot, '.ladder-row, .instrument-row').map((node) => [node.dataset.row, node]));
   bindBars(p); // before the first update rewrites a live cell, while every cell holds the build's words
@@ -1130,9 +1158,8 @@ function initPlate(root) {
       setView(p, 'sources');
       find('.plate-views input:checked').focus();
     } else if (e.target === p.moreChips) {
-      setView(p, 'sources');
-      p.list.focus();
-      p.list.scrollIntoView?.({ block: 'nearest' });
+      p.moreChips.parentElement.classList.toggle('is-all');
+      sayMore(p);
     } else if (chip) {
       setView(p, 'sources');
       openReceipt(p, p.open === chip.dataset.claim ? null : chip.dataset.claim, chip);
@@ -1268,5 +1295,5 @@ function read(id) {
 }
 // fig is the one rounding for a computed figure, and today the one date in house style, for the page scripts that print either. The Explorer shares the address,
 // the findable hiding, and a plot's aids.
-window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()), address: { read: readAddress, write: writeAddress }, conceal, aid };
+window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()), address: { read: readAddress, write: writeAddress }, conceal, aid, movedTo };
 })();

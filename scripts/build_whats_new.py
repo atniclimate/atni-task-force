@@ -107,7 +107,7 @@ def ledger_items(ledger, watch, today):
                 page = json.loads(path.read_text(encoding="utf-8")).get("page") or "index.html"
                 days_pages.add((day, page.removesuffix("index.html") or "./"))
     for day in sorted(days_evidence):
-        rows.append(item(day, "data", "Source evidence behind the charts updated", "explorer/#all-sources", "cross-cutting"))
+        rows.append(item(day, "data", "Source evidence behind the charts updated", "explorer/sources/", "cross-cutting"))
     for day, page in sorted(days_pages):
         label, area = PAGES.get(page, ("Home", "cross-cutting"))
         rows.append(item(day, "data", f"Charts updated on the {label} page", page, area))

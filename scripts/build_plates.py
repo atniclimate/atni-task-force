@@ -1329,8 +1329,20 @@ def sources_of(r, data):
     return f'{"; ".join(dict.fromkeys(names))}{", partly verified" if partly else ""}'
 
 
+def source_links(r, data, link):
+    """sources_of, each name linked to the receipt of the first claim it stands for; the words are the same."""
+    names, partly = {}, False
+    for claim_id in [r.get("claim"), *(r.get("cites") or [])]:
+        if claim_id:
+            names.setdefault(data["receipts"][claim_id]["short"], claim_id)
+            partly = partly or data["receipts"][claim_id]["status"] == "partly"
+    return f'{"; ".join(link(c, verbatim(name)) for name, c in names.items())}{", partly verified" if partly else ""}'
+
+
 def table_html(defn, data):
     spec = defn.get("table") or {}
+    # A claim id or a source name in the Table links to its receipt on the Sources page, so without scripts each figure's claim, status, and limit are one link away.
+    link = lambda claim_id, text: f'<a href="sources/#{data["id"]}-source-{escape(claim_id)}">{text}</a>'  # noqa: E731
     by_label = {}
     for c in defn.get("controls") or []:
         if c.get("name") == defn.get("by"):
@@ -1358,7 +1370,7 @@ def table_html(defn, data):
         for names, cells in groups.items():
             ids = list(dict.fromkeys(c for r in cells.values() for c in [r.get("claim"), *(r.get("cites") or [])] if c))
             first = f'<th scope="row">{escape(names[0])}</th>' + "".join(f"<td>{escape(n)}</td>" for n in names[1:])
-            body.append(f'<tr>{first}{"".join(f"<td>{escape(cells[t].get("text") or "") if t in cells else ""}</td>" for t in tops)}<td>{escape(", ".join(ids))}</td></tr>')
+            body.append(f'<tr>{first}{"".join(f"<td>{escape(cells[t].get("text") or "") if t in cells else ""}</td>" for t in tops)}<td>{", ".join(link(c, escape(c)) for c in ids)}</td></tr>')
     else:
         columns = spec.get("columns")
         if not columns:
@@ -1382,7 +1394,12 @@ def table_html(defn, data):
                 text = own[r["key"]] if field == "boundary" and r["key"] in own else cell_text(r, field, data, by_label)
                 if field == "display" and r.get("spark"):
                     text = "; ".join(f"{x}: {number(v)}" for x, v in r["spark"]) + f' {r["unit"]}'
-                inner = verbatim(text) if field == "source" else escape(text)
+                if field == "source":
+                    inner = source_links(r, data, link)
+                elif field == "claims":
+                    inner = ", ".join(link(c, escape(c)) for c in [r.get("claim"), *(r.get("cites") or [])] if c)
+                else:
+                    inner = escape(text)
                 changes = (r.get("f") and field in ("display", "text", "value", "low", "high")) or field in (r.get("fields") or {})
                 live = f' data-cell="{escape(r["key"])}|{escape(r.get("when") or "")}|{escape(field)}"' if changes else ""
                 cells.append(f'<th scope="row"{live}>{inner}</th>' if i == 0 else f"<td{live}>{inner}</td>")
@@ -1394,19 +1411,133 @@ def table_html(defn, data):
             f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>{also}')
 
 
-def sources_html(data):
+def plural(n, one, many=None):
+    return f"{n:,} {one if n == 1 else many or f'{one}s'}"
+
+
+def check_words(r):
+    """A receipt's status, with its limit: a verified figure can still carry one."""
+    limit = f" Limit: {r['limit']}" if r.get("limit") else ""
+    return f"{'Partly verified.' if r['status'] == 'partly' else 'Verified against the source.'}{limit}"
+
+
+def listed(items):
+    return items[0] if len(items) == 1 else " and ".join(items) if len(items) == 2 else f"{', '.join(items[:-1])}, and {items[-1]}"
+
+
+def doc_key(r):
+    return (r["url"], r["title"], r["publisher"], r["published"])
+
+
+def tally_words(receipts):
+    """How many sources, from how many documents, and how they were checked, in one line."""
+    partly = sum(r["status"] == "partly" for r in receipts.values())
+    mix = " and ".join(t for t in (f"{len(receipts) - partly:,} verified" if len(receipts) > partly else "", f"{partly:,} partly verified" if partly else "") if t)
+    return f"{plural(len(receipts), 'source')} from {plural(len({doc_key(r) for r in receipts.values()}), 'document')}: {mix}."
+
+
+def stub_html(plate, page, receipts):
+    """What a plate keeps of its sources: that line, and a link to its section of the page's Sources page, whose address prints on paper."""
+    folder = posixpath.dirname(page)
+    url = f"{vp.OWN_ORIGIN}{f'{folder}/' if folder else ''}sources/#{plate}"
+    return (f'<p class="caption plate-source-line">{escape(tally_words(receipts))}</p>'
+            f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{escape(url)}">All sources for this plate</a></p>')
+
+
+def measure_of(claim):
+    return ": ".join(t for t in (claim.get("entity"), claim.get("metric")) if t)
+
+
+def figure_of(claim):
+    text = value_text(claim.get("value"), claim.get("low"), claim.get("high"))
+    return f'{text} {claim.get("unit") or ""}'.strip() if text else ""
+
+
+OPEN_ROWS = 8  # a source with more claims than this folds them into a disclosure; theme.js opens it for a link to one of them
+
+
+def documents_html(prefix, receipts, claims, anchored):
+    """Receipts on a Sources page, one entry per source document. What every claim from a document shares is said once, and each claim is a row under it;
+    rows that share a boundary and a status stand under one line that states them. Each receipt keeps the id {prefix}-source-{claim}, and the first entry on
+    the page for a claim also takes src-{claim}: anchored holds the claims already taken."""
+    def anchor(claim_id):
+        if claim_id in anchored:
+            return ""
+        anchored.add(claim_id)
+        return f' id="src-{escape(claim_id)}"'
+    docs = {}
+    for claim_id, r in receipts.items():
+        docs.setdefault(doc_key(r), []).append(claim_id)
     items = []
-    for claim_id, r in data["receipts"].items():
-        year = f" Value year {r['year']}." if r.get("year") else ""
-        limit = f" Limit: {escape(r['limit'])}" if r.get("limit") else ""  # a verified figure can still carry one
-        status = f"Partly verified.{limit}" if r["status"] == "partly" else f"Verified against the source.{limit}"
-        derived = f'<p class="caption">Arithmetic: {escape(r["derived"])}</p>' if r.get("derived") else ""
-        items.append(
-            f'<li id="{escape(data["id"])}-source-{escape(claim_id)}"><p class="plate-source-title"><a href="{escape(r["url"])}">{verbatim(r["title"])}</a></p>'
-            f'<p class="caption">{verbatim(r["publisher"])}, published {escape(r["published"])}.{year}</p>'
-            f'<p class="caption">Boundary: {escape(r["boundary"])}</p><blockquote class="plate-quote">{verbatim(r["quote"])}</blockquote>'
-            f'<p class="caption">{status} Claim {escape(claim_id)}.</p>{derived}</li>')
+    for (url, title, publisher, published), ids in docs.items():
+        rs = [receipts[c] for c in ids]
+        first = rs[0]
+        same = {field: len({str(r.get(field) or "") for r in rs}) == 1 for field in ("year", "boundary", "quote", "derived")}
+        same["check"] = len({check_words(r) for r in rs}) == 1
+        dated = f" Value year {first['year']}." if same["year"] and first.get("year") else ""
+        dated += f" {EVIDENCE_LABEL[first['kind']]}." if first.get("kind") in EVIDENCE_LABEL else ""  # one document, one kind: an agency figure, a filing, a preprint
+        if len(ids) == 1:
+            claim_id = ids[0]
+            derived = f'<p class="caption">Arithmetic: {escape(first["derived"])}</p>' if first.get("derived") else ""
+            items.append(
+                f'<li id="{prefix}-source-{escape(claim_id)}"><p class="plate-source-title"{anchor(claim_id)}><a href="{escape(url)}">{verbatim(title)}</a></p>'
+                f'<p class="caption">{verbatim(publisher)}, published {escape(published)}.{dated}</p>'
+                f'<p class="caption">Boundary: {escape(first["boundary"])}</p><blockquote class="plate-quote">{verbatim(first["quote"])}</blockquote>'
+                f'<p class="caption">{escape(check_words(first))} Claim {escape(claim_id)}.</p>{derived}</li>')
+            continue
+        lines = [f'<p class="plate-source-title"><a href="{escape(url)}">{verbatim(title)}</a></p>', f'<p class="caption">{verbatim(publisher)}, published {escape(published)}.{dated}</p>']
+        if same["boundary"]:
+            lines.append(f'<p class="caption">Boundary: {escape(first["boundary"])}</p>')
+        if same["quote"]:
+            lines.append(f'<blockquote class="plate-quote">{verbatim(first["quote"])}</blockquote>')
+        if same["check"]:
+            lines.append(f'<p class="caption">{escape(check_words(first))}</p>')
+        if same["derived"] and first.get("derived"):
+            lines.append(f'<p class="caption">Arithmetic: {escape(first["derived"])}</p>')
+        extra = [(label, field) for label, field in (("Value year", "year"), ("Quote", "quote"), ("Arithmetic", "derived")) if not same[field] and any(r.get(field) for r in rs)]
+        runs = {}
+        for claim_id, r in zip(ids, rs):
+            runs.setdefault((None if same["boundary"] else r["boundary"], None if same["check"] else check_words(r)), []).append(claim_id)
+        bodies = []
+        for (boundary, check), members in runs.items():
+            said = " ".join(t for t in (f"Boundary: {boundary}" if boundary else "", check or "") if t)
+            rows = [f'<tr class="source-run"><th scope="rowgroup" colspan="{3 + len(extra)}">{escape(said)}</th></tr>'] if said else []
+            for claim_id in members:
+                r, claim = receipts[claim_id], claims[claim_id]
+                cells = "".join(f'<td>{verbatim(r.get(field) or "") if field == "quote" else escape(str(r.get(field) or ""))}</td>' for _, field in extra)
+                rows.append(f'<tr id="{prefix}-source-{escape(claim_id)}"><th scope="row"{anchor(claim_id)}>{escape(claim_id)}</th>'
+                            f'<td>{escape(measure_of(claim))}</td><td>{escape(figure_of(claim))}</td>{cells}</tr>')
+            bodies.append(f'<tbody>{"".join(rows)}</tbody>')
+        head = "".join(f'<th scope="col">{label}</th>' for label in ("Claim", "Measure", "Figure", *(label for label, _ in extra)))
+        table = (f'<div class="table-scroll" tabindex="0" role="group" aria-label="Claims from {verbatim(title)}"><table class="data-table source-claims">'
+                 f'<thead><tr>{head}</tr></thead>{"".join(bodies)}</table></div>')
+        if len(ids) > OPEN_ROWS:
+            table = f'<details class="disclosure source-more"><summary>{plural(len(ids), "claim")} from this source</summary>{table}</details>'
+        items.append(f'<li class="source-doc">{"".join(lines)}{table}</li>')
     return f'<ol class="plate-sources">{"".join(items)}</ol>'
+
+
+def sources_region(page, summaries, claims, files):
+    """A page's plates on its Sources page, in the page's order: one line for them all, then a section per plate with its line, a way back to it, its files,
+    and its receipts by document. Returns (the jump list's items, the sections)."""
+    here = posixpath.join(posixpath.dirname(page), "sources")
+    back = posixpath.relpath(page, here).removesuffix("index.html")
+    to = lambda rel: posixpath.relpath(rel, here)  # noqa: E731
+    anchored, sections = set(), []
+    for s in summaries:
+        plate, receipts = s["id"], s["receipts"]
+        named = sorted({files[c] for c in receipts if c in files})
+        claim_files = listed([f'<a href="{to(f"data/claims/{n}")}">{n}</a>' for n in named]) if named else ""
+        eyebrow = f'<p class="eyebrow">{escape(s["eyebrow"])}</p>' if s.get("eyebrow") else ""
+        sections.append(
+            f'<section class="sources-plate" id="{plate}" aria-labelledby="{plate}-sources-title">{eyebrow}<h3 id="{plate}-sources-title">{escape(s["title"])}</h3>'
+            f'<p class="caption">{escape(tally_words(receipts))} <a href="{back}#{plate}">Open the plate</a>. Data: <a href="{to(f"data/plates/{plate}.json")}">{plate}.json</a>'
+            f'{f", with its claims in {claim_files}" if claim_files else ""}.</p>{documents_html(plate, receipts, claims, anchored)}</section>')
+    every = {c: r for s in summaries for c, r in s["receipts"].items()}
+    toc = "\n".join(f'<li><a href="#{s["id"]}">{escape(s.get("eyebrow") or s["title"])}</a></li>' for s in summaries)
+    body = (f'<section class="sources-plates" id="plates" aria-labelledby="plates-title"><h2 id="plates-title">Sources by Plate</h2>'
+            f'<p class="caption">{plural(len(summaries), "plate")}; {escape(tally_words(every))}</p>\n' + "\n".join(sections) + "\n</section>")
+    return toc, body
 
 
 def facts_html(rows, data, key):
@@ -1607,7 +1738,7 @@ def plate_block(defn, claims, models=None):
         series = (row or {}).get("series") if (row or {}).get("claim") == claim_id and (row or {}).get("x") is not None else None
         hollow = (row or {}).get("hollow") if (row or {}).get("claim") == claim_id else (source.get("kind") == "model" or None)
         return compact({
-            "short": f'{series}: {short_name(source["publisher"])}' if series else short_name(source["publisher"]), "title": source["title"], "publisher": source["publisher"], "url": source["url"],
+            "short": f'{series}: {short_name(source["publisher"])}' if series else short_name(source["publisher"]), "title": source["title"], "publisher": source["publisher"], "url": source["url"], "kind": source.get("kind"),
             "published": us_date(source.get("published")), "year": claim.get("year"), "boundary": claim["boundary"], "quote": claim["quote"],
             "derived": claim.get("derived"), "status": claim["status"], "limit": limit if claim["status"] == "partly" else claim.get("limit"), "hollow": hollow,
         })
@@ -1669,8 +1800,8 @@ def plate_block(defn, claims, models=None):
     frac = head.get("frac")
     spot = f' style="--at:{frac}"' if frac is not None else ""
     needs_needle = kind == "ladder" and frac is not None or kind in LINE_KINDS and plot.get("select") != "point"
-    # The Sources list holds each receipt's words once; scripts read only these.
-    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit") if r["status"] == "partly" else None}) for claim_id, r in receipts.items()}
+    # The Sources page holds each receipt in full; the plate's scripts build a receipt's short card from these, so every limit and the link travel with it.
+    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit"), "url": r["url"]}) for claim_id, r in receipts.items()}
     block = "\n".join([
         f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}" id="{plate}" data-plate="{plate}" data-kind="{kind}" aria-labelledby="{plate}-title">',
         f'<div class="plate-claim">{eyebrow}<h3 class="plate-title" id="{plate}-title">{escape(title)}</h3>'
@@ -1683,21 +1814,31 @@ def plate_block(defn, claims, models=None):
         '<div class="plate-actions" data-js hidden><button type="button" class="button button-secondary" data-copy>Copy Reading</button>'
         '<button type="button" class="button button-secondary" data-reset>Reset</button><p class="caption plate-status" role="status"></p></div>'
         f'<div class="plate-chips" data-js hidden>{chips}</div><div class="plate-receipt" id="{plate}-receipt" hidden></div>{setting_line(defn)}</div>',
-        f'<div class="plate-view" data-view="sources"><p class="label">Sources</p>{sources_html(data)}</div>',
+        f'<div class="plate-view" data-view="sources"><p class="label">Sources</p>{stub_html(plate, str(defn.get("page") or ""), receipts)}</div>',
         f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_html(defn, data)}</div>',
         '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>',
         '</div>',
         '</figure>',
         f'<script type="application/json" id="plate-data-{plate}">{inline_json({**data, "receipts": light_receipts})}</script>',
     ])
-    return block, {"id": plate, "reading": reading, "readout": head["text"] or "", "unit": head["unit"], "frac": frac, "title": title}
+    return block, {"id": plate, "reading": reading, "readout": head["text"] or "", "unit": head["unit"], "frac": frac, "title": title,
+                   "eyebrow": own_text(plate, "eyebrow", defn["eyebrow"]) if defn.get("eyebrow") else None, "receipts": receipts}
+
+
+def region(page, name, block, where):
+    start, end = f"<!-- {name} -->", f"<!-- /{name} -->"
+    if page.count(start) != 1 or page.count(end) != 1 or page.index(end) < page.index(start):
+        raise BuildError(f"{where} must hold one {start} and one {end}, in that order")
+    return f"{page[:page.index(start) + len(start)]}\n{block}\n{page[page.index(end):]}"
 
 
 def inject(page, plate, block):
-    start, end = f"<!-- plate:{plate} -->", f"<!-- /plate:{plate} -->"
-    if page.count(start) != 1 or page.count(end) != 1 or page.index(end) < page.index(start):
-        raise BuildError(f"plate {plate}: its page must hold one {start} and one {end}, in that order")
-    return f"{page[:page.index(start) + len(start)]}\n{block}\n{page[page.index(end):]}"
+    return region(page, f"plate:{plate}", block, f"plate {plate}: its page")
+
+
+def claim_files(site):
+    """Each shipped claim's file name, for the Sources pages' data links."""
+    return {c["id"]: path.name for path in sorted((Path(site) / "data" / "claims").glob("*.json")) for c in json.loads(path.read_text(encoding="utf-8")).get("claims") or []}
 
 
 def bench_html(summary, page, target):
@@ -1765,7 +1906,7 @@ def build(site=vp.SITE, page=None):
         if defn.get("model") and defn["model"] not in models:
             models[defn["model"]] = vp.load_model(defn["model"], site)
     pages, names, built = {}, {}, 0
-    summaries = {}
+    summaries, on_page = {}, {}
     for stem, defn in definitions.items():
         rel = f"data/plates/{stem}.json"
         if only and page_name(defn.get("page")) != only:
@@ -1785,7 +1926,21 @@ def build(site=vp.SITE, page=None):
             pages[target] = target.read_bytes().decode("utf-8")
         block, summaries[stem] = plate_block(defn, claims, models)
         pages[target] = inject(pages[target], defn["id"], block)
+        on_page.setdefault(target, []).append(stem)
         built += 1
+    # A page with plates keeps their full receipts on its Sources page, sources/index.html beside it, which this fills between its markers in the page's plate order.
+    files, served = claim_files(site), {}
+    for target, stems in on_page.items():
+        rel, shell = target.relative_to(site).as_posix(), target.parent / "sources" / "index.html"
+        where = shell.relative_to(site).as_posix()
+        if not shell.is_file():
+            raise BuildError(f"{rel} has plates, so it needs a Sources page at {where}: copy site/ai/sources/index.html there and change its names and paths")
+        if served.setdefault(shell, rel) != rel:
+            raise BuildError(f"{rel} and {served[shell]} would share the Sources page {where}: give each page with plates its own folder")
+        order = sorted(stems, key=lambda s: pages[target].index(f"<!-- plate:{s} -->"))
+        toc, body = sources_region(rel, [summaries[s] for s in order], claims, files)
+        text = shell.read_bytes().decode("utf-8")
+        pages[shell] = region(region(text, "sources:toc", toc, f"{where}, the Sources page of {rel},"), "sources:plates", body, f"{where}, the Sources page of {rel},")
     extras = [site / only] if only else sorted(site.rglob("*.html"))
     for target in extras:
         text = pages.get(target) or target.read_bytes().decode("utf-8")
@@ -1838,7 +1993,14 @@ def sample_site(root, plate=None, claims=None):
     plate = plate or sample_plate()
     (root / "data" / "plates" / f"{plate['id']}.json").write_text(json.dumps(plate), encoding="utf-8")
     (root / "page.html").write_text(f"<main>before\n<!-- plate:{plate['id']} -->\nold\n<!-- /plate:{plate['id']} -->\nafter</main>", encoding="utf-8")
+    sources_shell(root / "sources" / "index.html")
     return root
+
+
+def sources_shell(path):
+    """The least a Sources page holds: the markers this build fills. A real one copies site/ai/sources/index.html."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("<main><nav><ul>\n<!-- sources:toc -->\n<!-- /sources:toc -->\n</ul></nav>\n<!-- sources:plates -->\n<!-- /sources:plates -->\n</main>\n", encoding="utf-8", newline="\n")
 
 
 def self_test():
@@ -1851,14 +2013,17 @@ def self_test():
     with tempfile.TemporaryDirectory() as tmp:
         site = sample_site(Path(tmp) / "site")
         first = build(site)
-        assert first == {"plates": 1, "pages_written": ["page.html"]}, first
+        assert first == {"plates": 1, "pages_written": ["page.html", "sources/index.html"]}, first
         page = (site / "page.html").read_text(encoding="utf-8")
+        sources = (site / "sources" / "index.html").read_text(encoding="utf-8")
         assert build(site)["pages_written"] == [], "a second run must change nothing"
         assert (site / "page.html").read_text(encoding="utf-8") == page
         assert "The B figure is an old estimate." in page and NO_MEASUREMENT in page and "Row A used 0.24 Wh in 2025" in page
+        assert 'class="plate-sources"' not in page and 'href="sources/#sample"' in page and 'id="sample-source-s-2"' in sources and 'id="src-s-2"' in sources
         errors = []
         vp.check_text("page", page, errors)
-        assert not errors and not vp.EM_DASH.search(page), errors
+        vp.check_text("sources", sources, errors)
+        assert not errors and not vp.EM_DASH.search(page) and not vp.EM_DASH.search(sources), errors
         assert vp.check_plate_blocks("page", page, load_claims(site), errors) == 1 and not errors, errors
         evidence = Path(tmp) / "evidence"
         evidence.mkdir()

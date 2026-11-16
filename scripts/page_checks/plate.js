@@ -122,7 +122,7 @@ async function ladder() {
   eq(`${p.value.textContent} ${p.unit.textContent}`, '0.24 Wh', 'default readout');
   ok(p.reading.textContent.includes('0.24 Wh inside the data center'), 'page script sentence');
   eq(p.chips().length, 1, 'one chip for the selection');
-  ok(!p.receipt.hidden && p.receipt.querySelector('blockquote'), 'the first receipt is open on load, so the panel holds its source');
+  ok(!p.receipt.hidden && p.receipt.querySelector('.plate-source-title a'), 'the first receipt is open on load, so the panel holds its source');
   ok(p.facts.textContent.includes('Assumption:'), 'assumption in the detail');
   const more = p.facts.querySelector('.plate-more');
   ok(more && !more.open && more.querySelector('summary').textContent.trim().length > 0, 'it waits behind a disclosure');
@@ -144,9 +144,13 @@ async function ladder() {
   ok(settings(window).includes('session-energy=video'), 'selection in the address');
   ok(p.reading.textContent.startsWith('Streamed video, one hour: 70 Wh, 2025.'), 'Reading follows');
   eq(p.plot.style.getPropertyValue('--at'), row(p.root, 'video').style.getPropertyValue('--x'), 'needle at the row');
-  ok(!p.receipt.hidden && p.receipt.querySelector('blockquote').textContent.length > 0 && p.receipt.querySelector('a').href.startsWith('https://'), 'receipt opens with quote and link');
-  ok(p.receipt.textContent.includes('Boundary:') && p.receipt.textContent.includes('Verified against the source.'), 'receipt has boundary and status');
-  eq(p.receipt.querySelectorAll('[id]').length, 0, 'clone holds no duplicate id');
+  // The card is built from the plate's own data: the source linked, its status, limit, and claim, and the way on to the full receipt on the Sources page.
+  const card = p.receipt.textContent;
+  ok(!p.receipt.hidden && p.receipt.querySelector('.plate-source-title a').href.startsWith('https://'), 'receipt opens with its source linked');
+  ok(card.includes('Verified against the source.') && /Claim [a-z]{2,3}-\d{3}\./.test(card), `receipt has its status and claim: ${card}`);
+  ok(/sources\/#session-energy-source-[a-z]{2,3}-\d{3}$/.test(p.receipt.querySelector('.plate-receipt-more a').getAttribute('href')), 'and links on to the quote, boundary, and date on the Sources page');
+  ok(!p.receipt.querySelector('blockquote'), 'the quote waits on the Sources page');
+  eq(p.receipt.querySelectorAll('[id]').length, 0, 'the card holds no duplicate id');
   const [chip] = p.chips();
   eq(chip.getAttribute('aria-expanded'), 'true', 'chip expanded');
   eq(chip.getAttribute('aria-controls'), p.receipt.id, 'chip names its panel');
@@ -183,7 +187,9 @@ async function ladder() {
   ok(!p.views('reading').hidden, 'Enter brings the Reading forward');
   eq(p.radio('session-energy-view', 'reading').checked, true, 'view radio follows');
   fire(window, p.radio('session-energy-view', 'sources'), 'click');
-  ok(!p.views('sources').hidden && p.views('sources').querySelectorAll('li').length === 5, 'Sources lists every receipt');
+  ok(!p.views('sources').hidden && p.views('sources').querySelector('.plate-source-line').textContent.startsWith('5 sources from'), 'Sources counts every receipt in one line');
+  eq(p.views('sources').querySelector('.plate-sources-link a').getAttribute('href'), 'sources/#session-energy', 'and links to the plate on the Sources page');
+  ok(!p.views('sources').querySelector('ol.plate-sources'), 'and keeps no list of its own');
   fire(window, row(p.root, 'no-figure').querySelector('.ladder-label'), 'click');
   ok(!p.views('reading').hidden, 'click shows the Reading');
   eq(row(p.root, 'no-figure').getAttribute('aria-selected'), 'true', 'click selects');
@@ -469,7 +475,10 @@ async function noScripts() {
   ok(document.querySelector('.bench-link a').getAttribute('href') === 'index.html#matrix-demo', 'a bench row links to its plate');
   ok(document.querySelector('.bench-reading').textContent.startsWith('Water, National scale'), 'a bench row holds the default Reading');
   ok(document.querySelectorAll('#capital-history .m-title').length === 4, 'static multiples');
-  ok(root.querySelector('.plate-sources').textContent.includes('Limit: Derived from a study'), 'limit on the page');
+  // Without scripts the Sources view is its line and link, the Table links each source to its receipt, and the receipts with their limits are on the Sources page.
+  ok(root.querySelector('.plate-view[data-view="sources"] .plate-sources-link a[href="sources/#session-energy"]') && !root.querySelector('ol.plate-sources'), 'a line and a link, no list');
+  ok([...root.querySelectorAll('.plate-table a')].some((a) => /^sources\/#session-energy-source-[a-z]{2,3}-\d{3}$/.test(a.getAttribute('href'))), 'the Table links its sources to their receipts');
+  ok(read('scripts/fixtures/plate-demo/sources/index.html').includes('Limit: Derived from a study'), 'the limit on the Sources page');
   ok(document.querySelector('.section-strip a[href="#history"]') && !document.querySelector('[role="tablist"]'), 'strip is a jump list');
 }
 
@@ -849,16 +858,17 @@ async function zones() {
   ok(!/has-more|is-short/.test(read('site/assets/js/plate.js')), 'nothing is left of the old bargain');
 }
 
-// The Reading view ends at Copy, Reset, and one line of receipts. Chips, the open receipt, and the list live in the Sources view, whose tab carries the count.
+// The Reading view ends at Copy, Reset, and one line of receipts. Chips, the open receipt, and the line and link to the Sources page live in the Sources view, whose tab carries the count.
 async function detailViews() {
   const { window, document, errors } = await load();
   const p = parts(document, 'session-energy');
   const reading = p.views('reading');
   const sources = p.views('sources');
   const chipsBox = p.root.querySelector('.plate-chips');
-  ok(sources.contains(chipsBox) && sources.contains(p.receipt) && sources.querySelector('.plate-sources'), 'chips, receipt, and list are in Sources');
-  ok(!reading.contains(chipsBox) && !reading.contains(p.receipt) && !reading.querySelector('.plate-sources'), 'and none in the Reading');
-  ok(chipsBox.compareDocumentPosition(p.receipt) === 4 && p.receipt.compareDocumentPosition(sources.querySelector('.plate-sources')) === 4, 'the receipt opens right under its chips, above the list');
+  const link = sources.querySelector('.plate-sources-link');
+  ok(sources.contains(chipsBox) && sources.contains(p.receipt) && link, 'chips, receipt, and the link are in Sources');
+  ok(!reading.contains(chipsBox) && !reading.contains(p.receipt) && !reading.querySelector('.plate-sources-link'), 'and none in the Reading');
+  ok(chipsBox.compareDocumentPosition(p.receipt) === 4 && p.receipt.compareDocumentPosition(link) === 4, 'the receipt opens right under its chips, above the line and link');
   eq(p.root.querySelector('.plate-views input[value="sources"] + span').textContent, 'Sources (5)', 'the tab carries the count of receipts');
   const tally = reading.querySelector('.plate-tally');
   eq(tally.previousElementSibling, p.root.querySelector('.plate-actions'), 'the line of receipts follows Copy and Reset');
@@ -1455,7 +1465,8 @@ async function printOne() {
   const title = p.root.querySelector('.plate-title');
   const before = title.textContent;
   const seen = [];
-  window.print = () => seen.push({ attr: html.dataset.printOne, on: p.root.classList.contains('is-print-one'), head: p.root.querySelector('.plate-print-head')?.textContent, foot: p.root.querySelector('.plate-print-foot')?.textContent, title: title.textContent });
+  window.print = () => seen.push({ attr: html.dataset.printOne, on: p.root.classList.contains('is-print-one'), head: p.root.querySelector('.plate-print-head')?.textContent, foot: p.root.querySelector('.plate-print-foot')?.textContent, title: title.textContent,
+    list: [...p.root.querySelectorAll('.plate-print-sources li')].map((li) => li.textContent), more: p.root.querySelector('.plate-print-sources .plate-receipt-more') });
   ok(!html.dataset.printOne, 'nothing is marked before the press');
   const press = p.root.querySelector('[data-print-plate]');
   fire(window, press, 'click');
@@ -1463,8 +1474,12 @@ async function printOne() {
   ok(seen[0].on, 'and marks it');
   ok(seen[0].head.includes('Settings chosen by the reader') && seen[0].foot === 'This comparison does not decide a proposal.', 'it carries the guard lines');
   eq(seen[0].title, before, 'at the defaults the title is the finding');
+  const receipts = JSON.parse(document.getElementById('plate-data-hour-demo').textContent).receipts;
+  eq(seen[0].list.length, Object.keys(receipts).length, 'the sheet lists every receipt');
+  ok(seen[0].list.every((text) => /(Verified against the source\.|Partly verified\. Limit: .+) Claim [a-z]{2,3}-\d{3}\.$/.test(text)), `each by its title, status, limit, and claim: ${seen[0].list[0]}`);
+  eq(seen[0].more, null, 'with no link on, since the stub prints the address of the full receipts');
   window.dispatchEvent(new window.Event('afterprint'));
-  ok(!html.dataset.printOne && !p.root.classList.contains('is-print-one') && !p.root.querySelector('.plate-print-head, .plate-print-foot'), 'and all of it goes when the dialog closes');
+  ok(!html.dataset.printOne && !p.root.classList.contains('is-print-one') && !p.root.querySelector('.plate-print-head, .plate-print-foot, .plate-print-sources'), 'and all of it goes when the dialog closes');
   const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
   num.value = '30';
   fire(window, num, 'input');
@@ -1474,7 +1489,8 @@ async function printOne() {
   eq(title.textContent, before, 'and the page gets its own back');
   const css = read('site/assets/css/site.css');
   ok(css.includes('html[data-print-one] main *:not(:has(.is-print-one), .is-print-one, .is-print-one *)'), 'print shows that plate and nothing else in the page');
-  ok(/\.is-print-one \.plate-sources li > p:nth-of-type[^}]*\.plate-quote[^}]*display: none/.test(css), 'its Sources drop the quotes, which stay on the site');
+  ok(/\.is-print-one \.plate-print-sources \{ display: block/.test(css) && /\.plate-print-sources \{ display: none/.test(css), 'its receipts print by title and status, on that sheet only');
+  ok(/\.plate-sources-link a::after \{ content: " " attr\(data-url\)/.test(css), 'and the stub prints the address of the Sources page');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -1609,4 +1625,19 @@ async function aids() {
   eq(errors.join(), '', 'no script errors');
 }
 
-module.exports = { groups: { charts, fragment, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address } };
+// A page's receipts moved to its Sources page (owner ruling 39): an old link to one here goes on to the same id there, and only a receipt's id moves.
+async function moved() {
+  const { window, document, errors } = await load();
+  eq(window.plate.movedTo('src-fp-001'), null, 'a page with no Sources link forwards nothing');
+  document.body.append(Object.assign(document.createElement('a'), { href: 'sources/' }));
+  document.body.lastElementChild.setAttribute('data-sources', '');
+  eq(window.plate.movedTo('src-fp-001'), 'http://localhost/scripts/fixtures/plate-demo/sources/#src-fp-001', 'a claim goes on to its receipt there');
+  eq(window.plate.movedTo('session-energy-source-fp-001'), 'http://localhost/scripts/fixtures/plate-demo/sources/#session-energy-source-fp-001', 'so does a plate receipt');
+  eq(window.plate.movedTo('session-energy'), null, 'a plate stays here');
+  eq(window.plate.movedTo('sessions'), null, 'and so does a section');
+  document.body.append(Object.assign(document.createElement('p'), { id: 'src-zz-999' }));
+  eq(window.plate.movedTo('src-zz-999'), null, 'an id still on the page stays');
+  eq(errors.join(), '', 'no script errors');
+}
+
+module.exports = { groups: { charts, fragment, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address, moved } };

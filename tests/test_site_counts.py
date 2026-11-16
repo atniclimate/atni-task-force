@@ -59,9 +59,9 @@ def test_each_library_bar_links_its_count_to_the_claim_that_holds_it():
     assert marks and len(marks) == len(doc.all("a", "comp-row"))
     for mark in marks:
         assert digits(mark) == str(CLAIMS[mark.attrs["data-claim"]]["value"]), mark.attrs["data-claim"]
-        assert mark.attrs["href"] == f'#src-{mark.attrs["data-claim"]}' and not mark.attrs.get("data-filter")
-    cited = {node.attrs["id"][4:] for node in doc.one("section", "claims-cited").all("li", id=True)}
-    assert {mark.attrs["data-claim"] for mark in marks} <= cited, "each mark's row is in the page's foot"
+        assert mark.attrs["href"] == f'sources/#src-{mark.attrs["data-claim"]}' and not mark.attrs.get("data-filter")
+    cited = {node.attrs["id"][4:] for node in page("library/sources/index.html").one("section", "claims-cited").all("li", id=True)}
+    assert {mark.attrs["data-claim"] for mark in marks} <= cited, "each mark's row is on the Library's Sources page"
 
 
 def test_each_home_figure_holds_its_claims_value():

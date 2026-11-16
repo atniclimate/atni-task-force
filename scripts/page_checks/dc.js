@@ -1,8 +1,9 @@
 // The Data Centers page with its real module and data: tabs, deep links, selection, and every control's effect on the Reading.
-const { JSDOM, ok, eq, wait, settle, settings, read, plateFile, open, fire, key, holds, leads, wordsOnly } = require('./lib');
+const { JSDOM, ok, eq, wait, settle, settings, read, plateFile, receiptsOn, open, fire, key, holds, leads, wordsOnly } = require('./lib');
 
 const PAGE = 'http://localhost/site/data-centers/index.html';
 const html = read('site/data-centers/index.html');
+const receipt = receiptsOn('site/data-centers/sources/index.html');
 
 async function load(query = '', { size = { w: 980, h: 520 } } = {}) {
   return open(html, `${PAGE}${query}`, (window) => {
@@ -94,14 +95,13 @@ async function deepLinks() {
   ok(checklists.document.getElementById('q-consent').open, 'and the Consent checklist');
   ok(!checklists.document.getElementById('q-land').open, 'and only that one');
   eq(checklists.errors.join(), '', '#checklists no errors');
-  // A claim id in the band opens the Overview plate on its Sources view, at that receipt.
+  // A claim id in the band links its receipt on the Sources page, and an old link to the receipt here goes on to the same id there.
   for (const a of document.querySelectorAll('.page-band-figures .figure-label a')) {
-    const band = await load(a.getAttribute('href'));
-    ok(!band.document.getElementById('overview').hidden, `${a.textContent} opens Overview`);
-    eq(band.document.getElementById('dc-pnw-load').dataset.view, 'sources', `${a.textContent} opens Sources`);
-    eq(band.window.scrolled, `dc-pnw-load-source-${a.textContent}`, `${a.textContent} reaches its receipt`);
-    eq(band.errors.join(), '', `${a.textContent} no errors`);
+    eq(a.getAttribute('href'), `sources/#dc-pnw-load-source-${a.textContent}`, `${a.textContent} links its receipt on the Sources page`);
+    ok(receipt(`dc-pnw-load-source-${a.textContent}`), `${a.textContent}: which is there`);
+    eq(window.plate.movedTo(`dc-pnw-load-source-${a.textContent}`), `http://localhost/site/data-centers/sources/#dc-pnw-load-source-${a.textContent}`, `${a.textContent}: an old link goes on there`);
   }
+  eq(document.querySelector('.page-band a[data-sources]').getAttribute('href'), 'sources/', 'a line under the title links the Sources page');
   // Settings after the anchor (#id&name=value) name no element, so the browser lands nowhere: the kit opens the anchor's tab and lands on it as the browser
   // would on a plain #id, in view and with focus there (a11y A1), and a disclosure it names still opens (A2). The old ?query form lands the same way.
   for (const [hash, tab, opens] of [['land', 'land', false], ['climate', 'climate', false], ['dc-pnw-load', 'overview', false], ['purpose', 'overview', true], ['?dc-pnw-load=2046#dc-pnw-load', 'overview', false]]) {
@@ -132,7 +132,7 @@ async function council() {
   eq(row(p.root, '2029'), undefined, 'no 2029 stop');
   ok(p.facts.textContent.includes('2029') && p.facts.textContent.includes('2,197.8 aMW'), 'the 2029 input stays in how this is modeled');
   ok(p.root.querySelector('.plate-also').textContent.includes('2,197.8 aMW'), 'and in the Table view');
-  ok(p.chips().some((c) => c.dataset.claim === 'dem-076') && document.getElementById('dc-pnw-load-source-dem-076'), 'with its receipt');
+  ok(p.chips().some((c) => c.dataset.claim === 'dem-076') && receipt('dc-pnw-load-source-dem-076'), 'with its receipt');
   eq(`${p.value.textContent} ${p.unit.textContent}`, '2,475.1 (1,512.8 to 4,988.7) aMW', 'readout');
   ok(p.root.querySelector('.plate-claim .dc-jump a[href="#rate-change"]') && !document.querySelector('.dc-panel-head .dc-jump'), 'the jump lists read in the claim zones');
   eq(p.root.querySelector('.plate-claim .dc-jump').textContent, 'Further down: Rates, Purpose, Why Now, Library', 'each is one sentence');
@@ -338,7 +338,7 @@ async function forecastCheck() {
 
   // Sources and Table.
   ok(p.root.querySelector('.plate-views input[value="sources"] + span').textContent === 'Sources (44)', 'the tab counts every receipt');
-  const sources = (claim) => document.getElementById(`dc-forecast-check-source-${claim}`).textContent;
+  const sources = (claim) => receipt(`dc-forecast-check-source-${claim}`);
   ok(sources('dem-113').includes(`Limit: ${CLAIMS['dem-113'].limit}`) && sources('dem-113').startsWith(CLAIMS['dem-113'].source.title), "EIA's history-revision limit prints on a verified receipt");
   ok(sources('dem-103').includes(`Partly verified. Limit: ${CLAIMS['dem-103'].limit}`), 'the chart read says so');
   ok(sources('dem-114').includes('published 03/2009'), 'a month with no day prints as a month');
@@ -680,7 +680,7 @@ async function noScripts() {
     ok(root.querySelector('.reading').textContent.length > 20, `${root.id} default Reading`);
     ok(root.querySelector('table tbody tr'), `${root.id} table`);
     ok(root.querySelector('.plate-plot').firstElementChild, `${root.id} static plot`);
-    ok(root.querySelector('.plate-sources li'), `${root.id} sources`);
+    ok(root.querySelector(`.plate-sources-link a[href="sources/#${root.id}"]`) && !root.querySelector('ol.plate-sources'), `${root.id} links its sources, and keeps no list`);
   }
   ok(holds(document.querySelector('#dc-project .plate-setting').textContent, ['125']), 'the setting named');
   ok(document.querySelector('#dc-jobs-per-mw .plate-plot [data-row="naics"]'), 'without scripts the fixed record stays in the plot');
@@ -700,7 +700,7 @@ async function noScripts() {
   eq(bandIds.map((a) => a.textContent).join(), 'dem-058,dem-073', 'each claim figure prints its id as a link');
   for (const a of bandIds) {
     eq(a.parentElement.textContent, `${a.textContent}, ${CLAIMS[a.textContent].status}`, `${a.textContent}: the status comes from the claim`);
-    ok(document.getElementById(a.getAttribute('href').split('#')[1]), `${a.textContent}: the link names a receipt on the page`);
+    ok(a.getAttribute('href').startsWith('sources/#') && receipt(a.getAttribute('href').split('#')[1]), `${a.textContent}: the link names a receipt on the Sources page`);
     eq(CLAIMS[a.textContent].limit ?? null, null, `${a.textContent}: no limit is owed beside it`);
   }
   ok(document.querySelector('.page-band .lead a[href$="atni-res-2026-034-tiered-sovereign-data-framework.pdf"]'), 'and the resolution link, at the end of the lead');

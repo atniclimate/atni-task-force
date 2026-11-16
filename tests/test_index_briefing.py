@@ -26,6 +26,8 @@ def small_site(tmp_path, band="11/04/2026"):
     (site / "data" / "plates" / "sample.json").write_text(json.dumps(defn), encoding="utf-8")
     (site / "ai").mkdir()
     (site / "ai" / "index.html").write_text(PAGE.format(band=band) if band else PAGE.split("<header>")[0] + "<!-- plate:sample -->\nold\n<!-- /plate:sample --></main>", encoding="utf-8")
+    bp.sources_shell(site / "ai" / "sources" / "index.html")
+    (site / "sources" / "index.html").write_text("<main>\n<!-- sources:hub -->\n<!-- /sources:hub -->\n</main>\n", encoding="utf-8")  # the site's own Sources page is the hub
     bp.build(site)
     (site / "data" / "library.json").write_text('{"schema": 1, "updated": "2026-01-01", "entries": []}', encoding="utf-8")
     (site / "data" / "new.json").write_text('{"schema": 1, "tier": "T0"}', encoding="utf-8")
@@ -74,6 +76,30 @@ def test_the_real_manifest_is_up_to_date_and_passes_the_validator():
     assert bi.run(check=True) is False, "run python scripts/build_index.py"
     errors = []
     assert vp.check_manifest(errors) > 0 and not errors, errors
+
+
+def test_the_hub_lists_each_sources_page_with_its_plates_and_every_file(tmp_path):
+    site = small_site(tmp_path)
+    assert bi.run(site) is True and bi.run(site, check=True) is False, "written once, then current: the hub prints no build date"
+    hub = parse((site / "sources" / "index.html").read_text(encoding="utf-8"))
+    pages = hub.one("section", id="pages")
+    assert pages.one("a", href="../ai/sources/") and pages.one("a", href="../ai/sources/#sample"), "the page's Sources page, and its plate there"
+    assert "1 plate; 3 sources from 1 document: 2 verified and 1 partly verified." in pages.text() and "Sources checked 11/04/2026." in pages.text()
+    files = hub.one("section", id="claim-files")
+    assert files.one("a", href="../data/claims/sample.json") and "3 claims in 1 file: 2 verified and 1 partly verified." in files.text()
+    assert hub.one("section", id="data-files").one("a", href="../data/new.json")
+    (site / "sources" / "index.html").write_text("<main></main>", encoding="utf-8")
+    with pytest.raises(bp.BuildError, match="sources:hub"):
+        bi.run(site)
+
+
+def test_the_real_hub_reaches_every_plate_claims_file_and_data_file():
+    index = json.loads((SITE / "data" / "index.json").read_text(encoding="utf-8"))
+    hub = (SITE / "sources" / "index.html").read_text(encoding="utf-8")
+    missing = [p["id"] for p in index["plates"] if f'href="../{p["page"].removesuffix("index.html")}sources/#{p["id"]}"' not in hub]
+    missing += [item["path"] for item in index["claims"] + index["data"] if f'href="../{item["path"]}"' not in hub]
+    assert not missing, missing
+    assert all(f'href="../{rel}"' in hub for rel in ("explorer/sources/", "library/sources/")), "the pages with receipts and no plates"
 
 
 def test_the_validator_catches_a_missing_or_untiered_file(tmp_path, monkeypatch):

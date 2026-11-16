@@ -175,11 +175,16 @@ async function sameHourPlate() {
   eq(p.plot.querySelector('.ladder-tick[data-mark="fixed"]').hidden, false, 'the screen and router stand on the ruler');
   eq(p.chips().includes('fp-001') && p.chips().includes('fp-124'), true, 'receipts follow the row and the setting');
   eq(p.chips().includes('fp-128'), false, 'a mobile receipt stays away on Wi-Fi');
-  // Six chips, one per publisher; the rest live in Sources.
+  // Six chips, one per publisher; one button shows the rest in place and folds them again.
+  const more = p.root.querySelector('.plate-chip-more');
   eq(p.root.querySelectorAll('.receipt:not([hidden]):not(.is-extra)').length, 6, 'six chips');
-  ok(/^\d+ more below$/.test(p.root.querySelector('.plate-chip-more').textContent), 'the rest are counted');
-  fire(window, p.root.querySelector('.plate-chip-more'), 'click');
-  eq(p.root.dataset.view, 'sources', 'the button opens Sources');
+  const extra = +(/^Show (\d+) more$/.exec(more.textContent) || [])[1];
+  ok(extra > 0 && more.getAttribute('aria-expanded') === 'false', `the rest are counted: ${more.textContent}`);
+  fire(window, more, 'click');
+  ok(p.root.querySelector('.plate-chips').classList.contains('is-all') && more.textContent === 'Show fewer' && more.getAttribute('aria-expanded') === 'true', 'the button shows them in place');
+  eq(p.root.dataset.view, 'reading', 'and leaves the view where it was');
+  fire(window, more, 'click');
+  ok(!p.root.querySelector('.plate-chips').classList.contains('is-all') && more.textContent === `Show ${extra} more`, 'and folds them again');
   fire(window, p.row('chat').querySelector('.ladder-label'), 'click');
   eq(p.root.dataset.view, 'reading', 'and a row returns to the Reading');
   ok(!p.facts.querySelector('.plate-more').open && p.facts.querySelector('.plate-more').textContent.includes('Equation:'), 'how it is modeled waits behind a disclosure');
@@ -451,7 +456,7 @@ async function otherPlates() {
     ok(seen.size > 1, `${id}: arrows change the Reading`);
     key(window, p.plot, 'Home');
     ok(p.plot.getAttribute('aria-activedescendant'), `${id}: an active row`);
-    ok(p.chips().length >= 0 && p.root.querySelector('.plate-sources li'), `${id}: receipts exist`);
+    ok(p.chips().length >= 0 && p.root.querySelector(`.plate-sources-link a[href="sources/#${id}"]`), `${id}: its receipts are a link away`);
   };
   const moved = async (p, id, name, values) => {
     const seen = new Set([p.reading.textContent]);
@@ -671,7 +676,7 @@ async function otherPlates() {
   key(window, ho.plot, 'Home');
   ok(leads(ho.reading.textContent, ['Apple', '5,008.2 billion dollars']) && /partly verified/.test(ho.reading.textContent) && ho.reading.textContent.includes('Limit:'), `a market value keeps its status and limit: ${ho.reading.textContent}`);
   ok(ho.reading.textContent.length < 900, 'with the long boundary left to Sources');
-  ok(ho.root.querySelector('.plate-sources').textContent.includes('Share counts are dated'), 'where it stands in full');
+  ok(read('site/ai/sources/index.html').includes('Share counts are dated'), 'where it stands in full, on the Sources page');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -685,7 +690,8 @@ async function noScripts() {
     ok(plate.querySelector('.plate-title').textContent.length <= 120, `${plate.id}: a title of at most 120 characters, four lines at 1440`);
     ok(plate.querySelector('.plate-controls') === null || plate.querySelector('.plate-controls').hidden, `${plate.id} controls wait for scripts`);
     ok(plate.querySelectorAll('table.plate-table tbody tr').length > 0, `${plate.id} has its table`);
-    ok(plate.querySelector('.plate-sources li'), `${plate.id} has its sources`);
+    ok(plate.querySelector(`.plate-sources-link a[href="sources/#${plate.id}"]`) && !plate.querySelector('ol.plate-sources'), `${plate.id} links its sources, and keeps no list`);
+    ok([...plate.querySelectorAll('.plate-table a')].every((a) => a.getAttribute('href').startsWith(`sources/#${plate.id}-source-`)), `${plate.id}: its Table links reach its receipts`);
     ok(plate.querySelector('.plate-plot').children.length > 0, `${plate.id} has a static plot`);
   }
   ok(/Boundary: Whole hour/.test(document.querySelector('#ai-same-hour .plate-setting').textContent), 'a line names the setting shown');

@@ -15,6 +15,7 @@ const V0 = Views(D); // the model at its defaults: where a moved bar started
 V0.set(V0.fresh());
 window.explorer = { ...window.resourceModel, view: V, state: S, data: D };
 const plateOf = (name) => $(`.x-plate[data-plate-x="${name}"]`);
+const claimOf = (a) => a.getAttribute('href').split('#src-')[1]; // a receipt's link, sources/#src-ID: the page's receipts are on its Sources page (owner ruling 39)
 const rowNodes = new Map($$('.plate-plot [data-row]').map((n) => [n.dataset.row, n]));
 const tableRows = new Map($$('tr[data-tr]').map((n) => [n.dataset.tr, n]));
 const shown = {}; // the keys a plate's arrows step through, in the order they stand
@@ -320,7 +321,7 @@ const damageNodes = (key) => {
   if (!c) return [];
   const family = D.carbon_damage.families[S.damage];
   const note = el('p', 'caption', `${c.kind.startsWith('avoidance') ? 'Not a price. ' : ''}${c.family}. ${c.kind}. ${family.spread} ${family.limit} `);
-  for (const [i, id] of c.claims.entries()) { const a = el('a', 'x-c', id); a.href = `#src-${id}`; note.append(...(i ? [', ', a] : [a])); }
+  for (const [i, id] of c.claims.entries()) { const a = el('a', 'x-c', id); a.href = `sources/#src-${id}`; note.append(...(i ? [', ', a] : [a])); }
   return [el('p', 'x-damage-head', `${c.column}, as of ${c.as_of}`), el('p', 'x-damage-figures', V.damageWords(c)), note];
 };
 
@@ -360,7 +361,7 @@ function movesInto(body, key) { // a table, so its rows read as rows; the bar un
     bar.setAttribute('aria-hidden', 'true');
     bar.append(el('i'));
     const ids = el('span', 'caption', r.claims.length ? '' : 'no source, an assumption');
-    ids.append(...r.claims.flatMap((id, i) => { const a = el('a', 'x-c', id); a.href = `#src-${id}`; return i ? [', ', a] : [a]; }));
+    ids.append(...r.claims.flatMap((id, i) => { const a = el('a', 'x-c', id); a.href = `sources/#src-${id}`; return i ? [', ', a] : [a]; }));
     const td = el('td', '', r.ends);
     td.append(bar);
     const from = el('td');
@@ -415,7 +416,7 @@ function detail(name, key) {
   const chips = parts.find((n) => n.matches('.plate-chips'));
   d('chips').replaceChildren(...(chips ? chips.children : []));
   const receipts = $$('.receipt', d('chips'));
-  for (const chip of receipts) { const id = chip.getAttribute('href').slice(5); chip.lastElementChild.textContent = `${id}, ${document.getElementById(`src-${id}`).dataset.short}`; }
+  for (const chip of receipts) { const id = claimOf(chip); chip.lastElementChild.textContent = `${id}, ${D.receipts[id].short}`; }
   const partly = receipts.filter((chip) => chip.classList.contains('is-hollow')).length;
   const verified = receipts.length - partly;
   const tally = $('[data-tally]', plate);
@@ -426,12 +427,16 @@ function detail(name, key) {
   receipt.replaceChildren();
   $$('.receipt, a.x-c', plate).forEach((c) => c.setAttribute('aria-expanded', false));
 }
-// As on every plate of the kit: the Sources view lists the whole plate and its name counts them, and its chips are the selected row's. So the view's count and the line under the Reading count one thing each.
+// As on every plate of the kit: the Sources view counts the whole plate in one line, beside the link to the full receipts, and its chips are the selected row's. So the view's count and the line under the Reading count one thing each.
+const plural = (n, one) => `${grouped(n)} ${n === 1 ? one : `${one}s`}`;
 function listSources(plate) {
-  const ids = new Set($$('.plate-plot [data-row]', plate).flatMap((row) => { const note = document.getElementById(D.rows[row.dataset.row]?.note); return note ? $$('.receipt', note).map((chip) => chip.getAttribute('href').slice(1)) : []; }));
+  const ids = new Set($$('.plate-plot [data-row]', plate).flatMap((row) => { const note = document.getElementById(D.rows[row.dataset.row]?.note); return note ? $$('.receipt', note).map(claimOf) : []; }));
   plate.dataset.sources = ids.size;
   $('.plate-views input[value="sources"] + span', plate).textContent = `Sources (${ids.size})`;
-  $('[data-d="sources"]', plate).replaceChildren(...[...ids].map((id) => { const src = document.getElementById(id).cloneNode(true); src.removeAttribute('id'); return src; }));
+  const rs = [...ids].map((id) => D.receipts[id]);
+  const partly = rs.filter((r) => r.status === 'partly').length;
+  const mix = [ids.size > partly && `${grouped(ids.size - partly)} verified`, partly && `${grouped(partly)} partly verified`].filter(Boolean).join(' and ');
+  $('[data-d="sources"]', plate).textContent = `${plural(ids.size, 'source')} from ${plural(new Set(rs.map((r) => `${r.url} ${r.title}`)).size, 'document')}: ${mix}.`; // the kit's line, in its words
 }
 function selectRow(name, key) {
   S.sel[name] = key;
@@ -628,7 +633,7 @@ async function copyReading(plate) {
   flushQuery(true);
   const reading = $('[data-d="reading"]', plate);
   const status = $('.plate-status', plate);
-  const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => $('.plate-source-title', document.getElementById(chip.getAttribute('href').slice(1))).textContent);
+  const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => D.receipts[claimOf(chip)].title);
   try {
     await navigator.clipboard.writeText(`${reading.textContent}\n${location.href}${titles.length ? `\nSources: ${[...new Set(titles)].join('; ')}` : ''}`);
     status.textContent = 'Copied with its link and sources.';
@@ -647,7 +652,7 @@ function closeReceipt(box) {
 function openReceipt(chip) {
   const plate = chip.closest('.x-plate');
   const box = $('[data-d="receipt"]', plate);
-  const id = chip.getAttribute('href').slice(1);
+  const id = claimOf(chip);
   const closing = box.dataset.open === id && !box.hidden;
   closeReceipt(box);
   if (closing) return;
@@ -655,7 +660,14 @@ function openReceipt(chip) {
   box.hidden = false;
   box.dataset.open = id;
   box.from = chip;
-  box.replaceChildren(...document.getElementById(id).cloneNode(true).children);
+  // The kit's short card, from the data block: the source, linked; status, limit, and claim; and the way on to the full receipt on the Sources page.
+  const r = D.receipts[id];
+  const title = el('p', 'plate-source-title');
+  if (/^https:\/\//.test(r.url || '')) title.append(Object.assign(el('a', '', r.title), { href: r.url }));
+  else title.textContent = r.title;
+  const more = el('p', 'caption plate-receipt-more');
+  more.append(Object.assign(el('a', '', 'Quote, boundary, and date'), { href: `sources/#src-${id}` }));
+  box.replaceChildren(title, el('p', 'caption', `${r.short}. ${r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.'}${r.limit ? ` Limit: ${r.limit}` : ''} Claim ${id}.`), more);
   chip.setAttribute('aria-expanded', true);
   box.focus(); // the reader goes to it, and Escape comes back
 }

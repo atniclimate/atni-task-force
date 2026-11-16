@@ -84,10 +84,71 @@ def test_pour_is_idempotent_and_the_check_accepts_its_own_output():
 
 
 def test_an_existing_receipt_stays_the_only_anchor():
-    body = page(mark("fp-141", "3.1 Wh")).replace("</p>", '</p><ul><li id="src-fp-141">receipt</li></ul>')
+    body = page(mark("fp-141", "3.1 Wh"), mark("fp-200", "45%")).replace("</p>", '</p><ul><li id="src-fp-141">receipt</li></ul>')
     out, problems = cr.pour(body, CLAIMS)
     assert problems == [] and out.count('id="src-fp-141"') == 1
-    assert [li.attrs.get("id") for li in parse(out).one("section", "claims-cited").all("li")] == [None]
+    assert [li.attrs.get("id") for li in parse(out).one("section", "claims-cited").all("li")] == [None, "src-fp-200"]
+
+
+def test_a_page_whose_every_mark_lands_on_the_page_keeps_no_list():
+    body = page(mark("fp-141", "3.1 Wh")).replace("</p>", '</p><ul><li id="src-fp-141">receipt</li></ul>')
+    out, problems = cr.pour(body, CLAIMS)
+    assert problems == [] and "claims-cited" not in out and 'href="#src-fp-141"' in out, "the Briefing's checklists carry their own receipts"
+
+
+# Sources pages (owner ruling 39) --------------------------------------------------------------------
+
+def sources_site(tmp_path, *marks):
+    """A page in x/ with its Sources page beside it, which already holds one plate receipt (src-fp-141)."""
+    site = tmp_path / "site"
+    (site / "x" / "sources").mkdir(parents=True)
+    (site / "x" / "index.html").write_text(page(*marks), encoding="utf-8", newline="\n")
+    (site / "x" / "sources" / "index.html").write_text('<html><body><main id="main">\n<p id="src-fp-141">plate receipt</p>\n  </main>\n</body></html>\n', encoding="utf-8", newline="\n")
+    return site
+
+
+def test_a_page_with_a_sources_page_links_its_marks_there_and_keeps_no_list(tmp_path):
+    site = sources_site(tmp_path, mark("fp-141", "3.1 Wh"))
+    main = site / "x" / "index.html"
+    assert cr.sources_page(main) == site / "x" / "sources" / "index.html" and cr.is_sources(cr.sources_page(main)) and cr.main_of(cr.sources_page(main)) == main
+    assert cr.sources_page(cr.sources_page(main)) is None, "a Sources page has none of its own"
+    out, problems = cr.pour(page(mark("fp-141", "3.1 Wh"), mark("fp-200", "45%")), CLAIMS, "sources/")
+    assert problems == [] and "claims-cited" not in out
+    assert [a.attrs["href"] for a in parse(out).all("a", "cr")] == ["sources/#src-fp-141", "sources/#src-fp-200"]
+
+
+def test_the_sources_page_holds_the_list_grouped_by_source(tmp_path):
+    claims = {**CLAIMS, "fp-217": claim("fp-217", value=3), "fp-218": claim("fp-218", "partly", value=4, limit="One year only.")}
+    for claim_id in ("fp-217", "fp-218"):
+        claims[claim_id]["source"] = dict(claims["fp-200"]["source"])
+    site = sources_site(tmp_path)
+    shell = (site / "x" / "sources" / "index.html").read_text(encoding="utf-8")
+    listed, problems = cr.pour_list(shell, page(mark("fp-141", "3.1 Wh"), mark("fp-200", "45%"), mark("fp-217", "3"), mark("fp-218", "4")), claims)
+    assert problems == [] and listed.index("<!-- /claims-cited -->") < listed.index("</main>")
+    section = parse(listed).one("section", "claims-cited")
+    assert section.one("h2").text() == "Claims Cited in the Text" and section.one("p", "caption").one("a", href="../"), "it names the page it lists, one folder up"
+    entries = [li for li in section.one("ul", "plate-sources").children if getattr(li, "tag", None) == "li"]
+    assert [li.attrs.get("id") for li in entries] == [None, None], "fp-141's receipt is the plate's; fp-200, fp-217, and fp-218 share one source"
+    assert [li.attrs.get("id") for li in entries[1].one("ul", "cited-claims").all("li")] == ["src-fp-200", "src-fp-217", "src-fp-218"]
+    assert entries[1].text().count("Title of fp-200") == 1 and "fp-218. Partly verified. Limit: One year only." in entries[1].text(), "the title once, each claim's status and limit"
+    assert cr.pour_list(listed, page(mark("fp-141", "3.1 Wh"), mark("fp-200", "45%"), mark("fp-217", "3"), mark("fp-218", "4")), claims) == (listed, []), "idempotent"
+
+
+def test_the_check_reads_a_page_and_its_sources_page_together(tmp_path):
+    site = sources_site(tmp_path, mark("fp-141", "3.1 Wh"), mark("fp-200", "45%"))
+    main, shell = site / "x" / "index.html", site / "x" / "sources" / "index.html"
+    body = main.read_text(encoding="utf-8")
+    assert "stale" in cr.check_page("x/index.html", body, CLAIMS, site)[0], "a mark still linking here"
+    poured, _ = cr.pour(body, CLAIMS, "sources/")
+    main.write_text(poured, encoding="utf-8", newline="\n")
+    assert cr.check_page("x/index.html", poured, CLAIMS, site) == []
+    old = cr.pour(page(mark("fp-141", "3.1 Wh")), CLAIMS)[0].replace('href="#src-fp-141"', 'href="sources/#src-fp-141"')
+    assert "stale" in cr.check_page("x/index.html", old, CLAIMS, site)[0], "a list left on the page"
+    assert "stale" in cr.check_page("x/sources/index.html", shell.read_text(encoding="utf-8"), CLAIMS, site)[0], "the Sources page without its list"
+    listed, _ = cr.pour_list(shell.read_text(encoding="utf-8"), poured, CLAIMS)
+    assert cr.check_page("x/sources/index.html", listed, CLAIMS, site) == []
+    assert "holds a claim mark" in cr.check_page("x/sources/index.html", listed.replace("</main>", mark("fp-141", "3.1 Wh") + "</main>"), CLAIMS, site)[0]
+    assert cr.check_page("x/sources/index.html", listed, CLAIMS) != [], "without the site, a Sources page is checked as a plain page"
 
 
 def test_a_page_with_no_marks_has_no_block():
@@ -272,4 +333,4 @@ def test_audit_keeps_what_the_exceptions_do_not_excuse():
 def test_shipped_pages_pass_the_claim_reference_check():
     claims = cr.load_claims()
     for path in cr.SITE.rglob("*.html"):
-        assert cr.check_page(path.name, path.read_text(encoding="utf-8"), claims) == []
+        assert cr.check_page(path.relative_to(cr.SITE).as_posix(), path.read_text(encoding="utf-8"), claims, cr.SITE) == []

@@ -312,10 +312,7 @@ a.x-c { white-space: nowrap; }
 .x-backtest .plate-title { margin-bottom: 12px; }
 .x-backtest table { min-width: 60rem; }
 @media (min-width: 1100px) { .x-method { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.x-sources { margin-top: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 16px 24px; }
-.x-sources li, .plate-sources li { display: grid; gap: 2px; }
-.x-all-sources > .x-sources { max-width: none; } /* two classes, or the kit's disclosure measure holds the list to 32rem */
-q.plate-quote { display: block; quotes: none; }
+.x-all-sources { margin-top: 16px; } /* the page's receipts are on explorer/sources/ (owner ruling 39); this pointer keeps the old anchor */
 .x-settings-now { display: none; columns: 2; margin: 0 0 12px; font-size: 0.875rem; }
 html:not(.x-live) .x-settings-now { display: block; }
 
@@ -401,7 +398,7 @@ html:not(.x-live) .x-reading .caption { grid-column: 1 / -1; }
   .x-ruler .ladder-row .ladder-track::after { top: 0; bottom: 0; }
   .x-lever .ladder-track::after { top: calc(50% - 1px); bottom: auto; }
   .x-note-slot { display: none; }
-  .x-plate [data-d="sources"] { display: none; } /* every receipt prints once, under All Sources, and each row's chips print in its note */
+  .x-plate [data-d="sources"] { display: none; } /* every receipt prints on the Explorer's Sources page, whose address the link beside this line prints, and each row's chips print in its note */
   .x-plate .x-custody-setting { display: block !important; margin-bottom: 8pt; padding-top: 0; } /* the kit's print drops a switch; the fixed line stays with the setting, and the list of settings names the rule */
   .x-custody-setting > [data-js] { display: none; }
   .x-custody[data-rule="any"] { display: none; } /* nothing left out, so nothing to list; a rule that leaves rows out prints them under every comparison */

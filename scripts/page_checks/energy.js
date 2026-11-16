@@ -1,6 +1,6 @@
 // The Energy pages with their real scripts and data: stacked bars and the needle, the alphabetical detail, the deadlines strip at fixed dates, and what shows without scripts.
 // jsdom cannot run a module, so each page's modules run here as plain scripts with the imports inlined; nothing else about them changes. The clock is fixed, so no check goes stale.
-const { JSDOM, ok, eq, read, open, fire, key, wait, settle, settings } = require('./lib');
+const { JSDOM, ok, eq, read, receiptsOn, open, fire, key, wait, settle, settings } = require('./lib');
 
 const util = read('site/assets/js/util.js').replace(/^export (async function|function|const) /gm, '$1 ').replace('import.meta.url', "'http://localhost/site/assets/js/util.js'");
 const classic = (rel) => read(rel).replace(/^import .*$/m, '');
@@ -83,7 +83,7 @@ async function typesPlate() {
   ok(plate.querySelector('.plate-view[data-view="reading"] a[href$="energy-potential.json"]'), 'and the data link waits in the Reading');
   ok(!panel(plate).open, 'the panel starts closed');
   eq(panel(plate).querySelector('summary').textContent, 'Energy efficiency and weatherization: 32 Tribes, by the most advanced stage found', 'one line: the Reading\'s first');
-  ok(panel(plate).contains(plate.querySelector('.reading')) && panel(plate).contains(plate.querySelector('.plate-sources')), 'the views are inside it');
+  ok(panel(plate).contains(plate.querySelector('.reading')) && panel(plate).contains(plate.querySelector('.plate-sources-link')), 'the views are inside it');
   ok(plate.querySelector('.plate-detail > output'), 'the live region is not, so a selection is still spoken');
   fire(window, row(plate, 'solar'), 'click');
   ok(panel(plate).open, 'selecting a row opens it');
@@ -125,8 +125,8 @@ async function panelLinks() {
   ok(asked.querySelector('[data-key="doe-40101d"]').classList.contains('is-on'), 'with its row marked');
   const sources = (await overview('?energy-deadlines-view=sources')).document.getElementById('energy-deadlines');
   ok(panel(sources).open && view(sources) === 'sources', 'and a view');
-  const source = (await overview('#energy-deadlines-source-ef-011')).document.getElementById('energy-deadlines');
-  ok(panel(source).open && view(source) === 'sources', 'and a source, on its view');
+  // A receipt is on the Sources page now: an old link to one here goes on to the same id there.
+  eq(selected.defaultView.plate.movedTo('energy-deadlines-source-ef-011'), 'http://localhost/site/energy/sources/#energy-deadlines-source-ef-011', 'and an old link to a source goes on to the Sources page');
   // Settings after the anchor, as Copy Reading writes them, name no element: the kit lands on the plate as the browser would on a plain #id (a11y A1).
   const deep = await overview('#energy-deadlines&energy-deadlines=doe-40101d');
   const plate = deep.document.getElementById('energy-deadlines');
@@ -181,14 +181,15 @@ async function strip() {
   eq(panel(plate).querySelector('summary').textContent, 'Tribal HEEHR home rebates (IRA 50122): 12/11/2026', 'and the line follows');
   fire(window, plate.querySelectorAll('.strip-mark')[2], 'click');
   ok(reading(plate).startsWith('Grid Resilience') && rows[2].classList.contains('is-on') && !rows[1].classList.contains('is-on'), 'its mark does too');
-  fire(window, rows[3].querySelector('.strip-claim'), 'click');
+  const pressed = fire(window, rows[3].querySelector('.strip-claim'), 'click');
   ok(reading(plate).startsWith('DOE Tribal Energy Financing') && view(plate) === 'sources', 'and its receipt, the keyboard\'s way, on the Sources view');
+  ok(pressed.defaultPrevented && plate.querySelector('.plate-receipt').textContent.includes(`Claim ${rows[3].querySelector('.strip-claim').textContent}.`), 'the receipt opens here, with the way on to the Sources page');
   plate.querySelector('[data-reset]').click();
   ok(reading(plate).startsWith('Dated deadlines in the catalog') && !rows.some((r) => r.classList.contains('is-on')), 'Reset returns');
   eq(plate.querySelector('.strip-name').getAttribute('href'), 'funding/#prog-bpa_tribal_iq', 'the name links to its record');
   ok(rows[1].textContent.includes('12/11/2026') && rows[1].textContent.includes('Checked 11/05/2026') && rows[1].textContent.includes('ef-012, verified'), 'a row keeps its date, its check, and its claim');
-  eq(plate.querySelector('.strip-claim').getAttribute('href'), '#energy-deadlines-source-ef-011', 'the claim links to its source');
-  ok(document.getElementById('energy-deadlines-source-ef-011'), 'which is there');
+  eq(plate.querySelector('.strip-claim').getAttribute('href'), 'sources/#energy-deadlines-source-ef-011', 'the claim links to its source on the Sources page');
+  ok(receiptsOn('site/energy/sources/index.html')('energy-deadlines-source-ef-011'), 'which is there');
   eq(plate.querySelectorAll('.strip-mark.is-soon').length, 1, 'only today is soon');
   eq(plate.querySelector('.strip .needle-label').textContent, 'today, 11/05/2026', 'the needle stands at today');
   eq(plate.querySelector('.plate-title').textContent, '4 dated deadlines in the next 24 months, and the first is today; 8 more programs carry no date in the catalog', 'the title says today');

@@ -24,13 +24,19 @@
     "site/briefing/index.html": 345,
     "site/data-centers/index.html": 210,
     "site/data-centers/resource-use/index.html": 62,
-    "site/explorer/index.html": 156
+    "site/explorer/index.html": 156,
+    "site/ai/sources/index.html": 64,
+    "site/data-centers/sources/index.html": 97,
+    "site/explorer/sources/index.html": 71
   },
   "files_kb": {
     "site/briefing/atni-energy-briefing.pdf": 3072
   },
   "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included; files_kb are other published files in KB of 1024 bytes, read by scripts/build_briefing_pdf.py. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
   "reasons": {
+    "site/data-centers/sources/index.html": "11/15/2026: ruling 39 moved every plate's receipts here, 704 of them, 528 the Climate plate's from one NASA dataset, grouped by document; about 10 percent over its 88.2 KB gzipped, which the main page shed.",
+    "site/ai/sources/index.html": "11/15/2026: ruling 39 moved the twelve plates' 232 receipts and the 42 claims the text cites here; about 10 percent over its 58.4 KB gzipped.",
+    "site/explorer/sources/index.html": "11/15/2026: ruling 39 moved All Sources here, 260 receipts with their quotes and arithmetic; about 10 percent over its 64.2 KB gzipped.",
     "site/briefing/atni-energy-briefing.pdf": "11/05/2026: about 3 MB is the line set for the Briefing's PDF; its default packet weighed 0.7 MB, and every plate and checklist at its defaults weighed 3.1 MB, which is why the default is the lead set.",
     "site/assets/js/plate.js": "11/06/2026: N10 added settings in the address's fragment and landing on them, the find-in-page reveal, each plot's description and Read as a table, the starting point, needle figures, and table bars, from 63.4 KB to 75.2 KB; about 10 percent over, since the kit is one file by design.",
     "site/assets/js/util.js": "11/06/2026: settings in the address's fragment (ruling 29), from 4.9 KB to 5.9 KB; about 10 percent over.",

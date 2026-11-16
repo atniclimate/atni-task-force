@@ -36,7 +36,7 @@ BLOCKS = {"address", "article", "aside", "blockquote", "button", "caption", "dd"
 MARKED_CLASSES = {"cr", "receipt", "x-c"}
 TITLE_CLASSES = {"plate-source-title", "entry-title"}
 LABELS = {"th", "caption", "figcaption", "legend"}  # a row, column, or figure label: a bare year here names a row, not a finding
-SKIP_BLOCK = re.compile(r"\s*(/?)(?:plate|bench|claims-cited)(?::\S+)?\s*$")
+SKIP_BLOCK = re.compile(r"\s*(/?)(?:plate|bench|claims-cited|sources)(?::\S+)?\s*$")
 MODEL_BLOCK = re.compile(r"\s*(/?)explorer:\S+\s*$")
 AXIS_CLASS = re.compile(r"axis|tick")
 from validate_public import CLAIM_ID  # noqa: E402  one claim-id pattern for every script

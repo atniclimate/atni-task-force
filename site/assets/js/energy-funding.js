@@ -40,13 +40,14 @@ function deadlineStrip(figure) {
   const data = JSON.parse(document.getElementById(`plate-data-${id}`).textContent);
   const { from, to, checked } = data.plot.strip;
   const base = id === 'energy-deadlines-catalog' ? '#prog-' : 'funding/#prog-';
+  const receipts = figure.querySelector('.plate-sources-link a')?.getAttribute('href').split('#')[0] ?? ''; // the page's Sources page
   const target = (r) => (r.cols.link ? href(r.cols.link) : `${base}${esc(r.cols.program)}`);
   const word = (claim) => (data.receipts[claim].status === 'verified' ? 'verified' : 'partly verified');
   const dated = data.rows.filter((r) => r.group === 'dated');
   const lane = data.rows.filter((r) => r.group === 'undated');
   const strip = Object.assign(document.createElement('div'), { className: 'strip' });
   Object.assign(strip.dataset, { from, to, checked });
-  strip.innerHTML = `<ol class="strip-rows">${dated.map((r) => `<li class="strip-row" data-date="${esc(r.cols.iso)}" data-key="${esc(r.key)}"><a class="strip-name" href="${target(r)}">${esc(r.label)}</a><span class="strip-what">${esc(r.display)}: ${esc(r.cols.what.replace(/\.?$/, '.'))} Checked ${esc(r.cols.checked)}; <a class="strip-claim" href="#${esc(id)}-source-${esc(r.claim)}">${esc(r.claim)}</a>, ${word(r.claim)}.</span></li>`).join('')}</ol>
+  strip.innerHTML = `<ol class="strip-rows">${dated.map((r) => `<li class="strip-row" data-date="${esc(r.cols.iso)}" data-key="${esc(r.key)}"><a class="strip-name" href="${target(r)}">${esc(r.label)}</a><span class="strip-what">${esc(r.display)}: ${esc(r.cols.what.replace(/\.?$/, '.'))} Checked ${esc(r.cols.checked)}; <a class="strip-claim" href="${esc(receipts)}#${esc(id)}-source-${esc(r.claim)}">${esc(r.claim)}</a>, ${word(r.claim)}.</span></li>`).join('')}</ol>
 <div class="strip-lane"><h4 class="strip-lane-title">No date in the catalog</h4><ul class="strip-undated">${lane.map((r) => `<li><a href="${target(r)}">${esc(r.label)}</a>${r.cols.status === 'forecasted' ? ' (forecasted)' : ''}</li>`).join('')}</ul></div>`;
   const plot = figure.querySelector('.plate-plot');
   plot.hidden = true;
@@ -83,14 +84,18 @@ function deadlineStrip(figure) {
   const next = first === 'today' ? ', and the first is today' : first === '1' ? ', and the first is tomorrow' : first ? `, the next in ${first} days` : '';
   figure.querySelector('.plate-title').textContent = `${rows.length + further ? plural(rows.length + further, 'dated deadline') : 'No dated deadline'} in the next 24 months${next}; ${plural(lane.length, 'more program')} ${lane.length === 1 ? 'carries' : 'carry'} no date in the catalog${passed ? `, and ${passed} passed` : ''}`;
 
-  // A row or its mark selects that deadline, on its Reading. Its receipt does too, on the Sources view, and then the link lands on that source. A program's name just goes there.
+  // A row or its mark selects that deadline, on its Reading. Its receipt does too, and opens here on the Sources view, as a chip's does; without scripts the
+  // link goes to the Sources page. A program's name just goes there.
   const marks = [...strip.querySelectorAll('.strip-mark')];
   strip.addEventListener('click', (event) => {
     const mark = marks.indexOf(event.target);
     const row = rows[mark] || event.target.closest('.strip-row');
     if (!row || event.target.closest('.strip-name')) return;
-    figure.querySelector(`.plate-plot [data-row="${row.dataset.key}"]`).click();
-    if (event.target.closest('.strip-claim')) figure.querySelector('.plate-views input[value="sources"]').click();
+    figure.querySelector(`.plate-plot [data-row="${row.dataset.key}"]`).click(); // the selection opens its receipt
+    if (event.target.closest('.strip-claim')) {
+      event.preventDefault();
+      figure.querySelector('.plate-views input[value="sources"]').click();
+    }
   });
   window.plate.register(id, {
     render(ctx) {

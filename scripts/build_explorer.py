@@ -23,6 +23,7 @@ import build_plates as bp  # noqa: E402
 import validate_public as vp  # noqa: E402
 
 PAGE = vp.SITE / "explorer" / "index.html"
+SOURCES = vp.SITE / "explorer" / "sources" / "index.html"  # its receipts, by source document, between its explorer:sources markers
 HOME = vp.SITE / "index.html"
 MODEL = vp.SITE / "data" / "resource-model.json"
 LIMITS = bp.EVIDENCE / "claim-limits.json"
@@ -678,7 +679,7 @@ def detail_html(name, st, data, extra="", kind="row", table="", also="", modeled
                f'<thead><tr><th scope="col">Input</th><th scope="col">Low end to high end</th><th scope="col">Sources</th></tr></thead><tbody data-d="moves">{moves_html(st["moves"][name])}</tbody></table></details>') if kind == "row" else ""
     # The Reading is plain text; the kit's polite output, in the page from the start, speaks it after a pause (explorer.js), never on a hover.
     return (f'{views}<div class="plate-view" data-view="reading">{body}{lead}{drivers}{more}{also}{actions}{tally}</div>'
-            f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><ol class="plate-sources" data-d="sources"></ol><p class="caption">Every source on this page is listed under <a href="#all-sources">All Sources</a>.</p></div>'
+            f'<div class="plate-view" data-view="sources"><p class="label">Sources</p><p class="plate-chips" data-d="chips" data-js hidden></p><div class="plate-receipt" data-d="receipt" role="group" aria-label="Source" tabindex="-1" hidden></div><p class="caption plate-source-line" data-d="sources" data-js hidden></p><p class="plate-sources-link"><a href="sources/" data-url="{vp.OWN_ORIGIN}explorer/sources/">Every source on this page, with its date, boundary, and quote</a></p></div>'
             f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_extra}<div class="table-scroll" tabindex="0" role="group" aria-label="Table, scrolls sideways">{table}</div></div>'
             '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>')
 
@@ -695,7 +696,7 @@ def moves_html(rows):
         return f'<tr><td colspan="3">{escape(MOVES["none"])}</td></tr>'
     out = []
     for r in rows:
-        ids = ", ".join(f'<a class="x-c" href="#src-{c}">{c}</a>' for c in r["claims"]) or "no source, an assumption"
+        ids = ", ".join(f'<a class="x-c" href="sources/#src-{c}">{c}</a>' for c in r["claims"]) or "no source, an assumption"
         out.append(f'<tr style="--l:{r["l"]};--c:{r["c"]};--h:{r["h"]};--z:{r["z"]}"><th scope="row">{escape(r["name"])}</th>'
                    f'<td>{escape(r["ends"])}<span class="plate-driver-bar" aria-hidden="true"><i></i></span></td><td><span class="caption">{ids}</span></td></tr>')
     return "".join(out)
@@ -719,7 +720,7 @@ def chips(ids, claims):
     for claim_id in dict.fromkeys(ids):
         c = claims[claim_id]
         hollow = " is-hollow" if c["status"] == "partly" else ""
-        out.append(f'<a class="receipt{hollow}" href="#src-{claim_id}"><span class="receipt-mark"></span><span>{claim_id}</span></a>')
+        out.append(f'<a class="receipt{hollow}" href="sources/#src-{claim_id}"><span class="receipt-mark"></span><span>{claim_id}</span></a>')
     return f'<p class="plate-chips">{"".join(out)}</p>' if out else ""
 
 
@@ -857,7 +858,7 @@ def waffle_detail(claims, limits):
         limit_line = '<p class="caption">Limit: ' + escape(limit) + "</p>" if limit else ""
         status = "1 partly verified" if claim["status"] == "partly" else "1 verified"
         out.append(f'<div data-group="waffle:{key}">{readout_html(value, "percent", w["label"], marks=False)}<p class="reading">{escape(w["def"])}</p>'
-                   f'{limit_line}<p class="x-this-figure"><a href="#about-{key}" data-about>This figure: {status}</a>; <a class="x-c" href="#src-{w["claim"]}">{w["claim"]}</a></p>'
+                   f'{limit_line}<p class="x-this-figure"><a href="#about-{key}" data-about>This figure: {status}</a>; <a class="x-c" href="sources/#src-{w["claim"]}">{w["claim"]}</a></p>'
                    f'<details class="plate-more" id="about-{key}" open><summary>About this figure</summary><p class="caption">{escape(claim["source"]["publisher"])}. {escape(claim["boundary"] or "")}</p></details></div>')
     return "".join(out)
 
@@ -1118,19 +1119,17 @@ def arch_words(pub, data, st):
     return "".join(out)
 
 
-def sources_html(ids, claims, limits):
-    out = []
-    labels = bp.EVIDENCE_LABEL
+def receipts_of(ids, claims, limits):
+    """Each claim the page names, as its receipt on explorer/sources/; short, title, status, limit, and url also ride in the page's data for the chips and the card."""
+    out = {}
     for claim_id in sorted(ids):
-        c = claims[claim_id]
-        s = c["source"]
-        date = escape(bp.us_date(s.get("published")))  # a date with words after it stays as written
-        status = f'Partly verified. Limit: {escape(limit_of(claim_id, claims, limits))}' if c["status"] == "partly" else "Verified against the source."
-        short = re.split(r"[,(;]", s.get("publisher") or "source")[0].strip()[:26]
-        out.append(f'<li id="src-{claim_id}" data-short="{attr(short)}"><a class="plate-source-title" href="{attr(s["url"])}">{bp.verbatim(s.get("title") or s.get("publisher") or claim_id)}</a>'
-                   f'<span class="caption">{claim_id}. {escape(s.get("publisher") or "")}, {date}. {labels.get(s.get("kind"), "Source")}.</span>'
-                   f'<q class="plate-quote">{bp.verbatim(c["quote"])}</q><span class="caption">{escape(c.get("boundary") or "")} {status}</span></li>')
-    return "".join(out)
+        c, s = claims[claim_id], claims[claim_id]["source"]
+        out[claim_id] = bp.compact({
+            "short": re.split(r"[,(;]", s.get("publisher") or "source")[0].strip()[:26], "title": s.get("title") or s.get("publisher") or claim_id, "publisher": s.get("publisher") or "",
+            "url": s["url"], "published": bp.us_date(s.get("published")), "kind": s.get("kind"), "year": c.get("year"), "boundary": c.get("boundary") or "", "quote": c["quote"],  # a date with words after it stays as written
+            "derived": c.get("derived"), "status": c["status"], "limit": limit_of(claim_id, claims, limits) if c["status"] == "partly" else c.get("limit"),
+        })
+    return out
 
 
 def linkify(html):
@@ -1144,7 +1143,7 @@ def linkify(html):
             elif re.match(r"</a\s*>", part):
                 inside -= 1
         elif not inside and CLAIM.search(part):
-            parts[i] = CLAIM.sub(lambda m: f'<a class="x-c" href="#src-{m[0]}">{m[0]}</a>', part)
+            parts[i] = CLAIM.sub(lambda m: f'<a class="x-c" href="sources/#src-{m[0]}">{m[0]}</a>', part)
     return "".join(parts)
 
 
@@ -1316,20 +1315,25 @@ def build():
     filled = POUR.sub(lambda m: f'<span data-m="{m["spec"]}">{st["pours"][m["spec"]]}</span>', filled)
     filled = re.sub(r"(<span data-setting-line>)[^<]*(</span>)", lambda m: m[1] + escape(st["line"]) + m[2], filled)
     check_typed_digits(filled)
-    # Linkify the running text, never the data block or the receipts, then write the receipts of what the page names.
+    # Linkify the running text, never the data block, then write the receipts of what the page names on its Sources page (owner ruling 39).
     head, sep, tail = filled.partition('<script type="application/json" id="explorer-data">')
     json_block, end, rest = tail.partition("</script>")
-    body = linkify(re.sub(r"<a class=\"x-c\" href=\"#src-[^\"]+\">([^<]+)</a>", r"\1", head))
-    rest = linkify(re.sub(r"<a class=\"x-c\" href=\"#src-[^\"]+\">([^<]+)</a>", r"\1", rest))
-    ids = set(re.findall(r'href="#src-([a-z]+-\d{3})"', body + rest))
+    body = linkify(re.sub(r"<a class=\"x-c\" href=\"(?:sources/)?#src-[^\"]+\">([^<]+)</a>", r"\1", head))
+    rest = linkify(re.sub(r"<a class=\"x-c\" href=\"(?:sources/)?#src-[^\"]+\">([^<]+)</a>", r"\1", rest))
+    ids = set(re.findall(r'href="sources/#src-([a-z]+-\d{3})"', body + rest))
     # Row notes in the data block name their claims through the chips above; ids in the block's words must ship too.
     ids |= set(CLAIM.findall(json_block))
     unknown = sorted(i for i in ids if i not in claims)
     if unknown:
         raise BuildError(f"the page names claims that do not ship: {unknown}")
+    receipts = receipts_of(ids, claims, limits)
+    # The chips' names and the in-place card come from the data block, so the page holds no copy of the list.
+    json_block = bp.inline_json({**json.loads(json_block), "receipts": {c: bp.compact({k: r.get(k) for k in ("short", "title", "status", "limit", "url")}) for c, r in receipts.items()}})
     final = body + sep + json_block + end + rest
-    final = MARKER.sub(lambda m: f"{m[1]}{sources_html(ids, claims, limits)}{m[4]}" if m["name"] == "sources" else m[0], final)
+    listed = f'<p class="caption">{escape(bp.tally_words(receipts))}</p>{bp.documents_html("explorer", receipts, claims, set())}'
+    sources = bp.region(SOURCES.read_text(encoding="utf-8"), "explorer:sources", listed, "explorer/sources/index.html")
     PAGE.write_bytes(final.encode("utf-8"))
+    SOURCES.write_bytes(sources.encode("utf-8"))
     home_bytes = pour_home(pub, data, st, claims, limits)
     return {"page_bytes": len(final.encode("utf-8")), "inline_data_bytes": len(json_block), "claims_on_page": len(ids), "partly": sum(claims[i]["status"] == "partly" for i in ids), "home_band_bytes": home_bytes}
 
@@ -1454,7 +1458,7 @@ def home_words(claims, limits, st):
             "fig:value": f'{load["value"]:,g}', "fig:low": f'{load["low"]:,g}', "fig:high": f'{load["high"]:,g}'}
 
 
-HOME_FIGURE_CLAIMS = {"ep-002": "data/energy-potential.json", "ep-001": "data/energy-potential.json", "ef-001": "data/energy-funding.json", "ef-002": "data/energy-funding.json", "lc-051": "data/policy-watch.json", "lc-052": "data/policy-watch.json", "lc-001": "data/library.json", "lc-002": "data/library.json", "dem-073": "data-centers/?dc-pnw-load=2030&amp;dc-pnw-load-view=sources#dc-pnw-load"}
+HOME_FIGURE_CLAIMS = {"ep-002": "data/energy-potential.json", "ep-001": "data/energy-potential.json", "ef-001": "data/energy-funding.json", "ef-002": "data/energy-funding.json", "lc-051": "data/policy-watch.json", "lc-052": "data/policy-watch.json", "lc-001": "data/library.json", "lc-002": "data/library.json", "dem-073": "data-centers/sources/#dc-pnw-load-source-dem-073"}
 
 
 def figure_limits_html(claims, limits):
@@ -1481,7 +1485,7 @@ def home_figures():
 def receipts_html(pub, data, st, claims, limits, words):
     """Every figure on the instrument at every boundary, with its claims, their status, and their limits; then the project question's. It opens on interaction, and shows without scripts and in print."""
     catalog = {r["key"]: r for r in pub["catalog"]}
-    link = lambda claim_id: f'<a href="explorer/#src-{claim_id}">{claim_id}</a>'
+    link = lambda claim_id: f'<a href="explorer/sources/#src-{claim_id}">{claim_id}</a>'
     head = "".join(f'<th scope="col">{escape(words_)}</th>' for words_ in ("One hour of", *(f"{HOME_STOPS[stop][0]}, Wh" for stop in HOME_STOPS), "Claims, status, and limits"))
     body = []
     for key, label, _ in HOME_ROWS:
@@ -1491,12 +1495,12 @@ def receipts_html(pub, data, st, claims, limits, words):
     built = pub["built"]
     project = plate_rows("data-centers/index.html", "dc-project")
     region = claims["dem-058"]
-    project_claim = claim_words(["dem-058"], claims, limits, lambda claim_id: f'<a href="data-centers/?dc-project-view=sources#dc-project">{claim_id}</a>')
+    project_claim = claim_words(["dem-058"], claims, limits, lambda claim_id: f'<a href="data-centers/sources/#dc-project-source-{claim_id}">{claim_id}</a>')
     return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values and receipts"><table class="data-table"><caption>Every figure on this ladder, at each boundary. Modeled, {built[5:7]}/{built[:4]}.</caption>'
             f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
             f'<p class="caption">Modeled estimates, not measurements, at the Explorer\'s default settings: an open-book model, checked against published figures. A range is a spread, not a confidence interval.</p>'
             f'<p class="caption">The project question, at example settings a reader can change: {escape(words["q:mw"])} MW at a load factor of {escape(words["q:lf"])} is {escape(project["amw"]["text"])} average megawatts, about {escape(words["q:twh"])} TWh a year, {escape(words["q:share"])} percent of the region\'s {region["value"]:,g} aMW. {project_claim} Published by {escape(region["source"]["publisher"])}.</p>'
-            f'<p class="caption">Sources with their quotes: <a href="ai/?ai-same-hour-view=sources#overview">chat and video on the AI page</a>, and <a href="explorer/#all-sources">every row in the Explorer</a>. The Resource Use Explorer runs the energy, carbon, water, and price of AI, video, search, and cloud software at settings you choose. Nothing you enter leaves your browser.</p>')
+            f'<p class="caption">Sources with their quotes: <a href="ai/sources/#ai-same-hour">chat and video on the AI page</a>, and <a href="explorer/sources/">every row in the Explorer</a>. The Resource Use Explorer runs the energy, carbon, water, and price of AI, video, search, and cloud software at settings you choose. Nothing you enter leaves your browser.</p>')
 
 
 def pour_home(pub, data, st, claims, limits):

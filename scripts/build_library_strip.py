@@ -30,9 +30,11 @@ def words(name, script):
 
 
 def mark(claim_id, inner, cls="cr"):
-    """A claim reference as scripts/pour_claim_refs.py leaves it, so a rebuild here and a pour there agree. Every count here has a limit, so each is partly verified."""
+    """A claim reference as scripts/pour_claim_refs.py leaves it, so a rebuild here and a pour there agree: linking the Library's Sources page, which holds its list.
+    Every count here has a limit, so each is partly verified."""
     words = " ".join(re.sub(r"<[^>]*>", "", inner).split())
-    return f'<a class="{cls}" data-claim="{claim_id}" data-status="partly verified" href="#src-{claim_id}" aria-label="{escape(words)}, claim {claim_id}, partly verified">{inner}</a>'
+    away = "sources/" if (ROOT / "site" / "library" / "sources" / "index.html").is_file() else ""
+    return f'<a class="{cls}" data-claim="{claim_id}" data-status="partly verified" href="{away}#src-{claim_id}" aria-label="{escape(words)}, claim {claim_id}, partly verified">{inner}</a>'
 
 
 def counts(data, script):
