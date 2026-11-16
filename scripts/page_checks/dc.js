@@ -1,4 +1,4 @@
-// The Data Centers page with its real module and data: tabs, deep links, selection, and every control's effect on the Reading.
+// The Data Centers page with its real module and data: the agenda, tabs, deep links, selection, every control's effect on the Reading, and the atlas.
 const { JSDOM, ok, eq, wait, settle, settings, read, plateFile, receiptsOn, open, fire, key, holds, leads, wordsOnly } = require('./lib');
 
 const PAGE = 'http://localhost/site/data-centers/index.html';
@@ -49,36 +49,55 @@ function moves(window, p, act, expected, message) {
 
 async function tabs() {
   const { window, document, errors } = await load();
-  const links = [...document.querySelectorAll('[role="tab"]')];
-  const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-  eq(links.length, 8, 'eight tabs');
-  eq(panels.length, 8, 'eight panels');
-  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,land,climate,jobs,policy-landscape,questions', 'panel ids');
-  ok(!panels[0].hidden && panels.slice(1).every((n) => n.hidden), 'Overview shows first');
-  for (let i = 1; i < 8; i++) {
+  const strip = document.querySelector('.section-strip');
+  const links = [...strip.querySelectorAll('[role="tab"]')];
+  const panels = [...document.querySelectorAll('main > section.panel[role="tabpanel"]')];
+  eq(links.length, 7, 'seven tabs');
+  eq(panels.length, 7, 'seven panels');
+  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,where,jobs,policy-landscape,questions', 'panel ids');
+  eq(links.map((a) => a.querySelector('.tab-name').textContent).join(), 'Why now,Growth,Tradeoffs,Where,Jobs,Policy,Questions', 'each tab is its name');
+  ok(links.every((a) => a.querySelector('.tab-q').textContent.endsWith('?')), 'over the question it answers');
+  ok(!panels[0].hidden && panels.slice(1).every((n) => n.hidden), 'Why now shows first');
+  for (let i = 1; i < 7; i++) {
     fire(window, links[i], 'click');
     ok(!panels[i].hidden, `tab ${i} shows`);
     eq(window.location.hash, `#${panels[i].id}`, 'hash written');
   }
-  key(window, links[7], 'ArrowRight');
+  key(window, links[6], 'ArrowRight');
   eq(links[0].getAttribute('aria-selected'), 'true', 'arrow wraps');
   key(window, links[0], 'End');
-  eq(links[7].getAttribute('aria-selected'), 'true', 'End');
-  key(window, links[7], 'Home');
+  eq(links[6].getAttribute('aria-selected'), 'true', 'End');
+  key(window, links[6], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
+  ok(strip.querySelector('a.strip-out[data-not-tab][href="sources/"]') && strip.querySelector('button.paper[data-sheet-open][data-js]'), 'the strip ends in Sources and the meeting sheet');
   eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
-  // jsdom loads no CSS, so the rule is held as text: four plates hide their key and keep Read as a table, in the kit's room for it (a11y A3).
-  const css = read('site/assets/css/dc.css');
-  ok(css.includes(':is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }') && !/\.plate-under \{ display: none; \}/.test(css) && !/--below: 0px/.test(css), 'four plates hide their key');
   for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-bar .plate-views [data-view="table"]`), `${id}: the Table is one press away, over the plot`);
+  ok(!document.querySelector('.dc-jump, .dc-panel-head, .page-band, [data-library-feed]'), 'no jump lists, no band, no library feed (data-centers-01, -22, -25)');
+  // The agenda (DIRECTION-R2 3.2): three questions, each answered in one sentence read off its face; the third face lists the question sets.
+  const agenda = document.querySelector('section.agenda');
+  const qs = [...agenda.querySelectorAll('.agenda-q > a[role="tab"]')];
+  eq(qs.map((a) => a.getAttribute('aria-controls')).join(), 'face-load,face-project,face-asks', 'three faces');
+  eq(agenda.querySelector('[role="tablist"]').getAttribute('aria-orientation'), 'vertical', 'a vertical tablist');
+  eq(agenda.querySelector('[data-answer="dc-pnw-load"]').textContent, "The Council's input for data centers and chip fabs is 2,475.1 aMW in 2030, about 11 percent of the region's 22,000 aMW today.", 'the load answer, its year ungrouped');
+  eq(agenda.querySelector('[data-answer="dc-project"]').textContent, "A 125 MW project at a 0.8 load factor averages 100 aMW, about 0.45 percent of the region's load today.", 'the proposal answer');
+  const adds = [...document.querySelectorAll('#face-asks [data-sheet-add]')];
+  eq(adds.length, 8, 'eight sets on the third face');
+  for (const b of adds) {
+    const set = document.getElementById(b.dataset.sheetAdd);
+    ok(set?.matches('form.asks[data-sheet] fieldset.ask-set'), `${b.dataset.sheetAdd} is a set of the page's one form`);
+    eq(b.textContent, `Add this set to the sheet (${set.querySelectorAll('input[name="ask"]').length})`, `${b.dataset.sheetAdd}: its button counts its questions`);
+  }
+  key(window, qs[0], 'ArrowDown');
+  ok(!document.getElementById('face-project').hidden && document.getElementById('face-load').hidden, 'Down chooses the next face');
   eq(errors.join(), '', 'no script errors');
 }
 
 async function deepLinks() {
   for (const [hash, tab, opens] of [
-    ['purpose', 'overview', true], ['why-now', 'overview', true], ['library', 'overview', false], ['environmental-impacts', 'tradeoffs', false],
+    ['purpose', 'overview', true], ['why-now', 'overview', false], ['environmental-impacts', 'tradeoffs', false],
     ['policy-landscape', 'policy-landscape', false], ['alternatives', 'policy-landscape', true], ['questions', 'questions', false], ['policy-watch', 'policy-landscape', false],
-    ['dc-lbnl-us', 'growth', false], ['dc-forecast-check', 'growth', false], ['forecast-revisions', 'growth', false], ['dc-water-intensity', 'tradeoffs', false], ['q-water', 'questions', true], ['policy-tribal', 'policy-landscape', true], ['dc-project', 'questions', false], ['jobs-how-long', 'jobs', true],
+    ['dc-lbnl-us', 'growth', false], ['dc-forecast-check', 'growth', false], ['forecast-revisions', 'growth', false], ['dc-water-intensity', 'tradeoffs', false], ['q-water', 'questions', false], ['policy-tribal', 'policy-landscape', true],
+    ['dc-project', 'face-project', false], ['jobs-how-long', 'jobs', true], ['dc-atlas', 'where', false], ['land', 'where', false], ['climate', 'where', false], ['rec-or-dc-01', 'where', true],
   ]) {
     const { document, errors } = await load(`#${hash}`);
     const target = document.getElementById(hash);
@@ -88,24 +107,24 @@ async function deepLinks() {
     eq(errors.join(), '', `#${hash} no errors`);
   }
   const { window, document } = await load();
-  window.location.hash = '#why-now';
+  window.location.hash = '#purpose';
   await wait(20);
-  ok(document.getElementById('why-now').closest('details').open, 'a later hash opens details too');
+  ok(document.getElementById('purpose').closest('details').open, 'a later hash opens details too');
   const checklists = await load('#checklists');
   ok(!checklists.document.getElementById('questions').hidden, '#checklists opens Questions');
-  ok(checklists.document.getElementById('q-consent').open, 'and the Consent checklist');
-  ok(!checklists.document.getElementById('q-land').open, 'and only that one');
+  ok(checklists.document.getElementById('q-consent').closest('form.asks[data-sheet]#checklists'), 'where every set is one fieldset of the page form');
   eq(checklists.errors.join(), '', '#checklists no errors');
-  // A claim id in the band links its receipt on the Sources page, and an old link to the receipt here goes on to the same id there.
-  for (const a of document.querySelectorAll('.page-band-figures .figure-label a')) {
-    eq(a.getAttribute('href'), `sources/#dc-pnw-load-source-${a.textContent}`, `${a.textContent} links its receipt on the Sources page`);
-    ok(receipt(`dc-pnw-load-source-${a.textContent}`), `${a.textContent}: which is there`);
-    eq(window.plate.movedTo(`dc-pnw-load-source-${a.textContent}`), `http://localhost/site/data-centers/sources/#dc-pnw-load-source-${a.textContent}`, `${a.textContent}: an old link goes on there`);
+  // The brief carries no figure (data-centers-22); its Sources link leads the page's receipts, and an old link to a receipt here goes on to the same id there.
+  eq([...document.querySelectorAll('.brief .figure-num')].map((n) => n.textContent).join(), '11/04/2026', 'the brief holds only the date its sources were checked');
+  eq(document.querySelector('.brief a[data-sources]').getAttribute('href'), 'sources/', 'the brief links the Sources page');
+  ok(document.querySelector('.brief-meta a[href$="atni-res-2026-034-tiered-sovereign-data-framework.pdf"]') && document.querySelector('.brief-meta a[href="resource-use/"]'), 'the resolution and the companion page sit in its meta line (data-centers-32)');
+  for (const id of ['dem-058', 'dem-073']) {
+    ok(receipt(`dc-pnw-load-source-${id}`), `${id}: its receipt is on the Sources page`);
+    eq(window.plate.movedTo(`dc-pnw-load-source-${id}`), `http://localhost/site/data-centers/sources/#dc-pnw-load-source-${id}`, `${id}: an old link goes on there`);
   }
-  eq(document.querySelector('.page-band a[data-sources]').getAttribute('href'), 'sources/', 'a line under the title links the Sources page');
   // Settings after the anchor (#id&name=value) name no element, so the browser lands nowhere: the kit opens the anchor's tab and lands on it as the browser
   // would on a plain #id, in view and with focus there (a11y A1), and a disclosure it names still opens (A2). The old ?query form lands the same way.
-  for (const [hash, tab, opens] of [['land', 'land', false], ['climate', 'climate', false], ['dc-pnw-load', 'overview', false], ['purpose', 'overview', true], ['?dc-pnw-load=2046#dc-pnw-load', 'overview', false]]) {
+  for (const [hash, tab, opens] of [['land', 'where', false], ['climate', 'where', false], ['dc-pnw-load', 'face-load', false], ['purpose', 'overview', true], ['?dc-pnw-load=2046#dc-pnw-load', 'face-load', false]]) {
     const deep = await load(hash.startsWith('?') ? hash : `#${hash}&dc-pnw-load=2046`);
     const id = hash.split('#').pop();
     const target = deep.document.getElementById(id);
@@ -135,10 +154,14 @@ async function council() {
   ok(p.root.querySelector('.plate-also').textContent.includes('2,197.8 aMW'), 'and in the Table view');
   ok(p.chips().some((c) => c.dataset.claim === 'dem-076') && receipt('dc-pnw-load-source-dem-076'), 'with its receipt');
   eq(`${p.value.textContent} ${p.unit.textContent}`, '2,475.1 (1,512.8 to 4,988.7) aMW', 'readout');
-  ok(p.root.querySelector('.plate-claim .dc-jump a[href="#rate-change"]') && !document.querySelector('.dc-panel-head .dc-jump'), 'the jump lists read in the claim zones');
-  eq(p.root.querySelector('.plate-claim .dc-jump').textContent, 'Further down: Rates, Purpose, Why Now, Library', 'each is one sentence');
-  eq(html.split('This plate does not decide a proposal.').length, 2, 'the plate says it decides nothing, once');
+  ok(document.querySelector('.brief-lead').textContent.includes('ATNI takes no position for or against data centers.'), 'the brief says ATNI decides nothing');
+  ok(p.root.closest('#face-load'), 'the plate is the agenda\'s first face');
   ok(p.plot.querySelector('.m-needle'), 'a needle');
+  // The whole region today is a rule across the same axis, so the input reads against it (data-centers-19).
+  const ref = p.plot.querySelector('.dc-ref');
+  eq(ref.querySelector('text').textContent, "The region's load today: 22,000 aMW", 'the region is drawn and named');
+  ok(+ref.querySelector('line').getAttribute('y1') < +row(p.root, '2030').querySelector('.m-dot').getAttribute('y'), 'above the input, on the same axis');
+  eq(plateFile('dc-pnw-load').plot.domain.join(), '0,25000', 'an axis that holds the region');
   eq([...p.plot.querySelectorAll('.m-tick')].map((n) => n.textContent).filter((t) => /^20\d\d$/.test(t)).sort().join(), '2030,2046', 'the axis starts at 2030');
   const end = [...p.plot.querySelectorAll('.m-tick')].find((n) => n.textContent === '2046');
   eq(end.getAttribute('text-anchor'), 'end', 'the axis end label ends at the edge, so it is not clipped');
@@ -153,6 +176,7 @@ async function council() {
   key(window, p.plot, 'ArrowRight');
   eq(row(p.root, '2046').getAttribute('aria-selected'), 'true', 'arrow moves the year');
   ok(leads(p.reading.textContent, ['2046', '2,958.4']), 'Reading follows');
+  eq(document.querySelector('[data-answer="dc-pnw-load"]').textContent, "The Council's input for data centers and chip fabs is 2,958.4 aMW in 2046, about 13 percent of the region's 22,000 aMW today.", 'and the agenda answer with it');
   ok(p.facts.textContent.includes('29,600 to 39,800 aMW') && p.facts.textContent.includes('Limit:'), 'the region in 2046 with its limit');
   ok(p.chips().some((c) => c.dataset.claim === 'dem-092'), 'its receipt');
   ok(!p.chips().some((c) => c.dataset.claim === 'dem-070'), 'only what the panel shows');
@@ -163,33 +187,7 @@ async function council() {
   eq(row(p.root, '2046').getAttribute('aria-selected'), 'true', 'a click selects');
   fire(window, row(p.root, '2030').querySelector('.m-hit'), 'click');
   ok(p.root.querySelector('[data-copy]') && p.root.querySelector('[data-reset]'), 'copy and reset');
-  ok(document.querySelector('#overview .disclosure-grid .plate-foot a').getAttribute('href') === '#questions', 'foot link, under the plate with the prose the claim zone let go');
-  // Squares: the region and each year in squares of one size. Keys, the Reading, and the receipts do not change with the view.
-  const reading = p.reading.textContent;
-  setRadio(window, p.radio('pnw_view', 'squares'));
-  eq(p.reading.textContent, reading, 'the view leaves the Reading alone');
-  eq(p.plot.querySelectorAll('.plate-svg').length, 1, 'one svg in Squares too');
-  eq(p.plot.querySelector('.dc-ctx').getAttribute('d').match(/M/g).length, 220, '220 squares for the region');
-  eq(p.plot.querySelectorAll('.m-band, .m-needle').length, 0, 'no band and no needle in Squares');
-  const squares = (k, kind) => row(p.root, k).querySelector(kind).getAttribute('d').match(/M/g).length;
-  const mid = '.m-count:not(.dc-faint)';
-  const up = '.m-count.dc-faint';
-  eq([squares('2030', mid), squares('2046', mid)].join(), '25,30', 'each year at 100 aMW a square');
-  eq([squares('2030', up), squares('2046', up)].join(), '25,40', 'the squares up to the high input');
-  const words = [...p.plot.querySelectorAll('.m-label')].map((n) => n.textContent);
-  ok(words.includes('The region today: 22,000 aMW. One square is 100 aMW.'), 'the unit is named');
-  ok(words.includes('2030: 2,475.1 aMW, fainter to 4,988.7 at high input') && words.includes('2046: 2,958.4 aMW, fainter to 6,923.5 at high input'), `each year is named: ${words}`);
-  ok(row(p.root, '2030').classList.contains('is-on'), 'the selected year is on');
-  key(window, p.plot, 'ArrowRight');
-  ok(row(p.root, '2046').classList.contains('is-on') && leads(p.reading.textContent, ['2046', '2,958.4']), 'arrows move the year in Squares');
-  fire(window, row(p.root, '2030').querySelector('.m-hit'), 'click');
-  ok(leads(p.reading.textContent, ['2030', '2,475.1']), 'a click selects a year in Squares');
-  setRadio(window, p.radio('pnw_view', 'lines'));
-  eq(p.plot.querySelectorAll('.dc-ctx').length, 0, 'and Lines comes back');
-  eq(p.plot.querySelectorAll('.m-band').length, 1, 'with its band');
-  const deep = await load('?pnw_view=squares');
-  eq(deep.document.querySelector('#dc-pnw-load .dc-ctx').getAttribute('d').match(/M/g).length, 220, 'a link can open Squares');
-  eq(deep.errors.join(), '', 'no script errors in Squares');
+  eq(p.root.querySelectorAll('.plate-controls').length, 0, 'Lines only: no setting, so its title stays the finding');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -198,23 +196,26 @@ async function growth() {
   const eia = parts(document, 'dc-eia-servers');
   eq(eia.plot.querySelectorAll('.m-line.is-on').length >= 1, true, 'a lead line');
   ok(eia.plot.querySelectorAll('.m-band').length === 1, 'a band');
-  ok(leads(eia.reading.textContent, ['Counterfactual Baseline', '178.1 billion kWh', '2030', '176.8', '190.7']), 'default Reading');
+  ok(leads(eia.reading.textContent, ['Counterfactual Baseline', '178.1 TWh', '2030', '176.8', '190.7']), 'default Reading');
   const eiaLabels = () => [...eia.plot.querySelectorAll('.m-label.is-lead')].map((n) => n.textContent);
   ok(eiaLabels().includes('2030: 178.1') && eiaLabels().some((t) => t.startsWith('2050: ')), `the selected case reads at 2030 and 2050: ${eiaLabels()}`);
   const eiaY = (name) => +[...eia.plot.querySelectorAll('.m-label')].find((n) => n.textContent.startsWith(name)).getAttribute('y');
   ok(eiaY('2050: ') <= eiaY('High Economic Growth') - 17, 'the 2050 figure sits clear above the names at the ends of the lines');
   ok(eia.plot.querySelector('[data-row="2030"] .m-dot.is-lead').classList.contains('is-solo'), 'with its mark');
-  moves(window, eia, () => setRadio(window, eia.radio('eia_case', 'High Electricity Demand')), (t) => leads(t, ['High Electricity Demand', '190.7 billion kWh']), 'the case control');
+  moves(window, eia, () => setRadio(window, eia.radio('eia_case', 'High Electricity Demand')), (t) => leads(t, ['High Electricity Demand', '190.7 TWh']), 'the case control');
   ok(eiaLabels().includes('2030: 190.7') && eiaLabels().includes('2050: 818.7'), `the labels follow the case: ${eiaLabels()}`);
   moves(window, eia, () => setRadio(window, eia.radio('eia_case', 'High Economic Growth')), (t) => leads(t, ['High Economic Growth', '178.9']), 'the case control');
   moves(window, eia, () => setRadio(window, eia.radio('eia_case', 'Low Economic Growth')), (t) => leads(t, ['Low Economic Growth', '176.8']), 'the case control');
   setRadio(window, eia.radio('eia_case', 'High Electricity Demand'));
   key(window, eia.plot, 'End');
-  ok(leads(eia.reading.textContent, ['High Electricity Demand', '818.7 billion kWh', '2050']), 'the needle reaches 2050');
+  ok(leads(eia.reading.textContent, ['High Electricity Demand', '818.7 TWh', '2050']), 'the needle reaches 2050');
   eq(eia.facts.querySelectorAll('.plate-values li').length, 4, 'every case listed');
   eq([...eia.facts.querySelectorAll('.plate-values li > span:first-child')].map((n) => n.className).join(), 'plate-square is-hollow,plate-square is-hollow is-on,plate-square is-hollow,plate-square is-hollow', 'each with a square, no dash: hollow when modeled, orange only for the selected case');
   key(window, eia.plot, 'Home');
   ok([...eia.facts.querySelectorAll('.plate-values li > span:first-child')].every((n) => n.classList.contains('plate-square') && !n.classList.contains('is-hollow')), 'and filled at 2025, which is not modeled');
+  ok(eia.reading.textContent.includes('All four cases share this figure for 2025.') && !/span 104.8 to 104.8/.test(eia.reading.textContent), `a year the cases share says so (data-centers-10): ${eia.reading.textContent}`);
+  eq(eia.root.querySelector('.plate-title').textContent, "EIA's High Electricity Demand case puts data center servers at 104.8 TWh in 2025", 'the title follows the case (data-centers-07)');
+  ok([...document.querySelectorAll('#growth .plate-strip > .plate')].map((n) => n.id).join() === 'dc-eia-servers,dc-lbnl-us,dc-iea-world', 'the three outlooks stand in one strip');
   const lbnl = parts(document, 'dc-lbnl-us');
   ok(lbnl.reading.textContent.includes('2030, Reference Case: 649 (521 to 843) TWh'), 'LBNL default');
   ok([...lbnl.plot.querySelectorAll('.m-label')].some((n) => n.textContent === 'EPRI'), 'the EPRI range is named');
@@ -240,7 +241,6 @@ async function forecastCheck() {
   ok(!/missed|forecasts? miss/i.test(`${title} ${p.root.querySelector('.plate-claim').textContent}`), 'the claim zone does not say forecasts miss');
   ok(!/forecast-misses|missed in both directions/.test(html), 'the retired plate and its verdict are gone from the page');
   eq(document.querySelectorAll('[data-plate="dc-forecast-misses"]').length, 0, 'no old plate');
-  ok(document.querySelector('.dc-jump a[href="#dc-forecast-check"]'), 'the jump list reaches the new plate');
   eq(p.plot.querySelectorAll('.ladder-group').length, 4, 'four rulers');
   eq(p.root.querySelector('.plate-switch [data-param="fc_target"] input:checked').value, '2023', 'the target year switch sits over the plot, at 2023');
   ok(!p.plot.querySelector('svg'), 'rows, so nothing has to redraw for print or with no scripts');
@@ -425,7 +425,7 @@ async function tradeoffs() {
   ok(leads(m.reading.textContent, ['66 billion liters', '2023', '800 billion liters', '2023', '868 billion liters', '2024', 'Limit:']), 'default Reading: one sentence for the cell, and its partly figure keeps its limit');
   eq(m.value.textContent, '66', 'the readout is the cell\'s first figure');
   eq(m.chips().length, 3, 'a receipt per figure');
-  ok(m.root.querySelector('.plate-claim .slot-label') && !m.root.querySelector('img'), 'the photograph slot is named, with no image');
+  ok(!document.querySelector('.slot-label') && !m.root.querySelector('img'), 'no photograph, and no note of one to come');
   ok(/#dc-tradeoff-matrix \.matrix tbody td\.is-on \{ outline-width: 1px; outline-offset: -1px; \}/.test(read('site/assets/css/dc.css')), 'the selected cell is 1px, so the needle stays the only 2px orange line');
   key(window, m.plot, 'ArrowRight');
   ok(leads(m.reading.textContent, ['0.36 L per kWh']), 'right moves a column');
@@ -442,15 +442,19 @@ async function tradeoffs() {
   const site = () => row(c.root, 'site').querySelector('.ladder-value').textContent;
   ok(leads(c.reading.textContent, ['100 MW', '1.45', '0.8', '1 TWh', '190 million liters', 'Microsoft', '4,600 million liters']), 'cooling default');
   moves(window, c, () => setValue(window, c.slider('c_mw'), 200), (t) => leads(t, ['200 MW', '1.45', '0.8', '2 TWh']), 'MW');
+  ok(c.root.querySelector('.plate-title').textContent.startsWith('At 200 MW and PUE 1.45, about '), `the title follows the settings: ${c.root.querySelector('.plate-title').textContent}`);
+  eq(c.unit.textContent, 'TWh a year', 'a size moves the electricity the needle reads');
   moves(window, c, () => setValue(window, c.slider('c_lf'), 1), (t) => leads(t, ['200 MW', '1.45', '1', '2.5 TWh']), 'load factor');
   moves(window, c, () => setValue(window, c.typed('c_pue'), 1.145), (t) => holds(t, ['1.145', '1', '2 TWh']), 'PUE typed');
   moves(window, c, () => fire(window, c.root.querySelector('[data-preset="1.45"]'), 'click'), (t) => holds(t, ['1.45']), 'PUE preset');
   moves(window, c, () => setRadio(window, c.radio('c_cool', 'lbnl')), (t) => holds(t, ['630 million liters', 'LBNL']), 'cooling at LBNL');
+  eq(`${c.value.textContent} ${c.unit.textContent}`, '630 million liters', 'the readout follows the water a cooling design moves (data-centers-08)');
   moves(window, c, () => setRadio(window, c.radio('c_cool', 'google')), (t) => holds(t, ['2,000 million liters', 'Google']), 'cooling at Google');
   moves(window, c, () => setRadio(window, c.radio('c_cool', 'dry')), (t) => /None on site/.test(t), 'dry');
   ok(row(c.root, 'site').classList.contains('dc-words'), 'words drop to body size');
   ok(wordsOnly(site()), 'the row says so');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'hyperscale')), (t) => holds(t, ['1.4 Mt']), 'hyperscale grid');
+  ok(c.value.textContent === '1.4' && c.unit.textContent.startsWith('Mt'), 'and the CO2 a grid moves');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'lbnl')), (t) => holds(t, ['0.86 Mt', 'LBNL']), 'LBNL grid');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'own')), (t) => holds(t, ['0.94 Mt']), "reader's grid");
   moves(window, c, () => setValue(window, c.slider('c_own'), 100), (t) => holds(t, ['0.25 Mt']), "reader's number");
@@ -459,6 +463,7 @@ async function tradeoffs() {
   ok(plantSquares() > 0, 'plant row has squares');
   fire(window, c.root.querySelector('[data-reset]'), 'click');
   ok(leads(c.reading.textContent, ['100 MW', '1.45']), 'Reset');
+  eq(`${c.value.textContent} ${c.unit.textContent}`, '1 TWh a year', 'and the readout is the electricity again');
   eq(plantSquares(), 46, '46 squares of 100 million liters at the default');
   fire(window, row(c.root, 'site').querySelector('.ladder-label'), 'click');
   ok(c.facts.querySelectorAll('.plate-seg').length === 2, 'two segments: water here, water at the plant');
@@ -587,17 +592,39 @@ async function policy() {
   ok(climate.querySelector('img.climate-on-dark[alt="ATNI Climate"]') && climate.querySelector('img.climate-on-light[alt="ATNI Climate"]'), 'the Climate voice: one lockup per theme');
   ok(climate.querySelector('a[href*="policy-sentinel"]') && climate.querySelector('[data-policy-checked]'), 'on the source line, which names Policy Sentinel and its date');
   ok(!document.querySelector('figure .climate-voice, [role="tablist"] .climate-voice'), 'and never on a plate or a tab');
-  ok(document.querySelector('#policy-grid .plate-claim .dc-jump a[href="#policy-watch"]'), 'the jump list reads in the claim zone');
-  ok(document.querySelector('[data-library-feed][data-area="data-centers"]'), 'library hook');
+  const watch = document.getElementById('policy-watch');
+  ok(watch.compareDocumentPosition(document.getElementById('policy-grid')) & 4, 'Policy Watch leads the tab (data-centers-34)');
+  ok(html.includes('<!-- policy:watch -->') && html.includes('<!-- /policy:watch -->'), 'its list sits in the region build_energy_pages.py writes');
+  ok(!/Import followed list/.test(document.getElementById('policy-landscape').textContent) && /Import followed list/.test(receipt('policy-sentinel') || ''), 'its import steps are on the Sources page');
   eq(document.querySelectorAll('#policy-landscape .dc-details > details').length, 4, 'Tribal, State, Federal, Alternatives');
   ok(document.querySelector('.dc-policy-side .dc-grid-wrap + .dc-policy-key'), 'the key sits under the grid');
   eq(errors.join(), '', 'no script errors');
 }
 
 async function project() {
-  const { window, document, errors } = await load('#questions');
+  // Count first: the region today, the Council's 2030 input, and the project, a hundred aMW a square in rows of 25, the project's in orange.
+  const first = await load('#face-project');
+  const f = parts(first.document, 'dc-project');
+  const count = () => f.plot.querySelector('.dc-count');
+  const n = (cls) => (count().querySelector(cls).getAttribute('d').match(/M/g) || []).length;
+  ok(!first.document.getElementById('face-project').hidden && f.plot.classList.contains('dc-is-count'), 'the face opens on Count');
+  eq([n('.dc-ctx'), n('.m-count.is-hollow'), n('.dc-lit')].join(), '220,25,1', 'the region, the Council input, and the project');
+  eq([...count().querySelectorAll('.dc-count-label')].map((l) => l.textContent).join('|'), "The region's load today: 22,000 aMW|The Council's 2030 input, data centers and chip fabs: 2,475.1 aMW|This project: 100 aMW", 'each field named with its figure');
+  ok(['dem-058', 'dem-073'].every((id) => first.document.querySelector(`#dc-project .plate-table a[data-claim="${id}"]`)), 'and each figure has its claim in the Table');
+  setValue(first.window, f.slider('p_mw'), 1000);
+  eq(n('.dc-lit'), 8, 'eight orange squares at 1,000 MW');
+  eq(f.root.querySelector('.plate-title').textContent, "A 1,000 MW project at a 0.8 load factor would average 800 aMW, 3.6 percent of the region's load today", 'the title follows the settings (data-centers-07)');
+  eq(first.document.querySelector('[data-answer="dc-project"]').textContent, "A 1,000 MW project at a 0.8 load factor averages 800 aMW, about 3.6 percent of the region's load today.", 'and the agenda answer');
+  fire(first.window, f.root.querySelector('[data-preset="0.95"]'), 'click');
+  ok(leads(f.reading.textContent, ['1,000 MW', '0.95', '950 aMW']), 'a load factor preset');
+  eq(n('.dc-lit'), 10, 'ten squares, the last a sliver');
+  ok(f.root.querySelector('details.plate-more [data-param="p_l"]') && f.root.querySelector('details.plate-more [data-param="p_plant"]'), 'the water inputs wait under More, for the Rulers view (data-centers-33)');
+  eq(first.errors.join(), '', 'no script errors in Count');
+  // Rulers: the instrument, under one needle.
+  const { window, document, errors } = await load('#face-project&p_view=rulers');
   const p = parts(document, 'dc-project');
-  const lit = () => (p.plot.querySelector('.dc-lit').getAttribute('d').match(/M/g) || []).length;
+  ok(!p.plot.classList.contains('dc-is-count'), 'a link opens Rulers');
+  const lit = () => (p.plot.querySelector('.dc-sq .dc-lit').getAttribute('d').match(/M/g) || []).length;
   ok(leads(p.reading.textContent, ['125 MW', '0.8', '100 aMW', '0.88 TWh', '0.45 percent', '22,000 aMW', '240', '1,000 million liters']), 'default');
   const amwAt = +row(p.root, 'amw').style.getPropertyValue('--x');
   ok(Math.abs(amwAt - 0.606) < 0.01, `125 MW reads at 60 percent of its log ruler: ${amwAt}`);
@@ -617,7 +644,7 @@ async function project() {
     ok(row(p.root, 'plant').getAttribute('aria-selected') !== 'true', 'arrows skip a row that is off');
   }
   key(window, p.plot, 'Home');
-  eq(p.plot.querySelector('.dc-ctx').getAttribute('d').match(/M/g).length, 220, 'the region in squares');
+  eq(p.plot.querySelector('.dc-sq .dc-ctx').getAttribute('d').match(/M/g).length, 220, 'the region in squares');
   eq(lit(), 1, 'one lit square');
   moves(window, p, () => setValue(window, p.slider('p_mw'), 1000), (t) => leads(t, ['1,000 MW', '0.8', '800 aMW', '7 TWh', '3.6 percent']), 'MW');
   eq(lit(), 8, 'eight lit squares');
@@ -638,12 +665,16 @@ async function project() {
   fire(window, row(p.root, 'council').querySelector('.ladder-label'), 'click');
   ok(leads(p.reading.textContent, ['2030', '2,020.4', '1,301.9', '4,429.3) aMW']), 'a context row');
   fire(window, p.root.querySelector('[data-reset]'), 'click');
-  eq(lit(), 1, 'Reset');
+  ok(p.plot.classList.contains('dc-is-count'), 'Reset goes back to Count, the starting view');
   fire(window, row(p.root, 'site').querySelector('.ladder-label'), 'click');
   ok(p.chips().some((c) => c.dataset.claim === 'fp-006') && p.chips().some((c) => c.dataset.claim === 'tr-028'), 'site water cites both ends');
-  eq(p.root.querySelector('.plate-foot a').getAttribute('href'), '#q-water', 'foot link');
-  eq(document.querySelectorAll('#checklists.dc-details > details').length, 8, 'eight checklists');
-  ok(p.root.querySelector('.plate-claim .dc-jump a[href="#checklists"]'), 'the jump list reaches them');
+  // The questions: one form, each question once with a checkbox (DIRECTION-R2 3.12), the provenance said once above them.
+  const form = document.getElementById('checklists');
+  ok(form.matches('form.asks[data-sheet]') && form.previousElementSibling.matches('p.dc-wide-note'), 'one form, its provenance first');
+  eq(form.querySelectorAll('fieldset.ask-set').length, 8, 'eight sets');
+  eq(form.querySelectorAll('input[type="checkbox"][name="ask"]').length, 24, 'every question once');
+  eq(document.querySelectorAll('input[name="ask"]').length, 24, 'and nowhere else');
+  ok([...form.querySelectorAll('input[name="ask"]')].every((b) => b.value === `${b.closest('fieldset').id}-${[...b.closest('ol').children].indexOf(b.closest('li')) + 1}`), 'each named by its set and place');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -664,22 +695,75 @@ async function climateLand() {
   near(place(row(c.root, 'walla-walla-wa'), 'x2'), (ww.days_95.baseline[1] - d.domain[0]) / (d.domain[1] - d.domain[0]), 'and the 1995 to 2014 mark at its own');
   ok(c.facts.textContent.includes(`${ww.days_95.baseline[1]} (`), 'the facts follow the measure');
   moves(window, c, () => setRadio(window, c.radio('cc_scenario', 'ssp370')), (t) => t.includes('SSP3-7.0') && t.includes(`about ${ww.days_95.ssp370[1]} (`), 'scenario');
+  // The Table, and so the CSV, follow the measure (CD 12): each line's figure and its one claim are the measure's.
+  const line = c.root.querySelector('.plate-table tbody tr[data-key="walla-walla-wa"][data-when="ssp370"]');
+  ok(line.children[3].textContent.startsWith(`${ww.days_95.ssp370[1]} (`) && line.children[3].textContent.endsWith('days a year'), `the Table line follows the measure: ${line.children[3].textContent}`);
+  eq([...line.querySelectorAll('a[data-claim]')].map((a) => a.dataset.claim).join(), ww.days_95.ssp370[0], 'with that figure\'s claim alone');
+  ok(c.root.querySelector('.plate-title').textContent.startsWith('Walla Walla County, WA, Days at or above 95 F: '), `the title follows the measure: ${c.root.querySelector('.plate-title').textContent}`);
   setRadio(window, c.radio('cc_state', 'mt'));
   ok(shown().length && shown().every((k) => k.endsWith('-mt')), 'a state shows its counties only');
   await wait(40);
   ok(c.reading.textContent.includes(', MT,'), `a county shown takes the selection: ${c.reading.textContent.slice(0, 60)}`);
-  const land = await load('#land');
-  const squares = [...land.document.querySelectorAll('#project-map .m')];
-  const lit = squares.filter((s) => !s.classList.contains('is-dim'));
-  ok(lit.length && lit.every((s) => s.dataset.row === 'federal-blm'), `the map lights the selected land row: ${lit.length} of ${squares.length}`);
-  ok(land.document.querySelector('#land-records .cr[data-claim^="pj-"]'), 'the record list marks its MW figures');
-  eq([...errors, ...land.errors].join(), '', 'no script errors');
+  // Where proposals sit: the larger finding leads (data-centers-31), and the title follows the kind.
+  const land = parts(document, 'dc-project-land');
+  eq(land.root.querySelector('.plate-title').textContent, 'The filings read state no land for 41 of the 83 named proposals', 'the land title');
+  setRadio(window, land.radio('kind', 'dc'));
+  ok(/^Not stated by the sources read: [0-9]+ of the named proposals read, Data centers$/.test(land.root.querySelector('.plate-title').textContent), `the title follows the kind: ${land.root.querySelector('.plate-title').textContent}`);
+  eq([...errors].join(), '', 'no script errors');
+}
+
+// The atlas (data-centers-11, -12, -36): the relief, one square per named proposal at its county's point, the county picker as the accessible route, and the card.
+async function atlas() {
+  const { window, document, errors } = await load('#where');
+  const fig = document.getElementById('dc-atlas');
+  ok(fig.closest('#where') && fig.dataset.variant === 'atlas', 'the atlas leads the Where tab');
+  ok(!fig.querySelector('path, polygon, polyline, line, image'), 'physical names and squares only: no line of any boundary is drawn, and the relief is the CSS ground');
+  ok(/--vw:\d+;--vh:\d+;--cx:\d+;--cy:\d+;--sw:2520;--sh:1920/.test(fig.querySelector('.dc-sheet').getAttribute('style')), 'the view is written by the build, so the field draws without scripts');
+  ok(/nw-dark-1600\.webp/.test(read('site/assets/css/dc.css')) && /nw-light-1600\.webp/.test(read('site/assets/css/dc.css')), 'a relief for each theme');
+  eq([...fig.querySelectorAll('.dc-names text')].map((t) => t.textContent).join('|'), 'Pacific Ocean|Columbia River|Snake River|Willamette River|Cascade Range|Columbia Plateau|Blue Mountains|Snake River Plain|Northern Rockies|Seattle|Portland|Spokane|Boise|Missoula', 'standard English names of land, water, and five cities');
+  ok(fig.querySelector('.dc-sheet-svg').getAttribute('aria-hidden') === 'true', 'the map is a picture; the picker and the records are its words');
+  const pick = fig.querySelector('[data-atlas-county]');
+  const counts = Object.fromEntries([...pick.options].map((o) => [o.value, +o.textContent.match(/\((\d+)\)$/)[1]]));
+  for (const g of fig.querySelectorAll('.dc-cty')) eq(g.querySelectorAll('.dc-m').length, counts[g.dataset.fips], `${g.dataset.fips}: a square for each of its records`);
+  const records = [...document.querySelectorAll('#land-records li[data-fips]')];
+  for (const [fips, n] of Object.entries(counts)) eq(records.filter((li) => li.dataset.fips.split(' ').includes(fips)).length, n, `${fips}: the picker counts the records`);
+  eq(pick.value, '41049', 'the county with the most records opens');
+  const card = fig.querySelector('[data-atlas-card]');
+  eq(card.querySelector('h4').textContent, 'Morrow County, OR', 'its card');
+  eq(card.querySelectorAll('.dc-card-records > li').length, 2, 'two records first');
+  ok(card.querySelectorAll('.dc-card-records a.cr[data-claim^="pj-"][data-status]').length >= 1, 'each MW figure is its record\'s claim mark');
+  ok(fig.querySelector('.dc-cty[data-fips="41049"]').classList.contains('is-on'), 'the county lights on the map');
+  fire(window, [...card.querySelectorAll('button')].find((b) => b.textContent === 'Show the other 9'), 'click');
+  eq(card.querySelectorAll('.dc-card-records > li').length, 11, 'and the rest on a press');
+  const clim = card.querySelector('.dc-card-climate');
+  ok(clim && clim.querySelector('a[href="#climate&dc-climate-counties=morrow-or"]') && clim.querySelectorAll('a[data-claim^="cp-"]').length === 2, 'the climate row, its two claims, and a way to compare');
+  pick.value = '53071';
+  fire(window, pick, 'change');
+  eq(card.querySelector('h4').textContent, 'Walla Walla County, WA', 'the picker chooses a county');
+  ok(fig.querySelector('.dc-cty[data-fips="53071"]').classList.contains('is-on') && !fig.querySelector('.dc-cty[data-fips="41049"]').classList.contains('is-on'), 'and lights it alone');
+  fire(window, fig.querySelector('.dc-cty[data-fips="41049"] .dc-m'), 'click');
+  eq(pick.value, '41049', 'a square on the map chooses its county too');
+  const dc = fig.querySelector('[data-atlas-kind] input[value="tx"]');
+  setRadio(window, dc);
+  ok([...fig.querySelectorAll('.dc-m')].every((m) => m.classList.contains('is-dim') === (m.dataset.kind !== 'tx')), 'a kind dims the others');
+  ok(/^\d+ of the 11 named proposals here (is|are) this kind\.$/.test(card.querySelector('.caption').textContent), `and the card says how many: ${card.querySelector('.caption').textContent}`);
+  ok(fig.querySelector('.dc-off').textContent.startsWith('Off this sheet to the south: 8 in Nevada and northern California. Off this sheet to the east: 4 in eastern Montana.'), 'what lies off the sheet, as words');
+  ok(holds(fig.querySelector('.plate-claim').textContent, ['83', 'A count of a curated public list on its date']), 'the title is the count, with its limit');
+  ok(fig.querySelector('.plate-title a.cr[data-claim="ld-001"]') && receipt('src-ld-001'), 'and its claim');
+  ok(holds(fig.querySelector('.plate-collar').textContent, ['NOAA National Centers for Environmental Information, ETOPO 2022', 'Natural Earth', 'U.S. Census Bureau']) && /NOAA[\s\S]*Natural Earth/.test(receipt('dc-atlas') || ''), 'its data credited in the collar and on the Sources page');
+  // Every record, by state: a count in each summary (data-centers-12), and its MW figures marked.
+  for (const d of document.querySelectorAll('#land-records details')) ok(/^\d+ named proposals?; (\d+|none) states? a size in MW as filed\.$/.test(d.querySelector('summary span').textContent), `${d.id}: ${d.querySelector('summary span').textContent}`);
+  ok(document.querySelector('#land-records .cr[data-claim^="pj-"]'), 'the record list marks its MW figures');
+  eq(errors.join(), '', 'no script errors');
 }
 
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
-  eq(document.querySelectorAll('section.panel').length, 8, 'all panels in the page');
+  eq(document.querySelectorAll('section.panel').length, 7, 'all panels in the page');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#jobs"]'), 'strip is a jump list');
+  ok(['face-load', 'face-project', 'face-asks'].every((id) => document.querySelector(`.agenda-q a[href="#${id}"]`) && !document.getElementById(id).hidden), 'the agenda questions are links, and every face stands whole');
+  ok(document.querySelectorAll('.dc-cty').length > 30 && document.querySelector('.dc-sheet').getAttribute('style').includes('--vw:'), 'the atlas draws without scripts');
+  eq(document.querySelectorAll('#land-records li[data-fips]').length, 83, 'and every record is listed');
   for (const root of document.querySelectorAll('[data-plate]')) {
     ok(root.querySelector('.reading').textContent.length > 20, `${root.id} default Reading`);
     ok(root.querySelector('table tbody tr'), `${root.id} table`);
@@ -688,29 +772,17 @@ async function noScripts() {
   }
   ok(holds(document.querySelector('#dc-project .plate-setting').textContent, ['125']), 'the setting named');
   ok(document.querySelector('#dc-jobs-per-mw .plate-plot [data-row="naics"]'), 'without scripts the fixed record stays in the plot');
-  ok(document.querySelector('.section-strip a[href="resource-use/"]') && !document.querySelector('header .subnav'), 'the other page of the family is a link in the strip');
-  eq(document.querySelector('.section-strip a[href="resource-use/"]').textContent, 'Reference: What Uses Data Center Energy and Water', 'and says so');
+  ok(document.querySelector('.brief-meta a[href="resource-use/"]') && !document.querySelector('header .subnav'), 'the other page of the family is a link in the brief');
+  eq(document.querySelector('.brief-meta a[href="resource-use/"]').textContent, 'Energy and Water Use', 'by the name the footer gives it');
   eq(document.querySelector('#dc-pnw-load .m-needle').getAttribute('x1'), `${+document.querySelector('#dc-pnw-load .m-grid').getAttribute('x1') + 24}.0`, 'the static needle stands 24px in from the ticks too');
   ok(!/>2029</.test(document.querySelector('#dc-pnw-load .plate-plot').innerHTML), 'and the static axis starts at 2030');
   eq([...document.querySelectorAll('#dc-tradeoff-matrix td[data-row="water--national"] .matrix-bar')].map((n) => n.style.getPropertyValue('--x')).join(), '0.076,0.9217,1.0', 'three water figures, scaled within the cell');
   eq(document.querySelectorAll('#dc-tradeoff-matrix td[data-row="power--national"] .matrix-bar').length, 0, 'a lone figure has nothing to compare');
   eq(document.querySelectorAll('#dc-tradeoff-matrix td[data-row="emissions--national"] .matrix-bar').length, 0, 'nor figures in different units');
-  eq(document.querySelector('[data-pour="dem-058"]').textContent, '22,000 aMW', 'a poured figure');
-  eq(document.querySelector('.page-band-figures [data-pour="dem-058"]').textContent, '22,000 aMW', 'the band: the region');
-  eq(document.querySelector('.page-band-figures').textContent.includes('2,475.1 aMW'), true, 'the band: the Council input, its middle figure');
-  eq(document.querySelector('[data-pour="dem-073"][data-field="value"]').textContent, '2,475.1', 'poured from its claim');
-  eq(document.querySelectorAll('.page-band-figures > li').length, 3, 'three figures');
-  const bandIds = [...document.querySelectorAll('.page-band-figures .figure-label a')];
-  eq(bandIds.map((a) => a.textContent).join(), 'dem-058,dem-073', 'each claim figure prints its id as a link');
-  for (const a of bandIds) {
-    eq(a.parentElement.textContent, `${a.textContent}, ${CLAIMS[a.textContent].status}`, `${a.textContent}: the status comes from the claim`);
-    ok(a.getAttribute('href').startsWith('sources/#') && receipt(a.getAttribute('href').split('#')[1]), `${a.textContent}: the link names a receipt on the Sources page`);
-    eq(CLAIMS[a.textContent].limit ?? null, null, `${a.textContent}: no limit is owed beside it`);
-  }
-  ok(document.querySelector('.page-band .lead a[href$="atni-res-2026-034-tiered-sovereign-data-framework.pdf"]'), 'and the resolution link, at the end of the lead');
-  ok(!document.querySelector('.key-facts, .page-hero, .dc-fact'), 'with no raised box');
-  ok(document.querySelector('#overview .dc-panel-head .dc-jump') && document.querySelector('#overview .dc-panel-head .panel-title'), 'without scripts the jump list and the title stay above the plate');
-  for (const id of ['purpose', 'why-now', 'environmental-impacts', 'policy-landscape', 'alternatives', 'questions', 'policy-watch', 'library', 'facts-title']) ok(document.getElementById(id), `${id} survives`);
+  eq(document.querySelector('[data-pour="dem-067"][data-field="text"]').textContent, '29', 'a poured figure');
+  eq(document.querySelector('[data-answer="dc-pnw-load"]').textContent.includes('2,475.1 aMW in 2030'), true, 'the built answer carries the starting figure');
+  ok(!document.querySelector('.key-facts, .page-hero, .dc-fact, .page-band'), 'with no raised box and no band of figures');
+  for (const id of ['purpose', 'why-now', 'environmental-impacts', 'policy-landscape', 'alternatives', 'questions', 'policy-watch', 'land', 'climate', 'dc-atlas', 'land-records', 'checklists']) ok(document.getElementById(id), `${id} survives`);
   const slots = html.match(/<!-- SLOT:data-centers:[a-z-]+ -->/g);
   eq(slots.length, 8, 'eight slots');
   eq(html.match(/<!-- \/SLOT -->/g).length, 8, 'all closed');
@@ -724,4 +796,4 @@ async function untrusted() {
 }
 
 
-module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, project, climateLand, noScripts, untrusted } };
+module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, project, climateLand, atlas, noScripts, untrusted } };

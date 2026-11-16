@@ -1,29 +1,31 @@
-/* The Data Center page, after site.css: only what the kit does not say. The band's link, the jump lists, the jobs bars, count squares in the
-   instruments, the policy grid, and details that open across the width. Tokens, type, marks, and the three zones stay in site.css. */
+/* The Data Center page, after site.css: only what the kit does not say. The agenda's question-set face, the tab questions, the Why Now band, count squares in
+   the instruments, the jobs bars, the forecast check, the matrix, the policy grid, the atlas and its county card, the records by state, and the question sets.
+   Tokens, type, marks, variants, and the window stay in site.css. Orange marks the reading only (DIRECTION-R2 2.2); bullets and chosen states are ink. */
 
-/* The band: the resolution link ends the lead's line where it fits and takes the next line whole where it does not. Below 1400 the figures draw closer (32px, not the kit's 48) so they still fit the row. */
-.page-band .lead { max-width: none; }
-.dc-band-link { display: inline-block; font-size: 1rem; }
-.page-band-figures li:nth-child(2) { max-width: 13.5rem; }
-.page-band-figures li { align-content: start; } /* the labels run one to three lines, so the numerals hang from one line */
-.dc-band-claim { display: block; }
-@media (max-width: 1399px) { .page-band-figures { column-gap: 32px; } }
+/* Tab questions wrap to a second line under their name, so seven tabs, Sources, and the meeting sheet share the 64px strip from 1440 (two short lines fit it). */
+.section-strip .tab-q { max-width: 11.5rem; white-space: normal; }
+/* Below 1700px the strip's Sources link gives way to the seven tabs (a departure from DIRECTION-R2 3.10): the brief carries the same link one screen up. */
+@media (max-width: 1699px) { .section-strip .strip-out { display: none; } }
+/* Under 1440 the tabs scroll inside the strip, behind the kit's fade, so the meeting sheet keeps its place and the strip its 64px. */
+@media (min-width: 1100px) and (max-width: 1439px) { .section-strip > .wrap { flex-wrap: nowrap; } .section-strip [data-sheet-open] { flex: none; white-space: nowrap; } }
 
-/* The other page of the family, at the strip's end: an underlined link in body type, so it cannot read as a tab. */
-.section-strip > .wrap > a { font-family: var(--body); font-weight: 400; font-size: 0.9375rem; white-space: normal; text-decoration: underline; text-decoration-color: var(--control); }
-.section-strip > .wrap > a:is(:hover, :focus-visible) { color: var(--energy-text); border-bottom-color: transparent; }
+/* A tab's one-line lead: what the panel holds, with a term's first use marked. */
+main p.dc-tab-lead { max-width: var(--measure-wide); margin: 20px 0 16px; color: var(--atni-text-secondary); }
 
-/* Panel heads: the title and what sits below the first screen. With scripts the h2 is the tab's own name, read by a screen reader, and the rest moves to the first plate's claim zone. */
-.dc-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 24px; margin-bottom: 0; }
-.dc-panel-head .panel-title { margin: 0; }
-/* What sits further down: one sentence, not a row of nav. A link stays whole when the sentence wraps. */
-.dc-jump { font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); }
-:is(.plate, .dc-panel-head) .dc-jump a { color: inherit; white-space: nowrap; }
-:is(.plate, .dc-panel-head) .dc-jump a:is(:hover, :focus-visible) { color: var(--energy-text); }
-@media (pointer: coarse) { .dc-jump a { display: inline-block; min-height: 44px; line-height: 44px; } }
+/* The agenda's third face: each question set by its first question, and the set's own Add, in columns that fit the face without scrolling. */
+.dc-asks-face { padding: 4px 0; }
+main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: var(--atni-text-secondary); }
+
+/* Why Now: its account in two balanced columns of the body measure, then a band of the rate figure and the Purpose, folded under its one-line stance. */
+.dc-why { margin-top: 24px; }
+.dc-why > h3 { margin: 0 0 12px; font-size: 1.5rem; line-height: 1.15; }
+.dc-why-text { max-width: calc(72rem + 48px); columns: 2 26rem; column-gap: 48px; }
+.dc-why-text > p { max-width: none; margin-top: 0; }
+.dc-why-more { margin-top: 16px; column-gap: 48px; }
+.dc-why-more > .pull { align-content: start; }
+.dc-why-more .disclosure-body { max-width: var(--measure); }
 
 /* Plates: the claim zone stays short enough to fit a 900px window. */
-.plate { scroll-margin-top: 56px; }
 .plate-claim .legend { gap: 2px 16px; }
 .plate .slider { row-gap: 0; }
 .plate .slider label { line-height: 1.3; }
@@ -36,14 +38,12 @@
   .plate .slider input[type="range"]::-moz-range-thumb { height: 32px; }
   .plate .slider input[type="number"] { min-height: 32px; padding: 4px 8px; font-size: 0.875rem; }
 }
-.plate-chips .receipt { max-width: 100%; }
-.plate-claim .slot-label::before { border-color: var(--series-context); } /* orange inside a plate means the selection */
-/* These plots say what a key would (the subtitle, the Reading, or a direct label), so only Read as a table stands under them, in the kit's room for it (--below). */
-:is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }
+/* The Growth strip holds plates only: a note the kit sets after a plate takes the strip's full width below them, so it never takes a plate's column. */
+#growth .plate-strip > :not(.plate) { grid-column: 1 / -1; order: 1; }
 /* Direct labels and the case control name the series, so these keys hold only what the plot cannot say. */
 :is(#dc-pnw-load, #dc-eia-servers) .plate-legend li:is([data-series], :has(.plate-square)) { display: none; }
-/* In Squares there is no band or projection to name. */
-.dc-is-squares .plate-legend { display: none; }
+/* The region today, a rule across the load plate's own axis (data-centers-19). */
+.dc-ref line { stroke: var(--atni-text-secondary); stroke-width: 1.5px; }
 
 /* Count squares: one square per unit in a row's track, drawn from its measured size so it cannot feed back. */
 .dc-sq { position: absolute; left: 0; top: 0; display: block; overflow: hidden; }
@@ -54,11 +54,15 @@
 .dc-unit { flex: none; margin: 0 0 4px; }
 .dc-words .ladder-value { font-family: var(--body); font-weight: 500; font-size: 0.875rem; line-height: 1.35; }
 
-/* The proposal: the rulers side by side under one needle, the region's squares below them, where the needle does not go. */
+/* The proposal: Count first, three fields of squares a hundred aMW each, in rows of 25; Rulers puts its rows under one needle and the region's squares below. */
+.dc-count { display: none; align-content: start; padding-top: 4px; }
+.dc-is-count > .dc-count { display: grid; }
+.dc-is-count > .instrument { display: none; }
+.dc-count-label { max-width: none; margin: 0; padding: 6px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-heading); }
+.dc-count-field svg { display: block; }
+#dc-project [data-param="p_lf"] .slider-stops { display: none; } /* its three presets and the typed twin say its range; the face keeps one row less */
 #dc-project .instrument { --l: clamp(8rem, 22%, 14rem); }
 #dc-project [data-row="share"] { grid-row: span 2; }
-#dc-project .plate-claim { grid-template-columns: auto auto minmax(0, 1fr); column-gap: 16px; }
-#dc-project .plate-claim > :not(.plate-foot) { grid-column: 1 / -1; } /* the two checklist links share a line */
 /* A phone stacks the rows. The needle's place is worked out from their three columns, and every value prints, so it goes; and a ruler's numbers need room above the value under them. */
 @media (max-width: 719px) {
   .instrument > .needle { display: none; }
@@ -80,7 +84,7 @@
   height: 24px;
   background: color-mix(in srgb, var(--series-context) 40%, transparent);
   border: 1.5px solid var(--series-context);
-  transition: width 160ms ease-out;
+  transition: width 120ms var(--ease);
 }
 #dc-jobs-per-mw .ladder-range { top: calc(50% - 12px); box-sizing: border-box; height: 24px; background: none; opacity: 1; border: 1.5px solid var(--series-context); border-left: 0; }
 #dc-jobs-per-mw .is-on .ladder-range { background: none; border-color: var(--energy-mark); }
@@ -90,9 +94,8 @@
 #dc-jobs-per-mw.is-live [data-row]:not([data-row="other"], [data-row="mw"]) .instrument-ends { display: none; }
 #dc-jobs-per-mw.is-live .instrument-ends > span { position: absolute; left: calc(var(--t) * 100%); transform: translateX(-50%); }
 #dc-jobs-per-mw.is-live [data-row="mw"] .instrument-ends > span { z-index: 2; padding-inline: 2px; color: var(--atni-text-muted); background: var(--plot-ground); }
-/* Departure from the first plate's window fit: at the window's height these four rows would be 160px each for a 24px bar, over a panel with nothing to say. The plate takes the height its zones need, the panel ends with its words, and the plot shares what it gets from 96 to 120px a row. It rides along beside an open record, which stretches nothing. */
+/* Four rows of 24px bars need no window-tall plot: it takes 96 to 120px a row and rides beside an open record, which stretches nothing. */
 @media screen and (min-width: 1100px) {
-  #dc-jobs-per-mw.is-live { min-height: 0; } /* B1 (R2 kit): its zones take the kit's variant areas now */
   #dc-jobs-per-mw.is-live > .plate-plot { position: sticky; top: 64px; align-self: stretch; min-height: 0; max-height: 30rem; }
   #dc-jobs-per-mw.is-live > .plate-detail { align-self: start; }
 }
@@ -178,51 +181,50 @@
   #dc-tradeoff-matrix.is-live .matrix tbody tr > :nth-child(4) .matrix-words::before { content: "Open question: "; }
 }
 
-/* The policy grid fills the plot zone: a static figure, rows by governments, one mark per sentence. */
-.dc-policy { align-items: stretch; }
-.dc-policy > .plate-claim { padding-top: 16px; }
+/* The policy grid: a static figure, rows by governments, one mark per sentence; its claim at the left and the grid at the right. It takes the height of its
+   sentences, never the window's, so wide screens leave no empty rows (data-centers-13). */
+#policy-grid { align-items: start; grid-template-areas: "claim" "side"; }
+#policy-grid > .plate-claim { grid-area: claim; padding-top: 16px; }
+#policy-grid > .dc-policy-side { grid-area: side; min-width: 0; }
 @media screen and (min-width: 1100px) {
-  .dc-policy { grid-template-columns: minmax(16rem, 18fr) minmax(0, 82fr); min-height: calc(100vh - 241px); }
-  .dc-policy-side { display: flex; flex-direction: column; }
-  .dc-policy-side .dc-grid-wrap { flex: 1; }
+  #policy-grid { grid-template-columns: minmax(16rem, 22fr) minmax(0, 78fr); grid-template-areas: "claim side"; grid-template-rows: auto; max-width: 112rem; }
 }
-.dc-policy-side { min-width: 0; }
 .dc-policy-key { margin: 8px 0 0; }
 .dc-grid-wrap { overflow-x: auto; }
-.dc-grid { width: 100%; min-width: 44rem; height: 100%; border-collapse: collapse; table-layout: fixed; }
-.dc-grid thead :is(th, td) { padding: 8px 12px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
+.dc-grid { width: 100%; min-width: 44rem; border-collapse: collapse; table-layout: fixed; }
+.dc-grid thead :is(th, td) { padding: 8px 12px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control-edge); }
 .dc-grid thead :is(th, td):first-child { width: 8rem; padding-left: 0; } /* a fixed table cannot resolve a percentage inside clamp(), and fell back to four equal columns */
 .dc-grid tbody th { padding: 8px 12px 8px 0; font-family: var(--display); font-weight: 500; font-size: 1.125rem; text-align: left; vertical-align: top; color: var(--atni-text-heading); border-bottom: 1px solid var(--rule); }
 .dc-grid td { padding: 8px 12px; vertical-align: top; border-bottom: 1px solid var(--rule); }
-.dc-grid td p { position: relative; max-width: none; margin: 0 0 4px; padding-left: 16px; font-size: 0.875rem; line-height: 1.35; }
+.dc-grid td p { position: relative; max-width: 36rem; margin: 0 0 4px; padding-left: 16px; font-size: 0.875rem; line-height: 1.4; }
 .dc-grid td p:last-child { margin-bottom: 0; }
 .dc-grid td p::before { content: ""; position: absolute; left: 0; top: 0.3em; width: 10px; height: 10px; }
 .dc-grid .is-in::before { background: var(--series-context); }
 .dc-grid .is-open::before { border: 2px solid var(--series-context); }
 .dc-grid .is-none { color: var(--atni-text-secondary); }
-.dc-grid .is-none::before { top: 0.65em; height: 1px; background: var(--control); }
-.dc-none-key { flex: none; width: 10px; height: 1px; background: var(--control); }
+.dc-grid .is-none::before { top: 0.65em; height: 1px; background: var(--control-edge); }
+.dc-none-key { flex: none; width: 10px; height: 1px; background: var(--control-edge); }
+/* Policy Watch leads the tab (data-centers-34); the Tribal, State, Federal and Alternatives sections follow, three columns at most. */
+.dc-watch { margin-top: 20px; }
+.dc-policy-parts { grid-template-columns: repeat(auto-fill, minmax(max(min(100%, 26rem), calc((100% - 64px) / 3)), 1fr)); }
 
-/* Details in a grid: each summary skims as a sentence; a long one opens across the width, in columns. */
+/* Details in a grid: each summary skims as a sentence; a long one opens across the width, in columns. The square is ink: hollow closed, filled open. */
 .dc-details { margin-top: 8px; }
-.dc-details > :is(.disclosure, .pull) { margin: 0; padding-top: 12px; border-top: 1px solid var(--rule); }
-.dc-details > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; min-height: 44px; padding: 0 0 12px; font-family: var(--body); font-weight: 400; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); list-style: none; }
-.dc-details > .disclosure > summary::-webkit-details-marker { display: none; }
-.dc-details > .disclosure > summary::before { content: ""; grid-row: 1; width: 10px; height: 10px; margin-top: 0.35em; border: 2px solid var(--energy-mark); }
-.dc-details > .disclosure[open] > summary::before { background: var(--energy-mark); }
-.dc-details > .disclosure > summary > * { grid-column: 2; margin: 0; }
-.dc-details > .disclosure > summary :is(h2, h3) { margin-bottom: 2px; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading); }
-.dc-details > .disclosure > summary:hover :is(h2, h3) { color: var(--atni-text-link-hover); }
+:is(.dc-details, .dc-record-states) > :is(.disclosure, .pull) { margin: 0; padding-top: 12px; border-top: 1px solid var(--rule); }
+:is(.dc-details, .dc-record-states) > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; min-height: 44px; padding: 0 0 12px; font-family: var(--body); font-weight: 400; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); list-style: none; cursor: pointer; }
+:is(.dc-details, .dc-record-states) > .disclosure > summary::-webkit-details-marker { display: none; }
+:is(.dc-details, .dc-record-states) > .disclosure > summary::before { content: ""; grid-row: 1; width: 10px; height: 10px; margin-top: 0.35em; border: 2px solid var(--control-edge); }
+:is(.dc-details, .dc-record-states) > .disclosure[open] > summary::before { background: var(--atni-text-heading); border-color: var(--atni-text-heading); }
+:is(.dc-details, .dc-record-states) > .disclosure > summary > * { grid-column: 2; margin: 0; }
+:is(.dc-details, .dc-record-states) > .disclosure > summary :is(h2, h3, h4) { margin-bottom: 2px; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading); }
+:is(.dc-details, .dc-record-states) > .disclosure > summary:hover :is(h2, h3, h4) { text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
 .dc-details > .disclosure > ul { max-width: none; font-size: 0.9375rem; line-height: 1.5; }
-.dc-details > .plate-note { padding-top: 12px; } /* a foot line the claim zone let go: level with the summaries beside it, its link whole */
-.dc-details > .plate-note a { white-space: nowrap; }
 .dc-long > .disclosure > .disclosure-body { max-width: none; padding-bottom: 16px; }
 .disclosure-body h4 { break-after: avoid; }
 .disclosure-body > ul { max-width: var(--measure); }
 @media (min-width: 900px) {
   .dc-long > .disclosure[open]:has(> .disclosure-body) { grid-column: 1 / -1; }
   .dc-long > .disclosure > .disclosure-body { columns: 26rem 4; column-gap: 32px; }
-  .dc-long > .pull { grid-column: -2; grid-row: 1 / span 2; } /* the tall figure takes the right column, so the short rows beside it do not stand apart */
 }
 .dc-three { column-span: all; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 0 24px; align-items: start; margin-bottom: 12px; }
 .dc-three .disclosure { margin: 0; }
@@ -231,11 +233,12 @@
 /* What follows the plates. */
 .dc-after { margin-top: 24px; }
 .dc-after > h2, .dc-after > h3 { margin: 0 0 12px; font-size: 1.5rem; line-height: 1.15; }
-.dc-anchor { display: grid; gap: 4px 24px; align-items: baseline; margin: 16px 0 8px; }
+.dc-anchor { display: grid; gap: 4px 24px; align-items: baseline; margin: 20px 0 16px; }
 .dc-anchor p { margin: 0; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
 .dc-anchor ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 4px 32px; margin: 0; }
 .dc-anchor li { margin: 0; }
-main p.dc-wide-note { max-width: var(--measure-wide); margin-bottom: 8px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.dc-anchor li::marker { color: var(--atni-text-muted); }
+main p.dc-wide-note { max-width: var(--measure-wide); margin-bottom: 16px; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .dc-work-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: 0 24px; }
 /* No ruler on these two: a rule with one tick and no numbers reads as an empty axis, and the row prints the figure. */
 .dc-work-links .bench-ruler { display: none; }
@@ -243,32 +246,89 @@ main p.dc-wide-note { max-width: var(--measure-wide); margin-bottom: 8px; font-s
 .dc-work-links .bench-link { font-size: 0.9375rem; }
 
 /* County climate: the 2040 to 2059 median is the pair's first mark, so the kit's selection orange is the finding; 1995 to 2014, the second, is the hollow mark it moved from.
-   One line a county ("87 F, from 84"), so the default eighteen rows end above a 900px window's fold. The facts list keys its two figures as the plot draws them. */
-#dc-climate-counties { --l: clamp(12rem, 26%, 13rem); --v: clamp(12rem, 22%, 13rem); --row-min: 32px; }
+   One line a county ("87 F, from 84"), so the default eighteen rows end above a 900px window's fold. The plot keeps 26rem of axis at 1280 (data-centers-06). */
+#dc-climate-counties { --l: clamp(10rem, 22%, 13rem); --v: clamp(9rem, 18%, 13rem); --row-min: 32px; }
+#dc-climate-counties .ladder-groups { min-width: 0; }
 #dc-climate-counties :is(.ladder-mark, .plate-square).is-b, #dc-climate-counties .plate-values li:last-child .plate-square { background: var(--plot-ground); border: 2px solid var(--series-context); }
 #dc-climate-counties .ladder-row.is-on .ladder-mark.is-b { border-color: var(--atni-text-heading); }
 #dc-climate-counties .plate-values li:first-child .plate-square { background: var(--energy-mark); }
-#climate .dc-details > .climate-voice { grid-column: 1 / -1; max-width: var(--measure-wide); }
+.dc-where-climate { margin-top: var(--section-pad); }
+.dc-where-climate > .climate-voice { max-width: var(--measure-wide); }
+.dc-where-land { margin-top: var(--section-pad); }
 
-/* Where proposals sit: the county map beside every record, by state. The map's squares take the plate's orange. */
-.dc-land { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px 32px; align-items: start; }
-.dc-map { margin: 0; color: var(--atni-text-secondary); }
-.dc-map h2 { margin: 0 0 8px; font-size: 1.5rem; line-height: 1.15; color: var(--atni-text-heading); }
-.dc-map svg { display: block; width: 100%; height: auto; --mark: var(--energy-mark); --mark-edge: var(--plot-ground); }
-.dc-map .m { transition: opacity 160ms ease-out; }
-.dc-map svg .m.is-selected { stroke: var(--atni-text-heading); } /* the drawing's currentColor is the secondary ink, too faint a ring on orange */
-.dc-records { grid-template-columns: 1fr; align-content: start; }
-.dc-record-list { margin: 0; padding-left: 1.25rem; }
-.dc-record-list li { margin: 0 0 12px; }
-.dc-record-list p { margin: 0 0 4px; }
+/* The atlas (the Where tab): the relief bake_relief.py bakes is the plot's ground, and the field always holds the part of the sheet where the proposals are
+   (VIEW in build_project_map.py): the sheet scales by the smaller of the field's two fits, from the field's own size, so it draws without scripts. Squares,
+   rings, and names keep their size on screen; their places are percentages of the sheet. Dark relief in the dark theme, paper relief in the light one and in
+   print; the larger file from 1800px, where the sheet is drawn wider than the smaller file. Water is blue and only water; squares are --mark-quiet until chosen. */
+.dc-atlas > .plate-plot { overflow: hidden; min-height: 0; padding: 0; }
+@media (max-width: 1099px) { .dc-atlas > .plate-plot { height: clamp(22rem, 72vw, 36rem); } }
+.dc-field { position: absolute; inset: 0; overflow: hidden; container-type: size; }
+.dc-sheet {
+  --s: min(100cqw / var(--vw), 100cqh / var(--vh));
+  position: absolute;
+  left: calc(50cqw - var(--s) * var(--cx));
+  top: calc(50cqh - var(--s) * var(--cy));
+  width: calc(var(--s) * var(--sw));
+  height: calc(var(--s) * var(--sh));
+  background: image-set(url("../img/relief/nw-dark-1600.webp") 1x, url("../img/relief/nw-dark-2520.webp") 2x) 0 0 / 100% 100% no-repeat;
+}
+[data-theme="light"] .dc-sheet { background-image: image-set(url("../img/relief/nw-light-1600.webp") 1x, url("../img/relief/nw-light-2520.webp") 2x); }
+@media (min-width: 1800px) {
+  .dc-sheet { background-image: url("../img/relief/nw-dark-2520.webp"); }
+  [data-theme="light"] .dc-sheet { background-image: url("../img/relief/nw-light-2520.webp"); }
+}
+.dc-sheet-svg { position: absolute; inset: 0; overflow: visible; }
+.dc-names text { font-family: var(--display); font-weight: 500; font-size: 0.875rem; fill: var(--atni-text-secondary); paint-order: stroke; stroke: var(--atni-ground-base); stroke-width: 3px; stroke-linejoin: round; }
+.dc-names .is-water, .dc-names .is-sea { font-family: var(--body); font-style: italic; font-weight: 400; fill: var(--water-label); }
+.dc-names .is-land { font-size: 0.9375rem; }
+.dc-city circle { fill: var(--atni-ground-base); stroke: var(--atni-text-body); stroke-width: 1.5px; }
+.dc-city text { fill: var(--atni-text-body); }
+.dc-cty { cursor: pointer; }
+.dc-hit { fill: transparent; }
+.dc-ring { fill: none; stroke: none; }
+.dc-m { fill: var(--mark-quiet); transition: fill 120ms var(--ease), opacity 120ms var(--ease); }
+.dc-m.is-dim { opacity: 0.25; }
+.dc-cty:hover .dc-ring { stroke: var(--atni-text-muted); stroke-width: 1px; }
+.dc-cty.is-on .dc-m { fill: var(--energy-mark); }
+.dc-cty.is-on .dc-ring { stroke: var(--atni-text-heading); stroke-width: 2px; } /* orange on --mark-quiet is 1.7:1, so the chosen county also takes a ring of ink */
+.dc-atlas-side { gap: 16px; }
+.dc-atlas-side .segmented legend { width: 100%; }
+.dc-key-sq { display: inline-block; width: 8px; height: 8px; margin-right: 8px; background: var(--mark-quiet); }
+.dc-atlas-pick { display: grid; gap: 4px; }
+.dc-atlas-pick label { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.dc-atlas-pick select { min-height: 44px; padding: 6px 8px; font: inherit; color: var(--atni-text-heading); background: var(--atni-ground-overlay); border: 1px solid var(--control-edge); border-radius: 0; }
+.dc-atlas-pick select:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
+.dc-atlas-card { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.dc-atlas-card:empty { display: none; }
+.dc-atlas-card h4 { margin: 0; font-size: 1.375rem; line-height: 1.2; }
+.dc-card-records { margin: 0; padding: 0; list-style: none; }
+.dc-card-records li { display: grid; gap: 2px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.dc-rec-name { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.dc-rec-mw { font-family: var(--display); font-weight: 600; font-variant-numeric: tabular-nums; }
+.dc-rec-meta { font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.dc-atlas-card > .button { justify-self: start; }
+.dc-card-climate { display: grid; gap: 6px; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.dc-card-climate b { font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); }
+.dc-off { margin-top: auto; }
+/* The map sticks while the card beside it is read, so near the plate's foot it slides under the collar, which keeps the ground. */
+.dc-atlas > .plate-collar { position: relative; z-index: 1; background: var(--atni-ground-base); }
+
+/* Every record, by state: three across where they fit; an open state takes the width, its records in columns. */
+.dc-records { margin-top: var(--section-pad); }
+.dc-records > h3 { margin: 0 0 8px; font-size: 1.5rem; line-height: 1.15; }
+.dc-record-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 32px; align-items: start; }
+.dc-record-states > .disclosure[open] { grid-column: 1 / -1; }
+.dc-record-states .disclosure-body { max-width: none; padding-bottom: 16px; }
+.dc-record-list { margin: 0; padding-left: 1.25rem; columns: 30rem 3; column-gap: 48px; }
+.dc-record-list li { margin: 0 0 12px; break-inside: avoid; }
+.dc-record-list p { max-width: var(--measure); margin: 0 0 4px; }
 .dc-record-list blockquote { margin: 4px 0 4px 8px; padding-left: 12px; border-left: 2px solid var(--grid); }
-@media (max-width: 1099px) { .dc-land { grid-template-columns: minmax(0, 1fr); } }
-@media (prefers-reduced-motion: reduce) { .dc-map .m { transition: none; } }
 
+@media (prefers-reduced-motion: reduce) { .dc-m { transition: none; } }
 @media print {
-  .dc-jump, .slot-label { display: none; }
-  .dc-long > .disclosure > .disclosure-body { columns: auto; }
+  .slot-label { display: none; }
+  .dc-sheet { background-image: url("../img/relief/nw-light-1600.webp"); }
+  .dc-long > .disclosure > .disclosure-body, .dc-record-list { columns: auto; }
   .dc-grid { min-width: 0; height: auto; }
-  .dc-policy { min-height: 0; }
   #dc-forecast-check .plate-table td:is(:nth-last-child(2), :last-child) { min-width: 0; } /* on screen the table scrolls; on paper these ran it 123px off the page */
 }

@@ -6,9 +6,10 @@
  "fit": true,
  "eyebrow": "Downscaled projections, NASA NEX-GDDP-CMIP6 v2, built 11/2026",
  "title": "Walla Walla County's May to September daytime high averages about {c[cp-518][value]:.0f} F in 2040 to 2059, up from {c[cp-517][value]:.0f} F",
+ "title_template": "{label}, {cc_metric}: {display}, {series}; {cc_scenario}",
  "subtitle": "County means on NASA's quarter-degree grid from seven global models; the figures in parentheses are the lowest and highest model.",
  "text": [
-  "The first view lists the counties where public filings name a data center proposal of fifty megawatts or more. Pick a state for the other counties that the proposals on the Land tab name."
+  "The first view lists the counties where public filings name a data center proposal of fifty megawatts or more. Pick a state for the other counties that the proposals on the atlas above name."
  ],
  "boundary": "County means from a global downscaled dataset. They say nothing about any site, any Nation's land, or what should be built.",
  "controls": [
@@ -60,7 +61,7 @@
    "options": [
     {
      "value": "dc",
-     "label": "Data centers"
+     "label": "Data center counties"
     },
     {
      "value": "wa",
@@ -1570,7 +1571,7 @@
   {
    "text": "What a county mean cannot say about water at a site is on the Questions tab.",
    "href": "#q-water",
-   "link": "Water checklist"
+   "link": "Water questions"
   }
  ],
  "measures": {

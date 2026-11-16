@@ -6,6 +6,7 @@
  "fit": true,
  "eyebrow": "Past projections, checked",
  "title": "{c[dem-133][value]:.0f} {c[dem-133][unit]} put 2023 US electricity sales high; {c[dem-134][value]:.0f} {c[dem-134][unit]} put commercial sales low",
+ "title_template": "{series}, {label}, for {fc_target}: {display}",
  "subtitle": "Whether an outlook ran high or low depends on its target. Each row compares one target year on one boundary. A diamond is a projection, a circle is what came after, and the bar between them is the difference. The two EIA rulers do not start at zero, so errors of a few percent stay visible.",
  "text": [
   "Only the LBNL ruler counts data centers, and it holds one pair, read from charts: {c[dem-039][value]:.0f} TWh projected for 2020, about {c[dem-103][value]:.0f} estimated later. That is a fact about one report, not a record of data center forecasts.",

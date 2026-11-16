@@ -1,4 +1,4 @@
-"""Claims (pj- and ld-) and the plate for where named proposals sit (Data Centers, Land tab), from site/data/projects.json. Standard library only.
+"""Claims (pj- and ld-) and the plate for where named proposals sit (Data Centers, Where tab), from site/data/projects.json. Standard library only.
 
     python -B scripts/project_claims.py
     then python scripts/build_plates.py --export-claims projects
@@ -99,13 +99,15 @@ def plate(ld, members):
     return {
         "schema": 1, "tier": "T0", "id": "dc-project-land", "page": "data-centers/index.html", "fit": True,
         "eyebrow": "Named proposals in public filings, read 11/05/2026",
-        "title": f"The filings read put {{c[{ld[('federal-blm', 'all')]}][value]:.0f}} of {{c[{ld[('total', 'all')]}][value]:.0f}} named proposals on BLM public land",
+        # The larger finding leads (data-centers-31): most filings read state no land at all.
+        "title": f"The filings read state no land for {{c[{ld[('not-stated', 'all')]}][value]:.0f}} of the {{c[{ld[('total', 'all')]}][value]:.0f}} named proposals",
+        "title_template": "{label}: {display} of the named proposals read, {kind}",
         "subtitle": "Land as each filing states it. No parcel outline yet, and no owner of record.",
         "text": ["A request or an application is not an approval. Each bar counts proposals whose public filing states that kind of land; a filing that says nothing is counted as not stated."],
         "controls": [{"type": "segmented", "name": "kind", "label": "Kind", "default": "all", "options": [{"value": s[0], "label": s[1]} for s in STOPS]}],
         "by": "kind",
         "plot": {"type": "ladder", "units": {"projects": ""}, "groups": [{"id": "land", "label": "Named proposals", "mark": "bar", "domain": [0, -(-(top + 1) // 10) * 10]}]},
-        "default": "federal-blm",
+        "default": "not-stated",
         "boundary": "What public filings say about where a proposal sits. Not a title record and not an ownership finding; on Tribal or Trust land, only the source's own words.",
         "reading": ("{label}: {display} of the named proposals read ({kind}), by the public documents read on 11/05/2026. The class is the filing's own wording, "
                     "not a title search; a request or an application is not an approval."),

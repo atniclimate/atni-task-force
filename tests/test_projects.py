@@ -1,5 +1,5 @@
-"""Named proposals and where they sit: the shipped records pass the validator, the counts add up, the claims match the records, and the map
-puts each square inside its county (and, with the Census file at hand, Walla Walla inside Washington)."""
+"""Named proposals and where they sit: the shipped records pass the validator, the counts add up, the claims match the records, the county map file
+puts each square inside its county (and, with the Census file at hand, Walla Walla inside Washington), and the atlas and its relief are current."""
 import json
 import re
 import sys
@@ -9,6 +9,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import bake_relief as br  # noqa: E402
 import build_project_map as bpm  # noqa: E402
 import project_claims as pc  # noqa: E402
 import validate_public as vp  # noqa: E402
@@ -44,8 +45,34 @@ def test_map_is_small_self_contained_and_marks_every_county_record():
     assert len(SVG.encode("utf-8")) <= 40 * 1024
     assert not re.search(r"https?://|<script|<image|xlink:href|@import|font-family", SVG.replace('xmlns="http://www.w3.org/2000/svg"', ""))
     assert set(re.findall(r'data-id="([A-Z]{2}-[A-Z]+-\d+)"', SVG)) == {p["id"] for p in DATA["projects"] if p["counties"]}
+
+
+def test_atlas_marks_each_county_record_and_draws_no_boundary():
+    """The atlas on the page: a square for each record and county on the relief sheet, a picker option for every county a record names, and nothing but
+    rectangles, points and physical names: no path, line or polygon, so no boundary of any kind is drawn."""
     page = bpm.PAGE.read_text(encoding="utf-8")
-    assert SVG.strip() in page, "rerun scripts/build_project_map.py"
+    atlas = re.search(r"<!-- map:projects -->(.*?)<!-- /map:projects -->", page, re.S)[1]
+    assert not re.search(r"<(path|line|polygon|polyline|image)\b|https?://", atlas)
+    per_county = {}
+    for p in DATA["projects"]:
+        for c in p["counties"]:
+            per_county[c["fips"]] = per_county.get(c["fips"], 0) + 1
+    options = {f: int(n) for f, n in re.findall(r'<option value="(\d{5})"[^>]*>[^<]*\((\d+)\)</option>', atlas)}
+    assert options == per_county
+    drawn = {f: len(re.findall(r'class="dc-m"', body)) for f, body in re.findall(r'<svg class="dc-cty"[^>]* data-fips="(\d{5})"[^>]*>(.*?)</svg>', atlas)}
+    assert drawn and all(drawn[f] == per_county[f] for f in drawn)
+    labels = re.findall(r"<text[^>]*>([^<]+)</text>", atlas)
+    assert set(labels) == {t for t, *_ in bpm.LABELS} | {t for t, *_ in bpm.CITIES}
+
+
+def test_relief_is_current_and_in_budget():
+    """The four relief images match their record (bake_relief.py --check needs no raw data), each is at most 120 KB, and the record credits its sources."""
+    assert br.stale() == []
+    record = json.loads(br.RECORD.read_text(encoding="utf-8"))
+    assert {o["path"] for o in record["outputs"]} == {p.relative_to(ROOT).as_posix() for p in br.outputs()}
+    assert all(o["bytes"] <= 120 * 1024 for o in record["outputs"])
+    assert any("ETOPO 2022" in c for c in record["credits"]) and any("Natural Earth" in c for c in record["credits"])
+    assert record["tier"] == "T0" and all(i["sha256"] and i["terms"] for i in record["inputs"])
 
 
 def rings_of(d):

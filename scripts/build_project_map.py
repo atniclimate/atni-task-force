@@ -1,12 +1,15 @@
-"""Builds the inline SVG map of where named proposals sit, and the record list by state, from the Census 1:20,000,000 county file and site/data/projects.json.
+"""Builds the atlas of where named proposals sit (the Where tab), the record list by state, and the county map file, from the Census 1:20,000,000 county file
+and site/data/projects.json.
 
     python -B scripts/build_project_map.py           (writes)        python -B scripts/build_project_map.py --check   (exit 1 if the page or the SVG is stale)
 
-Reads   work/site-refresh/n6/cb_2024_us_county_20m.zip (local; sha256 recorded in projects.json), site/data/projects.json
-Writes  site/data-centers/index.html between <!-- map:projects --> and between <!-- records:projects -->, and site/assets/img/maps/projects.svg.
-        The SVG is aria-hidden: the record list by state is its text, one entry per record, with each MW figure a claim mark (pj-, scripts/project_claims.py).
-        No script, font, image or external reference; light and dark through currentColor and CSS variables, its rules scoped to .project-map.
-Draws   WA, OR, ID and MT in full, and the NV and CA counties whose interior point is at or north of 38.0 N. A county with no record is not drawn on its own: each state's
+Reads   work/site-refresh/n6/cb_2024_us_county_20m.zip (local; sha256 recorded in projects.json), site/data/projects.json, and the county keys of
+        site/data/plates/dc-climate-counties.json (so a county card can name its climate row)
+Writes  site/data-centers/index.html between <!-- map:projects --> (the atlas) and between <!-- records:projects -->, and site/assets/img/maps/projects.svg.
+        The atlas draws one square per record and county at that county's interior point on the relief sheet of scripts/bake_relief.py, with physical names
+        only: no boundary, no Tribal place name. Its marks are aria-hidden; the county picker beside it and the record list are its text, each MW figure a claim
+        mark (pj-, scripts/project_claims.py). The SVG file is the county map as a download, not drawn on the page.
+The file: WA, OR, ID and MT in full, and the NV and CA counties whose interior point is at or north of 38.0 N. A county with no record is not drawn on its own: each state's
         outline is the dissolved edge of its counties (shared edges cancel). A county with a record is drawn and shaded by how many records name it. One square per record
         and county sits at that county's interior point (the point farthest from its edge, found on the Census polygon), laid out in a small grid when a county holds
         several. A filled square is a record whose MW claim is verified; a hollow square is a figure from press, a sum, no MW at all, or a status page.
@@ -24,12 +27,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import bake_relief as br  # noqa: E402
 import project_claims as pc  # noqa: E402
 
 ROOT = HERE.parent
 COUNTIES_ZIP = ROOT / "work" / "site-refresh" / "n6" / "cb_2024_us_county_20m.zip"
 PAGE = ROOT / "site" / "data-centers" / "index.html"
 SVG_OUT = ROOT / "site" / "assets" / "img" / "maps" / "projects.svg"
+CLIMATE_PLATE = ROOT / "site" / "data" / "plates" / "dc-climate-counties.json"
 STATE_NAMES = {"WA": "Washington", "OR": "Oregon", "ID": "Idaho", "MT": "Montana", "NV": "Nevada", "CA": "California"}
 KIND_SAY = {"data center": "a data center", "generation": "generation", "storage": "storage", "transmission": "a transmission line", "substation": "a substation"}
 
@@ -302,11 +307,20 @@ def us(iso):
     return f"{p[1]}/{p[2]}/{p[0]}" if len(p) == 3 else f"{p[1]}/{p[0]}"
 
 
+def away():
+    return "sources/" if (PAGE.parent / "sources" / "index.html").is_file() else ""  # a mark links the page's Sources page, as pour_claim_refs.py leaves it (owner ruling 39)
+
+
+def land_words(p, classes):
+    land = classes[p["land"]["class"]].split(",")[0].split(";")[0]
+    return land if land.startswith("Land") else "Land: " + re.sub(r"^(A|The) ", lambda x: x.group(1).lower() + " ", land)
+
+
 def records_html(proj):
-    """One disclosure per state, one entry per record, in file order. Every MW figure is a claim mark; every other digit is a date or an identifier."""
+    """One disclosure per state, one entry per record, in file order. Every MW figure is a claim mark; every other digit is a date, an identifier, or a count of
+    the list's own entries. Each entry carries its counties, kind, status and land as attributes, so the atlas's county card reads the same record."""
     e = html.escape
     pj = pc.pj_ids(proj["projects"])
-    away = "sources/" if (PAGE.parent / "sources" / "index.html").is_file() else ""  # a mark links the page's Sources page, as pour_claim_refs.py leaves it (owner ruling 39)
     classes = proj["land_classes"]
     by_state = {}
     for p in proj["projects"]:
@@ -315,22 +329,128 @@ def records_html(proj):
     for st, name in STATE_NAMES.items():
         items = []
         for p in by_state.get(st, []):
-            mw = (f'<a class="cr" data-claim="{pj[p["id"]]}" href="{away}#src-{pj[p["id"]]}">{p["mw"]:,g} MW</a> as filed' if p["mw_claim"] else "no MW stated by the sources read")
+            mw = (f'<a class="cr" data-claim="{pj[p["id"]]}" href="{away()}#src-{pj[p["id"]]}">{p["mw"]:,g} MW</a> as filed' if p["mw_claim"] else "no MW stated by the sources read")
             where = "; ".join(f'{e(c["name"])} County, {c["state"]}' for c in p["counties"]) or "No county named by the sources read"
-            land = classes[p["land"]["class"]].split(",")[0].split(";")[0]
-            land = e(land if land.startswith("Land") else "Land: " + re.sub(r"^(A|The) ", lambda x: x.group(1).lower() + " ", land))
+            land = land_words(p, classes)
+            short = "Land not stated by the sources read" if p["land"]["class"] == "not-stated" else land.removeprefix("Land: ")
+            land = e(land)
             if p["land"].get("as_stated"):
                 land += f' (“{e(p["land"]["as_stated"])}”)'
             parcels = "".join(f' Parcel {e(x["id"])}, as the county notice prints it.' for x in p["land"]["parcels"])
             quotes = "".join(f'<blockquote><p>“{e(t["text"])}”</p><p class="caption">{e(t["attribution"])}.</p></blockquote>' for t in p["tribal_context"] or [])
             links = "; ".join(f'<a href="{e(s["url"])}">{e(s["title"])}</a> ({e(s["publisher"])}{", " + us(s["date"]) if s.get("date") else ""})' for s in p["sources"])
-            items.append(f'<li id="rec-{e(p["id"].lower())}"><p><strong>{e(p["name"])}</strong>, {KIND_SAY[p["kind"]]}: {mw}. Status: {e(p["status"])}, {us(p["status_date"])}. '
+            meta = f'{p["kind"][0].upper()}{p["kind"][1:]}, {p["status"]}{", " + us(p["status_date"]) if p["status_date"] else ""}'
+            items.append(f'<li id="rec-{e(p["id"].lower())}" data-fips="{" ".join(c["fips"] for c in p["counties"])}" data-kind="{KIND_KEY[p["kind"]]}" '
+                         f'data-meta="{e(meta)}" data-land="{e(short[0].lower() + short[1:])}">'
+                         f'<p><strong>{e(p["name"])}</strong>, {KIND_SAY[p["kind"]]}: {mw}. Status: {e(p["status"])}, {us(p["status_date"])}. '
                          f'{where}. {land}.{parcels} Developer as filed: {e(p["developer_as_filed"] or "not named by the sources read")}.</p>{quotes}'
                          f'<p class="caption">Sources: {links}.</p></li>')
         if items:
-            out.append(f'<details class="disclosure" id="records-{st.lower()}"><summary><h3>{name}</h3><span>The named proposals whose filings sit in {name}, '
-                       f'with the land each states.</span></summary><div class="disclosure-body"><ol class="dc-record-list">{"".join(items)}</ol></div></details>')
+            # A count of this list's own entries, and how many of them state a size: MW figures rest on different bases (PJ_LIMIT), so they are not summed.
+            sized = sum(1 for p in by_state[st] if p["mw_claim"])
+            say = f'{len(items)} named {"proposal" if len(items) == 1 else "proposals"}; {sized if sized else "none"} {"states" if sized == 1 else "state"} a size in MW as filed.'
+            out.append(f'<details class="disclosure" id="records-{st.lower()}"><summary><h4>{name}</h4><span>{say}</span></summary>'
+                       f'<div class="disclosure-body"><ol class="dc-record-list">{"".join(items)}</ol></div></details>')
     return "\n".join(out)
+
+
+# The atlas (DIRECTION-R2 section 4, the Where tab): the relief bake_relief.py bakes, one uniform 6px square per named proposal at its county's interior point on
+# that sheet, and the physical names a Northwest reader steers by. No boundary of any kind, no Tribal place name, no point that reads as a site. The squares'
+# places are written here, as percentages of the sheet, so the field draws without scripts; site/assets/css/dc.css fits the view below to the field.
+LABELS = [  # name, lon, lat, kind, rotation: placed clear of the squares (the Field Atlas comp's places)
+    ("Pacific Ocean", -124.95, 44.2, "sea", -90),
+    ("Columbia River", -119.93, 46.98, "water", -79),
+    ("Snake River", -116.62, 45.55, "water", -84),
+    ("Willamette River", -123.12, 44.72, "water", -78),
+    ("Cascade Range", -121.3, 46.55, "land", -82),
+    ("Columbia Plateau", -118.45, 47.28, "land", 0),
+    ("Blue Mountains", -118.95, 44.52, "land", 0),
+    ("Snake River Plain", -112.95, 43.68, "land", 0),
+    ("Northern Rockies", -115.15, 45.35, "land", 0),
+]
+CITIES = [("Seattle", -122.33, 47.61, "right"), ("Portland", -122.68, 45.52, "above"), ("Spokane", -117.43, 47.66, "right"), ("Boise", -116.2, 43.62, "left"),
+          ("Missoula", -113.99, 46.87, "right")]
+VIEW = (-124.8, 49.0, -111.6, 42.25)  # west, north, east, south: the part of the sheet the field always shows, where the mapped proposals are
+PITCH, SQUARE = 8, 6
+
+
+def atlas_points(proj, counties):
+    """Each county a record names, at its interior point on the relief sheet (farthest from its edge, on the Census polygon in the sheet's pixels)."""
+    have, by_fips = {}, {c["fips"]: c for c in counties}
+    for p in proj["projects"]:
+        for c in p["counties"]:
+            have.setdefault(c["fips"], []).append(p)
+    out = []
+    for fips, ps in have.items():
+        c = by_fips[fips]
+        x, y = interior_point([[br.px(lon, lat) for lon, lat in ring] for ring in c["rings"]])
+        out.append({"fips": fips, "name": f'{c["name"]} County', "state": STATES[c["statefp"]], "x": x, "y": y, "projects": sorted({p["id"]: p for p in ps}.values(), key=lambda p: p["id"])})
+    return sorted(out, key=lambda c: (c["y"], c["x"]))
+
+
+def climate_of(c, keys):
+    """The county's row on the climate plate, when it has one, so its card can read it."""
+    key = f'{c["name"].removesuffix(" County").lower().replace(" ", "-")}-{c["state"].lower()}'
+    return f' data-climate="{key}"' if key in keys else ""
+
+
+def atlas_html(proj, counties, climate_keys):
+    e = html.escape
+    pts = atlas_points(proj, counties)
+    on_sheet = [c for c in pts if 0 < c["x"] < br.W and 0 < c["y"] < br.H]
+    south = sum(len(c["projects"]) for c in pts if c["y"] >= br.H)
+    east = sum(len(c["projects"]) for c in pts if c["x"] >= br.W and c["y"] < br.H)
+    if len(on_sheet) + sum(1 for c in pts if c["y"] >= br.H or c["x"] >= br.W) != len(pts):
+        sys.exit("a county with a record lies west or north of the relief sheet; widen bake_relief.py's extent")
+    pct = lambda v, whole: f"{v / whole * 100:.3f}%"  # noqa: E731
+    labels = []
+    for text, lon, lat, kind, rot in LABELS:
+        x, y = br.px(lon, lat)
+        turn = f' transform="rotate({rot})"' if rot else ""
+        labels.append(f'<svg x="{pct(x, br.W)}" y="{pct(y, br.H)}" overflow="visible"><text class="is-{kind}" text-anchor="middle" dy="0.35em"{turn}>{e(text)}</text></svg>')
+    side = {"left": 'dx="-0.8em" dy="0.35em" text-anchor="end"', "right": 'dx="0.8em" dy="0.35em"', "above": 'dy="-0.8em" text-anchor="middle"'}
+    for text, lon, lat, where in CITIES:
+        x, y = br.px(lon, lat)
+        labels.append(f'<svg x="{pct(x, br.W)}" y="{pct(y, br.H)}" overflow="visible" class="dc-city"><circle r="3"/><text {side[where]}>{e(text)}</text></svg>')
+    marks = []
+    for c in on_sheet:
+        n = len(c["projects"])
+        cols = min(4, math.ceil(math.sqrt(n)))
+        rows = math.ceil(n / cols)
+        w, h = cols * PITCH - (PITCH - SQUARE), rows * PITCH - (PITCH - SQUARE)
+        sq = "".join(f'<rect class="dc-m" data-kind="{KIND_KEY[p["kind"]]}" x="{(i % cols) * PITCH - w / 2:g}" y="{(i // cols) * PITCH - h / 2:g}" width="{SQUARE}" height="{SQUARE}"/>'
+                     for i, p in enumerate(c["projects"]))
+        clim = climate_of(c, climate_keys)
+        marks.append(f'<svg class="dc-cty" x="{pct(c["x"], br.W)}" y="{pct(c["y"], br.H)}" overflow="visible" data-fips="{c["fips"]}"{clim}>'
+                     f'<rect class="dc-hit" x="{-w / 2 - 8:g}" y="{-h / 2 - 8:g}" width="{w + 16:g}" height="{h + 16:g}"/>'
+                     f'<rect class="dc-ring" x="{-w / 2 - 4:g}" y="{-h / 2 - 4:g}" width="{w + 8:g}" height="{h + 8:g}"/>{sq}</svg>')
+    (w0, n0), (e0, s0) = br.px(VIEW[0], VIEW[1]), br.px(VIEW[2], VIEW[3])
+    view = f"--vw:{e0 - w0:.0f};--vh:{s0 - n0:.0f};--cx:{(w0 + e0) / 2:.0f};--cy:{(n0 + s0) / 2:.0f};--sw:{br.W};--sh:{br.H}"
+    options = []
+    for st, name in STATE_NAMES.items():
+        mine = sorted((c for c in pts if c["state"] == st), key=lambda c: c["name"])
+        if mine:
+            options.append(f'<optgroup label="{name}">' + "".join(
+                f'<option value="{c["fips"]}"{climate_of(c, climate_keys)}>{e(c["name"])}, {st} ({len(c["projects"])})</option>' for c in mine) + "</optgroup>")
+    first = max(pts, key=lambda c: (len(c["projects"]), -c["y"]))
+    off = []
+    if south:
+        off.append(f"Off this sheet to the south: {south} in Nevada and northern California.")
+    if east:
+        off.append(f"Off this sheet to the east: {east} in eastern Montana.")
+    ld = pc.mint(proj)[1][("total", "all")]
+    return f'''<figure class="plate dc-atlas" id="dc-atlas" data-variant="atlas" aria-labelledby="dc-atlas-title">
+<div class="plate-claim"><p class="eyebrow">Named proposals in public filings, read 11/05/2026</p><h3 class="plate-title" id="dc-atlas-title">The filings read name <a class="cr" data-claim="{ld}" href="{away()}#src-{ld}">{len(proj["projects"])}</a> data center, generation, and transmission proposals, each at a point inside its county</h3><p class="caption">A count of a curated public list on its date: what the filings read say, not every proposal in the region.</p></div>
+<div class="plate-plot dc-atlas-map"><div class="dc-field"><div class="dc-sheet" style="{view}"><svg class="dc-sheet-svg" width="100%" height="100%" aria-hidden="true" focusable="false"><g class="dc-names">{"".join(labels)}</g><g class="dc-marks">{"".join(marks)}</g></svg></div></div></div>
+<div class="plate-detail dc-atlas-side">
+<fieldset class="segmented" data-atlas-kind data-js><legend>Kind</legend><label><input type="radio" name="atlas-kind" value="all" checked><span>All</span></label><label><input type="radio" name="atlas-kind" value="dc"><span>Data centers</span></label><label><input type="radio" name="atlas-kind" value="gs"><span>Generation and storage</span></label><label><input type="radio" name="atlas-kind" value="tx"><span>Transmission</span></label></fieldset>
+<p class="caption dc-atlas-key"><span class="dc-key-sq" aria-hidden="true"></span>One square for each named proposal, at a point inside its county. It is never the site.</p>
+<p class="dc-atlas-pick" data-js><label for="dc-atlas-county">County</label><select id="dc-atlas-county" data-atlas-county data-first="{first["fips"]}">{"".join(options)}</select></p>
+<div class="dc-atlas-card" data-atlas-card aria-live="polite"></div>
+<p class="caption dc-off">{" ".join(off)} <a href="#land-records">Every record, by state</a></p>
+</div>
+<div class="plate-collar"><div class="plate-collar-sources"><p class="caption plate-source-line">Relief: NOAA National Centers for Environmental Information, ETOPO 2022. Rivers and lakes: Natural Earth. County points: U.S. Census Bureau, 2024 county file.</p><p class="plate-sources-link"><a href="{away()}#dc-atlas">All sources for this plate</a></p></div></div>
+</figure>'''
 
 
 def inject(page, name, body):
@@ -355,7 +475,8 @@ def main():
     if re.search(r"https?://|<script|<image|xlink:href|@import|font-family", svg.replace('xmlns="http://www.w3.org/2000/svg"', "")):
         sys.exit("the map holds an external reference, script, image, or font")
     page = PAGE.read_text(encoding="utf-8")
-    new = inject(inject(page, "map:projects", svg), "records:projects", records_html(proj))
+    climate = json.loads(CLIMATE_PLATE.read_text(encoding="utf-8"))
+    new = inject(inject(page, "map:projects", atlas_html(proj, counties, {r["id"] for r in climate["rows"]})), "records:projects", records_html(proj))
     if a.check:
         unpoured = lambda t: re.sub(r' (?:data-status|aria-label)="[^"]*"', "", t)  # noqa: E731  (pour_claim_refs.py adds both to each claim mark after this runs)
         stale = [n for n, ok in ((PAGE.name, unpoured(new) == unpoured(page)), (SVG_OUT.name, SVG_OUT.is_file() and SVG_OUT.read_text(encoding="utf-8") == svg + "\n")) if not ok]

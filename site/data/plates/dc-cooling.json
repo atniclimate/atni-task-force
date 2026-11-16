@@ -7,6 +7,7 @@
  "model": "comparison-model",
  "eyebrow": "Cooling",
  "title": "A {c_mw} MW site's evaporative cooling consumes about {spread_low} to {spread_high} million liters a year on site",
+ "title_template": "At {c_mw} MW and PUE {c_pue}, about {site} million liters of water a year on site, {plant} million at the power plants, and {co2} Mt of CO2",
  "subtitle": "At the 2024 national PUE the site uses about {energy[text]} TWh a year. The cooling range is the operators' figures; the power plants consume about {plant[text]} million liters more.",
  "details": ["The factors are national or fleet averages, so this illustrates a project and describes no stream."],
  "inputs": {
@@ -23,8 +24,8 @@
  },
  "controls": [
   {"type": "range", "name": "c_mw", "label": "IT load, MW", "min": 10, "max": 2000, "step": 5, "default": 100},
-  {"type": "range", "name": "c_lf", "label": "Load factor", "min": 0.5, "max": 1, "step": 0.05, "default": 0.8},
-  {"type": "range", "name": "c_pue", "label": "PUE, LBNL 2024: 1.45 all facilities, 1.145 AI-serving", "min": 1, "max": 2, "step": 0.005, "default": 1.45, "presets": [1.145, 1.45]},
+  {"type": "range", "name": "c_lf", "label": "Load factor", "min": 0.5, "max": 1, "step": 0.05, "default": 0.8, "more": true},
+  {"type": "range", "name": "c_pue", "label": "PUE, LBNL 2024: 1.45 all facilities, 1.145 AI-serving", "min": 1, "max": 2, "step": 0.005, "default": 1.45, "presets": [1.145, 1.45], "more": true},
   {
    "type": "segmented",
    "name": "c_cool",
@@ -51,7 +52,7 @@
   },
   {"type": "range", "name": "c_own", "label": "Reader's own grid, g CO2 per kWh", "min": 0, "max": 1000, "step": 10, "default": 370, "more": true}
  ],
- "more": "Reader's own grid",
+ "more": "Load factor, PUE, and the reader's own grid",
  "fields": {
   "spread_low": {"formula": "c_mw * c_lf * 8.76 * ms", "digits": 2},
   "spread_high": {"formula": "c_mw * c_lf * 8.76 * google", "digits": 2}

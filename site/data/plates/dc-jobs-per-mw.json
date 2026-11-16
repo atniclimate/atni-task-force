@@ -337,9 +337,9 @@
  ],
  "foot": [
   {
-   "text": "Written hiring and audit terms are in the checklists.",
+   "text": "Written hiring and audit terms are among the questions.",
    "href": "#q-jobs",
-   "link": "Jobs checklist"
+   "link": "Jobs questions"
   }
  ],
  "table": {
@@ -369,5 +369,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "title_template": "A {j_mw} MW site implies about {build[text]} construction workers at peak and {ops[text]} permanent staff"
 }

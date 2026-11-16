@@ -1,0 +1,84 @@
+{
+ "purpose": "Inputs and outputs of scripts/bake_relief.py, the relief under the Data Centers atlas. Public data only (T0); the inputs stay in H:/raw-data/relief/.",
+ "tier": "T0",
+ "baked_on": "2026-11-16",
+ "recipe_sha256": "5485faf4f5538c881b32e0d5af6b756e1cd3f22e6c1b21bc62127c703eb88794",
+ "credits": [
+  "Relief: NOAA National Centers for Environmental Information, ETOPO 2022 15 arc-second global relief model, retrieved 11/15/2026; free to use and redistribute.",
+  "Rivers and lakes: Natural Earth 10m physical vectors; public domain."
+ ],
+ "inputs": [
+  {
+   "name": "etopo2022_15s_pnw.nc",
+   "dataset": "ETOPO 2022 15 arc-second global relief model (ETOPO_2022_v1_15s), subset 41.5 to 49.5 N, 125.5 to 110.5 W",
+   "publisher": "NOAA National Centers for Environmental Information, served by NOAA CoastWatch ERDDAP",
+   "url": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ETOPO_2022_v1_15s.nc?z[(41.5):1:(49.5)][(-125.5):1:(-110.5)]",
+   "terms": "Free to use and redistribute, as the dataset's attributes state; not for legal use, and no warranty.",
+   "retrieved_on": "2026-11-15",
+   "sha256": "0316ab05333f2dd5a027cbc96d8755e867e1bc102786457b3099910db6472ebe",
+   "bytes": 27717748
+  },
+  {
+   "name": "ne_10m_rivers_lake_centerlines.geojson",
+   "dataset": "Natural Earth 10m rivers and lake centerlines",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_rivers_lake_centerlines.geojson",
+   "terms": "Public domain (Natural Earth terms of use).",
+   "retrieved_on": "2026-11-15",
+   "sha256": "bb854a900ecbd3b408df46d5e16e3e0f974ba55993f9d8b5c26e855273c0905a",
+   "bytes": 7307743
+  },
+  {
+   "name": "ne_10m_rivers_north_america.geojson",
+   "dataset": "Natural Earth 10m rivers, North America supplement",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_rivers_north_america.geojson",
+   "terms": "Public domain (Natural Earth terms of use).",
+   "retrieved_on": "2026-11-15",
+   "sha256": "dcd2348655a5f3d0ea7be35024073ab24f09115d2e4efb77e7bc0a33567db682",
+   "bytes": 8734704
+  },
+  {
+   "name": "ne_10m_lakes.geojson",
+   "dataset": "Natural Earth 10m lakes",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_lakes.geojson",
+   "terms": "Public domain (Natural Earth terms of use).",
+   "retrieved_on": "2026-11-15",
+   "sha256": "2d036f53dedec578001c5c30c2959ee7d4eebc1306900fa4367c49929ec8f2d9",
+   "bytes": 5043554
+  },
+  {
+   "name": "ne_10m_lakes_north_america.geojson",
+   "dataset": "Natural Earth 10m lakes, North America supplement",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_lakes_north_america.geojson",
+   "terms": "Public domain (Natural Earth terms of use).",
+   "retrieved_on": "2026-11-15",
+   "sha256": "76f49d4b698f3529e690136a989713bcd3c028ade150346f4b358de9815cfc43",
+   "bytes": 1810283
+  }
+ ],
+ "outputs": [
+  {
+   "path": "site/assets/img/relief/nw-dark-1600.webp",
+   "sha256": "8880a5795436b33fcf3ab7a9b61f9f12739dbc966138762d5ab491146ced234f",
+   "bytes": 79900
+  },
+  {
+   "path": "site/assets/img/relief/nw-dark-2520.webp",
+   "sha256": "dc67d926bcf44b8e2d6be946c69cbcabf41dde06deae50e27226a593614e8fff",
+   "bytes": 117882
+  },
+  {
+   "path": "site/assets/img/relief/nw-light-1600.webp",
+   "sha256": "57de1cf465e21068b091e8907bfccc2914d40b23b93d356f0e54c0caacc5b815",
+   "bytes": 91258
+  },
+  {
+   "path": "site/assets/img/relief/nw-light-2520.webp",
+   "sha256": "0f72fa421675e9d6b3a69f4cfb43c698709fda19ff5ad5aa2900387c2207c5c3",
+   "bytes": 117380
+  }
+ ]
+}

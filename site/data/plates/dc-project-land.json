@@ -5,7 +5,8 @@
  "page": "data-centers/index.html",
  "fit": true,
  "eyebrow": "Named proposals in public filings, read 11/05/2026",
- "title": "The filings read put {c[ld-005][value]:.0f} of {c[ld-001][value]:.0f} named proposals on BLM public land",
+ "title": "The filings read state no land for {c[ld-023][value]:.0f} of the {c[ld-001][value]:.0f} named proposals",
+ "title_template": "{label}: {display} of the named proposals read, {kind}",
  "subtitle": "Land as each filing states it. No parcel outline yet, and no owner of record.",
  "text": [
   "A request or an application is not an approval. Each bar counts proposals whose public filing states that kind of land; a filing that says nothing is counted as not stated."
@@ -54,7 +55,7 @@
    }
   ]
  },
- "default": "federal-blm",
+ "default": "not-stated",
  "boundary": "What public filings say about where a proposal sits. Not a title record and not an ownership finding; on Tribal or Trust land, only the source's own words.",
  "reading": "{label}: {display} of the named proposals read ({kind}), by the public documents read on 11/05/2026. The class is the filing's own wording, not a title search; a request or an application is not an approval.",
  "not_counted": "None of the named proposals read sits here",

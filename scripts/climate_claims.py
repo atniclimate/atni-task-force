@@ -145,9 +145,10 @@ def plate(data, regions, ids, claims):
         "schema": 1, "tier": "T0", "id": PLATE_ID, "page": "data-centers/index.html", "fit": True,
         "eyebrow": "Downscaled projections, NASA NEX-GDDP-CMIP6 v2, built 11/2026",
         "title": f"Walla Walla County's May to September daytime high averages about {{c[{ww_fut}][value]:.0f}} F in 2040 to 2059, up from {{c[{ww_base}][value]:.0f}} F",
+        "title_template": "{label}, {cc_metric}: {display}, {series}; {cc_scenario}",
         "subtitle": "County means on NASA's quarter-degree grid from seven global models; the figures in parentheses are the lowest and highest model.",
         "text": ["The first view lists the counties where public filings name a data center proposal of fifty megawatts or more. Pick a state for the "
-                 "other counties that the proposals on the Land tab name."],
+                 "other counties that the proposals on the atlas above name."],
         "boundary": "County means from a global downscaled dataset. They say nothing about any site, any Nation's land, or what should be built.",
         "controls": [
             {"type": "segmented", "name": "cc_scenario", "label": "Scenario", "default": "ssp245",
@@ -155,7 +156,7 @@ def plate(data, regions, ids, claims):
             {"type": "segmented", "name": "cc_metric", "label": "Measure", "default": DEFAULT_METRIC,
              "options": [{"value": m, "label": data["metrics"][m]["label"]} for m in METRIC_ORDER]},
             {"type": "segmented", "name": "cc_state", "label": "Counties", "default": "dc",
-             "options": [{"value": "dc", "label": "Data centers"}, *({"value": s.lower(), "label": s} for s in states)]},
+             "options": [{"value": "dc", "label": "Data center counties"}, *({"value": s.lower(), "label": s} for s in states)]},
         ],
         "by": "cc_scenario",
         "plot": {"type": "ladder", "domain": metrics[DEFAULT_METRIC]["domain"], "axis_label": AXIS[DEFAULT_METRIC]},
@@ -174,7 +175,7 @@ def plate(data, regions, ids, claims):
             "ran drier in one county and wetter in the other.",
         ],
         "foot": [{"text": "Every county, measure, and scenario, with each model's own figure.", "href": "../data/climate-regions.json", "link": "climate-regions.json"},
-                 {"text": "What a county mean cannot say about water at a site is on the Questions tab.", "href": "#q-water", "link": "Water checklist"}],
+                 {"text": "What a county mean cannot say about water at a site is on the Questions tab.", "href": "#q-water", "link": "Water questions"}],
         "measures": {"metrics": metrics, "default": DEFAULT_METRIC, "scenarios": SCEN_LABEL, "dc": dc, "rows": by_row},
     }
 

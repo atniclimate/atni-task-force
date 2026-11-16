@@ -1,12 +1,18 @@
-// The Data Center page: count squares in the instruments, the Council plate's second view, the jobs ruler, the matrix's one sentence, and the check of past projections.
-// Numbers come from the plates' data blocks; text reaches the page by textContent only.
+// The Data Center page: the proposal's Count view, the region on the load plate's axis, the cooling readout that follows its control, the jobs ruler, the
+// matrix's one sentence, the check of past projections, the county Table that follows its measure, and the atlas's county card.
+// Numbers come from the plates' data blocks and the page's own record list; text reaches the page by textContent only. Nothing here moves a laid-out
+// block after first paint (data-centers-01): every plate is in its final place in the HTML.
 (function () {
 const { add, frame, inner, chart, scale } = plate.draw;
+const register = (id, options) => document.querySelector(`[data-plate="${id}"]`) && plate.register(id, options); // home loads this script for dc-project alone
 const num = (v) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(v);
 const blank = (v) => v === undefined || v === null;
-
-// With scripts, the jump list and a named photograph slot read in the first plate's claim zone, so the plate starts under the tabs. Without them they stay above it.
-for (const head of document.querySelectorAll('.dc-panel-head')) head.closest('.panel').querySelector('.plate-claim').append(...head.querySelectorAll('.slot-label, .dc-jump'));
+const el = (tag, cls, ...kids) => {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  node.append(...kids.filter((k) => !blank(k)));
+  return node;
+};
 
 // The largest pitch at which n squares fit W by H.
 function fitPitch(n, W, H, max = 24) {
@@ -47,8 +53,7 @@ function fillTrack(node, runs, pitch) {
 function unitNote(plot, text) {
   let note = plot.querySelector('.dc-unit');
   if (!note) {
-    note = document.createElement('p');
-    note.className = 'caption dc-unit';
+    note = el('p', 'caption dc-unit');
     note.setAttribute('aria-hidden', 'true');
     plot.prepend(note);
   }
@@ -86,7 +91,8 @@ function moveRecord(root) {
   root.querySelector('.plate-plot').setAttribute('aria-owns', list.id);
   return more;
 }
-const record = moveRecord(document.getElementById('dc-jobs-per-mw'));
+const jobs = document.getElementById('dc-jobs-per-mw');
+const record = jobs && moveRecord(jobs);
 
 const stopNeedle = (list, y) => { list.querySelector('.needle').style.bottom = `${list.clientHeight - y}px`; };
 
@@ -95,7 +101,7 @@ const niceTop = (v) => {
   const decade = 10 ** Math.floor(Math.log10(v));
   return [1, 2, 5, 10].find((n) => n * decade >= v) * decade;
 };
-plate.register('dc-jobs-per-mw', {
+register('dc-jobs-per-mw', {
   render(ctx) {
     ctx.auto();
     if ((ctx.reason === 'select' || ctx.reason === 'init') && ctx.rows[0]?.group === 'ctx') record.open = true; // arrows or a link reached a record row, so it must show
@@ -118,23 +124,67 @@ plate.register('dc-jobs-per-mw', {
   },
 });
 
-plate.register('dc-cooling', {
+// Cooling: the readout follows the row the reader's last setting moves (data-centers-08): a cooling design moves the water on site, a grid moves the CO2.
+// At the starting point, and after Back to the starting point, it is the electricity the needle reads.
+const READS = { c_cool: 'site', c_grid: 'co2', c_own: 'co2' };
+let coolBy = null;
+const cooling = document.getElementById('dc-cooling');
+cooling?.addEventListener('input', (e) => { coolBy = READS[e.target.closest('[data-param]')?.dataset.param] || null; }, true);
+cooling?.addEventListener('click', (e) => { if (e.target.closest('[data-reset]')) coolBy = null; }, true);
+register('dc-cooling', {
   render(ctx) {
     countRows(ctx, ['site', 'plant'], (top) => (top <= 40000 ? 100 : 1000), (unit) => `One square is ${unit} million liters of water, in both water rows.`);
+    const r = coolBy && ctx.data.rows.find((x) => x.key === coolBy);
+    if (r?.text) ctx.readout(r.text, r.unit);
   },
 });
 
-plate.register('dc-project', {
+// The proposal: Count first, one square a hundred aMW in rows of 25, as in every count view on the site: the region today, the Council's input for 2030, and the
+// project in orange. Rulers is the instrument the build draws, its rows on logarithmic rulers of one span under one needle.
+function drawCount(ctx) {
+  const { plot, inputs } = ctx;
+  let box = plot.querySelector('.dc-count');
+  if (!box) {
+    box = el('div', 'dc-count');
+    box.setAttribute('aria-hidden', 'true'); // the Rulers rows and the Table hold every figure with its claim
+    plot.append(box);
+  }
+  box.replaceChildren();
+  const amw = ctx.data.rows.find((r) => r.key === 'amw').value;
+  const per = 25;
+  const line = 28;
+  const fields = [
+    { text: `The region's load today: ${num(inputs.region)} aMW`, n: inputs.region / 100, cls: 'dc-ctx' },
+    { text: `The Council's 2030 input, data centers and chip fabs: ${num(inputs.c2030)} aMW`, n: inputs.c2030 / 100, cls: 'm-count is-hollow' },
+    { text: `This project: ${num(amw)} aMW`, n: amw / 100, cls: 'dc-lit' },
+  ];
+  const lines = (n) => Math.max(1, Math.ceil(n / per - 1e-9));
+  const W = box.clientWidth || plot.clientWidth;
+  const H = (plot.clientHeight || 400) - 8;
+  const pitch = Math.max(6, Math.min(28, Math.floor(W / per), Math.floor((H - line * fields.length) / fields.reduce((sum, f) => sum + lines(f.n), 0))));
+  for (const f of fields) {
+    const svg = add(el('div', 'dc-count-field'), 'svg', { width: per * pitch, height: lines(f.n) * pitch });
+    add(svg, 'path', { class: f.cls, d: cells(0, f.n, pitch, per) });
+    box.append(el('p', 'dc-count-label', f.text), svg.parentNode);
+  }
+}
+register('dc-project', {
   render(ctx) {
     ctx.auto();
     markWords(ctx);
+    const counting = ctx.state.p_view !== 'rulers';
+    ctx.plot.classList.toggle('dc-is-count', counting);
     if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
+    if (counting) {
+      drawCount(ctx);
+      return;
+    }
     // One water row until the reader counts the plant, set before measuring, so the squares fit the height the rows then have.
     rowNode(ctx.plot, 'plant').hidden = ctx.state.p_plant !== 'on';
     const node = rowNode(ctx.plot, 'share');
     const region = ctx.inputs.region / 100;
     const pitch = fitPitch(region, trackOf(node).clientWidth, trackOf(node).clientHeight);
-    fillTrack(node, [{ n: region, cls: 'dc-ctx' }, { n: ctx.inputs.amw / 100, cls: 'dc-lit', from: 0 }], pitch);
+    fillTrack(node, [{ n: region, cls: 'dc-ctx' }, { n: ctx.data.rows.find((r) => r.key === 'amw').value / 100, cls: 'dc-lit', from: 0 }], pitch);
     // The needle reads across the rulers and stops above the squares, where a place on a ruler means nothing.
     const last = rowNode(ctx.plot, ctx.state.p_plant === 'on' ? 'plant' : 'site');
     stopNeedle(node.parentElement, last.offsetTop + last.offsetHeight);
@@ -144,7 +194,7 @@ plate.register('dc-project', {
 });
 
 // One sentence for a cell, however many figures it holds. plate.js adds a partly figure's limit, and the receipts line under it counts the statuses.
-plate.register('dc-tradeoff-matrix', {
+register('dc-tradeoff-matrix', {
   render(ctx) {
     const [first] = ctx.rows;
     ctx.auto();
@@ -152,86 +202,60 @@ plate.register('dc-tradeoff-matrix', {
   },
 });
 
-// The selected case read at 2030 and 2050, so the needle has something to read where the four lines nearly touch.
-plate.register('dc-eia-servers', {
+// EIA: the selected case read at 2030 and 2050, so the needle has something to read where the four lines nearly touch. A year the four cases share says so,
+// rather than "span 104.8 to 104.8" (data-centers-10).
+register('dc-eia-servers', {
   render(ctx) {
     ctx.auto();
-    if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
     const lead = ctx.data.plot.highlight;
+    const r = ctx.rows.find((x) => x.series === lead) || ctx.rows[0];
+    const band = r && (ctx.data.plot.band || []).find((b) => b[0] === r.year);
+    if (band && band[1] === band[2]) ctx.reading(`${r.series}: ${r.text} TWh for data center servers in ${r.year}. All four cases share this figure for ${r.year}.`);
+    if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
     const svg = ctx.plot.querySelector('.plate-svg');
     const names = [...svg.querySelectorAll('.m-label')].map((n) => +n.getAttribute('y')); // the column at the lines' ends
     for (const year of ['2030', '2050']) {
       const dot = ctx.plot.querySelector(`[data-row="${year}"] .m-dot.is-lead`);
-      const r = ctx.data.rows.find((x) => x.key === year && x.series === lead);
-      if (dot && r) {
+      const at = ctx.data.rows.find((x) => x.key === year && x.series === lead);
+      if (dot && at) {
         dot.classList.add('is-solo');
         const top = +dot.getAttribute('y') - 6;
         const x = +dot.getAttribute('x') - 6;
         const near = names.filter((h) => Math.abs(h - top) < 48);
         const overAxis = x - 88 < 56; // on a narrow plot the figure runs back over the axis, so it rises clear of the tick there
-        add(svg, 'text', { class: 'm-label is-lead', x, y: year === '2050' && near.length ? Math.min(top, Math.min(...near) - 17) : overAxis ? top - 16 : top, 'text-anchor': 'end', text: `${year}: ${num(r.value)}` });
+        add(svg, 'text', { class: 'm-label is-lead', x, y: year === '2050' && near.length ? Math.min(top, Math.min(...near) - 17) : overAxis ? top - 16 : top, 'text-anchor': 'end', text: `${year}: ${num(at.value)}` });
       }
     }
   },
 });
 
-// The Council plate, Lines: the line's name sits over its end, so the years take the plot's width and no margin can cut the name at a narrow window.
-// The default year is the first, so the years start 24px in from the ticks, or the needle would read as the y axis. Both inputs show their marks, grey until selected.
+// The Council plate: the line's name sits over its end, so the years take the plot's width and no margin can cut the name at a narrow window. The whole region
+// today is a rule across the same axis (data-centers-19), so the input reads against it. The default year is the first, so the years start 24px in from the ticks,
+// or the needle would read as the y axis.
 const LEAD = 'Data centers and chip fabs';
-function drawLines(ctx) {
-  const { plot, data } = ctx;
-  const f = frame(plot);
-  const area = inner(f.g, f.W, f.H, { top: 20, right: 14, bottom: 28, left: 56 });
-  const [from, to] = data.plot.xdomain;
-  chart(area, data.rows, { ...data.plot, xdomain: [from - ((to - from) * 24) / (area.x1 - area.x0 - 24), to] }, false);
-  for (const dot of f.g.querySelectorAll('.m-dot')) {
-    dot.classList.remove('is-lead');
-    dot.classList.add('is-solo');
-  }
-  const y = scale('linear', data.plot.domain, [area.y0, area.y1]);
-  add(f.g, 'text', { class: 'm-label is-lead', x: area.x1 - 8, y: y(data.rows.at(-1).value) - 18, 'text-anchor': 'end', 'aria-hidden': 'true', text: LEAD });
-}
-// Its second view: the region today, then each year's load in squares of one size, in rows of 25 as in every count view. A workbook input is hollow, and the squares up to the high input
-// recede. Each year is a stop of the same list as in Lines, so keys and the Reading do not change with the view.
-function drawSquares(ctx) {
-  const { plot, data, inputs } = ctx;
-  const f = frame(plot);
-  const per = 25;
-  const line = 24;
-  const lines = (n) => Math.ceil(n / per);
-  const years = data.rows.map((r) => ({ r, mid: r.value / 100, top: (r.high ?? r.value) / 100 }));
-  const room = f.H - line * (years.length + 1);
-  const pitch = Math.max(5, Math.min(32, Math.floor(f.W / per), Math.floor(room / years.reduce((sum, y) => sum + lines(y.top), lines(inputs.region / 100)))));
-  let at = 0;
-  const stripe = (parent, text, n, draw) => {
-    add(parent, 'text', { class: 'm-label', x: 0, y: at + 16, text });
-    const box = add(parent, 'g', { transform: `translate(0 ${at + line})` });
-    draw(box);
-    at += line + lines(n) * pitch;
-  };
-  const region = add(f.g, 'g', { 'aria-hidden': 'true' });
-  stripe(region, `The region today: ${num(inputs.region)} aMW. One square is 100 aMW.`, inputs.region / 100, (box) => add(box, 'path', { class: 'dc-ctx', d: cells(0, inputs.region / 100, pitch, per) }));
-  for (const { r, mid, top } of years) {
-    const band = add(f.g, 'g', { 'data-row': r.key }); // plate.js gives it its role and names it with the Reading
-    add(band, 'rect', { class: 'm-hit', x: 0, y: at, width: f.W, height: line + lines(top) * pitch });
-    stripe(band, `${r.key}: ${num(r.value)} aMW${r.high ? `, fainter to ${num(r.high)} at high input` : ''}`, top, (box) => {
-      add(box, 'path', { class: 'm-count is-hollow', d: cells(0, mid, pitch, per) });
-      if (top > mid) add(box, 'path', { class: 'm-count is-hollow dc-faint', d: cells(Math.ceil(mid), top - Math.ceil(mid), pitch, per) });
-    });
-  }
-}
-plate.register('dc-pnw-load', {
+register('dc-pnw-load', {
   render(ctx) {
     ctx.auto();
     if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
-    const squares = ctx.state.pnw_view === 'squares';
-    ctx.plot.parentElement.classList.toggle('dc-is-squares', squares);
-    (squares ? drawSquares : drawLines)(ctx);
+    const { plot, data, inputs } = ctx;
+    const f = frame(plot);
+    const area = inner(f.g, f.W, f.H, { top: 28, right: 14, bottom: 28, left: 56 });
+    const [from, to] = data.plot.xdomain;
+    chart(area, data.rows, { ...data.plot, xdomain: [from - ((to - from) * 24) / (area.x1 - area.x0 - 24), to] }, false);
+    for (const dot of f.g.querySelectorAll('.m-dot')) {
+      dot.classList.remove('is-lead');
+      dot.classList.add('is-solo');
+    }
+    const y = scale('linear', data.plot.domain, [area.y0, area.y1]);
+    const ref = add(f.g, 'g', { class: 'dc-ref', 'aria-hidden': 'true' });
+    add(ref, 'line', { x1: area.x0, x2: area.x1, y1: y(inputs.region), y2: y(inputs.region) });
+    add(ref, 'text', { class: 'm-label is-lead', x: area.x1 - 8, y: y(inputs.region) - 8, 'text-anchor': 'end', text: `The region's load today: ${num(inputs.region)} aMW` });
+    add(f.g, 'text', { class: 'm-label is-lead', x: area.x1 - 8, y: y(data.rows.at(-1).value) - 18, 'text-anchor': 'end', 'aria-hidden': 'true', text: LEAD });
   },
 });
 
 // The range-only EPRI mark gets its name on the plot.
-plate.register('dc-lbnl-us', {
+register('dc-lbnl-us', {
   render(ctx) {
     ctx.auto();
     if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
@@ -242,7 +266,7 @@ plate.register('dc-lbnl-us', {
 });
 
 // The check of past projections: a row's end and the readout say how far off it ran, and the EIA target year changes each row's edition.
-plate.register('dc-forecast-check', {
+register('dc-forecast-check', {
   render(ctx) {
     ctx.auto();
     if (ctx.reason !== 'select') {
@@ -258,10 +282,30 @@ plate.register('dc-forecast-check', {
   },
 });
 
-// County climate: the scenario is the kit's own setting; the measure and the counties shown are placed here. Each row's figures by measure
-// arrive in the plate's data as [claim, value, low, high], every claim already among its receipts, and each measure has its own ruler.
+// County climate: the scenario is the kit's own setting; the measure and the counties shown are placed here. Each row's figures by measure arrive in the
+// plate's data as [claim, value, low, high], every claim already among its receipts, and each measure has its own ruler. The Table, and so the CSV, follow
+// the measure: each line's figure and its one claim are rewritten for it (CD 12).
 const fig3 = (v, lo, hi) => `${plate.fig(v)} (${plate.fig(lo)} to ${plate.fig(hi)})`;
-plate.register('dc-climate-counties', {
+const STATUS = { verified: 'verified', partly: 'partly verified' };
+function claimRef(plateId, id, status) {
+  const a = el('a', null, el('span', `st ${status === 'verified' ? 'st-v' : 'st-p'}`), id);
+  a.href = `sources/#${plateId}-source-${id}`;
+  a.dataset.claim = id;
+  a.firstChild.setAttribute('aria-hidden', 'true');
+  return el('span', 'claim-ref', a, ` ${STATUS[status] || status}`);
+}
+function climateTable(ctx, m, meta) {
+  const root = ctx.plot.closest('.plate');
+  for (const tr of root.querySelectorAll('.plate-table tbody tr[data-key]')) {
+    const row = m.rows[tr.dataset.key]?.[ctx.state.cc_metric];
+    if (!row) continue;
+    const past = tr.children[2].textContent.startsWith('1995');
+    const [claim, v, lo, hi] = row[past ? 'baseline' : tr.dataset.when];
+    tr.children[3].textContent = `${fig3(v, lo, hi)} ${meta.unit}`;
+    tr.lastElementChild.replaceChildren(claimRef(root.id, claim, ctx.data.receipts[claim]?.status));
+  }
+}
+register('dc-climate-counties', {
   render(ctx) {
     const m = ctx.data.measures;
     const meta = m.metrics[ctx.state.cc_metric];
@@ -287,6 +331,7 @@ plate.register('dc-climate-counties', {
         // One line a county, the finding first, "87 F, from 84": the ranges are in the readout and the facts beside the plot.
         ctx.setRow(key, { frac: at(fut[1]), x2: at(base[1]), lo: Math.min(at(base[1]), at(fut[1])), hi: Math.max(at(base[1]), at(fut[1])), text: `${plate.fig(fut[1])} ${meta.unit}, from ${plate.fig(base[1])}` });
       }
+      climateTable(ctx, m, meta);
       const chosen = ctx.plot.querySelector(`.ladder-row[data-row="${ctx.key}"]`);
       if (chosen?.hidden) requestAnimationFrame(() => ctx.plot.querySelector('.ladder-row:not([hidden])')?.click()); // a filter hid the selected county, so the first one shown takes over
     }
@@ -295,18 +340,81 @@ plate.register('dc-climate-counties', {
     const [b, f] = [fig3(...base.slice(1)), fig3(...fut.slice(1))];
     ctx.reading(`${label}, ${m.scenarios[ctx.state.cc_scenario]}: the ${meta.words} averages about ${f} ${meta.unit} in 2040 to 2059, the median of seven models with the lowest and highest in parentheses, against ${b} ${meta.unit} in 1995 to 2014. A county mean on a quarter-degree grid. Limit: ${ctx.data.receipts[fut[0]].limit}`);
     ctx.readout(f, meta.unit);
-    for (const r of ctx.rows) r.display = `${r.series.startsWith('2040') ? f : b} ${meta.unit}`; // the facts list beside the plot names this measure's figures, not the build's
+    for (const r of ctx.rows) r.display = `${r.series.startsWith('2040') ? f : b} ${meta.unit}`; // the facts, the title, and the answer name this measure's figures
   },
 });
 
-// Where proposals sit: the selected land row lights its squares on the county map, and the kind picked dims the rest.
-plate.register('dc-project-land', {
-  render(ctx) {
-    ctx.auto();
-    for (const sq of document.querySelectorAll('#project-map .m')) {
-      sq.classList.toggle('is-selected', sq.dataset.row === ctx.key);
-      sq.classList.toggle('is-dim', sq.dataset.row !== ctx.key || (ctx.state.kind !== 'all' && sq.dataset.kind !== ctx.state.kind));
+// The atlas (the Where tab): a county chosen on the map or in the picker lights its squares and fills the card beside it from the page's own record list, two
+// records first; each MW figure is that record's claim mark. Its climate row reads the county plate's data. The kind filter dims the other kinds' squares.
+(function atlas() {
+  const fig = document.getElementById('dc-atlas');
+  const pick = fig?.querySelector('[data-atlas-county]');
+  if (!pick) return;
+  const card = fig.querySelector('[data-atlas-card]');
+  const groups = new Map([...fig.querySelectorAll('.dc-cty')].map((g) => [g.dataset.fips, g]));
+  const records = [...document.querySelectorAll('#land-records li[data-fips]')];
+  let kind = 'all';
+  let current = null;
+  let climate;
+  const climateOf = (key) => {
+    climate ??= JSON.parse(document.getElementById('plate-data-dc-climate-counties')?.textContent || 'null');
+    return climate && key ? { row: climate.measures.rows[key]?.tmax_summer, receipts: climate.receipts } : null;
+  };
+  const paint = () => {
+    for (const [fips, g] of groups) {
+      g.classList.toggle('is-on', fips === current);
+      for (const sq of g.querySelectorAll('.dc-m')) sq.classList.toggle('is-dim', kind !== 'all' && sq.dataset.kind !== kind);
     }
-  },
-});
+    pick.value = current;
+  };
+  const recordOf = (li) => {
+    const mw = li.querySelector('a.cr');
+    return el('li', null,
+      el('span', 'dc-rec-name', li.querySelector('strong').textContent),
+      el('span', 'dc-rec-mw', ...(mw ? [mw.cloneNode(true), ' as filed'] : ['No MW stated'])),
+      el('span', 'dc-rec-meta', `${li.dataset.meta}; ${li.dataset.land}. `, Object.assign(el('a', null, 'Full record'), { href: `#${li.id}` })));
+  };
+  const render = () => {
+    const option = pick.selectedOptions[0];
+    const all = records.filter((li) => li.dataset.fips.split(' ').includes(current));
+    const list = all.filter((li) => kind === 'all' || li.dataset.kind === kind);
+    const words = all.length === 1 ? 'one named proposal' : `${all.length} named proposals`;
+    const kids = [el('h4', null, option.textContent.replace(/ \(\d+\)$/, '')),
+      el('p', 'caption', kind === 'all' ? `The filings read name ${words} here.` : `${list.length} of the ${words} here ${list.length === 1 ? 'is' : 'are'} this kind.`)];
+    const ol = el('ol', 'dc-card-records', ...list.slice(0, 2).map(recordOf));
+    kids.push(ol);
+    if (list.length > 2) {
+      const more = el('button', 'button button-secondary', `Show the other ${list.length - 2}`);
+      more.type = 'button';
+      more.addEventListener('click', () => {
+        ol.append(...list.slice(2).map(recordOf));
+        more.remove();
+        ol.children[2]?.querySelector('a')?.focus();
+      });
+      kids.push(more);
+    }
+    const key = option.dataset.climate;
+    const c = climateOf(key);
+    if (c?.row) {
+      const [fc, fv, flo, fhi] = c.row.ssp245;
+      const [bc, bv, blo, bhi] = c.row.baseline;
+      const link = Object.assign(el('a', null, 'Compare it with the other counties'), { href: `#climate&dc-climate-counties=${key}` });
+      kids.push(el('div', 'dc-card-climate',
+        el('p', null, 'May to September daytime high, lower-emissions scenario (SSP2-4.5): ', el('b', null, `${fig3(fv, flo, fhi)} F`), ' in 2040 to 2059, against ',
+          el('b', null, `${fig3(bv, blo, bhi)} F`), ' in 1995 to 2014; the median of seven models, lowest and highest in parentheses. '),
+        el('p', 'caption', claimRef('dc-climate-counties', fc, c.receipts[fc]?.status), ', ', claimRef('dc-climate-counties', bc, c.receipts[bc]?.status), '. ', link)));
+    }
+    card.replaceChildren(...kids);
+  };
+  const select = (fips) => {
+    if (!fips || ![...pick.options].some((o) => o.value === fips)) return;
+    current = fips;
+    paint();
+    render();
+  };
+  fig.addEventListener('click', (e) => { const g = e.target.closest('.dc-cty'); if (g) select(g.dataset.fips); });
+  pick.addEventListener('change', () => select(pick.value));
+  fig.querySelector('[data-atlas-kind]')?.addEventListener('change', (e) => { kind = e.target.value; paint(); render(); });
+  select(pick.dataset.first);
+})();
 })();

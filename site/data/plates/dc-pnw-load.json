@@ -6,29 +6,7 @@
  "fit": true,
  "eyebrow": "The Council region",
  "title": "The Council puts data centers and chip fabs at {c[dem-073][value]:,.0f} aMW in 2030, in a region using {c[dem-058][value]:,.0f} today",
- "subtitle": "Average megawatts (aMW). Hollow marks a workbook input, not a measurement; the range for 2030 is {c[dem-073][low]:,.0f} to {c[dem-073][high]:,.0f}.",
- "text": [
-  "The largest new electricity load in a generation is arriving in the Council's four-state region, and member Tribes are being asked to host it, supply it, or live beside it. ATNI takes no position for or against."
- ],
- "controls": [
-  {
-   "type": "segmented",
-   "name": "pnw_view",
-   "label": "View",
-   "default": "lines",
-   "auto": true,
-   "options": [
-    {
-     "value": "lines",
-     "label": "Lines"
-    },
-    {
-     "value": "squares",
-     "label": "Squares"
-    }
-   ]
-  }
- ],
+ "subtitle": "Average megawatts (aMW). The rule across the top is the whole region's load today. Hollow marks a workbook input; the range for 2030 is {c[dem-073][low]:,.0f} to {c[dem-073][high]:,.0f}.",
  "inputs": {
   "region": {
    "claim": "dem-058"
@@ -47,7 +25,11 @@
   "band": {
    "across": "range"
   },
-  "band_label": "Low to high input"
+  "band_label": "Low to high input",
+  "domain": [
+   0,
+   25000
+  ]
  },
  "default": "2030",
  "boundary": "A power region, not a watershed: Oregon, Idaho, Washington, and Western Montana.",
@@ -138,13 +120,6 @@
  "details": [
   "The workbook's appendix calls this input incremental, but its 2024 row is not zero, so whether the series is a level or an increment is not stated. The values are read as printed."
  ],
- "foot": [
-  {
-   "text": "This plate does not decide a proposal.",
-   "href": "#questions",
-   "link": "Questions for Tribal leaders"
-  }
- ],
  "table": {
   "columns": [
    {
@@ -176,5 +151,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "answer": "The Council's input for data centers and chip fabs is {value} aMW in {year:.0f}, about {share} percent of the region's {region} aMW today."
 }
