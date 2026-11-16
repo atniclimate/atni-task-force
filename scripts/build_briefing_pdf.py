@@ -52,7 +52,7 @@ def note():
     """What the cover says of the packet, which the Briefing's own cover cannot, since on the page nothing is chosen until the reader ticks it; and where the claim ids are."""
     pages = list(bb.PAGES.values())
     return (f"This is the default packet: the lead plate from each of the {', '.join(pages[:-1])}, and {pages[-1]} pages, and every checklist, all at their default settings. "
-            "Each plate is followed by its Sources pages, which list each claim id with its source, status, and limit.")
+            "Its last pages list each claim id under its source document, with its status and limit.")
 
 
 def sections(site=SITE):
@@ -63,13 +63,10 @@ def sections(site=SITE):
 
 
 def default_ids(site=SITE):
-    """The first plate each page lists, in the rail's order, and then every checklist."""
+    """The first plate each page lists, in the rail's order, and then every checklist: the Briefing's ready-made packet (build_briefing.ready_ids)."""
     index = json.loads((Path(site) / "data" / "index.json").read_text(encoding="utf-8"))
-    first = {}
-    for plate in index["plates"]:
-        if plate["page"] in bb.PAGES:
-            first.setdefault(plate["page"], plate["id"])
-    return [*first.values(), *(i for i, chunk in sections(site) if i and 'class="packet-page packet-checklist"' in chunk)]
+    entries = sorted((p for p in index["plates"] if p["page"] in bb.PAGES), key=lambda p: list(bb.PAGES).index(p["page"]))
+    return bb.ready_ids(entries, [i for i, chunk in sections(site) if i and 'class="packet-page packet-checklist"' in chunk])
 
 
 def drawn_with(site=SITE):
@@ -116,8 +113,7 @@ def facts(path):
 
 def link_html(have):
     size = f"{have['bytes'] / 1e6:.1f} MB"  # decimal megabytes, as the word is read; the budget line is in KB of 1024
-    return (f'<p class="caption packet-pdf"><a href="{NAME}">Download the default packet (PDF, {have["pages"]} pages, {size})</a>. '
-            "It holds the first plate each page lists and every checklist, all at their default settings.</p>")
+    return f'<a class="paper" href="{NAME}" type="application/pdf">Download PDF</a><span class="preset-file">{have["pages"]} pages, {size}</span>'
 
 
 def link_is_current(site, have):

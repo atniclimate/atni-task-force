@@ -13,7 +13,7 @@ const ROOT = path.resolve(__dirname, '..');
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.csv': 'text/csv', '.txt': 'text/plain' };
 const TITLE = 'Council Briefing, Default Packet | ATNI Energy Task Forces';
 const FOOTER = 'Council Briefing, default packet | ATNI Energy Task Forces';
-const REPLACES = 'Settings chosen by the reader,';
+const REPLACES = 'Default settings,'; // the Briefing's own guard line at the defaults, which this sheet stamps with its build day
 
 // Added to the page before its plates draw, so they lay out at the sizes they print at. 10.5pt is the design system's Report body (decision 0009); the page's sizes are rem.
 // The page margins hold the running foot, in the design system's house style: the title in italic grey at left, the page number at right. Margin boxes are Chrome 131 and later.
@@ -62,15 +62,14 @@ function prepare({ date, base, title, replaces, note }) {
   const guards = [...document.querySelectorAll('.packet-guard')];
   if (!guards.length) throw new Error('the packet has no guard lines');
   for (const guard of guards) {
-    if (!guard.textContent.startsWith(replaces)) throw new Error(`a guard line reads "${guard.textContent}", not the reader's settings line this sheet replaces`);
-    guard.textContent = `Default settings,${guard.textContent.slice(replaces.length)} Built ${date}.`;
+    if (!guard.textContent.startsWith(replaces)) throw new Error(`a guard line reads "${guard.textContent}", not the default settings line this sheet stamps`);
+    guard.textContent = `${guard.textContent} Built ${date}.`;
   }
   document.querySelector('[data-assembled]').textContent = ` ${date}`;
   const said = document.createElement('p');
   said.className = 'caption packet-default-note';
   said.textContent = note;
   document.querySelector('.packet-assembled').after(said);
-  for (const term of document.querySelectorAll('.packet-rows dt')) if (term.textContent === 'Chosen by the reader') term.textContent = 'Settings';
   document.title = title;
   const origin = document.createElement('base');
   origin.href = base;
@@ -108,7 +107,7 @@ async function main() {
       document.querySelector('.briefing-rail form').dispatchEvent(new Event('change', { bubbles: true }));
       return boxes.filter((b) => b.checked).length;
     }, ids);
-    await page.waitForFunction(() => [...document.querySelectorAll('.packet-plate.is-chosen .plate')].every((p) => p.classList.contains('is-live')));
+    await page.waitForFunction(() => [...document.querySelectorAll('.packet-plate:not([hidden]) .plate')].every((p) => p.classList.contains('is-live')));
     await page.evaluate(() => new Promise((resolve) => { requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
     await page.waitForTimeout(500); // the kit redraws a plate once its section has a width
     await page.evaluate(prepare, { date, base, title: TITLE, replaces: REPLACES, note });

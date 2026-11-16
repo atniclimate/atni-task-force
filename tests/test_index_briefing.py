@@ -140,11 +140,58 @@ def test_a_copied_link_still_reaches_what_it_named(given, want):
     assert bb.rehome(given, "energy", HERE, SECTIONS) == want
 
 
+@pytest.mark.parametrize("given,want", [
+    ('<a href="../../assets/x.css">x</a>', '<a href="../assets/x.css">x</a>'),  # two levels down, the site's root is one level up from here
+    ('<a href="../">x</a>', '<a href="../data-centers/">x</a>'),  # its parent page
+    ('<a href="sources/#ru-hour">x</a>', '<a href="../data-centers/resource-use/sources/#ru-hour">x</a>'),  # its own Sources page
+    ('<a href="#water">x</a>', '<a href="../data-centers/resource-use/#water">x</a>'),
+])
+def test_a_link_copied_from_a_subpage_still_reaches_what_it_named(given, want):
+    assert bb.rehome(given, "data-centers/resource-use", HERE, SECTIONS) == want
+
+
 def test_a_section_is_framed_by_real_head_and_foot_rows():
     doc = parse(bb.page_section("packet-plate", 'id="x"', "<p>Body</p>", "11/04/2026"))
     section = doc.one("section", id="x")
     assert section.attrs["data-checked"] == "11/04/2026" and section.one("table").attrs["role"] == "presentation"
-    assert section.one("thead").text() == "Settings chosen by the reader, sources checked 11/04/2026." and section.one("tfoot").text() == bb.FOOT
+    assert section.one("thead").text() == "Default settings, sources checked 11/04/2026." and section.one("tfoot").text() == bb.FOOT
+
+
+def test_question_sets_come_from_the_meeting_sheet_form_with_where_they_come_from():
+    page = ('<p class="note">Before the form.</p>\n<form class="asks" data-sheet>'
+            '<fieldset class="ask-set" id="q-one"><legend>One</legend><ol><li><label><input type="checkbox" name="ask" value="q-one-1"> <span class="ask-q">First? <a class="cr" data-claim="x-1">3</a></span></label></li></ol></fieldset>'
+            '<fieldset class="ask-set" id="q-two"><legend>Two</legend><p class="sub">Its own note.</p><ol><li><label><input type="checkbox" name="ask" value="q-two-1"> <span class="ask-q">Second?</span></label></li></ol></fieldset></form>')
+    assert bb.question_sets(page) == [("q-one", "One", '\n<li>First? <a class="cr" data-claim="x-1">3</a></li>\n', "Before the form."), ("q-two", "Two", "\n<li>Second?</li>\n", "Its own note.")]
+    assert bb.question_sets("<main>no form</main>") == []
+
+
+def test_the_appendix_lists_each_document_once_with_its_claims_by_status_and_limit():
+    claims = {c: {"status": s, "limit": "A limit long enough to say something.", "source": {"url": u, "title": t, "publisher": "P", "published": "2025-05-02"}}
+              for c, s, u, t in [("a-1", "verified", "https://b.org", "Beta"), ("a-2", "partly", "https://b.org", "Beta"), ("a-3", "verified", "https://a.org", "Alpha")]}
+    cites = {"a-1": [{"status": "verified", "title": "Beta"}, ["p1"], False], "a-2": [{"status": "partly", "title": "Beta"}, ["p1", "q-x"], True], "a-3": [{"status": "verified", "title": "Alpha"}, ["p2"], False]}
+    docs = [parse(row) for row in bb.receipt_rows(cites, claims)]
+    assert [d.one("a").text() for d in docs] == ["Alpha", "Beta"], "A to Z by title"
+    beta = docs[1].one("li", "packet-doc")
+    assert beta.attrs["data-for"] == "p1 q-x" and "published 05/02/2025" in beta.text()
+    rows = beta.all("li")
+    assert [r.attrs["data-for"] for r in rows] == ["p1", "p1 q-x"]
+    assert rows[1].one("span", id="src-a-2") and rows[1].text().endswith("partly verified: A limit long enough to say something."), "a mark's claim keeps its anchor; partly verified states its limit"
+    assert rows[0].text().endswith("verified") and "limit" not in rows[0].text()
+
+
+def test_the_ready_made_packet_is_the_first_plate_of_each_page_then_every_set():
+    entries = [{"id": "a1", "page": "ai/index.html"}, {"id": "a2", "page": "ai/index.html"}, {"id": "d1", "page": "data-centers/index.html"}]
+    assert bb.ready_ids(entries, ["q-one", "q-two"]) == ["a1", "d1", "q-one", "q-two"]
+
+
+def test_every_packet_names_what_the_real_page_offers_and_every_plate_says_what_it_answers():
+    index = json.loads((SITE / "data" / "index.json").read_text(encoding="utf-8"))
+    page = (SITE / "briefing" / "index.html").read_text(encoding="utf-8")
+    offered = {p["id"] for p in index["plates"] if p["page"] in bb.PAGES}
+    assert offered <= set(bb.ASKS), f"name what these answer in ASKS: {sorted(offered - set(bb.ASKS))}"
+    assert all(ask.endswith("?") and "—" not in ask for ask in bb.ASKS.values()), "a question, in house style"
+    for key, _, plates, lists in bb.PACKETS:
+        assert all(f'id="pick-{i}"' in page for i in [*plates, *lists]), key
 
 
 def test_a_note_stops_at_its_own_paragraph():
@@ -183,9 +230,9 @@ def test_the_real_briefing_is_up_to_date_and_every_plate_it_holds_is_the_built_o
     page = (SITE / "briefing" / "index.html").read_text(encoding="utf-8")
     index = json.loads((SITE / "data" / "index.json").read_text(encoding="utf-8"))
     held = dict(vp.PLATE_BLOCK.findall(page))
-    offered = [p for p in index["plates"] if p["page"] in bb.PAGES]
-    assert list(held) == [p["id"] for p in offered], "the page holds the plates on offer, and not the two reference copies"
+    offered = sorted((p for p in index["plates"] if p["page"] in bb.PAGES), key=lambda p: list(bb.PAGES).index(p["page"]))
+    assert list(held) == [p["id"] for p in offered], "the page holds the plates on offer, in the rail's order, and not the two reference copies"
     for plate in offered:
         assert held[plate["id"]] == dict(vp.PLATE_BLOCK.findall((SITE / plate["page"]).read_text(encoding="utf-8")))[plate["id"]], plate["id"]
     assert '<html lang="en" data-address="none">' in page, "the page writes nothing to the address"
-    assert page.index("plate-svg.js") < page.index("/plate.js") < page.index("/ai.js")
+    assert page.index("/briefing.js") < page.index("plate-svg.js") < page.index("/plate.js") < page.index("/ai.js"), "briefing.js hides what is not chosen before the kit starts plates"
