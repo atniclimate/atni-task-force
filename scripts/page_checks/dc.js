@@ -97,7 +97,7 @@ async function deepLinks() {
     ['purpose', 'overview', true], ['why-now', 'overview', false], ['environmental-impacts', 'tradeoffs', false],
     ['policy-landscape', 'policy-landscape', false], ['alternatives', 'policy-landscape', true], ['questions', 'questions', false], ['policy-watch', 'policy-landscape', false],
     ['dc-lbnl-us', 'growth', false], ['dc-forecast-check', 'growth', false], ['forecast-revisions', 'growth', false], ['dc-water-intensity', 'tradeoffs', false], ['q-water', 'questions', false], ['policy-tribal', 'policy-landscape', true],
-    ['dc-project', 'face-project', false], ['jobs-how-long', 'jobs', true], ['dc-atlas', 'where', false], ['land', 'where', false], ['climate', 'where', false], ['rec-or-dc-01', 'where', true],
+    ['dc-project', 'face-project', false], ['jobs-how-long', 'jobs', false], ['dc-atlas', 'where', false], ['land', 'where', false], ['climate', 'where', false], ['rec-or-dc-01', 'where', true],
   ]) {
     const { document, errors } = await load(`#${hash}`);
     const target = document.getElementById(hash);
@@ -441,16 +441,20 @@ async function tradeoffs() {
   const c = parts(document, 'dc-cooling');
   const site = () => row(c.root, 'site').querySelector('.ladder-value').textContent;
   ok(leads(c.reading.textContent, ['100 MW', '1.45', '0.8', '1 TWh', '190 million liters', 'Microsoft', '4,600 million liters']), 'cooling default');
+  eq(`${c.value.textContent} ${c.unit.textContent}`, '190 million liters', 'the readout opens on the water the title names (data-centers-16)');
   moves(window, c, () => setValue(window, c.slider('c_mw'), 200), (t) => leads(t, ['200 MW', '1.45', '0.8', '2 TWh']), 'MW');
-  ok(c.root.querySelector('.plate-title').textContent.startsWith('At 200 MW and PUE 1.45, about '), `the title follows the settings: ${c.root.querySelector('.plate-title').textContent}`);
-  eq(c.unit.textContent, 'TWh a year', 'a size moves the electricity the needle reads');
+  ok(c.root.querySelector('.plate-title').textContent.startsWith('At 200 MW and PUE 1.45, each year: water on site, 380 million liters; '), `the title follows the settings: ${c.root.querySelector('.plate-title').textContent}`);
+  eq(`${c.value.textContent} ${c.unit.textContent}`, '380 million liters', 'a size moves the water on site, the row the plate opens on');
   moves(window, c, () => setValue(window, c.slider('c_lf'), 1), (t) => leads(t, ['200 MW', '1.45', '1', '2.5 TWh']), 'load factor');
   moves(window, c, () => setValue(window, c.typed('c_pue'), 1.145), (t) => holds(t, ['1.145', '1', '2 TWh']), 'PUE typed');
   moves(window, c, () => fire(window, c.root.querySelector('[data-preset="1.45"]'), 'click'), (t) => holds(t, ['1.45']), 'PUE preset');
   moves(window, c, () => setRadio(window, c.radio('c_cool', 'lbnl')), (t) => holds(t, ['630 million liters', 'LBNL']), 'cooling at LBNL');
   eq(`${c.value.textContent} ${c.unit.textContent}`, '630 million liters', 'the readout follows the water a cooling design moves (data-centers-08)');
   moves(window, c, () => setRadio(window, c.radio('c_cool', 'google')), (t) => holds(t, ['2,000 million liters', 'Google']), 'cooling at Google');
-  moves(window, c, () => setRadio(window, c.radio('c_cool', 'dry')), (t) => /None on site/.test(t), 'dry');
+  moves(window, c, () => setRadio(window, c.radio('c_cool', 'dry')), (t) => /on-site water none \(Closed loop or dry\)/.test(t), 'dry');
+  const dryTitle = c.root.querySelector('.plate-title').textContent;
+  ok(/water on site, none; at the power plants, about [\d,]+ million liters; CO2, [\d.]+ Mt$/.test(dryTitle), `the dry title has no empty field: ${dryTitle}`);
+  eq(`${c.value.textContent} ${c.unit.textContent}`, 'None on site', 'and the readout says so in words');
   ok(row(c.root, 'site').classList.contains('dc-words'), 'words drop to body size');
   ok(wordsOnly(site()), 'the row says so');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'hyperscale')), (t) => holds(t, ['1.4 Mt']), 'hyperscale grid');
@@ -463,7 +467,7 @@ async function tradeoffs() {
   ok(plantSquares() > 0, 'plant row has squares');
   fire(window, c.root.querySelector('[data-reset]'), 'click');
   ok(leads(c.reading.textContent, ['100 MW', '1.45']), 'Reset');
-  eq(`${c.value.textContent} ${c.unit.textContent}`, '1 TWh a year', 'and the readout is the electricity again');
+  eq(`${c.value.textContent} ${c.unit.textContent}`, '190 million liters', 'and the readout is the water on site again');
   eq(plantSquares(), 46, '46 squares of 100 million liters at the default');
   fire(window, row(c.root, 'site').querySelector('.ladder-label'), 'click');
   ok(c.facts.querySelectorAll('.plate-seg').length === 2, 'two segments: water here, water at the plant');
@@ -503,8 +507,8 @@ async function jobs() {
   eq(row(p.root, 'build').getAttribute('aria-selected'), 'true', 'construction is selected first');
   // The claim zone holds the title, one short paragraph, and the controls. The rest moved under the plate, with the county figure poured and its limit printed.
   eq([...p.root.querySelectorAll('.plate-claim > p')].filter((n) => !/eyebrow|plate-foot/.test(n.className)).length, 1, 'one paragraph beside the plot');
-  const how = document.getElementById('jobs-how-long').closest('details');
-  ok(how.closest('.dc-details') && how.querySelector('summary').textContent.includes('A data center brings many jobs while it is built and few once it runs.'), 'the summary is the sentence');
+  const how = document.getElementById('jobs-how-long').closest('.dc-after');
+  ok(!how.closest('details') && how.querySelector('p').textContent.startsWith('A data center brings many jobs while it is built and few once it runs.'), 'its one short section reads as prose, its finding first (data-centers-21)');
   eq(how.querySelector('[data-pour="jb-035"][data-field="text"]').textContent, '2.7', 'the county figure, poured per MW');
   eq(how.querySelector('[data-pour="jb-035"][data-field="status"]').textContent, 'partly verified', 'with its status');
   ok(how.textContent.includes('(jb-035, partly verified)') && how.querySelector('[data-pour="jb-035"][data-field="limit"]').textContent.includes('association rather than cause'), 'its id and its limit');
@@ -617,6 +621,8 @@ async function project() {
   eq(first.document.querySelector('[data-answer="dc-project"]').textContent, "A 1,000 MW project at a 0.8 load factor averages 800 aMW, about 3.6 percent of the region's load today.", 'and the agenda answer');
   fire(first.window, f.root.querySelector('[data-preset="0.95"]'), 'click');
   ok(leads(f.reading.textContent, ['1,000 MW', '0.95', '950 aMW']), 'a load factor preset');
+  ok(!/water|liters/i.test(f.reading.textContent), `Count reads the load and its share alone: ${f.reading.textContent}`);
+  ok(!f.root.querySelector('.plate-claim > .plate-controls > [data-param="p_view"]') && f.root.querySelector('.plate-claim details.plate-more [data-param="p_view"]'), 'the face counts; Rulers waits with the water inputs');
   eq(n('.dc-lit'), 10, 'ten squares, the last a sliver');
   ok(f.root.querySelector('details.plate-more [data-param="p_l"]') && f.root.querySelector('details.plate-more [data-param="p_plant"]'), 'the water inputs wait under More, for the Rulers view (data-centers-33)');
   eq(first.errors.join(), '', 'no script errors in Count');
@@ -743,6 +749,11 @@ async function atlas() {
   ok(fig.querySelector('.dc-cty[data-fips="53071"]').classList.contains('is-on') && !fig.querySelector('.dc-cty[data-fips="41049"]').classList.contains('is-on'), 'and lights it alone');
   fire(window, fig.querySelector('.dc-cty[data-fips="41049"] .dc-m'), 'click');
   eq(pick.value, '41049', 'a square on the map chooses its county too');
+  ok(window.location.hash.startsWith('#where') && window.location.hash.includes('atlas=41049'), `the county rides in the address: ${window.location.hash}`);
+  ok(!/\(EFSEC(?!, EFSC, PUC\))/.test(card.textContent) && !document.querySelector('#land-records li[data-land^="bureau"]'), 'a land phrase keeps its parenthesis and a name its capital');
+  const linked = await load('#where&atlas=53071');
+  eq(linked.document.querySelector('[data-atlas-card] h4').textContent, 'Walla Walla County, WA', 'and a link with it opens that card');
+  eq(linked.errors.join(), '', 'no script errors from a linked county');
   const dc = fig.querySelector('[data-atlas-kind] input[value="tx"]');
   setRadio(window, dc);
   ok([...fig.querySelectorAll('.dc-m')].every((m) => m.classList.contains('is-dim') === (m.dataset.kind !== 'tx')), 'a kind dims the others');

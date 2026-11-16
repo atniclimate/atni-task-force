@@ -2,13 +2,11 @@
    the instruments, the jobs bars, the forecast check, the matrix, the policy grid, the atlas and its county card, the records by state, and the question sets.
    Tokens, type, marks, variants, and the window stay in site.css. Orange marks the reading only (DIRECTION-R2 2.2); bullets and chosen states are ink. */
 
-/* Tab questions wrap to a second line under their name, so seven tabs, Sources, and the meeting sheet share the 64px strip from 1440 (two short lines fit it). */
+/* Tab questions are short enough for one line each from 1600, where site.css shows them, so every tab name shares one top line (a longer one may still wrap). */
 .section-strip .tab-q { max-width: 11.5rem; white-space: normal; }
-/* Below 1700px the strip's Sources link gives way to the seven tabs (a departure from DIRECTION-R2 3.10): the brief carries the same link one screen up. */
-@media (max-width: 1699px) { .section-strip .strip-out { display: none; } }
-/* Under 1440 the tabs scroll inside the strip, behind the kit's fade, so the meeting sheet keeps its place and the strip its 64px. */
-@media (min-width: 1100px) and (max-width: 1439px) { .section-strip > .wrap { flex-wrap: nowrap; } .section-strip [data-sheet-open] { flex: none; white-space: nowrap; } }
-
+/* From 1600 to 1699, where the questions show, the strip's Sources link gives way to the seven tabs (a departure from DIRECTION-R2 3.10): the brief carries the
+   same link one screen up. Below 1600 the tabs are their names alone, and Sources has room again. */
+@media (min-width: 1600px) and (max-width: 1699px) { .section-strip .strip-out { display: none; } }
 /* A tab's one-line lead: what the panel holds, with a term's first use marked. */
 main p.dc-tab-lead { max-width: var(--measure-wide); margin: 20px 0 16px; color: var(--atni-text-secondary); }
 
@@ -16,11 +14,14 @@ main p.dc-tab-lead { max-width: var(--measure-wide); margin: 20px 0 16px; color:
 .dc-asks-face { padding: 4px 0; }
 main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: var(--atni-text-secondary); }
 
-/* Why Now: its account in two balanced columns of the body measure, then a band of the rate figure and the Purpose, folded under its one-line stance. */
+/* Why Now: its account as a prose band, whole paragraphs in two columns of the body measure (DIRECTION-R2 2.4), so no sentence or citation breaks across a
+   column; then the three places it names, folded under their one-line findings; then a band of the rate figure and the Purpose, under its one-line stance. */
 .dc-why { margin-top: 24px; }
 .dc-why > h3 { margin: 0 0 12px; font-size: 1.5rem; line-height: 1.15; }
-.dc-why-text { max-width: calc(72rem + 48px); columns: 2 26rem; column-gap: 48px; }
-.dc-why-text > p { max-width: none; margin-top: 0; }
+.dc-why-text { display: grid; grid-template-columns: repeat(2, minmax(0, 36rem)); gap: 0 48px; align-items: start; }
+@media (max-width: 1099px) { .dc-why-text { grid-template-columns: minmax(0, 1fr); } }
+.dc-why-text p { max-width: none; margin-top: 0; }
+main p.dc-why-lead { max-width: var(--measure-wide); margin: 8px 0 4px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; color: var(--atni-text-heading); }
 .dc-why-more { margin-top: 16px; column-gap: 48px; }
 .dc-why-more > .pull { align-content: start; }
 .dc-why-more .disclosure-body { max-width: var(--measure); }
@@ -40,6 +41,16 @@ main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: v
 }
 /* The Growth strip holds plates only: a note the kit sets after a plate takes the strip's full width below them, so it never takes a plate's column. */
 #growth .plate-strip > :not(.plate) { grid-column: 1 / -1; order: 1; }
+/* Under a 1680px strip the outlooks run one a row, so each takes the repeater's geometry, plot and window side by side, rather than a full-width plot over a
+   short Reading (data-centers-20, -30): about half the height a row. From 1680 the strip's own columns hold. */
+@media screen and (min-width: 1100px) {
+  @container (max-width: 1679px) {
+    #growth .plate-strip > .plate { grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); grid-template-areas: "claim claim" "bar bar" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto 1fr auto auto; }
+    #growth .plate-strip > .plate > .plate-claim { display: grid; grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); column-gap: var(--plate-gap); align-items: start; }
+    #growth .plate-strip > .plate > .plate-claim > * { grid-column: 1; }
+    #growth .plate-strip > .plate > .plate-claim > .plate-controls { grid-column: 2; grid-row: 1 / span 8; }
+  }
+}
 /* Direct labels and the case control name the series, so these keys hold only what the plot cannot say. */
 :is(#dc-pnw-load, #dc-eia-servers) .plate-legend li:is([data-series], :has(.plate-square)) { display: none; }
 /* The region today, a rule across the load plate's own axis (data-centers-19). */
@@ -62,6 +73,9 @@ main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: v
 .dc-count-field svg { display: block; }
 #dc-project [data-param="p_lf"] .slider-stops { display: none; } /* its three presets and the typed twin say its range; the face keeps one row less */
 #dc-project .instrument { --l: clamp(8rem, 22%, 14rem); }
+/* The face counts; the View switch waits under "Rulers view and water assumptions", and the water inputs show only once Rulers is chosen, the one view that
+   reads them (data-centers-33): in Count they would move nothing on screen. Home's copy of the face follows the same rule. */
+.plate:has([data-param="p_view"] input[value="count"]:checked) .plate-more :is([data-param="p_l"], [data-param="p_plant"]) { display: none; }
 #dc-project [data-row="share"] { grid-row: span 2; }
 /* A phone stacks the rows. The needle's place is worked out from their three columns, and every value prints, so it goes; and a ruler's numbers need room above the value under them. */
 @media (max-width: 719px) {
@@ -184,7 +198,7 @@ main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: v
 /* The policy grid: a static figure, rows by governments, one mark per sentence; its claim at the left and the grid at the right. It takes the height of its
    sentences, never the window's, so wide screens leave no empty rows (data-centers-13). */
 #policy-grid { align-items: start; grid-template-areas: "claim" "side"; }
-#policy-grid > .plate-claim { grid-area: claim; padding-top: 16px; }
+#policy-grid > .plate-claim { grid-area: claim; grid-template-columns: minmax(0, 1fr); padding-top: 16px; } /* one column: the kit's lead split would leave its words 0px in this 16rem area */
 #policy-grid > .dc-policy-side { grid-area: side; min-width: 0; }
 @media screen and (min-width: 1100px) {
   #policy-grid { grid-template-columns: minmax(16rem, 22fr) minmax(0, 78fr); grid-template-areas: "claim side"; grid-template-rows: auto; max-width: 112rem; }
@@ -208,13 +222,14 @@ main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: v
 .dc-watch { margin-top: 20px; }
 .dc-policy-parts { grid-template-columns: repeat(auto-fill, minmax(max(min(100%, 26rem), calc((100% - 64px) / 3)), 1fr)); }
 
-/* Details in a grid: each summary skims as a sentence; a long one opens across the width, in columns. The square is ink: hollow closed, filled open. */
+/* Details in a grid: each summary skims as a sentence; a long one opens across the width, in columns. The marker is a plain caret, right when closed and down
+   when open, never a square: squares on this site are claim statuses (measured, modeled), and these hold prose (data-centers-21). */
 .dc-details { margin-top: 8px; }
 :is(.dc-details, .dc-record-states) > :is(.disclosure, .pull) { margin: 0; padding-top: 12px; border-top: 1px solid var(--rule); }
 :is(.dc-details, .dc-record-states) > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; min-height: 44px; padding: 0 0 12px; font-family: var(--body); font-weight: 400; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); list-style: none; cursor: pointer; }
 :is(.dc-details, .dc-record-states) > .disclosure > summary::-webkit-details-marker { display: none; }
-:is(.dc-details, .dc-record-states) > .disclosure > summary::before { content: ""; grid-row: 1; width: 10px; height: 10px; margin-top: 0.35em; border: 2px solid var(--control-edge); }
-:is(.dc-details, .dc-record-states) > .disclosure[open] > summary::before { background: var(--atni-text-heading); border-color: var(--atni-text-heading); }
+:is(.dc-details, .dc-record-states) > .disclosure > summary::before { content: ""; grid-row: 1; box-sizing: border-box; width: 7px; height: 7px; margin: 0.5em 0 0 0; border: solid var(--atni-text-secondary); border-width: 0 2px 2px 0; transform: rotate(-45deg); }
+:is(.dc-details, .dc-record-states) > .disclosure[open] > summary::before { margin: 0.4em 0 0 1px; transform: rotate(45deg); }
 :is(.dc-details, .dc-record-states) > .disclosure > summary > * { grid-column: 2; margin: 0; }
 :is(.dc-details, .dc-record-states) > .disclosure > summary :is(h2, h3, h4) { margin-bottom: 2px; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading); }
 :is(.dc-details, .dc-record-states) > .disclosure > summary:hover :is(h2, h3, h4) { text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
@@ -226,7 +241,7 @@ main p.dc-asks-lead { max-width: var(--measure-wide); margin: 0 0 12px; color: v
   .dc-long > .disclosure[open]:has(> .disclosure-body) { grid-column: 1 / -1; }
   .dc-long > .disclosure > .disclosure-body { columns: 26rem 4; column-gap: 32px; }
 }
-.dc-three { column-span: all; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 0 24px; align-items: start; margin-bottom: 12px; }
+.dc-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 0 24px; align-items: start; margin-bottom: 12px; }
 .dc-three .disclosure { margin: 0; }
 .pull .caption { display: block; }
 

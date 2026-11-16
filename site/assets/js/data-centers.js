@@ -124,9 +124,9 @@ register('dc-jobs-per-mw', {
   },
 });
 
-// Cooling: the readout follows the row the reader's last setting moves (data-centers-08): a cooling design moves the water on site, a grid moves the CO2.
-// At the starting point, and after Back to the starting point, it is the electricity the needle reads.
-const READS = { c_cool: 'site', c_grid: 'co2', c_own: 'co2' };
+// Cooling: the readout follows the row the reader's last setting moves (data-centers-08): PUE moves the electricity, a grid the CO2. A size, a load factor, or
+// a cooling design moves the water on site, the selected row from the start, so the readout opens on the water the title names (data-centers-16).
+const READS = { c_pue: 'energy', c_grid: 'co2', c_own: 'co2' };
 let coolBy = null;
 const cooling = document.getElementById('dc-cooling');
 cooling?.addEventListener('input', (e) => { coolBy = READS[e.target.closest('[data-param]')?.dataset.param] || null; }, true);
@@ -134,8 +134,9 @@ cooling?.addEventListener('click', (e) => { if (e.target.closest('[data-reset]')
 register('dc-cooling', {
   render(ctx) {
     countRows(ctx, ['site', 'plant'], (top) => (top <= 40000 ? 100 : 1000), (unit) => `One square is ${unit} million liters of water, in both water rows.`);
-    const r = coolBy && ctx.data.rows.find((x) => x.key === coolBy);
-    if (r?.text) ctx.readout(r.text, r.unit);
+    const r = coolBy ? ctx.data.rows.find((x) => x.key === coolBy) : ctx.rows[0];
+    if (r?.key === 'site' && !r.text) ctx.readout('None', 'on site'); // closed loop or dry: the row's own word, never an empty figure
+    else if (coolBy && r?.text) ctx.readout(r.text, r.unit);
   },
 });
 
@@ -168,11 +169,25 @@ function drawCount(ctx) {
     box.append(el('p', 'dc-count-label', f.text), svg.parentNode);
   }
 }
+// The Reading: Count's is the plate's own, one sentence on the load and its share. Rulers adds the energy and the water its rows read, in words (data-centers-29, -33).
+const plain = (v) => new Intl.NumberFormat('en-US').format(v);
+function rulersReading(ctx) {
+  const at = (k) => ctx.data.rows.find((r) => r.key === k);
+  const { p_mw, p_lf, p_l, p_plant } = ctx.state;
+  return [
+    `${plain(p_mw)} MW at a ${plain(p_lf)} load factor averages ${at('amw').text} aMW, about ${at('twh').text} TWh a year and ${at('share').text} percent of the region's ${plain(ctx.inputs.region)} aMW today.`,
+    blank(p_l) ? `Water on site would be ${at('site').display} a year, across the record's ${plain(ctx.inputs.ms)} to ${plain(ctx.inputs.google)} liters per kWh.`
+      : `Water on site would be ${at('site').display} a year, at the applicant's ${plain(p_l)} liters per kWh.`,
+    p_plant === 'on' ? `The power plants would consume about ${at('plant').display} more.` : "Water at the power plant is not counted here, since the convention for a reservoir's evaporation is not stated.",
+    "Modeled from the reader's inputs; sources checked 11/04/2026.",
+  ].join(' ');
+}
 register('dc-project', {
   render(ctx) {
     ctx.auto();
     markWords(ctx);
     const counting = ctx.state.p_view !== 'rulers';
+    if (!counting && ctx.rows[0]?.f) ctx.reading(rulersReading(ctx));
     ctx.plot.classList.toggle('dc-is-count', counting);
     if (ctx.reason === 'select' || !ctx.plot.clientWidth) return;
     if (counting) {
@@ -406,15 +421,24 @@ register('dc-climate-counties', {
     }
     card.replaceChildren(...kids);
   };
-  const select = (fips) => {
-    if (!fips || ![...pick.options].some((o) => o.value === fips)) return;
+  // The chosen county rides in the address as atlas=FIPS (DIRECTION-R2 3.8), replacing the entry, so a copied link or a reload opens the same card.
+  const said = () => window.siteAddress.read().params.get('atlas');
+  const select = (fips, write) => {
+    if (!fips || ![...pick.options].some((o) => o.value === fips)) return false;
     current = fips;
     paint();
     render();
+    if (write) {
+      const { anchor, params } = window.siteAddress.read();
+      params.set('atlas', fips);
+      window.siteAddress.write(anchor, params);
+    }
+    return true;
   };
-  fig.addEventListener('click', (e) => { const g = e.target.closest('.dc-cty'); if (g) select(g.dataset.fips); });
-  pick.addEventListener('change', () => select(pick.value));
+  fig.addEventListener('click', (e) => { const g = e.target.closest('.dc-cty'); if (g) select(g.dataset.fips, true); });
+  pick.addEventListener('change', () => select(pick.value, true));
   fig.querySelector('[data-atlas-kind]')?.addEventListener('change', (e) => { kind = e.target.value; paint(); render(); });
-  select(pick.dataset.first);
+  window.addEventListener('hashchange', () => { if (said() && said() !== current) select(said()); });
+  if (!select(said())) select(pick.dataset.first);
 })();
 })();

@@ -312,7 +312,7 @@ def away():
 
 
 def land_words(p, classes):
-    land = classes[p["land"]["class"]].split(",")[0].split(";")[0]
+    land = re.split(r"[,;](?![^(]*\))", classes[p["land"]["class"]])[0]  # the first clause, but never inside a parenthesis: "(EFSEC, EFSC, PUC)" stays whole
     return land if land.startswith("Land") else "Land: " + re.sub(r"^(A|The) ", lambda x: x.group(1).lower() + " ", land)
 
 
@@ -333,6 +333,7 @@ def records_html(proj):
             where = "; ".join(f'{e(c["name"])} County, {c["state"]}' for c in p["counties"]) or "No county named by the sources read"
             land = land_words(p, classes)
             short = "Land not stated by the sources read" if p["land"]["class"] == "not-stated" else land.removeprefix("Land: ")
+            card_land = re.sub(r"^(Land|A|The) ", lambda x: x.group(1).lower() + " ", short)  # mid-sentence in the card; a name keeps its capital (Bureau of Land Management)
             land = e(land)
             if p["land"].get("as_stated"):
                 land += f' (“{e(p["land"]["as_stated"])}”)'
@@ -341,7 +342,7 @@ def records_html(proj):
             links = "; ".join(f'<a href="{e(s["url"])}">{e(s["title"])}</a> ({e(s["publisher"])}{", " + us(s["date"]) if s.get("date") else ""})' for s in p["sources"])
             meta = f'{p["kind"][0].upper()}{p["kind"][1:]}, {p["status"]}{", " + us(p["status_date"]) if p["status_date"] else ""}'
             items.append(f'<li id="rec-{e(p["id"].lower())}" data-fips="{" ".join(c["fips"] for c in p["counties"])}" data-kind="{KIND_KEY[p["kind"]]}" '
-                         f'data-meta="{e(meta)}" data-land="{e(short[0].lower() + short[1:])}">'
+                         f'data-meta="{e(meta)}" data-land="{e(card_land)}">'
                          f'<p><strong>{e(p["name"])}</strong>, {KIND_SAY[p["kind"]]}: {mw}. Status: {e(p["status"])}, {us(p["status_date"])}. '
                          f'{where}. {land}.{parcels} Developer as filed: {e(p["developer_as_filed"] or "not named by the sources read")}.</p>{quotes}'
                          f'<p class="caption">Sources: {links}.</p></li>')
