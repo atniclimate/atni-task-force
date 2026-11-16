@@ -67,8 +67,14 @@ async function noScripts() {
   eq(money.dataset.kind, 'countdown', 'the deadlines are a countdown');
   for (const date of ['11/05/2026', '12/11/2026', '02/17/2027', '08/31/2028']) ok(money.querySelector('.plate-plot').textContent.includes(date), `the static page shows ${date}`);
   ok(!/the first on/.test(money.querySelector('.plate-title').textContent), 'the title says nothing the clock can change');
-  eq(energy.querySelectorAll('[data-policy-searches] .watch-item').length, 13, 'the saved searches are on the page');
-  eq(energy.querySelectorAll('[data-policy-follow] .watch-item').length, 12, 'and the follow list');
+  const latest = [...energy.querySelectorAll('[data-policy-latest] > li')];
+  ok(latest.length >= 6 && latest.length <= 8, `the overview lists the newest followed records, one line each (energy critic 4): ${latest.length}`);
+  ok(latest.every((li) => /latest record \d{2}\/\d{2}\/\d{4}$/.test(li.textContent)), 'each with its agency and the date of its newest record');
+  ok(!energy.querySelector('[data-policy-searches], [data-policy-follow]') && energy.querySelector('a[href="sources/#policy-watch"]'), 'the whole lists are a link away');
+  const sources = doc('site/energy/sources/index.html');
+  eq(sources.querySelectorAll('[data-policy-searches] .watch-item').length, 13, 'the saved searches are on the Sources page');
+  eq(sources.querySelectorAll('[data-policy-follow] .watch-item').length, 12, 'and the follow list');
+  ok(![...sources.querySelectorAll('[data-policy-follow] .record-meta')].some((p) => /Docket: Docket|importable/.test(p.textContent)), 'each item names its docket once, in plain words');
   ok(!energy.querySelector('[data-prefill-note]'), 'no development note');
   for (const script of ['energy-funding.js', 'policy-watch.js', 'library.js']) ok(!read('site/energy/index.html').includes(`assets/js/${script}`), `the overview loads no ${script}`);
 
@@ -158,6 +164,7 @@ async function overviewPage() {
 async function fundingPage() {
   const { window, document, errors } = await funding();
   eq(errors.join(), '', 'no script errors');
+  eq(window.scrolled, undefined, 'the starting choice scrolls nothing, so the reader lands on the brief (energy critic 1)');
   eq(window.fetched.length, 0, 'nothing is fetched');
   const list = document.getElementById('catalog-list');
   eq(list.getAttribute('role'), 'listbox', 'the catalog is one list box');
@@ -186,7 +193,9 @@ async function fundingPage() {
   eq(document.activeElement.id, 'prog-doe_wap', 'focus goes to the program');
   const bpaDue = document.querySelector('#prog-bpa_tribal_iq .program-due');
   ok(bpaDue.classList.contains('is-passed') && bpaDue.textContent.startsWith('Passed 11/05/2026:'), 'BPA\'s date reads passed in its detail');
-  ok(list.querySelector('[data-program="bpa_tribal_iq"] .catalog-date').textContent === '11/05/2026, passed' && list.querySelector('[data-program="bpa_tribal_iq"] .tag').textContent === 'Open', 'and in the list, with its status open (energy-14)');
+  ok(list.querySelector('[data-program="bpa_tribal_iq"] .catalog-date').textContent === '11/05/2026 passed; open while funds last' && list.querySelector('[data-program="bpa_tribal_iq"] .tag').textContent === 'Open', 'and in the list, with its status open (energy-14)');
+  eq(document.querySelector('.pays-list a[href="#prog-bpa_tribal_iq"] ~ .catalog-date').textContent, '11/05/2026 passed; open while funds last', 'the first face says the same');
+  ok(document.querySelector('#energy-deadlines-catalog tr[data-key="bpa-tribal-iq"]').textContent.includes('open while funds last'), 'and so does the Table');
   ok(document.querySelector('#energy-deadlines-catalog [data-row="bpa-tribal-iq"]').classList.contains('is-passed'), 'as the countdown says');
 
   const deep = await funding('#prog-hud_ihbg&status=closed');
@@ -200,6 +209,7 @@ async function fundingPage() {
   fire(window, pick, 'change');
   const status = document.getElementById('tribe-status').textContent;
   ok(status.startsWith(`${tribe.name}: ${tribe.matches.length} energy types in its public plans;`), `one line of status: ${status}`);
+  eq(document.getElementById('fit-answer').textContent, status, 'the agenda answer takes the status line (energy critic 14)');
   const links = [...document.querySelectorAll('#tribe-results a')].map((a) => a.getAttribute('href'));
   eq(new Set(links).size, links.length, 'each program once (energy-21)');
   ok(links.every((h) => document.getElementById(h.slice(1))), 'each linking to its detail');
@@ -280,7 +290,7 @@ async function potentialPage() {
 
 // Policy Watch is built into each task force page; the script that once filled it only hides a development note now (data-centers-18).
 async function policyWatch() {
-  for (const [rel, force] of [['site/ai/index.html', 'ai'], ['site/data-centers/index.html', 'data-centers'], ['site/energy/index.html', 'energy-feasibility']]) {
+  for (const [rel, force] of [['site/ai/index.html', 'ai'], ['site/data-centers/index.html', 'data-centers'], ['site/energy/sources/index.html', 'energy-feasibility']]) {
     const text = read(rel);
     if (!text.includes('<!-- policy:watch -->')) continue;
     const { document } = new JSDOM(text).window;

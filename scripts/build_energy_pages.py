@@ -10,7 +10,8 @@ Writes  between its markers, each region whole:
         energy/potential/index.html          <!-- energy:grid -->       the Tribe-by-type grid, A to Z
                                              <!-- energy:excerpts -->   each Tribe's findings and the passages behind them
         energy/potential/sources/index.html  <!-- energy:documents -->  the documents read, by Tribe, under #docs-{slug}
-        energy/index.html, ai/index.html, data-centers/index.html  <!-- policy:watch -->  that task force's saved searches and follow list
+        energy/sources/index.html, ai/index.html, data-centers/index.html  <!-- policy:watch -->  that task force's saved searches and follow list
+        energy/index.html                    <!-- policy:latest -->     the followed items with the newest records, one line each
 
     python scripts/build_energy_pages.py                             # every page
     python scripts/build_energy_pages.py --page energy/index.html    # only these pages (repeatable): a page lane writes its own pages only
@@ -32,12 +33,13 @@ STATES = {"AK": "Alaska", "CA": "California", "ID": "Idaho", "MT": "Montana", "N
 STAGES = ["Installed or operating", "Planned or funded", "Assessed or sited", "Goal or interest"]  # most advanced first, as the data lists them
 SHORT = {"efficiency": "Efficiency", "solar": "Solar", "electrification": "Electrification", "wind": "Wind", "storage": "Battery storage", "microgrid": "Microgrids", "hydropower": "Hydropower",
          "biomass": "Biomass", "geothermal": "Geothermal", "bioenergy-fuels": "Biogas and biofuels", "hydrogen": "Hydrogen", "offshore-wind": "Offshore wind", "marine": "Marine"}
-CHECKS = {"verified": "Verified", "needs_review": "Needs review"}
+# The second Jev pass over each finding's own passages; "confirmed", so it is not read as a claim's status (verified, partly verified).
+CHECKS = {"verified": "Second reading: confirmed", "needs_review": "Second reading: needs review"}
 ORDER = ["open", "forecasted", "closed", "terminated", "rescinded", "enjoined", "unknown"]
 # How a program pays, from its catalog kind: the agenda's first face groups open programs by these, so the page shows how little is a competitive grant.
 PAYS = [("formula", "Formula and non-competitive grants"), ("loan", "Loans"), ("tax", "A tax credit"), ("help", "Technical help at no cost"), ("disaster", "After a declared disaster"),
         ("competitive", "Competitive grants")]
-WATCH = {"energy/index.html": "energy-feasibility", "ai/index.html": "ai", "data-centers/index.html": "data-centers"}
+WATCH = {"energy/sources/index.html": "energy-feasibility", "ai/index.html": "ai", "data-centers/index.html": "data-centers"}  # every search and followed item
 KINDS = {"docket": "Docket", "rin": "Regulation Identifier Number", "document": "Federal Register document", "bill": "Bill"}
 # Word's Symbol-font bullets and decoding's replacement character are list marks and damage, not words; energy_potential.py drops them where it cuts an excerpt.
 STRAY = dict.fromkeys(map(ord, "�"))
@@ -108,9 +110,15 @@ def status_tag(p):
     return f'<span class="tag status-{e(p["status"])}{hollow}">{e(capital(p.get("status_label") or p["status"]))}</span>'
 
 
+def rolling(p):
+    """A date to apply by for funding, after which the agency still takes applications while funds last (BPA's), rather than a closing date.
+    shortcut: read from the deadline's own words; give the record a field if a second program words it differently."""
+    return "while funds last" in ((p.get("deadline") or {}).get("what") or "")
+
+
 def date_html(p):
     iso = (p.get("deadline") or {}).get("date")
-    return f'<span class="catalog-date" data-date="{iso}">{us(iso)}</span>' if iso else '<span class="catalog-date">No date</span>'
+    return f'<span class="catalog-date" data-date="{iso}"{" data-rolling" if rolling(p) else ""}>{us(iso)}</span>' if iso else '<span class="catalog-date">No date</span>'
 
 
 # Funding
@@ -229,9 +237,13 @@ def states_of(tribe):
     return ", ".join(STATES.get(s, s) for s in tribe["states"]) or "State not recorded"
 
 
+# Where a long name may break when the grid's heads read across (energy.css); a soft hyphen shows only at a break, and the page script reads the names without it.
+SOFT = {"electrification": "Electri­fication", "microgrid": "Micro­grids", "hydropower": "Hydro­power", "geothermal": "Geo­thermal"}
+
+
 def grid(potential):
     cols = columns(potential)
-    head = "".join(f'<th scope="col" data-type="{e(t["id"])}"><span>{e(SHORT[t["id"]])}</span></th>' for t in cols)
+    head = "".join(f'<th scope="col" data-type="{e(t["id"])}"><span>{SOFT.get(t["id"], e(SHORT[t["id"]]))}</span></th>' for t in cols)
     body = []
     for t in sorted(potential["tribes"], key=lambda x: x["name"].lower()):
         found = {f["type"]: f for f in t["top"]}
@@ -319,10 +331,27 @@ def watch(policy, force_id):
     for f in force["follow"]:
         latest = f'<p class="record-note">Latest: {e(f["latest"]["title"])}, {us(f["latest"]["date"])}.</p>' if f.get("latest") else ""
         agency = f', {f["agency"]}' if f.get("agency") else ""
-        follow.append(f'<li class="record watch-item"><h4><a href="{link(f["url"])}">{e(f["title"])}</a></h4><p class="record-meta">{e(KINDS.get(f["kind"], f["kind"]))}: '
-                      f'{e(f.get("identifier") or f.get("value") or f.get("id"))}{e(agency)}{". In the importable list" if f.get("importable") else ""}</p><p>{e(f["reason"])}</p>{latest}</li>')
+        follow.append(f'<li class="record watch-item"><h4><a href="{link(f["url"])}">{e(f["title"])}</a></h4><p class="record-meta">{e(identifier(f))}{e(agency)}</p>'
+                      f'<p>{e(f["reason"])}</p>{latest}</li>')
     return (f'<h3>Saved Searches</h3>\n<div data-policy-searches data-from="policy-watch.json"><ul class="records watch-list" role="list">{"".join(searches)}</ul></div>\n'
             f'<h3>Follow List</h3>\n<div data-policy-follow data-from="policy-watch.json"><ul class="records watch-list" role="list">{"".join(follow)}</ul></div>')
+
+
+def identifier(f):
+    """"Docket No. RM21-17-000" names itself; "1545-BQ13" takes its kind, "Regulation Identifier Number 1545-BQ13"."""
+    ident = str(f.get("identifier") or f.get("value") or f.get("id"))
+    return ident if re.search(r"\b(Docket|File)\b", ident) else f'{KINDS.get(f["kind"], f["kind"])} {ident}'
+
+
+LATEST = 8  # the overview lists this many followed items, newest record first; the Sources page holds every search and item (energy critic 4)
+
+
+def watch_latest(policy, force_id):
+    """The overview's Policy Watch: one line per followed item with a dated latest record, newest first: its name, agency and that date."""
+    dated = sorted((f for f in policy["task_forces"][force_id]["follow"] if (f.get("latest") or {}).get("date")), key=lambda f: f["latest"]["date"], reverse=True)
+    items = "".join(f'<li><a href="{link(f["url"])}">{e(f["title"])}</a> <span class="watch-when">{e(f.get("agency") or identifier(f))}, latest record {us(f["latest"]["date"])}</span></li>'
+                    for f in dated[:LATEST])
+    return f'<ul class="watch-latest" data-policy-latest data-from="policy-watch.json">{items}</ul>'
 
 
 # Pages
@@ -338,6 +367,7 @@ def regions(funding, potential, policy):
     }
     for page, force in WATCH.items():
         out.setdefault(page, {})["policy:watch"] = watch(policy, force)
+    out["energy/index.html"] = {"policy:latest": watch_latest(policy, "energy-feasibility")}
     return out
 
 

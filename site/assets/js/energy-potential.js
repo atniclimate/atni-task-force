@@ -44,7 +44,7 @@ function grid(table) {
   const tbody = table.tBodies[0];
   const original = [...tbody.rows];
   const heads = [...table.tHead.rows[0].cells].slice(1);
-  const types = heads.map((th) => [th.dataset.type, th.textContent.trim()]);
+  const types = heads.map((th) => [th.dataset.type, th.textContent.replace(/­/g, '').trim()]); // a head's soft hyphens are for its line breaks only
   const field = (name) => form.elements.namedItem(name);
   const total = original.length;
   let active = null;

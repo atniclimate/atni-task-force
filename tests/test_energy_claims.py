@@ -174,7 +174,8 @@ def test_every_figure_in_a_pages_own_words_is_poured(page):
 
 # scripts/build_energy_pages.py: the regions a page script only filters and selects.
 
-ENERGY_PAGES = ["energy/index.html", "energy/funding/index.html", "energy/potential/index.html", "energy/funding/sources/index.html", "energy/potential/sources/index.html"]
+ENERGY_PAGES = ["energy/index.html", "energy/sources/index.html", "energy/funding/index.html", "energy/potential/index.html", "energy/funding/sources/index.html",
+                "energy/potential/sources/index.html"]
 
 
 def test_the_energy_pages_regions_are_current():
@@ -189,6 +190,15 @@ def test_the_catalog_lists_every_program_once_open_first():
     statuses = [next(p["status"] for p in FUNDING["programs"] if p["id"] == i) for i in ids]
     assert statuses == sorted(statuses, key=lambda s: bep.ORDER.index(s)), "open, then forecasted, then closed"
     assert all(f'id="prog-{i}"' in html for i in ids), "each row's link has its detail"
+
+
+def test_a_program_reads_one_status():
+    """BPA's date is the date to apply by for funding; later applications are still taken, so every place says open while funds last (energy-14)."""
+    rows = {r["key"]: r for r in ec.dated_rows(FUNDING)}
+    assert ec.due_words(rows["bpa-tribal-iq"]) == "open while funds last; 11/05/2026 is the date to ensure funding"
+    assert ec.due_words(rows["doe-heehr-tribal"]) == "applications are due 12/11/2026"
+    assert all(bep.rolling(p) == ec.rolling(p.get("deadline") or {}) for p in FUNDING["programs"]), "the builder and the plates read a rolling date the same way"
+    assert 'data-date="2026-11-05" data-rolling' in bep.open_face(FUNDING)
 
 
 def test_how_a_program_pays():

@@ -23,8 +23,9 @@
    "id": "bpa-tribal-iq",
    "label": "BPA Tribal efficiency grants",
    "claim": "ef-011",
+   "tag": "open while funds last; 11/05/2026 is the date to ensure funding",
    "cols": {
-    "status": "open",
+    "status": "open while funds last",
     "checked": "11/05/2026",
     "program": "bpa_tribal_iq"
    }
@@ -33,6 +34,7 @@
    "id": "doe-heehr-tribal",
    "label": "Tribal HEEHR home rebates (IRA 50122)",
    "claim": "ef-012",
+   "tag": "applications are due 12/11/2026",
    "cols": {
     "status": "open",
     "checked": "11/05/2026",
@@ -43,6 +45,7 @@
    "id": "doe-40101d",
    "label": "Grid Resilience formula grants (IIJA 40101(d))",
    "claim": "ef-013",
+   "tag": "applications are due 02/17/2027",
    "cols": {
     "status": "open",
     "checked": "11/05/2026",
@@ -53,6 +56,7 @@
    "id": "doe-tefp",
    "label": "DOE Tribal Energy Financing (loans)",
    "claim": "ef-014",
+   "tag": "applications are due 08/31/2028",
    "cols": {
     "status": "open",
     "checked": "11/05/2026",
@@ -63,6 +67,7 @@
    "id": "doe-ie-technical-assistance",
    "label": "DOE Indian Energy technical assistance",
    "claim": "ef-021",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -73,6 +78,7 @@
    "id": "doe-wap",
    "label": "Weatherization Assistance Program",
    "claim": "ef-022",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -83,6 +89,7 @@
    "id": "hhs-liheap",
    "label": "LIHEAP",
    "claim": "ef-023",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -93,6 +100,7 @@
    "id": "hud-ihbg",
    "label": "HUD IHBG",
    "claim": "ef-024",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -103,6 +111,7 @@
    "id": "hud-icdbg",
    "label": "HUD ICDBG",
    "claim": "ef-025",
+   "tag": "forecasted; the catalog holds no deadline",
    "cols": {
     "status": "forecasted",
     "checked": "10/29/2026",
@@ -113,6 +122,7 @@
    "id": "fema-hmgp",
    "label": "FEMA HMGP",
    "claim": "ef-026",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -123,6 +133,7 @@
    "id": "usda-cf",
    "label": "USDA Community Facilities",
    "claim": "ef-027",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -133,6 +144,7 @@
    "id": "irs-elective-pay",
    "label": "IRS elective pay",
    "claim": "ef-028",
+   "tag": "open; the catalog holds no deadline",
    "cols": {
     "status": "open",
     "checked": "10/29/2026",
@@ -141,7 +153,7 @@
   }
  ],
  "reading": "{label}: {display}. {boundary} {evidence}",
- "answer": "{open} of {total} programs in the catalog were open at the check. {label}: {display}.",
+ "answer": "{open} of {total} programs in the catalog were open at the check. {label}: {tag}.",
  "table": {
   "columns": [
    {

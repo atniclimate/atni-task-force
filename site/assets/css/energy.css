@@ -31,6 +31,15 @@
 .plate-square.is-stage-2 { background: var(--stage-2); }
 .plate-square.is-stage-1 { background: var(--stage-1); }
 :is(.stack-bar > i, .plate-square[class*="is-stage-"]) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--atni-text-heading) 18%, transparent); }
+/* On the overview's face the stage key sits in the head beside the caption, where the face has no settings, so the first screen holds the plot, its key and
+   the readout (energy critic 8). Built under the plot (.plate-under) or, in an older build, in the claim zone: either way it lands in the same place. */
+@media screen and (min-width: 1100px) {
+  .agenda-faces [data-plate="energy-types-by-stage"] > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
+  .agenda-faces [data-plate="energy-types-by-stage"] > .plate-claim > * { grid-column: 1; }
+  .agenda-faces [data-plate="energy-types-by-stage"] > .plate-claim > .plate-legend { grid-column: 2; grid-row: 1 / span 6; }
+  .agenda-faces [data-plate="energy-types-by-stage"] > .plate-under { grid-row: claim; grid-column: window; padding: 4px 0 0 20px; }
+  .agenda-faces [data-plate="energy-types-by-stage"] :is(.plate-under, .plate-claim) > .plate-legend { display: grid; gap: 6px; margin: 0; }
+}
 .plate[data-plate^="energy-"] .plate-table td:last-child { white-space: nowrap; } /* a claim id stays whole */
 [data-plate^="energy-deadlines"] .plate-table td { text-align: left; } /* words and dates, not figures to compare */
 /* In a face the plot has two thirds of the width, so the gutter and the names give the ruler more of it, and the months keep apart. */
@@ -64,20 +73,35 @@
 .energy-folds { margin-top: 16px; }
 @media (min-width: 1100px) { .energy-why { grid-template-columns: minmax(0, 36rem) minmax(0, 44rem); } .energy-quote { position: sticky; top: 24px; align-self: start; } }
 
-/* Focus areas and Programs and Tools: two columns of ruled items, so no column runs on alone (energy-17, -20). */
+/* The folds under Why and Focus Areas: a ruled row each, opened by a plus and closed by a minus, the sign What's New uses, never the plot's squares, which
+   mean a stage, "No date" or a status here (energy critic 10). */
+:is(.energy-why, .energy-focus) .rail-details > .disclosure > summary { grid-template-columns: 1rem minmax(0, 1fr); }
+:is(.energy-why, .energy-focus) .rail-details > .disclosure > summary::before { content: "+"; width: auto; height: auto; margin: 0; border: 0; font-family: var(--display); font-weight: 500;
+  font-size: 1.25rem; line-height: 1; color: var(--atni-text-secondary); }
+:is(.energy-why, .energy-focus) .rail-details > .disclosure[open] > summary::before { content: "\2212"; background: none; color: var(--atni-text-heading); }
+
+/* Focus areas and Programs and Tools: ruled items in two columns, four across where four fit, so no item sits alone on a row (energy-17, -20; critic 13). */
 .energy-focus, .energy-tools, .energy-watch { border-top: 1px solid var(--rule); }
-.energy-fold-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr)); align-items: start; }
+.energy-fold-grid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1100px) { :is(.energy-fold-grid, .energy-tools .tool-list) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1800px) { :is(.energy-fold-grid, .energy-tools .tool-list) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .energy-fold-grid > .disclosure[open] { grid-column: auto; }
-.energy-focus > .slot { margin-top: 24px; }
 .tool-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr)); gap: 0 48px; margin: 0; padding: 0; list-style: none; }
 .tool-list > li { margin: 0; padding-block: 16px 20px; border-top: 1px solid var(--rule); }
 .tool-list h3 { margin: 0 0 6px; font-size: 1.125rem; line-height: 1.3; }
 .tool-list h3 a { color: var(--atni-text-heading); }
 .tool-list p { margin: 0; }
-.tool-list > .climate-voice { padding-left: 16px; } /* the one Climate mark on the page (energy-18) */
+.tool-list > .climate-voice { align-self: start; padding-left: 16px; } /* the one Climate mark on the page (energy-18); its rule no longer runs past its words */
 .tool-list .climate-lockup { height: 32px; }
 
-/* Policy Watch: the saved searches and the follow list side by side, each a column of short records, built by build_energy_pages.py. */
+/* Policy Watch on the overview: the followed items with the newest records, a ruled line each (energy critic 4); the saved searches and the whole follow
+   list are on the Sources page, side by side, each a column of short records. All built by build_energy_pages.py. */
+.watch-latest { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 36rem), 1fr)); gap: 0 48px; margin: 0; padding: 0; list-style: none; }
+.watch-latest > li { margin: 0; padding-block: 10px 12px; border-top: 1px solid var(--rule); }
+.watch-latest a { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-heading); }
+.watch-when { display: block; margin-top: 2px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.sources-page .content > #policy-watch { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--grid); }
+#policy-watch > .caption { max-width: var(--measure-wide); margin-bottom: 16px; }
 @media (min-width: 1100px) { .watch-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; align-items: start; } }
 .watch-columns > h3 { grid-row: 1; margin: 0 0 8px; font-size: 1.125rem; }
 .watch-columns > [data-policy-searches], .watch-columns > [data-policy-follow] { grid-row: 2; }
@@ -100,7 +124,7 @@
 
 /* Funding, the third face: one Tribe's plans against the catalog, with a one-line status a screen reader hears and a list it does not re-read (energy-12). */
 .energy-fit { display: grid; align-content: start; gap: 12px; }
-.energy-fit .filters { grid-template-columns: minmax(0, 32rem); }
+.energy-fit .filters { grid-template-columns: minmax(0, 44rem); } /* the longest Tribe's name shows whole (energy critic 14) */
 .energy-fit .data-status { margin: 0; }
 .fit-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 32px; }
 .fit-group { margin: 0; padding-block: 10px 12px; border-top: 1px solid var(--rule); }
@@ -109,12 +133,13 @@
 .fit-group li { margin: 0 0 6px; }
 .fit-group a { color: var(--atni-text-heading); }
 .fit-types { display: block; font-size: 0.875rem; color: var(--atni-text-secondary); }
-#pick-tribe { max-width: 32rem; }
 
 /* The catalog: the list at the left, open first and closed last in muted ink with its tag, and the chosen program's detail beside it (energy-13, -16).
    Without scripts every program's detail follows the list, whole; with them only the chosen one shows, held from the first paint by the js class. */
 .catalog-filters { margin-bottom: 8px; }
-@media (min-width: 1024px) { .catalog-filters { grid-template-columns: repeat(3, minmax(0, 18rem)) auto; } }
+@media (min-width: 1024px) { .catalog-filters { grid-template-columns: repeat(3, minmax(0, 18rem)) auto; justify-content: start; } } /* the button keeps its own width */
+/* A section's heading sits level with the first line of its intro, not its last (energy critic 16). */
+.section-head { align-items: first baseline; }
 .catalog { display: grid; gap: 24px 48px; align-items: start; }
 @media (min-width: 1100px) { .catalog { grid-template-columns: minmax(28rem, 5fr) minmax(0, 7fr); } }
 .catalog-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
@@ -129,13 +154,23 @@
 .catalog-pick:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
 .catalog-item.is-on .catalog-name { color: var(--atni-text-heading); }
 .catalog-item.is-on .catalog-pick::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--energy-mark); }
-.catalog-item.is-dim .catalog-pick > * { opacity: 0.45; }
+/* A program a mark misses is still an option: muted ink, 4.6:1 or better, never faded below what can be read (energy critic 7). */
+.catalog-item.is-dim :is(.catalog-name, .catalog-pays, .catalog-date) { color: var(--atni-text-muted); }
+.catalog-item.is-dim .tag { color: var(--atni-text-secondary); } /* muted on the tag's own ground is 4.4:1 in light */
+.catalog-item.is-dim .tag::before { border-color: currentColor; }
+.catalog-item.is-dim .tag:not(.is-hollow, .is-plain)::before { background: currentColor; }
 .catalog-list:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
 .catalog-details > .program { padding: 20px 24px 24px; background: var(--window); box-shadow: var(--window-ring); }
 .catalog-details > .program + .program { margin-top: 24px; }
 html.js .catalog-details > .program { display: none; }
 html.js .catalog-details > .program.is-on, html.js .catalog-details:not(:has(> .is-on)) > .program:first-child { display: block; }
-@media screen and (min-width: 1100px) { html.js .catalog-details { position: sticky; top: 16px; max-height: calc(100svh - 32px); overflow-y: auto; overscroll-behavior: contain; } }
+@media screen and (min-width: 1100px) {
+  html.js .catalog-details { position: sticky; top: 16px; max-height: calc(100svh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+  /* While the pane holds more than it shows, its foot says so (energy-funding.js sets has-more; energy critic 18). The line keeps its room when hidden. */
+  html.js .catalog-details::after { content: "More below"; position: sticky; bottom: 0; display: block; padding: 8px 24px; font-family: var(--display); font-weight: 500; font-size: 0.875rem;
+    color: var(--atni-text-secondary); background: var(--window); box-shadow: inset 0 1px 0 var(--rule); visibility: hidden; }
+  html.js .catalog-details.has-more::after { visibility: visible; }
+}
 .program h3 { margin: 0 0 4px; font-size: 1.375rem; line-height: 1.2; }
 .program h3 a { color: var(--atni-text-heading); }
 .program h4 { margin: 20px 0 6px; font-size: 1rem; }
@@ -159,12 +194,12 @@ html.js .catalog-details > .program.is-on, html.js .catalog-details:not(:has(> .
    for a goal up to whole for installed or operating, in the stage ramp, so height and ink both say the stage and print and forced colors keep it. The
    selected cell takes a 2px orange ring, focus a 2px ink ring; marks are highlights, so nothing a filter misses disappears (energy-09). */
 .tt-filters { margin-bottom: 8px; }
-@media (min-width: 1024px) { .tt-filters { grid-template-columns: auto minmax(0, 20rem) repeat(4, minmax(0, 12rem)) auto; } }
+@media (min-width: 1024px) { .tt-filters { grid-template-columns: auto minmax(0, 20rem) repeat(4, minmax(0, 12rem)) auto; justify-content: start; } }
 .tt-filters select { min-width: 0; }
 .tt-filters .segmented legend { margin-bottom: 4px; }
 .tt-layout { display: grid; gap: 24px 48px; align-items: start; }
 @media (min-width: 1100px) { .tt-layout { grid-template-columns: minmax(0, 1fr) clamp(22rem, 28vw, 34rem); } }
-.tt-grid-box { min-width: 0; }
+.tt-grid-box { min-width: 0; container-type: inline-size; }
 .tt-key { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0 0 12px; padding: 0; list-style: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .tt-key > li { display: flex; align-items: center; gap: 8px; margin: 0; }
 .tt-grid { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.875rem; }
@@ -173,15 +208,22 @@ html.js .catalog-details > .program.is-on, html.js .catalog-details:not(:has(> .
 .tt-grid thead th { height: 8.5rem; padding: 0 0 8px; vertical-align: bottom; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .tt-grid thead th > span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; text-align: left; }
 .tt-grid thead th.is-mark > span { color: var(--atni-text-heading); text-decoration: underline 2px; text-underline-offset: 0.3em; }
+/* Where a column is wide enough for a word (60px, from about 1680), the heads read across, a long name broken at its soft hyphen (energy critic 9). At 1280
+   and 1440 the columns are 41 to 49px, narrower than "Efficiency", so the heads stay turned. */
+@container (min-width: 1100px) {
+  .tt-grid thead th { height: auto; padding: 0 4px 8px; text-align: center; }
+  .tt-grid thead th > span { writing-mode: horizontal-tb; transform: none; white-space: normal; text-align: center; line-height: 1.15; }
+}
 .tt-grid tbody th { padding: 4px 12px 4px 0; text-align: left; font-family: var(--body); font-weight: 500; line-height: 1.25; }
 .tt-grid tbody th a { color: var(--atni-text-heading); text-decoration: none; }
 .tt-grid tbody th a:hover { text-decoration: underline 1px var(--control-edge); }
 .tt-state { margin-left: 4px; font-size: 0.8125rem; font-weight: 400; color: var(--atni-text-muted); }
 .tt-grid tbody tr { border-top: 1px solid var(--rule); }
 .tt-grid tbody tr.is-group > th { padding-top: 16px; font-family: var(--display); font-weight: 600; color: var(--atni-text-secondary); }
-.tt-grid td { position: relative; height: 2rem; padding: 0; text-align: center; vertical-align: middle; cursor: pointer; }
+.tt-grid td { position: relative; height: 2.25rem; padding: 0; text-align: center; vertical-align: middle; cursor: pointer; }
 .tt-grid td:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
-.tt-mark { display: inline-block; vertical-align: middle; box-sizing: border-box; width: 1rem; height: 1rem; border: 1px solid var(--control-edge);
+/* 22px marks, so a quarter step of the fill is 5px and each stage also wears its own step of the ramp (energy critic 9). */
+.tt-mark { display: inline-block; vertical-align: middle; box-sizing: border-box; width: 1.375rem; height: 1.375rem; border: 1px solid var(--control-edge);
   background: linear-gradient(to top, var(--st, transparent) calc(var(--lvl, 0) * 25%), transparent 0); }
 [data-stage="1"] { --lvl: 1; --st: var(--stage-1); }
 [data-stage="2"] { --lvl: 2; --st: var(--stage-2); }
@@ -216,7 +258,13 @@ html.js .tt-evidence-box { display: none; }
 
 @media print {
   .tt-side, .catalog-filters, .tt-filters { display: none; }
-  html.js .catalog-details > .program { display: block; break-inside: avoid; }
+  /* Funding prints the catalog list and the chosen program, not all 22 details (energy critic 6); without scripts every detail prints, as it reads. */
+  html.js .catalog-details > .program.is-on { break-inside: avoid; }
+  /* The stage plate's six facts run as one paragraph, so the plate keeps to one sheet; the Table under it lists each with its limit. */
+  [data-plate^="energy-types"] :is(.plate-facts > p.caption, .plate-also > li) { display: inline; }
+  [data-plate^="energy-types"] :is(.plate-facts > p.caption, .plate-also > li)::after { content: " "; }
+  [data-plate^="energy-types"] > .plate-collar { break-before: avoid; break-inside: avoid; } /* the Sources address stays with the Table */
+  [data-plate^="energy-types"] .plate-table :is(th, td) { padding-block: 3px; }
   .tt-grid thead th { height: 7rem; }
   .energy-quote { position: static; }
 }

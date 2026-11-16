@@ -236,6 +236,21 @@ def types_plate(plate_id, page, tribes_href, potential, claims, answer=None):
     }
 
 
+def rolling(r):
+    """A date to apply by for funding, after which the agency still takes applications while funds last (BPA's); build_energy_pages.py reads it the same way.
+    shortcut: read from the deadline's own words; give the record a field if a second program words it differently."""
+    return "while funds last" in (r.get("what") or "")
+
+
+def due_words(r):
+    """A row's words for the agenda's answer ({label}: {tag}.), its date the claim's own, so one program reads one status everywhere (energy-14)."""
+    if r.get("link"):
+        return f"the notice closes {us(r['iso'])}"
+    if rolling(r):
+        return f"open while funds last; {us(r['iso'])} is the date to ensure funding"
+    return f"applications are due {us(r['iso'])}"
+
+
 def deadlines_plate(plate_id, page, funding, claims, answer):
     """A countdown (scripts/plate_countdown.py): each dated deadline on a 24-month ruler from the day the dates were rechecked, then the open or forecasted programs
     with no date. A row's date is its claim's, so the title states only what the clock cannot change: how many dates the catalog holds, and the last."""
@@ -243,8 +258,10 @@ def deadlines_plate(plate_id, page, funding, claims, answer):
     ids = {c["entity"]: c["id"] for c in claims if "ef-011" <= c["id"] < "ef-041"}
     checks = checked_dates(funding["programs"])
     start = checks[-1]  # the day the dated programs were read on their agencies' pages
-    rows = [{"id": r["key"], "label": r["name"], "claim": ids[r["name"]], "cols": {"status": r["status"], "checked": us(r["checked"]), **({"program": r["program"]} if r.get("program") else {"link": r["link"]})}} for r in dated]
-    rows += [{"id": p["id"].replace("_", "-"), "label": p["short_name"], "claim": ids[p["short_name"]], "cols": {"status": p["status"], "checked": us(p["status_checked"]["date"]), "program": p["id"]}} for p in undated]
+    rows = [{"id": r["key"], "label": r["name"], "claim": ids[r["name"]], "tag": due_words(r),
+             "cols": {"status": "open while funds last" if rolling(r) else r["status"], "checked": us(r["checked"]), **({"program": r["program"]} if r.get("program") else {"link": r["link"]})}} for r in dated]
+    rows += [{"id": p["id"].replace("_", "-"), "label": p["short_name"], "claim": ids[p["short_name"]], "tag": f"{p['status']}; the catalog holds no deadline",
+              "cols": {"status": p["status"], "checked": us(p["status_checked"]["date"]), "program": p["id"]}} for p in undated]
     upcoming = [r for r in dated if r["iso"] > start]
     recheck = f"Dated programs rechecked {us(checks[-1])}; other statuses checked {us(checks[0])}." if len(checks) > 1 else f"Statuses checked {us(checks[0])}."
     last = f" through {us(dated[-1]['iso'])}" if dated else ""
@@ -267,8 +284,8 @@ def plates_for(potential, funding, potential_list, funding_list):
     made = [
         types_plate("energy-types-by-stage", "energy/index.html", "potential/#tribes", potential, potential_list, answer="{label}: {display} name it in their public plans."),
         types_plate("energy-types-by-stage-plans", "energy/potential/index.html", "#tribes", potential, potential_list),
-        deadlines_plate("energy-deadlines", "energy/index.html", funding, funding_list, "{open} of {total} programs in the catalog were open at the check. {label}: {display}."),
-        deadlines_plate("energy-deadlines-catalog", "energy/funding/index.html", funding, funding_list, "{label}: {display}."),
+        deadlines_plate("energy-deadlines", "energy/index.html", funding, funding_list, "{open} of {total} programs in the catalog were open at the check. {label}: {tag}."),
+        deadlines_plate("energy-deadlines-catalog", "energy/funding/index.html", funding, funding_list, "{label}: {tag}."),
     ]
     return {plate["id"]: plate for plate in made}
 

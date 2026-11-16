@@ -5,10 +5,11 @@ import { esc, plural, day, linkFilters, address, writeAddress } from './util.js'
 
 const today = () => { const n = new Date(); return [n.getFullYear(), n.getMonth() + 1, n.getDate()].map((v) => String(v).padStart(2, '0')).join('-'); };
 
-// A date the countdown counts as passed reads as passed here too, so a program shows one status: open, with its date passed (energy-14).
+// A date the countdown counts as passed reads as passed here too, so a program shows one status: open, with its date passed, and still open while funds
+// last when its agency takes later applications (data-rolling, BPA's case; energy-14).
 function dates(root) {
   const now = today();
-  for (const el of root.querySelectorAll('.catalog-date[data-date]')) if (el.dataset.date < now) el.textContent = `${day(el.dataset.date)}, passed`;
+  for (const el of root.querySelectorAll('.catalog-date[data-date]')) if (el.dataset.date < now) el.textContent = `${day(el.dataset.date)} passed${'rolling' in el.dataset ? '; open while funds last' : ''}`;
   for (const el of root.querySelectorAll('.program-due[data-date]')) {
     if (el.dataset.date >= now) continue;
     el.classList.add('is-passed');
@@ -40,6 +41,11 @@ function catalog() {
     item.setAttribute('aria-controls', `prog-${item.dataset.program}`);
   }
   for (const article of document.querySelectorAll('.catalog-details > .program')) article.tabIndex = -1;
+  // The detail pane scrolls on its own beside the list; "More below" shows while it holds more than it shows (energy.css).
+  const pane = document.querySelector('.catalog-details');
+  const more = () => pane?.classList.toggle('has-more', pane.scrollHeight - pane.scrollTop - pane.clientHeight > 4);
+  pane?.addEventListener('scroll', more, { passive: true });
+  window.addEventListener('resize', more);
 
   function choose(item, { write = true } = {}) {
     if (!item) return;
@@ -49,9 +55,10 @@ function catalog() {
     item.setAttribute('aria-selected', 'true');
     list.setAttribute('aria-activedescendant', item.id);
     detail(item).classList.add('is-on');
-    detail(item).scrollTop = 0;
-    item.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-    if (write) {
+    if (pane) pane.scrollTop = 0;
+    more();
+    if (write) { // the starting choice never scrolls the page: the reader lands on the brief (energy critic 1)
+      item.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       const { params } = address();
       params.set('program', item.dataset.program);
       writeAddress('', params);
@@ -134,6 +141,8 @@ function tribes() {
   const table = JSON.parse(data.textContent);
   const out = document.getElementById('tribe-results');
   const status = document.getElementById('tribe-status');
+  const answer = document.getElementById('fit-answer'); // the agenda's third answer takes the status line once a Tribe is chosen
+  const ask = answer?.textContent;
   const program = (id) => document.querySelector(`.catalog-item[data-program="${CSS.escape(id)}"]`);
   const name = (id) => program(id)?.querySelector('.catalog-name').textContent || id;
   const typeLabel = new Map([...document.querySelectorAll('#filter-type option')].map((o) => [o.value, o.textContent.replace(/ \(\d+\)$/, '')]));
@@ -141,7 +150,7 @@ function tribes() {
 
   function render() {
     const tribe = table[select.value];
-    if (!tribe) { out.replaceChildren(); status.textContent = ''; writeParams(); return; }
+    if (!tribe) { out.replaceChildren(); status.textContent = ''; if (answer) answer.textContent = ask; writeParams(); return; }
     const named = new Map();
     const possible = new Map();
     for (const [type, , , names, maybes] of tribe.types) {
@@ -158,6 +167,7 @@ function tribes() {
     status.textContent = tribe.types.length
       ? `${tribe.name}: ${plural(tribe.types.length, 'energy type')} in its public plans; ${plural(openNamed.length, 'open or forecasted program')} ${openNamed.length === 1 ? 'names' : 'name'} one of them.`
       : `${tribe.name}: no energy type was found in its public plans in the library, so no program is matched.`;
+    if (answer) answer.textContent = status.textContent;
     writeParams();
   }
   select.addEventListener('change', render);
