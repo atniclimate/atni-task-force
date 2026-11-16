@@ -132,13 +132,13 @@ def static_html(entries, types):
     """For a reader without scripts: the newest Tribal-specific entries the Start here shelf does not already hold, by title and source (each summary is a
     press away, at the source), so the page stays light. library.js hides the block."""
     shown = [e for e in newest(entries) if e["tribal_specific"] and not e["featured"]][:STATIC_TRIBAL]
-    return (f'<section class="shelf-static" aria-labelledby="static-tribal-title"><h2 id="static-tribal-title">Tribal-specific, newest first</h2>'
+    return (f'<section class="shelf-static" aria-labelledby="static-tribal-title"><h2 id="static-tribal-title">Tribal-Specific, Newest First</h2>'
             f'<ol class="entries" role="list">{"".join(row(e, types, with_summary=False) for e in shown)}</ol>'
             '<p class="caption">The rest of the library is in its data file, <a href="../data/library.json">library.json</a>, and, with scripts on, under Browse all.</p></section>')
 
 
 def preview_html(entry, types, areas, pages, cites, at, up="../"):
-    """The selected entry beside the list: its whole summary, its areas, where the site cites it, and the way to the document."""
+    """The selected entry beside the list: the way to the document first, so it sits in the first screen, then its whole summary, its areas, and where the site cites it."""
     pdf = " (PDF)" if entry["url"].lower().endswith(".pdf") else ""
     chips = "".join(f'<li><a href="#area={a}" data-filter="area" data-value="{a}">{escape(areas.get(a, a))}</a></li>' for a in entry["areas"])
     if entry["tribal_specific"]:
@@ -149,10 +149,10 @@ def preview_html(entry, types, areas, pages, cites, at, up="../"):
              if used else "<li>No figure on this site cites it.</li>")
     return (f'<div data-preview="{escape(entry["id"])}"><h3 class="preview-title">{escape(entry["title"])}</h3>'
             f'<p class="entry-meta"><span class="entry-type">{escape(types.get(entry["type"], entry["type"]))}</span>, {escape(entry["publisher"])}, <time datetime="{escape(entry["date"])}">{day(entry["date"])}</time></p>'
+            f'<p class="preview-go"><a class="paper" href="{escape(link(entry["url"], up))}">Open the document{pdf}</a></p>'
             f'<p class="preview-summary">{summary(entry)}</p>'
             f'<dl class="preview-facts"><div><dt>Areas</dt><dd><ul class="tags" role="list">{chips}</ul></dd></div>'
-            f'<div><dt>Cited on this site</dt><dd><ul class="preview-cites" role="list">{where}</ul></dd></div></dl>'
-            f'<p class="preview-go"><a class="paper" href="{escape(link(entry["url"], up))}">Open the document{pdf}</a></p></div>')
+            f'<div><dt>Cited on this site</dt><dd><ul class="preview-cites" role="list">{where}</ul></dd></div></dl></div>')
 
 
 def norm(url):
@@ -211,7 +211,7 @@ def group(title, rows, cls="", note=""):
 
 
 def composition(data, script):
-    """The field with its key, the Area rows, and the Type, Year and Tribal focus rows with what their counts leave out."""
+    """The field with its key, the Area rows, and the Type, Year and Tribal-specific rows with what their counts leave out. One label, the form's, for the Tribal rows (critic 14)."""
     entries = data["entries"]
     total = len(entries)
     areas = words("AREAS", script)
@@ -234,7 +234,7 @@ def composition(data, script):
           <div class="comp-groups">
             {group("Type", [bar(r, total) for r in sorted(of("type"), key=lambda r: (-r["n"], r["value"])) if r["n"]], " comp-group-wide")}
             {group("Year", [bar(r, total) for r in of("year")])}
-            {group("Tribal focus", [bar(r, total) for r in of("tribal")], note=note)}
+            {group("Tribal-specific", [bar(r, total) for r in of("tribal")], note=note)}
           </div>
           <!-- /library-legend -->"""
     return {"library-composition": field_block, "library-legend": bars_block}

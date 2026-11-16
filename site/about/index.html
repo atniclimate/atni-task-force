@@ -25,6 +25,7 @@
   <link rel="preload" href="../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/LeagueSpartan-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/NotoSans-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/NotoSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/site.css">
   <link rel="stylesheet" href="../assets/css/pages.css">
@@ -66,7 +67,7 @@
         <p>This project classifies its material under the Tiered Sovereign Data Framework (TSDF), which ATNI endorsed as a recognized standard for Indigenous Data Sovereignty in <a href="../library/resolutions/atni-res-2026-034-tiered-sovereign-data-framework.pdf">Resolution #2026-034 (PDF)</a>. It holds two tiers only, and publishes one.</p>
       </div>
       <fieldset class="stair about-stair">
-        <legend>The framework’s four tiers. Choose a tier to read it.</legend>
+        <legend>The framework’s four tiers. <span class="pick-how">Choose a tier to read it.</span></legend>
         <label class="stair-step is-lit"><input class="stair-pick" type="radio" name="tier" checked> <span class="stair-code">T0</span> <span class="stair-name">Open/Public</span> <span class="stair-tag">What you see here</span></label>
         <div class="stair-detail"><dl>
           <div><dt>What it holds</dt><dd>ATNI resolutions, links to public websites, published reports and datasets, and syntheses released for public use.</dd></div>
@@ -98,14 +99,16 @@
         <p>Every figure on a chart carries a claim: a record of its source, the words it was read from, what it counts, and what it leaves out. Here is one, followed from its source to this site.</p>
       </div>
       <fieldset class="track about-track">
-        <legend>The life of one claim, dem-073. Choose a step to read it.</legend>
+        <legend>The life of one claim, dem-073. <span class="pick-how">Choose a step to read it.</span></legend>
         <label class="track-step"><input class="track-pick" type="radio" name="claim-step" checked> <span class="track-n">1</span> <span class="track-name">A public source</span></label>
         <div class="track-detail"><dl>
           <div><dt>The source</dt><dd>The <a data-pour="dem-073" data-field="source" href="https://nwcouncil.box.com/v/ninthplandemndfcastworkbooks">Northwest Power and Conservation Council</a> publishes its forecast of the electricity data centers and chip plants may draw in the Northwest, as a public workbook.</dd></div>
         </dl></div>
         <label class="track-step"><input class="track-pick" type="radio" name="claim-step"> <span class="track-n">2</span> <span class="track-name">A claim</span></label>
         <div class="track-detail"><dl>
-          <div><dt>One figure, recorded</dt><dd>Claim dem-073 records one figure from it, <span data-pour="dem-073" data-field="value">2,475.1</span> <span data-pour="dem-073" data-field="unit">aMW</span> (average megawatts) for <span data-pour="dem-073" data-field="year">2030</span>, with the cells it was read from, what it counts, and the date the source gives.</dd></div>
+          <div><dt>One figure, recorded</dt><dd>Claim dem-073 records the Council’s forecast for <span data-pour="dem-073" data-field="year">2030</span> in average megawatts (aMW): <span data-pour="dem-073" data-field="text">2,475.1 (1,512.8 to 4,988.7)</span> <span data-pour="dem-073" data-field="unit">aMW</span>, its middle case with the low and high cases in parentheses. The claim keeps the cells it was read from and the date the source gives.</dd></div>
+          <div><dt>What it counts</dt><dd>Data centers and chip plants together, across Oregon, Idaho, Washington, and western Montana.</dd></div>
+          <div><dt>What it leaves out</dt><dd>It does not separate data centers from chip plants. The workbook does not say whether the figure is a total or an increase over an earlier base, so the site reads it as printed.</dd></div>
         </dl></div>
         <label class="track-step"><input class="track-pick" type="radio" name="claim-step"> <span class="track-n">3</span> <span class="track-name">A check</span></label>
         <div class="track-detail"><dl>
@@ -131,8 +134,8 @@
       <dl class="rule-rows">
         <div><dt>Hosting</dt><dd>GitHub hosts the site and, as its own <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection">documentation</a> states, logs and stores each visitor’s IP address for security purposes, whether or not the visitor is signed in. GitHub does not publish how long it keeps those logs.</dd></div>
         <div><dt>What the site loads</dt><dd>Static HTML, CSS, and JavaScript from this site only: no analytics, trackers, outside scripts, or outside fonts, and no cookies. Nothing on the site sends GitHub, or anyone else, anything you type.</dd></div>
-        <div><dt>What your browser keeps</dt><dd>A light or dark theme choice, on that device only. The home and Library pages also keep, on that device only, the date of the newest update listed at a reader’s last visit, so they can count what is new. Neither is sent anywhere.</dd></div>
-        <div><dt>Without JavaScript</dt><dd>Pages read in full. The library’s search, filters, and other shelves, the energy plan and funding views, and the policy watch lists need it, and each links to its open data file instead.</dd></div>
+        <div><dt>What your browser keeps</dt><dd>A light or dark theme choice, on that device only. The Library page also keeps, on that device only, the date of the newest update listed at a reader’s last visit, so it can count what is new. Neither is sent anywhere.</dd></div>
+        <div><dt>Without JavaScript</dt><dd>Pages read in full, and every chart shows its table, each figure with its claim, its status, and a link to its record. JavaScript runs the rest: chart settings and views, the Explorer’s settings, the meeting sheet, the Library’s search, filters, and other shelves, the Funding page’s Tribe picker, the plan grid’s filters and excerpts on What Tribal Plans Say, and the Briefing’s custom packets. The full Briefing PDF downloads without it.</dd></div>
         <div><dt>Before release</dt><dd>An automated check scans the public site for local file paths, credentials, links to private documents, and library entries that are not T0.</dd></div>
         <div><dt>Who decides</dt><dd>ATNI staff decide what is published and check library summaries against their sources.</dd></div>
       </dl>
@@ -201,6 +204,7 @@
           </li>
           <li><strong>Typefaces:</strong> League Spartan, by The League Spartan Project Authors, and Noto Sans, by The Noto Project Authors, both under the SIL Open Font License 1.1 (<a href="../assets/fonts/OFL-LeagueSpartan.txt">League Spartan license</a>, <a href="../assets/fonts/OFL-NotoSans.txt">Noto Sans license</a>).</li>
           <li><strong>Photographs:</strong> a night sky and transmission lines, by GreensandBlues, on the home page; a wall of servers, by seventyfourimages, on the AI page; and the back of a server cabinet and its cables, by svitlanah, on the Data Centers page. Each is a stock photograph from Envato Elements, licensed for this project; the place of each is unknown, and none shows any facility in any proposal. They sit behind the top of those pages in the dark theme on a wide screen.</li>
+          <li><strong>Maps:</strong> on the Data Centers page, the relief is from the ETOPO 2022 global relief model of NOAA’s National Centers for Environmental Information, free to use and redistribute; rivers and lakes are from Natural Earth, in the public domain; and county points are from the U.S. Census Bureau’s 2024 county file.</li>
         </ul>
       </div>
     </section>

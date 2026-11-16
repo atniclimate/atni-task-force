@@ -98,6 +98,7 @@ const groups = {
       eq(bar.getAttribute('aria-current'), 'true', 'the bar says it is on');
       eq(document.querySelectorAll('.comp-row[aria-current]').length, 1, 'and only that one');
       eq(TOTAL - out(document), Number(printed(bar)), 'the field keeps that many squares');
+      eq(document.activeElement, status, 'the page returns to the list it filtered, its status line in focus (critic 9)');
       eq(bar.querySelector('.comp-hit').textContent, `${Number(printed(bar)).toLocaleString('en-US')} of`, 'its whole share is kept');
       ok(settings(window).includes(`${bar.dataset.filter}=${bar.dataset.value}`), 'the view can be linked');
       await press(window, bar);
@@ -108,15 +109,32 @@ const groups = {
   },
 
   async shelvesSwitchTheList() {
-    const { window, document, status, heading, rows } = await load();
+    const { window, document, status, heading, rows, form } = await load();
     const shelf = (name) => document.querySelector(`[data-shelf="${name}"]`);
+    const since = new Date(Date.parse(data.updated) - 90 * 864e5).toISOString().slice(0, 10);
+    const recent = data.entries.filter((e) => e.added >= since);
     const cases = [
-      ['tribal', 'Tribal-specific, newest first', data.entries.filter((e) => e.tribal_specific).length],
-      ['filings', 'Company filings', data.entries.filter((e) => FILINGS.test(e.publisher)).length],
-      ['all', 'Browse all', TOTAL],
+      ['tribal', 'Tribal-Specific, Newest First', data.entries.filter((e) => e.tribal_specific).length],
+      ['new', 'Newly Added', recent.length],
+      ['filings', 'Company Filings', data.entries.filter((e) => FILINGS.test(e.publisher)).length],
+      ['all', 'Browse All', TOTAL],
     ];
+    eq(form.hasAttribute('data-full'), false, 'Start here offers the search alone (critic 4)');
     for (const [name, title, count] of cases) {
       await press(window, shelf(name));
+      eq(form.hasAttribute('data-full'), true, `${name}: a list shelf offers every filter`);
+      if (name === 'new') {
+        const added = rows().map((r) => data.entries.find((e) => e.id === r.dataset.entry).added);
+        ok(added.every((day) => day >= since), 'Newly added holds only recent additions');
+        ok(added.every((day, i) => !i || added[i - 1] >= day), 'the newest addition first');
+        ok(status.textContent.includes(`added since ${since.slice(5, 7)}/${since.slice(8)}/${since.slice(0, 4)}`), 'and its line says since when');
+        const log = document.querySelector('[data-log]');
+        eq(log.hidden, false, 'it links the log of every change');
+        await press(window, log.querySelector('a'));
+        ok(document.getElementById('whats-new').open, 'which opens in place');
+        eq(document.activeElement, document.querySelector('#whats-new summary'), 'and takes focus');
+        eq(heading.textContent, title, 'while the shelf stays');
+      }
       eq(heading.textContent, title, `${name}: the list says which shelf`);
       eq(shown(status), count, `${name}: and how many it holds`);
       eq(shelf(name).getAttribute('aria-current'), 'true', `${name}: the shelf says it is open`);
@@ -127,6 +145,8 @@ const groups = {
     ok(newest > 0, 'the library holds company filings');
     await press(window, shelf('start'));
     eq(rows().length, data.entries.filter((e) => e.featured).length, 'Start here again');
+    eq(form.hasAttribute('data-full'), false, 'and the search alone again');
+    eq(document.querySelector('[data-log]').hidden, true, 'the log link goes with Newly added');
     eq(rows()[0].querySelector('.entry-type').textContent, 'Resolution', 'resolutions first');
     ok(!rows().some((r) => FILINGS.test(r.querySelector('.entry-meta').textContent)), 'and no company filing (-25)');
   },

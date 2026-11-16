@@ -14,44 +14,9 @@
   {
    "date": "2026-11-16",
    "kind": "data",
-   "title": "Charts updated on the AI page",
-   "url": "ai/",
-   "area": "ai"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "data",
-   "title": "Charts updated on the Data Centers page",
-   "url": "data-centers/",
-   "area": "data-centers"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "data",
-   "title": "Charts updated on the Resource Use page",
-   "url": "data-centers/resource-use/",
-   "area": "data-centers"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "data",
-   "title": "Charts updated on the Energy page",
-   "url": "energy/",
-   "area": "energy-feasibility"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "data",
-   "title": "Charts updated on the Energy Funding page",
-   "url": "energy/funding/",
-   "area": "energy-feasibility"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "data",
-   "title": "Charts updated on the What Tribal Plans Say page",
-   "url": "energy/potential/",
-   "area": "energy-feasibility"
+   "title": "Charts updated on six pages",
+   "url": "sources/",
+   "area": "cross-cutting"
   },
   {
    "date": "2026-11-15",
@@ -161,37 +126,9 @@
   {
    "date": "2026-11-05",
    "kind": "data",
-   "title": "Charts updated on the AI page",
-   "url": "ai/",
-   "area": "ai"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "data",
-   "title": "Charts updated on the Data Centers page",
-   "url": "data-centers/",
-   "area": "data-centers"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "data",
-   "title": "Charts updated on the Energy page",
-   "url": "energy/",
-   "area": "energy-feasibility"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "data",
-   "title": "Charts updated on the Energy Funding page",
-   "url": "energy/funding/",
-   "area": "energy-feasibility"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "data",
-   "title": "Charts updated on the What Tribal Plans Say page",
-   "url": "energy/potential/",
-   "area": "energy-feasibility"
+   "title": "Charts updated on five pages",
+   "url": "sources/",
+   "area": "cross-cutting"
   },
   {
    "date": "2026-11-04",
@@ -356,6 +293,8 @@
   }
  ],
  "ledger": {
+  "charts:2026-11-05": "ai/ data-centers/ energy/ energy/funding/ energy/potential/",
+  "charts:2026-11-16": "ai/ data-centers/ data-centers/resource-use/ energy/ energy/funding/ energy/potential/",
   "claims/aiunits.json": "fc59f38bcb40",
   "claims/anonymized.json": "5e74f7b323c8",
   "claims/atni.json": "35b2bf0513b2",
@@ -379,7 +318,7 @@
   "claims/prose-ru.json": "3215761f4ad6",
   "claims/resources.json": "d37721f0aae3",
   "claims/services.json": "3f60b542e4cb",
-  "claims/site-counts.json": "f250f7336396",
+  "claims/site-counts.json": "f66f93519dba",
   "claims/sovereign.json": "4a01ea106810",
   "claims/tradeoffs.json": "e140d57246dd",
   "follow/0331-AA10": "2026-11-05",
@@ -421,21 +360,21 @@
   "follow/S. 1181 (119th Congress)": "2026-11-05",
   "follow/S. 5050 (119th Congress)": "2026-11-05",
   "follow/S. 5645 (119th Congress)": "2026-11-05",
-  "plates/ai-capex-cash.json": "201c287223e4",
-  "plates/ai-company-footprint.json": "b13efff0337a",
-  "plates/ai-company-money.json": "36bbb9dfcdd2",
+  "plates/ai-capex-cash.json": "d3575348269c",
+  "plates/ai-company-footprint.json": "65a8465201e7",
+  "plates/ai-company-money.json": "70c8309e073a",
   "plates/ai-displacement.json": "5f36ec19fe2c",
   "plates/ai-guidance-2026.json": "0c4f198b07cd",
   "plates/ai-heavy-ai.json": "1d2b95d67766",
   "plates/ai-holdings.json": "6daaccc97acb",
-  "plates/ai-hour.json": "7ff6c59f9094",
+  "plates/ai-hour.json": "df51d168af5b",
   "plates/ai-jobs-sector.json": "6d875470a22e",
   "plates/ai-occupations.json": "6a64df79b946",
   "plates/ai-per-day.json": "e570e13f24ff",
-  "plates/ai-same-hour.json": "d3fcd7bd76b3",
+  "plates/ai-same-hour.json": "26e0d6286907",
   "plates/ai-scale.json": "5527928beeba",
   "plates/dc-climate-counties.json": "4611ca06a397",
-  "plates/dc-cooling.json": "4d2c98c982c5",
+  "plates/dc-cooling.json": "0eabfbe9117c",
   "plates/dc-eia-servers.json": "f2525ca39ac9",
   "plates/dc-forecast-check.json": "602d17740f08",
   "plates/dc-iea-world.json": "50db43e7a192",
@@ -443,17 +382,17 @@
   "plates/dc-lbnl-us.json": "658ee35405ce",
   "plates/dc-pnw-load.json": "111b24203128",
   "plates/dc-project-land.json": "1b4fd1e38681",
-  "plates/dc-project.json": "69d15712d798",
+  "plates/dc-project.json": "74835439bd56",
   "plates/dc-tradeoff-matrix.json": "5f20364373e2",
   "plates/dc-water-intensity.json": "0e6cc9b50d8e",
-  "plates/energy-deadlines-catalog.json": "850c379965a9",
-  "plates/energy-deadlines.json": "115c62243ca3",
+  "plates/energy-deadlines-catalog.json": "6a27ec8c4ceb",
+  "plates/energy-deadlines.json": "332f01c86223",
   "plates/energy-types-by-stage-plans.json": "498ffca23a5d",
   "plates/energy-types-by-stage.json": "59d0f87c1dc2",
-  "plates/ru-boundary.json": "75502a4a3d2d",
-  "plates/ru-electricity.json": "2410896c0c33",
-  "plates/ru-forecasts.json": "737addd26407",
-  "plates/ru-hour.json": "acaae09408ea",
-  "plates/ru-water.json": "e311949c9ed5"
+  "plates/ru-boundary.json": "8897e81612a1",
+  "plates/ru-electricity.json": "0395b38e3e21",
+  "plates/ru-forecasts.json": "c174acc2229c",
+  "plates/ru-hour.json": "8a827c8bf53f",
+  "plates/ru-water.json": "079b29f811b6"
  }
 }

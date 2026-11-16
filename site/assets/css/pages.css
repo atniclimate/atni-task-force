@@ -1,9 +1,9 @@
 /* Library, Summit, and About (DIRECTION-R2 4, P-pages). Loads after site.css and holds only what the kit does not say: the kit draws the brief, the track,
    the stair, the asks, and What's New rows. Orange marks one thing here, the Library's selected entry; every other chosen state is heading ink. */
 
-/* A word tag says a state in words, in a 1px frame: "To be confirmed", "Not open", "In development" (library-summit-about-16). The kit's hollow square
-   stays with the controls that open, and numbers with the steps of a sequence. */
-.word-tag, .photo-slot .slot-label { display: inline-flex; align-items: center; margin: 0; padding: 2px 8px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-heading); border: 1px solid var(--control-edge); }
+/* A word tag says a state in words: "To be confirmed", "Not open", "In development" (library-summit-about-16). Text in heading ink and no frame, since a
+   1px frame is a secondary button's shape (3.11) and a state is not a control (critic 8); its note follows on the next line. */
+.word-tag, .photo-slot .slot-label { display: block; margin: 0; font-family: var(--display); font-weight: 600; font-size: 1rem; line-height: 1.3; color: var(--atni-text-heading); }
 .photo-slot .slot-label::before { content: none; }
 .photo-slot { display: grid; justify-items: start; gap: 8px; }
 .photo-slot p:not(.slot-label) { margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); }
@@ -40,12 +40,19 @@
 .lib-filters .field select { width: auto; max-width: 100%; } /* each as wide as its longest choice, so no chosen value is cut off or stretched (-04) */
 .lib-filters .button { width: auto; min-height: 44px; }
 .lib-try { flex-basis: 100%; max-width: none; margin: 0; font-size: 0.875rem; color: var(--atni-text-secondary); }
+/* Start here holds the search and its Try words in one row, so its first entries reach the first screen; the other filters come with the list shelves,
+   where they narrow something (critic 4). library.js sets data-full. */
+.lib-filters:not([data-full]) :is(.field:not(.field-search), [data-clear]) { display: none; }
+.lib-filters:not([data-full]) .field-search { flex: 1 1 14rem; }
+.lib-filters:not([data-full]) .lib-try { flex: 2 1 16rem; align-self: center; margin-top: 1.4em; } /* beside the search from 1280, its words wrapping if they must */
+#library-results > .entry-group:first-child { margin-top: 4px; }
 .lib-try button { min-height: 32px; padding: 4px 6px; font: inherit; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; cursor: pointer; }
 .lib-try button:hover { text-decoration-color: currentColor; }
 .shelf > .notice { margin: 12px 0 0; }
 .shelf-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px; margin-top: 16px; padding-bottom: 8px; }
 .shelf-head h2 { margin: 0; font-size: 1.375rem; }
 .shelf-head .library-status { max-width: 44rem; margin: 0; font-weight: 400; font-size: 0.9375rem; line-height: 1.4; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.shelf-log { margin: 0; font-size: 0.9375rem; }
 .entry-group { max-width: none; margin: 16px 0 0; padding-bottom: 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 
 /* Rows: a title, its type, publisher and date, and a Tribal-specific tag in words. The selected row carries the page's one orange, a 3px rule. */
@@ -71,13 +78,13 @@
 .entry-preview { min-width: 0; padding: 20px 24px 24px; background: var(--window); box-shadow: var(--window-ring); }
 .preview-title { margin: 0 0 6px; font-size: 1.375rem; line-height: 1.2; color: var(--atni-text-heading); text-wrap: balance; }
 .entry-preview .entry-meta { margin: 0; }
-.preview-summary { margin: 14px 0 16px; line-height: 1.6; }
+.preview-summary { margin: 0 0 16px; line-height: 1.6; }
 .preview-facts { display: grid; gap: 14px; margin: 0; padding-top: 14px; border-top: 1px solid var(--rule); }
 .preview-facts dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .preview-facts dd { margin: 6px 0 0; }
 .preview-cites { margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.45; }
 .preview-cites li { margin: 0 0 4px; }
-.preview-go { margin: 20px 0 0; }
+.preview-go { margin: 14px 0 16px; }
 .entry-preview .tags li { padding: 0; background: none; }
 .entry-preview .tags a { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 8px; color: var(--atni-text-heading); text-decoration: none; background: var(--tag-bg); }
 .entry-preview .tags a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
@@ -93,6 +100,9 @@
   .js .library-room .entry-summary { display: none; } /* the preview carries it */
 }
 @media screen and (max-width: 1099px) { .entry-preview { display: none; } }
+/* Without scripts the preview could only repeat the first row's summary, which the list already shows, so the list takes its column (critic 15). */
+html:not(.js) .entry-preview { display: none; }
+@media screen and (min-width: 1100px) { html:not(.js) .library-room { grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); } }
 
 /* Explore the collection: the field with its key, then a row of bars per facet. Every bar is a filter, and every count is a claim mark that opens its
    record. With filters on, a bar's darker part is the share of that row the filters keep, and the field dims what they leave out (-03, -19). */
@@ -156,21 +166,33 @@ a.comp-n { position: absolute; top: 4px; right: 0; font-family: var(--display); 
 .status-note { display: block; margin-top: 6px; font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
 .summit-path h2, .summit-prepare h2, .summit-reading h2 { margin-bottom: 12px; }
 .track-when { font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
-:is(.summit-track .track-detail, .about-track .track-detail, .about-stair .stair-detail) { max-width: 72rem; } /* wider than the kit's 44rem: the shared cell is as tall as its longest step, so short columns keep it low */
+/* The detail's rule runs under every step of the track, so the last steps keep their floor (critic 12); only its text keeps a measure, wider than the kit's
+   44rem, since the shared cell is as tall as its longest step and short columns keep it low. */
+:is(.summit-track .track-detail, .about-track .track-detail, .about-stair .stair-detail) { max-width: none; }
+:is(.summit-track .track-detail, .about-track .track-detail, .about-stair .stair-detail) > dl { max-width: 72rem; }
 @supports selector(:has(*)) {
   @media screen and (min-width: 720px) {
     .summit-track .track-step:nth-of-type(3)::before { right: auto; width: 2rem; } /* the rail breaks between the days, so two days do not read as one run */
   }
 }
-.summit-prepare .section-note, .summit-reading .section-note { margin: 0 0 16px; }
+/* Who comes, and what each brings: one column per role, side by side, so "who comes" sits right under the track (critic 6). Plain lists: a box to tick
+   that nothing reads would be a control that does nothing (critic 7). */
+.role-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 24px 40px; align-items: start; max-width: calc(3 * 36rem + 80px); } /* three across from 1280; the cap keeps each measure under 36rem */
+.role { padding-top: 12px; border-top: 1px solid var(--rule); }
+.role h3 { margin: 0 0 6px; font-size: 1.1875rem; line-height: 1.25; }
+.role-who { margin: 0 0 8px; font-size: 0.9375rem; line-height: 1.5; }
+.role-label { margin: 14px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.role-bring { margin: 0; padding-left: 1.25em; font-size: 0.9375rem; line-height: 1.5; }
+.role-bring li { margin: 0 0 6px; }
+.reading-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 36rem)); gap: 0 48px; align-items: start; }
+.summit-reading .section-note { margin: 0 0 16px; }
 .summit-reading .entry-group { margin-top: 8px; }
-.reading-more { margin: 16px 0 0; }
-.summit-next { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 36rem)); gap: 12px 48px; align-items: start; padding-top: 24px; border-top: 1px solid var(--rule); }
-.summit-next > h2, .summit-next > p:first-of-type { grid-column: 1; margin: 0; }
-.summit-next > h2 { font-size: 1.375rem; }
-.summit-actions { grid-column: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 4px 0 0; }
-.summit-next > .photo-slot { grid-column: 2; grid-row: 1 / span 3; }
-@media (max-width: 1099px) { .summit-next > .photo-slot { grid-column: 1; grid-row: auto; } }
+.reading-list .entries { grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); } /* titles only, so three across at 1440 */
+.summit-next { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 36rem)); gap: 24px 48px; align-items: start; }
+.summit-ask > h2 { margin: 0 0 8px; }
+.summit-ask > p { margin: 0; }
+.summit-ask > .summit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 12px; }
+.summit-plan > .summit-logistics { max-width: 36rem; margin: 0 0 16px; } /* how the two days and registration will run, beside the ask */
 
 /* About -------------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -208,6 +230,11 @@ a.comp-n { position: absolute; top: 4px; right: 0; font-family: var(--display); 
   .library-room { display: block; padding: 0; }
   .library-room .entry-summary { display: block !important; }
   .library-room .entry[aria-current] { box-shadow: none; }
-  .prose-bands, .summit-next, .about-terms, .rule-rows, .status-row { display: block; }
-  .prose-bands > *, .rule-rows > div, .status-row > div { margin-bottom: 12pt; break-inside: avoid; }
+  .prose-bands, .summit-next, .about-terms, .rule-rows, .role-cols, .reading-notes { display: block; }
+  .prose-bands > *, .rule-rows > div, .role, .summit-ask { margin-bottom: 12pt; break-inside: avoid; }
+  .status-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8pt 16pt; } /* four across, as on screen, not half a page (critic 13) */
+  .pick-how { display: none; } /* "Choose a stop" asks for a press paper cannot take */
+  :is(.track-step, .stair-step) { break-after: avoid; }
+  :is(.track-detail, .stair-detail) dl > div { break-inside: avoid; }
+  .about-nasa::details-content { content-visibility: visible; display: block; } /* CC BY-SA asks for the acknowledgement, so paper prints it unfolded */
 }

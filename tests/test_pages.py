@@ -91,6 +91,7 @@ def test_start_here_is_the_first_view_and_reads_without_scripts():
     doc = parse(source("library"))
     shelves = doc.one("nav", "shelves").all("a")
     assert shelves[0].attrs["data-shelf"] == "start" and shelves[0].attrs.get("aria-current") == "true"
+    assert [a.attrs["data-shelf"] for a in shelves] == ["start", "tribal", "new", "filings", "all"], "every shelf is a list, What changed included (critic 5)"
     first = doc.one("div", id="library-results")
     rows = first.all("li", "entry")
     featured = [e for e in ENTRIES if e["featured"]]
@@ -174,6 +175,8 @@ def test_the_summit_track_has_six_stops_over_two_days_and_no_disclosures():
     assert [s.one("span", "track-n").text() for s in steps] == [str(n) for n in range(1, 7)], "numbered, since it is a sequence"
     assert sum("checked" in s.one("input").attrs for s in steps) == 1 and len(track.all("div", "track-detail")) == 6
     assert not doc.one("main").all("details"), "the answers are open, not behind disclosures (-15, -28)"
+    assert not [box for box in doc.one("main").all("input") if box.attrs.get("type") == "checkbox"], "no box to tick that nothing reads (critic 7)"
+    assert doc.one("dl", "status-row").all(id="registration"), "Dates and registration lands on the status row"
 
 
 def test_the_summit_reading_list_is_the_librarys():
@@ -221,6 +224,8 @@ def test_about_years_and_the_claim_track_are_poured_from_verified_claims_and_say
     record = known["dem-073"]
     poured = {node.attrs.get("data-field"): node.text() for node in track.all(data_pour="dem-073")}
     assert poured["status"] == "verified" == {"verified": "verified"}[record["status"]] and poured["year"] == str(record["year"]) and poured["unit"] == record["unit"]
+    assert all(f"{record[k]:,}" in poured["text"] for k in ("value", "low", "high")), "the example keeps its range, as its plate prints it (critic 3)"
+    assert "What it leaves out" in track.text()
     assert "dem-073" in track.text() and len(track.all("label", "track-step")) == 5
 
 

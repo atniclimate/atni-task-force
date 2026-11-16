@@ -9,7 +9,7 @@ changed. Run it after a merge, a Policy Watch refresh, or a plate build:
 
 The file keeps what cannot be rebuilt: News rows and the data rows (no plate or claims file holds a build date, so the ledger keeps a hash of each and a change
 dates a new row on the day it is seen). Library and policy rows are worked out again each run, and SITE_ROWS, the changes to the site itself, come from here.
-A burst stays one row: see library_items and home_rows. A lane that must not date other lanes' work, or write a page it does not own, runs
+A burst stays one row, and so does a day's chart updates: see library_items, one_chart_row_a_day and home_rows. A lane that must not date other lanes' work, or write a page it does not own, runs
 
     python scripts/build_whats_new.py --keep-ledger --skip-home   # no new chart rows, the ledger as it is, and only the Library page poured
 """
@@ -32,7 +32,7 @@ from jev_release_screen import hold_reason
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 WINDOW = 90
-HOME_ROWS = 6
+HOME_ROWS = 5  # DIRECTION-R2 4: home shows five rows
 BURST = 5  # this many records from one publisher in one day read as one row
 DAY_TOP = 3  # the single sources a day may show; the rest of the day is one row
 KIND_WORDS = {"news": "News", "policy": "Policy", "library": "Library", "data": "Data", "site": "Site"}  # also the order within a day
@@ -155,15 +155,36 @@ def order(rows):
 
 
 def home_rows(items, count=HOME_ROWS):
-    """At most two rows of a kind from one day and three of a kind in all, then whatever is newest if that leaves room."""
+    """At most two rows of a kind from one day and two of a kind in all, each title once, then whatever is newest if that leaves room."""
     day, kind, picked = Counter(), Counter(), []
     for row in items:
-        if len(picked) < count and day[row["date"], row["kind"]] < 2 and kind[row["kind"]] < 3:
+        if len(picked) < count and day[row["date"], row["kind"]] < 2 and kind[row["kind"]] < 2 and all(row["title"] != p["title"] for p in picked):
             picked.append(row)
             day[row["date"], row["kind"]] += 1
             kind[row["kind"]] += 1
     picked += [row for row in items if row not in picked][: count - len(picked)]
     return sorted(picked, key=items.index)
+
+
+CHART_ROW = re.compile(r"Charts updated on (the .+ page|\w+ pages)")
+COUNT_WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
+
+
+def one_chart_row_a_day(rows, ledger):
+    """A day's chart rows read as one, "Charts updated on six pages" linking the Sources hub, so a rebuild of every page is one line and not a column of churn
+    (home-shell-17). The ledger keeps each such day's pages under charts:DAY, so a later build that day adds to the count instead of guessing it."""
+    days = {}
+    for row in rows:
+        if row["kind"] == "data" and CHART_ROW.fullmatch(row["title"]):
+            days.setdefault(row["date"], []).append(row)
+    out = list(rows)
+    for day, group in days.items():
+        pages = set(ledger.get(f"charts:{day}", "").split()) | {row["url"] for row in group if row["url"] != "sources/"}
+        if len(pages) < 2:
+            continue
+        ledger[f"charts:{day}"] = " ".join(sorted(pages))
+        out = [row for row in out if row not in group] + [item(day, "data", f"Charts updated on {COUNT_WORDS.get(len(pages), len(pages))} pages", "sources/", "cross-cutting")]
+    return order(out)
 
 
 def recent(items, today):
@@ -191,7 +212,6 @@ def home_block(feed, areas):
       <div class="wrap whats-new-grid">
         <div class="whats-new-head">
           <h2 id="whats-new-title">What’s New</h2>
-          <p class="whats-new-since" data-whats-new-since hidden></p>
           <p>The latest public sources, policy changes, and chart updates. <a href="library/#whats-new">See the last ninety days</a> or the <a href="data/whats-new.json">feed’s data</a>.</p>
         </div>
         {rows_html(home_rows(feed["items"]), "", areas)}
@@ -246,7 +266,7 @@ def build(today, news=(), keep_ledger=False, home=True):
     watch = json.loads((SITE / "data" / "policy-watch.json").read_text(encoding="utf-8"))
     ledger = dict(prior["ledger"])
     new = [] if keep_ledger else ledger_items(ledger, watch, today)
-    items = order([*news_items(news, today), *carried(prior["items"]), *new, *library_items(entries), *policy_items(watch, today), *SITE_ROWS])
+    items = one_chart_row_a_day(order([*news_items(news, today), *carried(prior["items"]), *new, *library_items(entries), *policy_items(watch, today), *SITE_ROWS]), ledger)
     feed = {"schema": 1, "tier": "T0", "generated": today, "window_days": WINDOW, "items": items, "ledger": dict(sorted(ledger.items()))}
     path.write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     pour_pages(feed, home=home)
@@ -256,7 +276,16 @@ def build(today, news=(), keep_ledger=False, home=True):
 def self_test():
     a = lambda n: item("2026-11-05", "library", f"t{n}", "library/", "ai")
     picked = home_rows([a(0), a(1), a(2), a(3), item("2026-11-04", "policy", "p", "library/", "ai"), item("2026-11-04", "data", "d", "library/", "ai"), item("2026-11-03", "library", "o", "library/", "ai")])
-    assert [r["title"] for r in picked] == ["t0", "t1", "t2", "p", "d", "o"], picked
+    assert [r["title"] for r in picked] == ["t0", "t1", "t2", "p", "d"], picked
+    twice = [item("2026-11-05", "data", EVIDENCE, "sources/", "cross-cutting"), item("2026-11-04", "data", EVIDENCE, "sources/", "cross-cutting"), a(0)]
+    assert [r["date"] for r in home_rows(twice, 2)] == ["2026-11-05", "2026-11-05"], "a title shows once while another row has room"
+    chart = lambda day, label, url: item(day, "data", f"Charts updated on the {label} page", url, "ai")
+    ledger = {}
+    rows = one_chart_row_a_day([chart("2026-11-05", "AI", "ai/"), chart("2026-11-05", "Energy", "energy/"), chart("2026-11-05", "Explorer", "explorer/"), chart("2026-11-04", "AI", "ai/")], ledger)
+    assert [r["title"] for r in rows] == ["Charts updated on three pages", "Charts updated on the AI page"] and rows[0]["url"] == "sources/", rows
+    assert one_chart_row_a_day(rows, ledger) == rows, "idempotent: the ledger holds the day's pages"
+    later = one_chart_row_a_day([*rows, chart("2026-11-05", "AI", "ai/"), chart("2026-11-05", "Summit", "summit/")], ledger)
+    assert later[0]["title"] == "Charts updated on four pages" and len(later) == 2, "a later build that day adds only new pages"
     entries = [{"added": "2026-11-05", "publisher": "Filer", "title": f"r{n}", "url": f"https://x.org/{n}", "areas": ["ai"], "type": "report", "featured": False, "summary": "s"} for n in range(9)]
     entries.append({"added": "2026-11-05", "publisher": "Other", "title": "Examplename Nation plan", "url": "https://y.org/", "areas": ["ai"], "type": "report", "featured": True, "summary": "s"})
     rows = library_items(entries)

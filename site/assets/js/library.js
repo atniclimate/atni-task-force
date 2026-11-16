@@ -6,6 +6,7 @@
 import { ROOT, esc, day, usDates, fold, linkFilters, setFigure, address } from './util.js';
 
 const PAGE_SIZE = 40;
+const WINDOW_DAYS = 90; // Newly added: the entries added in this many days to the library's update date, as scripts/build_whats_new.py WINDOW
 const NARROW = ['q', 'area', 'type', 'tribal', 'year', 'added', 'publisher', 'filings']; // any of these set opens Browse all
 const FILTERS = [...NARROW, 'shelf', 'entry'];
 const AREAS = {
@@ -28,7 +29,7 @@ const TYPES = {
   news: 'News',
 };
 const GROUPS = { grounding: 'Grounding resolutions', 'energy-feasibility': 'Tribal Energy', 'data-centers': 'Data Centers', ai: 'AI', 'cross-cutting': 'Across the task forces' };
-const SHELVES = { start: 'Start here', tribal: 'Tribal-specific, newest first', filings: 'Company filings', all: 'Browse all' };
+const SHELVES = { start: 'Start Here', tribal: 'Tribal-Specific, Newest First', new: 'Newly Added', filings: 'Company Filings', all: 'Browse All' };
 const FILINGS = /\bSEC\b/; // a company filing: its publisher is the SEC's EDGAR system (scripts/build_library_strip.py FILINGS)
 
 const cmp = (x, y) => (x < y ? -1 : x > y ? 1 : 0); // code-point order, as the build sorts, so a shelf drawn here and there agree
@@ -135,6 +136,7 @@ function readingRoom(room) {
   const more = document.getElementById('library-more');
   const pane = document.getElementById('entry-preview-body');
   const notice = room.querySelector('[data-library-notice]');
+  const log = room.querySelector('[data-log]');
   const rail = [...room.querySelectorAll('[data-shelf]')];
   const held = JSON.parse(document.getElementById('library-cites')?.textContent || '{"pages":[],"cites":{}}');
   const squares = document.querySelectorAll('.comp-field > i');
@@ -148,9 +150,12 @@ function readingRoom(room) {
   const ready = () => load().then((json) => {
     if (!data) {
       const sorted = [...json.entries].sort(newestFirst);
+      const since = new Date(Date.parse(json.updated) - WINDOW_DAYS * 864e5).toISOString().slice(0, 10);
       data = {
         entries: json.entries,
         sorted,
+        since,
+        recent: json.entries.filter((e) => e.added >= since).sort(latestAdded), // the Newly added shelf, the newest addition first
         byId: new Map(json.entries.map((e) => [e.id, e])),
         at: new Map(json.entries.map((e, i) => [e, i])), // a row's place in the file keys its citations, as the build wrote them
         text: new Map(sorted.map((e) => [e, fold([e.title, e.publisher, e.summary, TYPES[e.type], ...e.areas.map((a) => AREAS[a])].join(' '))])),
@@ -162,9 +167,10 @@ function readingRoom(room) {
   });
 
   const narrowing = () => Object.fromEntries(NARROW.map((name) => [name, field(name).value.trim()]));
-  const browsing = () => field('shelf').value === 'all' || Object.values(narrowing()).some(Boolean);
+  const browsing = () => Boolean(field('shelf').value) || Object.values(narrowing()).some(Boolean);
   const current = () => {
     if (!browsing()) return 'start';
+    if (field('shelf').value === 'new') return 'new'; // its filters narrow the shelf, and it stays
     const set = Object.entries(narrowing()).filter(([, v]) => v);
     if (set.length === 1 && set[0][0] === 'tribal' && set[0][1] === 'yes') return 'tribal';
     if (set.length === 1 && set[0][0] === 'filings') return 'filings';
@@ -203,7 +209,8 @@ function readingRoom(room) {
         return `<li><a href="${esc(page)}">${esc(name)}</a>: ${ids.map((c) => `<a href="${esc(page)}sources/#src-${esc(c)}">${esc(c)}</a>`).join(', ')}</li>`;
       }).join('')
       : '<li>No figure on this site cites it.</li>';
-    return `<h3 class="preview-title">${esc(v.title)}</h3><p class="entry-meta"><span class="entry-type">${esc(v.kind)}</span>, ${esc(v.publisher)}, <time datetime="${esc(v.date)}">${esc(day(v.date))}</time></p><p class="preview-summary">${esc(v.summary)}</p><dl class="preview-facts"><div><dt>Areas</dt><dd><ul class="tags" role="list">${chips}</ul></dd></div><div><dt>Cited on this site</dt><dd><ul class="preview-cites" role="list">${where}</ul></dd></div></dl><p class="preview-go"><a class="paper" href="${esc(v.url)}">Open the document${isPdf(v.url) ? ' (PDF)' : ''}</a></p>`;
+    // The way to the document comes before the summary, so it sits in the first screen however long the summary runs (critic 15).
+    return `<h3 class="preview-title">${esc(v.title)}</h3><p class="entry-meta"><span class="entry-type">${esc(v.kind)}</span>, ${esc(v.publisher)}, <time datetime="${esc(v.date)}">${esc(day(v.date))}</time></p><p class="preview-go"><a class="paper" href="${esc(v.url)}">Open the document${isPdf(v.url) ? ' (PDF)' : ''}</a></p><p class="preview-summary">${esc(v.summary)}</p><dl class="preview-facts"><div><dt>Areas</dt><dd><ul class="tags" role="list">${chips}</ul></dd></div><div><dt>Cited on this site</dt><dd><ul class="preview-cites" role="list">${where}</ul></dd></div></dl>`;
   };
   let picked = pane.querySelector('[data-preview]')?.dataset.preview || results.querySelector('.entry')?.dataset.entry;
   const pick = (view, chosen) => {
@@ -229,10 +236,12 @@ function readingRoom(room) {
     for (const e of data.entries.filter((x) => x.featured).sort(newestFirst)) by[e.type === 'resolution' ? 'grounding' : e.areas[0]].push(e);
     return Object.entries(by).filter(([, list]) => list.length).map(([key, list]) => `<p class="entry-group" id="group-${key}">${GROUPS[key]}</p><ol class="entries" role="list" aria-labelledby="group-${key}">${list.map((e) => rowHTML(e, data.at.get(e))).join('')}</ol>`).join('');
   };
-  const describe = (f) => [
+  const describe = (f, kind) => [
     f.publisher && `from ${f.publisher}`,
     f.added && `added ${day(f.added)}`,
+    kind === 'new' && !f.added && `added since ${day(data.since)}`,
   ].filter(Boolean).join(', ');
+  const pool = (kind) => (kind === 'new' ? data.recent : data.sorted);
   const paint = () => {
     const f = narrowing();
     const filtered = Object.values(f).some(Boolean);
@@ -248,11 +257,12 @@ function readingRoom(room) {
       bar.querySelector('.comp-hit').textContent = filtered ? `${n.toLocaleString('en-US')} of` : '';
     }
     // A choice the other filters leave empty is shown, but cannot be chosen (-03).
+    const from = pool(current());
     for (const name of ['area', 'type', 'tribal', 'year']) {
       const others = { ...f, [name]: '' };
       for (const option of field(name).options) {
         if (!option.value) continue;
-        option.disabled = option.value !== field(name).value && !data.sorted.some(matches({ ...others, [name]: option.value }, words));
+        option.disabled = option.value !== field(name).value && !from.some(matches({ ...others, [name]: option.value }, words));
       }
     }
   };
@@ -261,6 +271,8 @@ function readingRoom(room) {
     words = fold(f.q).split(/\s+/).filter(Boolean);
     const kind = current();
     heading.textContent = SHELVES[kind];
+    form.toggleAttribute('data-full', kind !== 'start'); // Start here offers the search alone; a list shelf, every filter (critic 4)
+    if (log) log.hidden = kind !== 'new';
     for (const a of rail) {
       if (a.dataset.shelf === kind) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');
@@ -271,13 +283,13 @@ function readingRoom(room) {
       status.textContent = startNote;
       more.hidden = true;
     } else {
-      hits = data.sorted.filter(matches(f, words));
+      hits = pool(kind).filter(matches(f, words));
       shown = Math.min(PAGE_SIZE, hits.length);
       results.innerHTML = `<ol class="entries" role="list" aria-labelledby="shelf-title">${hits.slice(0, shown).map((e) => rowHTML(e, data.at.get(e), words)).join('')}</ol>`;
-      const what = describe(f);
+      const what = describe(f, kind);
       const noun = hits.length === 1 ? 'entry' : 'entries';
       status.textContent = hits.length
-        ? `Showing ${shown.toLocaleString('en-US')} of ${hits.length.toLocaleString('en-US')} ${noun}${what ? ` ${what}` : ''}, newest first.`
+        ? `Showing ${shown.toLocaleString('en-US')} of ${hits.length.toLocaleString('en-US')} ${noun}${what ? ` ${what}` : ''}, ${kind === 'new' ? 'the newest addition' : 'newest'} first.`
         : 'No entries match. Clear the filters or change the search.';
       more.hidden = shown >= hits.length;
       more.textContent = `Show ${Math.min(PAGE_SIZE, hits.length - shown)} more`;
@@ -296,9 +308,10 @@ function readingRoom(room) {
   if (params.get('area') === 'start-here') params.delete('area');
   const unknown = ['area', 'type', 'tribal', 'year'].filter((name) => params.get(name) && field(name).value !== params.get(name));
   if (unknown.length) {
-    notice.textContent = `This library has no ${unknown.map((name) => `${{ area: 'area', type: 'type', tribal: 'Tribal focus', year: 'year' }[name]} “${params.get(name)}”`).join(' or ')}, so the list is not narrowed by ${unknown.length === 1 ? 'it' : 'them'}.`;
+    notice.textContent = `This library has no ${unknown.map((name) => `${{ area: 'area', type: 'type', tribal: 'Tribal-specific', year: 'year' }[name]} “${params.get(name)}”`).join(' or ')}, so the list is not narrowed by ${unknown.length === 1 ? 'it' : 'them'}.`;
     notice.hidden = false;
   }
+  form.toggleAttribute('data-full', browsing()); // a linked shelf shows its filters before the data arrives
   if (browsing() || field('entry').value) update();
 
   // The data loads when a reader reaches for anything past the first view: the form, the shelves, a bar, or a chip.
@@ -355,30 +368,45 @@ function readingRoom(room) {
     if (li) pick(fromRow(li), true);
   });
 
-  // A shelf is a set of filters; What changed is a place on the page, and opens there.
+  // A shelf is a set of filters; Newly added is the recent entries, which its filters narrow.
   for (const a of rail) {
     a.addEventListener('click', (event) => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       for (const name of [...NARROW, 'entry']) field(name).value = '';
-      field('shelf').value = a.dataset.shelf === 'start' ? '' : 'all';
+      field('shelf').value = { start: '', new: 'new' }[a.dataset.shelf] ?? 'all';
       if (a.dataset.shelf === 'tribal') field('tribal').value = 'yes';
       if (a.dataset.shelf === 'filings') field('filings').value = 'only';
       update();
     });
   }
-  room.querySelector('[data-changes]')?.addEventListener('click', () => { newest && (newest.open = true); });
 
-  // A bar or a chip sets one filter, and pressing it again clears it. A modified click still opens a new tab.
+  // The log opens in place and takes focus, and the address keeps the shelf, so coming back up finds the list as it was.
+  log?.querySelector('a').addEventListener('click', (event) => {
+    if (!newest || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    newest.open = true;
+    newest.scrollIntoView({ block: 'start', behavior: 'instant' });
+    newest.querySelector('summary').focus({ preventScroll: true });
+  });
+
+  // A bar or a chip sets one filter, and pressing it again clears it. A modified click still opens a new tab. A bar sits far below the list it filters, so
+  // the page returns to the list and the status line takes focus (critic 9); a chip is redrawn away, so its focus goes to the status line too.
   document.addEventListener('click', (event) => {
     const link = event.target.closest?.('[data-filter]');
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     const control = field(link.dataset.filter);
     const redrawn = pane.contains(link);
+    const bar = link.classList.contains('comp-row');
     control.value = control.value === link.dataset.value ? '' : link.dataset.value;
     field('entry').value = '';
-    update().then(() => { if (redrawn) status.focus(); }); // the chip that had focus is gone
+    update().then(() => {
+      if (bar) {
+        room.scrollIntoView({ block: 'start', behavior: 'instant' });
+        status.focus({ preventScroll: true });
+      } else if (redrawn) status.focus();
+    });
   });
 }
 
@@ -396,7 +424,7 @@ if (sinceLine) {
     })
     .catch(() => {});
 }
-const newest = document.getElementById('whats-new'); // the What changed shelf opens it; theme.js opens it for a link
+const newest = document.getElementById('whats-new'); // the log of every change to the site and its data, at the page's foot; the Newly added shelf links it
 
 const room = document.getElementById('room');
 if (room) readingRoom(room);

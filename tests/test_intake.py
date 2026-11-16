@@ -229,7 +229,7 @@ def test_a_burst_of_records_is_one_row_and_cannot_fill_the_home_feed():
     assert rows[0]["url"] == "library/#added=2026-11-05&publisher=SEC%20EDGAR%20%28data.sec.gov%29"  # R2 library-summit-about-08: a burst links exactly its records
     others = [feed.item("2026-11-04", kind, f"{kind} {n}", "library/", "ai") for kind in ("policy", "data", "library") for n in range(3)]
     picked = feed.home_rows(feed.order([*rows, *others]))
-    assert len(picked) == 6 and sum("SEC EDGAR" in row["title"] for row in picked) == 1
+    assert len(picked) == 5 and sum("SEC EDGAR" in row["title"] for row in picked) == 1
     assert {row["kind"] for row in picked} == {"policy", "library", "data"}
 
 
@@ -255,7 +255,7 @@ def test_the_pages_match_the_feed_and_the_feed_matches_the_library():
     assert all(row in data["items"] for row in feed.library_items(entries)), "the feed is out of date: run python scripts/build_whats_new.py"
     home = parse((ROOT / "site" / "index.html").read_text(encoding="utf-8")).one("ol", "whats-new-rows").all("li")
     library = parse((ROOT / "site" / "library" / "index.html").read_text(encoding="utf-8")).one("details", "whats-new-all").one("ol").all("li")
-    assert len(home) == 6 and len(library) == len(feed.recent(data["items"], data["generated"]))
+    assert len(home) == 5 and len(library) == len(feed.recent(data["items"], data["generated"]))
 
 
 def test_the_last_seen_date_stays_in_the_browser():
