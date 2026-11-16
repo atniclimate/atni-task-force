@@ -28,7 +28,8 @@ const parts = (document, id) => {
   return {
     root, plot: root.querySelector('.plate-plot'), reading: root.querySelector('.reading'), value: root.querySelector('.readout-value'), unit: root.querySelector('.readout-unit'),
     facts: root.querySelector('.plate-facts'), receipt: root.querySelector('.plate-receipt'),
-    chips: () => [...root.querySelectorAll('.receipt')].filter((c) => !c.hidden),
+    // The selection's claims, one entry each, under its publishers' chips (a chip stands for every claim it counts).
+    chips: () => [...root.querySelectorAll('.plate-evidence .receipt')].flatMap((chip) => chip.dataset.claims.split(' ').map((claim) => ({ dataset: { claim }, chip }))),
     radio: (name, value) => root.querySelector(`input[name="${name}"][value="${value}"]`),
     slider: (name) => root.querySelector(`[data-param="${name}"] input[type=range]`),
     typed: (name) => root.querySelector(`[data-param="${name}"] input[type=number]`),
@@ -68,8 +69,8 @@ async function tabs() {
   eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
   // jsdom loads no CSS, so the rule is held as text: four plates hide their key and keep Read as a table, in the kit's room for it (a11y A3).
   const css = read('site/assets/css/dc.css');
-  ok(css.includes(':is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }') && !/\.plate-under \{ display: none; \}/.test(css) && !/--below: 0px/.test(css), 'four plates hide their key, never Read as a table');
-  for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-under > .plate-to-table`), `${id}: Read as a table is in the box that stays`);
+  ok(css.includes(':is(#dc-tradeoff-matrix, #dc-cooling, #dc-project, #dc-jobs-per-mw) .plate-under > :not(.plate-to-table) { display: none; }') && !/\.plate-under \{ display: none; \}/.test(css) && !/--below: 0px/.test(css), 'four plates hide their key');
+  for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-bar .plate-views [data-view="table"]`), `${id}: the Table is one press away, over the plot`);
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -252,9 +253,12 @@ async function forecastCheck() {
   eq([...p.facts.querySelectorAll('.plate-values strong')].map((n) => n.textContent).join(), '4,075.26 TWh,3,874.25 TWh', 'both figures, named');
   eq(row(p.root, 't-10').querySelector('.ladder-value').textContent.replace(/\s+/g, ' '), '-201.01 TWh', "a row's end prints the difference");
   eq(row(p.root, 't-10').querySelector('.ladder-label .ladder-tag').textContent, 'AEO2013', 'and names the edition');
-  eq(p.root.querySelector('.plate-tally').textContent, 'This row: 2 verified; 44 sources on the plate', 'two receipts, both verified, of the count the Sources tab carries');
+  eq(p.root.querySelector('.plate-evidence-line').textContent, '2 verified', 'two receipts, both verified');
+  ok(p.root.querySelector('.plate-collar .plate-source-line').textContent.startsWith('44 sourced figures'), 'of the count the collar carries');
   eq(p.chips().map((c) => c.dataset.claim).join(), 'dem-119,dem-113', 'the projection and the realized value');
-  ok(!p.receipt.hidden && p.receipt.querySelector('a').href.startsWith('https://'), 'the receipt waits in Sources');
+  ok(p.receipt.hidden, 'no card before a press');
+  fire(window, p.chips()[0].chip, 'click');
+  ok(!p.receipt.hidden && p.receipt.querySelector('a').href.startsWith('https://'), 'a chip opens its card in the window');
 
   // Every position is its figure on its ruler: projection at --x, what came after at --x2, the bar between.
   const onRuler = (key, stop) => {
@@ -289,7 +293,7 @@ async function forecastCheck() {
   ok(p.reading.textContent.includes(`Limit: ${CLAIMS['dem-103'].limit}`), 'its limit is on the Reading');
   eq(`${p.value.textContent} ${p.unit.textContent}`, '+32 TWh', 'the readout');
   eq(p.chips().map((c) => c.dataset.claim).sort().join(), 'dem-039,dem-103,dem-108,dem-109', 'the two figures and the two differences');
-  ok(/partly verified/.test(p.root.querySelector('.plate-tally').textContent), 'the receipts line says partly');
+  ok(/partly verified/.test(p.root.querySelector('.plate-evidence-line').textContent), 'the evidence line says partly');
   ok(p.facts.textContent.includes('cryptocurrency mining') && /was not checked/.test(p.facts.textContent), 'what was not checked stays in the detail');
   fire(window, row(p.root, 'l-2025').querySelector('.ladder-label'), 'click');
   ok(holds(p.reading.textContent, ['2025 Update', 'about 103 TWh', '+30 TWh', '29.1 percent']) && p.reading.textContent.includes(CLAIMS['dem-104'].limit), 'the later estimate, the same way');
@@ -337,7 +341,7 @@ async function forecastCheck() {
   eq(deep.errors.join(), '', 'no script errors from a link');
 
   // Sources and Table.
-  ok(p.root.querySelector('.plate-views input[value="sources"] + span').textContent === 'Sources (44)', 'the tab counts every receipt');
+  ok(p.root.querySelector('.plate-collar .plate-source-line').textContent.startsWith('44 sourced figures from'), 'the collar counts every receipt');
   const sources = (claim) => receipt(`dc-forecast-check-source-${claim}`);
   ok(sources('dem-113').includes(`Limit: ${CLAIMS['dem-113'].limit}`) && sources('dem-113').startsWith(CLAIMS['dem-113'].source.title), "EIA's history-revision limit prints on a verified receipt");
   ok(sources('dem-103').includes(`Partly verified. Limit: ${CLAIMS['dem-103'].limit}`), 'the chart read says so');
@@ -353,7 +357,7 @@ async function forecastCheck() {
   line('AEO2009', '2019', '4,131.91 TWh|3,811.15 TWh|-320.76 TWh|8.42 percent');
   line('AEO2017', '2019', '3,804.4 TWh|3,811.15 TWh|+6.75 TWh|0.18 percent');
   line('AEO2021', '2023', '1,335.87 TWh|1,408.11 TWh|+72.24 TWh|5.13 percent');
-  ok(lines.some((l) => l[1] === '2024 Report' && l.slice(4, 8).join('|') === '73 TWh|105 TWh|+32 TWh|30.5 percent' && /partly verified/.test(l[8]) && l[9] === 'dem-039, dem-103, dem-108, dem-109'), 'table: the data center pair, partly verified, all four claims');
+  ok(lines.some((l) => l[1] === '2024 Report' && l.slice(4, 8).join('|') === '73 TWh|105 TWh|+32 TWh|30.5 percent' && /partly verified/.test(l[8]) && l[9].replace(/ (partly verified|verified)(?=,|$)/g, '') === 'dem-039, dem-103, dem-108, dem-109' && /partly verified/.test(l[9])), 'table: the data center pair, partly verified, all four claims, each with its status');
   ok(lines.some((l) => l[1] === 'Portland General Electric' && l.slice(4, 8).join('|') === '2.6 (1.2 to 3.1) percent per year|0.2 percent per year|-2.4 points|not computed'), 'table: a plan, no percent');
   ok(lines.some((l) => l[1] === '2014 base' && l.slice(4, 8).join('|') === '70 TWh|60 TWh||'), 'table: context, no difference');
   eq(errors.join(), '', 'no script errors');
@@ -432,7 +436,7 @@ async function tradeoffs() {
   eq(m.chips().length, 0, 'no receipt on words');
   fire(window, row(m.root, 'heat--national').querySelector('.matrix-figure'), 'click');
   ok(holds(m.reading.textContent, ['+2 degrees C']) && m.reading.textContent.includes('Limit:'), 'a partly figure keeps its limit');
-  ok(!m.receipt.hidden, 'one figure opens its receipt');
+  ok(m.receipt.hidden && m.chips().length === 1, 'one figure names its receipt, and its card waits for a press');
 
   const c = parts(document, 'dc-cooling');
   const site = () => row(c.root, 'site').querySelector('.ladder-value').textContent;
@@ -510,7 +514,7 @@ async function jobs() {
   eq(row(p.root, 'build').querySelector('.ladder-value').textContent, '70 to 200 workers', 'construction');
   eq(row(p.root, 'ops').querySelector('.ladder-value').textContent, '15 to 35 FTE', 'operations');
   eq(row(p.root, 'other').querySelector('.ladder-value').textContent, '270 jobs', 'other local jobs');
-  const record = p.root.querySelector('.plate-view[data-view="reading"] > details.dc-record');
+  const record = p.root.querySelector('.plate-detail > details.dc-record');
   ok(record && record.querySelector('[data-row="naics"]') && !p.plot.querySelector('.is-fixed'), "the fixed record is the panel's details");
   eq(record.querySelector('summary').textContent, 'The record', 'named so');
   ok(!record.open, 'and closed, so the first screen is the number and the sentence');
@@ -552,11 +556,10 @@ async function jobs() {
   fire(window, row(p.root, 'naics').querySelector('.ladder-label'), 'click');
   ok(leads(p.reading.textContent, ['518210', '419.4', '491.6 thousand jobs', '2021', '2025']), 'a trend row');
   eq(p.chips().length, 5, 'five receipts');
-  const chipShown = p.chips().filter((c) => !c.classList.contains('is-extra'));
-  ok(chipShown.length === 1 && chipShown[0].textContent.endsWith(', 5 claims'), `one chip for one publisher: ${chipShown.map((c) => c.textContent)}`);
+  const chipShown = [...p.root.querySelectorAll('.plate-evidence .receipt')];
+  ok(chipShown.length === 1 && chipShown[0].textContent.endsWith(', 5'), `one chip for one publisher, its count after a comma: ${chipShown.map((c) => c.textContent)}`);
   fire(window, chipShown[0], 'click');
-  eq(p.root.dataset.view, 'sources', 'it opens the per-claim list');
-  fire(window, p.root.querySelector('input[value="reading"]'), 'change');
+  ok(p.root.dataset.view === 'chart' && p.receipt.querySelectorAll('.plate-receipt-item').length === 4 && /1 more from this publisher/.test(p.receipt.textContent), 'its card lists four claims in the window, and the way to the rest');
   ok(row(p.root, 'naics').querySelector('svg.spark path'), 'a sparkline');
   fire(window, row(p.root, 'wa-cost').querySelector('.ladder-label'), 'click');
   eq(p.facts.querySelectorAll('.plate-values li').length, 3, 'three figures');
@@ -568,7 +571,8 @@ async function jobs() {
   eq(row(p.root, 'build').getAttribute('aria-selected'), 'true', 'keys move through rows');
   ok(holds(p.facts.textContent, ['0.7', '2.0']), 'the equation');
   eq(p.chips().filter((c) => c.dataset.claim === 'jb-023').length, 1, 'its receipt');
-  ok(!p.receipt.hidden && p.receipt.textContent.includes('Limit:'), 'a partly receipt states its limit');
+  fire(window, p.chips().find((c) => c.dataset.claim === 'jb-023').chip, 'click');
+  ok(!p.receipt.hidden && p.receipt.textContent.includes('Limit:'), 'a partly receipt states its limit, in its card');
   eq(errors.join(), '', 'no script errors');
 }
 

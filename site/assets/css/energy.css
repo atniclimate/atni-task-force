@@ -91,18 +91,10 @@
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) { min-height: 0; }
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-plot { min-height: 0; }
   .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) .plate-view { position: static; }
-  .plate:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-detail { grid-column: 1 / -1; margin-top: 12px; } /* .plate outranks the kit's .has-under, which sends the detail to a third column these plates do not have */
   /* The title runs the plate's width; the figures keep the left column beside the plot, with the button under them. */
   [data-plate^="energy-types"] { --row-min: 26px; }
-  .is-live[data-plate^="energy-types"] { grid-template-columns: minmax(8.5rem, 24fr) minmax(0, 76fr); grid-template-rows: repeat(9, auto) 1fr; }
-  .is-live[data-plate^="energy-types"] > .plate-claim { display: contents; }
-  .is-live[data-plate^="energy-types"] .plate-claim > .plate-title { grid-column: 1 / -1; }
-  .is-live[data-plate^="energy-types"] .plate-claim > p { grid-column: 1; margin-bottom: 8px; }
+  /* B1 (R2 kit): the zones take the kit's variant areas now; P-energy lays these plates out again on the agenda. */
   .is-live[data-plate^="energy-types"] .plate-claim > .plate-foot .button { padding: 8px; }
-  .is-live[data-plate^="energy-types"] .plate-claim > p:nth-of-type(5) { grid-column: 1 / -1; grid-row: 12; max-width: none; margin: 4px 0 0; font-size: 0.875rem; } /* the caveats run under the picture, on the first screen */
-  .is-live[data-plate^="energy-types"] > .plate-plot { grid-column: 2; grid-row: 2 / span 9; }
-  .is-live[data-plate^="energy-types"] > .plate-under { grid-column: 1 / -1; grid-row: 11; justify-content: flex-end; padding-top: 0; }
-  .is-live[data-plate^="energy-types"] > .plate-detail { grid-row: 13; }
   .is-live[data-plate^="energy-types"] .plate-title { margin-bottom: 8px; }
   [data-plate^="energy-types"] .ladder-rows { margin-bottom: 24px; }
   .plate-pair > .is-live[data-plate^="energy-types"] .readout { display: none; } /* the Reading says the figure, and at this width the sentence is what fits the first screen */
@@ -114,7 +106,6 @@
   [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-tribes { grid-column: 1 / -1; }
   /* One column: each zone in it, in source order, title, strip, Read as a table, then the panel; the kit's .has-under rows would send them to columns it lacks. */
   .plate[data-plate^="energy-deadlines"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
-  .plate[data-plate^="energy-deadlines"] > :is(.plate-claim, .plate-switch, .plate-plot, .plate-under, .plate-detail) { grid-area: auto; }
   .plate.is-live[data-plate^="energy-deadlines"] > .plate-claim { padding-top: 0; row-gap: 4px; }
   .plate-pair > .plate { align-self: start; align-content: start; } /* the shorter plate keeps its own rows rather than stretching them to its neighbor's height */
   /* The band: a title that must not wrap, beside figures that may. */

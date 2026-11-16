@@ -31,12 +31,15 @@ function frame(plot, minH = 0) {
   if (H > plot.clientHeight) plot.style.minHeight = `${H}px`; // a drawing that needs more than the plate gives grows the plot, in the page's scroll
   return { g: svg, W, H };
 }
-function axes(f, x, y, yTicks, xs) {
+// inside: in a small multiple the 0 at the foot of the y axis would meet the first year's label, so it stands inside the plot, on its baseline (ai-06).
+function axes(f, x, y, yTicks, xs, inside = false) {
   const g = add(f.g, 'g', { 'aria-hidden': 'true' });
   const top = Math.max(...yTicks.map(Math.abs));
+  const foot = Math.min(...yTicks);
   for (const t of yTicks) {
     add(g, 'line', { class: 'm-grid', x1: f.x0, x2: f.x1, y1: y(t), y2: y(t) });
-    add(g, 'text', { class: 'm-tick', x: f.x0 - 8, y: y(t), dy: '.32em', 'text-anchor': 'end', text: fmt(t, top) });
+    const zero = inside && t === 0 && t === foot;
+    add(g, 'text', { class: 'm-tick', x: zero ? f.x0 + 4 : f.x0 - 8, y: y(t), dy: zero ? '-.4em' : '.32em', 'text-anchor': zero ? 'start' : 'end', text: fmt(t, top) });
   }
   const base = y(Math.max(Math.min(...yTicks), 0));
   add(g, 'line', { class: 'm-base', x1: f.x0, x2: f.x1, y1: base, y2: base });
@@ -68,7 +71,7 @@ function chart(f, rows, cfg, withLabels) {
   const x = scale('linear', cfg.xdomain, [f.x0, f.x1]);
   const y = scale('linear', cfg.domain, [f.y0, f.y1]);
   const point = cfg.select === 'point';
-  axes(f, x, y, cfg.ticks, unique(rows.map((r) => r.x)));
+  axes(f, x, y, cfg.ticks, unique(rows.map((r) => r.x)), !!cfg.panels);
   if (cfg.band) {
     const up = cfg.band.map((b) => [x(b[0]), y(b[2]), b[3]]);
     const down = cfg.band.map((b) => [x(b[0]), y(b[1]), b[3]]);

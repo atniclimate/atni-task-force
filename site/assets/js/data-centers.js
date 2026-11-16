@@ -82,7 +82,7 @@ function moveRecord(root) {
   list.append(...root.querySelectorAll('.plate-plot .instrument-group, .plate-plot .is-fixed'));
   const more = Object.assign(document.createElement('details'), { className: 'plate-more dc-record' });
   more.append(Object.assign(document.createElement('summary'), { textContent: 'The record' }), list);
-  root.querySelector('.plate-view[data-view="reading"]').append(more);
+  root.querySelector('.plate-detail').append(more);
   root.querySelector('.plate-plot').setAttribute('aria-owns', list.id);
   return more;
 }

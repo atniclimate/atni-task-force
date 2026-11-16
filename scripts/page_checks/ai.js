@@ -35,7 +35,7 @@ const plateOf = (document, id) => {
     root, plot: root.querySelector('.plate-plot'), reading: root.querySelector('.reading'), value: root.querySelector('.readout-value'), unit: root.querySelector('.readout-unit'),
     facts: root.querySelector('.plate-facts'), receipt: root.querySelector('.plate-receipt'), table: root.querySelector('.plate-view[data-view="table"]'),
     row: (k) => [...root.querySelectorAll('[data-row]')].find((n) => n.dataset.row === k && !n.closest('[hidden]')),
-    chips: () => [...root.querySelectorAll('.receipt')].filter((c) => !c.hidden).map((c) => c.dataset.claim),
+    chips: () => [...root.querySelectorAll('.plate-evidence .receipt')].flatMap((c) => c.dataset.claims.split(' ')), // the selection's claims, under its publishers' chips
     radio: (name, v) => root.querySelector(`input[name="${name}"][value="${v}"]`),
   };
 };
@@ -166,27 +166,24 @@ async function sameHourPlate() {
   eq(p.facts.querySelectorAll('.plate-seg').length, 4, 'the bar holds what this boundary counts, so it adds up to the readout');
   ok(holds(p.facts.textContent, ['3 Wh', '0.0008 Wh', '10 Wh', '2 Wh']), 'its four parts');
   ok(/measured/.test(p.facts.textContent) && /modeled/.test(p.facts.textContent) && /Router/.test(p.facts.textContent), 'each part marked');
-  ok(!p.receipt.hidden && p.receipt.textContent.includes('Measuring the environmental impact'), 'the first source is open in the panel');
+  ok(p.receipt.hidden, 'no card is open before the reader asks');
+  fire(window, [...p.root.querySelectorAll('.plate-evidence .receipt')].find((c) => c.dataset.claims.split(' ').includes('fp-001')), 'click');
+  ok(!p.receipt.hidden && p.receipt.textContent.includes('Measuring the environmental impact'), "a chip opens its source's card in the window");
   ok(holds(p.facts.textContent, ['3 Wh', '12 Wh']), 'the fixed band is named');
   ok(holds(p.root.querySelector('.plate-title').textContent, ['15', '14', '12 Wh']) && /overlap/.test(p.root.querySelector('.plate-title').textContent), 'the title states the overlap and the fixed band');
   eq(p.root.querySelector('.eyebrow').textContent, 'The same hour, modeled 11/2026', 'the model date sits in the eyebrow');
-  const sourcesCount = p.root.querySelector('.plate-views input[value="sources"] + span').textContent.match(/\d+/)[0];
-  ok(/^This row: \d+ verified, \d+ partly verified; \d+ sources on the plate$/.test(p.root.querySelector('.plate-tally').textContent) && p.root.querySelector('.plate-tally').textContent.endsWith(`; ${sourcesCount} sources on the plate`), `the receipts line agrees with the Sources tab: ${p.root.querySelector('.plate-tally').textContent}`);
+  const line = p.root.querySelector('.plate-evidence-line').textContent;
+  ok(/^\d+ verified( \d+ partly verified)?$/.test(line), `the evidence line counts the selection by status: ${line}`);
+  const sourced = +p.root.querySelector('.plate-collar .plate-source-line').textContent.match(/^(\d+) sourced figures/)[1];
+  eq(sourced, Object.keys(JSON.parse(document.getElementById('plate-data-ai-same-hour').textContent).receipts).length, 'and the collar counts every receipt on the plate');
   eq(p.plot.querySelector('.ladder-tick[data-mark="fixed"]').hidden, false, 'the screen and router stand on the ruler');
   eq(p.chips().includes('fp-001') && p.chips().includes('fp-124'), true, 'receipts follow the row and the setting');
   eq(p.chips().includes('fp-128'), false, 'a mobile receipt stays away on Wi-Fi');
-  // Six chips, one per publisher; one button shows the rest in place and folds them again.
-  const more = p.root.querySelector('.plate-chip-more');
-  eq(p.root.querySelectorAll('.receipt:not([hidden]):not(.is-extra)').length, 6, 'six chips');
-  const extra = +(/^Show (\d+) more$/.exec(more.textContent) || [])[1];
-  ok(extra > 0 && more.getAttribute('aria-expanded') === 'false', `the rest are counted: ${more.textContent}`);
-  fire(window, more, 'click');
-  ok(p.root.querySelector('.plate-chips').classList.contains('is-all') && more.textContent === 'Show fewer' && more.getAttribute('aria-expanded') === 'true', 'the button shows them in place');
-  eq(p.root.dataset.view, 'reading', 'and leaves the view where it was');
-  fire(window, more, 'click');
-  ok(!p.root.querySelector('.plate-chips').classList.contains('is-all') && more.textContent === `Show ${extra} more`, 'and folds them again');
+  // One chip per publisher, its count after a comma for repeats; every claim the selection rests on is under one.
+  const chipWords = [...p.root.querySelectorAll('.plate-evidence .receipt')].map((c) => c.textContent);
+  ok(chipWords.length > 1 && chipWords.every((w) => !/claims$/.test(w)) && new Set(chipWords.map((w) => w.replace(/, \d+$/, ''))).size === chipWords.length, `one chip per publisher: ${chipWords.join(' | ')}`);
   fire(window, p.row('chat').querySelector('.ladder-label'), 'click');
-  eq(p.root.dataset.view, 'reading', 'and a row returns to the Reading');
+  eq(p.root.dataset.view, 'chart', 'a row keeps the Chart');
   ok(!p.facts.querySelector('.plate-more').open && p.facts.querySelector('.plate-more').textContent.includes('Equation:'), 'how it is modeled waits behind a disclosure');
   // One paragraph beside the plate; the rest in the details grid under it, the foot lines with their links in view.
   const claimWords = (id) => [...document.querySelectorAll(`#${id} .plate-claim > p:not(.eyebrow)`)].map((n) => n.textContent);
@@ -282,7 +279,7 @@ async function sameHourPlate() {
   eq(p.row('chat').querySelector('.ladder-label').firstChild.nodeValue, 'Chat, 30 prompts', 'the row label follows');
   ok(holds(p.row('chat').querySelector('.ladder-tag').textContent, ['9 Wh']), 'the tag follows');
   await settle();
-  ok(settings(window).includes('prompts=30'), 'setting in the address');
+  ok(!settings(window).includes('prompts='), 'a dragged figure stays out of the address (owner ruling 29)');
   await slide(window, num, 60);
   ok(holds(p.reading.textContent, ['60 prompts', '30 Wh']), 'typed field');
   fire(window, p.root.querySelector('[data-preset="2.52"]'), 'click');
@@ -536,9 +533,9 @@ async function otherPlates() {
   walk(oc, 'ai-occupations');
   for (const id of ['ai-occupations', 'ai-jobs-sector']) eq(document.querySelector(`#${id} .plate-under .plate-legend`).textContent, 'Dashed outline: BLS projection, 2025 to 2035', `${id}: the key says what the dashes mean`);
   ok(document.querySelector('#ai-occupations .plate-under .plate-square.is-proj'), 'with the same dashed outline on a square');
-  // jsdom loads no CSS, so the rule is held as text: only the key rides over the plot's head; Read as a table stays under the plot, in reading order, at every width (a11y A4).
+  // jsdom loads no CSS, so the rule is held as text: the occupations key stands in the kit's under area, in reading order (a11y A4); the Table is a button over the plot.
   const aiCss = read('site/assets/css/ai.css');
-  ok(aiCss.includes('#ai-occupations.has-under > .plate-under { display: contents; }') && aiCss.includes('#ai-occupations.has-under > .plate-under > .plate-to-table { grid-column: 2; grid-row: 3;') && !/#ai-occupations[^{,]*> \.plate-under \{[^}]*(order|grid-row)/.test(aiCss), 'the occupations key moves alone; the button keeps its place under the plot');
+  ok(!/#ai-occupations[^{,]*> \.plate-under \{[^}]*(display: contents|order|grid-row)/.test(aiCss) && document.querySelector('#ai-occupations .plate-views [data-view="table"]'), 'the occupations key keeps its place under the plot, and the Table its button');
   eq(oc.row('jb-007').querySelector('.ladder-value').textContent, '-25.5 percent', 'a printed minus');
   eq(oc.row('jb-002').querySelector('.ladder-value').textContent, '+34.6 percent', 'a printed plus');
   ok(oc.row('jb-007').classList.contains('is-neg') && oc.row('jb-002').classList.contains('is-pos'), 'polarity');

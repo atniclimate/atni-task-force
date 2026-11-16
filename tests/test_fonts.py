@@ -47,9 +47,12 @@ def drawn(site=SITE):
 
 
 def faces(css=SITE / "assets" / "css" / "site.css"):
-    """{(family, style, weight): [(file, ranges)]} from the stylesheet's @font-face rules."""
+    """{(family, style, weight): [(file, ranges)]} from the stylesheet's @font-face rules. Two kinds of rule are not faces of their own and are left out: a
+    metric-matched stand-in, which names a local() font and no file, and the agenda answer's figures, a digits-only rule on a file a face already names."""
     out = {}
     for body in FONT_FACE.findall(css.read_text(encoding="utf-8")):
+        if "url(" not in body or '"Answer Figures"' in body:
+            continue
         get = lambda name: re.search(rf"{name}:\s*([^;]+);", body)[1].strip()  # noqa: E731
         ranges = []
         for part in re.findall(r"U\+([0-9A-Fa-f]+(?:-[0-9A-Fa-f]+)?)", get("unicode-range")):

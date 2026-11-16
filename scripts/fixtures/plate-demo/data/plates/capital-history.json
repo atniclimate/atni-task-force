@@ -1,5 +1,6 @@
 {
   "schema": 1, "tier": "T0", "id": "capital-history", "page": "index.html",
+  "variant": "atlas",
   "eyebrow": "Capital spending over time",
   "title": "{series} spent {display} in fiscal {year}",
   "subtitle": "Each company on the same axis. Billions of dollars per fiscal year.",

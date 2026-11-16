@@ -1,0 +1,36 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "meter-demo",
+ "model": "comparison-model",
+ "by": "reach",
+ "eyebrow": "One hour on one scale",
+ "title": "Counted to the screen, an hour of chat is about {now[chat][total]:.0f} Wh",
+ "title_template": "Counted as {reach}, an hour of chat is about {chat} Wh",
+ "answer": "{label}, counted as {reach}: about {display}.",
+ "subtitle": "Test data: the fixture's comparison model, on a fixed scale.",
+ "inputs": {
+  "now": {"model": "computed_defaults.same_hour.default"},
+  "lo": {"model": "computed_defaults.same_hour.low"},
+  "hi": {"model": "computed_defaults.same_hour.high"},
+  "household": {"model": "inputs.household_wh_per_day.value"}
+ },
+ "controls": [
+  {"type": "segmented", "name": "reach", "label": "Counted", "default": "whole", "options": [{"value": "dc", "label": "Data center only"}, {"value": "whole", "label": "Whole hour"}]}
+ ],
+ "plot": {"type": "meter", "domain": [0, 25], "switch": "reach"},
+ "default": "chat",
+ "reading": "{label}, counted as {reach}: about {display} for the hour.",
+ "rows": [
+  {"id": "chat", "label": "Chat, ten prompts", "unit": "Wh", "cites": ["fp-001", "fp-017"],
+   "formula": {"dc": {"value": "now.chat.data_center", "low": "lo.chat.data_center", "high": "hi.chat.data_center"}, "whole": {"value": "now.chat.total", "low": "lo.chat.total", "high": "hi.chat.total"}},
+   "segments": [{"label": "Data center", "value": "now.chat.data_center"}, {"label": "Network", "value": "now.chat.network", "modeled": true, "at": ["whole"]},
+                {"label": "Router and screen", "value": "now.chat.router + now.chat.device", "modeled": true, "at": ["whole"]}]},
+  {"id": "video", "label": "Streamed video", "unit": "Wh", "cites": ["fp-122", "fp-130"],
+   "formula": {"dc": {"value": "now.video.data_center", "low": "lo.video.data_center", "high": "hi.video.data_center"}, "whole": {"value": "now.video.total", "low": "lo.video.total", "high": "hi.video.total"}},
+   "segments": [{"label": "Data center", "value": "now.video.data_center"}, {"label": "Network", "value": "now.video.network", "modeled": true, "at": ["whole"]},
+                {"label": "Router and screen", "value": "now.video.router + now.video.device", "modeled": true, "at": ["whole"]}]},
+  {"id": "household", "label": "A household's day", "unit": "Wh", "digits": 4, "cites": ["fp-075"], "off_scale": true, "formula": {"dc": null, "whole": {"value": "household"}}}
+ ]
+}

@@ -32,7 +32,7 @@ function receiptsOn(rel) {
     const entry = node.closest('li');
     const run = node.closest('tbody');
     if (!entry || !run) return (entry || node).textContent; // a document with one claim: the whole entry is its receipt
-    const shared = [...entry.children].filter((n) => /^(P|BLOCKQUOTE)$/.test(n.tagName)).map((n) => n.textContent);
+    const shared = [...entry.children].filter((n) => /^(P|BLOCKQUOTE|DETAILS)$/.test(n.tagName)).map((n) => n.textContent);
     return [...shared, ...[...run.querySelectorAll('.source-run')].map((n) => n.textContent), node.closest('tr').textContent].join(' ');
   };
 }

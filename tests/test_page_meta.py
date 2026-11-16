@@ -1,6 +1,7 @@
 """Link-preview tags: scripts/add_page_meta.py is idempotent, every page carries them, and the public check allows only this site's own canonical address."""
 import importlib.util
 import json
+import posixpath
 import re
 import sys
 from pathlib import Path
@@ -63,6 +64,43 @@ def test_run_writes_then_has_nothing_left_to_do(tmp_path):
 
 def test_the_real_site_is_up_to_date():
     assert meta.run(check=True) == [], "run python scripts/add_page_meta.py"
+
+
+def test_the_footer_names_the_newest_whats_new_date(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "whats-new.json").write_text(json.dumps({"items": [{"date": "2026-11-03"}, {"date": "2026-11-12"}, {"date": "soon"}, {}]}), encoding="utf-8")
+    assert meta.newest_day(tmp_path) == "11/12/2026" and meta.newest_day(tmp_path / "none") is None
+    page = PAGE + '<footer><p class="footer-updated">Updated 01/01/2020.</p></footer>\n'
+    assert '<p class="footer-updated">Updated 11/12/2026.</p>' in meta.stamp_footer(page, "11/12/2026")
+    assert meta.stamp_footer(page, None) == page, "no date in the file leaves the footer as it stands"
+
+
+SHELL = re.compile(r'<header class="site-header"[^>]*>.*?</header>|<footer class="site-footer">.*?</footer>', re.S)
+LINK = re.compile(r'(href|src)="(?![a-z]+:|#)([^"]*)"')
+
+
+def shell_of(rel, text):
+    """A page's header and footer with every relative address resolved from the site's root and the current-page marks set aside."""
+    here = posixpath.dirname(rel)
+
+    def resolve(m):
+        target = posixpath.normpath(posixpath.join(here, m[2]))
+        target = "" if target == "." else target + ("/" if m[2].endswith("/") else "")
+        return f'{m[1]}="/{target}"'
+    return LINK.sub(resolve, re.sub(r' aria-current="(?:page|true)"', "", "\n".join(SHELL.findall(text))))
+
+
+def test_every_page_carries_one_shell():
+    """DIRECTION-R2 3.13: the header, nav, and footer are hand-copied into every page, and each copy is the same once its paths are read from the site's
+    root and its current-page marks are set aside. The nav marks one section at most."""
+    shells = {}
+    for path in sorted((ROOT / "site").rglob("*.html")):
+        rel = path.relative_to(ROOT / "site").as_posix()
+        text = path.read_text(encoding="utf-8")
+        assert len(SHELL.findall(text)) == 2, f"{rel}: one site header and one site footer"
+        assert len(re.findall(r'aria-current="(?:page|true)"', re.search(r'<nav class="site-nav".*?</nav>', text, re.S)[0])) <= 1, f"{rel}: one current section"
+        shells.setdefault(shell_of(rel, text), []).append(rel)
+    assert len(shells) == 1, {k[:200]: v for k, v in shells.items()}
 
 
 def test_speculation_rules_name_only_this_sites_pages_and_pass_the_public_check():

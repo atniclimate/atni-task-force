@@ -99,8 +99,8 @@ main .ru-notice-line a { color: var(--atni-text-heading); text-decoration-color:
 .ru-stack { flex: none; display: flex; gap: 2px; width: calc(var(--total) / var(--max) * 100%); min-height: clamp(44px, 6vh, 96px); max-height: 160px; margin: 0; padding: 0; list-style: none; }
 .ru-seg { position: relative; flex: var(--v) 1 0; display: flex; align-items: center; min-width: 3px; margin: 0; border: 1.5px solid var(--series-context); }
 .ru-seg-label { padding: 2px 6px; font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
-.ru-seg.is-on { background: var(--energy-fill); border-color: var(--energy-fill); }
-.ru-seg.is-on .ru-seg-label { font-weight: 500; color: var(--energy-on-fill); }
+.ru-seg.is-on { background: var(--atni-text-heading); border-color: var(--atni-text-heading); } /* a chosen part is ink: orange is the reading's (CD 2) */
+.ru-seg.is-on .ru-seg-label { font-weight: 500; color: var(--atni-ground-base); }
 .ru-seg.is-top .ru-seg-label { position: absolute; left: -1.5px; bottom: 100%; padding: 0 0 2px; white-space: nowrap; font-weight: 500; color: var(--atni-text-heading); }
 .ru-seg.is-bottom .ru-seg-label { position: absolute; left: -1.5px; top: 100%; padding: 2px 0 0; white-space: nowrap; color: var(--atni-text-secondary); }
 @media (max-width: 1099px) {

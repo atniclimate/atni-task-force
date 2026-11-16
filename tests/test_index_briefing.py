@@ -84,7 +84,10 @@ def test_the_hub_lists_each_sources_page_with_its_plates_and_every_file(tmp_path
     hub = parse((site / "sources" / "index.html").read_text(encoding="utf-8"))
     pages = hub.one("section", id="pages")
     assert pages.one("a", href="../ai/sources/") and pages.one("a", href="../ai/sources/#sample"), "the page's Sources page, and its plate there"
-    assert "1 plate; 3 sources from 1 document: 2 verified and 1 partly verified." in pages.text() and "Sources checked 11/04/2026." in pages.text()
+    [row] = [tr for tr in pages.all("tr") if tr.all("a", href="../ai/sources/")]
+    assert [td.text() for td in row.all("td")] == ["1", "3", "3", "1", "2", "1"], "plates, figures, distinct claims, documents, verified, partly verified"
+    assert "Sources checked 11/04/2026." in pages.text() and "3 distinct claims behind the figures on these pages, from 1 document and 1 publisher." in pages.text()
+    assert {dt.attrs["id"] for dt in hub.one("section", id="terms").all("dt")} == {f"term-{key}" for key in bi.cr.GLOSSARY}, "an anchor for every term a page can mark"
     files = hub.one("section", id="claim-files")
     assert files.one("a", href="../data/claims/sample.json") and "3 claims in 1 file: 2 verified and 1 partly verified." in files.text()
     assert hub.one("section", id="data-files").one("a", href="../data/new.json")

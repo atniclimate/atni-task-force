@@ -4,7 +4,7 @@
   python scripts/rebuild_all.py --check   write nothing: run every builder's own check, then exit 1 naming each stale output
 
 The claim generators come first, where the data products table in CLAUDE.md places them. site_count_claims.py runs twice: before the plates and
-the Explorer read its library and policy counts (build_explorer.py stops if those differ from the data files), and after build_whats_new.py,
+the home page read its library and policy counts (build_home.py stops if those differ from the data files), and after build_whats_new.py,
 whose rows it counts and whose page mark pour_claim_refs.py checks. The project map, the share cards (they need VectorCraft), and the Briefing
 PDF (it needs Chrome) are rebuilt only when their own --check says stale. In --check mode the freshness tests stand in for the claims export,
 the plate build, and the model export, which have no check flag; a builder with no check at all is named, never counted as passed.
@@ -35,7 +35,8 @@ STEPS = [
     ("site/data/resource-model.json and resource-model-inputs.csv", ["scripts/resource_model.py", "--export"], fresh("test_resource_model_matches_export"), False),
     ("Explorer oracle", ["scripts/resource_model.py", "--oracle"], None, False),
     ("resource model run", ["scripts/resource_model.py"], None, False),
-    ("Explorer page and home band", ["scripts/build_explorer.py"], None, False),
+    ("Explorer page", ["scripts/build_explorer.py"], None, False),
+    ("home page", ["scripts/build_home.py"], ["scripts/build_home.py", "--check"], False),
     ("data/index.json", ["scripts/build_index.py"], ["scripts/build_index.py", "--check"], False),
     ("What's New", ["scripts/build_whats_new.py"], ["scripts/build_whats_new.py", "--check"], False),
     ("site counts, after What's New", ["scripts/site_count_claims.py"], None, False),

@@ -29,6 +29,7 @@ This script checks, and exits non-zero on any problem:
   numbers (or a model's, or a formula's over those), and states the limit of a partly claim; every plate
   definition (data/plates/) is T0 and built; a figure poured into a page (data-pour) names a claim that ships;
   a claim reference in prose (.cr) passes scripts/pour_claim_refs.py, whose figure rule lists rather than fails while in report mode;
+  a copy of another page's block (data-copy-of) is held to these where it was built, and here only to the loading, linking, and text rules;
 - a bound word in prose (floor, lower or upper bound, at least, at most) about a marked figure states a bound its claim's quote or
   derived text states the same way (see BOUND_WORDS; listed rather than failed while REFUSE_BOUND_WORDS is False);
 - a claim whose source.published is a day (YYYY-MM-DD) carries source.date_words, the words the source prints for that day: without
@@ -297,8 +298,10 @@ def check_html(path, rel, errors):
         if not target.is_relative_to(SITE.resolve()) or not target.is_file():
             errors.append(f"Broken or escaping local link in {rel}: {url}: point it at a file inside site/, relative to this page")
             continue
-        if parts.fragment and target.suffix.lower() == ".html" and parts.fragment not in parse(target).ids:
-            errors.append(f"Missing anchor in {rel}: {url}: add id=\"{parts.fragment}\" to the target, or correct the link")
+        # The address grammar (theme.js): #anchor&name=value. The anchor, when there is one, is the first part and holds no "="; settings after it name no element.
+        anchor = "" if "=" in parts.fragment.split("&")[0] else unquote(parts.fragment.split("&")[0])
+        if anchor and target.suffix.lower() == ".html" and anchor not in parse(target).ids:
+            errors.append(f"Missing anchor in {rel}: {url}: add id=\"{anchor}\" to the target, or correct the link")
     for style in page.styles:
         if CSS_EXTERNAL.search(style):
             errors.append(f"External stylesheet or font in an inline style in {rel}: copy the file into site/assets/ and load it from there")
@@ -824,9 +827,9 @@ def check_plate_blocks(rel, body, claims, errors):
 
 
 def check_plate_scripts(rel, body, errors):
-    """The SVG marks load before the kit that uses them."""
-    if PLATE_BLOCK.search(body) and not -1 < body.find("/plate-svg.js") < body.find("/plate.js"):
-        errors.append(f"{rel}: a page with plates loads assets/js/plate-svg.js and then assets/js/plate.js: add both script tags, in that order")
+    """theme.js (the address and the js class) and the SVG marks load before the kit that uses them."""
+    if PLATE_BLOCK.search(body) and not -1 < body.find("/theme.js") < body.find("/plate-svg.js") < body.find("/plate.js"):
+        errors.append(f"{rel}: a page with plates loads assets/js/theme.js, assets/js/plate-svg.js, and then assets/js/plate.js: add the script tags, in that order")
 
 
 def check_poured(rel, body, claims, errors):
@@ -990,13 +993,17 @@ def main():
             if suffix in {".html", ".svg"}:
                 check_html(path, rel, errors)
             if suffix == ".html":
-                check_slots(path, rel, body, slots, errors)
-                plate_blocks += check_plate_blocks(rel, body, claims, errors)
+                try:
+                    own = pour_claim_refs.without_copies(body)  # a copy's slots, plate blocks, pours, and marks are its own page's
+                except ValueError:
+                    own = body  # pour_claim_refs.check_page names the copy that never closes
+                check_slots(path, rel, own, slots, errors)
+                plate_blocks += check_plate_blocks(rel, own, claims, errors)
                 check_plate_scripts(rel, body, errors)
-                check_poured(rel, body, claims, errors)
+                check_poured(rel, own, claims, errors)
                 errors.extend(pour_claim_refs.check_page(rel, body, claims, SITE))
-                figure_report += [f"{rel}: {problem}" for problem in pour_claim_refs.figure_report(body, claims)]
-                (errors if REFUSE_BOUND_WORDS else bound_report).extend(f"{rel}: {hit}" for hit in bound_words(body, claims))
+                figure_report += [f"{rel}: {problem}" for problem in pour_claim_refs.figure_report(own, claims)]
+                (errors if REFUSE_BOUND_WORDS else bound_report).extend(f"{rel}: {hit}" for hit in bound_words(own, claims))
         elif suffix == ".pdf":
             check_pdf(path, rel, errors)
     if not (SITE / ".nojekyll").is_file():

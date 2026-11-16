@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Runs axe-core on served pages in both themes: each tab panel of a workbench page, with its disclosures open and each plate's Sources and Table views shown.
-//   node scripts/a11y_check.js --out FOLDER [--pages ai/,about/] [--themes dark,light] [--width 1440] [--unclip]
-// Prints counts by impact, writes results.json to the folder, closes its server, and exits 1 on any serious or critical issue. Motion is reduced, so a fade cannot read as low contrast.
+// Runs axe-core on served pages in both themes: each agenda face and tab panel, with its disclosures open, each plate's Chart and then its Table shown.
+//   node scripts/a11y_check.js --out FOLDER [--pages home,ai/,about/] [--themes dark,light] [--width 1440] [--unclip]
+// The default pages are every page, each page's Sources page, and the hub (CW 8). Prints counts by impact, writes results.json to the folder, closes its server,
+// and exits 1 on any serious or critical issue or on any script error a page throws (CW 7). Motion is reduced, so a fade cannot read as low contrast.
 // axe-core comes from node_modules ("npm ci" once). Playwright comes from local node_modules or else the global npm root, and drives the installed Chrome.
 const { execSync } = require('child_process');
 const fs = require('fs');
@@ -11,7 +12,11 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const SITE = path.join(ROOT, 'site');
 const AXE = path.join(ROOT, 'node_modules/axe-core/axe.min.js');
-const PAGES = ['ai/', 'data-centers/', 'data-centers/resource-use/', 'energy/', 'library/', 'about/', 'summit/', 'briefing/'];
+// Every page with an index.html under site/ (home is ""), so each Sources page and the hub (site/sources/) come with them; assets/ and data/ hold no pages.
+const PAGES = (function pages(dir, rel) {
+  const here = fs.existsSync(path.join(dir, 'index.html')) ? [rel] : [];
+  return here.concat(...fs.readdirSync(dir, { withFileTypes: true }).filter((e) => e.isDirectory() && !(rel === '' && /^(assets|data)$/.test(e.name))).map((e) => pages(path.join(dir, e.name), `${rel}${e.name}/`)));
+})(SITE, '');
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.csv': 'text/csv', '.txt': 'text/plain' };
 const BLOCKING = new Set(['serious', 'critical']);
 
@@ -41,12 +46,12 @@ function args() {
   const take = (name, fallback) => { const at = process.argv.indexOf(`--${name}`); return at < 0 ? fallback : process.argv[at + 1]; };
   const out = take('out');
   if (!out) throw new Error('Name the output folder: node scripts/a11y_check.js --out FOLDER [--pages ai/,about/] [--themes dark,light] [--width 1440]');
-  return { out: path.resolve(out), pages: take('pages', PAGES.join(',')).split(','), themes: take('themes', 'dark,light').split(','), width: +take('width', '1440') };
+  return { out: path.resolve(out), pages: take('pages', PAGES.join(',')).split(',').map((p) => (p === 'home' ? '' : p)), themes: take('themes', 'dark,light').split(','), width: +take('width', '1440') };
 }
 
-// Runs in the page: every plate that is showing moves to this view (a view with no radio stays as it is).
+// Runs in the page: every plate that is showing presses this view's button, Chart or Table (a plate in a closed panel or face waits for its turn).
 function showView(view) {
-  for (const radio of document.querySelectorAll(`.plate-views input[value="${view}"]`)) if (radio.offsetParent !== null || radio.closest('.plate-views').offsetParent !== null) radio.click();
+  for (const button of document.querySelectorAll(`.plate-views button[data-view="${view}"]`)) if (button.offsetParent !== null) button.click();
 }
 
 const review = {}; // what axe could not decide, such as text over a gradient; a person looks at these, and they do not change the exit code
@@ -83,13 +88,12 @@ async function scanPage(page, url, theme, record) {
       await page.waitForTimeout(150);
     }
     await page.evaluate(() => { for (const d of document.querySelectorAll('details')) d.open = true; });
-    record(url, theme, tab, 'reading', [...await scan(page, 'html'), ...await hearPlots(page)]);
-    for (const view of ['sources', 'table']) {
-      if (!(await page.evaluate(() => document.querySelector('.plate .plate-views:not([hidden])') !== null))) break;
-      await page.evaluate(showView, view);
-      record(url, theme, tab, view, await scan(page, 'main'));
+    record(url, theme, tab, 'chart', [...await scan(page, 'html'), ...await hearPlots(page)]);
+    if (await page.evaluate(() => [...document.querySelectorAll('.plate-views button[data-view="table"]')].some((b) => b.offsetParent !== null))) {
+      await page.evaluate(showView, 'table');
+      record(url, theme, tab, 'table', await scan(page, 'main'));
+      await page.evaluate(showView, 'chart');
     }
-    await page.evaluate(showView, 'reading');
   }
 }
 
@@ -143,7 +147,7 @@ async function main() {
   for (const [rule, nodes] of Object.entries(review)) console.log(`  needs a person: ${rule}, ${nodes.length} distinct nodes`);
   for (const line of scripts) console.log(`  script error: ${line}`);
   console.log(`Results in ${path.join(path.basename(opt.out), 'results.json')}`);
-  process.exit(Object.keys(byImpact).some((k) => BLOCKING.has(k)) ? 1 : 0);
+  process.exit(Object.keys(byImpact).some((k) => BLOCKING.has(k)) || scripts.length ? 1 : 0); // a page that throws fails, however clean its tree (CW 7)
 }
 
 main().catch((e) => { console.error(e.message || e); process.exit(2); });

@@ -5,6 +5,8 @@ accessible name to each mark, keeping any other attribute, and writes the list b
 with a Sources page beside it (sources/index.html, owner ruling 39) keeps no list: its marks link to sources/#src-ID, and the list goes before that
 page's </main>, under "Claims Cited in the Page's Text". Any other page lists them before its own </main>, unless every mark already lands on a receipt
 on the page. An id that already has a receipt where the list goes (a src- anchor outside the block) keeps it as its one anchor, and its row carries no id.
+A copy of another page's block (an element with data-copy-of, as scripts/build_home.py writes them) keeps its marks and terms as its own page poured
+them, and is never listed or counted here; the prose tip carries its claims too.
 
 It refuses, and writes nothing, if a mark names a claim that does not ship, is unverified, or is partly verified with no limit, or if
 a mark holds no digits while its claim holds a number. A word mark stands only on a claim whose value, low, and high hold no number
@@ -44,6 +46,32 @@ SCALE = {"thousand": 10**3, "million": 10**6, "billion": 10**9, "trillion": 10**
 WIDE = Context(prec=60, rounding=ROUND_HALF_UP)  # room for any claim's digits at any printed precision
 # The figure rule's mode. True since N10 step 4 (0 hits in 432 marks): refuse such a mark like any other problem. False reports only.
 REFUSE_FIGURES = True
+# A copy of another page's block: an element carrying data-copy-of (scripts/build_home.py marks the plates it copies). Its marks and terms were poured on the
+# page it comes from, and its links already reach that page's Sources page, so this page leaves it as it is and never lists or counts it as its own.
+COPY_OPEN = re.compile(r"<([a-z][a-z0-9-]*)\b[^<>]*\sdata-copy-of=[\"'][^<>]*>", re.I)
+
+
+def copies(body):
+    """Where each data-copy-of element runs, from its tag to its own closing tag; raises ValueError for one that never closes."""
+    spans = []
+    for match in COPY_OPEN.finditer(body):
+        if spans and match.start() < spans[-1][1]:
+            continue  # inside a copy already found
+        depth = 0
+        for tag in re.finditer(rf"<(/?){match[1]}\b[^<>]*>", body[match.start():], re.I):
+            depth += -1 if tag[1] else 1
+            if not depth:
+                spans.append((match.start(), match.start() + tag.end()))
+                break
+        else:
+            raise ValueError(f"a <{match[1]} data-copy-of> element never closes: close it, or rebuild the page that copies it")
+    return spans
+
+
+def without_copies(body):
+    """The page's own part: its text with every copy cut out, for the checks that belong to the page a copy comes from."""
+    cut = copies(body)
+    return "".join(body[a:b] for a, b in zip([0, *(end for _, end in cut)], [*(start for start, _ in cut), len(body)]))
 
 
 def load_claims(site=SITE):
@@ -136,7 +164,7 @@ def verbatim(text):
 
 
 ON_PAGE = ("Claims Cited on This Page", "Each dotted underline links to its claim here.")
-FROM_PAGE = "Claims Cited in the Text"
+FROM_PAGE = "Figures in the Text"  # the Sources page's name for it, as its rail says (briefing-plates-23: one word for one thing)
 
 
 def status_words(claim):
@@ -148,7 +176,7 @@ def row(claim_id, claim, anchored):
     source = claim["source"]
     title, publisher = verbatim(source.get("title") or source.get("publisher") or claim_id), verbatim(source.get("publisher") or "")
     anchor = "" if anchored else f' id="src-{escape(claim_id)}"'
-    return (f'          <li{anchor}><a class="plate-source-title" href="{escape(source["url"])}">{title}</a>'
+    return (f'          <li{anchor} data-status="{claim["status"]}"><a class="plate-source-title" href="{escape(source["url"])}">{title}</a>'
             f'<span class="caption">{escape(claim_id)}. {publisher}. {status_words(claim)}</span></li>\n')
 
 
@@ -156,7 +184,7 @@ def document_row(ids, claims, anchored):
     """Several claims from one source: its title and publisher once, then a line per claim."""
     source = claims[ids[0]]["source"]
     anchor = lambda claim_id: "" if claim_id in anchored else f' id="src-{escape(claim_id)}"'  # noqa: E731
-    lines = "".join(f'<li{anchor(claim_id)}><span class="caption">{escape(claim_id)}. {status_words(claims[claim_id])}</span></li>' for claim_id in ids)
+    lines = "".join(f'<li{anchor(claim_id)} data-status="{claims[claim_id]["status"]}"><span class="caption">{escape(claim_id)}. {status_words(claims[claim_id])}</span></li>' for claim_id in ids)
     return (f'          <li><a class="plate-source-title" href="{escape(source["url"])}">{verbatim(source.get("title") or source.get("publisher") or ids[0])}</a>'
             f'<span class="caption">{verbatim(source.get("publisher") or "")}.</span><ul class="cited-claims">{lines}</ul></li>\n')
 
@@ -193,12 +221,26 @@ def main_of(path):
     return Path(path).parent.parent / "index.html"
 
 
+def in_copy(body):
+    """Whether a place in the page falls inside a copy (a page whose copies never close gets every place, and its problem from copies() elsewhere)."""
+    try:
+        spans = copies(body)
+    except ValueError:
+        return lambda at: True
+    return lambda at: any(a <= at < b for a, b in spans)
+
+
 def marks_in(body, claims, away=""):
-    """The page with each good mark poured, linking to {away}#src-ID; the problems; and the ids its marks cite, in order."""
+    """The page with each good mark poured, linking to {away}#src-ID; the problems; and the ids its marks cite, in order. A copy's marks stay as they are."""
     problems, ids = [], []
+    try:
+        copies(body)
+    except ValueError as error:
+        problems.append(str(error))
+    copied = in_copy(body)
 
     def mark(match):
-        if not match["attrs"]:
+        if not match["attrs"] or copied(match.start()):
             return match[0]
         claim_id, text = mark_parts(match)
         problem = mark_problem(claim_id, text, claims.get(claim_id))
@@ -221,27 +263,101 @@ def cited(body, claims):
 
 
 def listed(body, ids, claims, words):
-    """The page with the list of these ids before its </main>, in place of any old one, and the problems."""
+    """The page with the list of these ids where its old one stood (a Sources page keeps it in its content column, beside the rail), or else before its
+    </main>, and the problems."""
+    old = BLOCK.search(body)
     bare = BLOCK.sub("", body)
     if not ids:
         return bare, []
-    foot = bare.rfind("</main>")
+    foot = old.start() if old else bare.rfind("</main>")
     if foot < 0:
         return body, ["the page has marks but no </main>, so the block has no place: add the element"]
-    foot = bare.rfind("\n", 0, foot) + 1
+    foot = foot if old else bare.rfind("\n", 0, foot) + 1
     return bare[:foot] + block(ids, claims, set(SRC_ANCHOR.findall(bare)), words) + bare[foot:], []
 
 
 def pour(body, claims, away=""):
     """Returns (the page as it should stand, problems). The same page in gives the same page out. With away (its Sources page, "sources/"), the marks
-    link there and the page keeps no list; without it, the list stays off a page whose every mark already lands on a receipt there."""
+    link there and the page keeps no list; without it, the list stays off a page whose every mark already lands on a receipt there. A site page (one that
+    links site.css, which says how far it sits from the site's root) also links its terms to the hub's glossary and carries the prose tip's data and cite.js."""
     poured, problems, ids = marks_in(body, claims, away)
+    root = SITE_CSS.search(body)
+    if root and not problems:
+        poured, problems, terms = terms_in(poured, root[1])
+        if not problems:  # the tip serves every mark on the page, a copy's too, though only the page's own are listed
+            copied = in_copy(poured)
+            theirs = [mark_parts(m) for m in MARK.finditer(poured) if m["attrs"] and copied(m.start())]
+            tip_ids = list(dict.fromkeys(ids + [c for c, text in theirs if not gate_problem(c, text, claims.get(c))]))
+            tip_terms = list(dict.fromkeys(terms + [t["term"] for t in TERM.finditer(poured) if copied(t.start()) and t["term"] in GLOSSARY]))
+            poured = tip_data(poured, tip_ids, tip_terms, claims, root[1])
     if problems:
         return body, problems
     poured = BLOCK.sub("", poured)
     if away or set(ids) <= set(SRC_ANCHOR.findall(poured)):
         return poured, []
     return listed(poured, ids, claims, (escape(ON_PAGE[0]), escape(ON_PAGE[1])))
+
+
+# Terms and the prose tip (DIRECTION-R2 3.9). A lane marks a term's first use in the brief and in each tab panel as <span class="term" data-term="amw">aMW</span>;
+# this links it to the hub's glossary (site/sources/#term-amw) and gives its definition to the same tip as a claim mark. The definitions are ours, in house style.
+GLOSSARY = {
+    "amw": ("aMW", "Average megawatts: a year's electricity use stated as the steady power that would use it evenly, hour by hour. It is less than a load's peak MW whenever the load factor is below one."),
+    "mw": ("MW", "Megawatts: a rate of electric power, the size of a load or a power plant at full draw. A thousand kilowatts."),
+    "twh": ("TWh", "Terawatt-hours: an amount of electric energy, a billion kilowatt-hours, the scale of a region's or a country's use in a year."),
+    "wh": ("Wh", "Watt-hours: an amount of energy at the scale of one device, such as a phone charge or an hour of streaming on a screen."),
+    "load-factor": ("load factor", "A load's average draw as a share of its peak. A data center that runs near full power all year has a high one."),
+    "pue": ("PUE", "Power usage effectiveness: a data center's total energy divided by what its computers use. The rest goes to cooling, power conversion, and lighting; closer to one is leaner."),
+    "co2e": ("CO2e", "Carbon dioxide equivalent: greenhouse gases stated as the amount of carbon dioxide that would warm the climate as much."),
+    "partly-verified": ("partly verified", "The source supports the figure with a stated limit, and the limit travels with the figure wherever it appears."),
+    "modeled": ("modeled", "Worked out from published inputs and stated assumptions rather than measured; a hollow mark on a plate."),
+    "council": ("the Council", "The Northwest Power and Conservation Council, which plans the region's electric power under the Northwest Power Act."),
+}
+TERM = re.compile(r'<(?P<tag>span|a) class="term" data-term="(?P<term>[a-z0-9-]+)"(?: href="[^"]*")?>(?P<inner>[^<]*)</(?P=tag)>')
+TIP_BLOCK = re.compile(r"[ \t]*<!-- cr-data -->.*?<!-- /cr-data -->\n?", re.S)
+SITE_CSS = re.compile(r'href="((?:\.\./)*)assets/css/site\.css"')
+
+
+def terms_in(body, root):
+    """The page with each term linked to the hub's glossary, the problems, and the terms in order. A copy's terms stay as they are."""
+    problems, terms = [], []
+    copied = in_copy(body)
+
+    def term(match):
+        if copied(match.start()):
+            return match[0]
+        if match["term"] not in GLOSSARY:
+            problems.append(f'term {match["term"]!r} has no definition: add it to GLOSSARY in scripts/pour_claim_refs.py, or mark a term it holds')
+            return match[0]
+        if match["term"] not in terms:
+            terms.append(match["term"])
+        return f'<a class="term" data-term="{match["term"]}" href="{root}sources/#term-{match["term"]}">{match["inner"]}</a>'
+    return TERM.sub(term, body), problems, terms
+
+
+def tip_data(body, ids, terms, claims, root):
+    """The prose tip's data, before </body>: each marked claim's source, publisher, date, status, and limit, and each term's definition, with cite.js to
+    read them. A page with neither keeps no block."""
+    bare = TIP_BLOCK.sub("", body)
+    if not ids and not terms:
+        return bare
+    def record(claim):
+        source = claim["source"]
+        return {k: v for k, v in {"title": source.get("title") or source.get("publisher"), "url": source.get("url"), "publisher": source.get("publisher"),
+                                  "date": us_day(source.get("published")), "status": STATUS[claim["status"]], "limit": str(claim.get("limit") or "").strip() or None}.items() if v}
+    data = {"claims": {c: record(claims[c]) for c in ids}, "terms": {t: {"name": GLOSSARY[t][0], "words": GLOSSARY[t][1]} for t in terms}}
+    text = json.dumps(data, ensure_ascii=True, separators=(",", ":")).replace("<", "\\u003c").replace("--", "-\\u002d")
+    foot = bare.rfind("</body>")
+    if foot < 0:
+        return bare
+    foot = bare.rfind("\n", 0, foot) + 1
+    block = (f'  <!-- cr-data -->\n  <script type="application/json" id="cr-data">{text}</script>\n'
+             f'  <script defer src="{root}assets/js/cite.js"></script>\n  <!-- /cr-data -->\n')
+    return bare[:foot] + block + bare[foot:]
+
+
+def us_day(text):
+    match = re.fullmatch(r"(\d{4})-(\d{2})(?:-(\d{2}))?", str(text or ""))
+    return (f"{match[2]}/{match[3]}/{match[1]}" if match[3] else f"{match[2]}/{match[1]}") if match else (str(text) if text else None)
 
 
 def pour_list(sources, main, claims):

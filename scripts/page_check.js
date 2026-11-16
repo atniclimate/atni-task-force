@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Runs the jsdom page checks. No browser and no network.
 //   node scripts/page_check.js --all
-//   node scripts/page_check.js --page ai     (plate, dc, ai, ru, explorer, library, energy, briefing)
+//   node scripts/page_check.js --page ai     (plate, home, dc, ai, ru, explorer, library, energy, briefing)
 // Exit 1 on a failed check and 2 on bad arguments. Budgets in tests/budgets.json only print warnings; they never change the exit code.
 // Needs "npm ci" once. The Explorer page reads 300 oracle cases and takes ten to fifteen minutes (825 seconds on 11/06/2026); run it last.
 const { spawn } = require('child_process');
@@ -10,7 +10,7 @@ const path = require('path');
 const zlib = require('zlib');
 
 const ROOT = path.resolve(__dirname, '..');
-const PAGES = ['plate', 'dc', 'ai', 'ru', 'explorer', 'library', 'energy', 'briefing'];
+const PAGES = ['plate', 'home', 'dc', 'ai', 'ru', 'explorer', 'library', 'energy', 'briefing'];
 const ALIASES = { 'data-centers': 'dc', 'resource-use': 'ru', kit: 'plate' };
 
 function htmlFiles(dir) {
@@ -47,6 +47,13 @@ function printBudgets() {
     const rel = path.relative(ROOT, full).replace(/\\/g, '/');
     const cap = pages[rel] || pages.default;
     if (cap) report(rel, +(zlib.gzipSync(fs.readFileSync(full), { level: 9 }).length / 1024).toFixed(1), cap, 'KB gzipped');
+  }
+  // Other published files; a line may end in a * pattern, which names each file it matches (the relief images).
+  for (const [pattern, cap] of Object.entries(budgets.files_kb || {})) {
+    const dir = path.join(ROOT, path.posix.dirname(pattern));
+    const [head, tail = null] = path.posix.basename(pattern).split('*');
+    const names = !fs.existsSync(dir) ? [] : tail === null ? [path.posix.basename(pattern)] : fs.readdirSync(dir).filter((n) => n.startsWith(head) && n.endsWith(tail));
+    for (const name of names.filter((n) => fs.existsSync(path.join(dir, n)))) report(`${path.posix.dirname(pattern)}/${name}`, +(fs.statSync(path.join(dir, name)).size / 1024).toFixed(1), cap, 'KB');
   }
 }
 
@@ -98,7 +105,7 @@ async function main() {
     return bad.length ? 1 : 0;
   }
   if (!PAGES.includes(name)) {
-    console.log('Usage: node scripts/page_check.js --all, or --page plate|dc|ai|ru|explorer|library|energy|briefing');
+    console.log(`Usage: node scripts/page_check.js --all, or --page ${PAGES.join('|')}`);
     return 2;
   }
   const { failed, checks } = await runPage(name);

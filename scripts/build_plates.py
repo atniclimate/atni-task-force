@@ -21,7 +21,7 @@ writes nothing, on a local path, an email address, or our own prose out of house
 import argparse
 import ast
 from decimal import ROUND_HALF_UP, Context, Decimal
-from html import escape
+from html import escape, unescape
 import json
 import math
 import operator
@@ -36,7 +36,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_public as vp  # noqa: E402  (the release rules; it reads no PDF on import)
-from pour_claim_refs import load_claims, verbatim  # noqa: E402,F401  (one copy of each; other builders reach them as bp.verbatim and bp.load_claims)
+from pour_claim_refs import cited, load_claims, verbatim  # noqa: E402,F401  (one copy of each; other builders reach them as bp.verbatim and bp.load_claims)
 
 EVIDENCE = vp.ROOT / "work" / "site-refresh" / "evidence"
 # The keys a shipped claim carries; any other evidence-file field (today note and recheck, working notes and check logs) stays local, and a public limit travels as "limit".
@@ -50,7 +50,7 @@ HELD_BACK = {"ec-055", "ec-056", "lf-059", "lf-070", "lf-071", "sf-053", "sf-054
 HOUSE_WORDS = re.compile(r"\b(?:tribes?|tribal|indigenous|[iI]ntertribal|treat(?:y|ies))\b")
 LINE_KINDS = {"lines", "multiples"}
 RULER_KINDS = {"ladder", "bars"}
-PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix"}
+PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix", "meter"}  # a meter is a ruler of stacked parts on a fixed scale (docs/PLATE-KIT.md)
 BINARY = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
 CALLS = {"min", "max", "ifblank"}
 # Digits our own sentences may type: years, dates, resolution numbers, and names like CO2, GPT-5, or Scope 2. shortcut: a bare
@@ -172,13 +172,22 @@ def nice_ticks(lo, hi, count=5):
     return [round(i * step, 10) for i in range(first, math.floor((hi + step / 1e6) / step) + 1)]
 
 
-def nice_domain(numbers):
-    def ceiling(v):
+def nice_domain(numbers, cap=None):
+    """A domain from zero, or around zero, to a round number. cap: the most the end may be over the data (1.25 for bars, energy-06), reached with finer steps."""
+    def ceiling(v, count=5):
         if v <= 0:
             return 0
-        step = nice_step(v)
+        step = nice_step(v, count)
         return round(math.ceil(v / step) * step, 10)
-    return [-ceiling(-min(numbers)), ceiling(max(numbers))] if min(numbers) < 0 else [0, ceiling(max(numbers)) or 1]
+
+    def end(v):
+        out = ceiling(v)
+        for count in (10, 20):
+            if not cap or out <= cap * v:
+                break
+            out = ceiling(v, count)
+        return out
+    return [-end(-min(numbers)), end(max(numbers))] if min(numbers) < 0 else [0, end(max(numbers)) or 1]
 
 
 def tick_text(value, top):
@@ -302,6 +311,56 @@ def template_names(template):
     return {name.split("[")[0].split(".")[0] for _, name, *_ in string.Formatter().parse(template) if name}
 
 
+VARIANTS = {"face", "lead", "repeater", "strip", "atlas"}  # docs/PLATE-KIT.md; plate.js reads the variant from where a plate sits unless its definition names one
+ROW_FIELDS = {"label", "display", "text", "value", "low", "high", "unit", "year", "series", "tag", "end", "column", "panel", "band_low", "band_high"}
+PLACEHOLDER = re.compile(r"([\w-]+)((?:\[[\w-]+\])*)")
+
+
+def check_state_template(ctx, field, template, keys, own_fields, formula_ids):
+    """The figure rule for a title or an answer that follows the plate's state: each placeholder names a row field, a setting, a row by its id (its figure, or
+    one of its fields), or an input with a claim or model source. So every figure it prints is one the plate prints at that state, with that state's evidence,
+    and it takes no claim mark. plate.js fills the same template from the selected row. Returns the template."""
+    own_text(ctx.plate, field, template)
+    controls = {c["name"] for c in ctx.defn.get("controls") or []}
+    fields = ROW_FIELDS | own_fields
+    try:
+        names = [name for _, name, _, _ in string.Formatter().parse(template) if name is not None]
+    except ValueError as error:
+        raise BuildError(f"plate {ctx.plate}: {field} has a bad placeholder: {error}") from error
+    for name in names:
+        match = PLACEHOLDER.fullmatch(name)
+        base, parts = (match[1], re.findall(r"\[([\w-]+)\]", match[2])) if match else (name, None)
+        good = match and (
+            (base in controls and not parts) or base in ctx.sources or (base in fields and not parts)
+            or (base in keys and (not parts or (len(parts) == 1 and parts[0] in fields))) or (base in formula_ids and not parts))
+        if not good:
+            raise BuildError(f"plate {ctx.plate}: {field} names {{{name}}}, which is not a row field, a setting, a row, or an input with a claim or model source; "
+                             "a title or an answer prints only figures the plate prints at that state")
+    if re.search(r"\d", NAMED_DIGITS.sub(" ", "".join(literal for literal, *_ in string.Formatter().parse(template)))):
+        raise BuildError(f"plate {ctx.plate}: {field} writes a number in its own words; use a placeholder so it comes from the plate's state")
+    return template
+
+
+class RowWords(dict):
+    """A row in a title or an answer: {amw} prints its figure as the plate prints it, {amw[text]} one of its fields."""
+    def __init__(self, words, figure):
+        super().__init__(words)
+        self.figure = figure
+
+    def __format__(self, spec):
+        return "" if self.figure is None else format(self.figure, spec)
+
+
+def state_context(lead, env_words, by_key, rows):
+    """What a title or an answer can say at the defaults: the lead row's fields, the settings' words (a setting named boundary outranks the boundary sentence),
+    the inputs, and each row by its id, rounded as plate.js prints it."""
+    def figure(r):
+        v = r["value"] if r["value"] is not None else r["low"]
+        return None if v is None else Fig(rounded(v, r.get("digits")) if r.get("f") else v)
+    words = {k: Fig(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else v for k, v in env_words.items()}  # a typed setting groups its thousands, as plate.js prints it
+    return {**lead, **words, **{k: RowWords(by_key.get(k, {}), figure(r)) for k, r in rows.items()}}
+
+
 # Rows -----------------------------------------------------------------------------------------------
 
 def read_points(plate, name, claim, field):
@@ -336,7 +395,7 @@ def limit_of(ctx, name, claim, spec=None):
 
 
 def row_extras(ctx, spec):
-    extra = {key: spec[key] for key in ("group", "panel", "tag", "dx", "show", "slug") if spec.get(key) is not None}
+    extra = {key: spec[key] for key in ("group", "panel", "tag", "dx", "show", "slug", "off_scale") if spec.get(key) is not None}
     for key in ("note", "equation", "detail"):
         if spec.get(key):
             extra[key] = own_text(ctx.plate, key, spec[key])
@@ -728,7 +787,7 @@ def plate_env(ctx, models):
             ctx.reader.add(control["name"])
 
 
-def nice_axis(plate, scale, domain, numbers):
+def nice_axis(plate, scale, domain, numbers, cap=None):
     """The domain and ticks of one axis, checked against the numbers it must hold."""
     if scale == "log":
         if numbers and min(numbers) <= 0:
@@ -739,7 +798,7 @@ def nice_axis(plate, scale, domain, numbers):
             raise BuildError(f"plate {plate}: a log scale needs a positive domain")
         ticks = [10.0 ** e for e in range(math.ceil(math.log10(lo) - 1e-9), math.floor(math.log10(hi) + 1e-9) + 1)]
     else:
-        lo, hi = domain or nice_domain(numbers)
+        lo, hi = domain or nice_domain(numbers, cap)
         if hi <= lo:
             raise BuildError(f"plate {plate}: plot.domain must run low to high")
         ticks = nice_ticks(lo, hi)
@@ -875,11 +934,21 @@ def finish_rulers(ctx, rows, plot):
         mine = [r for r in rows if r.get("group") == group["id"]]
         here = [m for m in marks if m.get("group") == group["id"]]
         scale = group.get("scale") or plot.get("scale") or "linear"
-        mark = group.get("mark") or ("bar" if kind == "bars" else "square")
-        if scale == "log" and mark == "bar":
+        mark = group.get("mark") or ("bar" if kind == "bars" else "meter" if kind == "meter" else "square")
+        if scale == "log" and mark in ("bar", "meter"):
             raise BuildError(f"plate {plate}: a log scale carries squares, never bars; use a ladder")
-        numbers = numbers_of(mine) + [n for m in here for n in (m["value"], m["low"], m["high"]) if n is not None]
-        axis = nice_axis(plate, scale, group.get("domain") or plot.get("domain"), numbers)
+        if kind == "meter" and not (group.get("domain") or plot.get("domain")):
+            raise BuildError(f"plate {plate}: a meter needs plot.domain, the one fixed scale its stops share; a row past it is off_scale")
+        on_scale = [r for r in mine if not r.get("off_scale")]
+        # A meter's spread may run past its fixed scale: the line stops at the end, and the row's words print how far it runs.
+        numbers = ([n for r in on_scale for n in (r["value"], r["low"]) if n is not None] if kind == "meter" else numbers_of(on_scale)) + [n for m in here for n in (m["value"], m["low"], m["high"]) if n is not None]
+        fixed = group.get("domain") or plot.get("domain")
+        reach = setting_reach(ctx, on_scale, scale) if kind != "meter" else []  # fixed axes: a domain holds every figure any setting reaches; a meter's is fixed by hand
+        if fixed and reach and (min(reach) < min(fixed) or max(reach) > max(fixed)) and not (plot.get("fit") or plot.get("rescale")):
+            print(f"warning: plate {plate}: a setting takes a figure to {number(rounded(min(reach)))} to {number(rounded(max(reach)))}, off plot.domain {fixed}; plate.js holds it at the end", file=sys.stderr)
+        if not fixed and not (plot.get("fit") or plot.get("rescale")):
+            numbers += reach
+        axis = nice_axis(plate, scale, fixed, numbers, cap=1.25 if mark == "bar" and not fixed else None)
         group.update(axis, mark=mark, unit=one_unit(plate, mine, f"group {group['id']}" if group["id"] else "one axis"))
         group["zero"] = position(axis, 0) if axis["scale"] != "log" else None
         place_on(axis, mine)
@@ -931,6 +1000,33 @@ def setting_extremes(ctx, cap=64):
     return combos
 
 
+def setting_corners(ctx, cap=64):
+    """The settings at their corners: every typed or dragged control at its least and at its most, each with every stop a control stands for."""
+    controls = ctx.defn.get("controls") or []
+    typed = [c for c in controls if c.get("type") == "range" or (c.get("type") == "number" and ctx.env.get(c["name"]) is not None)]
+    combos = [{**ctx.env, **{c["name"]: c[end] for c in typed}} for end in ("min", "max")] if typed else [dict(ctx.env)]
+    for control in controls:
+        stands = ctx.stands.get(control["name"])
+        if stands:
+            combos = [{**env, control["name"]: env[stands[o["value"]]] if o["value"] in stands else None} for env in combos for o in control["options"]][:cap]
+    return combos
+
+
+def setting_reach(ctx, rows, scale):
+    """Every figure the formula rows here reach at the settings' corners: what a fixed axis must hold. A log ruler takes only what it can draw."""
+    computed = [r for r in rows if r.get("f")]
+    if not computed:
+        return []
+    out = []
+    for env in setting_corners(ctx):
+        try:
+            run_formulas(ctx, env)
+            out += [v for r in computed for expr in r["f"].values() if (v := evaluate(expr, env)) is not None]
+        except (BuildError, SyntaxError, ValueError, KeyError, TypeError, ZeroDivisionError):
+            continue  # a corner the formulas cannot reach draws nothing
+    return [v for v in out if v > 0] if scale == "log" else out
+
+
 def run_formulas(ctx, env):
     for spec in ctx.defn.get("rows") or []:
         formula = spec.get("formula")
@@ -949,7 +1045,7 @@ def finish_plot(ctx, rows):
         plot["highlight"] = control_stop(defn, plot["highlight_by"])
     if kind in LINE_KINDS:
         finish_lines(ctx, rows, plot)
-    elif kind in RULER_KINDS:
+    elif kind in RULER_KINDS or kind == "meter":
         finish_rulers(ctx, rows, plot)
     elif kind == "instrument":
         finish_instrument(ctx, rows, plot)
@@ -1062,6 +1158,16 @@ def legend_html(data):
     if plot.get("key"):  # a plate whose marks mean their own thing says so; a page's sheet draws each shape
         shape = lambda k: '<span class="plate-square is-%s"></span>' % escape(k["shape"]) if k.get("shape") else ""
         return f'<ul class="legend plate-legend">{"".join(f"<li>{shape(k)}{escape(own_text(data['id'], 'key', k['label']))}</li>" for k in plot["key"])}</ul>'
+    if plot["type"] == "meter":  # the parts by ink, what a stop leaves out, the spread, and a figure past the scale; never chart hues on a needle plate
+        first = next((r for r in data["rows"] if r.get("segments")), None)
+        keys = ("plate-key is-part is-p1", "plate-key is-part is-p2", "plate-key is-part is-p3")
+        items += [f'<li><span class="{keys[min(i, 2)]}"></span>{escape(s["label"])}</li>' for i, s in enumerate((first or {}).get("segments") or [])]
+        if any(s.get("at") for r in data["rows"] for s in r.get("segments") or []):
+            items.append('<li><span class="plate-key is-part is-ghost"></span>Not counted at this setting</li>')
+        if any(r.get("low") is not None and r.get("high") is not None for r in data["rows"]):
+            items.append('<li><span class="plate-key is-spread"></span>Spread, not a confidence interval</li>')
+        if any(r.get("off_scale") for r in data["rows"]):
+            items.append('<li><span class="plate-key is-part is-off"></span>Past this scale; the figure is printed</li>')
     names = list(dict.fromkeys(r["series"] for r in data["rows"] if r.get("series") and r.get("x") is not None))
     if plot["type"] == "lines" and len(names) >= 2:
         items += [f'<li data-series="{escape(n)}"><span class="plate-key{" is-on" if n == plot.get("highlight") else ""}"></span>{escape(n)}</li>' for n in names]
@@ -1074,7 +1180,7 @@ def legend_html(data):
     if any(r.get("projected") for r in data["rows"]):
         items.append('<li><span class="plate-key is-proj"></span>Projection</li>')
     hollow = {bool(r.get("hollow")) for r in data["rows"] if r.get("text")}
-    if len(hollow) == 2:
+    if len(hollow) == 2 and plot["type"] != "meter":
         items += ['<li><span class="plate-square"></span>Measured or company-reported</li>', '<li><span class="plate-square is-hollow"></span>Modeled or estimated</li>']
     return f'<ul class="legend plate-legend">{"".join(items)}</ul>' if items else ""
 
@@ -1088,10 +1194,30 @@ def value_html(text):
     return f'<span class="ladder-num">{escape(match[1])}</span> <span class="ladder-tag">{escape(match[2])}</span>{unit}'
 
 
+def meter_parts(r, axis, stop):
+    """A meter row's parts, stacked from zero on the fixed scale in their own order; a part this stop does not count stays as a dashed ghost (plate.js meterParts
+    is the twin). A row past the scale draws one hatched bar to its end, with an arrow; its value cell prints the figure."""
+    lo, hi = axis["domain"]
+    if r.get("off_scale"):
+        return '<span class="meter-part is-off" style="--a:0;--w:1"></span><span class="meter-arrow" aria-hidden="true"></span>'
+    parts, at = [], 0.0
+    for i, part in enumerate(r.get("segments") or []):
+        v = part.get("value") or 0
+        a = min(1, max(0, (at - lo) / (hi - lo)))
+        w = max(0, min(1 - a, v / (hi - lo)))
+        counted = not part.get("at") or stop in part["at"]
+        ink = ("meter-part is-p1", "meter-part is-p2", "meter-part is-p3")[min(i, 2)] + ("" if counted else " is-ghost")
+        parts.append(f'<span class="{ink}" style="--a:{round(a, 4)};--w:{round(w, 4)}"></span>')
+        at += v
+    return "".join(parts)
+
+
 def ladder_row(data, key, label, rows, axis, tag):
     r = rows[0] if rows else None
     second = rows[1] if len(rows) > 1 else None
     frac, lo, hi = (r.get("frac"), r.get("lo"), r.get("hi")) if r else (None, None, None)
+    if axis.get("mark") == "meter":  # a figure past a meter's fixed scale stands at its end; the words say how far
+        frac, lo, hi = (None if v is None else min(1, max(0, v)) for v in (frac, lo, hi))
     x2 = second.get("frac") if second else None
     if second and frac is not None and x2 is not None:
         lo, hi = min(frac, x2), max(frac, x2)
@@ -1101,6 +1227,7 @@ def ladder_row(data, key, label, rows, axis, tag):
     if axis.get("diverging") and r and r.get("value") is not None:
         sign = " is-neg" if r["value"] < 0 else " is-pos"
     bar = axis.get("mark") == "bar"
+    meter = axis.get("mark") == "meter"
     projected = " is-proj" if r and r.get("projected") else ""
     hollow = " is-hollow" if r and r.get("hollow") else ""
     text = r["display"] if r else data["not_counted"]
@@ -1108,12 +1235,15 @@ def ladder_row(data, key, label, rows, axis, tag):
         text = (r.get("fields") or {}).get("cell") or f'{r.get("text") or ""} and {second.get("text") or ""} {r.get("unit") or ""}'.strip()
     marks = (f'<span class="ladder-bar{hollow}{projected}"{"" if frac is not None else " hidden"}></span>' if bar else "") + (
         f'<span class="ladder-range{projected}"{"" if lo is not None and hi is not None else " hidden"}></span>')
-    if not bar:
+    if meter:
+        marks = (f'<span class="meter-parts">{meter_parts(r, axis, data["stops_now"].get(data.get("by")))}</span>' if r else "") + marks
+    elif not bar:
         marks += f'<span class="ladder-mark{hollow}"{"" if frac is not None else " hidden"}></span>'
     if second or data["plot"].get("pair_names"):
         marks += f'<span class="ladder-mark is-b"{"" if x2 is not None else " hidden"}></span>'
     words = f'<span class="ladder-tag">{escape(tag)}</span>' if tag else ""
     gap = " is-gap" if frac is None and lo is None else ""
+    gap += " is-off" if r and r.get("off_scale") else ""
     return (f'<li class="ladder-row{sign}{gap}" data-row="{escape(key)}"{style}><span class="ladder-label">{escape(label)}{words}</span>'
             f'<span class="ladder-track">{marks}</span><span class="ladder-value">{value_html(text)}</span></li>')
 
@@ -1329,20 +1459,27 @@ def sources_of(r, data):
     return f'{"; ".join(dict.fromkeys(names))}{", partly verified" if partly else ""}'
 
 
-def source_links(r, data, link):
-    """sources_of, each name linked to the receipt of the first claim it stands for; the words are the same."""
-    names, partly = {}, False
-    for claim_id in [r.get("claim"), *(r.get("cites") or [])]:
-        if claim_id:
-            names.setdefault(data["receipts"][claim_id]["short"], claim_id)
-            partly = partly or data["receipts"][claim_id]["status"] == "partly"
-    return f'{"; ".join(link(c, verbatim(name)) for name, c in names.items())}{", partly verified" if partly else ""}'
+STATUS_WORD = {"verified": "verified", "partly": "partly verified"}
+CELL_WARN = 80  # a Table cell holds short words; a longer one belongs on the Sources page
 
 
-def table_html(defn, data):
+def claim_refs(ids, data):
+    """Claim ids in a Table cell: each links to its receipt on the Sources page, with its status as a square (full or half) and a word, so without scripts a
+    figure's claim and status are in the cell and its limit is one link away. The text reads "fp-001 verified, fp-015 partly verified"."""
+    def one(claim_id):
+        status = data["receipts"][claim_id]["status"]
+        square = "st st-p" if status == "partly" else "st st-v"
+        return (f'<span class="claim-ref"><a href="sources/#{data["id"]}-source-{escape(claim_id)}" data-claim="{escape(claim_id)}">'
+                f'<span class="{square}" aria-hidden="true"></span>{escape(claim_id)}</a> {STATUS_WORD[status]}</span>')
+    return ", ".join(one(c) for c in ids)
+
+
+def row_ids(r):
+    return list(dict.fromkeys(c for c in [r.get("claim"), *(r.get("cites") or [])] if c))
+
+
+def table_html(defn, data, caption=""):
     spec = defn.get("table") or {}
-    # A claim id or a source name in the Table links to its receipt on the Sources page, so without scripts each figure's claim, status, and limit are one link away.
-    link = lambda claim_id, text: f'<a href="sources/#{data["id"]}-source-{escape(claim_id)}">{text}</a>'  # noqa: E731
     by_label = {}
     for c in defn.get("controls") or []:
         if c.get("name") == defn.get("by"):
@@ -1368,9 +1505,9 @@ def table_html(defn, data):
         head = "".join(f'<th scope="col">{escape(labels.get(f, f.capitalize()))}</th>' for f in by) + "".join(f'<th scope="col">{escape(panels.get(t, str(t)))}</th>' for t in tops) + '<th scope="col">Claims</th>'
         body = []
         for names, cells in groups.items():
-            ids = list(dict.fromkeys(c for r in cells.values() for c in [r.get("claim"), *(r.get("cites") or [])] if c))
+            ids = list(dict.fromkeys(c for r in cells.values() for c in row_ids(r)))
             first = f'<th scope="row">{escape(names[0])}</th>' + "".join(f"<td>{escape(n)}</td>" for n in names[1:])
-            body.append(f'<tr>{first}{"".join(f"<td>{escape(cells[t].get("text") or "") if t in cells else ""}</td>" for t in tops)}<td>{", ".join(link(c, escape(c)) for c in ids)}</td></tr>')
+            body.append(f'<tr>{first}{"".join(f"<td>{escape(cells[t].get("text") or "") if t in cells else ""}</td>" for t in tops)}<td>{claim_refs(ids, data)}</td></tr>')
     else:
         columns = spec.get("columns")
         if not columns:
@@ -1384,6 +1521,8 @@ def table_html(defn, data):
             if any(r.get("series") and r.get("x") is None for r in rows):
                 columns.append({"label": "Part", "field": "series"})
             columns += [{"label": "Value", "field": "display"}, {"label": "Year", "field": "year"}, {"label": "Source", "field": "source"}]
+        if not any(c["field"] == "claims" for c in columns):  # every Table states each figure's claims and their status
+            columns = [*columns, {"label": "Claims", "field": "claims"}]
         head = "".join(f'<th scope="col">{escape(c["label"])}</th>' for c in columns)
         own = {s.get("id"): s["boundary"] for s in defn.get("rows") or [] if s.get("boundary")}  # a row's own boundary words stand before its claims' (ru-boundary)
         body = []
@@ -1394,21 +1533,21 @@ def table_html(defn, data):
                 text = own[r["key"]] if field == "boundary" and r["key"] in own else cell_text(r, field, data, by_label)
                 if field == "display" and r.get("spark"):
                     text = "; ".join(f"{x}: {number(v)}" for x, v in r["spark"]) + f' {r["unit"]}'
-                if field == "source":
-                    inner = source_links(r, data, link)
-                elif field == "claims":
-                    inner = ", ".join(link(c, escape(c)) for c in [r.get("claim"), *(r.get("cites") or [])] if c)
+                if field == "claims":
+                    inner = claim_refs(row_ids(r), data)
                 else:
                     inner = escape(text)
+                    if len(text) > CELL_WARN:
+                        print(f"warning: plate {data['id']}: a Table cell runs {len(text)} characters, past {CELL_WARN}, in column {c['label']!r}; the long words belong on the Sources page", file=sys.stderr)
                 changes = (r.get("f") and field in ("display", "text", "value", "low", "high")) or field in (r.get("fields") or {})
                 live = f' data-cell="{escape(r["key"])}|{escape(r.get("when") or "")}|{escape(field)}"' if changes else ""
                 cells.append(f'<th scope="row"{live}>{inner}</th>' if i == 0 else f"<td{live}>{inner}</td>")
-            body.append(f'<tr>{"".join(cells)}</tr>')
-    caption = "<caption>Every value in this plate, with its source.</caption>"
+            when = f' data-when="{escape(r["when"])}"' if r.get("when") else ""
+            body.append(f'<tr data-key="{escape(r["key"])}"{when}>{"".join(cells)}</tr>')
     also = "".join(f'<li>{escape(a["label"])}: {escape(a["display"])}</li>' for a in data.get("also") or [])
     also = f'<ul class="plate-also caption">{also}</ul>' if also else ""
-    return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values"><table class="data-table plate-table">{caption}'
-            f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>{also}')
+    return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values"><table class="data-table plate-table"><caption>{escape(caption)}</caption>'
+            f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div><p class="caption plate-count">{plural(len(body), "row")}</p>{also}')
 
 
 def plural(n, one, many=None):
@@ -1430,18 +1569,26 @@ def doc_key(r):
 
 
 def tally_words(receipts):
-    """How many sources, from how many documents, and how they were checked, in one line."""
+    """How many sourced figures, from how many documents, and how they were checked, in one line."""
     partly = sum(r["status"] == "partly" for r in receipts.values())
-    mix = " and ".join(t for t in (f"{len(receipts) - partly:,} verified" if len(receipts) > partly else "", f"{partly:,} partly verified" if partly else "") if t)
-    return f"{plural(len(receipts), 'source')} from {plural(len({doc_key(r) for r in receipts.values()}), 'document')}: {mix}."
+    mix = ", ".join(t for t in (f"{len(receipts) - partly:,} verified" if len(receipts) > partly else "", f"{partly:,} partly verified" if partly else "") if t)
+    return f"{plural(len(receipts), 'sourced figure')} from {plural(len({doc_key(r) for r in receipts.values()}), 'document')}: {mix}."
 
 
-def stub_html(plate, page, receipts):
-    """What a plate keeps of its sources: that line, and a link to its section of the page's Sources page, whose address prints on paper."""
+BRIEFING_PAGES = {"ai/index.html", "data-centers/index.html", "energy/index.html"}  # the pages scripts/build_briefing.py copies plates from (its PAGES)
+
+
+def collar_html(plate, page, receipts, svg):
+    """The plate's foot: its sources line and the link to its section of the page's Sources page, whose address prints on paper; then what leaves the page."""
     folder = posixpath.dirname(page)
     url = f"{vp.OWN_ORIGIN}{f'{folder}/' if folder else ''}sources/#{plate}"
-    return (f'<p class="caption plate-source-line">{escape(tally_words(receipts))}</p>'
-            f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{escape(url)}">All sources for this plate</a></p>')
+    out = ['<button type="button" data-print-plate>Print this plate</button>', '<button type="button" data-csv>Download CSV</button>',
+           f'<button type="button" data-svg{"" if svg else " hidden"}>Download SVG</button>']
+    if page in BRIEFING_PAGES:  # plate.js drops it on the Briefing itself
+        out.append(f'<a href="../briefing/#add={plate}" data-add-briefing>Add to a briefing</a>')
+    return (f'<div class="plate-collar"><div class="plate-collar-sources"><p class="caption plate-source-line">{escape(tally_words(receipts))}</p>'
+            f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{escape(url)}">All sources for this plate</a></p></div>'
+            f'<div class="plate-out" data-js>{"".join(out)}</div></div>')
 
 
 def measure_of(claim):
@@ -1456,10 +1603,17 @@ def figure_of(claim):
 OPEN_ROWS = 8  # a source with more claims than this folds them into a disclosure; theme.js opens it for a link to one of them
 
 
+def said(label, text):
+    """A receipt's boundary or arithmetic, folded behind its name (DIRECTION-R2 3.14): the wall of shared wording reads as one line, and opens in place.
+    Print opens every disclosure, so paper keeps the words."""
+    return f'<details class="source-detail"><summary>{label}</summary><p class="caption">{escape(text)}</p></details>'
+
+
 def documents_html(prefix, receipts, claims, anchored):
     """Receipts on a Sources page, one entry per source document. What every claim from a document shares is said once, and each claim is a row under it;
     rows that share a boundary and a status stand under one line that states them. Each receipt keeps the id {prefix}-source-{claim}, and the first entry on
-    the page for a claim also takes src-{claim}: anchored holds the claims already taken."""
+    the page for a claim also takes src-{claim}: anchored holds the claims already taken. Each receipt carries data-status (verified or partly), so the
+    page's Show filter can keep the partly verified ones (sources.css)."""
     def anchor(claim_id):
         if claim_id in anchored:
             return ""
@@ -1478,36 +1632,38 @@ def documents_html(prefix, receipts, claims, anchored):
         dated += f" {EVIDENCE_LABEL[first['kind']]}." if first.get("kind") in EVIDENCE_LABEL else ""  # one document, one kind: an agency figure, a filing, a preprint
         if len(ids) == 1:
             claim_id = ids[0]
-            derived = f'<p class="caption">Arithmetic: {escape(first["derived"])}</p>' if first.get("derived") else ""
+            derived = said("Arithmetic", first["derived"]) if first.get("derived") else ""
             items.append(
-                f'<li id="{prefix}-source-{escape(claim_id)}"><p class="plate-source-title"{anchor(claim_id)}><a href="{escape(url)}">{verbatim(title)}</a></p>'
+                f'<li id="{prefix}-source-{escape(claim_id)}" data-status="{first["status"]}"><p class="plate-source-title"{anchor(claim_id)}><a href="{escape(url)}">{verbatim(title)}</a></p>'
                 f'<p class="caption">{verbatim(publisher)}, published {escape(published)}.{dated}</p>'
-                f'<p class="caption">Boundary: {escape(first["boundary"])}</p><blockquote class="plate-quote">{verbatim(first["quote"])}</blockquote>'
-                f'<p class="caption">{escape(check_words(first))} Claim {escape(claim_id)}.</p>{derived}</li>')
+                f'<blockquote class="plate-quote">{verbatim(first["quote"])}</blockquote>'
+                f'<p class="caption">{escape(check_words(first))} Claim {escape(claim_id)}.</p>{said("Boundary", first["boundary"])}{derived}</li>')
             continue
         lines = [f'<p class="plate-source-title"><a href="{escape(url)}">{verbatim(title)}</a></p>', f'<p class="caption">{verbatim(publisher)}, published {escape(published)}.{dated}</p>']
-        if same["boundary"]:
-            lines.append(f'<p class="caption">Boundary: {escape(first["boundary"])}</p>')
         if same["quote"]:
             lines.append(f'<blockquote class="plate-quote">{verbatim(first["quote"])}</blockquote>')
         if same["check"]:
             lines.append(f'<p class="caption">{escape(check_words(first))}</p>')
+        if same["boundary"]:
+            lines.append(said("Boundary", first["boundary"]))
         if same["derived"] and first.get("derived"):
-            lines.append(f'<p class="caption">Arithmetic: {escape(first["derived"])}</p>')
+            lines.append(said("Arithmetic", first["derived"]))
         extra = [(label, field) for label, field in (("Value year", "year"), ("Quote", "quote"), ("Arithmetic", "derived")) if not same[field] and any(r.get(field) for r in rs)]
         runs = {}
         for claim_id, r in zip(ids, rs):
             runs.setdefault((None if same["boundary"] else r["boundary"], None if same["check"] else check_words(r)), []).append(claim_id)
         bodies = []
         for (boundary, check), members in runs.items():
-            said = " ".join(t for t in (f"Boundary: {boundary}" if boundary else "", check or "") if t)
-            rows = [f'<tr class="source-run"><th scope="rowgroup" colspan="{3 + len(extra)}">{escape(said)}</th></tr>'] if said else []
+            words = " ".join(t for t in (f"Boundary: {boundary}" if boundary else "", check or "") if t)
+            rows = [f'<tr class="source-run"><th scope="rowgroup" colspan="{3 + len(extra)}">{escape(words)}</th></tr>'] if words else []
             for claim_id in members:
                 r, claim = receipts[claim_id], claims[claim_id]
                 cells = "".join(f'<td>{verbatim(r.get(field) or "") if field == "quote" else escape(str(r.get(field) or ""))}</td>' for _, field in extra)
-                rows.append(f'<tr id="{prefix}-source-{escape(claim_id)}"><th scope="row"{anchor(claim_id)}>{escape(claim_id)}</th>'
+                rows.append(f'<tr id="{prefix}-source-{escape(claim_id)}" data-status="{r["status"]}"><th scope="row"{anchor(claim_id)}>{escape(claim_id)}</th>'
                             f'<td>{escape(measure_of(claim))}</td><td>{escape(figure_of(claim))}</td>{cells}</tr>')
-            bodies.append(f'<tbody>{"".join(rows)}</tbody>')
+            statuses = {receipts[c]["status"] for c in members}
+            status = f' data-status="{next(iter(statuses))}"' if len(statuses) == 1 else ""
+            bodies.append(f'<tbody{status}>{"".join(rows)}</tbody>')
         head = "".join(f'<th scope="col">{label}</th>' for label in ("Claim", "Measure", "Figure", *(label for label, _ in extra)))
         table = (f'<div class="table-scroll" tabindex="0" role="group" aria-label="Claims from {verbatim(title)}"><table class="data-table source-claims">'
                  f'<thead><tr>{head}</tr></thead>{"".join(bodies)}</table></div>')
@@ -1517,9 +1673,66 @@ def documents_html(prefix, receipts, claims, anchored):
     return f'<ol class="plate-sources">{"".join(items)}</ol>'
 
 
-def sources_region(page, summaries, claims, files):
+def census_html(receipts):
+    """A Sources page's census (DIRECTION-R2 3.14): the distinct claims behind its plates and its text, their documents and publishers in a line, and the
+    verified and partly verified split as one bar, each part labeled at its own end with its status square, word and count; the hub counts each page's row
+    the same way. The bar is for the eye; the words under it hold every number."""
+    partly = sum(r["status"] == "partly" for r in receipts.values())
+    parts = [(k, n, word) for k, n, word in (("v", len(receipts) - partly, "verified"), ("p", partly, "partly verified")) if n]
+    docs, publishers = len({doc_key(r) for r in receipts.values()}), len({r["publisher"] for r in receipts.values()})
+    bar = "".join('<span class="census-%s" style="flex-grow:%d"></span>' % (k, n) for k, n, _ in parts)
+    key = "".join('<span><span class="st st-%s"></span> <b>%s</b> %s</span>' % (k, f"{n:,}", word) for k, n, word in parts)
+    return (f'<div class="census"><p class="census-line">{plural(len(receipts), "claim")} behind this page\'s figures, from {plural(docs, "document")} and '
+            f'{plural(publishers, "publisher")}.</p><div class="census-bar" aria-hidden="true">{bar}</div><p class="census-key">{key}</p></div>')
+
+
+TAB_LINK = re.compile(r'<a\b(?P<attrs>[^>]*)\bhref="#(?P<id>[\w-]+)"[^>]*>(?P<inner>.*?)</a>', re.S)
+PAGE_NAV = re.compile(r'<nav class="(?:section-strip|toc)\b.*?</nav>', re.S)
+
+
+def plate_groups(text, plates):
+    """Each plate's tab, or its section on a page with a section rail, in the page's order: a plate belongs to the last panel its page's strip or rail names
+    that opens before it. A page with neither, or a plate before every panel, gives an unnamed group. Returns {label: [plate, ...]}."""
+    opens = []
+    for nav in PAGE_NAV.finditer(text or ""):
+        for link in TAB_LINK.finditer(nav[0]):
+            name = re.search(r'<span class="tab-name">(.*?)</span>', link["inner"], re.S)
+            label = " ".join(unescape(re.sub(r"<[^>]+>", "", name[1] if name else link["inner"])).split())
+            at = text.find(f'id="{link["id"]}"')
+            if "data-not-tab" not in link["attrs"] and label and at >= 0:
+                opens.append((at, label))
+    groups = {}
+    for plate in plates:
+        at = (text or "").find(f"<!-- plate:{plate} -->")
+        groups.setdefault(next((label for start, label in sorted(opens, reverse=True) if start < at), ""), []).append(plate)
+    return groups
+
+
+def az_key(title):
+    return re.sub(r"^(?:the|a|an)\s+", "", " ".join(unescape(str(title)).split()).casefold())
+
+
+def documents_az(summaries):
+    """Every document the page's plates cite, A to Z by title, once each, with a link to its first figure on each plate that uses it."""
+    docs = {}
+    for s in summaries:
+        for claim_id, r in s["receipts"].items():
+            uses = docs.setdefault(doc_key(r), {"r": r, "plates": {}})["plates"]
+            uses.setdefault(s["id"], (s.get("eyebrow") or s["title"], claim_id))
+    rows = []
+    for d in sorted(docs.values(), key=lambda d: (az_key(d["r"]["title"]), d["r"]["url"])):
+        r = d["r"]
+        used = ", ".join(f'<a href="#{plate}-source-{escape(claim_id)}">{escape(name)}</a>' for plate, (name, claim_id) in d["plates"].items())
+        rows.append(f'<li><p class="plate-source-title"><a href="{escape(r["url"])}">{verbatim(r["title"])}</a></p>'
+                    f'<p class="caption">{verbatim(r["publisher"])}, published {escape(r["published"])}. On {used}.</p></li>')
+    return (f'<section class="sources-az" id="documents-az" aria-labelledby="documents-az-title"><h2 id="documents-az-title">Documents A to Z</h2>'
+            f'<p class="caption">{plural(len(rows), "document")} behind the plates, each with a link to where it is used.</p><ol class="az-list">{"".join(rows)}</ol></section>')
+
+
+def sources_region(page, summaries, claims, files, text=""):
     """A page's plates on its Sources page, in the page's order: one line for them all, then a section per plate with its line, a way back to it, its files,
-    and its receipts by document. Returns (the jump list's items, the sections)."""
+    and its receipts by document. text is the page itself, whose strip or rail names the tabs the rail groups plates by. Returns (the census, the rail's
+    plates by tab, the sections, the documents A to Z)."""
     here = posixpath.join(posixpath.dirname(page), "sources")
     back = posixpath.relpath(page, here).removesuffix("index.html")
     to = lambda rel: posixpath.relpath(rel, here)  # noqa: E731
@@ -1534,10 +1747,17 @@ def sources_region(page, summaries, claims, files):
             f'<p class="caption">{escape(tally_words(receipts))} <a href="{back}#{plate}">Open the plate</a>. Data: <a href="{to(f"data/plates/{plate}.json")}">{plate}.json</a>'
             f'{f", with its claims in {claim_files}" if claim_files else ""}.</p>{documents_html(plate, receipts, claims, anchored)}</section>')
     every = {c: r for s in summaries for c, r in s["receipts"].items()}
-    toc = "\n".join(f'<li><a href="#{s["id"]}">{escape(s.get("eyebrow") or s["title"])}</a></li>' for s in summaries)
+    by_id = {s["id"]: s for s in summaries}
+    rail = []
+    for label, plates in plate_groups(text, [s["id"] for s in summaries]).items():
+        items = "".join(f'<li><a href="#{p}">{escape(by_id[p].get("eyebrow") or by_id[p]["title"])}</a></li>' for p in plates)
+        head = f'<p class="rail-group">{escape(label)}</p>' if label else ""
+        rail.append(f'{head}<ul class="rail-list">{items}</ul>')
     body = (f'<section class="sources-plates" id="plates" aria-labelledby="plates-title"><h2 id="plates-title">Sources by Plate</h2>'
             f'<p class="caption">{plural(len(summaries), "plate")}; {escape(tally_words(every))}</p>\n' + "\n".join(sections) + "\n</section>")
-    return toc, body
+    marked = {c: {"status": claims[c]["status"], "url": claims[c]["source"]["url"], "title": claims[c]["source"]["title"], "publisher": claims[c]["source"]["publisher"],
+                  "published": us_date(claims[c]["source"].get("published"))} for c in cited(text or "", claims) if c in claims and c not in every}
+    return census_html({**every, **marked}), "\n".join(rail), body, documents_az(summaries)
 
 
 def facts_html(rows, data, key):
@@ -1770,7 +1990,7 @@ def plate_block(defn, claims, models=None):
     })
     alt = {**data, "alt": f"{title} The table holds every value.", "stops_now": {c["name"]: control_default(c) for c in defn.get("controls") or []}}
     now_full = [r for r in rows if not r.get("when") or r["when"] == stop]
-    if kind in RULER_KINDS:
+    if kind in RULER_KINDS or kind == "meter":
         plot_html = ladder_html(alt, now_full)
     elif kind == "lines":
         plot_html = lines_svg(alt, now_full)
@@ -1793,35 +2013,44 @@ def plate_block(defn, claims, models=None):
     reading += f" {tail}" if tail else ""
     log_note = '<p class="caption">Each mark is ten times the last.</p>' if plot.get("scale") == "log" and kind in RULER_KINDS else ""
     eyebrow = f'<p class="eyebrow">{escape(own_text(plate, "eyebrow", defn["eyebrow"]))}</p>' if defn.get("eyebrow") else ""
-    views = "".join(f'<label><input type="radio" name="{plate}-view" value="{v.lower()}"{" checked" if v == "Reading" else ""}><span>{v}</span></label>' for v in ("Reading", "Sources", "Table"))
-    chips = "".join(
-        f'<button type="button" class="receipt{" is-hollow" if r.get("hollow") else ""}" data-claim="{escape(claim_id)}" aria-expanded="false" aria-controls="{plate}-receipt">'
-        f'<span class="receipt-mark"></span><span>{verbatim(r["short"])}</span></button>' for claim_id, r in receipts.items())
+    variant = defn.get("variant")
+    if variant is not None and variant not in VARIANTS:
+        raise BuildError(f"plate {plate}: variant must be one of {sorted(VARIANTS)}; leave it out and plate.js reads it from where the plate sits")
+    # A title and an answer that follow the settings: their templates pass the figure rule, and the build writes the answer at the defaults.
+    keys_now = {r["key"]: r for r in reversed(now_full)}  # the first row of each key at the default stop
+    formula_ids = {s["id"] for s in defn["rows"] if s.get("formula") is not None and s.get("id")}
+    templates = {field: check_state_template(ctx, field, defn[field], set(keys_now), set(fields_spec), formula_ids) for field in ("title_template", "answer") if defn.get(field)}
+    answer = tidy(fill(plate, "answer", templates["answer"], state_context(fields_of(head), env_words, by_key, keys_now))) if "answer" in templates else None
     frac = head.get("frac")
     spot = f' style="--at:{frac}"' if frac is not None else ""
-    needs_needle = kind == "ladder" and frac is not None or kind in LINE_KINDS and plot.get("select") != "point"
-    # The Sources page holds each receipt in full; the plate's scripts build a receipt's short card from these, so every limit and the link travel with it.
-    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit"), "url": r["url"]}) for claim_id, r in receipts.items()}
+    needs_needle = kind in ("ladder", "meter") and frac is not None or kind in LINE_KINDS and plot.get("select") != "point"
+    # The Sources page holds each receipt in full; the plate's scripts build the evidence line and a receipt's short card from these, so every limit and the link travel with it.
+    light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit"), "url": r["url"], "published": r.get("published"), "year": r.get("year")})
+                      for claim_id, r in receipts.items()}
+    views = ('<div class="plate-bar" data-js><div class="plate-views" role="group" aria-label="View">'
+             '<button type="button" data-view="chart" aria-pressed="true">Chart</button><button type="button" data-view="table" aria-pressed="false">Table</button></div></div>')
+    variant_attr = f' data-variant="{variant}"' if variant else ""
     block = "\n".join([
-        f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}" id="{plate}" data-plate="{plate}" data-kind="{kind}" aria-labelledby="{plate}-title">',
+        f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}" id="{plate}" data-plate="{plate}" data-kind="{kind}"{variant_attr} aria-labelledby="{plate}-title">',
         f'<div class="plate-claim">{eyebrow}<h3 class="plate-title" id="{plate}-title">{escape(title)}</h3>'
         f'{subtitle}{log_note}{paragraphs}{controls_html(defn)}{legend_html({**data, "plot": plot})}{foot}</div>',
+        views,
         f'<div class="plate-plot{"" if needs_needle else " no-needle"}"{spot}>{plot_html}</div>',
         '<div class="plate-detail">',
-        f'<fieldset class="segmented plate-views" data-js hidden><legend class="sr-only">Detail view</legend>{views}</fieldset>',
-        f'<div class="plate-view" data-view="reading">{readout_html({**head, "text": checked["diff"], "unit": checked["diff_unit"]} if "diff" in checked else head)}<p class="reading">{escape(reading)}</p>'
+        f'{readout_html({**head, "text": checked["diff"], "unit": checked["diff_unit"]} if "diff" in checked else head)}<p class="reading">{escape(reading)}</p>'
         f'<div class="plate-facts">{facts_html(focus, data, default)}</div>'
-        '<div class="plate-actions" data-js hidden><button type="button" class="button button-secondary" data-copy>Copy Reading</button>'
-        '<button type="button" class="button button-secondary" data-reset>Reset</button><p class="caption plate-status" role="status"></p></div>'
-        f'<div class="plate-chips" data-js hidden>{chips}</div><div class="plate-receipt" id="{plate}-receipt" hidden></div>{setting_line(defn)}</div>',
-        f'<div class="plate-view" data-view="sources"><p class="label">Sources</p>{stub_html(plate, str(defn.get("page") or ""), receipts)}</div>',
-        f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_html(defn, data)}</div>',
-        '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>',
+        f'<div class="plate-evidence" data-js></div><div class="plate-receipt" id="{plate}-receipt" hidden></div>'
+        '<div class="plate-actions" data-js><button type="button" class="button button-secondary" data-copy>Copy reading</button>'
+        '<button type="button" class="button button-secondary" data-reset hidden>Back to the starting point</button><p class="caption plate-status" role="status"></p></div>'
+        f'{setting_line(defn)}',
         '</div>',
+        f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_html(defn, data, re.split(r"(?<=[.]) ", reading)[0])}</div>',
+        collar_html(plate, str(defn.get("page") or ""), receipts, kind in LINE_KINDS),
+        '<output class="sr-only" aria-live="polite" aria-atomic="true"></output>',
         '</figure>',
-        f'<script type="application/json" id="plate-data-{plate}">{inline_json({**data, "receipts": light_receipts})}</script>',
+        f'<script type="application/json" id="plate-data-{plate}">{inline_json({**data, "receipts": light_receipts, **templates})}</script>',
     ])
-    return block, {"id": plate, "reading": reading, "readout": head["text"] or "", "unit": head["unit"], "frac": frac, "title": title,
+    return block, {"id": plate, "reading": reading, "readout": head["text"] or "", "unit": head["unit"], "frac": frac, "title": title, "answer": answer,
                    "eyebrow": own_text(plate, "eyebrow", defn["eyebrow"]) if defn.get("eyebrow") else None, "receipts": receipts}
 
 
@@ -1882,6 +2111,26 @@ def pour_figures(page, rel, claims):
     return filled
 
 
+# The address's reserved names, and the filters the plate pages keep there (energy-potential.js FILTERS, energy-funding.js CATALOG).
+RESERVED_NAMES = {"ask", "tribe", "m", "preset", "add", "q", "state", "type", "stage", "check", "has", "cooling", "status", "agenda"}  # agenda: the chosen face (plate.js initAgenda)
+ANSWER = re.compile(r'<(?P<tag>[a-z][a-z0-9]*)(?P<attrs>[^<>]*\sdata-answer="(?P<id>[^"]+)"[^<>]*)>(?P<inner>[^<]*)</(?P=tag)>')
+
+
+def pour_answers(page, rel, summary_of):
+    """Fills each element with data-answer="PLATE" with that plate's answer at its defaults, as plate.js rewrites it on every change. Only words: no markup."""
+    def one(match):
+        summary = summary_of(match["id"])
+        if summary is None:
+            raise BuildError(f"{rel}: data-answer names plate {match['id']}, which has no definition")
+        if not summary.get("answer"):
+            raise BuildError(f"{rel}: data-answer names plate {match['id']}, whose definition has no \"answer\" template")
+        return f'<{match["tag"]}{match["attrs"]}>{escape(summary["answer"])}</{match["tag"]}>'
+    filled = ANSWER.sub(one, page)
+    if filled.count("data-answer=") != len(ANSWER.findall(filled)):
+        raise BuildError(f"{rel}: an element with data-answer holds markup; it holds only the answer's words, which this build writes")
+    return filled
+
+
 def page_name(page):
     return re.sub(r"^(\./)?(site/)?", "", str(page).replace("\\", "/"))
 
@@ -1918,8 +2167,10 @@ def build(site=vp.SITE, page=None):
         target = site / str(defn.get("page"))
         if not target.is_file():
             raise BuildError(f"{rel}: no page at {defn.get('page')}")
-        # One address bar: settings and selections on a page need distinct names.
-        for name in [defn["id"], *(c.get("name") for c in defn.get("controls") or [])]:
+        # One address bar: settings, selections, and views on a page need distinct names, and none may take a name the site reserves (docs/PLATE-KIT.md, the address).
+        for name in [defn["id"], f'{defn["id"]}-view', *(c.get("name") for c in defn.get("controls") or [])]:
+            if name in RESERVED_NAMES or (name.endswith("-view") and name != f'{defn["id"]}-view'):
+                raise BuildError(f"{rel}: the name {name} is reserved for the address; give the control another name")
             if names.setdefault((target, name), defn["id"]) != defn["id"]:
                 raise BuildError(f"{rel}: the name {name} is already used by plate {names[(target, name)]} on that page")
         if target not in pages:
@@ -1938,15 +2189,18 @@ def build(site=vp.SITE, page=None):
         if served.setdefault(shell, rel) != rel:
             raise BuildError(f"{rel} and {served[shell]} would share the Sources page {where}: give each page with plates its own folder")
         order = sorted(stems, key=lambda s: pages[target].index(f"<!-- plate:{s} -->"))
-        toc, body = sources_region(rel, [summaries[s] for s in order], claims, files)
-        text = shell.read_bytes().decode("utf-8")
-        pages[shell] = region(region(text, "sources:toc", toc, f"{where}, the Sources page of {rel},"), "sources:plates", body, f"{where}, the Sources page of {rel},")
+        census, toc, body, docs = sources_region(rel, [summaries[s] for s in order], claims, files, pages[target])
+        text, named = shell.read_bytes().decode("utf-8"), f"{where}, the Sources page of {rel},"
+        for name, block in (("sources:census", census), ("sources:toc", toc), ("sources:plates", body), ("sources:documents", docs)):
+            text = region(text, name, block, named)
+        pages[shell] = text
     extras = [site / only] if only else sorted(site.rglob("*.html"))
     for target in extras:
         text = pages.get(target) or target.read_bytes().decode("utf-8")
-        if "data-pour=" not in text and "<!-- bench:" not in text:
+        if "data-pour=" not in text and "<!-- bench:" not in text and "data-answer=" not in text:
             continue
         rel = target.relative_to(site).as_posix()
+        text = pour_answers(text, rel, lambda stem: summaries.get(stem) or (plate_block(definitions[stem], claims, models)[1] if stem in definitions else None))
         for match in list(BENCH.finditer(text)):
             stem = match["id"]
             if stem not in definitions:
@@ -2000,7 +2254,8 @@ def sample_site(root, plate=None, claims=None):
 def sources_shell(path):
     """The least a Sources page holds: the markers this build fills. A real one copies site/ai/sources/index.html."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("<main><nav><ul>\n<!-- sources:toc -->\n<!-- /sources:toc -->\n</ul></nav>\n<!-- sources:plates -->\n<!-- /sources:plates -->\n</main>\n", encoding="utf-8", newline="\n")
+    path.write_text("<main><header>\n<!-- sources:census -->\n<!-- /sources:census -->\n</header><nav>\n<!-- sources:toc -->\n<!-- /sources:toc -->\n</nav>\n"
+                    "<!-- sources:plates -->\n<!-- /sources:plates -->\n<!-- sources:documents -->\n<!-- /sources:documents -->\n</main>\n", encoding="utf-8", newline="\n")
 
 
 def self_test():

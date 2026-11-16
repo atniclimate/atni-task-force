@@ -126,7 +126,7 @@ def test_the_sources_page_holds_the_list_grouped_by_source(tmp_path):
     listed, problems = cr.pour_list(shell, page(mark("fp-141", "3.1 Wh"), mark("fp-200", "45%"), mark("fp-217", "3"), mark("fp-218", "4")), claims)
     assert problems == [] and listed.index("<!-- /claims-cited -->") < listed.index("</main>")
     section = parse(listed).one("section", "claims-cited")
-    assert section.one("h2").text() == "Claims Cited in the Text" and section.one("p", "caption").one("a", href="../"), "it names the page it lists, one folder up"
+    assert section.one("h2").text() == "Figures in the Text" and section.one("p", "caption").one("a", href="../"), "it names the page it lists, one folder up"
     entries = [li for li in section.one("ul", "plate-sources").children if getattr(li, "tag", None) == "li"]
     assert [li.attrs.get("id") for li in entries] == [None, None], "fp-141's receipt is the plate's; fp-200, fp-217, and fp-218 share one source"
     assert [li.attrs.get("id") for li in entries[1].one("ul", "cited-claims").all("li")] == ["src-fp-200", "src-fp-217", "src-fp-218"]
@@ -149,6 +149,36 @@ def test_the_check_reads_a_page_and_its_sources_page_together(tmp_path):
     assert cr.check_page("x/sources/index.html", listed, CLAIMS, site) == []
     assert "holds a claim mark" in cr.check_page("x/sources/index.html", listed.replace("</main>", mark("fp-141", "3.1 Wh") + "</main>"), CLAIMS, site)[0]
     assert cr.check_page("x/sources/index.html", listed, CLAIMS) != [], "without the site, a Sources page is checked as a plain page"
+
+
+def test_a_site_page_carries_the_tips_data_and_links_its_terms():
+    body = page(mark("fp-200", "45%"), '<span class="term" data-term="amw">aMW</span>').replace("<html>", '<html><head><link rel="stylesheet" href="../assets/css/site.css"></head>')
+    out, problems = cr.pour(body, CLAIMS, "sources/")
+    assert problems == []
+    data = json.loads(re.search(r'<script type="application/json" id="cr-data">(.*?)</script>', out).group(1))
+    assert data["claims"]["fp-200"] == {"title": "Title of fp-200", "url": "https://example.org/fp-200", "publisher": "A Publisher", "date": "01/01/2026",
+                                        "status": "partly verified", "limit": "One survey, not a census."}, "a mark's source, date, status, and limit"
+    assert data["terms"]["amw"]["name"] == "aMW" and data["terms"]["amw"]["words"] == cr.GLOSSARY["amw"][1], "and a term's definition"
+    assert 'href="../sources/#term-amw"' in out and '<script defer src="../assets/js/cite.js"></script>' in out, "from the page's own depth"
+    assert out.index("<!-- /cr-data -->") < out.index("</body>")
+    assert cr.pour(out, CLAIMS, "sources/") == (out, []), "and pouring again changes nothing"
+    assert "has no definition" in cr.pour(body.replace('data-term="amw"', 'data-term="nope"'), CLAIMS, "sources/")[1][0]
+    plain = page("no marks").replace("<html>", '<html><head><link rel="stylesheet" href="assets/css/site.css"></head>')
+    assert cr.pour(plain, CLAIMS) == (plain, []), "a page with nothing to tip carries no data and no script"
+
+
+def test_a_copy_keeps_its_own_pages_marks_and_is_never_this_pages():  # data-copy-of, as scripts/build_home.py marks home's faces
+    theirs = ('<div class="face" data-copy-of="ai/#ai-hour"><div><a class="cr" data-claim="fp-141" data-status="verified" href="ai/sources/#src-fp-141" '
+              'aria-label="3.1 Wh, claim fp-141, verified">3.1 Wh</a> <a class="term" data-term="mw" href="sources/#term-mw">MW</a></div></div>')
+    body = page(mark("fp-200", "45%"), theirs).replace("<html>", '<html><head><link rel="stylesheet" href="assets/css/site.css"></head>')
+    out, problems = cr.pour(body, CLAIMS, "sources/")
+    assert problems == [] and theirs in out, "the copy is left as its own page poured it, links and all"
+    assert cr.cited(out, CLAIMS) == ["fp-200"], "so it is never listed or counted as this page's (the hub's row and Figures in the Text)"
+    data = json.loads(re.search(r'<script type="application/json" id="cr-data">(.*?)</script>', out).group(1))
+    assert set(data["claims"]) == {"fp-200", "fp-141"} and set(data["terms"]) == {"mw"}, "but the tip serves its marks too"
+    assert cr.pour(out, CLAIMS, "sources/") == (out, [])
+    assert cr.without_copies(out).count("data-copy-of") == 0 and "fp-200" in cr.without_copies(out)
+    assert "never closes" in cr.pour(body.replace("</div></div>", "</div>"), CLAIMS, "sources/")[1][0], "a copy that never closes is a problem, not a skipped page"
 
 
 def test_a_page_with_no_marks_has_no_block():
@@ -219,7 +249,7 @@ def test_marks_that_hold_the_claims_figures_pass(refuse, claim_id, text):
 @pytest.mark.parametrize("claim_id", ["fp-210", "fp-211", "fp-216"])
 def test_a_word_mark_stands_on_a_claim_with_no_number(refuse, claim_id):  # owner ruling 28: pa-037, pa-038, rs-027
     out, problems = cr.pour(page(mark(claim_id, "the resolution")), CLAIMS)
-    assert problems == [] and f'aria-label="the resolution, claim {claim_id}, verified"' in out and f'<li id="src-{claim_id}">' in out
+    assert problems == [] and f'aria-label="the resolution, claim {claim_id}, verified"' in out and f'<li id="src-{claim_id}" data-status="verified">' in out
 
 
 def test_report_mode_pours_the_page_and_lists_the_mark(monkeypatch):
@@ -227,7 +257,7 @@ def test_report_mode_pours_the_page_and_lists_the_mark(monkeypatch):
     out, problems = cr.pour(page(mark("fp-141", "9.9 Wh"), mark("fp-141", "3.1 Wh"), mark("no-999", "9 Wh")), CLAIMS)
     assert len(problems) == 1 and "no-999" in problems[0], "report mode keeps every other refusal"
     out, problems = cr.pour(page(mark("fp-141", "9.9 Wh"), mark("fp-141", "3.1 Wh")), CLAIMS)
-    assert problems == [] and out.count('data-status="verified"') == 2 and cr.check_page("p.html", out, CLAIMS) == []
+    assert problems == [] and out.count('data-claim="fp-141" data-status="verified"') == 2 and cr.check_page("p.html", out, CLAIMS) == []
     report = cr.figure_report(out, CLAIMS)
     assert len(report) == 1 and report[0].startswith("mark '9.9 Wh' prints 9.9, which")
     monkeypatch.setattr(cr, "REFUSE_FIGURES", True)

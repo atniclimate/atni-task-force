@@ -143,6 +143,19 @@ const groups = {
     eq(document.querySelector('.comp-row[aria-current]').dataset.value, before.dataset.value, 'the right one');
   },
 
+  async backPutsTheFiltersWhereTheAddressSays() { // CW 4: util.js linkFilters hears Back, Forward, or a typed address, and not a followed link
+    const year = document_of(html).querySelector('.comp-row[data-filter="year"]');
+    const { window, status, form } = await load();
+    const field = form.elements.namedItem('year');
+    window.history.replaceState(null, '', `#year=${year.dataset.value}`); // the entry Back returns to
+    fire(window, window, 'hashchange');
+    eq(field.value, year.dataset.value, 'Back sets the filter the address names');
+    eq(figures(status.textContent)[1], printed(year), 'and the list follows it');
+    window.history.replaceState(null, '', window.location.pathname);
+    fire(window, window, 'hashchange');
+    eq(`${field.value}|${figures(status.textContent)[1]}`, `|${TOTAL}`, 'an address without it clears it');
+  },
+
   async aDeepLinkWithFiltersOpensWhatsNew() { // the anchor is the fragment's first part; the filters after it are settings (a11y A2)
     const plain = await load('#whats-new');
     ok(plain.document.getElementById('whats-new').open, '#whats-new opens What\'s New');

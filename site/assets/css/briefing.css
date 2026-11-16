@@ -87,11 +87,7 @@ html:not(.has-js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the li
 /* The plate in a packet is read top to bottom: at this column's width three zones leave the plot too narrow, so claim and plot share a row and the detail runs under them, as .plate-pair does. No least height: a packet of twenty-four plates at a window each is a scroll of a hundred screens. */
 .briefing-packet .plate { margin-bottom: 12px; }
 @media screen and (min-width: 1100px) {
-  .briefing-packet .plate.is-live { --h: 30rem; min-height: 0; }
-  .briefing-packet .plate, .briefing-packet .plate[data-view="table"] { grid-template-columns: minmax(16rem, 28fr) minmax(0, 72fr); }
-  .briefing-packet .plate > .plate-detail, .briefing-packet .plate.has-under > .plate-detail { grid-column: 1 / -1; grid-row: auto; }
-  .briefing-packet .plate.is-live .plate-view { position: static; }
-  .briefing-packet #dc-jobs-per-mw > .plate-detail { grid-row: 2; } /* dc.css lays this plate on one row for its own page */
+  .briefing-packet .plate.is-live { min-height: 0; } /* B1 (R2 kit): a packet's plates are leads, in the kit's variant areas */
 }
 .briefing-packet .plate-claim > .eyebrow { display: none; } /* the section's own line says it, with the page's name */
 /* The two Energy plates come without that page's own script and sheet: the bars the build draws, and the list of deadlines, as a reader without scripts gets them. */

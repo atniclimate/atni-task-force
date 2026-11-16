@@ -91,10 +91,10 @@ function deadlineStrip(figure) {
     const mark = marks.indexOf(event.target);
     const row = rows[mark] || event.target.closest('.strip-row');
     if (!row || event.target.closest('.strip-name')) return;
-    figure.querySelector(`.plate-plot [data-row="${row.dataset.key}"]`).click(); // the selection opens its receipt
+    figure.querySelector(`.plate-plot [data-row="${row.dataset.key}"]`).click(); // the selection's evidence names its receipt
     if (event.target.closest('.strip-claim')) {
       event.preventDefault();
-      figure.querySelector('.plate-views input[value="sources"]').click();
+      figure.querySelector('.plate-evidence .receipt')?.click(); // its card opens in the window
     }
   });
   window.plate.register(id, {

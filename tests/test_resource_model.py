@@ -117,6 +117,20 @@ def test_same_hour_rows_equal_the_comparison_model(world):  # (1)
         assert cat[key]["energy_wh"]["high"] == pytest.approx(target["high"][row]["total"], rel=1e-4)
 
 
+def test_the_hour_at_each_stop_is_same_hour_counted_to_it():  # the hour meter's one source (DIRECTION-R2 section 5); the shipped file, so CI runs it too
+    model = json.loads((ROOT / "site" / "data" / "resource-model.json").read_text(encoding="utf-8"))
+    stops, same = model["computed_defaults"]["same_hour_stops"], model["computed_defaults"]["same_hour"]
+    for row in ("chat", "video", "short"):
+        for stop, field in (("dc", "data_center"), ("adds", "activity_added"), ("whole", "total")):
+            for end, run in (("value", "default"), ("low", "low"), ("high", "high")):
+                assert stops[row][stop][end] == pytest.approx(same[run][row][field], abs=1e-9), (row, stop, end)
+    coding = stops["coding"]
+    whole = {r["key"]: r for r in model["catalog"]}["catalog.coding_hour"]["energy_wh"]
+    assert [coding["whole"][end] for end in ("value", "low", "high")] == pytest.approx([whole[end] for end in ("value", "low", "high")], rel=1e-5), "coding is the model's own row"
+    assert coding["dc"]["value"] == coding["layers"]["data_center"] and coding["whole"]["value"] == pytest.approx(sum(coding["layers"].values()))
+    assert all(s["low"] <= s["value"] <= s["high"] for r in stops.values() for k, s in r.items() if k != "layers"), "each figure sits inside its spread"
+
+
 @need_files
 def test_same_hour_inputs_are_read_not_copied(world):
     assert not set(world["doc"]["same_hour_refs"]) & set(world["doc"]["params"])

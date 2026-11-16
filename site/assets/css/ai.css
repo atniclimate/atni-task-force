@@ -86,19 +86,7 @@
 #ai-occupations .ladder-tick span { top: 24px; }
 /* Its key stands under the ruler, on the line of the tick's name, where the first screen reads it: the foot of thirteen rows is under the fold. It shares the plot's grid cell, over the head the rows leave empty.
    Read as a table is no part of the key: its box gives way (display: contents, a plain div), so the button stays under the plot, after it in reading order, at every width. */
-#ai-occupations.has-under > .plate-under { display: contents; }
-@media screen and (min-width: 1100px) {
-  #ai-occupations.has-under > .plate-under > :not(.plate-to-table) { grid-column: 2; grid-row: 2; z-index: 3; justify-self: start; align-self: start; margin-top: 46px; padding: 0 8px 0 0; background: var(--plot-ground); }
-  #ai-occupations.has-under > .plate-under > .plate-to-table { grid-column: 2; grid-row: 3; justify-self: start; margin-top: 8px; }
-}
-@media screen and (min-width: 1100px) and (max-width: 1319px) { /* two lines in the label column, so it stops short of the tick's name */
-  #ai-occupations.has-under > .plate-under > :not(.plate-to-table) { max-width: calc(var(--l) + 12px); }
-  #ai-occupations .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 64px; }
-}
-@media print, (max-width: 1099px) {
-  #ai-occupations > .plate-claim { order: -2; }
-  #ai-occupations > .plate-under > :not(.plate-to-table) { order: -1; }
-}
+/* B1 (R2 kit): its key stands under the plot in the kit's under area again; P-ai places it anew. */
 
 /* A projected bar is a dashed outline, and its key the same outline on a square. Selected, the dashes turn orange around a 40 percent wash, as the Jobs instrument fills. */
 :is(#ai-occupations, #ai-jobs-sector) .ladder-bar.is-proj { border: 2px dashed var(--series-context); }

@@ -23,6 +23,8 @@
   <meta name="theme-color" content="#010B13">
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/LeagueSpartan-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/NotoSans-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/site.css">
   <link rel="stylesheet" href="../assets/css/pages.css">
@@ -30,22 +32,23 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
+  <header class="site-header" id="top">
     <div class="wrap header-inner">
       <a class="wordmark" href="../" aria-label="ATNI Energy Task Forces, home"><img class="lockup lockup-on-dark" src="../assets/img/atni-energy-header-on-dark.svg" alt=""><img class="lockup lockup-on-light" src="../assets/img/atni-energy-header.svg" alt=""></a>
       <nav class="site-nav" aria-label="Main">
         <ul>
-          <li><a href="../energy/">Energy</a></li>
+          <li><a href="../energy/">Tribal Energy</a></li>
           <li><a href="../data-centers/">Data Centers</a></li>
           <li><a href="../ai/">AI</a></li>
-          <li><a href="../explorer/">Explorer</a></li>
+          <li class="nav-group"><a href="../explorer/">Explorer</a></li>
           <li><a href="../briefing/">Briefing</a></li>
-          <li><a href="../summit/" aria-current="page">Summit</a></li>
+          <li class="nav-group"><a href="../summit/" aria-current="page">Summit</a></li>
           <li><a href="../library/">Library</a></li>
           <li><a href="../about/">About</a></li>
+          <li class="nav-group"><a href="../sources/">Sources</a></li>
         </ul>
       </nav>
-      <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
+      <button class="theme-toggle" type="button" data-theme-toggle data-js aria-pressed="false">Use light theme</button>
     </div>
   </header>
 
@@ -154,29 +157,29 @@
 
   <footer class="site-footer">
     <div class="wrap footer-inner">
-      <div>
+      <div class="footer-about">
         <p class="footer-title">ATNI Energy Task Forces</p>
         <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
+      <nav class="footer-nav" aria-label="Every page">
         <ul>
           <li><a href="../">Home</a></li>
-          <li><a href="../energy/">Energy Feasibility</a></li>
-          <li><a href="../energy/potential/">What Tribal Plans Say</a></li>
-          <li><a href="../energy/funding/">Energy Funding</a></li>
-          <li><a href="../data-centers/">Data Centers</a></li>
-          <li><a href="../ai/">Artificial Intelligence</a></li>
-          <li><a href="../briefing/">Council Briefing</a></li>
-          <li><a href="../summit/">Summit</a></li>
+          <li><a href="../energy/">Tribal Energy</a><ul><li><a href="../energy/potential/">What Tribal Plans Say</a></li><li><a href="../energy/funding/">Funding</a></li></ul></li>
+          <li><a href="../data-centers/">Data Centers</a><ul><li><a href="../data-centers/resource-use/">Energy and Water Use</a></li></ul></li>
+          <li><a href="../ai/">AI</a></li>
+          <li><a href="../explorer/">Explorer</a></li>
+          <li><a href="../briefing/">Briefing</a></li>
+          <li><a href="../summit/" aria-current="page">Summit</a></li>
           <li><a href="../library/">Library</a></li>
-          <li><a href="../sources/">Sources</a></li>
           <li><a href="../about/">About</a></li>
+          <li><a href="../sources/">Sources</a></li>
         </ul>
       </nav>
-      <div>
-        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+      <div class="footer-meta">
         <p>This site publishes public (T0) material only and sets no cookies. <a href="../about/#data-governance">How this site handles data</a>.</p>
-        <p>Updated 11/15/2026.</p>
+        <p class="footer-updated">Updated 11/16/2026.</p>
+        <p><a class="footer-top" href="#top">Top</a></p>
       </div>
     </div>
   </footer>

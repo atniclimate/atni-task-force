@@ -5,6 +5,7 @@
   "scripts": {
     "site/assets/js/ai.js": 25600,
     "site/assets/js/briefing.js": 10000,
+    "site/assets/js/cite.js": 4500,
     "site/assets/js/data-centers.js": 19300,
     "site/assets/js/energy-funding.js": 19100,
     "site/assets/js/energy-potential.js": 14800,
@@ -12,41 +13,56 @@
     "site/assets/js/explorer.js": 62900,
     "site/assets/js/library.js": 12600,
     "site/assets/js/plate-svg.js": 10000,
-    "site/assets/js/plate.js": 82800,
+    "site/assets/js/plate.js": 104500,
     "site/assets/js/policy-watch.js": 4300,
     "site/assets/js/resource-model.js": 80000,
-    "site/assets/js/theme.js": 2200,
-    "site/assets/js/util.js": 6500
+    "site/assets/js/sheet.js": 5500,
+    "site/assets/js/theme.js": 5800,
+    "site/assets/js/util.js": 6900
   },
   "pages_gzip_kb": {
     "default": 33,
-    "site/ai/index.html": 154,
-    "site/briefing/index.html": 345,
-    "site/data-centers/index.html": 210,
-    "site/data-centers/resource-use/index.html": 62,
+    "site/ai/index.html": 118,
+    "site/briefing/index.html": 236,
+    "site/data-centers/index.html": 154,
+    "site/data-centers/resource-use/index.html": 54,
     "site/explorer/index.html": 156,
-    "site/ai/sources/index.html": 64,
+    "site/ai/sources/index.html": 75,
     "site/data-centers/sources/index.html": 97,
-    "site/explorer/sources/index.html": 71
+    "site/explorer/sources/index.html": 71,
+    "site/index.html": 12,
+    "site/energy/index.html": 22,
+    "site/energy/funding/index.html": 10,
+    "site/energy/potential/index.html": 10,
+    "site/library/index.html": 8
   },
   "files_kb": {
-    "site/briefing/atni-energy-briefing.pdf": 3072
+    "site/briefing/atni-energy-briefing.pdf": 3072,
+    "site/assets/img/relief/*.webp": 120
   },
-  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included; files_kb are other published files in KB of 1024 bytes, read by scripts/build_briefing_pdf.py. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
+  "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included; files_kb are other published files in KB of 1024 bytes, read by scripts/build_briefing_pdf.py, tests/test_plates.py, and scripts/page_check.js, and a name with one * in its last part is a line for each file it matches. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
   "reasons": {
     "site/data-centers/sources/index.html": "11/15/2026: ruling 39 moved every plate's receipts here, 704 of them, 528 the Climate plate's from one NASA dataset, grouped by document; about 10 percent over its 88.2 KB gzipped, which the main page shed.",
-    "site/ai/sources/index.html": "11/15/2026: ruling 39 moved the twelve plates' 232 receipts and the 42 claims the text cites here; about 10 percent over its 58.4 KB gzipped.",
+    "site/ai/sources/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent: the Sources page's brief, census, rail, and Documents A to Z, at 68.1 KB gzipped.",
     "site/explorer/sources/index.html": "11/15/2026: ruling 39 moved All Sources here, 260 receipts with their quotes and arithmetic; about 10 percent over its 64.2 KB gzipped.",
     "site/briefing/atni-energy-briefing.pdf": "11/05/2026: about 3 MB is the line set for the Briefing's PDF; its default packet weighed 0.7 MB, and every plate and checklist at its defaults weighed 3.1 MB, which is why the default is the lead set.",
-    "site/assets/js/plate.js": "11/06/2026: N10 added settings in the address's fragment and landing on them, the find-in-page reveal, each plot's description and Read as a table, the starting point, needle figures, and table bars, from 63.4 KB to 75.2 KB; about 10 percent over, since the kit is one file by design.",
-    "site/assets/js/util.js": "11/06/2026: settings in the address's fragment (ruling 29), from 4.9 KB to 5.9 KB; about 10 percent over.",
+    "site/assets/js/plate.js": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent: R2 added the variants, Chart and Table, the evidence line and card, the collar, titles and answers that follow the state, fixed axes, the meter, lazy start, and the agenda, at 95.0 KB.",
+    "site/assets/js/util.js": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent: linkFilters hears Back and Forward (CW 4), at 6.2 KB.",
     "site/assets/js/library.js": "11/06/2026: over its 11,100 line before N10 at 11,380 bytes, and the fix round's anchor reading made it 11,430; the owner's N9 item 16 takes the default raise, about 10 percent over.",
-    "site/data-centers/resource-use/index.html": "11/06/2026: never named, so it ran under the 33 KB default; four plates with their inline data, Sources and Table views, and 127 receipts in Claims Cited; about 10 percent over its 56.5 KB gzipped.",
-    "site/briefing/index.html": "11/05/2026: it copies every council plate whole, now with the two Data Centers plates of the Land and Climate tabs; about 10 percent over its 313 KB gzipped.",
+    "site/data-centers/resource-use/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 127 claims its text marks: 48.4 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/briefing/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 1 claims its text marks: 214.5 KB gzipped. A lane that builds more into the page raises this with its reason.",
     "site/assets/js/explorer.js": "11/06/2026: N10 added settings in the address's fragment (ruling 29), the spoken Reading, and the starting point on every Wall (ruling 31), from 49.9 KB to 57.2 KB; about 10 percent over.",
     "site/assets/js/resource-model.js": "11/05/2026: the same v2 model, which the Python oracle checks case by case; about 10 percent over its 73.1 KB.",
     "site/explorer/index.html": "11/06/2026: N10's described plots, Read as a table, starting points, and table bars, drawn into the static page too, from 136.0 KB; about 10 percent over its 141.9 KB gzipped.",
     "site/assets/js/data-centers.js": "11/05/2026: the county climate plate places four measures with their own rulers and filters counties by state, and the land plate lights the map; about 10 percent over its 17.5 KB.",
-    "site/data-centers/index.html": "11/05/2026: the Land tab (plate, county map, every record by state with its claim marks) and the Climate tab (44 counties, four measures, two scenarios: 528 claims, each a receipt in Sources); about 10 percent over its 188.6 KB gzipped. Trimming each receipt cut 0.4 MB raw but little gzipped, since the rest is unique figures."
+    "site/data-centers/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 132 claims its text marks: 140.0 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/assets/js/theme.js": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent: the address every script reads (window.siteAddress), Back and Forward told apart from a followed link, and the toggle's aria-pressed, at 5.2 KB.",
+    "site/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 3 claims its text marks: 10.4 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/ai/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 42 claims its text marks: 106.9 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/energy/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 14 claims its text marks: 19.2 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/energy/funding/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 4 claims its text marks: 8.9 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/energy/potential/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 3 claims its text marks: 8.7 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/library/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent, with #cr-data, the prose tip's record of the 27 claims its text marks: 7.1 KB gzipped. A lane that builds more into the page raises this with its reason.",
+    "site/assets/img/relief/*.webp": "11/16/2026: DIRECTION-R2 sections 2.7 and 6, each baked relief image (dark and paper-light, 1x and 2x) at most 120 KB; the comp's four weighed 51 to 116 KB."
   }
 }

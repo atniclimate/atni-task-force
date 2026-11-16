@@ -366,7 +366,7 @@ def test_a_definition_must_be_t0_and_named_for_its_file(tmp_path):
 
 
 def test_every_class_the_kit_writes_has_a_rule():
-    css = re.sub(r"/\*.*?\*/", " ", (SITE / "assets" / "css" / "site.css").read_text(encoding="utf-8"), flags=re.S)
+    css = re.sub(r"/\*.*?\*/", " ", "".join((SITE / "assets" / "css" / name).read_text(encoding="utf-8") for name in ("site.css", "sources.css")), flags=re.S)  # the Sources pages' look is sources.css
     defined = set(re.findall(r"\.([a-zA-Z][\w-]*)", css))
     source = (SCRIPTS / "build_plates.py").read_text(encoding="utf-8") + (SITE / "assets" / "js" / "plate.js").read_text(encoding="utf-8") + (SITE / "assets" / "js" / "plate-svg.js").read_text(encoding="utf-8")
     used = set()
@@ -803,9 +803,9 @@ def test_a_pair_is_a_ghost_at_a_stop_it_names_no_claim_for(tmp_path):
 def test_a_table_can_give_one_line_per_pair(tmp_path):
     page, data, _ = built(tmp_path, *checked_plate())
     cells = [[cell.text() for cell in row.children if isinstance(cell, Node)] for row in parse(page).one("tbody").all("tr")]
-    assert len(cells) == 5 and cells[0] == ["A", "110.5 TWh", "100.25 TWh", "-10.25 TWh", "10.22 percent", "p-23, r-23"]
-    assert cells[3] == ["C", "2.6 (1.2 to 3.1) percent per year", "0.2 percent per year", "-2.4 points", "not computed", "g-p, g-o"]
-    assert cells[4][-1] == "m-p, m-r, m-d, m-e", "every claim behind the line"
+    assert len(cells) == 5 and cells[0] == ["A", "110.5 TWh", "100.25 TWh", "-10.25 TWh", "10.22 percent", "p-23 verified, r-23 verified"]
+    assert cells[3] == ["C", "2.6 (1.2 to 3.1) percent per year", "0.2 percent per year", "-2.4 points", "not computed", "g-p verified, g-o verified"]
+    assert cells[4][-1] == "m-p verified, m-r partly verified, m-d partly verified, m-e partly verified", "every claim behind the line, with its status"
     assert len(data["rows"]) == 10, "the data block keeps both members"
 
 
@@ -933,7 +933,7 @@ def test_custom_table_columns(tmp_path):
     assert data["fields"] == {"times": ["value / unit_wh", 2]} and data["rows"][0]["fields"] == {"times": "4"}
     assert data["rows"][0]["reading"] == "A: 12 Wh, or 4 times." and data["rows"][0]["t"] == "A: 12 Wh, or {times} times."
     doc = parse(page)
-    assert doc.one(cls="plate-table").texts("td") == ["12", "4", "GPU only", "s-1"] and doc.one("td", data_cell="a||times").text() == "4"
+    assert doc.one(cls="plate-table").texts("td") == ["12", "4", "GPU only", "s-1 verified"] and doc.one("td", data_cell="a||times").text() == "4"
 
 
 # Page build, bench rows, poured figures --------------------------------------------------------------
@@ -961,10 +961,10 @@ def test_page_builds_one_page(tmp_path, name):
 def test_a_plate_keeps_a_line_and_a_link_and_its_receipts_go_to_the_sources_page(tmp_path):
     page, data, _ = built(tmp_path)
     figure = parse(page).one("figure")
-    view = figure.one(cls="plate-view", data_view="sources")
-    assert not figure.all("ol", "plate-sources") and not figure.all(id="sample-source-s-1"), "no list on the plate"
-    assert view.one("p", "plate-source-line").text() == "3 sources from 1 document: 2 verified and 1 partly verified."
-    link = view.one("p", "plate-sources-link").one("a")
+    collar = figure.one(cls="plate-collar")
+    assert not figure.all("ol", "plate-sources") and not figure.all(id="sample-source-s-1") and not figure.all(data_view="sources"), "no list and no Sources view on the plate"
+    assert collar.one("p", "plate-source-line").text() == "3 sourced figures from 1 document: 2 verified, 1 partly verified.", "the collar's line (DIRECTION-R2 3.6)"
+    link = collar.one("p", "plate-sources-link").one("a")
     assert link.attrs["href"] == "sources/#sample" and link.attrs["data-url"] == f"{vp.OWN_ORIGIN}sources/#sample", "its address prints on paper"
     listed = sources(tmp_path)
     assert listed.one("section", "sources-plate", id="sample").one("a", href="../page.html#sample"), "the section links back to its plate"
@@ -976,10 +976,87 @@ def test_the_table_links_each_claim_to_its_receipt_and_keeps_its_words(tmp_path)
                             rows=[{"id": "a", "label": "A", "claim": "s-1", "cites": ["s-3"]}, {"id": "b", "label": "B", "claim": "s-2", "limit": "Old."}])
     page, _, _ = built(tmp_path, plate)
     table = parse(page).one(cls="plate-table")
-    assert table.texts("td") == ["s-1, s-3", "Example Agency", "s-2", "Example Agency, partly verified"], "the words csvOf and lineClaims read are the same"
-    assert [a.attrs["href"] for a in table.all("a")] == ["sources/#sample-source-s-1", "sources/#sample-source-s-3", "sources/#sample-source-s-1", "sources/#sample-source-s-2", "sources/#sample-source-s-2"]
+    assert table.texts("td") == ["s-1 verified, s-3 verified", "Example Agency", "s-2 partly verified", "Example Agency, partly verified"], "each claim with its status in words; a source by name"
+    assert [a.attrs["href"] for a in table.all("a")] == ["sources/#sample-source-s-1", "sources/#sample-source-s-3", "sources/#sample-source-s-2"], "each claim id links to its receipt"
+    assert [a.attrs["data-claim"] for a in table.all("a")] == ["s-1", "s-3", "s-2"], "and names its claim, which is what csvOf and lineClaims read"
+    assert [n.attrs["class"] for n in table.all("span", "st")] == ["st st-v", "st st-v", "st st-p"], "a full square for verified, a half square for partly verified"
     listed = sources(tmp_path)
     assert all(listed.all(id=a.attrs["href"].split("#")[1]) for a in table.all("a")), "every link lands on a receipt"
+
+
+def formula_plate(**extra):
+    """A plate whose rows follow a typed setting: what a title or an answer can follow."""
+    return bp.sample_plate(title="A load of {mw} MW", default="amw", inputs={"base": {"claim": "s-1"}},
+                           controls=[{"type": "range", "name": "mw", "label": "Size, MW", "min": 10, "max": 2000, "step": 5, "default": 125}],
+                           rows=[{"id": "amw", "label": "Average", "unit": "aMW", "cites": ["s-1"], "formula": {"value": "mw * 0.8"}},
+                                 {"id": "share", "label": "Per base", "unit": "aMW", "cites": ["s-1"], "digits": 2, "formula": {"value": "amw / base"}}], **extra)
+
+
+def test_a_title_and_an_answer_follow_the_state_from_the_plates_own_figures(tmp_path):
+    plate = formula_plate(title_template="A {mw} MW load averages {amw} aMW", answer="A {mw} MW project averages {amw} aMW, {share} times the base.")
+    site = bp.sample_site(tmp_path / "site", plate)
+    page = site / "page.html"
+    page.write_text(page.read_text(encoding="utf-8").replace("after</main>", 'after<p class="agenda-a" data-answer="sample">old words</p></main>'), encoding="utf-8")
+    bp.build(site)
+    text = page.read_text(encoding="utf-8")
+    data = json.loads(vp.PLATE_BLOCK.findall(text)[0][1])
+    assert data["title_template"] == "A {mw} MW load averages {amw} aMW" and data["answer"].startswith("A {mw} MW project"), "the templates travel for plate.js to fill"
+    assert parse(text).one("p", "agenda-a").text() == "A 125 MW project averages 100 aMW, 420 times the base.", "the build writes the answer at the defaults, as plate.js rounds it"
+    assert bp.build(site)["pages_written"] == [], "and pours it again unchanged"
+
+
+@pytest.mark.parametrize("field, template, words", [
+    ("title_template", "A {mw} MW load is {c[s-1][display]}", "not a row field"),
+    ("answer", "It counts {boundary}.", "not a row field"),
+    ("answer", "A load of 125 MW.", "writes a number in its own words"),
+    ("title_template", "{amw[quote]} aMW", "not a row field"),
+])
+def test_a_title_or_an_answer_names_only_figures_the_plate_prints(tmp_path, field, template, words):
+    with pytest.raises(bp.BuildError, match=words):
+        built(tmp_path, formula_plate(**{field: template}))
+
+
+def test_an_answer_element_needs_a_plate_with_an_answer(tmp_path):
+    site = bp.sample_site(tmp_path / "site")
+    page = site / "page.html"
+    page.write_text(page.read_text(encoding="utf-8").replace("after</main>", 'after<p data-answer="sample">x</p></main>'), encoding="utf-8")
+    with pytest.raises(bp.BuildError, match='has no "answer" template'):
+        bp.build(site)
+
+
+def test_a_variant_is_named_or_left_to_the_kit(tmp_path):
+    page, _, _ = built(tmp_path, bp.sample_plate(variant="repeater"))
+    assert parse(page).one("figure").attrs["data-variant"] == "repeater"
+    page, _, _ = built(tmp_path / "plain")
+    assert "data-variant" not in parse(page).one("figure").attrs, "plate.js reads it from where the plate sits"
+    with pytest.raises(bp.BuildError, match="variant must be one of"):
+        built(tmp_path / "bad", bp.sample_plate(variant="poster"))
+
+
+@pytest.mark.parametrize("name", ["ask", "tribe", "m", "preset", "add", "other-view"])
+def test_a_control_may_not_take_a_reserved_address_name(tmp_path, name):
+    plate = bp.sample_plate(controls=[{"type": "segmented", "name": name, "label": "X", "options": [{"value": "a", "label": "A"}, {"value": "b", "label": "B"}]}])
+    with pytest.raises(bp.BuildError, match="reserved for the address"):
+        built(tmp_path, plate)
+
+
+def test_a_fixed_axis_holds_what_every_setting_reaches(tmp_path):
+    plate = bp.sample_plate(title="A load", default="amw", plot={"type": "bars"},
+                            controls=[{"type": "range", "name": "mw", "label": "Size, MW", "min": 10, "max": 2000, "step": 5, "default": 125}],
+                            rows=[{"id": "amw", "label": "Average", "unit": "aMW", "cites": ["s-1"], "formula": {"value": "mw * 0.8"}}])
+    _, data, _ = built(tmp_path, plate)
+    assert data["plot"]["domain"][1] >= 2000 * 0.8, "the ruler reaches the figure at the slider's far end, so the scale never moves under a reader"
+    assert bp.nice_domain([110], cap=1.25) == [0, 120] and bp.nice_domain([110]) == [0, 150], "a bar ruler ends within a quarter of the longest bar (energy-06)"
+
+
+def test_every_table_states_its_claims_and_counts_its_rows(tmp_path):
+    plate = bp.sample_plate(table={"columns": [{"label": "Row", "field": "label"}, {"label": "Value", "field": "display"}]})
+    page, _, _ = built(tmp_path, plate)
+    view = parse(page).one(cls="plate-view", data_view="table")
+    assert view.one("thead").texts("th")[-1] == "Claims", "a Table with no Claims column gets one"
+    assert view.one("p", "plate-count").text() == "3 rows" and len(view.one("tbody").all("tr")) == 3
+    assert [tr.attrs["data-key"] for tr in view.one("tbody").all("tr")] == ["a", "b", "c"], "each line names its row, for the selected row's rule"
+    assert view.one("caption").text() == "Row A: 0.24 Wh, 2025.", "its caption is the Reading's lead sentence"
 
 
 def test_a_documents_claims_share_one_entry_and_rows_share_their_runs(tmp_path):
@@ -1238,7 +1315,7 @@ def test_a_negated_row_and_a_trend_trace_back_to_their_claims():
 
 def test_a_page_with_plates_loads_both_kit_scripts_in_order():
     block = '<script type="application/json" id="plate-data-a">{}</script>'
-    good = f'<script defer src="assets/js/plate-svg.js"></script><script defer src="assets/js/plate.js"></script>{block}'
+    good = f'<script src="assets/js/theme.js"></script><script defer src="assets/js/plate-svg.js"></script><script defer src="assets/js/plate.js"></script>{block}'
     errors = []
     vp.check_plate_scripts("page", good, errors)
     vp.check_plate_scripts("plain", "<p>no plates</p>", errors)
@@ -1311,10 +1388,13 @@ def plates(doc, text):
 def plate_structure_problems(figure, data):
     """The views, labels, and table a plate needs to work by keyboard and screen reader, and without scripts."""
     plate_id, problems = figure.attrs["id"], []
-    views = {node.attrs["value"] for node in figure.all("input", type="radio", name=f"{plate_id}-view")}
-    panels = {node.attrs["data-view"] for node in figure.all(cls="plate-view", data_view=True)}
-    if views != panels or not {"reading", "sources", "table"} <= panels:
-        problems.append(f"{plate_id}: view switch {sorted(views)} does not match its panels {sorted(panels)}")
+    views = [node for node in figure.all("button", data_view=True) if node.attrs.get("aria-pressed") in ("true", "false")]
+    if sorted(node.attrs["data-view"] for node in views) != ["chart", "table"] or [node.attrs["aria-pressed"] for node in views] != ["true", "false"]:
+        problems.append(f"{plate_id}: needs two pressed buttons, Chart pressed and Table not: {[node.attrs.get('data-view') for node in views]}")
+    if [node.attrs["data-view"] for node in figure.all(cls="plate-view", data_view=True)] != ["table"] or not figure.all(cls="plate-plot") or not figure.all(cls="plate-detail"):
+        problems.append(f"{plate_id}: a plot, a window, and one Table view, and no other view")
+    if not figure.all(cls="plate-collar") or not figure.all("p", "plate-sources-link"):
+        problems.append(f"{plate_id}: the collar needs its sources line and link")
     if not figure.all(id=figure.attrs.get("aria-labelledby", "none")):
         problems.append(f"{plate_id}: the figure is not labelled by its title")
     for node in figure.all(aria_controls=True):
@@ -1338,7 +1418,8 @@ def test_a_built_plate_has_its_views_labels_and_table(tmp_path):
 def test_a_broken_plate_structure_is_seen(tmp_path):
     page, data, _ = built(tmp_path)
     for broken in (page.replace('data-view="table"', 'data-view="grid"'), page.replace('aria-labelledby="sample-title"', 'aria-labelledby="gone"'),
-                   page.replace('aria-controls="sample-receipt"', 'aria-controls="gone"'), page.replace('role="status"', ""), page.replace('scope="col"', "")):
+                   page.replace('aria-pressed="false"', 'aria-pressed="true"'), page.replace('class="plate-collar"', 'class="plate-end"'),
+                   page.replace('role="status"', ""), page.replace('scope="col"', "")):
         assert broken != page and plate_structure_problems(parse(broken).one("figure"), data)
 
 
@@ -1414,8 +1495,8 @@ def test_every_claim_a_shipped_plate_uses_keeps_its_receipt(shipped):
 
 
 def test_no_main_page_keeps_a_source_list_and_each_points_to_its_sources_page(shipped):
-    """Ruling 39: a main page keeps no Claims Cited block and no full list; a page with plates or claim marks links its Sources page under its title and in its
-    footer, and that page holds a src- anchor for every claim its text marks. Every page links the hub."""
+    """Ruling 39: a main page keeps no Claims Cited block and no full list; a page with plates or claim marks links its Sources page under its title (the
+    footer is the same on every page, DIRECTION-R2 3.13, and links the hub), and that page holds a src- anchor for every claim its text marks."""
     pages, claims = shipped
     texts = {name: text for name, text, _ in pages}
     checked = 0
@@ -1431,7 +1512,7 @@ def test_no_main_page_keeps_a_source_list_and_each_points_to_its_sources_page(sh
             assert not marks or name == "briefing/index.html", f"{name} marks claims and has no Sources page"
             continue
         checked += 1
-        assert doc.one("a", href="sources/", data_sources=True) and (footer.all("a", href="sources/") or name == "index.html"), f"{name}: a line under its title and its footer link its Sources page"
+        assert doc.one("a", href="sources/", data_sources=True), f"{name}: a line under its title links its Sources page"
         anchors = set(re.findall(r'id="src-([a-z]{2,3}-\d{3})"', texts[own]))
         assert set(marks) <= anchors, f"{own} lacks receipts for {sorted(set(marks) - anchors)[:5]}"
         assert all(node.attrs["href"] == f"sources/#src-{node.attrs['data-claim']}" for node in doc.all("a", "cr")), f"{name}: every mark links its Sources page"
@@ -1499,6 +1580,9 @@ def check_budgets(budgets, root=ROOT):
         name = path.relative_to(root).as_posix()
         size = round(len(gzip.compress(path.read_bytes(), 9)) / 1024, 1)
         budget_warning(name, size, pages.get(name, pages["default"]), warn_at, "KB gzipped")
+    for pattern, budget in budgets.get("files_kb", {}).items():  # a line may name each file a pattern matches, as the relief images
+        for path in sorted(root.glob(pattern)):
+            budget_warning(path.relative_to(root).as_posix(), round(path.stat().st_size / 1024, 1), budget, warn_at, "KB")
 
 
 def test_budgets_file_has_its_shape():
@@ -1522,7 +1606,10 @@ def test_an_over_budget_file_only_warns(tmp_path):
     (tmp_path / "site" / "assets" / "js").mkdir(parents=True)
     (tmp_path / "site" / "assets" / "js" / "big.js").write_text("x" * 100, encoding="utf-8")
     (tmp_path / "site" / "index.html").write_text("<p>" * 9000, encoding="utf-8")
-    tiny = {"warn_at": 0.9, "scripts": {"site/assets/js/big.js": 10}, "pages_gzip_kb": {"default": 0.01}}
+    (tmp_path / "site" / "assets" / "img").mkdir()
+    (tmp_path / "site" / "assets" / "img" / "a.webp").write_bytes(b"x" * 4096)
+    tiny = {"warn_at": 0.9, "scripts": {"site/assets/js/big.js": 10}, "pages_gzip_kb": {"default": 0.01}, "files_kb": {"site/assets/img/*.webp": 1}}
     with pytest.warns(UserWarning) as caught:
         check_budgets(tiny, tmp_path)
-    assert [str(w.message).split(":")[0] for w in caught] == ["OVER BUDGET", "OVER BUDGET"], "over budget warns, and the test goes on"
+    assert [str(w.message).split(":")[0] for w in caught] == ["OVER BUDGET"] * 3, "over budget warns, and the test goes on"
+    assert "site/assets/img/a.webp is 4 KB" in str(caught[2].message), "a pattern's line weighs each file it names"

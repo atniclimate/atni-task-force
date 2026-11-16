@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Writes canonical and link-preview tags and the speculation rules into every page's head, and site/robots.txt and site/sitemap.txt.
+"""Writes canonical and link-preview tags and the speculation rules into every page's head, each footer's "Updated" date (the newest What's New date, from
+site/data/whats-new.json), and site/robots.txt and site/sitemap.txt.
 
 Idempotent: the tags sit between two markers and are replaced on each run, so run it again after anyone adds a page or changes a title.
    python scripts/add_page_meta.py          # write
@@ -34,6 +35,21 @@ SPECULATION = json.dumps({
 }, separators=(",", ":"))
 TITLE = re.compile(r"<title>(.*?)</title>", re.S)
 DESCRIPTION = re.compile(r'[ \t]*<meta name="description" content="([^"]*)">\r?\n')
+UPDATED = re.compile(r'<p class="footer-updated">Updated [^<]*</p>')
+DAY = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def newest_day(site):
+    """The newest What's New date as the footer prints it, MM/DD/YYYY (home-shell-23), or None when the file holds none."""
+    path = Path(site) / "data" / "whats-new.json"
+    items = json.loads(path.read_text(encoding="utf-8")).get("items") or [] if path.is_file() else []
+    day = max((i.get("date") or "" for i in items if DAY.fullmatch(i.get("date") or "")), default=None)
+    return f"{day[5:7]}/{day[8:10]}/{day[:4]}" if day else None
+
+
+def stamp_footer(html, day):
+    """Every footer's "Updated" line names the newest What's New date, so no page carries a hand-typed one."""
+    return UPDATED.sub(f'<p class="footer-updated">Updated {day}.</p>', html) if day else html
 
 
 def url_of(rel):
@@ -106,10 +122,10 @@ def run(site=SITE, check=False):
         if not check:
             path.write_bytes(text.encode("utf-8"))
 
-    cards = load_cards(site)
+    cards, day = load_cards(site), newest_day(site)
     for rel in pages(site):
         path = site / rel
-        put(path, apply_meta(path.read_bytes().decode("utf-8"), rel, cards))
+        put(path, stamp_footer(apply_meta(path.read_bytes().decode("utf-8"), rel, cards), day))
     put(site / "sitemap.txt", sitemap(site))
     put(site / "robots.txt", robots())
     return stale

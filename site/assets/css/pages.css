@@ -117,7 +117,7 @@ a.comp-n:is(:hover, :focus-visible)::after { left: auto; right: 0; } /* its labe
 .library-page .tags a:hover { color: var(--atni-text-heading); text-decoration: underline; text-underline-offset: 0.2em; }
 .library-page .tags .tag-tribal::before { content: none; }
 .library-page .tags .tag-tribal a { color: var(--atni-text-heading); }
-.library-page .tags .tag-tribal a::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--energy-text); }
+.library-page .tags .tag-tribal a::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--atni-text-heading); } /* ink, not orange (CD 2) */
 
 /* About: the lockup in the band's right cell, a ruled row of figures, then three columns. A column runs to its own end, so nothing floats mid-column. */
 .about-band { align-items: start; } /* the h1 stays where every other page has it, whatever the lockup's height */

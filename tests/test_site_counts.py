@@ -62,20 +62,3 @@ def test_each_library_bar_links_its_count_to_the_claim_that_holds_it():
         assert mark.attrs["href"] == f'sources/#src-{mark.attrs["data-claim"]}' and not mark.attrs.get("data-filter")
     cited = {node.attrs["id"][4:] for node in page("library/sources/index.html").one("section", "claims-cited").all("li", id=True)}
     assert {mark.attrs["data-claim"] for mark in marks} <= cited, "each mark's row is on the Library's Sources page"
-
-
-def test_each_home_figure_holds_its_claims_value():
-    doc = page("index.html")
-    spans = doc.one("ul", "home-figures").all(data_claim=True)
-    others = {c["id"]: c for path in (SITE / "data" / "claims").glob("*.json") for c in json.loads(path.read_text(encoding="utf-8")).get("claims") or []}
-    assert len(spans) >= 8
-    for span in spans:
-        claim = others[span.attrs["data-claim"]]
-        assert span.text().split()[0].replace(",", "") in {f'{claim[key]:g}' for key in ("value", "low", "high") if claim.get(key) is not None}, span.attrs["data-claim"]
-    assert not [f for f in doc.one("ul", "home-figures").all("li", "figure") if not f.all("p", "figure-claims")], "every figure carries its chips"
-
-
-def test_home_reads_the_project_settings_as_an_example():
-    second = page("index.html").one("ul", "home-questions").all("li")[1].one("p").text()
-    assert second.startswith("Example, at settings you can change: a 125 MW project at a 0.8 load factor")
-    assert "8 checklists:" in page("index.html").one("ul", "home-questions").all("li")[2].text()

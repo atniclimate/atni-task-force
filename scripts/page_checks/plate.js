@@ -7,8 +7,9 @@ const PAGE = 'http://localhost/scripts/fixtures/plate-demo/index.html';
 const html = fixture('scripts/fixtures/plate-demo/index.html', 'Rebuild it with scripts/fixtures/kit_make_demo.py.');
 const frame = () => wait(40);
 
-async function load(query = '', { source = html, clipboard = true, wide = false, reveal = true } = {}) {
+async function load(query = '', { source = html, clipboard = true, wide = false, reveal = true, before = () => {} } = {}) {
   return open(source, `${PAGE}${query}`, (window) => {
+    before(window);
     window.size = { w: 900, h: 400 };
     if (!reveal) delete window.HTMLElement.prototype.onbeforematch; // jsdom reveals hidden="until-found", as Chrome and Firefox do; Safari does not
     if (wide) {
@@ -28,17 +29,22 @@ async function load(query = '', { source = html, clipboard = true, wide = false,
   });
 }
 
-const row = (plate, k) => [...plate.querySelectorAll('[data-row]')].find((n) => n.dataset.row === k);
+const row = (plate, k) => [...plate.querySelectorAll('.plate-plot [data-row]')].find((n) => n.dataset.row === k);
+// A plate in a closed tab panel starts when its panel opens (lazy start), so a check opens the plate's panel by its tab first, as a reader would.
 const parts = (document, id) => {
   const root = document.getElementById(id);
+  const panel = root.closest('[role="tabpanel"]');
+  if (panel?.hidden) document.querySelector(`[role="tab"][aria-controls="${panel.id}"]`).click();
   return {
     root, plot: root.querySelector('.plate-plot'), reading: root.querySelector('.reading'), value: root.querySelector('.readout-value'), unit: root.querySelector('.readout-unit'),
-    receipt: root.querySelector('.plate-receipt'), live: root.querySelector('output'), status: root.querySelector('.plate-status'), facts: root.querySelector('.plate-facts'),
-    chips: () => [...root.querySelectorAll('.receipt')].filter((c) => !c.hidden),
-    views: (name) => root.querySelector(`.plate-view[data-view="${name}"]`),
+    receipt: root.querySelector('.plate-receipt'), live: root.querySelector(':scope > output'), status: root.querySelector('.plate-status'), facts: root.querySelector('.plate-facts'),
+    window: root.querySelector('.plate-detail'), table: root.querySelector('.plate-view[data-view="table"]'), evidence: root.querySelector('.plate-evidence'),
+    chips: () => [...root.querySelectorAll('.plate-evidence .receipt')],
+    view: (name) => root.querySelector(`.plate-views button[data-view="${name}"]`),
     radio: (name, value) => root.querySelector(`input[name="${name}"][value="${value}"]`),
   };
 };
+const claimsOf = (chip) => chip.dataset.claims.split(' ');
 
 // The build copies plot keys through to the data block, so a page gets these exactly as this fixture does.
 function withData(id, change) {
@@ -57,10 +63,17 @@ const pick = (window, radio) => {
 
 async function tabs() {
   const { window, document, errors } = await load();
-  const list = document.querySelector('[role="tablist"]');
-  const links = [...document.querySelectorAll('[role="tab"]')];
-  const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-  ok(list && links.length === 14 && panels.length === 14, 'tab list and panels');
+  const list = document.querySelector('.section-strip [role="tablist"]'); // the agenda above it is a tablist of its own
+  const links = [...list.querySelectorAll('[role="tab"]')];
+  const panels = links.map((a) => document.getElementById(a.getAttribute('aria-controls')));
+  ok(list && links.length === 15 && panels.every((n) => n?.getAttribute('role') === 'tabpanel'), 'tab list and panels');
+  // A tab is its name over its question; a group label is a muted word out of the tab order; the Sources link and the sheet's button are not tabs.
+  ok(links.every((a) => a.querySelector(':scope > .tab-name + .tab-q')), 'each tab is a name and a question');
+  eq(links[0].textContent, 'Ladder and a page script How does a row read?', 'with a space between, so its name reads as two phrases');
+  ok([...list.querySelectorAll('.strip-group')].every((n) => n.getAttribute('aria-hidden') === 'true' && !n.querySelector('a, [tabindex]')), 'group labels are hidden words, out of the tab order');
+  const out = document.querySelector('.section-strip .strip-out');
+  ok(out && !out.hasAttribute('role') && out.getAttribute('href') === 'sources/', 'the Sources link stays a link');
+  ok(!document.querySelector('.section-strip [data-sheet-open]').hasAttribute('role'), 'and so does the sheet\'s button');
   eq(list.getAttribute('aria-label'), 'Demonstration sections', 'tab list named');
   // A strip that scrolls says so while more waits past its edge.
   Object.defineProperty(list, 'scrollWidth', { value: 900 });
@@ -82,11 +95,11 @@ async function tabs() {
   eq(links[2].getAttribute('aria-selected'), 'true', 'arrow right');
   eq(document.activeElement, links[2], 'focus follows');
   key(window, links[2], 'End');
-  key(window, links[13], 'ArrowRight');
+  key(window, links.at(-1), 'ArrowRight');
   eq(links[0].getAttribute('aria-selected'), 'true', 'wraps to first');
   key(window, links[0], 'ArrowLeft');
-  eq(links[13].getAttribute('aria-selected'), 'true', 'wraps to last');
-  key(window, links[13], 'Home');
+  eq(links.at(-1).getAttribute('aria-selected'), 'true', 'wraps to last');
+  key(window, links.at(-1), 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'home');
   // Space is the one action on a link's own keydown, and takes the page scroll with it; Alt+Left stays the browser's Back.
   const hash = window.location.hash;
@@ -117,12 +130,15 @@ async function ladder() {
   eq(p.plot.getAttribute('aria-labelledby'), 'session-energy-title', 'plot named');
   eq(p.plot.getAttribute('aria-activedescendant'), row(p.root, 'chat').id, 'active row');
   eq(p.plot.querySelector('.ladder-rows').getAttribute('role'), 'none', 'list role removed');
-  ok(!p.root.querySelector('.plate-controls').hidden && !p.root.querySelector('.plate-views').hidden && !p.root.querySelector('.plate-actions').hidden, 'script-only parts shown');
-  ok(!p.views('reading').hidden && p.views('sources').hidden && p.views('table').hidden, 'only Reading shows');
+  ok(!p.root.querySelector('.plate-controls').hidden && !p.root.querySelector('.plate-bar').hidden && !p.root.querySelector('.plate-actions').hidden, 'script-only parts shown');
+  ok(!p.window.hidden && !p.plot.hidden && p.table.hidden, 'the Chart shows: plot and window, the Table waits');
+  eq(p.view('chart').getAttribute('aria-pressed'), 'true', 'Chart is the pressed view');
+  eq(p.root.dataset.variant, 'lead', 'the first plate in its panel leads');
   eq(`${p.value.textContent} ${p.unit.textContent}`, '0.24 Wh', 'default readout');
   ok(p.reading.textContent.includes('0.24 Wh inside the data center'), 'page script sentence');
   eq(p.chips().length, 1, 'one chip for the selection');
-  ok(!p.receipt.hidden && p.receipt.querySelector('.plate-source-title a'), 'the first receipt is open on load, so the panel holds its source');
+  eq(p.evidence.querySelector('.plate-evidence-line').textContent, '1 verified', 'the evidence line counts the selection by status');
+  ok(p.receipt.hidden, 'no card is open before the reader asks (energy-10, briefing-plates-14)');
   ok(p.facts.textContent.includes('Assumption:'), 'assumption in the detail');
   const more = p.facts.querySelector('.plate-more');
   ok(more && !more.open && more.querySelector('summary').textContent.trim().length > 0, 'it waits behind a disclosure');
@@ -144,23 +160,29 @@ async function ladder() {
   ok(settings(window).includes('session-energy=video'), 'selection in the address');
   ok(p.reading.textContent.startsWith('Streamed video, one hour: 70 Wh, 2025.'), 'Reading follows');
   eq(p.plot.style.getPropertyValue('--at'), row(p.root, 'video').style.getPropertyValue('--x'), 'needle at the row');
-  // The card is built from the plate's own data: the source linked, its status, limit, and claim, and the way on to the full receipt on the Sources page.
+  ok(p.receipt.hidden, 'a new selection opens no card');
+  // The card is built from the plate's own data: the source linked, its publisher and dates, status and limit, claim, and the way on to the full receipt.
+  const [chip] = p.chips();
+  eq(chip.getAttribute('aria-expanded'), 'false', 'chip collapsed until pressed');
+  eq(chip.getAttribute('aria-controls'), p.receipt.id, 'chip names its panel');
+  fire(window, chip, 'click');
   const card = p.receipt.textContent;
-  ok(!p.receipt.hidden && p.receipt.querySelector('.plate-source-title a').href.startsWith('https://'), 'receipt opens with its source linked');
-  ok(card.includes('Verified against the source.') && /Claim [a-z]{2,3}-\d{3}\./.test(card), `receipt has its status and claim: ${card}`);
+  ok(!p.receipt.hidden && p.receipt.querySelector('.plate-source-title a').href.startsWith('https://'), 'the card opens with its source linked');
+  ok(card.includes('Verified against the source.') && /Claim [a-z]{2,3}-\d{3}/.test(card) && /published \d{2}\/\d{2}\/\d{4}/.test(card), `the card has its status, claim, and date: ${card}`);
   ok(/sources\/#session-energy-source-[a-z]{2,3}-\d{3}$/.test(p.receipt.querySelector('.plate-receipt-more a').getAttribute('href')), 'and links on to the quote, boundary, and date on the Sources page');
+  eq(p.receipt.querySelector('.plate-receipt-more a').textContent, 'Quote, boundary and date on the Sources page', 'in those words');
   ok(!p.receipt.querySelector('blockquote'), 'the quote waits on the Sources page');
   eq(p.receipt.querySelectorAll('[id]').length, 0, 'the card holds no duplicate id');
-  const [chip] = p.chips();
   eq(chip.getAttribute('aria-expanded'), 'true', 'chip expanded');
-  eq(chip.getAttribute('aria-controls'), p.receipt.id, 'chip names its panel');
+  eq(window.document.activeElement, p.receipt, 'focus goes into the card');
   fire(window, chip, 'click');
   ok(p.receipt.hidden, 'second press closes');
   eq(chip.getAttribute('aria-expanded'), 'false', 'chip collapsed');
   fire(window, chip.querySelector('span'), 'click');
-  ok(!p.receipt.hidden, 'press on the chip text opens');
-  key(window, p.plot, 'Escape');
-  ok(p.receipt.hidden, 'Escape closes the receipt first');
+  ok(!p.receipt.hidden, 'press on the chip glyph opens');
+  key(window, p.receipt, 'Escape');
+  ok(p.receipt.hidden, 'Escape closes the card first');
+  eq(window.document.activeElement, chip, 'and focus returns to its chip');
   eq(row(p.root, 'video').getAttribute('aria-selected'), 'true', 'selection stays');
   key(window, p.plot, 'Escape');
   eq(row(p.root, 'chat').getAttribute('aria-selected'), 'true', 'Escape restores the default');
@@ -178,20 +200,27 @@ async function ladder() {
   key(window, p.plot, 'ArrowUp');
   eq(row(p.root, 'chat').getAttribute('aria-selected'), 'true', 'arrow stops at the top');
 
-  // Click, views, Enter
-  fire(window, p.radio('session-energy-view', 'table'), 'click');
-  ok(p.views('table').querySelectorAll('tbody tr').length >= 5 && !p.views('table').hidden && p.views('reading').hidden, 'Table view');
+  // Chart and Table: two pressed buttons; the Table takes the plot's and the window's place, and the claim zone stays.
+  fire(window, p.view('table'), 'click');
+  ok(p.table.querySelectorAll('tbody tr').length >= 5 && !p.table.hidden && p.window.hidden && p.plot.hidden, 'Table view');
+  ok(!p.root.querySelector('.plate-claim').hidden, 'the claim zone stays');
+  eq(`${p.view('table').getAttribute('aria-pressed')} ${p.view('chart').getAttribute('aria-pressed')}`, 'true false', 'the pressed button follows');
+  await settle();
+  ok(settings(window).includes('session-energy-view=table'), 'the view is in the address');
+  eq(p.table.querySelector('caption').textContent, p.reading.textContent.split(/(?<=\.) /)[0], "the Table's caption is the Reading's lead sentence");
+  ok(p.table.querySelector('tr[data-key="chat"]').classList.contains('is-on'), 'the selected row carries the rule');
+  eq(p.table.querySelector('.plate-count').textContent, `${p.table.querySelectorAll('tbody tr').length} rows`, 'and the Table counts its rows');
   key(window, p.plot, 'ArrowDown');
-  ok(p.views('reading').hidden, 'arrows leave the view alone');
-  key(window, p.plot, 'Enter');
-  ok(!p.views('reading').hidden, 'Enter brings the Reading forward');
-  eq(p.radio('session-energy-view', 'reading').checked, true, 'view radio follows');
-  fire(window, p.radio('session-energy-view', 'sources'), 'click');
-  ok(!p.views('sources').hidden && p.views('sources').querySelector('.plate-source-line').textContent.startsWith('5 sources from'), 'Sources counts every receipt in one line');
-  eq(p.views('sources').querySelector('.plate-sources-link a').getAttribute('href'), 'sources/#session-energy', 'and links to the plate on the Sources page');
-  ok(!p.views('sources').querySelector('ol.plate-sources'), 'and keeps no list of its own');
+  ok(p.window.hidden, 'arrows leave the view alone');
+  fire(window, p.view('chart'), 'click');
+  ok(!p.window.hidden && p.table.hidden, 'Chart brings the plot and window back');
+  await settle();
+  ok(!settings(window).includes('-view'), 'and the Chart, the default, leaves the address');
+  const collar = p.root.querySelector('.plate-collar');
+  ok(collar.querySelector('.plate-source-line').textContent.startsWith('5 sourced figures from'), 'the collar counts every receipt in one line');
+  eq(collar.querySelector('.plate-sources-link a').getAttribute('href'), 'sources/#session-energy', 'and links to the plate on the Sources page');
+  ok(!p.root.querySelector('ol.plate-sources') && !p.root.querySelector('.plate-view[data-view="sources"]'), 'and the plate keeps no list and no Sources view of its own');
   fire(window, row(p.root, 'no-figure').querySelector('.ladder-label'), 'click');
-  ok(!p.views('reading').hidden, 'click shows the Reading');
   eq(row(p.root, 'no-figure').getAttribute('aria-selected'), 'true', 'click selects');
 
   // Segmented radios and the by control
@@ -212,9 +241,11 @@ async function ladder() {
   key(window, p.plot, 'ArrowDown');
   key(window, p.plot, 'ArrowDown');
   ok(p.reading.textContent.includes('Limit: Derived from a study'), 'a partly row carries its limit');
-  ok(p.receipt.textContent.includes('Partly verified. Limit: Derived from a study'), 'receipt carries the limit');
   eq(p.chips().length, 1, 'chip follows');
-  ok(p.chips()[0].dataset.claim === 'fp-120', 'chip for the claim at this boundary');
+  eq(claimsOf(p.chips()[0]).join(), 'fp-120', 'chip for the claim at this boundary');
+  ok(p.chips()[0].querySelector('.st-p') && p.evidence.textContent.includes('1 partly verified'), 'a half square and its word for a partly verified claim');
+  fire(window, p.chips()[0], 'click');
+  ok(p.receipt.textContent.includes('Partly verified. Limit: Derived from a study'), 'the card carries the limit');
 
   // Slider and typed twin
   const range = p.root.querySelector('input[type=range]');
@@ -227,31 +258,37 @@ async function ladder() {
   fire(window, range, 'input');
   eq(num.value, '20', 'number follows the slider');
   await settle();
-  ok(settings(window).includes('use=20'), 'slider in the address');
+  ok(!settings(window).includes('use='), 'a dragged or typed figure never rides in the address (owner ruling 29)');
   eq(p.value.textContent, '4.8', 'page script multiplies');
   eq(row(p.root, 'chat').querySelector('.ladder-value').textContent, '4.8 Wh', 'row text follows');
   eq(p.plot.style.getPropertyValue('--at'), row(p.root, 'chat').style.getPropertyValue('--x'), 'needle follows the page script');
   ok(p.reading.textContent.startsWith('At 20 prompts an hour'), 'Reading follows');
+  ok(p.root.hasAttribute('data-moved') && !p.root.querySelector('[data-reset]').hidden, 'a moved setting marks the plate and offers the way back');
+  ok(p.root.querySelector('.plate-link-note').textContent.includes('leaves them out'), 'and the plate says a typed figure stays on this screen');
   num.value = '50';
   fire(window, num, 'input');
   eq(range.value, '50', 'slider follows the number');
   eq(p.value.textContent, '12', 'number drives the plate');
   num.value = '999';
   fire(window, num, 'input');
-  await settle();
-  ok(settings(window).includes('use=50'), 'bad value ignored');
+  eq(p.value.textContent, '12', 'a figure past the end does not apply while typed');
+  eq(num.getAttribute('aria-invalid'), 'true', 'and says so to a screen reader');
   fire(window, num, 'change');
-  eq(num.value, '50', 'bad value goes back');
+  eq(num.value, '200', 'on leaving the box it goes to the end it passed (ai-09)');
+  eq(p.value.textContent, '48', 'and the plate takes that end');
+  ok(p.status.textContent.includes('runs from 1 to 200, so 200 is used'), `with a message: ${p.status.textContent}`);
+  ok(!num.hasAttribute('aria-invalid'), 'and the box is valid again');
 
-  // Reset
+  // Back to the starting point
   fire(window, p.root.querySelector('[data-reset]'), 'click');
   await settle();
-  eq(settings(window), '', 'Reset clears the address');
-  eq(range.value, '1', 'Reset restores the slider');
-  eq(p.radio('boundary', 'dc').checked, true, 'Reset restores the radio');
-  eq(row(p.root, 'chat').getAttribute('aria-selected'), 'true', 'Reset restores the row');
-  eq(p.value.textContent, '0.24', 'Reset restores the readout');
-  ok(!p.receipt.hidden, 'Reset returns to the load state, with the first receipt open');
+  eq(settings(window), '', 'Back to the starting point clears the address');
+  eq(range.value, '1', 'it restores the slider');
+  eq(p.radio('boundary', 'dc').checked, true, 'it restores the radio');
+  eq(row(p.root, 'chat').getAttribute('aria-selected'), 'true', 'it restores the row');
+  eq(p.value.textContent, '0.24', 'it restores the readout');
+  ok(p.receipt.hidden && p.root.querySelector('[data-reset]').hidden && !p.root.hasAttribute('data-moved'), 'it returns to the load state, and its button leaves with the moved settings');
+  eq(window.document.activeElement, p.root.querySelector('[data-copy]'), 'focus stays beside it, on Copy reading');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -259,21 +296,21 @@ async function preview() {
   const { window, document } = await load();
   const p = parts(document, 'session-energy');
   window.under = row(p.root, 'video').querySelector('.ladder-label');
-  fire(window, p.plot, 'pointermove');
-  fire(window, p.plot, 'pointermove');
+  const before = `${p.value.textContent}|${p.reading.textContent}`;
+  fire(window, p.plot, 'pointermove', {}, { pointerType: 'mouse' });
+  fire(window, p.plot, 'pointermove', {}, { pointerType: 'mouse' });
   await frame();
-  ok(p.reading.textContent.startsWith('Streamed video'), 'hover updates the fixed Reading');
-  eq(row(p.root, 'video').getAttribute('aria-selected'), 'false', 'hover does not select');
-  ok(row(p.root, 'video').classList.contains('is-on'), 'hover marks the row');
-  await settle();
-  eq(settings(window), '', 'hover leaves the address');
-  eq(p.chips()[0].dataset.claim, 'fp-001', 'chips stay with the selection');
-  fire(window, p.plot, 'pointerleave');
-  ok(p.reading.textContent.startsWith('At 1 prompts') || p.reading.textContent.includes('0.24 Wh'), 'leaving restores');
-  ok(row(p.root, 'chat').classList.contains('is-on'), 'leaving restores the mark');
+  eq(`${p.value.textContent}|${p.reading.textContent}`, before, 'a mouse hover changes no readout and no Reading, so nothing moves under the pointer (CD 1, explorer-03)');
+  ok(!row(p.root, 'video').classList.contains('is-on') && read('site/assets/css/site.css').includes('.plate-plot [data-row]:not(.is-ghost):hover { outline: 1px solid var(--atni-text-muted)'), 'it outlines the row in CSS, and marks nothing');
+  // A sideways touch drag previews the rows it crosses and commits where it lifts.
   window.under = row(p.root, 'video');
-  fire(window, p.plot, 'pointermove');
+  fire(window, p.plot, 'pointermove', {}, { pointerType: 'touch' });
   await frame();
+  ok(p.reading.textContent.startsWith('Streamed video'), 'a touch drag previews the row under it');
+  eq(row(p.root, 'video').getAttribute('aria-selected'), 'false', 'without selecting it');
+  eq(claimsOf(p.chips()[0]).join(), 'fp-001', 'chips stay with the selection');
+  await settle();
+  eq(settings(window), '', 'and leaves the address');
   fire(window, p.plot, 'pointerleave', {}, { pointerType: 'touch' });
   eq(row(p.root, 'video').getAttribute('aria-selected'), 'true', 'a touch drag commits');
 }
@@ -299,8 +336,8 @@ async function copy() {
   const p = parts(a.document, 'session-energy');
   fire(a.window, p.root.querySelector('[data-copy]'), 'click');
   await wait(20);
-  ok(a.window.clip.startsWith(p.reading.textContent), 'sentence first');
-  ok(a.window.clip.includes('use=3') && a.window.clip.includes('#session-energy'), 'link with state');
+  ok(a.window.clip.startsWith(`${p.root.querySelector('.plate-title').textContent}\n${p.reading.textContent}`), 'the title as it stands, then the sentence');
+  ok(a.window.clip.includes('#session-energy') && !a.window.clip.includes('use='), 'link to the plate, never with a typed figure');
   ok(a.window.clip.includes('Sources: Measuring the environmental impact'), 'source titles');
   ok(p.status.textContent.trim().length > 0, 'says so');
   const b = await load('', { clipboard: false });
@@ -325,7 +362,7 @@ async function query() {
   const q = parts(good.document, 'session-energy');
   eq(q.radio('boundary', 'full').checked, true, 'good stop applies');
   eq(row(q.root, 'video').getAttribute('aria-selected'), 'true', 'good row applies');
-  eq(q.root.querySelector('input[type=number]').value, '5', 'good number applies');
+  eq(q.root.querySelector('input[type=number]').value, '1', 'a typed figure in a link is not applied: it never rides in the address (owner ruling 29)');
   ok(q.reading.textContent.includes('262.5'), 'Reading reflects the address');
   eq(good.errors.join(), '', 'no script errors');
 }
@@ -357,10 +394,10 @@ async function svgPlots() {
   ok(p.facts.querySelector('.plate-square') && !p.facts.querySelector('.plate-key') && p.facts.querySelector('strong'), 'value first, keyed by a square, as every figure list is');
   ok(p.facts.querySelectorAll('.plate-square.is-on').length <= 1, 'orange for the selected series alone');
   ok(p.reading.textContent.includes('Google:') && p.reading.textContent.includes('Microsoft:') && p.reading.textContent.includes('verified against the source.'), 'Reading lists the series and the evidence');
-  eq(p.chips().length, 2, 'a chip per claim');
+  eq(p.chips().length, 2, 'a chip per publisher');
   key(window, p.plot, 'ArrowLeft');
   eq(p.facts.querySelectorAll('li').length, 3, 'all three in the year before');
-  ok(!p.receipt.hidden, 'several claims: the first opens, and chips open the others');
+  ok(p.receipt.hidden && p.chips().length >= 2, 'several claims: the chips name them, and no card opens before a press');
   fire(window, p.chips()[1], 'click');
   ok(!p.receipt.hidden, 'chip opens one');
   fire(window, p.chips()[0], 'click');
@@ -389,7 +426,7 @@ async function svgPlots() {
   ok(bars.plot.classList.contains('no-needle'), 'no needle on bars');
   fire(window, bars.plot.querySelectorAll('[data-row] .ladder-label')[3], 'click');
   ok(bars.reading.textContent.startsWith('Meta:'), 'a bar row is its own hit target');
-  ok(!bars.receipt.hidden, 'receipt opens');
+  ok(bars.receipt.hidden && bars.chips().length > 0, 'the selection names its receipts, and its card waits for a press');
 
   // Small multiples: one option per year.
   const many = parts(document, 'capital-history');
@@ -431,7 +468,10 @@ async function api() {
   count(3);
   let seen = null;
   window.plate.register('company-electricity', { defaults: {}, render(ctx) { seen = ctx.reason; ctx.auto(); ctx.reading('Own sentence.'); } });
-  eq(seen, 'init', 'render runs at once');
+  eq(seen, null, 'a plate in a closed panel waits: its render runs when the panel opens (lazy start)');
+  ok(!document.getElementById('company-electricity').classList.contains('is-live'), 'and the plate is not started');
+  parts(document, 'company-electricity');
+  eq(seen, 'init', 'render runs when the plate starts');
   eq(document.querySelector('#company-electricity .reading').textContent, 'Own sentence.', 'a page script can write the Reading');
   const { draw } = window.plate;
   eq(draw.fmt(25000), '25K', 'compact from ten thousand');
@@ -449,10 +489,13 @@ async function api() {
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   const root = document.getElementById('session-energy');
-  ok(document.querySelectorAll('section.section').length === 14, 'all panels in the page');
-  ok(root.querySelector('.plate-controls').hidden && root.querySelector('.plate-views').hidden && root.querySelector('.plate-chips').hidden && root.querySelector('.plate-actions').hidden, 'controls stay hidden');
+  ok(document.querySelectorAll('section.section').length === 15, 'all panels in the page');
+  // Script-only parts carry data-js, which site.css hides until theme.js marks the page as scripted (html.js), so nothing appears late (ai-08).
+  ok(!document.documentElement.classList.contains('js') && ['.plate-controls', '.plate-bar', '.plate-evidence', '.plate-actions', '.plate-out'].every((s) => root.querySelector(s).hasAttribute('data-js')), 'controls, view buttons, chips, and actions stay hidden');
+  ok(read('site/assets/css/site.css').includes('html:not(.js) [data-js]'), 'by the one rule in site.css');
+  ok(root.querySelector('.plate-receipt').hidden, 'and so does the card');
   ok(root.querySelector('.plate-setting').textContent.includes('Boundary:'), 'a line names the setting shown');
-  ok([...root.querySelectorAll('.plate-view')].every((v) => !v.hidden), 'Reading, Sources, and Table all show');
+  ok([root.querySelector('.plate-plot'), root.querySelector('.plate-detail'), root.querySelector('.plate-view[data-view="table"]')].every((v) => !v.hidden), 'plot, window, and Table all show');
   ok(root.querySelector('.reading').textContent.length > 20, 'default Reading');
   ok(root.querySelector('.readout-value').textContent === '0.24', 'default readout');
   ok(root.querySelectorAll('table tbody tr').length >= 5, 'full table');
@@ -475,11 +518,20 @@ async function noScripts() {
   ok(document.querySelector('.bench-link a').getAttribute('href') === 'index.html#matrix-demo', 'a bench row links to its plate');
   ok(document.querySelector('.bench-reading').textContent.startsWith('Water, National scale'), 'a bench row holds the default Reading');
   ok(document.querySelectorAll('#capital-history .m-title').length === 4, 'static multiples');
-  // Without scripts the Sources view is its line and link, the Table links each source to its receipt, and the receipts with their limits are on the Sources page.
-  ok(root.querySelector('.plate-view[data-view="sources"] .plate-sources-link a[href="sources/#session-energy"]') && !root.querySelector('ol.plate-sources'), 'a line and a link, no list');
-  ok([...root.querySelectorAll('.plate-table a')].some((a) => /^sources\/#session-energy-source-[a-z]{2,3}-\d{3}$/.test(a.getAttribute('href'))), 'the Table links its sources to their receipts');
+  // Without scripts the collar is its line and link, the Table states each claim with its status and links it to its receipt, and the receipts with their limits
+  // are on the Sources page: claim and status in the cell, the limit one link away (B0's decision a).
+  ok(root.querySelector('.plate-collar .plate-sources-link a[href="sources/#session-energy"]') && !root.querySelector('ol.plate-sources'), 'a line and a link, no list');
+  ok([...root.querySelectorAll('.plate-table a')].some((a) => /^sources\/#session-energy-source-[a-z]{2,3}-\d{3}$/.test(a.getAttribute('href'))), 'the Table links its claims to their receipts');
+  ok([...root.querySelectorAll('.plate-table .claim-ref')].every((n) => / (verified|partly verified)$/.test(n.textContent)) && root.querySelector('.plate-table .claim-ref .st'), 'each with its status, as a square and a word');
+  eq(root.querySelector('.plate-count').textContent, `${root.querySelectorAll('.plate-table tbody tr').length} rows`, 'and every row, counted');
   ok(read('scripts/fixtures/plate-demo/sources/index.html').includes('Limit: Derived from a study'), 'the limit on the Sources page');
   ok(document.querySelector('.section-strip a[href="#history"]') && !document.querySelector('[role="tablist"]'), 'strip is a jump list');
+  // The agenda: its questions are jump links to faces that stand whole, one under another; the sheet's button waits; a term and a mark are links on.
+  const qs = [...document.querySelectorAll('.agenda-q > a')];
+  ok(qs.length === 3 && qs.every((a) => document.getElementById(a.hash.slice(1))?.parentElement.matches('.agenda-faces') && !a.hasAttribute('role')), 'the agenda\'s questions are jump links to its faces');
+  ok([...document.querySelectorAll('.agenda-faces > *')].every((n) => !n.hidden) && document.querySelector('.agenda-a[data-answer="meter-demo"]').textContent.includes('about 15'), 'every face stands whole, and each answer is the build\'s');
+  ok(document.querySelector('[data-sheet-open]').hasAttribute('data-js') && document.querySelectorAll('input[name="ask"]').length === 3, 'the sheet\'s button waits; its questions are a plain list to tick or print');
+  ok(document.querySelector('.brief a.term').getAttribute('href').endsWith('sources/#term-amw') && document.querySelector('.brief a.cr').getAttribute('href') === 'sources/#src-dem-058', 'a term goes to the glossary, a mark to its record');
 }
 
 async function instrument() {
@@ -509,7 +561,7 @@ async function instrument() {
   eq(value('twh'), '1.4 TWh', 'and the rows after it');
   ok(row(p.root, 'amw').style.getPropertyValue('--x') !== x0, 'the mark moves');
   await settle();
-  ok(settings(window).includes('mw=200'), 'setting in the address');
+  ok(!settings(window).includes('mw='), 'a dragged figure stays out of the address');
   ok(p.reading.textContent.startsWith('200 MW at 0.8 load factor is 160 aMW'), 'the Reading follows');
   eq(p.root.querySelector('[data-param="mw"] input[type=number]').value, '200', 'the typed twin follows');
   // A load factor off the float grid still counts as on a stop.
@@ -522,7 +574,7 @@ async function instrument() {
   typed.value = '1';
   fire(window, typed, 'input');
   await settle();
-  ok(settings(window).includes('lkwh=1'), 'typed in the address');
+  ok(!settings(window).includes('lkwh'), 'a typed figure stays out of the address');
   eq(value('site'), '1,700 million liters', 'one figure, no spread');
   ok(!row(p.root, 'site').querySelector('.ladder-mark').hidden, 'a mark when low meets high');
   typed.value = '';
@@ -553,10 +605,12 @@ async function instrument() {
   fire(window, p.root.querySelector('[data-reset]'), 'click');
   // Fixed rows: a trend from five claims, and a row of two figures.
   fire(window, row(p.root, 'naics').querySelector('.ladder-label'), 'click');
-  eq(p.chips().length, 5, 'a row that cites five claims shows every receipt');
+  eq(p.chips().flatMap(claimsOf).length, 5, 'a row that cites five claims shows every receipt');
   ok(p.reading.textContent.startsWith('Industry employment: 419.4 to 491.6 thousand jobs, 2021 to 2025'), 'a trend reads as a span');
   ok(row(p.root, 'naics').querySelector('svg.spark path').getAttribute('d').startsWith('M0'), 'a sparkline');
-  ok(!p.receipt.hidden, 'several claims: the first opens');
+  ok(p.receipt.hidden, 'several claims: no card before a press');
+  fire(window, p.chips()[0], 'click');
+  eq(p.receipt.querySelectorAll('.plate-receipt-item').length, Math.min(4, claimsOf(p.chips()[0]).length), 'a chip of several claims opens a card for each, up to four');
   fire(window, row(p.root, 'montana').querySelector('.ladder-label'), 'click');
   eq(p.facts.querySelectorAll('.plate-values li').length, 2, 'two figures listed');
   ok(p.facts.textContent.includes('at 500 MW') && row(p.root, 'montana').textContent.includes('at 1,000 MW'), 'each named');
@@ -581,14 +635,14 @@ async function matrix() {
   eq(p.plot.getAttribute('aria-activedescendant'), cell('water--national').id, 'active cell');
   eq(p.facts.querySelectorAll('.plate-values li').length, 2, 'two figures in the cell');
   ok(p.facts.textContent.includes('about 800 billion liters at power plants'), 'a figure keeps its words');
-  eq(p.chips().length, 2, 'a receipt per figure');
+  eq(p.chips().flatMap(claimsOf).length, 2, 'a claim per figure, under the chips of its publishers');
   ok(cell('water--national').querySelector('.matrix-figure strong').textContent === '66 billion liters', 'the figure is strong');
   key(window, p.plot, 'ArrowRight');
   eq(cell('water--unit').getAttribute('aria-selected'), 'true', 'right moves a column');
   key(window, p.plot, 'ArrowDown');
   eq(cell('power--unit').getAttribute('aria-selected'), 'true', 'down moves a row');
   ok(cell('power--unit').querySelector('.matrix-figure').classList.contains('is-hollow'), 'a hollow square where modeled');
-  ok(!cell('power--unit').classList.contains('matrix-figure') && !p.receipt.hidden, 'one figure opens its receipt');
+  ok(!cell('power--unit').classList.contains('matrix-figure') && p.chips().flatMap(claimsOf).length === 1 && p.receipt.hidden, 'one figure names its receipt, and its card waits for a press');
   key(window, p.plot, 'ArrowUp');
   eq(cell('water--unit').getAttribute('aria-selected'), 'true', 'up moves a row');
   key(window, p.plot, 'ArrowUp');
@@ -614,7 +668,7 @@ async function matrix() {
   ok(p.reading.textContent.startsWith('Water, Open question: Watershed and season.'), 'a word cell has a Reading');
   eq(p.chips().length, 0, 'and no receipt');
   eq(`${p.value.textContent}|${p.unit.textContent}`, '|Watershed and season', 'its words in the readout');
-  ok(p.views('table').querySelectorAll('tbody tr').length >= 6, 'the table lists the figures');
+  ok(p.table.querySelectorAll('tbody tr').length >= 6, 'the table lists the figures');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -636,7 +690,7 @@ async function countView() {
   eq(p.plot.querySelectorAll('.plate-seg, .count-row').length, 0, 'Count waits until asked for');
   eq(p.facts.querySelectorAll('.plate-seg').length, 4, 'a thin segmented bar in the detail');
   ok(p.facts.textContent.includes('Data center, measured') && p.facts.textContent.includes('Router, modeled'), 'each part marked');
-  eq(p.chips().length, 2, 'a row that cites two claims shows both');
+  eq(p.chips().flatMap(claimsOf).length, 2, 'a row that cites two claims shows both');
   ok(p.reading.textContent.includes('or 50 text prompts'), 'a field computed per row');
   const tick = p.plot.querySelector('.ladder-tick');
   ok(tick.textContent.startsWith('Phone video hour, 14.1 Wh') || tick.textContent.startsWith('Phone video hour, 14 Wh'), 'a labeled yardstick'); // the frozen fixture's mark holds its built words
@@ -665,18 +719,18 @@ async function countView() {
   view('ruler');
   ok(!p.plot.querySelector('.ladder-groups').hidden && p.plot.querySelector('.count-rows').hidden, 'back to the ruler');
   eq(value('chat'), '21 (9.3 to 24) Wh', 'the ruler follows the slider');
-  const cell = [...p.views('table').querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|display');
+  const cell = [...p.table.querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|display');
   eq(cell.textContent, '21 (9.3 to 24) Wh', 'the table follows the slider');
-  const fieldCell = [...p.views('table').querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|prompts_equal');
+  const fieldCell = [...p.table.querySelectorAll('[data-cell]')].find((td) => td.dataset.cell === 'chat|whole|prompts_equal');
   eq(fieldCell.textContent, '70', 'a computed column follows the slider');
   // Presets.
   fire(window, p.root.querySelector('[data-preset="2.52"]'), 'click');
   eq(num.value, '2.52', 'a preset fills the typed field');
   await settle();
-  ok(settings(window).includes('prompts=2.52'), 'a preset off the step is in the address');
+  ok(!settings(window).includes('prompts='), 'a preset is a typed figure too, so it stays out of the address');
   eq(value('chat'), '13 (9.3 to 24) Wh', 'a preset moves the row');
   const again = await load('?prompts=2.52#hour');
-  eq(again.document.querySelector('[data-param="prompts"] input[type=number]').value, '2.52', 'a preset survives the address');
+  eq(again.document.querySelector('[data-param="prompts"] input[type=number]').value, '10', 'and a link that names one is not applied');
   const off = await load('?prompts=2.5#hour');
   eq(off.document.querySelector('[data-param="prompts"] input[type=number]').value, '10', 'other values off the step do not');
   // The by control on formula rows.
@@ -700,7 +754,7 @@ async function band() {
   ok(/span [\d.,]+ to [\d.,]+\./.test(p.reading.textContent), 'and the span of the band');
   eq(p.facts.querySelectorAll('.plate-values li').length, 2, 'the facts list every case');
   ok(p.facts.textContent.includes("Servers' share of commercial sales: 7 percent"), 'a figure beside the plot');
-  ok(p.chips().some((c) => c.dataset.claim === 'dem-016'), 'with its receipt');
+  ok(p.chips().flatMap(claimsOf).includes('dem-016'), 'with its receipt');
   ok(p.root.querySelector('.plate-legend').textContent.includes('Range of the cases'), 'the band in the legend');
   const radio = p.radio('case', 'High demand');
   radio.checked = true;
@@ -724,19 +778,19 @@ async function panels() {
   ok(p.reading.textContent.includes('operating cash flow') && p.reading.textContent.includes('cash and securities'), 'across the panels');
   eq(p.facts.querySelectorAll('.plate-values li').length, 3, "the year's values for one company");
   ok(p.facts.textContent.includes('Capital spending'), 'named by panel');
-  eq(p.chips().length, 3, "that company's receipts");
+  eq(p.chips().flatMap(claimsOf).length, 3, "that company's receipts");
   const radio = p.radio('company', 'Microsoft');
   radio.checked = true;
   fire(window, radio, 'input');
   ok(p.reading.textContent.startsWith('Microsoft, fiscal 2025 (ends 06/30/2025)'), 'the company changes, the year stays');
-  ok(p.chips().every((c) => /fin-00[18]|fin-035/.test(c.dataset.claim)), 'the receipts follow');
+  ok(p.chips().flatMap(claimsOf).every((c) => /fin-00[18]|fin-035/.test(c)), 'the receipts follow');
   key(window, p.plot, 'End');
   ok(p.reading.textContent.startsWith('Microsoft, fiscal 2026'), 'a later year');
   const apple = p.radio('company', 'Amazon');
   apple.checked = true;
   fire(window, apple, 'input');
   ok(p.reading.textContent.includes('No public measurement') || p.reading.textContent.startsWith('Amazon'), 'a company with no filing for that year says so');
-  const cols = [...p.views('table').querySelectorAll('thead th')].map((n) => n.textContent);
+  const cols = [...p.table.querySelectorAll('thead th')].map((n) => n.textContent);
   eq(cols.join(), 'Company,Fiscal year,Year ends,Capital spending,Operating cash flow,Cash and securities,Claims', 'a pivoted table');
   eq(p.plot.querySelectorAll('[role="option"]').length > 3, true, 'one option per year');
   eq(errors.join(), '', 'no script errors');
@@ -767,7 +821,7 @@ async function pair() {
   ok(!r.querySelector('.ladder-range').hidden, 'a line between');
   ok(r.querySelector('.ladder-value').textContent.includes(' and '), 'both values');
   ok(p.reading.textContent.startsWith('Amazon, fiscal 2025: capital spending'), 'one sentence for the pair');
-  eq(p.chips().length, 2, 'both receipts');
+  eq(p.chips().flatMap(claimsOf).length, 2, 'both receipts');
   eq(p.facts.querySelectorAll('.plate-values li').length, 2, 'both facts');
   ok(p.root.querySelector('.plate-legend').textContent.includes('Cash and securities'), 'the marks named');
   const before = r.style.getPropertyValue('--x');
@@ -828,17 +882,19 @@ async function points() {
   eq(errors.join(), '', 'no script errors');
 }
 
+// The agenda runs to the window's foot (--plate-h, the window less what stands above it); a plate keeps the height its variant gives it.
 async function fit() {
-  const { window, document } = await load('#project', { wide: true });
+  const { window, document } = await load('#project', { wide: true, source: html.replace('<main id="main">', '<main id="main"><section class="agenda"></section>') });
   const root = document.getElementById('project-demo');
-  ok(root.classList.contains('plate-fit'), 'a fit plate');
-  eq(root.style.getPropertyValue('--plate-h'), '860px', 'the first plate runs to the foot of the window');
+  const agenda = document.querySelector('.agenda');
+  ok(root.classList.contains('plate-fit') && !root.style.getPropertyValue('--plate-h'), 'a plate takes no height from the window');
+  eq(agenda.style.getPropertyValue('--plate-h'), '860px', 'the agenda runs to the foot of the window');
   window.innerHeight = 1200;
   window.dispatchEvent(new window.Event('resize'));
-  eq(root.style.getPropertyValue('--plate-h'), '1160px', 'it follows the window');
+  eq(agenda.style.getPropertyValue('--plate-h'), '1160px', 'it follows the window');
   window.innerHeight = 500;
   window.dispatchEvent(new window.Event('resize'));
-  eq(root.style.getPropertyValue('--plate-h'), '544px', 'and never gets too short');
+  eq(agenda.style.getPropertyValue('--plate-h'), '460px', 'and never gets too short');
   const tab = document.querySelector('a[href="#matrix"]');
   fire(window, tab, 'click');
   ok(document.getElementById('matrix').classList.contains('is-entering'), 'a tab change may move once');
@@ -853,44 +909,34 @@ async function zones() {
     ok(!zone.classList.contains('has-more'), 'and none fades');
   }
   const css = read('site/assets/css/site.css');
-  ok(css.includes('.plate.is-live { --h: var(--plate-h, max(34rem, 72vh)); min-height: var(--h); }'), 'a live plate has a least height, not a height');
+  ok(css.includes('.plate > .plate-plot { grid-area: plot; min-height: var(--plot-h); }'), 'a plot has a least height from its variant, not a height');
   ok(!/\.plate[^{}]*\{[^{}]*overflow-y: auto/.test(css), 'and no zone scrolls on its own');
   ok(!/has-more|is-short/.test(read('site/assets/js/plate.js')), 'nothing is left of the old bargain');
 }
 
-// The Reading view ends at Copy, Reset, and one line of receipts. Chips, the open receipt, and the line and link to the Sources page live in the Sources view, whose tab carries the count.
+// The window, in order: readout, Reading, facts, the evidence and its card, then Copy reading and, once a setting moves, Back to the starting point. The collar
+// across the plate's foot holds the sources line, its link, and what leaves the page.
 async function detailViews() {
   const { window, document, errors } = await load();
   const p = parts(document, 'session-energy');
-  const reading = p.views('reading');
-  const sources = p.views('sources');
-  const chipsBox = p.root.querySelector('.plate-chips');
-  const link = sources.querySelector('.plate-sources-link');
-  ok(sources.contains(chipsBox) && sources.contains(p.receipt) && link, 'chips, receipt, and the link are in Sources');
-  ok(!reading.contains(chipsBox) && !reading.contains(p.receipt) && !reading.querySelector('.plate-sources-link'), 'and none in the Reading');
-  ok(chipsBox.compareDocumentPosition(p.receipt) === 4 && p.receipt.compareDocumentPosition(link) === 4, 'the receipt opens right under its chips, above the line and link');
-  eq(p.root.querySelector('.plate-views input[value="sources"] + span').textContent, 'Sources (5)', 'the tab carries the count of receipts');
-  const tally = reading.querySelector('.plate-tally');
-  eq(tally.previousElementSibling, p.root.querySelector('.plate-actions'), 'the line of receipts follows Copy and Reset');
-  eq(tally.textContent, 'This row: 1 verified; 5 sources on the plate', 'the selection by status, then the count the tab carries');
+  const order = [...p.window.children].map((n) => ['readout', 'reading', 'plate-facts', 'plate-evidence', 'plate-receipt', 'plate-actions', 'plate-setting', 'plate-link-note'].find((c) => n.classList.contains(c)) || n.tagName);
+  eq(order.slice(0, 7).join(), 'readout,reading,plate-facts,plate-evidence,plate-receipt,plate-actions,plate-setting', `the window's order: ${order.join()}`);
+  ok(!p.window.querySelector('.plate-sources-link') && p.root.querySelector('.plate-collar .plate-sources-link'), 'the Sources link is in the collar, not the window');
+  ok(p.window.compareDocumentPosition(p.root.querySelector('.plate-collar')) === 4 && p.table.compareDocumentPosition(p.root.querySelector('.plate-collar')) === 4, 'the collar follows the window and the Table');
+  eq([...p.root.querySelectorAll('.plate-out button')].map((b) => b.textContent).join(), 'Print this plate,Download CSV,Download SVG', 'what leaves the page, in the collar');
+  eq(p.evidence.querySelector('.plate-evidence-line').textContent, '1 verified', 'the selection by status');
   pick(window, p.radio('boundary', 'full'));
   key(window, p.plot, 'ArrowDown');
   key(window, p.plot, 'ArrowDown');
   ok(p.reading.textContent.includes('Limit:'), 'a partly row');
-  eq(tally.textContent, 'This row: 1 partly verified; 5 sources on the plate', 'its line says partly');
-  fire(window, tally, 'click');
-  eq(p.root.dataset.view, 'sources', 'the line opens Sources');
-  ok(!sources.hidden && reading.hidden, 'and only Sources');
-  eq(document.activeElement, p.radio('session-energy-view', 'sources'), 'focus goes to the view switch, since the line left with its view');
+  eq(p.evidence.querySelector('.plate-evidence-line').textContent, '1 partly verified', 'its line says partly');
   key(window, p.plot, 'Home');
   // A chip pressed: focus goes to what opened, and Escape comes back to the chip.
   const [chip] = p.chips();
-  fire(window, chip, 'click');
-  ok(p.receipt.hidden, 'the first press closes the receipt open since the selection');
-  eq(document.activeElement === p.receipt, false, 'and leaves focus alone');
+  ok(p.receipt.hidden, 'no card is open since the selection');
   chip.focus();
   fire(window, chip, 'click');
-  ok(!p.receipt.hidden, 'the next opens it');
+  ok(!p.receipt.hidden, 'a press opens it');
   eq(chip.getAttribute('aria-expanded'), 'true', 'the chip says so');
   eq(document.activeElement, p.receipt, 'focus moves to the receipt');
   eq(p.receipt.getAttribute('role'), 'group', 'a group');
@@ -900,10 +946,13 @@ async function detailViews() {
   ok(p.receipt.hidden, 'Escape closes it');
   eq(document.activeElement, chip, 'and returns to the chip');
   eq(chip.getAttribute('aria-expanded'), 'false', 'which says so');
-  // A link from another page may open a view; anything else opens the Reading.
-  eq((await load('?session-energy-view=sources')).document.getElementById('session-energy').dataset.view, 'sources', 'the view comes from the address');
-  eq((await load('?session-energy-view=bogus')).document.getElementById('session-energy').dataset.view, 'reading', 'a bad one is the Reading');
-  eq((await load('#session-energy-view=table')).document.getElementById('session-energy').dataset.view, 'table', 'and the fragment names one as the query did');
+  // A link from another page may open the Table; an old link to the Sources or Reading view opens the Chart with focus on the evidence.
+  const old = await load('?session-energy-view=sources');
+  eq(old.document.getElementById('session-energy').dataset.view, 'chart', 'an old Sources link opens the Chart');
+  ok(old.document.getElementById('session-energy').querySelector('.plate-evidence').contains(old.document.activeElement), 'with focus on the evidence');
+  ok(!old.window.location.hash.includes('-view'), 'and the old view leaves the address');
+  eq((await load('?session-energy-view=bogus')).document.getElementById('session-energy').dataset.view, 'chart', 'a bad one is the Chart');
+  eq((await load('#session-energy-view=table')).document.getElementById('session-energy').dataset.view, 'table', 'and the fragment names the Table');
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -1163,9 +1212,9 @@ async function charts() {
   eq(heads(m).join('|'), [`${year(m)}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'they follow the arrows');
   const other = [...m.plot.querySelectorAll('[data-row]')].find((n) => !n.classList.contains('is-on')).dataset.row;
   money.window.under = m.plot.querySelector(`[data-row="${other}"] .m-hit`);
-  fire(money.window, m.plot, 'pointermove');
+  fire(money.window, m.plot, 'pointermove', {}, { pointerType: 'touch' });
   await frame();
-  ok(heads(m)[0].startsWith(`${other}: `) && heads(m).join('|') === [`${other}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'and a hover\'s preview');
+  ok(heads(m)[0].startsWith(`${other}: `) && heads(m).join('|') === [`${other}: ${said(m)[0]}`, ...said(m).slice(1)].join('|'), 'and a touch drag\'s preview');
   ok(!/m-value/.test(css), 'the kit draws no figure beside a square');
   const history = await load('#history');
   const h = parts(history.document, 'capital-history');
@@ -1176,13 +1225,14 @@ async function charts() {
   eq(errors.join() + inst.errors.join() + latest.errors.join() + log.errors.join() + off.errors.join() + money.errors.join() + history.errors.join(), '', 'no script errors');
 }
 
-// plot.switch: a control that is part of the picture sits over the plot; the key sits under it. Neither is inside the list box.
+// plot.switch: a control that is part of the picture sits over the plot, in the bar with the view buttons; the key sits under it. Neither is inside the list box.
 async function arranged() {
   const { window, document, errors } = await load('#hour', { source: withData('hour-demo', (d) => { d.plot.switch = 'edge'; }) });
   const p = parts(document, 'hour-demo');
   const box = p.root.querySelector('.plate-switch [data-param="edge"]');
   ok(box && !p.root.querySelector('.plate-claim [data-param="edge"]'), 'the control left the claim');
-  eq(p.root.querySelector('.plate-switch').nextElementSibling, p.plot, 'for the place above the plot');
+  ok(p.root.querySelector('.plate-bar').contains(p.root.querySelector('.plate-switch')) && p.root.querySelector('.plate-bar').nextElementSibling === p.plot, 'for the bar above the plot, beside Chart and Table');
+  eq(p.root.dataset.variant, 'lead', 'the first plate in its panel leads');
   ok(p.root.classList.contains('has-switch') && p.root.classList.contains('has-under'), 'the plate knows');
   ok(!p.plot.contains(box), 'outside the list box');
   pick(window, p.radio('edge', 'dc'));
@@ -1269,7 +1319,7 @@ function stripPage(rows, checked = -7) {
   return { day, html: `<!doctype html><html><body><main><div class="strip" data-strip data-from="${day(-7)}" data-to="${day(723)}" data-checked="${day(checked)}"><ol class="strip-rows">${items}</ol>
 <div class="strip-lane"><h4 class="strip-lane-title">No date in the catalog</h4><ul class="strip-undated"><li><a href="#undated">Undated</a></li></ul></div>
 <p class="caption strip-foot">Statuses checked<span data-strip-age></span>; confirm each with the agency.</p></div></main>
-<script defer src="/site/assets/js/plate-svg.js"></script><script defer src="/site/assets/js/plate.js"></script></body></html>` };
+<script src="/site/assets/js/theme.js"></script><script defer src="/site/assets/js/plate-svg.js"></script><script defer src="/site/assets/js/plate.js"></script></body></html>` };
 }
 async function strip() {
   const us = (iso) => { const [y, m, d] = iso.split('-'); return `${m}/${d}/${y}`; };
@@ -1331,7 +1381,6 @@ async function contrast() {
   };
   const dark = block(':root, [data-theme="dark"] {');
   const light = block('[data-theme="light"] {');
-  const auto = block('[data-theme="auto"] {');
   const print = block('@media print {\n  :root, [data-theme] {');
   const grounds = {
     dark: [token('core-black-bg'), token('core-grey-element'), token('core-grey-overlay'), dark('wash')],
@@ -1348,7 +1397,12 @@ async function contrast() {
     ok(ratio(t('on-fill'), t('fill')) >= 4.5, `${theme} ink on the fill`);
     ok(ratio(t('on-fill'), t('hover')) >= 4.5, `${theme} ink on the hover`);
   }
-  for (const name of ['text', 'mark', 'fill', 'hover', 'wash', 'on-fill']) eq(auto(name), light(name), `auto light repeats --energy-${name}`);
+  ok(!css.includes('[data-theme="auto"]'), 'nothing sets auto, so no rule waits for it (home-shell-11)');
+  // Orange is the reading's (DIRECTION-R2 2.2): links, buttons, and focus are ink; and on light the body is the darker grey (resource-use-10).
+  ok(/--atni-text-link: var\(--atni-text-heading\);/.test(css) && /--atni-non-text-button-fill: var\(--paper\);/.test(css) && /:focus-visible \{ outline: 2px solid var\(--atni-text-heading\); outline-offset: 2px; \}/.test(css), 'links, buttons, and focus wear ink');
+  const lightBlock = css.slice(css.indexOf('[data-theme="light"] {'));
+  ok(/--atni-text-body: var\(--atni-color-core-grey-alt\);/.test(lightBlock) && /--atni-text-secondary: var\(--atni-color-core-grey\);/.test(lightBlock), 'light body is the darker grey, secondary the lighter');
+  ok(ratio(token('core-grey-alt'), token('core-surface-tint')) >= 7 && ratio(token('core-grey'), token('core-surface-tint')) >= 4.5, 'and both pass on the light ground');
   eq(print('text'), light('text'), 'print text is the light step');
   ok(ratio(print('mark'), light('wash')) >= 3, 'print mark on the wash');
   // The ATNI Climate voice, on the base ground only, as the direction asks before it ships.
@@ -1362,30 +1416,33 @@ async function contrast() {
 async function printAndMotion() {
   const css = read('site/assets/css/site.css');
   ok(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{ transition-duration: 0ms !important; animation-duration: 0ms !important;/.test(css), 'reduced motion zeroes every transition and animation');
-  ok(/\[role="tabpanel"\]\[hidden\]/.test(css) && /\.plate-view\[hidden\] \{ display: grid !important; \}/.test(css), 'print opens every panel and view');
+  ok(!/\[role="tabpanel"\]\[hidden\][^{]*\{ display: block !important/.test(css) && /\.plate > :is\(\.plate-plot, \.plate-detail, \.plate-under, \.plate-view\)\[hidden\] \{ display: block !important; \}/.test(css), 'print keeps a closed tab panel closed and opens every view of a plate on it (ai-14)');
+  ok(/:not\(\[role="tabpanel"\]\)\[hidden="until-found"\] \{ content-visibility: visible; \}/.test(css), 'what a findable view holds prints, and a findable panel stays closed');
   ok(/details::details-content \{ display: block;/.test(css), 'print opens every disclosure');
-  ok(css.includes('@media screen and (min-width: 1100px) {\n  .plate {'), 'the plate grid and its fixed height are for the screen, so print can never clip a zone');
-  ok(/@media print \{\s*\.plate-controls, \.plate-switch,/.test(css), 'a switch stays off paper, as other controls do');
-  ok(/@media print \{[^@]*\.plate \{ padding: 12pt; border: 1px solid var\(--rule\); \}/.test(css), 'a plate keeps a frame on paper');
-  ok(/@keyframes needle-draw/.test(css) && /\.needle, \.ladder-needle, \.ladder-mark, \.ladder-range, \.ladder-shared \{ transition: left 160ms ease-out, width 160ms ease-out; \}/.test(css), 'the one stroke and the 160ms slide');
+  ok(/@page \{ margin: /.test(css), 'and every sheet keeps margins');
+  ok(css.includes('@media screen and (min-width: 1100px) {\n  .plate {'), 'the plate grid is for the screen, so print reads the zones in order and can never clip one');
+  ok(/@media print \{\s*\.plate-controls, \.plate-switch, \.plate-bar,/.test(css), 'a switch and the view buttons stay off paper, as other controls do');
+  ok(/@keyframes needle-draw/.test(css) && /\.needle, \.ladder-needle, \.ladder-mark, \.ladder-range, \.ladder-shared \{ transition: left 120ms var\(--ease\), width 120ms var\(--ease\); \}/.test(css), 'the one stroke and the 120ms press');
+  ok(css.includes('.plate:has(:focus-visible) *, .agenda:has(:focus-visible) * { transition-duration: 0ms !important;'), 'and nothing moves after a key press');
 }
 
 // The floor and the marks, as text: a size a browser would apply and no check could see. The direction states them; these hold them.
 async function tokens() {
   const css = read('site/assets/css/site.css');
-  const rule = (selector) => { const at = css.indexOf(`${selector} {`); ok(at >= 0, `${selector} has a rule`); return css.slice(at, css.indexOf('}', at)); };
-  ok(rule('.plate').includes('--row-min: 56px') && rule('.plate').includes('--mark: clamp(16px, 1vw + 5px, 26px)'), 'rows and marks at their stated sizes');
+  const rule = (selector) => { const at = css.search(new RegExp(`^${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{`, 'm')); ok(at >= 0, `${selector} has a rule`); return css.slice(at, css.indexOf('}', at)); }; // the rule that starts a line
+  ok(rule('.plate').includes('--row-min: 3.5rem') && rule('.plate').includes('--mark: clamp(16px, 1vw + 5px, 26px)'), 'rows (in rem, DIRECTION-R2 2.4) and marks at their stated sizes');
   ok(!/--row-min: 32px/.test(css), 'and no smaller row for a mouse');
-  ok(css.includes('--poster: clamp(6rem, 2.5rem + 5vw, 8.5rem)') && rule('.readout-value').includes('var(--poster)'), 'the poster readout');
+  ok(rule('.plate').includes('--readout: clamp(3rem, 2.25rem + 1vw, 3.75rem)') && /--readout: 2\.25rem/.test(css) && rule('.readout-value').includes('min(1em,'), 'the readout: 3 to 3.75rem on a face or a lead, 2.25rem on a repeater or a strip; the 96 to 136px poster is retired');
+  ok(rule('.plate').includes('--plot-h: clamp(20rem, 46vh, 44rem)'), 'and the plot of a face or a lead');
   ok(rule('.ladder-range').includes('height: 8px') && rule('.ladder-range').includes('opacity: 0.4'), 'the range band');
   ok(rule('.ladder-mark.is-hollow').includes('border: 2.5px solid'), 'the hollow ring');
-  ok(rule('.plate-title').includes('font-size: 1.5rem') && rule('.ladder-label').includes('font-size: 1.125rem') && rule('.ladder-value').includes('font-size: 1.5rem'), 'the type scale on a plate');
+  ok(rule('.plate-title').includes('font-size: 1.375rem') && rule('.ladder-label').includes('font-size: 1.125rem') && rule('.ladder-value').includes('font-size: 1.5rem'), 'the type scale on a plate');
   ok(!/font-size: 0\.75rem/.test(css), 'nothing at 0.75rem');
   const small = css.split('\n').filter((line) => /font-size: 0\.8125rem/.test(line));
   ok(small.length > 0 && small.every((line) => /plate-sources|plate-receipt|plate-quote|plate-table/.test(line)), `0.8125rem survives in Sources and Table alone: ${small.join(' | ')}`);
   ok(!/text-transform: uppercase/.test(css), 'no tracked capitals');
   // High Contrast: the rules moved here from the Explorer's sheet, since every page has tabs and options.
-  ok(/@media \(forced-colors: active\) \{[^}]*\.segmented span[^}]*border-bottom-color: Canvas; \}\s*\.segmented input:checked \+ span[^}]*border-bottom-color: Highlight; \}/.test(css), 'High Contrast tells the selected option apart, site-wide');
+  ok(/@media \(forced-colors: active\) \{[^}]*\.section-strip :is\(a, \[role="tab"\]\)::after[^}]*border-bottom-color: Canvas; \}[^}]*border-bottom-color: Highlight; \}\s*\.segmented input:checked \+ span, \.plate-views button\[aria-pressed="true"\] \{ border: 2px solid Highlight; \}/.test(css), 'High Contrast tells the selected tab, stop, and view apart, site-wide');
   ok(!read('site/assets/css/explorer.css').includes('border-bottom-color: Canvas'), 'and once');
 }
 
@@ -1419,8 +1476,8 @@ async function downloads() {
   const { window, document, errors } = await load('#hour');
   catchFiles(window);
   const p = parts(document, 'hour-demo');
-  const actions = p.root.querySelector('.plate-actions');
-  ok(actions.contains(p.root.querySelector('[data-csv]')) && actions.contains(p.root.querySelector('[data-print-plate]')) && actions.contains(p.root.querySelector('[data-copy]')), 'beside Copy Reading');
+  const out = p.root.querySelector('.plate-collar .plate-out');
+  ok(out.contains(p.root.querySelector('[data-csv]')) && out.contains(p.root.querySelector('[data-print-plate]')) && p.root.querySelector('.plate-actions [data-copy]'), 'in the collar, with Copy reading in the window');
   ok(p.root.querySelector('[data-svg]').hidden, 'no SVG for a plot that is not one');
   const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
   num.value = '30';
@@ -1432,9 +1489,11 @@ async function downloads() {
   const lines = text.replace(/^﻿/, '').trim().split(/\r\n/);
   const heads = [...p.root.querySelectorAll('.plate-table thead th')].map((n) => n.textContent.trim());
   eq(lines[0], [...heads, 'claim_ids', 'status', 'limit'].map((h) => (h.includes(',') ? `"${h}"` : h)).join(','), 'a header first, the view\'s columns and the three of the record');
-  eq(lines.length, p.root.querySelectorAll('.plate-table tbody tr').length + 3, 'a line per row, and the two at the foot');
+  eq(lines.length, p.root.querySelectorAll('.plate-table tbody tr').length + 4, 'a line per row, and the three at the foot');
   ok(lines.some((l) => l.includes('21 (9.3 to 24) Wh')), 'at the settings the reader set');
   ok(lines.some((l) => l.includes('"Chat, at the prompts set"') || l.includes('"Chat,')), 'a comma is quoted');
+  eq(lines.at(-3), `title,${p.root.querySelector('.plate-title').textContent.includes(',') ? `"${p.root.querySelector('.plate-title').textContent}"` : p.root.querySelector('.plate-title').textContent}`, 'the title as it stands on the plate (ai-04)');
+  ok(lines.slice(1, -3).every((l) => /(fp|tr|dem|jb)-\d{3}/.test(l)), 'every line names its claims');
   ok(lines.at(-2).startsWith('settings,') && lines.at(-2).includes('30'), `what it was set to: ${lines.at(-2)}`);
   ok(lines.at(-1).startsWith('checked,'), 'and when its sources were checked');
   const chart = await load('#electricity');
@@ -1465,8 +1524,7 @@ async function printOne() {
   const title = p.root.querySelector('.plate-title');
   const before = title.textContent;
   const seen = [];
-  window.print = () => seen.push({ attr: html.dataset.printOne, on: p.root.classList.contains('is-print-one'), head: p.root.querySelector('.plate-print-head')?.textContent, foot: p.root.querySelector('.plate-print-foot')?.textContent, title: title.textContent,
-    list: [...p.root.querySelectorAll('.plate-print-sources li')].map((li) => li.textContent), more: p.root.querySelector('.plate-print-sources .plate-receipt-more') });
+  window.print = () => seen.push({ attr: html.dataset.printOne, on: p.root.classList.contains('is-print-one'), head: p.root.querySelector('.plate-print-head')?.textContent, foot: p.root.querySelector('.plate-print-foot')?.textContent, title: title.textContent });
   ok(!html.dataset.printOne, 'nothing is marked before the press');
   const press = p.root.querySelector('[data-print-plate]');
   fire(window, press, 'click');
@@ -1474,32 +1532,31 @@ async function printOne() {
   ok(seen[0].on, 'and marks it');
   ok(seen[0].head.includes('Settings chosen by the reader') && seen[0].foot === 'This comparison does not decide a proposal.', 'it carries the guard lines');
   eq(seen[0].title, before, 'at the defaults the title is the finding');
-  const receipts = JSON.parse(document.getElementById('plate-data-hour-demo').textContent).receipts;
-  eq(seen[0].list.length, Object.keys(receipts).length, 'the sheet lists every receipt');
-  ok(seen[0].list.every((text) => /(Verified against the source\.|Partly verified\. Limit: .+) Claim [a-z]{2,3}-\d{3}\.$/.test(text)), `each by its title, status, limit, and claim: ${seen[0].list[0]}`);
-  eq(seen[0].more, null, 'with no link on, since the stub prints the address of the full receipts');
+  ok(p.root.querySelectorAll('.plate-table .claim-ref').length >= p.root.querySelectorAll('.plate-table tbody tr').length, 'the sheet carries the Table, each line with its claims and their status');
   window.dispatchEvent(new window.Event('afterprint'));
-  ok(!html.dataset.printOne && !p.root.classList.contains('is-print-one') && !p.root.querySelector('.plate-print-head, .plate-print-foot, .plate-print-sources'), 'and all of it goes when the dialog closes');
+  ok(!html.dataset.printOne && !p.root.classList.contains('is-print-one') && !p.root.querySelector('.plate-print-head, .plate-print-foot'), 'and all of it goes when the dialog closes');
   const num = p.root.querySelector('[data-param="prompts"] input[type=number]');
   num.value = '30';
   fire(window, num, 'input');
+  ok(title.textContent !== before && p.reading.textContent.startsWith(title.textContent), `moved off the defaults, the title on the screen is the Reading's first sentence (ai-04): ${title.textContent}`);
   fire(window, press, 'click');
-  ok(seen[1].title !== before && p.reading.textContent.startsWith(seen[1].title), `moved off the defaults, the title is the Reading's first sentence: ${seen[1].title}`);
+  eq(seen[1].title, title.textContent, 'and the sheet prints the same title');
   window.dispatchEvent(new window.Event('afterprint'));
-  eq(title.textContent, before, 'and the page gets its own back');
   const css = read('site/assets/css/site.css');
   ok(css.includes('html[data-print-one] main *:not(:has(.is-print-one), .is-print-one, .is-print-one *)'), 'print shows that plate and nothing else in the page');
-  ok(/\.is-print-one \.plate-print-sources \{ display: block/.test(css) && /\.plate-print-sources \{ display: none/.test(css), 'its receipts print by title and status, on that sheet only');
-  ok(/\.plate-sources-link a::after \{ content: " " attr\(data-url\)/.test(css), 'and the stub prints the address of the Sources page');
+  ok(/\.plate-table tr\.is-more \{ display: table-row/.test(css), 'every Table row prints, past the 25 the screen opens with');
+  ok(/\.plate-sources-link a::after \{ content: " " attr\(data-url\)/.test(css), 'and the collar prints the address of the Sources page');
   eq(errors.join(), '', 'no script errors');
 }
 
 // A plate page keeps its settings in the address and says so; the briefing keeps nothing there.
 async function address() {
   const typed = (doc) => doc.querySelector('#session-energy input[type=number]');
-  const plain = await load('#hour');
-  ok(plain.document.querySelector('#session-energy .plate-link-note').textContent.includes('private figures'), 'a plate with a typed control says what its link carries');
+  const plain = await load('#sessions');
+  ok(plain.document.querySelector('#session-energy .plate-link-note').textContent.includes('the link in Copy reading leaves them out'), 'a plate with a typed control says its link leaves typed figures out');
+  parts(plain.document, 'company-electricity');
   ok(!plain.document.querySelector('#company-electricity .plate-link-note'), 'one with none has nothing to say');
+  parts(plain.document, 'session-energy');
   // A browser that throttles replaceState throws: the plate has already redrawn, and the throw is caught, so no script error follows.
   plain.window.history.replaceState = () => { throw new plain.window.DOMException('Too many calls to replaceState', 'SecurityError'); };
   typed(plain.document).value = '20';
@@ -1539,53 +1596,85 @@ async function address() {
 // the page shares the fragment with the settings: the anchor first, the settings after it.
 async function fragment() {
   const old = await load('?boundary=full&session-energy=video&use=5#history');
-  const p = parts(old.document, 'session-energy');
-  eq(p.radio('boundary', 'full').checked, true, 'an old ?query link still names a stop');
-  ok(row(p.root, 'video').getAttribute('aria-selected') === 'true' && p.root.querySelector('input[type=number]').value === '5', 'a row, and a typed figure');
-  ok(!old.document.getElementById('history').hidden, 'and its anchor still opens its panel');
+  ok(!old.document.getElementById('history').hidden, 'an old ?query link still opens the panel its anchor names');
   eq(old.window.location.hash, '#history&boundary=full&session-energy=video&use=5', 'then the query moves into the fragment, after the anchor');
-  eq(settings(old.window), 'boundary=full&session-energy=video&use=5', 'and leaves the request line');
+  eq(old.window.location.search, '', 'and leaves the request line');
+  const p = parts(old.document, 'session-energy');
+  eq(settings(old.window), 'boundary=full&session-energy=video', 'its plate, starting, drops the typed figure it did not apply');
+  eq(p.radio('boundary', 'full').checked, true, 'it still names a stop');
+  ok(row(p.root, 'video').getAttribute('aria-selected') === 'true' && p.root.querySelector('input[type=number]').value === '1', 'and a row, but never a typed figure (owner ruling 29)');
   const range = p.root.querySelector('input[type=range]');
   range.value = '20';
   fire(old.window, range, 'input');
   await settle();
-  eq(old.window.location.hash, '#history&boundary=full&session-energy=video&use=20', 'a change rewrites its setting in place, and the anchor keeps its place');
-  const tab = old.document.querySelector('[role="tab"]');
+  ok(old.window.location.hash.endsWith('&boundary=full&session-energy=video'), 'a dragged figure leaves the address as it was');
+  const tab = old.document.querySelector('[role="tab"][aria-controls="history"]');
+  const length = old.window.history.length;
   fire(old.window, tab, 'click');
-  eq(old.window.location.hash, `${tab.hash}&boundary=full&session-energy=video&use=20`, 'a tab takes the anchor and keeps the settings');
-  old.window.location.hash = '#capital-history';
+  eq(old.window.location.hash, `${tab.hash}&boundary=full&session-energy=video`, 'a tab takes the anchor and keeps the settings');
+  eq(old.window.history.length, length + 1, 'and a change of tab is a new history entry (ai-13)');
+  pick(old.window, p.radio('boundary', 'dc'));
+  await settle();
+  eq(old.window.history.length, length + 1, 'a setting replaces the entry');
+  pick(old.window, p.radio('boundary', 'full'));
+  await settle();
+  // A link within the page keeps only the settings of the plate the reader last touched (resource-use-05, ai-12).
+  const link = Object.assign(old.document.createElement('a'), { href: '#capital-history' });
+  old.document.body.append(link);
+  link.click();
   await wait(20);
   ok(!old.document.getElementById('history').hidden, 'a link within the page still opens the panel it names');
-  eq(old.window.location.hash, '#capital-history&boundary=full&session-energy=video&use=20', 'and the settings come back after it');
+  const sorted = (raw) => [...new URLSearchParams(raw)].map((pair) => pair.join('=')).sort().join('&');
+  ok(old.window.location.hash.startsWith('#capital-history&') && sorted(settings(old.window)) === 'boundary=full&session-energy=video', `and the settings of the plate last touched come back after it: ${old.window.location.hash}`);
   fire(old.window, p.root.querySelector('[data-copy]'), 'click');
   await wait(20);
-  const link = old.window.clip.split('\n')[1];
-  ok(link.endsWith('#session-energy&boundary=full&session-energy=video&use=20') && !link.includes('?'), `Copy Reading's link names the plate, then the settings, with no query: ${link}`);
-  const again = await load(link.slice(link.indexOf('#')));
+  const copied = old.window.clip.split('\n')[2];
+  ok(copied.includes('#session-energy&') && sorted(copied.split('#session-energy&')[1]) === 'boundary=full&session-energy=video' && !copied.includes('?'), `Copy reading's link names the plate, then the settings, with no query: ${copied}`);
+  const again = await load(copied.slice(copied.indexOf('#')));
   const q = parts(again.document, 'session-energy');
-  ok(q.radio('boundary', 'full').checked && row(q.root, 'video').getAttribute('aria-selected') === 'true' && q.root.querySelector('input[type=number]').value === '20', 'that link opens the same settings from the fragment alone');
+  ok(q.radio('boundary', 'full').checked && row(q.root, 'video').getAttribute('aria-selected') === 'true', 'that link opens the same settings from the fragment alone');
   ok(!again.document.getElementById('sessions').hidden, 'on the panel that holds the plate');
-  eq(settings(again.window), 'boundary=full&session-energy=video&use=20', 'and the address stays as it came');
+  eq(sorted(settings(again.window)), 'boundary=full&session-energy=video', 'and the address stays as it came');
   eq(old.errors.join() + again.errors.join(), '', 'no script errors');
+}
+
+// Back after a tab change returns to the tab, and Back or Forward puts every plate where its entry says (CW 4, ai-13).
+async function history() {
+  const { window, document, errors } = await load('#sessions');
+  const tabs = [...document.querySelectorAll('.section-strip [role="tab"]')];
+  const p = parts(document, 'session-energy');
+  pick(window, p.radio('boundary', 'full'));
+  await settle();
+  fire(window, tabs[1], 'click');
+  eq(tabs[1].getAttribute('aria-selected'), 'true', 'a tab opens');
+  window.history.back();
+  await wait(40);
+  eq(tabs[0].getAttribute('aria-selected'), 'true', 'Back returns to the tab before');
+  ok(p.radio('boundary', 'full').checked, 'with the plate as that entry left it');
+  eq(window.siteAddress.followed, false, 'Back is not a link the reader followed');
+  eq(errors.join(), '', 'no script errors');
 }
 
 // Platform finding 4: a closed panel or view stays findable where the browser can reveal it, and a reveal brings its tab or view forward, radios and all.
 async function findable() {
   const plain = await load('', { reveal: false });
-  ok([...plain.document.querySelectorAll('[role="tabpanel"]')].slice(1).every((n) => n.getAttribute('hidden') === ''), 'without the reveal (Safari), a closed panel is plain hidden');
-  ok(parts(plain.document, 'session-energy').views('table').getAttribute('hidden') === '', 'and so is a closed view');
+  ok([...plain.document.querySelectorAll('[role="tabpanel"]')].filter((n) => !n.closest('.agenda')).slice(1).every((n) => n.getAttribute('hidden') === ''), 'without the reveal (Safari), a closed panel is plain hidden');
+  ok(parts(plain.document, 'session-energy').table.getAttribute('hidden') === '', 'and so is a closed view');
   const { window, document, errors } = await load();
-  const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
-  ok(panels.slice(1).every((n) => n.getAttribute('hidden') === 'until-found' && n.tabIndex === -1) && panels[0].tabIndex === 0, 'with it, a closed panel is hidden until found, and out of the Tab order');
+  const tabs = [...document.querySelectorAll('.section-strip [role="tab"]')];
+  const panels = tabs.map((a) => document.getElementById(a.getAttribute('aria-controls')));
+  ok([...document.querySelectorAll('.agenda-faces > [role="tabpanel"]')].slice(1).every((n) => n.getAttribute('hidden') === 'until-found'), 'a closed agenda face is hidden until found too');
+  ok(panels.slice(1).every((n) => n.getAttribute('hidden') === 'until-found'), 'with it, a closed panel is hidden until found');
+  ok(panels.every((n) => !n.hasAttribute('tabindex')), 'a panel with controls in it takes no Tab stop of its own: the next Tab after the strip reaches its first control (ai-15)');
   panels[2].dispatchEvent(new window.Event('beforematch'));
-  ok(!panels[2].hidden && panels[0].getAttribute('hidden') === 'until-found' && panels[2].tabIndex === 0, 'a match in a closed panel opens it, and only it');
+  ok(!panels[2].hidden && panels[0].getAttribute('hidden') === 'until-found', 'a match in a closed panel opens it, and only it');
   ok(tabs[2].getAttribute('aria-selected') === 'true' && tabs[0].getAttribute('aria-selected') === 'false', 'and its tab is the selected one');
+  ok(document.querySelector('#spending [data-plate]').classList.contains('is-live'), 'and its plates start');
   const p = parts(document, 'session-energy');
-  ok(p.views('table').getAttribute('hidden') === 'until-found' && p.views('sources').getAttribute('hidden') === 'until-found', 'a closed view is hidden until found');
-  p.views('sources').dispatchEvent(new window.Event('beforematch'));
-  ok(!p.views('sources').hidden && p.views('reading').getAttribute('hidden') === 'until-found', 'a match in Sources opens it');
-  ok(p.radio('session-energy-view', 'sources').checked && p.root.dataset.view === 'sources', 'and its radio and the plate follow');
+  ok(p.table.getAttribute('hidden') === 'until-found', 'a closed view is hidden until found');
+  p.table.dispatchEvent(new window.Event('beforematch'));
+  ok(!p.table.hidden && p.window.getAttribute('hidden') === 'until-found' && p.plot.getAttribute('hidden') === 'until-found', 'a match in the Table opens it, and the Chart steps aside');
+  ok(p.view('table').getAttribute('aria-pressed') === 'true' && p.root.dataset.view === 'table', 'and its button and the plate follow');
   const css = read('site/assets/css/site.css');
   ok(css.includes('[hidden]:not([hidden="until-found"]) { display: none !important; }'), 'the site\'s hidden rule leaves a findable panel to the browser');
   ok(css.includes('@media screen { [hidden="until-found"] { margin: 0 !important; padding: 0 !important; border: 0 !important; } }'), 'whose box takes no room until found');
@@ -1607,37 +1696,242 @@ async function aids() {
   const forms = new Set();
   for (const plot of plots) {
     const root = plot.closest('[data-plate]');
+    parts(document, root.id); // its panel opens, and the plate starts
     const how = document.getElementById(plot.getAttribute('aria-describedby'));
     const { type } = JSON.parse(document.getElementById(`plate-data-${root.dataset.plate}`).textContent).plot;
     const form = type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(type) ? 'years' : 'rows';
     forms.add(form);
     ok(how && how.hidden && how.textContent === HOW[form], `${root.id}: the plot is described by the instruction for ${form}, out of view`);
     eq(form === 'cells' ? 'grid' : form === 'years' ? 'horizontal' : 'listbox', form === 'years' ? plot.getAttribute('aria-orientation') : plot.getAttribute('role'), `${root.id}: and the words fit how its keys move`);
-    ok(root.querySelector(':scope > .plate-under').previousElementSibling === plot && root.querySelector(':scope > .plate-under > .plate-to-table').textContent === 'Read as a table', `${root.id}: Read as a table stands right under the plot`);
+    ok(root.querySelector(':scope > .plate-under').previousElementSibling === plot && !root.querySelector('.plate-to-table'), `${root.id}: the key stands right under the plot, and Read as a table has gone (explorer-22)`);
+    eq(root.querySelector('.plate-views [data-view="table"]').textContent, 'Table', `${root.id}: the Table is one press from the plot, over it`);
   }
   eq(new Set(plots.map((n) => n.getAttribute('aria-describedby'))).size, plots.length, 'each plot has its own');
   eq([...forms].sort().join(), 'cells,rows,years', 'the demonstration holds all three forms');
   const p = parts(document, 'session-energy');
-  fire(window, p.root.querySelector('.plate-to-table'), 'click');
-  ok(!p.views('table').hidden && p.views('reading').hidden && p.radio('session-energy-view', 'table').checked, 'the button opens the Table view, and the radio follows');
-  eq(document.activeElement, p.views('table').querySelector('.table-scroll'), 'and focus goes to the table');
-  ok(!p.plot.querySelector('.plate-to-table, [id$="-how"]'), 'nothing but rows in the list box');
+  ok(!p.plot.querySelector('.plate-to-table, .plate-views, [id$="-how"]'), 'nothing but rows in the list box');
   eq(errors.join(), '', 'no script errors');
+}
+
+// A meter: stacked parts on one fixed scale. A stop leaves parts out as dashed ghosts and moves the needle to the counted total while the axis holds; a row past
+// the scale is hatched, with an arrow and its figure printed. Its title and its answer follow the state, from the plate's own figures (DIRECTION-R2 3.7).
+async function meter() {
+  const { window, document, errors } = await load('#face-hour');
+  const p = parts(document, 'meter-demo');
+  const answer = document.querySelector('[data-answer="meter-demo"]');
+  eq(document.querySelectorAll('[data-answer="meter-demo"]').length, 1, 'the answer stands once, in the agenda');
+  const title = p.root.querySelector('.plate-title');
+  const axis = () => [...p.plot.querySelectorAll('.ladder-axis span')].map((n) => `${n.textContent}@${n.style.getPropertyValue('--x')}`).join();
+  const ticks = axis();
+  const chat = row(p.root, 'chat');
+  eq(p.plot.querySelector('.ladder').dataset.form, 'meter', 'a meter ruler');
+  eq(chat.querySelectorAll('.meter-part').length, 3, 'a row of three parts');
+  ok(!chat.querySelector('.meter-part.is-ghost'), 'at the whole hour every part counts');
+  const off = row(p.root, 'household');
+  ok(off.classList.contains('is-off') && off.querySelector('.meter-arrow') && off.querySelector('.ladder-value').textContent.includes('28,740'), 'a row past the scale is hatched, with an arrow and its figure printed');
+  ok(p.root.querySelector('.plate-legend').textContent.includes('Spread, not a confidence interval'), 'the spread is keyed for what it is');
+  eq(answer.textContent, 'Chat, ten prompts, counted as Whole hour: about 15 (9.3 to 24) Wh.', 'the build wrote the answer at the defaults');
+  const at0 = +p.plot.style.getPropertyValue('--at');
+  const title0 = title.textContent;
+  const heard = [];
+  window.plate.onReading('meter-demo', (r) => heard.push(r.answer));
+  eq(heard.length, 1, 'onReading answers at once');
+  pick(window, p.radio('reach', 'dc'));
+  eq(axis(), ticks, 'the axis holds across stops: one fixed scale');
+  eq(chat.querySelectorAll('.meter-part.is-ghost').length, 2, 'the parts this stop leaves out are dashed ghosts');
+  ok(+p.plot.style.getPropertyValue('--at') < at0, 'and the needle moves to the counted total');
+  ok(p.root.hasAttribute('data-moved'), 'a stop off its default moves the plate');
+  eq(title.textContent, `Counted as Data center only, an hour of chat is about ${p.value.textContent} Wh`, "the title follows the state, from the plate's own figure");
+  ok(answer.textContent.startsWith(`Chat, ten prompts, counted as Data center only: about ${p.value.textContent} `), `and so does the answer: ${answer.textContent}`);
+  eq(heard.at(-1), answer.textContent, 'and a listener hears it');
+  key(window, p.plot, 'ArrowDown');
+  ok(answer.textContent.startsWith('Streamed video, counted as Data center only'), 'the answer follows the selected row');
+  ok(title.textContent.includes(`about ${row(p.root, 'chat').querySelector('.ladder-num').textContent} Wh`), 'while the title, about chat, keeps its own figure');
+  fire(window, p.root.querySelector('[data-reset]'), 'click');
+  eq(title.textContent, title0, 'back at the starting point the title is the finding again');
+  eq(answer.textContent, 'Chat, ten prompts, counted as Whole hour: about 15 (9.3 to 24) Wh.', 'and the answer is the starting one');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// The agenda (DIRECTION-R2 3.2): the questions become a vertical tablist over their faces; a face is a look, so choosing one replaces the history entry,
+// and an answer stays with its plate whether its face is chosen or not. The fixture's agenda: the meter as a face, a list face, and a face of words.
+async function agenda() {
+  const source = html;
+  ok(/<section class="wrap agenda"[^>]*>\s*<div class="agenda-qs">/.test(html) && html.indexOf('class="wrap agenda"') < html.indexOf('class="section-strip"'), 'the fixture holds the agenda, above the tab strip');
+  const { window, document, errors } = await load('', { source });
+  const list = document.querySelector('.agenda-qs');
+  const tabs = [...document.querySelectorAll('.agenda [role="tab"]')];
+  const face = (n) => document.getElementById(['face-hour', 'face-list', 'face-third'][n]);
+  const chosen = () => tabs.map((t) => t.getAttribute('aria-selected')).join();
+  ok(document.querySelector('.agenda').classList.contains('is-live'), 'the agenda is live');
+  eq(`${list.getAttribute('role')} ${list.getAttribute('aria-orientation')}`, 'tablist vertical', 'its questions are a vertical tablist');
+  eq(tabs.length, 3, 'a tab for each question');
+  eq(chosen(), 'true,false,false', 'the first is chosen');
+  ok(!face(0).hidden && face(1).hidden && face(2).hidden, 'its face shows, the others wait');
+  eq(face(1).getAttribute('role'), 'tabpanel', 'each face is a panel');
+  eq(face(1).getAttribute('aria-labelledby'), tabs[1].id, 'named by its question');
+  const answer = document.querySelector('.agenda-a');
+  eq(tabs[0].getAttribute('aria-describedby'), answer.id, 'the answer describes its question');
+  eq(answer.getAttribute('aria-hidden'), 'true', 'and is read once, as the description');
+  ok([...list.children].every((n) => n.getAttribute('role') === 'none'), 'the cells add nothing to the tablist');
+  eq(answer.textContent, new JSDOM(html).window.document.querySelector('[data-answer="meter-demo"]').textContent, 'the kit keeps the answer the build wrote');
+  eq(document.getElementById('meter-demo').dataset.variant, 'face', 'a plate in a face is a face');
+  const before = window.history.length;
+  key(window, tabs[0], 'ArrowDown');
+  eq(document.activeElement, tabs[1], 'Down moves to the next question');
+  eq(chosen(), 'false,true,false', 'and chooses it at once');
+  ok(face(0).hidden && !face(1).hidden, 'its face shows');
+  ok(settings(window).includes('agenda=list'), 'the face is named in the address');
+  eq(window.history.length, before, 'replacing the entry: a face is a look, not a place');
+  key(window, tabs[1], 'End');
+  eq(chosen(), 'false,false,true', 'End takes the last');
+  key(window, tabs[2], 'ArrowDown');
+  eq(chosen(), 'true,false,false', 'Down from the last wraps to the first');
+  ok(!settings(window).includes('agenda='), 'the first face goes unnamed');
+  key(window, tabs[0], 'ArrowUp');
+  eq(chosen(), 'false,false,true', 'Up from the first wraps to the last');
+  key(window, tabs[2], 'Home');
+  eq(chosen(), 'true,false,false', 'Home takes the first');
+  fire(window, tabs[1], 'click');
+  eq(chosen(), 'false,true,false', 'a press on a question chooses it');
+  eq(document.activeElement, tabs[1], 'and keeps focus on it');
+  ok(!face(1).hasAttribute('tabindex') && !face(0).hasAttribute('tabindex'), 'a face with a control or a plate in it takes no Tab stop of its own');
+  fire(window, tabs[2], 'click');
+  eq(face(2).tabIndex, 0, 'a face with nothing to focus is one Tab stop itself');
+  fire(window, tabs[1], 'click');
+  const p = parts(document, 'meter-demo');
+  fire(window, tabs[1], 'click');
+  pick(window, p.radio('reach', 'dc'));
+  ok(face(0).hidden && answer.textContent.startsWith('Chat, ten prompts, counted as Data center only'), `an answer follows its plate while its face is closed: ${answer.textContent}`);
+  // The address opens a face: an anchor inside it, or its name.
+  const deep = await load('#in-list', { source });
+  ok(!deep.document.getElementById('face-list').hidden && deep.document.getElementById('face-hour').hidden, 'an anchor in a face opens it');
+  const named = await load('#sessions&agenda=third', { source });
+  ok(!named.document.getElementById('face-third').hidden, 'and so does its name');
+  named.window.location.hash = 'face-list';
+  fire(named.window, named.window, 'hashchange');
+  ok(!named.document.getElementById('face-list').hidden, 'a link to a face, followed later, opens it');
+  ok(read('site/assets/css/site.css').includes('.js .agenda:not(.is-live) .agenda-faces > :not(:first-child) { display: none; }'), 'before the kit runs, the later faces wait, so nothing jumps');
+  eq(errors.join() + deep.errors.join() + named.errors.join(), '', 'no script errors');
+}
+
+// The meeting sheet (sheet.js, DIRECTION-R2 3.12): a page's one form of questions, the sheet a modal on the right. Ticks ride in ask=; nothing is stored. The
+// fixture's form is in its Questions panel, a set's Add is on the agenda's list face, and the sheet's button stands at the strip's end.
+async function sheet() {
+  const source = html;
+  ok(html.includes('<form class="asks" data-sheet') && html.indexOf('data-sheet-add="q-water"') < html.indexOf('<form class="asks"') && /<script defer src="[^"]*\/sheet\.js"><\/script>/.test(html), 'the fixture holds the one form, an Add on the list face, and sheet.js');
+  const open = (query) => load(query, { source }).then((r) => {
+    r.window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
+    r.window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); this.dispatchEvent(new r.window.Event('close')); };
+    return r;
+  });
+  const { window, document, errors } = await open('');
+  const opener = document.querySelector('[data-sheet-open]');
+  const dialog = document.getElementById('meeting-sheet');
+  const boxes = [...document.querySelectorAll('input[name="ask"]')];
+  ok(dialog && dialog.matches('dialog.drawer.drawer-right') && dialog.getAttribute('aria-labelledby') === 'meeting-sheet-title', 'the sheet is a labeled drawer on the right');
+  eq(opener.textContent, 'Meeting sheet (0)', 'its button counts the ticks');
+  const button = (text) => [...dialog.querySelectorAll('button, a')].find((n) => n.textContent === text);
+  fire(window, opener, 'click');
+  ok(dialog.hasAttribute('open'), 'it opens as a modal');
+  ok(dialog.querySelector('.drawer-body').textContent.includes('Tick a question to build the sheet.'), 'empty, it says how to start');
+  fire(window, button('Print the sheet'), 'click');
+  eq(dialog.querySelector('[role="status"]').textContent, 'Tick a question to build the sheet.', 'an action that cannot run says why, and is never disabled');
+  ok(![...dialog.querySelectorAll('button')].some((b) => b.disabled), 'no button is disabled');
+  dialog.close();
+  eq(document.activeElement, opener, 'closing gives focus back to its opener');
+  fire(window, document.querySelector('[data-sheet-add="q-water"]'), 'click');
+  ok(boxes[0].checked && boxes[1].checked && !boxes[2].checked, 'a set\'s Add ticks that set, in the one form');
+  ok(settings(window).includes('ask=q-water-1.q-water-2'), 'the ticks ride in the address');
+  eq(opener.textContent, 'Meeting sheet (2)', 'and the count follows');
+  boxes[2].checked = true;
+  fire(window, boxes[2], 'change');
+  fire(window, opener, 'click');
+  eq([...dialog.querySelectorAll('.drawer-body h3')].map((n) => n.textContent).join(), 'Water,Land', 'the sheet lists the ticked questions by set');
+  ok(dialog.querySelector('.drawer-body li').textContent.includes('3 Wh [fp-001]'), 'a figure keeps its claim id');
+  ok(button('Add these sets to a council briefing').href.endsWith('/site/briefing/#add=q-water.q-land'), 'the briefing link carries the sets');
+  fire(window, button('Copy the questions'), 'click');
+  await wait(10);
+  ok(window.clip.startsWith('Water\n1. How much water, counting 3 Wh [fp-001]?'), 'Copy puts the questions on the clipboard');
+  fire(window, button('Clear'), 'click');
+  ok(boxes.every((b) => !b.checked) && !settings(window).includes('ask='), 'Clear unticks them all');
+  ok(button('Undo clear'), 'and offers to undo');
+  fire(window, button('Undo clear'), 'click');
+  eq(boxes.filter((b) => b.checked).length, 3, 'Undo clear puts them back');
+  ok(window.localStorage.length === 0, 'nothing is stored');
+  const linked = await open('#x&ask=q-land-1');
+  ok(linked.document.querySelector('input[value="q-land-1"]').checked, 'a copied link keeps its ticks');
+  eq(errors.join() + linked.errors.join(), '', 'no script errors');
 }
 
 // A page's receipts moved to its Sources page (owner ruling 39): an old link to one here goes on to the same id there, and only a receipt's id moves.
 async function moved() {
   const { window, document, errors } = await load();
-  eq(window.plate.movedTo('src-fp-001'), null, 'a page with no Sources link forwards nothing');
-  document.body.append(Object.assign(document.createElement('a'), { href: 'sources/' }));
-  document.body.lastElementChild.setAttribute('data-sources', '');
+  ok(document.querySelector('.brief > .brief-meta > a[data-sources][href="sources/"]'), 'the brief links the page\'s Sources page');
   eq(window.plate.movedTo('src-fp-001'), 'http://localhost/scripts/fixtures/plate-demo/sources/#src-fp-001', 'a claim goes on to its receipt there');
   eq(window.plate.movedTo('session-energy-source-fp-001'), 'http://localhost/scripts/fixtures/plate-demo/sources/#session-energy-source-fp-001', 'so does a plate receipt');
   eq(window.plate.movedTo('session-energy'), null, 'a plate stays here');
   eq(window.plate.movedTo('sessions'), null, 'and so does a section');
   document.body.append(Object.assign(document.createElement('p'), { id: 'src-zz-999' }));
   eq(window.plate.movedTo('src-zz-999'), null, 'an id still on the page stays');
+  document.querySelector('[data-sources]').remove();
+  eq(window.plate.movedTo('src-fp-001'), null, 'a page with no Sources link forwards nothing');
   eq(errors.join(), '', 'no script errors');
 }
 
-module.exports = { groups: { charts, fragment, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address, moved } };
+// Where a plate sits gives its variant (docs/PLATE-KIT.md), and a definition's "variant" wins: a face in the agenda, a lead first in its panel, a repeater after
+// it, a strip in .plate-strip, and the atlas only by name. The site's CSS draws each; here, the kit must name them, and only the named one is in the markup.
+async function variants() {
+  const still = new JSDOM(html).window.document;
+  eq([...still.querySelectorAll('[data-plate][data-variant]')].map((n) => `${n.id}=${n.dataset.variant}`).join(), 'capital-history=atlas', 'without scripts only the named variant is in the markup');
+  const { document, errors } = await load();
+  const at = (id) => { parts(document, id); return document.getElementById(id).dataset.variant; };
+  eq(['meter-demo', 'hour-demo', 'jobs-demo', 'repeat-demo', 'shift-demo', 'capital-history'].map(at).join(), 'face,lead,lead,repeater,strip,atlas', 'face, lead, repeater, strip, and atlas');
+  const css = read('site/assets/css/site.css');
+  ok(['face', 'repeater', 'strip', 'atlas'].every((v) => css.includes(`[data-variant="${v}"]`)) && css.includes('main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { container-type: inline-size; }'), 'and the stylesheet draws each, by its container');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// The prose tip (cite.js, DIRECTION-R2 3.9): a plain click on a claim mark or a term opens one popover in place from #cr-data; closing gives focus back.
+// jsdom has no popover, so this gives it the four parts the script uses.
+async function tip() {
+  const data = JSON.parse(new JSDOM(html).window.document.getElementById('cr-data').textContent);
+  ok(data.claims['jb-070'].limit && data.terms.amw.name === 'aMW' && /<script defer src="\.\.\/\.\.\/\.\.\/site\/assets\/js\/cite\.js"><\/script>\s*<!-- \/cr-data -->/.test(html), 'the page carries the tip\'s data, as pour_claim_refs.py writes it, and cite.js');
+  const { window, document, errors } = await load('#sessions', { before: (w) => {
+    Object.defineProperty(w.HTMLElement.prototype, 'popover', { get() { return this.getAttribute('popover'); }, configurable: true });
+    w.HTMLElement.prototype.showPopover = function () { this.dataset.open = ''; this.setAttribute('open', ''); }; // jsdom focuses only a dialog that is open
+    w.HTMLElement.prototype.hidePopover = function () { this.dispatchEvent(Object.assign(new w.Event('beforetoggle'), { newState: 'closed' })); delete this.dataset.open; this.removeAttribute('open'); };
+    const matches = w.Element.prototype.matches;
+    w.Element.prototype.matches = function (s) { return s === ':popover-open' ? 'open' in this.dataset : matches.call(this, s); };
+  } });
+  let stayed = null; // what cite.js decided for a click; then nothing navigates, which jsdom cannot
+  window.addEventListener('click', (e) => { stayed = e.defaultPrevented; e.preventDefault(); });
+  const tipOf = () => document.getElementById('cr-tip');
+  const links = () => [...tipOf().querySelectorAll('a')];
+  const mark = document.querySelector('.brief a.cr[data-claim="jb-070"]');
+  ok(tipOf() && tipOf().getAttribute('popover') === 'auto' && tipOf().tagName === 'DIALOG', 'one popover for the page');
+  mark.focus();
+  fire(window, mark, 'click');
+  ok(stayed, 'a plain click on a mark stays on the page');
+  ok('open' in tipOf().dataset && mark.getAttribute('aria-expanded') === 'true', 'and opens the tip, which the mark says');
+  ok(tipOf().textContent.includes(data.claims['jb-070'].title) && tipOf().textContent.includes(`Partly verified. Limit: ${data.claims['jb-070'].limit}`) && tipOf().textContent.includes('Claim jb-070.'), 'with the source, its status and limit, and the claim');
+  ok(links()[0].href === data.claims['jb-070'].url && links().at(-1).href === mark.href && links().at(-1).textContent === 'Full record on the Sources page', 'the source is a link, and so is the way on to the full record');
+  eq(document.activeElement, tipOf(), 'focus moves in');
+  tipOf().hidePopover();
+  ok(!('open' in tipOf().dataset) && mark.getAttribute('aria-expanded') === 'false' && document.activeElement === mark, 'closing gives focus back to the mark');
+  const term = document.querySelector('.brief a.term[data-term="amw"]');
+  fire(window, term, 'click');
+  ok(stayed && tipOf().textContent.startsWith('aMW') && tipOf().textContent.includes(data.terms.amw.words) && tipOf().getAttribute('aria-label') === 'Definition: aMW', 'a term opens its definition');
+  ok(links().at(-1).href === term.href && term.getAttribute('href') === '../../../site/sources/#term-amw', 'with the glossary one link on');
+  tipOf().hidePopover();
+  fire(window, mark, 'click', { ctrlKey: true });
+  ok(!stayed && !('open' in tipOf().dataset), 'a modified click is a plain link');
+  const stray = Object.assign(document.createElement('a'), { className: 'cr', href: 'sources/#src-zz-999' });
+  stray.dataset.claim = 'zz-999';
+  document.querySelector('.brief-lead').append(stray);
+  fire(window, stray, 'click');
+  ok(!stayed, 'and so is a mark the data does not hold');
+  eq(errors.join(), '', 'no script errors');
+}
+
+module.exports = { groups: { agenda, sheet, meter, variants, tip, charts, fragment, history, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address, moved } };

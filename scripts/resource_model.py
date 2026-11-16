@@ -1210,6 +1210,32 @@ def catalog_snapshot(tree, rows):
     return {r: {m: tree["catalog"][r][m] for m in MEASURES} for r in rows}
 
 
+# An hour counted to each boundary, for the hour meter (DIRECTION-R2, ai-hour): the layers each stop counts, and the hour rows by their names in same_hour.
+HOUR_STOPS = {"dc": ("data_center",), "adds": ("data_center", "network"), "whole": ("data_center", "network", "router", "device")}
+HOUR_ROWS = {"chat": "chat_hour", "video": "video_hour", "short": "short_hour", "coding": "coding_hour"}
+
+
+def sum_extremes(keys, inputs, base, central, oat):
+    """Low and high of a sum of results by input_extremes's rule: every input at whichever end lowers or raises the sum, the settings fixed."""
+    total = lambda flat: sum(flat[k] for k in keys)  # noqa: E731
+    up = {k: total(oat[k][1]) >= total(oat[k][0]) for k in oat}
+    ends = [total(flatten(compute({**base, **{k: inputs[k][a if up[k] else b] for k in oat}}))) for a, b in (("low", "high"), ("high", "low"))]
+    return min(total(central), *ends), max(total(central), *ends)
+
+
+def same_hour_stops(inputs, base, central, oat):
+    """Each hour row at each stop, with its low and high, and its layers. Coding is the open-book model's own row; at the whole hour chat, video, and
+    short are same_hour's totals (tests/test_resource_model.py)."""
+    out = {}
+    for row, key in HOUR_ROWS.items():
+        layer = lambda name: "catalog.%s.layers.%s" % (key, name)  # noqa: E731
+        out[row] = {"layers": {name: central[layer(name)] for name in HOUR_STOPS["whole"]}}
+        for stop, counted in HOUR_STOPS.items():
+            low, high = sum_extremes([layer(name) for name in counted], inputs, base, central, oat)
+            out[row][stop] = {"value": sum(central[layer(name)] for name in counted), "low": low, "high": high}
+    return out
+
+
 def build(doc, cm):
     inputs, selectors, base = resolve(doc, cm)
     tree = compute(base)
@@ -1338,6 +1364,7 @@ def build(doc, cm):
         "computed_defaults": {
             "settings": {name: sel["default"] for name, sel in selectors.items()},
             "same_hour": sh_out,
+            "same_hour_stops": same_hour_stops(inputs, base, central, oat),
             "catalog": {"default": catalog_snapshot(tree, cat_names), "low": snap(0), "high": snap(1)},
             "selectors": selector_out,
             "crossovers": tree["cross"],
@@ -1345,9 +1372,9 @@ def build(doc, cm):
     }
     if "carbon_damage" in doc:  # the one line that joins the damage layer to the file; see its block below
         output["carbon_damage"] = doc["carbon_damage"]
-    same = output["computed_defaults"].pop("same_hour")
+    exact = {k: output["computed_defaults"].pop(k) for k in ("same_hour", "same_hour_stops")}
     output = rounded(output)
-    output["computed_defaults"]["same_hour"] = same  # kept exact: the tests compare it to the comparison model
+    output["computed_defaults"].update(exact)  # kept exact: the tests compare them to the comparison model and to each other
     return output
 
 

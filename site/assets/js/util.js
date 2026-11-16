@@ -33,29 +33,14 @@ export async function getJSON(path) {
   return response.json();
 }
 
-// The address, as plate.js keeps it: #anchor&name=value, since a browser never sends the fragment. An old link's ?query is read too, and the next write moves it.
-const parse = (raw) => {
-  const first = raw.split('&')[0];
-  const anchor = first.includes('=') ? '' : first;
-  return { anchor, params: new URLSearchParams(anchor ? raw.slice(first.length + 1) : raw) };
-};
-function address() {
-  const at = parse(window.location.hash.slice(1));
-  for (const [name, value] of new URLSearchParams(window.location.search)) if (!at.params.has(name)) at.params.append(name, value);
-  return at;
-}
-function writeAddress(anchor, params) {
-  const hash = [anchor, params.toString()].filter(Boolean).join('&');
-  try { window.history.replaceState(null, '', `${window.location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
-}
-// A link within the page (#id) takes the whole fragment: the filters it held come back after it. Added once, however many forms a page links.
-const keep = (e) => {
-  const now = address();
-  const was = e.oldURL ? parse(new URL(e.oldURL).hash.slice(1)).params : null;
-  if (was?.toString() && !now.params.toString()) writeAddress(now.anchor, was);
-};
+// The address, #anchor&name=value, as theme.js reads and writes it for every script (window.siteAddress): one grammar, one place. A filter or a tick replaces
+// the history entry; only a change of place (a tab) pushes one. A link within the page keeps the filters (theme.js), and an old link's ?query moves into the fragment.
+export const address = () => window.siteAddress.read();
+export const writeAddress = (anchor, params, push = false) => window.siteAddress.write(anchor, params, push);
 
 // Reads the named form fields from the address, and returns a function that writes them back, so a filtered view can be linked. Other settings and the anchor are kept.
+// Back, Forward, or an address typed in puts the fields where the address says and runs the page's filter, as an input would (CW 4); a link the reader
+// followed keeps them (theme.js tells the two apart, before this hears the change).
 export function linkFilters(form, names) {
   const { anchor, params } = address();
   for (const name of names) {
@@ -63,7 +48,14 @@ export function linkFilters(form, names) {
     if (field && params.has(name)) field.value = params.get(name);
   }
   writeAddress(anchor, params);
-  window.addEventListener('hashchange', keep);
+  window.addEventListener('hashchange', () => {
+    if (window.siteAddress.followed) return;
+    const now = address().params;
+    const field = (name) => form.elements.namedItem(name);
+    const moved = names.filter((name) => field(name) && field(name).value !== (now.get(name) ?? ''));
+    for (const name of moved) field(name).value = now.get(name) ?? ''; // every field first, so the filter runs once on the whole address
+    for (const name of moved) for (const type of ['input', 'change']) field(name).dispatchEvent(new Event(type, { bubbles: true })); // as a reader's change: a form's input, a picker's change
+  });
   return () => {
     const { anchor: at, params: next } = address();
     for (const name of names) {
@@ -97,8 +89,8 @@ export function addOptions(select, options) {
   );
 }
 
-// A plate's detail panel as a <details> (the Energy pages): closed until a reader selects a row or follows a link into it, its summary the Reading up to a second colon or a first
-// period. Without scripts, and in print, the panel shows as the build wrote it. The live region stays outside, so a selection is still spoken.
+// A plate's window as a <details> (the Energy pages): closed until a reader selects a row or follows a link into it, its summary the Reading up to a second colon or a first
+// period. Without scripts, and in print, the window shows as the build wrote it. The live region is outside the window, so a selection is still spoken.
 export function closedDetail(figure) {
   const id = figure.dataset.plate;
   const panel = figure.querySelector('.plate-detail');
@@ -108,15 +100,15 @@ export function closedDetail(figure) {
   const sync = () => { line.textContent = /^[^:.]*(?::[^:.]*)?/.exec(reading.textContent)[0]; };
   sync();
   new MutationObserver(sync).observe(reading, { childList: true, characterData: true, subtree: true });
-  more.append(line, ...[...panel.children].filter((node) => node.tagName !== 'OUTPUT'));
+  const active = panel.contains(document.activeElement) ? document.activeElement : null; // plate.js focuses the evidence for an old Sources link; a move would drop it
+  more.append(line, ...panel.children);
   panel.prepend(more);
   const { params } = address();
   const target = hashTarget();
-  more.open = params.has(id) || params.has(`${id}-view`) || more.contains(target);
-  if (more.contains(target)) {
-    panel.querySelector(`.plate-views input[value="${target.closest('.plate-view').dataset.view}"]`).click();
-    target.scrollIntoView();
-  }
+  more.open = params.has(id) || params.has(`${id}-view`) || more.contains(target) || !!active;
+  active?.focus({ preventScroll: true });
+  if (target && figure.querySelector('.plate-view[data-view="table"]')?.contains(target)) figure.querySelector('.plate-views [data-view="table"]')?.click();
+  if (more.contains(target)) target.scrollIntoView();
   figure.addEventListener('click', (event) => { if (event.target.closest('.plate-plot [data-row]')) more.open = true; });
   figure.querySelector('.plate-plot').addEventListener('keydown', (event) => { if (/^(Arrow|Home$|End$|Enter$| $)/.test(event.key)) more.open = true; });
 }

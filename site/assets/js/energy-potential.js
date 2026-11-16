@@ -217,7 +217,7 @@ function typesPlate(figure, pick) {
       p.replaceChildren(big, ` ${match[2]}`);
     }
     // What the build leaves in the claim zone for no scripts moves beside the Reading, where selecting a row asks about it. The button stays beside the figures, on the first screen.
-    const reading = figure.querySelector('.plate-view[data-view="reading"]');
+    const reading = figure.querySelector('.plate-detail');
     const actions = reading.querySelector('.plate-actions');
     const feet = [...figure.querySelectorAll('.plate-claim > .plate-foot')];
     parts.read = feet.map((p) => p.querySelector('a[href$="#tribes"]')).find(Boolean);
@@ -231,9 +231,7 @@ function typesPlate(figure, pick) {
     parts.tribes = document.createElement('div');
     parts.more.append(parts.summary, parts.tribes);
     parts.more.addEventListener('toggle', () => { if (parts.more.open) fillTribes(); });
-    reading.insertBefore(states, actions);
-    reading.insertBefore(feet.find((p) => p.querySelector('a[href$=".json"]')), actions);
-    reading.insertBefore(parts.more, actions);
+    actions.before(states, feet.find((p) => p.querySelector('a[href$=".json"]')), parts.more); // B1 (R2 kit): the window's parts may sit in closedDetail's disclosure
     if (onThisPage) {
       parts.read.addEventListener('click', (event) => {
         event.preventDefault();

@@ -92,8 +92,7 @@
 #dc-jobs-per-mw.is-live [data-row="mw"] .instrument-ends > span { z-index: 2; padding-inline: 2px; color: var(--atni-text-muted); background: var(--plot-ground); }
 /* Departure from the first plate's window fit: at the window's height these four rows would be 160px each for a 24px bar, over a panel with nothing to say. The plate takes the height its zones need, the panel ends with its words, and the plot shares what it gets from 96 to 120px a row. It rides along beside an open record, which stretches nothing. */
 @media screen and (min-width: 1100px) {
-  #dc-jobs-per-mw.is-live { grid-template-rows: auto; min-height: 0; }
-  #dc-jobs-per-mw > :is(.plate-claim, .plate-plot, .plate-detail) { grid-row: 1; }
+  #dc-jobs-per-mw.is-live { min-height: 0; } /* B1 (R2 kit): its zones take the kit's variant areas now */
   #dc-jobs-per-mw.is-live > .plate-plot { position: sticky; top: 64px; align-self: stretch; min-height: 0; max-height: 30rem; }
   #dc-jobs-per-mw.is-live > .plate-detail { align-self: start; }
 }

@@ -23,6 +23,8 @@
   <meta name="theme-color" content="#010B13">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/LeagueSpartan-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/NotoSans-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/site.css">
   <link rel="stylesheet" href="assets/css/home.css">
@@ -34,22 +36,23 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
+  <header class="site-header" id="top">
     <div class="wrap header-inner">
       <a class="wordmark" href="./" aria-current="page" aria-label="ATNI Energy Task Forces, home"><img class="lockup lockup-on-dark" src="assets/img/atni-energy-header-on-dark.svg" alt=""><img class="lockup lockup-on-light" src="assets/img/atni-energy-header.svg" alt=""></a>
       <nav class="site-nav" aria-label="Main">
         <ul>
-          <li><a href="energy/">Energy</a></li>
+          <li><a href="energy/">Tribal Energy</a></li>
           <li><a href="data-centers/">Data Centers</a></li>
           <li><a href="ai/">AI</a></li>
-          <li><a href="explorer/">Explorer</a></li>
+          <li class="nav-group"><a href="explorer/">Explorer</a></li>
           <li><a href="briefing/">Briefing</a></li>
-          <li><a href="summit/">Summit</a></li>
+          <li class="nav-group"><a href="summit/">Summit</a></li>
           <li><a href="library/">Library</a></li>
           <li><a href="about/">About</a></li>
+          <li class="nav-group"><a href="sources/">Sources</a></li>
         </ul>
       </nav>
-      <button class="theme-toggle" type="button" data-theme-toggle hidden>Use light theme</button>
+      <button class="theme-toggle" type="button" data-theme-toggle data-js aria-pressed="false">Use light theme</button>
     </div>
   </header>
 
@@ -94,7 +97,7 @@
           <p class="whats-new-since" data-whats-new-since hidden></p>
           <p>The latest public sources, policy changes, and chart updates. <a href="library/#whats-new">See the last ninety days</a> or the <a href="data/whats-new.json">feed’s data</a>.</p>
         </div>
-        <ol class="whats-new-rows" role="list"><li><time datetime="2026-11-15">11/15/2026</time><span class="whats-new-kind">Data</span><a href="explorer/sources/">Source evidence behind the charts updated</a><span class="whats-new-area">Cross-cutting</span></li><li><time datetime="2026-11-06">11/06/2026</time><span class="whats-new-kind">Data</span><a href="explorer/#all-sources">Source evidence behind the charts updated</a><span class="whats-new-area">Cross-cutting</span></li><li><time datetime="2026-11-06">11/06/2026</time><span class="whats-new-kind">Data</span><a href="data-centers/resource-use/">Charts updated on the Resource Use page</a><span class="whats-new-area">Data centers</span></li><li><time datetime="2026-11-05">11/05/2026</time><span class="whats-new-kind">Library</span><a href="https://www.iso.org/standard/30134-2">ISO/IEC 30134-2:2026 Information technology, Data centres key performance indicators, Part 2: Power usage effectiveness (PUE)</a><span class="whats-new-area">Artificial intelligence</span></li><li><time datetime="2026-11-05">11/05/2026</time><span class="whats-new-kind">Library</span><a href="https://www.itu.int/epublications/en/publication/itu-t-l-1410-2024-11-methodology-for-environmental-life-cycle-assessments-of-information-and-communication-technology-goods-networks-and-services">Recommendation ITU-T L.1410 (11/2024), Methodology for environmental life cycle assessments of ICT goods, networks and services</a><span class="whats-new-area">Artificial intelligence</span></li><li><time datetime="2026-11-04">11/04/2026</time><span class="whats-new-kind">Library</span><a href="https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf">2024 United States Data Center Energy Usage Report</a><span class="whats-new-area">Data centers</span></li></ol>
+        <ol class="whats-new-rows" role="list"><li><time datetime="2026-11-16">11/16/2026</time><span class="whats-new-kind">Data</span><a href="explorer/sources/">Source evidence behind the charts updated</a><span class="whats-new-area">Cross-cutting</span></li><li><time datetime="2026-11-15">11/15/2026</time><span class="whats-new-kind">Data</span><a href="explorer/sources/">Source evidence behind the charts updated</a><span class="whats-new-area">Cross-cutting</span></li><li><time datetime="2026-11-06">11/06/2026</time><span class="whats-new-kind">Data</span><a href="explorer/#all-sources">Source evidence behind the charts updated</a><span class="whats-new-area">Cross-cutting</span></li><li><time datetime="2026-11-05">11/05/2026</time><span class="whats-new-kind">Library</span><a href="https://www.iso.org/standard/30134-2">ISO/IEC 30134-2:2026 Information technology, Data centres key performance indicators, Part 2: Power usage effectiveness (PUE)</a><span class="whats-new-area">Artificial intelligence</span></li><li><time datetime="2026-11-05">11/05/2026</time><span class="whats-new-kind">Library</span><a href="https://www.itu.int/epublications/en/publication/itu-t-l-1410-2024-11-methodology-for-environmental-life-cycle-assessments-of-information-and-communication-technology-goods-networks-and-services">Recommendation ITU-T L.1410 (11/2024), Methodology for environmental life cycle assessments of ICT goods, networks and services</a><span class="whats-new-area">Artificial intelligence</span></li><li><time datetime="2026-11-04">11/04/2026</time><span class="whats-new-kind">Library</span><a href="https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf">2024 United States Data Center Energy Usage Report</a><span class="whats-new-area">Data centers</span></li></ol>
       </div>
     </section>
     <!-- /SLOT -->
@@ -299,31 +302,35 @@
 
   <footer class="site-footer">
     <div class="wrap footer-inner">
-      <div>
+      <div class="footer-about">
         <p class="footer-title">ATNI Energy Task Forces</p>
         <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
+      <nav class="footer-nav" aria-label="Every page">
         <ul>
-          <li><a href="./">Home</a></li>
-          <li><a href="energy/">Energy Feasibility</a></li>
-          <li><a href="energy/potential/">What Tribal Plans Say</a></li>
-          <li><a href="energy/funding/">Energy Funding</a></li>
-          <li><a href="data-centers/">Data Centers</a></li>
-          <li><a href="ai/">Artificial Intelligence</a></li>
-          <li><a href="briefing/">Council Briefing</a></li>
+          <li><a href="./" aria-current="page">Home</a></li>
+          <li><a href="energy/">Tribal Energy</a><ul><li><a href="energy/potential/">What Tribal Plans Say</a></li><li><a href="energy/funding/">Funding</a></li></ul></li>
+          <li><a href="data-centers/">Data Centers</a><ul><li><a href="data-centers/resource-use/">Energy and Water Use</a></li></ul></li>
+          <li><a href="ai/">AI</a></li>
+          <li><a href="explorer/">Explorer</a></li>
+          <li><a href="briefing/">Briefing</a></li>
           <li><a href="summit/">Summit</a></li>
           <li><a href="library/">Library</a></li>
-          <li><a href="sources/">Sources</a></li>
           <li><a href="about/">About</a></li>
+          <li><a href="sources/">Sources</a></li>
         </ul>
       </nav>
-      <div>
-        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+      <div class="footer-meta">
         <p>This site publishes public (T0) material only and sets no cookies. <a href="about/#data-governance">How this site handles data</a>.</p>
-        <p>Updated 11/15/2026.</p>
+        <p class="footer-updated">Updated 11/16/2026.</p>
+        <p><a class="footer-top" href="#top">Top</a></p>
       </div>
     </div>
   </footer>
+  <!-- cr-data -->
+  <script type="application/json" id="cr-data">{"claims":{"lc-061":{"title":"Data Centers, Questions: the checklists","url":"https://atniclimate.github.io/atni-task-force/data-centers/#checklists","publisher":"ATNI Energy Task Forces","date":"11/05/2026","status":"partly verified","limit":"A count of this site's own checklists: questions to put to a proposal, not a review of any proposal and not legal advice."},"lc-071":{"title":"Resolution #2025-41: Establishing an Affiliated Tribes of Northwest Indians (ATNI) Task Force on Data Centers","url":"https://atnitribes.org/wp-content/uploads/2025/11/20251016_25-41_TASK%20FORCE%20DATA%20CENTERS.pdf","publisher":"Affiliated Tribes of Northwest Indians","date":"10/2025","status":"verified"},"pa-001":{"title":"Resolution #2026-039: The Affiliated Tribes of Northwest Indians (ATNI) Energy Committee Supports the Formation of a Task Force on Artificial Intelligence (AI)","url":"https://atnitribes.org/wp-content/uploads/2026/09/20260917_26-39_FORMATION%20OF%20A%20TASK%20FORCE%20ON%20AI.pdf","publisher":"Affiliated Tribes of Northwest Indians","status":"partly verified","limit":"The resolution's certification gives September 13 to 17, 2026; ATNI's convention page lists September 14 to 17, 2026, so the first day differs by source."}},"terms":{}}</script>
+  <script defer src="assets/js/cite.js"></script>
+  <!-- /cr-data -->
 </body>
 </html>

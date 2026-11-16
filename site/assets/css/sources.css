@@ -1,0 +1,109 @@
+/* Sources pages and the hub (DIRECTION-R2 3.14 and 3.15): B0's structure in the system's look, loaded after site.css by every sources/index.html.
+   A brief with the page's census; a 16rem rail that sticks (Show, the plates by the page's tabs, the page's other lists); the receipts by plate, then by
+   document, a document's shared wording said once and its boundary and arithmetic folded behind their names. No script: Show is two radios read with
+   :has(), and the page prints whole, every disclosure open. The receipt an address names wears the reading's orange rule (a :target is a followed claim). */
+
+/* The page: the brief across, then the rail and the content column. Below 1100px the rail stacks above the content and does not stick. */
+.sources-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 8px 48px; }
+@media screen and (min-width: 1100px) {
+  .sources-body { grid-template-columns: 16rem minmax(0, 1fr); column-gap: 48px; }
+  .sources-rail { position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+}
+.sources-page .brief .breadcrumb ol { margin-bottom: 6px; }
+.sources-page :is([id], .plate-sources li) { scroll-margin-top: 16px; }
+
+/* The census: one line of counts, then the verified and partly verified split as one bar of the parts' ink (full, and half-filled in an outline, as
+   their squares are), each part labeled at its own end. The bar is aria-hidden: the line and the labels hold every number. */
+.census { margin-top: 16px; max-width: 48rem; }
+.census-line { margin: 0 0 8px; max-width: none; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
+.census-bar { display: flex; gap: 2px; height: 12px; }
+.census-v { background: var(--part-1); }
+.census-p { background: linear-gradient(var(--part-1), var(--part-1)) bottom / 100% 50% no-repeat; box-shadow: inset 0 0 0 1.5px var(--part-1); }
+.census-key { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; max-width: none; margin: 6px 0 0; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.census-key .st { color: var(--part-1); }
+.census-key b { font-family: var(--display); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+
+/* The rail. Its links are plain rows on a 2px rule; a group label names the main page's tab or section. */
+.sources-rail { font-family: var(--display); font-size: 0.875rem; line-height: 1.3; }
+.rail-title { margin: 0 0 10px; font-weight: 500; color: var(--atni-text-muted); }
+.rail-group { margin: 16px 0 4px; font-weight: 500; color: var(--atni-text-muted); }
+.rail-list { list-style: none; margin: 0; padding: 0; }
+.rail-list li { margin: 0; }
+.rail-list a { display: block; padding: 5px 0 5px 12px; color: var(--atni-text-secondary); text-decoration: none; border-left: 2px solid var(--rule); }
+.rail-list a:hover { color: var(--atni-text-heading); border-left-color: var(--control-edge); }
+.rail-list a:focus-visible { outline-offset: -2px; }
+.rail-more { margin-top: 16px; }
+
+/* Show: all figures, or the partly verified ones alone; two radios in the settings' look, read by :has(), so no script is needed. Paper prints them all. */
+.sources-show { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 12px; padding: 0; border: 0; min-width: 0; }
+.sources-show legend { margin-bottom: 6px; padding: 0; font-weight: 500; color: var(--atni-text-secondary); }
+.sources-show label { position: relative; display: inline-flex; min-height: 36px; cursor: pointer; }
+.sources-show input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.sources-show span { display: flex; align-items: center; padding: 4px 10px; font-weight: 500; color: var(--atni-text-secondary); border: 1px solid var(--control-edge); }
+.sources-show input:hover + span { color: var(--atni-text-heading); }
+.sources-show input:checked + span { color: var(--atni-text-heading); background: var(--control-on); border-color: var(--atni-text-heading); }
+.sources-show input:focus-visible + span { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
+@media screen {
+  .sources-page:has(.sources-show input[value="partly"]:checked) :is([data-status="verified"], .plate-sources > li:not([data-status]):not(:has([data-status="partly"])), .sources-plate:not(:has([data-status="partly"]))) { display: none; }
+}
+
+/* Plates and their receipts. A receipt is a ruled entry in as many columns as fit; a document with a table of claims takes the width. */
+.sources-plates > h2 { margin-bottom: 4px; }
+.sources-plate { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--grid); }
+.sources-plate > h3 { margin-bottom: 6px; font-size: 1.25rem; color: var(--atni-text-heading); }
+.sources-plate > .caption { max-width: none; }
+.sources-page .plate-sources { grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); gap: 20px 32px; margin-top: 16px; }
+.sources-page .plate-sources > li { position: relative; align-content: start; }
+.sources-page .plate-sources > .source-doc { grid-column: 1 / -1; }
+.source-more { margin-block: 4px 0; }
+.source-doc .table-scroll { margin-top: 4px; }
+.source-claims td { text-align: left; }
+.source-claims :is(th, td) { font-size: 0.8125rem; }
+.source-claims tbody th[scope="row"] { white-space: nowrap; } /* a claim id never breaks at its hyphen */
+.source-claims .source-run th { color: var(--atni-text-secondary); }
+.source-detail { margin: 0; }
+.source-detail > summary { display: list-item; width: fit-content; min-height: 28px; padding-block: 3px; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-heading); cursor: pointer; }
+.source-detail > p { margin: 2px 0 6px; }
+/* The receipt an address names: a 3px orange rule beside it, the reading's own mark, never a row wash. */
+.sources-page .plate-sources li:is(:target, :has(> :target))::before, .glossary dt:target::before { content: ""; position: absolute; top: 0; bottom: 0; left: -12px; width: 3px; background: var(--energy-mark); }
+.sources-page tr:is(:target, :has(> :target)) > :first-child { box-shadow: inset 3px 0 0 var(--energy-mark); }
+
+/* Figures in the text: Claims Cited, in the content column. */
+.sources-page .content > .claims-cited { margin-top: 40px; padding: 24px 0 0; max-width: none; border-top: 1px solid var(--grid); }
+.claims-cited .plate-sources { grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); gap: 16px 32px; margin-top: 16px; }
+.cited-claims { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+
+/* Documents A to Z, and the page's own resolutions and data files. */
+.sources-az { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--grid); }
+.az-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); gap: 12px 32px; overflow-wrap: anywhere; }
+.az-list li { display: grid; gap: 2px; margin: 0; }
+.az-list .caption { font-size: 0.8125rem; }
+.sources-page .content > #documents { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--grid); }
+
+/* The hub: a row for each page, what the marks mean, the terms, and the files. */
+.sources-hub .table-scroll { max-width: 84rem; } /* the counts stay near the names they count at 2560 */
+.hub-pages { min-width: 44rem; }
+.hub-pages tbody th { min-width: 18rem; }
+.hub-page { font-family: var(--display); font-weight: 600; font-size: 1.0625rem; color: var(--atni-text-heading); }
+.census-bar.is-row { width: min(100%, 14rem); height: 6px; margin: 6px 0 4px; }
+.hub-pages .caption { margin: 0 0 4px; font-size: 0.8125rem; }
+.hub-plates { list-style: none; display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 4px 0 0; padding: 0; font-size: 0.8125rem; }
+.hub-plates li { margin: 0; }
+.hub-marks { list-style: none; margin: 0 0 12px; padding: 0; max-width: var(--measure-wide); }
+.hub-marks li { display: flex; align-items: baseline; gap: 10px; }
+.hub-marks .st { color: var(--atni-text-heading); }
+.glossary { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 32px; margin: 16px 0 0; max-width: 56rem; }
+.glossary dt { position: relative; font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); scroll-margin-top: 16px; }
+.glossary dd { margin: 0 0 12px; max-width: var(--measure); }
+@media (min-width: 720px) {
+  .glossary { grid-template-columns: 11rem minmax(0, 1fr); }
+  .glossary dd { margin: 0; }
+}
+.sources-hub .content > section + section { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--grid); }
+
+@media print {
+  .sources-rail { display: none; }
+  .sources-body { display: block; padding-block: 0; }
+  .census-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sources-page .plate-sources > li, .az-list li { break-inside: avoid; }
+}

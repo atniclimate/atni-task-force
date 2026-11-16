@@ -1,0 +1,14 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "index.html",
+ "id": "repeat-demo",
+ "eyebrow": "A later plate in its panel",
+ "title": "BLS projects {label} at {display} by 2035",
+ "subtitle": "Test data: the second plate in a panel is a repeater, smaller than the lead above it.",
+ "plot": {"type": "bars", "signed": true, "projected": true, "axis_label": "Projected percent change, 2025 to 2035"},
+ "rows": [
+  {"id": "developers", "label": "Software developers", "claim": "jb-001"},
+  {"id": "service", "label": "Customer service representatives", "claim": "jb-003"}
+ ]
+}

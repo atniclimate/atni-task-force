@@ -27,22 +27,9 @@ const { add, scale } = draw;
 // The briefing keeps nothing in the address: a staff member's typed megawatts are the case the Explorer's link rule protects. <html data-address="none">.
 const NO_ADDRESS = document.documentElement.dataset.address === 'none';
 
-// Settings ride in the fragment, #anchor&name=value, since a browser never sends a fragment to the server (owner ruling 29). The anchor, when there is one, comes
-// first and names an element. An old link's ?query is read as part of the address, and moves into the fragment once theme.js has read the deep link.
-const parse = (raw) => {
-  const first = raw.split('&')[0];
-  const anchor = first.includes('=') ? '' : first;
-  return { anchor, params: new URLSearchParams(anchor ? raw.slice(first.length + 1) : raw) };
-};
-function readAddress() {
-  const at = parse(location.hash.slice(1));
-  for (const [name, value] of new URLSearchParams(location.search)) if (!at.params.has(name)) at.params.append(name, value);
-  return at;
-}
-function writeAddress(anchor, params) {
-  const hash = [anchor, params.toString()].filter(Boolean).join('&');
-  try { history.replaceState(null, '', `${location.pathname}${hash ? `#${hash}` : ''}`); } catch { /* throttled: the next change writes it */ }
-}
+// The address, #anchor&name=value, is theme.js's (window.siteAddress), the one script every page loads first; util.js hands the same functions to modules.
+// Settings ride in the fragment, since a browser never sends it to a server (owner ruling 29). A tab pushes a history entry; everything else replaces one.
+const { parse, read: readAddress, write: writeAddress } = window.siteAddress;
 // A page's receipts live on its Sources page (owner ruling 39, 11/15/2026): an old link to one here, #src-ID or #PLATE-source-ID, goes on to the same id there.
 const MOVED = /^(?:src-|[a-z0-9-]+-source-)[a-z]{2,3}-\d{3}$/;
 const movedTo = (anchor) => {
@@ -62,67 +49,82 @@ function land(raw) {
   if (target.tabIndex < 0 && !target.hasAttribute('tabindex')) target.tabIndex = -1; // a plate or a heading takes focus without joining the Tab order
   target.focus({ preventScroll: true });
 }
-if (!NO_ADDRESS) {
-  on(document, 'DOMContentLoaded', () => { if (location.search) { const { anchor, params } = readAddress(); writeAddress(anchor, params); } });
-  // A link within the page (#id) takes the whole fragment: the settings it held come back after it, so a reload or a copied link keeps them.
-  on(window, 'hashchange', (e) => {
-    const now = readAddress();
-    const was = e.oldURL ? parse(new URL(e.oldURL).hash.slice(1)).params : null;
-    if (was?.toString() && !now.params.toString()) writeAddress(now.anchor, was);
-  });
-}
+if (!NO_ADDRESS) on(document, 'DOMContentLoaded', () => { if (location.search) { const { anchor, params } = readAddress(); writeAddress(anchor, params); } });
+// A link within the page keeps only the settings of the plate the reader last touched (resource-use-05, ai-12); theme.js asks this for each name it could keep.
+let touched = null;
+const namesOf = (p) => new Set([p.id, `${p.id}-view`, ...[...p.params].filter(([, c]) => c.stop).map(([name]) => name)]);
+window.siteAddress.keep = (name) => ![...plates.values()].some((p) => namesOf(p).has(name)) || (!!touched && namesOf(touched).has(name));
 // A closed tab panel or view stays findable where the browser can reveal one: find-in-page or a link opens it, and its beforematch listener brings its tab or
 // view forward. Safari has no such reveal, and gets plain hidden.
 const FINDABLE = 'onbeforematch' in document.documentElement;
 const conceal = (node, off) => (off ? node.setAttribute('hidden', FINDABLE ? 'until-found' : '') : node.removeAttribute('hidden'));
 
-// The first plate on the screen runs to the window's foot; others keep the height CSS gives them. A panel kept for find-in-page still has a box, so hidden is asked too.
+// The agenda runs to the window's foot (docs/PLATE-KIT.md): --plate-h is the window less what stands above it. Plates keep the heights their variant gives them.
 function fitFirst() {
-  const first = all(document, '[data-plate]').find((node) => node.offsetParent && !node.closest('[hidden]'));
-  if (!first || innerWidth < 1100) return;
+  const first = document.querySelector('.agenda');
+  if (!first || innerWidth < 1100 || first.closest('[hidden]')) return;
   const top = first.getBoundingClientRect().top + scrollY;
-  if (top < innerHeight * 0.6) first.style.setProperty('--plate-h', `${Math.round(Math.max(544, innerHeight - top - 16))}px`);
+  if (top < innerHeight * 0.6) first.style.setProperty('--plate-h', `${Math.round(Math.max(448, innerHeight - top - 16))}px`);
 }
 
-// A jump list becomes tabs. Without this, and in print, every panel shows.
+// A plate in a closed tab panel starts when its panel opens (lazy start), so a page's first paint pays only for what shows.
+const FOCUSABLE = 'a[href], button, input, select, textarea, summary, [tabindex="0"]';
+function startIn(node) { all(node, '[data-plate]').forEach(start); }
+
+// A jump list becomes tabs. Without this, and in print, every panel shows. A tab is a place: changing one pushes a history entry, so Back returns to it.
 function initTabs(strip) {
-  const tabs = all(strip, 'a[href^="#"]');
+  const tabs = all(strip, 'a[href^="#"]:not([data-not-tab])');
   const panels = tabs.map((a) => document.getElementById(a.hash.slice(1)));
   if (panels.includes(null)) return;
   set(strip.querySelector('ul'), { role: 'tablist', 'aria-label': strip.getAttribute('aria-label') || 'Sections' });
   tabs.forEach((a, i) => {
     a.parentElement.setAttribute('role', 'none');
     set(a, { role: 'tab', id: a.id || `tab-${panels[i].id}`, 'aria-controls': panels[i].id });
-    set(panels[i], { role: 'tabpanel', 'aria-labelledby': a.id, tabindex: 0 });
+    set(panels[i], { role: 'tabpanel', 'aria-labelledby': a.id });
   });
+  // The next Tab after the strip reaches the panel's first control; a panel with nothing to focus is itself one stop, so its words can be reached (ai-15).
+  const stops = panels.map((panel) => !panel.querySelector(`${FOCUSABLE}, [data-plate]`));
   const show = (n) => {
     tabs.forEach((a, i) => {
       set(a, { 'aria-selected': i === n, tabindex: i === n ? 0 : -1 });
       conceal(panels[i], i !== n);
-      panels[i].tabIndex = i === n ? 0 : -1; // a closed panel kept for find-in-page is still a box, so it leaves the Tab order
+      if (stops[i] && i === n) panels[i].tabIndex = 0;
+      else panels[i].removeAttribute('tabindex');
     });
+    startIn(panels[n]);
     strip.classList.toggle('is-sticky', panels[n].offsetHeight > innerHeight);
     fitFirst();
   };
   panels.forEach((panel, i) => on(panel, 'beforematch', () => show(i))); // find-in-page or a link reached a closed panel: its tab comes with it
   const go = (n, e) => {
     e.preventDefault();
+    const moved = !tabs[n].matches('[aria-selected="true"]');
     show(n);
     panels[n].classList.add('is-entering'); // a tab change counts as a touch; CSS takes it to 0ms under reduced motion
     setTimeout(() => panels[n].classList.remove('is-entering'), 200);
-    writeAddress(panels[n].id, readAddress().params); // the tab is the anchor, and the settings stay beside it
+    // From deep in a panel the new one opens at its top, at once, under the strip (ai-03); focus stays on the tab.
+    const top = panels[n].getBoundingClientRect().top;
+    const under = strip.classList.contains('is-sticky') ? strip.offsetHeight : 0;
+    if (top < under) scrollTo({ top: scrollY + top - under, behavior: 'instant' });
+    // The tab is the anchor, and the settings stay beside it. A run of arrow keys is one change of place, so it pushes once and then replaces; the tab already
+    // open only writes its anchor.
+    writeAddress(panels[n].id, readAddress().params, moved && !arrowing);
+    arrowing = arrowing || !!e.key;
   };
+  let arrowing = false;
+  on(strip, 'focusout', (e) => { if (!strip.contains(e.relatedTarget)) arrowing = false; });
   const fromHash = () => {
     const { anchor } = readAddress();
     const target = document.getElementById(anchor);
     const n = panels.findIndex((panel) => panel.contains(target));
     if (n >= 0) show(n);
     if (anchor === 'checklists') target?.querySelector('details')?.setAttribute('open', '');
-    if (n >= 0 && target !== panels[n]) target.scrollIntoView();
+    if (n >= 0 && target !== panels[n] && !window.siteAddress.traversed) target.scrollIntoView();
     return n >= 0;
   };
   on(strip, 'click', (e) => {
     const n = tabs.indexOf(e.target.closest('a'));
+    arrowing = false;
     if (n >= 0) go(n, e);
   });
   on(strip, 'keydown', (e) => {
@@ -130,11 +132,92 @@ function initTabs(strip) {
     // Space on a link does nothing natively, so this is its one action; Enter arrives as the link's click. Alt+Left stays the browser's Back.
     const n = { ArrowRight: (i + 1) % tabs.length, ArrowLeft: (i || tabs.length) - 1, Home: 0, End: tabs.length - 1, ' ': i }[e.key];
     if (i < 0 || !has(n) || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === ' ') arrowing = false;
     go(n, e);
     tabs[n].focus();
   });
-  on(window, 'hashchange', fromHash);
+  on(window, 'hashchange', fromHash); // a link, Back, or Forward: the tab the address names comes forward
   if (!fromHash()) show(0);
+}
+
+// The agenda (DIRECTION-R2 3.2): its questions become a vertical tablist and its faces their panels. Up, Down, Home, and End choose at once; Tab enters the
+// face. A face is a look, not a place: a change replaces the history entry, naming the face in agenda= (the first face is the default and goes unnamed); an
+// anchor in a face, or the face itself, opens it and wins. An answer is plain text the kit keeps with its plate's own state (data-answer), chosen or not, so
+// it is the tab's description and is hidden from the tree once, never read twice. The join bar follows the chosen cell. Without this, the questions are
+// links and the faces stack, whole.
+function initAgenda(agenda) {
+  const tabs = all(agenda, '.agenda-q > a[href^="#"]');
+  const faces = tabs.map((a) => document.getElementById(a.hash.slice(1)));
+  if (!tabs.length || faces.includes(null)) return;
+  set(agenda.querySelector('.agenda-qs'), { role: 'tablist', 'aria-orientation': 'vertical', 'aria-label': agenda.getAttribute('aria-label') || 'Questions' });
+  const names = faces.map((face) => face.id.replace(/^face-/, ''));
+  tabs.forEach((a, i) => {
+    const cell = a.closest('.agenda-q');
+    const answer = cell.querySelector('.agenda-a');
+    set(cell, { role: 'none' });
+    set(a, { role: 'tab', id: a.id || `q-${names[i]}`, 'aria-controls': faces[i].id });
+    if (answer) {
+      set(answer, { id: answer.id || `${a.id}-a`, 'aria-hidden': 'true' });
+      a.setAttribute('aria-describedby', answer.id);
+    }
+    set(faces[i], { role: 'tabpanel', 'aria-labelledby': a.id });
+  });
+  const stops = faces.map((face) => !face.querySelector(`${FOCUSABLE}, [data-plate]`));
+  let at = -1;
+  const join = () => {
+    const cell = tabs[at]?.closest('.agenda-q');
+    if (!cell) return;
+    agenda.style.setProperty('--join-y', `${cell.offsetTop}px`);
+    agenda.style.setProperty('--join-h', `${cell.offsetHeight}px`);
+  };
+  const show = (n) => {
+    at = n;
+    tabs.forEach((a, i) => {
+      set(a, { 'aria-selected': i === n, tabindex: i === n ? 0 : -1 });
+      a.closest('.agenda-q').classList.toggle('is-on', i === n);
+      conceal(faces[i], i !== n);
+      if (stops[i] && i === n) faces[i].tabIndex = 0;
+      else faces[i].removeAttribute('tabindex');
+    });
+    startIn(faces[n]);
+    join();
+  };
+  const choose = (n, e) => {
+    e.preventDefault();
+    tabs[n].focus();
+    if (n === at) return;
+    show(n);
+    faces[n].classList.add('is-entering');
+    setTimeout(() => faces[n].classList.remove('is-entering'), 200);
+    const { anchor, params } = readAddress();
+    if (n) params.set('agenda', names[n]);
+    else params.delete('agenda');
+    writeAddress(faces.some((face) => face.id === anchor || face.contains(document.getElementById(anchor))) ? '' : anchor, params);
+  };
+  const fromAddress = () => {
+    const { anchor, params } = readAddress();
+    let target = null;
+    try { target = anchor ? document.getElementById(decodeURIComponent(anchor)) : null; } catch { /* a broken escape names nothing */ }
+    const held = faces.findIndex((face) => target && face.contains(target));
+    const named = names.indexOf(params.get('agenda'));
+    const n = held >= 0 ? held : Math.max(named, 0);
+    if (n !== at) show(n);
+  };
+  on(agenda, 'click', (e) => {
+    const n = tabs.indexOf(e.target.closest('.agenda-q > a'));
+    if (n >= 0) choose(n, e);
+  });
+  on(agenda, 'keydown', (e) => {
+    const i = tabs.indexOf(e.target);
+    const n = { ArrowDown: (i + 1) % tabs.length, ArrowUp: (i || tabs.length) - 1, Home: 0, End: tabs.length - 1, ' ': i }[e.key];
+    if (i < 0 || !has(n) || e.altKey || e.ctrlKey || e.metaKey) return;
+    choose(n, e);
+  });
+  faces.forEach((face, i) => on(face, 'beforematch', () => show(i)));
+  on(window, 'hashchange', fromAddress);
+  agenda.classList.add('is-live');
+  fromAddress();
+  new ResizeObserver(join).observe(agenda.querySelector('.agenda-qs'));
 }
 
 const GROUPED = new Intl.NumberFormat('en-US', { maximumFractionDigits: 12 }); // one formatter: building one per call cost the Briefing and AI pages over four seconds
@@ -233,13 +316,16 @@ function fitRuler(p) {
   grid.prepend(...ticks.map((t) => h('i', { style: placed(t) })));
   p.plot.querySelector('.ladder-axis').replaceChildren(...ticks.map((t) => h('span', { style: placed(t), text: draw.fmt(t, ticks.at(-1)) })));
 }
-// Fills a sentence's live names: {text}, {other[text]}, a setting, a field, an input, a branch {now[chat][total]:.0f}.
-function live(p, r, template) {
+// Fills a sentence's live names: {text}, {other[text]}, a setting, a field, an input, a branch {now[chat][total]:.0f}. figures: a row named by its id prints its
+// figure as the plate rounds it, as a title or an answer must (build_plates.py state_context is the twin).
+function live(p, r, template, figures = false) {
   return template.replace(/\{([\w-]+)((?:\[[\w-]+\])*)(?::([^}]*))?\}/g, (m, name, path, spec) => {
     const parts = path.slice(1, -1).split('][').filter(Boolean);
     const dig = (start) => parts.reduce((o, k) => o?.[k], start);
     let v;
+    const row = figures && !parts.length && !has(r[name]) && !has(r.fields?.[name]) ? rowsAt(p, name)[0] : null;
     if (parts.length) v = dig(rowsAt(p, name)[0] || p.env[name]);
+    else if (row && !p.data.setting?.some((s) => s.name === name)) v = row.f ? sig(row.value ?? row.low, row.digits) : row.value ?? row.low;
     else {
       const c = p.data.setting?.find((s) => s.name === name);
       v = c ? c.options?.[p.state[name]] ?? p.state[name] ?? 'blank' : r[name] ?? r.fields?.[name] ?? p.env[name];
@@ -286,14 +372,22 @@ function compute(p) {
     }
     if (r.t) r.reading = live(p, r, r.t);
   }
-  if (data.plot.fit === 'data') fitRuler(p);
+  if (data.plot.fit === 'data') {
+    fitRuler(p);
+    // Fixed axes are the rule; a plate that refits its ruler to a stop (plot.fit "data", or "rescale") says so whenever the scale is not the one it opened on.
+    const at = data.plot.domain.join();
+    p.fit0 = p.fit0 || at;
+    if (p.scaleNote) set(p.scaleNote, { text: at === p.fit0 ? '' : 'The scale changed.' }).hidden = at === p.fit0;
+  }
 }
 
-function readState(p) {
+// A stop, the selection, and the view ride in the address; a typed or dragged figure never does (owner ruling 29): it is the reader's to enter on this screen,
+// so Back or a link keeps whatever the reader set. init: a plate starting out takes its defaults for those.
+function readState(p, init = true) {
   const { params } = readAddress();
   for (const [name, c] of p.params) {
-    // With no address to keep, a link may still name a stop; a typed figure is the reader's to enter here.
-    p.state[name] = c.parse(NO_ADDRESS && !c.stop ? '' : params.get(name) ?? '') ?? c.def;
+    if (!c.stop && !init && has(p.state[name])) continue;
+    p.state[name] = c.parse(c.stop ? params.get(name) ?? '' : '') ?? c.def;
     c.write(p.state[name]);
   }
   p.selected = p.keys.includes(params.get(p.id)) ? params.get(p.id) : p.data.default;
@@ -301,26 +395,41 @@ function readState(p) {
 }
 // The address follows a quarter second after the last change, so a dragged slider writes it once, and a browser that throttles replaceState can never stop a redraw.
 function writeQuery(p) {
+  touched = p;
   if (NO_ADDRESS) return;
   clearTimeout(p.queryTimer);
   p.queryTimer = setTimeout(() => flushQuery(p), 250);
 }
-// Copy Reading flushes a pending write first, so a copy within a quarter second of a change carries the new address.
+// Copy reading flushes a pending write first, so a copy within a quarter second of a change carries the new address.
 function flushQuery(p) {
   if (!p.queryTimer) return;
   clearTimeout(p.queryTimer);
   p.queryTimer = 0;
   const { anchor, params } = readAddress();
   const put = (name, value, def) => (value === def ? params.delete(name) : params.set(name, value));
-  for (const [name, c] of p.params) put(name, p.state[name], c.def);
+  for (const [name, c] of p.params) if (c.stop) put(name, p.state[name], c.def);
   put(p.id, p.selected, p.data.default);
+  put(`${p.id}-view`, p.root.dataset.view, 'chart');
   writeAddress(anchor, params);
+}
+// Back, Forward, or an address typed in: every plate takes what the address names (CW 4, ai-13).
+function reapply() {
+  for (const p of plates.values()) {
+    readState(p, false);
+    const asked = readAddress().params.get(`${p.id}-view`);
+    setView(p, asked === 'table' ? 'table' : 'chart');
+    update(p, 'state');
+  }
 }
 function announce(p) {
   clearTimeout(p.liveTimer);
   // A drawn plot's selected band is named with the Reading, so with focus on it the sentence has already been spoken.
   const spoken = () => document.activeElement === p.plot && document.getElementById(p.plot.getAttribute('aria-activedescendant'))?.ownerSVGElement;
-  p.liveTimer = setTimeout(() => { if (!spoken()) p.live.textContent = p.reading.textContent; }, 500);
+  p.liveTimer = setTimeout(() => {
+    if (!spoken() || p.sortSaid) p.live.textContent = [p.sortSaid, spoken() ? '' : p.reading.textContent].filter(Boolean).join(' ');
+    if (p.sortSaid && p.root.contains(document.activeElement)) document.getElementById(p.plot.getAttribute('aria-activedescendant'))?.scrollIntoView?.({ block: 'nearest' });
+    p.sortSaid = '';
+  }, 500);
 }
 function addControl(p, box) {
   const name = box.dataset.param;
@@ -352,44 +461,69 @@ function addControl(p, box) {
     announce(p);
     writeQuery(p);
   };
+  const label = box.querySelector('label, legend')?.textContent.trim() || name;
   on(box, 'input', (e) => {
     const value = c.parse(e.target.value);
+    if (!radio) e.target.setAttribute('aria-invalid', String(!has(value) && e.target.value !== '')); // a typed figure off the scale says so while it is typed
     if (has(value)) apply(value, e.target);
   });
   on(box, 'click', (e) => {
     if (e.target.dataset.preset) apply(+e.target.dataset.preset);
   });
-  on(box, 'change', () => c.write(p.state[name])); // a value off the stops goes back
+  // A typed figure past an end goes to that end, and the status says so (ai-09, explorer-10); one off the steps goes back to the last one taken.
+  on(box, 'change', (e) => {
+    const typed = +e.target.value;
+    if (!radio && e.target.value !== '' && Number.isFinite(typed) && (typed < +min || typed > +max)) {
+      const end = typed < +min ? +min : +max;
+      apply(end);
+      p.status.textContent = `${label} runs from ${grouped(+min)} to ${grouped(+max)}, so ${grouped(end)} is used.`;
+    }
+    e.target.removeAttribute('aria-invalid');
+    c.write(p.state[name]);
+  });
 }
 
+// Chart or Table: two pressed buttons over the plot. The Table takes the plot's and the window's place while the claim zone stays, so nothing beside it moves.
+// A view kept for find-in-page stays findable, and its beforematch brings it forward.
 function setView(p, name) {
   p.root.dataset.view = name;
-  for (const view of all(p.root, '.plate-view')) conceal(view, view.dataset.view !== name);
-  for (const radio of all(p.root, '.plate-views input')) radio.checked = radio.value === name;
+  const table = name === 'table';
+  conceal(p.tableView, !table);
+  for (const part of [p.plot, p.detail, p.root.querySelector(':scope > .plate-under')]) if (part) conceal(part, table);
+  for (const button of all(p.root, '.plate-views button')) button.setAttribute('aria-pressed', String(button.dataset.view === name));
 }
-// A receipt's short card, from the plate's own data: its source, linked; its status, limit, and claim; and the way on to the full receipt (quote, boundary, and date) on the Sources page.
+const STATUS_WORDS = { verified: 'verified', partly: 'partly verified' };
+const glyph = (status) => h('span', { class: status === 'partly' ? 'st st-p' : 'st st-v', 'aria-hidden': 'true' });
+// The card for one chip: each claim the chip stands for, from the plate's own data. Its source as a link; the publisher and dates; status and limit; the claim id;
+// and the way on to the full receipt (quote, boundary, and date) on the Sources page. more: false leaves that link off, as a printed sheet does.
 function receiptNodes(p, claim, more = true) {
   const r = p.data.receipts[claim];
-  const status = r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.';
+  const dates = [r.published && `published ${r.published}`, r.year && `value year ${r.year}`].filter(Boolean).join(', ');
   return [
     h('p', { class: 'plate-source-title' }, /^https:\/\//.test(r.url || '') ? h('a', { href: r.url, text: r.title }) : r.title),
-    h('p', { class: 'caption', text: `${r.short}. ${status}${r.limit ? ` Limit: ${r.limit}` : ''} Claim ${claim}.` }),
-    ...(more && p.sources ? [h('p', { class: 'caption plate-receipt-more' }, h('a', { href: `${p.sources}#${p.id}-source-${claim}`, text: 'Quote, boundary, and date' }))] : []),
+    h('p', { class: 'caption', text: `${r.short.split(': ').pop()}${dates ? `, ${dates}` : ''}.` }),
+    h('p', { class: 'caption plate-receipt-status' }, glyph(r.status), `${r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.'}${r.limit ? ` Limit: ${r.limit}` : ''}`),
+    h('p', { class: 'caption plate-receipt-id', text: `Claim ${claim}` }),
+    ...(more && p.sources ? [h('p', { class: 'caption plate-receipt-more' }, h('a', { href: `${p.sources}#${p.id}-source-${claim}`, text: 'Quote, boundary and date on the Sources page' }))] : []),
   ];
 }
-// A chip the reader pressed sends focus to what it opened, in view, and Escape comes back to the chip; on load or on a selection nothing takes focus.
-function openReceipt(p, claim, chip) {
-  p.open = claim;
-  p.receipt.hidden = !claim;
-  p.receipt.replaceChildren(...(claim ? receiptNodes(p, claim) : []));
-  for (const each of all(p.root, '.receipt')) each.setAttribute('aria-expanded', each.dataset.claim === claim);
+// One card at a time, never open before the reader asks. A chip the reader pressed sends focus into its card, and Escape comes back to the chip; pressing it
+// again, or a new selection, closes it (energy-10, briefing-plates-14).
+function openCard(p, chip) {
+  const claims = chip ? chip.dataset.claims.split(' ') : [];
+  p.open = chip ? chip.dataset.claims : null;
+  p.receipt.hidden = !chip;
+  const cards = claims.slice(0, 4).map((claim) => h('div', { class: 'plate-receipt-item' }, ...receiptNodes(p, claim)));
+  const rest = claims.length - cards.length;
+  if (rest > 0 && p.sources) cards.push(h('p', { class: 'caption' }, h('a', { href: `${p.sources}#${p.id}`, text: `${rest} more from this publisher on the Sources page` })));
+  p.receipt.replaceChildren(...cards);
+  for (const each of all(p.root, '.plate-evidence .receipt')) each.setAttribute('aria-expanded', String(each === chip));
   p.from = chip;
-  if (chip && claim) {
-    p.receipt.focus();
+  if (chip) {
+    p.receipt.focus({ preventScroll: true });
     p.receipt.scrollIntoView?.({ block: 'nearest' });
   }
 }
-const firstClaim = (p) => claimsOf(focusOf(p, rowsAt(p, p.selected)))[0] ?? null;
 function factNodes(p, rows, key) {
   const hl = p.data.plot.highlight;
   const list = (items) => h('ul', { class: 'plate-values' }, ...items);
@@ -483,8 +617,11 @@ function nameNeedle(p, key, spot, at) {
   const words = `${/^(lines|multiples)$/.test(p.data.plot.type) ? key : row?.label ?? ''}${changed(p) ? ', your setting' : ''}`;
   const needle = spot?.closest('.ladder')?.querySelector('.ladder-needle');
   if (needle) {
-    (needle.querySelector('.needle-label') || needle.appendChild(span('needle-label', ''))).textContent = words;
-    needle.classList.toggle('is-flip', +at > 0.6);
+    const label = needle.querySelector('.needle-label') || needle.appendChild(span('needle-label', ''));
+    label.textContent = words;
+    // The name reads right of the needle and turns back only where it would run past the ruler's end (data-centers-09).
+    const width = needle.parentElement.clientWidth;
+    needle.classList.toggle('is-flip', width && label.offsetWidth ? (1 - +at) * width < label.offsetWidth + 16 : +at > 0.6);
   }
   all(p.plot, '.m-needle-label').forEach((label, i) => { // the plot's far end, in the same coordinates as the needle's px
     const flip = parseFloat(at) > label.getAttribute('data-end') * 0.6;
@@ -549,6 +686,12 @@ function paint(p) {
   const needle = fixed || (spot?.closest('.ladder')?.dataset.form === 'bar' || cfg.type === 'instrument' || cfg.select === 'point' ? null : spot?.dataset.nx ? `${spot.dataset.nx}px` : spot?.style.getPropertyValue('--x'));
   p.plot.classList.toggle('no-needle', !needle);
   p.plot.style.setProperty('--at', needle || '');
+  // Within 32px of a ruler's end the needle and its name stand where that end's tick would, so the tick gives way (data-centers-09).
+  const nx = needle && !String(needle).endsWith('px') ? parseFloat(needle) : null;
+  const ruler = p.plot.querySelector('.ladder-grid, .instrument-ruler')?.clientWidth || 0;
+  const near = (f) => nx !== null && (ruler ? f * ruler < 32 : f < 0.03);
+  p.plot.classList.toggle('near-start', near(nx));
+  p.plot.classList.toggle('near-end', nx !== null && near(1 - nx));
   for (const ladder of all(p.plot, '.ladder')) ladder.classList.toggle('no-needle', !needle || !ladder.contains(spot));
   if (needle && !fixed) nameNeedle(p, key, spot, needle);
   // A tick's name reads away from the needle, so neither word covers the other's line.
@@ -567,43 +710,78 @@ function paint(p) {
   p.value.parentElement.classList.toggle('is-long', p.value.textContent.length >= 9);
   readingInto(p.reading, text, figure);
   p.facts.replaceChildren(...factNodes(p, rows, key));
-  const claims = new Set([...claimsOf(focusOf(p, rowsAt(p, p.selected))), ...(p.data.also || []).filter((a) => !a.at || a.at === p.selected).map((a) => a.claim), ...(p.data.cites || [])]);
-  // One chip per publisher, with a count; the per-claim list follows them, and so does what passes six chips. The Reading view counts them by status.
-  const groups = new Map();
-  const tally = { verified: 0, partly: 0 };
-  for (const chip of all(p.root, '.receipt')) {
-    chip.hidden = !claims.has(chip.dataset.claim);
-    chip.classList.add('is-extra');
-    if (chip.hidden) continue;
-    const { short, status } = p.data.receipts[chip.dataset.claim];
-    tally[status] += 1;
-    const publisher = short.split(': ').pop(); // "Series: Publisher" in a lines plate
-    groups.set(publisher, [...(groups.get(publisher) || []), chip]);
-  }
-  [...groups].forEach(([publisher, [chip, ...others]], i) => {
-    chip.classList.toggle('is-extra', i >= 6);
-    chip.lastElementChild.textContent = others.length ? `${publisher}, ${others.length + 1} claims` : p.data.receipts[chip.dataset.claim].short;
-  });
-  p.extraChips = groups.size - 6;
-  p.moreChips.hidden = groups.size <= 6;
-  sayMore(p);
-  p.tally.hidden = !tally.verified && !tally.partly;
-  const whose = cfg.type === 'matrix' ? 'This cell' : /^(lines|multiples)$/.test(cfg.type) ? 'This year' : 'This row';
-  const total = Object.keys(p.data.receipts).length; // the same count the Sources tab carries
-  p.tally.textContent = `${whose}: ${[tally.verified && `${tally.verified} verified`, tally.partly && `${tally.partly} partly verified`].filter(Boolean).join(', ')}; ${total} ${total === 1 ? 'source' : 'sources'} on the plate`;
   if (p.setting) p.setting.textContent = `Setting shown: ${p.data.setting.map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'blank'}`).join('; ')}.`;
-  if (NO_ADDRESS && p.shown === p.selected) p.title.textContent = titleAt(p);
   if (p.svgOut) p.svgOut.hidden = !p.plot.querySelector('.plate-svg');
   const picked = new Set(focusOf(p, rowsAt(p, p.selected)).filter((r) => !hl || !r.series || r.series === hl)); // the Table's bars: orange for the selection, as the facts list marks it, never a preview
   for (const { cell, r } of p.bars) cell.classList.toggle('is-on', picked.has(r));
+  const moved = changed(p);
+  p.root.toggleAttribute('data-moved', moved);
+  p.back.hidden = !moved;
+  settleLabels(p);
+  if (p.shown !== p.selected) return; // a preview shows a row; the title, the evidence, the Table, and the answer stay with the selection
+  evidence(p);
+  p.caption.textContent = firstSentence(p.reading.textContent);
+  for (const tr of p.lines) tr.classList.toggle('is-on', tr.dataset.key === p.selected && (!tr.dataset.when || tr.dataset.when === p.state[p.data.by]));
+  if (p.title.textContent !== p.titleSaid) p.title0 = p.title.textContent; // a page script's own title stands as the finding at the defaults
+  p.titleSaid = titleAt(p);
+  if (p.title.textContent !== p.titleSaid) p.title.textContent = p.titleSaid;
+  const answer = p.data.answer ? fillState(p, p.data.answer) : null;
+  if (answer) for (const node of all(document, `[data-answer="${p.id}"]`)) if (node.textContent !== answer) node.textContent = answer;
+  for (const fn of p.listeners) fn(read(p.id));
 }
-// Past six publishers the chips fold, and one button shows the rest in place or folds them again.
-function sayMore(p) {
-  const open = p.moreChips.parentElement.classList.contains('is-all');
-  set(p.moreChips, { text: open ? 'Show fewer' : `Show ${p.extraChips} more`, 'aria-expanded': open });
+// Under the Reading: the selection's claims, counted by status, then one chip per publisher with its count; a chip opens its card in the window.
+function evidence(p) {
+  // A page script's render may add what its setting rests on (data.cites), as the AI hour plate does for a connection's receipt.
+  const claims = unique([...claimsOf(focusOf(p, rowsAt(p, p.selected))), ...(p.data.also || []).filter((a) => !a.at || a.at === p.selected).map((a) => a.claim), ...(p.data.cites || [])]).filter((c) => p.data.receipts[c]);
+  const said = claims.join(' ');
+  if (said === p.said) return;
+  p.said = said;
+  const groups = new Map();
+  const tally = { verified: 0, partly: 0 };
+  for (const claim of claims) {
+    const { short, status } = p.data.receipts[claim];
+    tally[status] += 1;
+    const publisher = short.split(': ').pop(); // "Series: Publisher" in a lines plate
+    groups.set(publisher, [...(groups.get(publisher) || []), claim]);
+  }
+  const counts = Object.entries(tally).filter(([, n]) => n).map(([status, n]) => h('span', { class: 'plate-evidence-count' }, glyph(status), `${n} ${STATUS_WORDS[status]}`));
+  const chips = [...groups].map(([publisher, ids]) => h('button', { type: 'button', class: 'receipt', 'data-claims': ids.join(' '), 'aria-expanded': 'false', 'aria-controls': p.receipt.id },
+    glyph(ids.some((id) => p.data.receipts[id].status === 'partly') ? 'partly' : 'verified'), `${publisher}${ids.length > 1 ? `, ${ids.length}` : ''}`));
+  const held = p.evidence.contains(document.activeElement) ? document.activeElement.textContent.replace(/, \d+$/, '') : null; // focus survives a rebuild
+  p.evidence.replaceChildren(...(claims.length ? [h('p', { class: 'plate-evidence-line' }, ...counts.flatMap((n, i) => (i ? [' ', n] : [n]))), h('div', { class: 'plate-chips' }, ...chips)] : []));
+  if (held !== null) (chips.find((c) => c.textContent.replace(/, \d+$/, '') === held) || chips[0])?.focus({ preventScroll: true });
+  if (p.open) openCard(p, null);
 }
-// The title is the finding at the defaults. Moved off them, it is the Reading's first sentence, which the settings have already rewritten. A packet or a printed sheet may not state a figure the plot beside it has left.
-const titleAt = (p) => (changed(p) ? p.reading.textContent.split(/(?<=\.) /)[0].replace(/\.$/, '') : p.title0);
+// Labels give way rather than overprint: axis ticks thin, keeping both ends, before two would touch; a starting point's name hides where it would cover the
+// shared ground's or the needle's. From measured boxes, so a layout with no boxes (print preview, a test) keeps every label.
+const box = (n) => n.getBoundingClientRect();
+const touch = (a, b, gap = 0) => a.width && b.width && a.left < b.right + gap && b.left < a.right + gap && a.top < b.bottom && b.top < a.bottom;
+function settleLabels(p) {
+  for (const axis of all(p.plot, '.ladder-axis')) {
+    const ticks = [...axis.children];
+    ticks.forEach((t) => t.classList.remove('is-thin'));
+    let kept = ticks[0];
+    for (const t of ticks.slice(1)) {
+      if (kept && touch(box(kept), box(t), 8)) (t === ticks.at(-1) && kept !== ticks[0] ? kept : t).classList.add('is-thin');
+      if (!t.classList.contains('is-thin')) kept = t;
+    }
+  }
+  const others = all(p.plot, '.ladder-shared-label, .needle-label');
+  for (const label of all(p.plot, '.start-mark > span')) label.classList.toggle('is-hidden', others.some((o) => touch(box(label), box(o))));
+}
+const firstSentence = (text) => String(text).split(/(?<=\.) /)[0];
+// The title is the finding at the defaults. Moved off them, it is the plate's title_template filled from the state, else the Reading's first sentence, which the
+// settings have already rewritten, else the old title said to be the starting one. CSV, print, and Copy reading use the same words (ai-04).
+function titleAt(p) {
+  if (!changed(p)) return p.title0;
+  if (p.data.title_template) return fillState(p, p.data.title_template);
+  return firstSentence(p.reading.textContent).replace(/\.$/, '') || `At the starting settings: ${p.title0}`;
+}
+// A title or an answer at this state, from the selected row: each figure is one the plate prints now (the build's figure rule), a row by its id as the plate rounds it.
+function fillState(p, template) {
+  const rows = focusOf(p, rowsAt(p, p.selected));
+  return live(p, rows.find((r) => r.series === p.data.plot.highlight) || rows[0] || {}, template, true).replace(/\s+/g, ' ').replace(/,\s*\./g, '.').trim();
+}
 
 // "15 (9.28 to 24) Wh": figure and unit on one line, the range on the next. "240 to 320 million liters" and "28,740 Wh": the figures large and the unit small, in the same words.
 const FIGURES = /^([+-]?\$?[\d.,]+(?: (?:to|and) [+-]?\$?[\d.,]+)?) (.+)$/;
@@ -634,6 +812,9 @@ function drawRulers(p) {
   const cfg = p.data.plot;
   if (cfg.sort) { // biggest first; by tag, tagged groups together
     const by = p.state[cfg.sort];
+    // A new order is said with the Reading, and the selected row stays the plot's active one, in view (ai-11).
+    if (has(p.sortedBy) && p.sortedBy !== by) p.sortSaid = `Order: ${p.data.setting?.find((s) => s.name === cfg.sort)?.options?.[by] ?? by}.`;
+    p.sortedBy = by;
     const rows = [...current(p)];
     const tags = unique(rows.map((r) => r.tag || ''));
     const size = (r) => (blank(r.value) ? -Infinity : r.value);
@@ -655,6 +836,7 @@ function drawRulers(p) {
     node?.classList.toggle('is-neg', sign < 0);
     node?.classList.toggle('is-ghost', !a); // this stop does not count the row: it keeps its place, with no mark and the words
     node?.classList.toggle('is-yard', !!cfg.yard?.includes(key));
+    if (cfg.type === 'meter') meterParts(p, node, a);
     startMark(p, node, a && !b && !cfg.off_ruler?.includes(key) ? a : null);
   }
   p.plot.classList.toggle('has-yard', !!cfg.yard?.length);
@@ -668,6 +850,24 @@ function drawRulers(p) {
     }
     if (m.f) node.firstElementChild.textContent = `${m.label}, ${m.text || ''} ${m.unit || ''}`.trim();
   }
+}
+// A meter row's parts on its one fixed scale (build_plates.py meter_parts is the twin): stacked from zero in their order, and a part this stop does not count
+// left as a dashed ghost, so the needle, at the counted total, moves while the axis holds (DIRECTION-R2 3.7, item 4). A row past the scale keeps its hatched bar.
+function meterParts(p, node, r) {
+  const box = node?.querySelector('.meter-parts');
+  if (!box || !r || r.off_scale) return;
+  const [lo, hi] = p.data.plot.domain;
+  const stop = p.state[p.data.by];
+  let at = 0;
+  [...box.children].forEach((part, i) => {
+    const s = (r.segments || [])[i];
+    if (!s) return;
+    const a = Math.min(1, Math.max(0, (at - lo) / (hi - lo)));
+    part.style.setProperty('--a', a.toFixed(4));
+    part.style.setProperty('--w', Math.max(0, Math.min(1 - a, (s.value || 0) / (hi - lo))).toFixed(4));
+    part.classList.toggle('is-ghost', !!s.at && !s.at.includes(stop));
+    at += s.value || 0;
+  });
 }
 // The starting point behind a moved row: a hollow mark where its figure stood at the defaults, on today's ruler, named on the selected row. aria-hidden: the Reading says it.
 function startMark(p, node, r) {
@@ -801,8 +1001,11 @@ function drawCount(p) {
   if (!p.countBox) {
     const row = (key) => h('li', { class: 'count-row', 'data-row': key }, h('span', { class: 'ladder-label', text: p.data.rows.find((r) => r.key === key).label }), h('span', { class: 'count-cell' }), h('span', { class: 'ladder-value' }));
     p.countBox = p.plot.appendChild(h('ol', { class: 'count-rows', role: 'none' }, ...p.keys.map(row)));
+    // The Count view says what one square is before any square (ai-35).
+    p.countKey = p.countBox.before(h('p', { class: 'caption count-key' }, h('span', { class: 'count-key-square', 'aria-hidden': 'true' }), `Each square is one ${cfg.noun}.`)) || p.countBox.previousElementSibling;
   }
   p.countBox.hidden = !counting;
+  p.countKey.hidden = !counting;
   if (!counting) return;
   const unit = evaluate(cfg.unit, p.env);
   const rows = [...p.countBox.children].map((node) => {
@@ -864,35 +1067,36 @@ function update(p, reason) {
     placeBars(p);
   }
   paint(p);
-  if (reason === 'state' && p.open) openReceipt(p, firstClaim(p)); // a setting can change whose figure this is
 }
 function preview(p, key) {
   p.shown = key;
   update(p, 'select');
 }
-function select(p, key, openIt = true) {
+function select(p, key) {
   p.selected = key;
-  preview(p, key);
+  preview(p, key); // a new selection closes the open card: its claims are the evidence line's to show
   writeQuery(p);
   announce(p);
-  openReceipt(p, openIt ? firstClaim(p) : null); // the source, its date, boundary, and quote wait in the Sources view
 }
+// Back to the starting point: every setting to its default, the selection to the default row, and More assumptions closed (ai-10).
 function reset(p) {
   for (const [name, c] of p.params) {
     p.state[name] = c.def;
     c.write(c.def);
   }
+  for (const more of all(p.root, '.plate-claim details.plate-more')) more.open = false;
   p.status.textContent = '';
   update(p, 'state');
   select(p, p.data.default);
 }
+// The reading as it stands, with the plate's current title, its link (this plate first, then the stops and selections on the page), and its sources.
 async function copyReading(p) {
-  const titles = unique(claimsOf(focusOf(p, rowsAt(p, p.selected))).map((claim) => p.data.receipts[claim].title)).join('; ');
+  const titles = unique(claimsOf(focusOf(p, rowsAt(p, p.selected))).map((claim) => p.data.receipts[claim]?.title).filter(Boolean)).join('; ');
   flushQuery(p);
   const url = new URL(location.pathname, location.href);
-  url.hash = [p.id, readAddress().params.toString()].filter(Boolean).join('&'); // this plate first, then every setting on the page
+  url.hash = [p.id, readAddress().params.toString()].filter(Boolean).join('&');
   try {
-    await navigator.clipboard.writeText(`${p.reading.textContent}${NO_ADDRESS ? '' : `\n${url}`}${titles ? `\nSources: ${titles}` : ''}`);
+    await navigator.clipboard.writeText(`${titleAt(p)}\n${p.reading.textContent}${NO_ADDRESS ? '' : `\n${url}`}${titles ? `\nSources: ${titles}` : ''}`);
     p.status.textContent = NO_ADDRESS ? 'Copied with its sources.' : 'Copied with its link and sources.';
   } catch {
     getSelection().selectAllChildren(p.reading);
@@ -913,20 +1117,10 @@ const checkedOf = (p) => p.root.closest('[data-checked]')?.dataset.checked ?? al
 const guardLine = (p) => (checkedOf(p) ? `Settings chosen by the reader, sources checked ${checkedOf(p)}.` : 'Settings chosen by the reader.');
 const settingWords = (p) => (p.data.setting || []).map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set'}`).join('; ');
 
-// One line of the Table per claim set: a table with a Claims column says so itself; otherwise a line is a row, or, where a table pairs two rows on a line, every row of that key and stop.
-function lineClaims(p, lines) {
-  const heads = all(p.root, '.plate-table thead th').map((n) => n.textContent.trim());
-  const at = heads.findIndex((t) => /^claims?$/i.test(t));
-  if (at >= 0) return lines.map((tr) => tr.children[at].textContent.split(/,\s*/).filter(Boolean));
-  if (lines.length === p.tableRows.length) return p.tableRows.map((r) => unique(claimsOf([r])));
-  const pairs = new Map();
-  for (const r of p.tableRows) {
-    const key = `${r.key}|${r.when || ''}`;
-    pairs.set(key, [...(pairs.get(key) || []), r]);
-  }
-  return [...pairs.values()].map((rows) => unique(claimsOf(rows)));
-}
-// The Table view at these settings, as it shows, plus each line's claims, statuses, and limits; then what it was set to and when its sources were checked.
+// One line of the Table per claim set: each line links its own claims (build_plates.py claim_refs), so the line says them itself.
+const lineClaims = (p, lines) => lines.map((tr) => unique(all(tr, 'a[data-claim]').map((a) => a.dataset.claim)));
+// The Table at these settings, every line of it whether or not it shows, plus each line's claims, statuses, and limits; then the title as it stands, what it
+// was set to, and when its sources were checked.
 function csvOf(p) {
   const lines = all(p.root, '.plate-table tbody tr');
   const claims = lineClaims(p, lines);
@@ -935,6 +1129,7 @@ function csvOf(p) {
   const rows = [
     [...all(p.root, '.plate-table thead th').map((n) => n.textContent.trim()), 'claim_ids', 'status', 'limit'],
     ...lines.map((tr, i) => [...[...tr.children].map((n) => n.textContent.trim()), (claims[i] || []).join('; '), of(claims[i] || [], 'status'), of(claims[i] || [], 'limit')]),
+    ['title', titleAt(p)],
     ['settings', settingWords(p) || 'none on this plate'],
     ['checked', checkedOf(p) || 'not stated on this page'],
   ];
@@ -958,32 +1153,29 @@ function svgOf(p) {
   set(copy, { width: W, height: H });
   const ground = add(copy, 'rect', { width: W, height: H, fill: getComputedStyle(p.plot).getPropertyValue('--plot-ground').trim() || '#FFFFFF' });
   const desc = add(copy, 'desc', { text: `${guardLine(p)} ${GUARD_FOOT} Claims: ${Object.keys(p.data.receipts).join(', ')}.` });
-  const title = add(copy, 'title', { text: p.title.textContent });
+  const title = add(copy, 'title', { text: titleAt(p) });
   copy.prepend(title, desc, ground);
   return new XMLSerializer().serializeToString(copy);
 }
-// One plate, one sheet. The attribute and the class last until the print dialog closes, so Ctrl+P on its own still prints the page.
+// One plate, one sheet: its title as it stands, the plot and the Reading together, then the Table, every line with its claims and their status, and the
+// collar with the Sources page's address. A Table past 25 lines runs on, its head and foot lines repeated. The class lasts until the dialog closes, so
+// Ctrl+P on its own still prints the page.
 function printOne(p) {
-  const words = p.title.textContent;
-  if (changed(p)) p.title.textContent = titleAt(p);
+  p.title.textContent = titleAt(p);
   const from = p.root.closest('[data-from]')?.dataset.from ?? document.querySelector('main h1')?.textContent ?? '';
   const eyebrow = p.root.querySelector('.eyebrow')?.textContent ?? '';
   const head = h('div', { class: 'plate-print-head' }, h('p', { text: [from, eyebrow].filter(Boolean).join(': ') }), h('p', { text: guardLine(p) }));
   const foot = h('p', { class: 'plate-print-foot', text: GUARD_FOOT });
-  // The sheet lists every receipt by title, status, limit, and claim; the quotes and boundaries stay on the Sources page, whose address the stub prints.
-  const list = h('ol', { class: 'plate-sources plate-print-sources' }, ...Object.keys(p.data.receipts).map((claim) => h('li', {}, ...receiptNodes(p, claim, false))));
-  p.root.querySelector('.plate-view[data-view="sources"]').append(list);
   p.root.prepend(head);
   p.root.append(foot);
   p.root.classList.add('is-print-one');
+  p.root.classList.toggle('is-long', p.lines.length > 25);
   document.documentElement.dataset.printOne = p.id;
   addEventListener('afterprint', () => {
     head.remove();
     foot.remove();
-    list.remove();
-    p.root.classList.remove('is-print-one');
+    p.root.classList.remove('is-print-one', 'is-long');
     delete document.documentElement.dataset.printOne;
-    p.title.textContent = words;
   }, { once: true });
   print();
 }
@@ -1021,13 +1213,14 @@ function wirePlot(p) {
     const n = press ? i : moves[e.key];
     if (!has(n)) return;
     e.preventDefault();
-    if (press) setView(p, 'reading');
     select(p, keys[Math.max(0, Math.min(n, keys.length - 1))]);
     document.getElementById(plot.getAttribute('aria-activedescendant'))?.scrollIntoView?.({ block: 'nearest' }); // focus stays on the plot, so nothing else brings the row into view
   });
-  // elementFromPoint follows a sideways touch drag.
+  // A pointer's hover outlines a row and changes nothing else (site.css; CD 1, explorer-03), so the readout and the actions never move under it. A sideways touch
+  // drag previews the rows it crosses, through elementFromPoint, and commits where it lifts.
   let last = null;
   on(plot, 'pointermove', (e) => {
+    if (e.pointerType !== 'touch') return;
     if (!last) {
       requestAnimationFrame(() => {
         const row = document.elementFromPoint(last.clientX, last.clientY)?.closest('[data-row]:not(.is-ghost)');
@@ -1052,9 +1245,13 @@ const HOW = {
   years: 'Use the left and right arrow keys to move between years, Home and End to reach the first and last, and the Table view for all values.',
   cells: 'Use arrow keys to move between cells, Home and End for the ends of a row, Ctrl with Home or End for the corners, and the Table view for all values.',
 };
-function aid(root, plot, id, toTable, form = 'rows') {
+const describe = (root, plot, id, form) => {
   plot.setAttribute('aria-describedby', id);
   root.append(h('p', { id, hidden: '', text: HOW[form] }));
+};
+// The Explorer's plots: the description, and Read as a table under the plot, until its own views take the kit's Chart and Table buttons (P-explorer).
+function aid(root, plot, id, toTable, form = 'rows') {
+  describe(root, plot, id, form);
   const press = h('button', { type: 'button', class: 'plate-to-table', text: 'Read as a table' });
   on(press, 'click', () => {
     toTable();
@@ -1068,34 +1265,53 @@ function aid(root, plot, id, toTable, form = 'rows') {
   under.append(press);
   root.classList.add('has-under');
 }
+// Where a plate sits gives its variant (docs/PLATE-KIT.md): a face in an agenda, a column of a strip, a lead as a tab's or a section's first plate and on the
+// Briefing, a repeater after it. A definition's "variant" wins. site.css draws the same guess before this runs, so nothing jumps.
+function variantOf(root) {
+  if (root.dataset.variant) return root.dataset.variant;
+  if (root.closest('.agenda-faces')) return 'face';
+  if (root.closest('.plate-strip, .plate-pair')) return 'strip'; // two plates side by side are a strip of two
+  const room = NO_ADDRESS ? null : root.closest('[role="tabpanel"], section, main');
+  return !room || room.querySelector('[data-plate]') === root ? 'lead' : 'repeater';
+}
+const ROWS_SHOWN = 25; // a longer Table opens with this many, and a button appends the rest in place: no inner scroll (docs/PLATE-KIT.md)
 // With scripts the parts move to where a reader wants them; without scripts they stay where the build wrote them, and everything shows.
 function arrange(p) {
-  const { root, plot, data: { plot: cfg, receipts } } = p;
-  // Chips and the receipt they open go to the Sources view, above its line and link, so the Reading view ends at Copy and Reset and one line of receipts.
-  root.querySelector('.plate-view[data-view="sources"] > .label').after(root.querySelector('.plate-chips'), p.receipt);
+  const { root, plot, data: { plot: cfg } } = p;
+  root.dataset.variant = variantOf(root);
   set(p.receipt, { tabindex: -1, role: 'group', 'aria-label': 'Source' });
-  p.tally = h('button', { type: 'button', class: 'plate-tally', hidden: '' });
-  const actions = root.querySelector('.plate-actions');
-  actions.after(p.tally);
-  // What leaves the page, in one row of words beside Copy and Reset, since three more boxes would stack the panel's first screen. CSV always; SVG only on a plot that is one.
-  p.svgOut = h('button', { type: 'button', 'data-svg': '', hidden: '', text: 'Download SVG' });
-  actions.insertBefore(h('div', { class: 'plate-out' }, h('button', { type: 'button', 'data-print-plate': '', text: 'Print this plate' }), h('button', { type: 'button', 'data-csv': '', text: 'Download CSV' }), p.svgOut), p.status);
-  // A link carries a plate's settings, here where the home questions rely on it. The briefing keeps no address, so it has no need of the sentence.
-  if (!NO_ADDRESS && [...p.params.values()].some((c) => !c.stop)) p.tally.after(h('p', { class: 'caption plate-link-note', text: "The link in Copy Reading carries these settings. Do not put a Nation's private figures in a shared link." }));
-  root.querySelector('.plate-views input[value="sources"] + span').textContent = `Sources (${Object.keys(receipts).length})`;
-  // plot.switch: a control that is part of the picture sits above the plot, at its full width.
+  // A typed figure never rides in the address, so a shared link cannot carry one; the plate says so where a reader types (owner ruling 29).
+  if (!NO_ADDRESS && [...p.params.values()].some((c) => !c.stop)) p.detail.append(h('p', { class: 'caption plate-link-note', text: 'Figures you type stay on this screen: the link in Copy reading leaves them out.' }));
+  if (NO_ADDRESS) root.querySelector('[data-add-briefing]')?.remove(); // on the Briefing the plate is already in it
+  // plot.switch: a control that is part of the picture sits over the plot, at its full width, beside the view buttons.
   const control = cfg.switch && root.querySelector(`.plate-controls [data-param="${cfg.switch}"]`);
   if (control) {
-    root.insertBefore(h('div', { class: 'plate-switch' }, control), plot);
+    root.querySelector('.plate-bar').prepend(h('div', { class: 'plate-switch' }, control));
     root.classList.add('has-switch');
   }
   // The key, and the ruler's caption where the ruler redraws itself, read under the axis.
   p.note = cfg.fit === 'data' ? all(root, '.plate-claim > .caption').find((n) => n.textContent.startsWith('Each mark is ten times')) : null;
-  const under = [p.note, root.querySelector('.plate-claim .plate-legend')].filter(Boolean);
-  if (under.length) plot.after(h('div', { class: 'plate-under' }, ...under));
-  aid(root, plot, `${p.id}-how`, () => setView(p, 'table'), cfg.type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(cfg.type) ? 'years' : 'rows');
+  const under = [p.note, root.querySelector('.plate-claim .plate-legend'), p.scaleNote = h('p', { class: 'plate-scale-note', hidden: '' })].filter(Boolean);
+  plot.after(h('div', { class: 'plate-under' }, ...under));
+  root.classList.add('has-under');
+  describe(root, plot, `${p.id}-how`, cfg.type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(cfg.type) ? 'years' : 'rows');
   if (cfg.needle && cfg.type === 'instrument') plot.querySelector('.instrument').prepend(h('li', { class: 'needle', role: 'none', 'aria-hidden': 'true' }));
+  // A long Table opens on its first rows; every row prints, and shows without scripts.
+  const extra = p.lines.slice(ROWS_SHOWN);
+  if (extra.length) {
+    for (const tr of extra) tr.classList.add('is-more');
+    p.more = h('button', { type: 'button', class: 'plate-more-rows', 'data-more-rows': '', text: `Show all ${grouped(p.lines.length)} rows` });
+    p.count.textContent = `${ROWS_SHOWN} of ${grouped(p.lines.length)} rows`;
+    p.count.after(p.more);
+  }
   moveProse(root);
+}
+function showAllRows(p) {
+  const first = p.lines.find((tr) => tr.classList.contains('is-more'));
+  for (const tr of p.lines) tr.classList.remove('is-more');
+  p.count.textContent = `${grouped(p.lines.length)} rows`;
+  p.more.remove();
+  if (first) { first.tabIndex = -1; first.focus(); } // the first new row, where the reader's eye goes next
 }
 // In a workbench panel the claim zone keeps its title, its controls, and one paragraph; the rest reads under the plate, in the details grid that follows it, or a new one in the page's own style.
 // A paragraph with more than one sentence is a disclosure whose summary is its first; a single sentence or a foot line stands as it is, its link in view. An axis caption and a foot that is only a link stay.
@@ -1130,10 +1346,11 @@ function initPlate(root) {
     if (!only.includes(data.default)) [data.default] = only;
   }
   const p = {
-    id, root, data, tableRows, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env },
-    title: find('.plate-title'), title0: find('.plate-title').textContent, plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
-    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find('output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'),
-    moreChips: find('.plate-chips').appendChild(h('button', { type: 'button', class: 'plate-chip-more', hidden: '' })),
+    id, root, data, tableRows, params: new Map(), state: {}, keys: keysOf(data.rows), env: { ...data.env }, listeners: [],
+    title: find('.plate-title'), title0: find('.plate-title').textContent, titleSaid: find('.plate-title').textContent, plot: find('.plate-plot'), reading: find('.reading'), value: find('.readout-value'), unit: find('.readout-unit'), status: find('.plate-status'),
+    facts: find('.plate-facts'), receipt: find('.plate-receipt'), live: find(':scope > output'), setting: find('.plate-setting'), ladders: find('.ladder-groups'),
+    detail: find('.plate-detail'), evidence: find('.plate-evidence'), back: find('[data-reset]'), svgOut: find('[data-svg]'),
+    tableView: find('.plate-view[data-view="table"]'), caption: find('.plate-table caption'), count: find('.plate-count'), lines: all(root, '.plate-table tbody tr'),
     sources: find('.plate-sources-link a')?.getAttribute('href').split('#')[0], // the page's Sources page, as this page reaches it; the Briefing's copy reaches it from there
   };
   p.rowNodes = new Map(all(p.plot, '.ladder-row, .instrument-row').map((node) => [node.dataset.row, node]));
@@ -1141,51 +1358,73 @@ function initPlate(root) {
   plates.set(id, p);
   all(root, '[data-param]').forEach((box) => addControl(p, box));
   readState(p);
+  // An old link may still carry a typed figure; it was not applied, and it leaves the address so no copy of the link carries it on.
+  const typed = [...p.params].filter(([name, c]) => !c.stop && readAddress().params.has(name));
+  if (typed.length && !NO_ADDRESS) {
+    const { anchor, params } = readAddress();
+    for (const [name] of typed) params.delete(name);
+    writeAddress(anchor, params);
+  }
   root.classList.add('is-live');
-  for (const part of all(root, '[data-js]')) part.hidden = false;
+  for (const part of all(root, '[data-js][hidden]')) part.hidden = false; // markup from before the js class: site.css now hides [data-js] without scripts
   // Each plate's table region is a landmark, so each needs its own name.
-  for (const region of all(root, '.table-scroll[role="region"]')) region.setAttribute('aria-label', `Table of values: ${find('.plate-title')?.textContent ?? id}`);
+  for (const region of all(root, '.table-scroll[role="region"]')) region.setAttribute('aria-label', `Table of values: ${p.title0}`);
   arrange(p);
-  // ID-view=sources in the address opens a plate on that view, from a link on another page.
+  // {id}-view=table opens the Table; an old link's =sources or =reading opens the Chart with focus on the evidence, and leaves the address (movedTo forwards receipts).
   const asked = readAddress().params.get(`${id}-view`);
-  setView(p, asked === 'sources' || asked === 'table' ? asked : 'reading');
-  for (const view of all(root, '.plate-view')) on(view, 'beforematch', () => setView(p, view.dataset.view)); // a word found in a closed view brings it forward, radio and all
-  on(root, 'change', (e) => { if (e.target.closest('.plate-views')) setView(p, e.target.value); });
+  setView(p, asked === 'table' ? 'table' : 'chart');
+  if (asked && asked !== 'table') {
+    const { anchor, params } = readAddress();
+    params.delete(`${id}-view`);
+    writeAddress(anchor, params);
+    p.focusEvidence = true;
+  }
+  on(p.tableView, 'beforematch', () => setView(p, 'table')); // a word found in a closed view brings it forward, buttons and all
+  for (const part of [p.plot, p.detail]) on(part, 'beforematch', () => setView(p, 'chart'));
   on(root, 'click', (e) => {
-    const chip = e.target.closest('.receipt');
-    const row = e.target.closest('[data-row]');
-    if (e.target === p.tally) { // the button leaves with its view, so focus goes to the view switch
-      setView(p, 'sources');
-      find('.plate-views input:checked').focus();
-    } else if (e.target === p.moreChips) {
-      p.moreChips.parentElement.classList.toggle('is-all');
-      sayMore(p);
-    } else if (chip) {
-      setView(p, 'sources');
-      openReceipt(p, p.open === chip.dataset.claim ? null : chip.dataset.claim, chip);
-    } else if (e.target.closest('[data-copy]')) copyReading(p);
-    else if (e.target.closest('[data-reset]')) reset(p);
-    else if (e.target.closest('[data-print-plate]')) printOne(p);
+    const chip = e.target.closest('.plate-evidence .receipt');
+    const row = e.target.closest('[data-row]'); // a page may hold some rows in the window (data-centers.js moveRecord)
+    const view = e.target.closest('.plate-views button');
+    if (view) {
+      setView(p, view.dataset.view);
+      writeQuery(p);
+    } else if (chip) openCard(p, p.open === chip.dataset.claims ? null : chip);
+    else if (e.target.closest('[data-copy]')) copyReading(p);
+    else if (e.target.closest('[data-reset]')) {
+      reset(p);
+      root.querySelector('[data-copy]')?.focus(); // the button leaves with the moved settings, so focus stays beside it
+    } else if (e.target.closest('[data-print-plate]')) printOne(p);
     else if (e.target.closest('[data-csv]')) save(`${id}-${fileDate()}.csv`, csvOf(p), 'text/csv;charset=utf-8');
     else if (e.target.closest('[data-svg]')) save(`${id}-${fileDate()}.svg`, svgOf(p), 'image/svg+xml');
-    else if (row && !row.classList.contains('is-ghost')) {
-      setView(p, 'reading');
-      select(p, row.dataset.row);
-    }
+    else if (e.target.closest('[data-more-rows]')) showAllRows(p);
+    else if (row && !row.classList.contains('is-ghost')) select(p, row.dataset.row);
   });
   on(root, 'keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (p.open) {
       const { from } = p;
       const inside = p.receipt.contains(document.activeElement);
-      openReceipt(p, null);
+      openCard(p, null);
       if (inside) from?.focus(); // back to the chip the reader came from
-    } else if (e.target === p.plot) select(p, p.data.default, false);
+    } else if (e.target === p.plot) select(p, p.data.default);
   });
   wirePlot(p);
   update(p, 'init');
-  openReceipt(p, firstClaim(p));
+  if (p.focusEvidence) (p.evidence.querySelector('button') || p.evidence).focus?.({ preventScroll: true });
 }
+// Lazy start: a plate starts when it shows, and a page script's register waits for it.
+const pending = new Map();
+function start(root) {
+  const id = root.dataset.plate;
+  if (plates.has(id) || !document.getElementById(`plate-data-${id}`)) return plates.get(id);
+  initPlate(root);
+  if (pending.has(id)) apply(plates.get(id), pending.get(id));
+  return plates.get(id);
+}
+const plateOf = (id) => {
+  const root = document.querySelector(`[data-plate="${id}"]`);
+  return root ? start(root) : null;
+};
 
 // The strip: dates on one track from a checked date, built from a list a generator writes, so without scripts it is that list. Days count between local midnights, so a deadline
 // reads "today" all of its day in the reader's own zone. See docs/PLATE-KIT.md for the markup.
@@ -1251,12 +1490,16 @@ function initStrip(root) {
   root.classList.add('is-live');
 }
 
-function register(id, { render, defaults = {}, countParts } = {}) {
-  const p = plates.get(id);
-  if (!p) throw new Error(`No plate ${id}`);
+// A page script's drawing and defaults for its plate; a plate in a closed panel takes them when it starts.
+function register(id, options = {}) {
+  if (!document.querySelector(`[data-plate="${id}"]`)) throw new Error(`No plate ${id}`);
+  if (plates.has(id)) apply(plates.get(id), options);
+  else pending.set(id, options);
+}
+function apply(p, { render, defaults = {}, countParts } = {}) {
   for (const [name, value] of Object.entries(defaults)) {
     const c = p.params.get(name);
-    if (!has(c?.parse(String(value)))) throw new Error(`Bad default ${name} on plate ${id}`);
+    if (!has(c?.parse(String(value)))) throw new Error(`Bad default ${name} on plate ${p.id}`);
     c.def = c.parse(String(value));
   }
   p.render = render;
@@ -1265,11 +1508,19 @@ function register(id, { render, defaults = {}, countParts } = {}) {
   update(p, 'init');
 }
 
-all(document, '[data-plate]').forEach(initPlate);
-all(document, '[data-strip]').forEach(initStrip);
+// Tabs and the agenda first, so a closed panel's or face's plates wait; then a deep link's plate, so the reader's landing is drawn first; then every plate that shows.
 all(document, '.section-strip[data-workbench]').forEach(initTabs);
+all(document, '.agenda').forEach(initAgenda);
+const landing = (() => { try { return document.getElementById(decodeURIComponent(readAddress().anchor))?.closest('[data-plate]'); } catch { return null; } })();
+if (landing && !landing.closest('[hidden]')) start(landing);
+all(document, '[data-plate]').filter((root) => !root.closest('[hidden]')).forEach(start);
+all(document, '[data-strip]').forEach(initStrip);
 on(document, 'DOMContentLoaded', () => land(location.hash.slice(1))); // after an old ?query has moved into the fragment, and after a tab has opened
-on(window, 'hashchange', (e) => { if (e.newURL) land(new URL(e.newURL).hash.slice(1)); }); // where the reader went; the Explorer's own event after Back names nothing
+// A link the reader followed lands; Back, Forward, or a typed address puts every plate where the address says (theme.js tells the two apart).
+on(window, 'hashchange', (e) => {
+  if (!window.siteAddress.followed) reapply();
+  if (!window.siteAddress.traversed && e.newURL) land(new URL(e.newURL).hash.slice(1));
+});
 // A strip that scrolls says so: its right edge fades while more waits past it.
 for (const list of all(document, '.section-strip ul, .toc ul')) {
   const cut = () => list.classList.toggle('is-cut', list.scrollLeft + list.clientWidth < list.scrollWidth - 1);
@@ -1287,13 +1538,25 @@ for (const value of all(document, '.readout-value')) {
   count();
   new MutationObserver(count).observe(value, { childList: true, characterData: true, subtree: true });
 }
-// What a page may read of a plate or ask of it, for the briefing: its state as the reader left it, in the words the plate prints.
+// What a page may read of a plate or ask of it, for the briefing and the agenda: its state as the reader left it, in the words the plate prints. A plate not yet
+// started starts for it.
 function read(id) {
-  const p = plates.get(id);
+  const p = plates.get(id) || plateOf(id);
   const settings = (p.data.setting || []).map((c) => ({ name: c.name, label: c.label, word: c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set', changed: p.state[c.name] !== p.params.get(c.name).def }));
-  return { id, title: p.title.textContent, state: { ...p.state }, selected: p.selected, changed: changed(p), settings, receipts: p.data.receipts };
+  const answer = p.data.answer ? fillState(p, p.data.answer) : null;
+  return { id, title: p.title.textContent, answer, reading: p.reading.textContent, state: { ...p.state }, selected: p.selected, changed: changed(p), settings, receipts: p.data.receipts };
+}
+// onReading(id, fn): fn(read(id)) after every change the plate settles on (a setting or a selection, never a hover's preview), and once now.
+function onReading(id, fn) {
+  const p = plateOf(id);
+  if (!p) throw new Error(`No plate ${id}`);
+  p.listeners.push(fn);
+  fn(read(id));
 }
 // fig is the one rounding for a computed figure, and today the one date in house style, for the page scripts that print either. The Explorer shares the address,
 // the findable hiding, and a plot's aids.
-window.plate = { register, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plates.get(id)), save, fig, today: () => usDay(isoToday()), address: { read: readAddress, write: writeAddress }, conceal, aid, movedTo };
+window.plate = {
+  register, onReading, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plateOf(id)), start: plateOf, save, fig, today: () => usDay(isoToday()),
+  address: { read: readAddress, write: writeAddress }, conceal, aid, movedTo,
+};
 })();

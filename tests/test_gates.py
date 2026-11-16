@@ -191,7 +191,7 @@ def test_a_mark_in_single_quotes_is_read_and_its_other_attributes_are_kept():  #
     body = ("<main><p><a class='cr' data-claim='fp-141' href='#src-fp-141'>3.1 Wh</a> and "
             '<a class="cr" data-claim="fp-141" href="#src-fp-141" title="Per prompt" data-note="n">3.1 Wh</a></p>\n</main>')
     once, problems = cr.pour(body, {"fp-141": claim})
-    assert not problems and once.count('data-status="verified"') == 2
+    assert not problems and once.count('data-claim="fp-141" data-status="verified"') == 2
     assert ' title="Per prompt" data-note="n">' in once and cr.pour(once, {"fp-141": claim}) == (once, [])
 
 
@@ -311,7 +311,7 @@ def test_the_rebuild_runs_in_the_documented_order():  # 17
     export = at("build_plates.py --export-claims")
     assert max(at("energy_claims.py"), at("climate_claims.py"), at("project_claims.py")) < export < at("build_project_map.py") < at("build_plates.py")
     model = [at(f"resource_model.py{flag}") for flag in (" --self-test", " --export", " --oracle", "")]
-    assert model == sorted(model) and model[-1] < at("build_explorer.py") < at("build_index.py") < at("build_whats_new.py")
+    assert model == sorted(model) and model[-1] < at("build_explorer.py") < at("build_home.py") < at("build_index.py") < at("build_whats_new.py")
     counts = [n for n, command in enumerate(order) if command == "scripts/site_count_claims.py"]
     assert counts[0] < at("build_plates.py") and at("build_whats_new.py") < counts[1] < at("pour_claim_refs.py"), "before the pages read the counts, and after the rows it counts"
     assert at("pour_claim_refs.py") < at("build_share_cards.py") < at("build_briefing.py") < at("build_briefing_pdf.py") < at("add_page_meta.py") == len(order) - 1
@@ -344,3 +344,14 @@ def test_the_check_runs_every_check_and_no_build_and_names_each_stale_output(mon
     assert "data/index.json (python scripts/build_index.py --check); Briefing PDF (python scripts/build_briefing_pdf.py --check)" in stop.value.code
     assert ran == [command for _, _, command, _ in ra.STEPS if command], "each check once, in order, and nothing else"
     assert "no check of their own: Energy claims and plates, climate claims and plate" in capsys.readouterr().out
+
+
+def test_a_copy_is_checked_where_it_was_built_and_here_only_for_its_loads_and_links(tmp_path, monkeypatch, capsys):  # data-copy-of, home's faces
+    block = '<!-- SLOT:ai:charge --><p>x</p><!-- /SLOT --><script type="application/json" id="plate-data-zz">{"rows": [{"key": "a", "claim": "zz-999"}]}</script>'
+    (tmp_path / "index.html").write_text(f'<main><div data-copy-of="ai/#zz">{block}<a href="nowhere.html">x</a></div></main>', encoding="utf-8")
+    out = validator_output(tmp_path, monkeypatch, capsys)
+    assert "Slot ai:charge" not in out and "zz-999" not in out, "its slot and its plate block are its own page's"
+    assert "Broken or escaping local link in index.html: nowhere.html" in out, "but a link in it must still land from here"
+    (tmp_path / "index.html").write_text(f"<main>{block}</main>", encoding="utf-8")
+    out = validator_output(tmp_path, monkeypatch, capsys)
+    assert "Slot ai:charge in index.html should start with 'home:'" in out and "names unknown claim 'zz-999'" in out, "the same block as the page's own is held to them"

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Serves site/ on an ephemeral port, takes screenshots, writes metrics.json, and closes its server. Use at integration, not per edit.
 //   node scripts/capture.js --out work/site-refresh/shots/x3 --pages ai,home --widths 1440,390 --themes dark,light [--tabs] [--full]
-// --pages takes names from PAGES below, paths under site/ such as ai/, or "all". Playwright comes from local node_modules or else the global npm root,
-// and drives the installed Chrome. A page's console errors and overflow go in the metrics and do not change the exit code.
+// --pages takes names from PAGES below, paths under site/ such as ai/sources/, or "all": every page, each page's Sources page, and the hub (CW 8). Playwright
+// comes from local node_modules or else the global npm root, and drives the installed Chrome. A page's console errors and overflow go in the metrics and do
+// not change the exit code.
 const { execSync } = require('child_process');
 const fs = require('fs');
 const http = require('http');
@@ -12,6 +13,11 @@ const ROOT = path.resolve(__dirname, '..');
 // CAPTURE_SITE points at a scratch copy of site/, for design comps.
 const SITE = process.env.CAPTURE_SITE ? path.resolve(process.env.CAPTURE_SITE) : path.join(ROOT, 'site');
 const PAGES = { home: '', ai: 'ai/', 'data-centers': 'data-centers/', 'resource-use': 'data-centers/resource-use/', energy: 'energy/', potential: 'energy/potential/', funding: 'energy/funding/', library: 'library/', summit: 'summit/', about: 'about/', explorer: 'explorer/', briefing: 'briefing/' };
+// Every page with an index.html under site/, by its name above where it has one; assets/ and data/ hold no pages.
+const EVERY = (function pages(dir, rel) {
+  const here = fs.existsSync(path.join(dir, 'index.html')) ? [rel] : [];
+  return here.concat(...fs.readdirSync(dir, { withFileTypes: true }).filter((e) => e.isDirectory() && !(rel === '' && /^(assets|data)$/.test(e.name))).map((e) => pages(path.join(dir, e.name), `${rel}${e.name}/`)));
+})(SITE, '').map((rel) => Object.keys(PAGES).find((name) => PAGES[name] === rel) || rel);
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.csv': 'text/csv', '.txt': 'text/plain' };
 
 function loadPlaywright() {
@@ -66,7 +72,7 @@ function args() {
   const names = take('pages', 'all');
   return {
     out: path.resolve(out),
-    pages: names === 'all' ? Object.keys(PAGES) : names.split(','),
+    pages: names === 'all' ? EVERY : names.split(','),
     widths: take('widths', '1440').split(',').map(Number),
     themes: take('themes', 'dark,light').split(','),
     tabs: process.argv.includes('--tabs'),

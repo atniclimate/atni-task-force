@@ -55,7 +55,7 @@ async function ids() {
   eq([...document.querySelectorAll('p')].filter((p) => p.textContent.trim() === '---').length, 0, 'no stray rule lines');
   eq(document.querySelector('.site-nav a[href="../../energy/"]').hasAttribute('aria-current'), false, 'Energy is not current');
   eq(document.querySelectorAll('.site-nav [aria-current]').length, 1, 'one current section in the main nav');
-  eq(document.querySelectorAll('.subnav [aria-current="page"]').length, 1, 'one current page in the subnav');
+  ok(!document.querySelector('.site-header .subnav') && document.querySelector('main .brief-name a[href="../"]'), 'the header is the same as every page\'s, and the name line leads back to Data Centers (home-shell-21)');
   // The figures' title ids survive as the plates' own.
   for (const id of Object.keys(PLATES)) eq(document.getElementById(`${id}-title`).closest('[data-plate]').id, id, `${id}-title names its plate`);
 }
@@ -190,7 +190,7 @@ async function plates() {
         ok(Math.abs(+node.style.getPropertyValue(name) - at(v)) < 1e-4, `${id} ${spec.id}: ${name} is ${spec.claim}'s place on the ruler`);
       }
       const line = lines[i]; // in the plate's order: "Data center" is a row of two accounts
-      ok(line.querySelector('th').textContent === spec.label && line.lastElementChild.textContent.split(', ').includes(spec.claim), `${id} ${spec.id}: the Table names ${spec.claim}`);
+      ok(line.querySelector('th').textContent === spec.label && [...line.lastElementChild.querySelectorAll('a[data-claim]')].map((a) => a.dataset.claim).includes(spec.claim), `${id} ${spec.id}: the Table names ${spec.claim}`);
       for (const claim of [spec.claim, ...(spec.cites || []), ...(spec.range_from ? [spec.range_from] : [])]) {
         ok(receipt(`${id}-source-${claim}`), `${id}: ${claim} has its receipt on the Sources page`);
         eq(data.receipts[claim].status, CLAIMS[claim].status, `${id}: ${claim} keeps its status`);
@@ -321,8 +321,8 @@ async function landing() {
   fire(a.window, row(plate(a.document, 'ru-boundary'), 'gemini'), 'click');
   fire(a.window, plate(a.document, 'ru-boundary').querySelector('[data-copy]'), 'click');
   await wait(300);
-  const link = a.window.clip.split('\n')[1];
-  ok(link.endsWith('#ru-boundary&ru-boundary=gemini'), `Copy Reading's link names the plate, then its setting: ${link}`);
+  const link = a.window.clip.split('\n')[2]; // the title, the Reading, then the link
+  ok(link.endsWith('#ru-boundary&ru-boundary=gemini'), `Copy reading's link names the plate, then its setting: ${link}`);
   const b = await load(link.slice(link.indexOf('#')));
   eq(b.window.scrolled, 'ru-boundary', 'that link scrolls to its plate');
   eq(b.document.activeElement, plate(b.document, 'ru-boundary'), 'and focus starts there, so Tab goes on into the plate');
