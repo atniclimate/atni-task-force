@@ -250,5 +250,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "title_template": "By 2035, BLS projects {jb-002[display]} for data scientists and {jb-007[display]} for data entry keyers"
 }

@@ -26,7 +26,7 @@
   {
    "type": "segmented",
    "name": "scale_wh",
-   "label": "Wh per text prompt",
+   "label": "Energy per text prompt",
    "default": "value",
    "options": [
     {
@@ -50,7 +50,7 @@
   {
    "type": "segmented",
    "name": "scale_intensity",
-   "label": "Streaming data center energy",
+   "label": "Data center energy for video",
    "default": "m",
    "options": [
     {
@@ -60,12 +60,12 @@
     },
     {
      "value": "d",
-     "label": "DESNZ follow-up",
+     "label": "UK government scenario",
      "is": "yt_d"
     },
     {
      "value": "t",
-     "label": "Top-down",
+     "label": "Averaged over all traffic",
      "is": "yt_t"
     }
    ]
@@ -241,5 +241,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "title_template": "All of ChatGPT's text messages come to about {chat} TWh a year; the buildout adds hundreds"
 }

@@ -55,23 +55,31 @@ const closeWalk = (stored, fresh, where) => {
     else if (typeof v === 'number' && fresh[k] !== undefined) near(fresh[k], v, `${where}.${k}`);
   }
 };
-const TABS = ['overview', 'energy', 'economics', 'companies', 'working-with-ai', 'youth-education', 'data-sovereignty', 'policy-watch'];
+const TABS = ['energy', 'economics', 'companies', 'data-sovereignty', 'working-with-ai', 'youth-education', 'policy-watch'];
+const STREAM_WORDS = 'Measured,UK government scenario,Averaged over all traffic';
 // The words each first plate moves under itself: the kit keeps one paragraph in the claim zone, and no word leaves the page.
 const PROSE = {
-  'ai-same-hour': ['The first question most readers bring', 'each segment labeled measured or modeled', 'Resolution #2026-039 calls for this task force', 'This comparison does not decide a proposal', 'Treaty-reserved rights', 'What a building would run'],
+  'ai-same-hour': ['This is the hour from the first question', 'each segment labeled measured or modeled', 'This comparison does not decide a proposal', 'Treaty-reserved rights', 'What a building would run'],
   'ai-company-money': ['one scale for all seven', 'share a scale', 'Seven large companies sit at the center', 'Fiscal years differ (Microsoft June, Apple September, NVIDIA January)'],
 };
 
+const stripTabs = (document) => [...document.querySelectorAll('.section-strip [role="tab"]')];
+const panelsOf = (document) => [...document.querySelectorAll('section.panel')];
+
 async function tabs() {
   const { window, document, errors } = await load();
-  const list = document.querySelector('[role="tablist"]');
-  const links = [...document.querySelectorAll('[role="tab"]')];
-  const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-  eq(links.length, 8, 'eight tabs');
-  eq(panels.map((p) => p.id).join(), TABS.join(), 'panels in order');
+  const list = document.querySelector('.section-strip [role="tablist"]');
+  const links = stripTabs(document);
+  const panels = panelsOf(document);
+  eq(links.length, 7, 'seven tabs, and no Overview: the agenda is the overview');
+  eq(panels.map((p) => p.id).join(), TABS.join(), 'panels in order, Measure then Decide');
   eq(list.getAttribute('aria-label'), 'Sections', 'tab list named');
+  eq([...document.querySelectorAll('.section-strip .strip-group')].map((n) => n.textContent).join(), 'Measure,Decide', 'two groups, out of the tab order');
+  ok(links.every((a) => a.querySelector('.tab-name') && a.querySelector('.tab-q')), 'each tab is its name over its question');
+  eq(links.map((a) => a.querySelector('.tab-name').textContent).join(), 'Energy,Work,Companies,Data Sovereignty,Working with AI,Youth and Education,Policy Watch', 'tab names');
+  ok(document.querySelector('.section-strip a.strip-out[data-not-tab][href="sources/"]') && document.querySelector('.section-strip button.paper[data-sheet-open]'), 'Sources and the meeting sheet at the right end');
   ok(!panels[0].hidden && panels.slice(1).every((p) => p.hidden), 'one panel at a time');
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < links.length; i += 1) {
     fire(window, links[i], 'click');
     panels.forEach((p, j) => eq(p.hidden, j !== i, `tab ${i} shows only its panel`));
     eq(window.location.hash, `#${TABS[i]}`, 'hash written');
@@ -81,29 +89,90 @@ async function tabs() {
   eq(links[1].getAttribute('aria-selected'), 'true', 'arrow right');
   eq(document.activeElement, links[1], 'focus follows');
   key(window, links[1], 'End');
-  eq(links[7].getAttribute('aria-selected'), 'true', 'End');
-  key(window, links[7], 'ArrowRight');
+  eq(links.at(-1).getAttribute('aria-selected'), 'true', 'End');
+  key(window, links.at(-1), 'ArrowRight');
   eq(links[0].getAttribute('aria-selected'), 'true', 'wraps');
   key(window, links[0], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
   eq(errors.join(), '', 'no script errors');
 }
 
+// The agenda: three questions, each answered from its face's own state; the hour meter holds its axis; the stair is radios.
+async function agenda() {
+  const { window, document, errors } = await load();
+  const box = document.querySelector('section.agenda#overview');
+  ok(box && box.compareDocumentPosition(document.querySelector('.section-strip')) & 4, 'the agenda opens the page, above the strip');
+  const qs = [...box.querySelectorAll('.agenda-q > a[role="tab"]')];
+  eq(qs.map((a) => a.textContent).join('|'), 'Is everyday AI use the problem?|Who is paying for the buildout?|How does a Tribe keep control of its data?', 'three questions');
+  eq(qs.map((a) => a.getAttribute('aria-controls')).join(), 'face-hour,face-buildout,face-tiers', 'each controls its face');
+  const answer = (i) => box.querySelectorAll('.agenda-a')[i].textContent;
+  eq(answer(0), 'Whole hour: chat with ten prompts is about 15 Wh, streamed video 14 Wh, a short-video feed 13 Wh, and agentic coding 211 Wh.', 'the hour answer, from the meter at its start');
+  ok(leads(answer(1), ['Amazon', '131.82 billion dollars', '12/31/2025']), `the buildout answer: ${answer(1)}`);
+  ok(/most protective/.test(answer(2)), 'the tiers answer is fixed words');
+  ok(!document.getElementById('face-hour').hidden && document.getElementById('face-buildout').hidden, 'the first face shows');
+  // The hour meter: one fixed linear scale, the needle moving under it from stop to stop.
+  const h = plateOf(document, 'ai-hour');
+  eq(h.root.dataset.kind, 'meter', 'a meter');
+  const axis = () => [...h.plot.querySelectorAll('.ladder-axis span')].map((n) => n.textContent).join();
+  const start = axis();
+  ok(start.startsWith('0,') && start.endsWith('25'), `a linear axis from 0 to 25 Wh: ${start}`);
+  eq(`${h.value.textContent} ${h.unit.textContent}`, '15 (9.3 to 24) Wh', 'the starting readout');
+  ok(h.row('coding').classList.contains('is-off') && leads(h.row('coding').querySelector('.ladder-value').textContent, ['211']), 'agentic coding is past the scale, its figure printed');
+  for (const [stop, chat, video] of [['dc', '3', '0.45'], ['adds', '3', '2.1'], ['whole', '15', '14']]) {
+    await pick(window, h.radio('counted', stop));
+    eq(axis(), start, `the axis holds at ${stop}`);
+    eq(h.value.textContent, chat, `the needle reads ${chat} at ${stop}`);
+    ok(answer(0).includes(`chat with ten prompts is about ${chat} Wh, streamed video ${video} Wh`), `the answer follows at ${stop}: ${answer(0)}`);
+    ok(!/\(/.test(answer(0)), 'the answer prints figures, not spreads');
+  }
+  await pick(window, h.radio('counted', 'dc'));
+  ok(h.plot.querySelector('.meter-part.is-ghost'), 'what a stop leaves out stays as a ghost');
+  ok(/^Data center only/.test(h.root.querySelector('.plate-title').textContent), `the title follows the stop: ${h.root.querySelector('.plate-title').textContent}`);
+  eq(h.root.querySelector('.plate-foot a[href="#ai-same-hour"]').textContent, 'Change the assumptions on the Energy tab', 'the assumptions are a link away, on the Energy plate');
+  // A face keeps its state; the second face starts when shown.
+  fire(window, qs[1], 'click');
+  await wait(30);
+  ok(!document.getElementById('face-buildout').hidden && document.getElementById('face-hour').hidden, 'the second face shows');
+  ok(answer(0).startsWith('Data center only'), 'and the first keeps its state');
+  const cc = plateOf(document, 'ai-capex-cash');
+  await pick(window, cc.radio('fy', '2022'));
+  ok(leads(answer(1), ['Amazon', '63.65 billion dollars', '12/31/2022']), `the buildout answer follows the year: ${answer(1)}`);
+  ok(leads(cc.root.querySelector('.plate-title').textContent, ['Amazon', '2022']), 'and so does the title');
+  // The stair, the kit's fieldset.stair: four radios rising from open to restricted, the most protective chosen, each step's detail after its label.
+  const stair = document.querySelector('#face-tiers fieldset.stair#tier-grid');
+  ok(stair, 'the stair keeps the old tier anchor');
+  const radios = [...stair.querySelectorAll('label.stair-step > input.stair-pick[type="radio"][name="tier"]')];
+  eq(radios.map((r) => r.value).join(), 't0,t1,t2,t3', 'four steps, rising from open to restricted');
+  ok(radios[3].checked && radios.slice(0, 3).every((r) => !r.checked), 'it starts at the most protective tier, where data starts');
+  for (const step of stair.querySelectorAll('label.stair-step')) {
+    eq(step.nextElementSibling.className, 'stair-detail', `${step.id}: its detail follows it`);
+    eq([...step.nextElementSibling.querySelectorAll('dt')].map((n) => n.textContent).join('|'), 'What may touch the data|Who decides|On this site', `${step.id}: three facts`);
+  }
+  const rule = document.querySelector('#face-tiers > .tier-rule');
+  ok(/only/.test(rule.textContent) && /never expose/.test(rule.textContent), 'the rule for moving between tiers');
+  eq(errors.join(), '', 'no script errors');
+}
+
 async function deepLinks() {
   const targets = {
-    overview: 'overview', energy: 'energy', economics: 'economics', companies: 'companies', 'working-with-ai': 'working-with-ai', 'youth-education': 'youth-education', 'data-sovereignty': 'data-sovereignty', 'policy-watch': 'policy-watch',
-    purpose: 'overview', library: 'overview', 'tier-grid': 'working-with-ai', offloading: 'working-with-ai', 'yf-native': 'youth-education', 'ai-heavy-ai': 'energy', 'ai-scale': 'energy', 'ai-displacement': 'economics', 'ai-holdings': 'companies',
+    energy: 'energy', economics: 'economics', companies: 'companies', 'working-with-ai': 'working-with-ai', 'youth-education': 'youth-education', 'data-sovereignty': 'data-sovereignty', 'policy-watch': 'policy-watch',
+    purpose: 'working-with-ai', offloading: 'working-with-ai', 'yf-native': 'youth-education', 'ai-same-hour': 'energy', 'ai-heavy-ai': 'energy', 'ai-scale': 'energy', 'ai-displacement': 'economics', 'ai-holdings': 'companies',
   };
   for (const [hash, panel] of Object.entries(targets)) {
     const { document, errors } = await load(`#${hash}`);
     ok(document.getElementById(hash), `#${hash} exists`);
     eq(document.getElementById(panel).hidden, false, `#${hash} opens ${panel}`);
-    eq([...document.querySelectorAll('[role="tabpanel"]')].filter((p) => !p.hidden).length, 1, 'one panel');
+    eq(panelsOf(document).filter((p) => !p.hidden).length, 1, 'one panel');
     if (document.getElementById(hash).matches('details')) eq(document.getElementById(hash).open, true, `#${hash} opens its disclosure`);
     eq(errors.join(), '', `no script errors at #${hash}`);
   }
-  const { document } = await load('#facts-title');
-  ok(document.getElementById('facts-title'), 'the Key Facts heading keeps its id');
+  // Old links into the Overview land on the agenda, which replaced it; the old tier anchor opens the stair's face.
+  for (const [hash, face] of [['overview', 'face-hour'], ['tier-grid', 'face-tiers'], ['face-buildout', 'face-buildout'], ['ai-capex-cash', 'face-buildout']]) {
+    const { document, errors } = await load(`#${hash}`);
+    ok(document.getElementById(hash), `#${hash} exists`);
+    eq(document.getElementById(face).hidden, false, `#${hash} shows ${face}`);
+    eq(errors.join(), '', `no script errors at #${hash}`);
+  }
   // A link inside the page moves to another tab.
   const live = await load('#yf-teens');
   live.window.location.hash = '#offloading';
@@ -187,13 +256,20 @@ async function sameHourPlate() {
   ok(!p.facts.querySelector('.plate-more').open && p.facts.querySelector('.plate-more').textContent.includes('Equation:'), 'how it is modeled waits behind a disclosure');
   // One paragraph beside the plate; the rest in the details grid under it, the foot lines with their links in view.
   const claimWords = (id) => [...document.querySelectorAll(`#${id} .plate-claim > p:not(.eyebrow)`)].map((n) => n.textContent);
-  eq(claimWords('ai-same-hour').join('|'), 'Energy for one hour, in watt-hours, one boundary at a time.', 'the Overview claim zone keeps one paragraph');
-  const overviewNotes = document.querySelector('#overview > .wrap > .disclosure-grid');
-  for (const part of PROSE['ai-same-hour']) ok(overviewNotes.textContent.includes(part), `under the plate: ${part}`);
-  ok(overviewNotes.querySelector('.plate-note a[href="../data-centers/#questions"]') && overviewNotes.querySelector('.plate-note a[href="../data-centers/#dc-project"]'), 'its two links in view, not behind a disclosure');
-  eq(overviewNotes.querySelector('details > summary').textContent, 'The first question most readers bring is whether their own chat use is the problem, so the page starts there.', 'a paragraph folds under its first sentence');
+  eq(claimWords('ai-same-hour').join('|'), 'Energy for one hour, in watt-hours, one boundary at a time.', 'the Energy claim zone keeps one paragraph');
+  const energyNotes = document.querySelector('#energy > .wrap > .disclosure-grid');
+  for (const part of PROSE['ai-same-hour']) ok(energyNotes.textContent.includes(part), `under the plate: ${part}`);
+  ok(energyNotes.querySelector('.plate-note a[href="../data-centers/#questions"]') && energyNotes.querySelector('.plate-note a[href="../data-centers/#dc-project"]'), 'its two links in view, not behind a disclosure');
+  eq(energyNotes.querySelector('details > summary').textContent, 'This is the hour from the first question at the top of the page, with every assumption open to change.', 'a paragraph folds under its first sentence');
   const order = [...p.root.querySelector('.plate-controls').children].map((c) => c.dataset.param || c.tagName);
   eq(order[0], 'ai-same-hour-plot', 'the view control comes first');
+  // Every assumption behind one disclosure, in plain words (ai-28); the stop stays over the plot.
+  const more = p.root.querySelector('.plate-claim details.plate-more');
+  eq(more.querySelector('summary').textContent, 'Change the assumptions', 'one disclosure for the assumptions');
+  eq([...more.querySelectorAll('[data-param]')].map((n) => n.dataset.param).join(), 'prompts,chat_kind,device,connection,network_mode,router_allocation,video_dc_intensity,chat_wh_per_prompt', 'every assumption inside it');
+  eq([...p.root.querySelectorAll('[data-param="boundary"] span')].map((n) => n.textContent).join(), 'Data center only,Data center and network,Whole hour', 'the stops in plain words');
+  const controlWords = [...document.querySelectorAll('#energy :is(.segmented legend, .segmented label span, .slider > label)')].map((n) => n.textContent).join('|');
+  ok(!/Boundary|Plus network|Network accounting|DESNZ|Top-down|Yardstick|By time|^Wh per/.test(controlWords), `no jargon in the controls: ${controlWords}`);
 
   // Each control moves the Reading, and the numbers match the method.
   const moves = [
@@ -510,7 +586,13 @@ async function otherPlates() {
   ok(pd.reading.textContent.includes('0.25'), `DESNZ follow-up day: ${pd.reading.textContent}`);
   await pick(window, pd.radio('day_intensity', 'top_down'));
   ok(holds(pd.reading.textContent, ['81']) && /a scenario at the top of an unsettled allocation/.test(pd.facts.textContent), `top-down day: ${pd.reading.textContent}`);
+  // A spread the model does not compute at this setting is not printed (ai-05).
+  for (const k of ['yt', 'ig']) {
+    ok(!/\(/.test(pd.row(k).querySelector('.ladder-value').textContent) && pd.row(k).querySelector('.ladder-range').hidden, `${k}: no spread at the top-down setting: ${pd.row(k).querySelector('.ladder-value').textContent}`);
+  }
+  ok(!/\(/.test(pd.reading.textContent) && /Range not computed for this setting/.test(pd.facts.textContent), `and the Reading says so: ${pd.reading.textContent}`);
   await pick(window, pd.radio('day_intensity', 'measured_delivery'));
+  ok(/\(/.test(pd.row('yt').querySelector('.ladder-value').textContent) && !pd.row('yt').querySelector('.ladder-range').hidden, 'the spread returns on measured delivery');
   fire(window, pd.row('chat').querySelector('.ladder-label'), 'click');
   await slide(window, pd.root.querySelector('[data-param="day_wh"] input[type=range]'), 0.6);
   ok(pd.reading.textContent.includes('2.2'), `Wh per prompt: ${pd.reading.textContent}`);
@@ -629,6 +711,8 @@ async function otherPlates() {
   ok(!mo.reading.textContent.includes('free cash flow') && !mo.chips().includes('fin-057'), "Amazon's free cash flow reads only under Amazon");
   await pick(window, mo.radio('company', 'Amazon'));
 
+  fire(window, document.getElementById('q-buildout'), 'click'); // the agenda's second face holds it now
+  await wait(30);
   const cc = plateOf(document, 'ai-capex-cash');
   ok(figures(cc.row('amazon').querySelector('.ladder-value').textContent).length >= 2, 'both values');
   ok(!cc.row('amazon').querySelector('.ladder-mark.is-b').hidden, 'a second mark');
@@ -679,8 +763,8 @@ async function otherPlates() {
 
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
-  eq(document.querySelectorAll('section.panel').length, 8, 'all panels in the page');
-  eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
+  eq(document.querySelectorAll('section.panel').length, 7, 'all panels in the page');
+  eq(document.querySelectorAll('[data-plate]').length, 13, 'thirteen plates');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#economics"]'), 'the strip is a jump list');
   for (const plate of document.querySelectorAll('[data-plate]')) {
     ok(plate.querySelector('.reading').textContent.length > 10, `${plate.id} has a default Reading`);
@@ -691,53 +775,80 @@ async function noScripts() {
     ok([...plate.querySelectorAll('.plate-table a')].every((a) => a.getAttribute('href').startsWith(`sources/#${plate.id}-source-`)), `${plate.id}: its Table links reach its receipts`);
     ok(plate.querySelector('.plate-plot').children.length > 0, `${plate.id} has a static plot`);
   }
-  ok(/Boundary: Whole hour/.test(document.querySelector('#ai-same-hour .plate-setting').textContent), 'a line names the setting shown');
+  ok(/Counted: Whole hour/.test(document.querySelector('#ai-same-hour .plate-setting').textContent), 'a line names the setting shown');
   ok(document.querySelector('#ai-same-hour .plate-facts details.plate-more').textContent.includes('Equation:'), 'without scripts how it is modeled is on the page');
   ok(document.querySelector('#ai-heavy-ai [data-row="sora"] .ladder-value').textContent.startsWith('418.5'), 'Sora at the paper mean');
-  eq(['overview', 'energy', 'economics', 'companies'].filter((id) => document.querySelector(`#${id} .panel-title.is-tab-label`)).length, 4, 'titles that repeat the tab');
+  eq(['energy', 'economics', 'companies'].filter((id) => document.querySelector(`#${id} .panel-title.is-tab-label`)).length, 3, 'titles that repeat the tab');
   eq(document.querySelector('#economics .panel-title').textContent, 'Work', 'the Work tab keeps its name');
-  ok(document.querySelector('#economics details.slot-fold .slot'), 'the held notice folds at the foot of the panel');
-  // A tab with no plate: its words in the claim zone, its figure in the plot zone, its details in a grid under them.
+  // One Coming line per tab, and no unfinished folds (ai-31).
+  eq(document.querySelectorAll('.slot-fold').length, 0, 'no folded status notes');
+  ok(document.querySelector('#economics > .wrap > .slot') && document.querySelectorAll('#economics .slot').length === 1, 'Work: the held slot is its one Coming line');
+  eq(document.querySelectorAll('#youth-education .slot').length, 1, 'Youth: one Coming line');
+  // The brief, and the agenda under it; without scripts the faces stack, whole, and the questions are jump links.
+  const brief = document.querySelector('main > header.brief.photo-ai');
+  eq(brief.querySelector('.brief-name').textContent, 'Artificial Intelligence Task Force', 'the name line');
+  eq(brief.querySelector('h1').textContent, 'Who an AI tool serves, what it uses, and whether the Tribe controls it', 'the h1 says what the page settles');
+  ok(brief.querySelector('.brief-lead').textContent.split(/(?<=[.?]) /).length <= 2, 'a lead of two sentences at most');
+  eq(brief.querySelector('.brief-meta .figure-num + .figure-label').textContent, 'Sources checked', 'the date and its label');
+  ok(brief.querySelector('.brief-meta a[data-sources][href="sources/"]') && brief.querySelector('.brief-meta a[href*="2026-039"]'), 'the Sources page and the resolution');
+  ok(!brief.querySelector('[data-pour], .cr') && !/\d+(\.\d+)? Wh/.test(brief.textContent), 'no figures in the brief');
+  ok(brief.querySelector('.photo-credit'), 'the photograph is credited');
+  const agenda = document.querySelector('section.agenda#overview');
+  eq([...agenda.querySelectorAll('.agenda-q > a')].map((a) => a.getAttribute('href')).join(), '#face-hour,#face-buildout,#face-tiers', 'the questions link their faces');
+  ok(agenda.querySelector('#face-hour #ai-hour') && agenda.querySelector('#face-buildout #ai-capex-cash') && agenda.querySelector('#face-tiers fieldset.stair'), 'each face in place');
+  ok([...agenda.querySelectorAll('.agenda-a')].every((n) => n.textContent.length > 20 && !n.children.length), 'each answer is built in, as plain text');
+  eq(agenda.querySelectorAll('#face-tiers .stair-detail').length, 4, 'every step keeps its facts');
+  // The text tabs: prose bands, no tier table and no second stair (ai-26).
   for (const id of ['working-with-ai', 'youth-education', 'data-sovereignty']) {
-    ok(document.querySelector(`#${id} .ai-spread > .ai-lede > h2.panel-title`) && document.querySelector(`#${id} .ai-spread figure`), `${id}: claim zone and figure`);
-    eq(document.querySelectorAll(`#${id} .ai-lede details`).length, 0, `${id}: no disclosure in the claim zone`);
+    ok(document.querySelector(`#${id} .ai-band > .ai-lede > h2.panel-title`), `${id}: its words lead a band`);
+    eq(document.querySelectorAll(`#${id} .ai-lede details`).length, 0, `${id}: no disclosure in the lede`);
   }
-  eq(document.querySelectorAll('#working-with-ai .ai-spread + .disclosure-grid > details.disclosure').length, 3, 'the three disclosures sit under the table');
-  ok(!document.querySelector('.tier-grid .tier-mark') && document.querySelector('.tier-grid .tier-verdict.is-yes').textContent === 'Permitted', 'the tier table marks its verdicts');
-  ok(document.querySelector('#data-sovereignty .ai-side > .named-risks'), 'the list sits under the stair');
-  eq(document.querySelector('#youth-education .ai-spread + .disclosure-grid > details.disclosure').id, 'yf-urges', 'the first findings lead the grid');
-  eq(document.querySelectorAll('#youth-education .ai-spread + .disclosure-grid > details.disclosure').length, 14, 'all fourteen findings');
+  eq(document.querySelectorAll('.tier-grid, .tier-stair, figure.evidence-key, [data-library-feed]').length, 0, 'the tier table, the old stair, the evidence key, and the library feed are gone');
+  ok(document.querySelector('#data-sovereignty a[href="#face-tiers"]') && document.querySelector('#data-sovereignty .ai-side > .named-risks'), 'Data Sovereignty points to the stair, and keeps what the resolution names');
+  eq([...document.querySelectorAll('#working-with-ai .ai-band > .disclosure-grid > details.disclosure')].map((d) => d.id).join(), 'purpose,building-tools,offloading,task-force-questions', 'the purpose and three disclosures beside the lede');
+  // Before a Tribe adopts an AI tool: the page's one form, each question once, with its principle.
+  eq(document.querySelectorAll('form.asks[data-sheet]').length, 1, 'one form of questions');
+  const set = document.querySelector('#working-with-ai form.asks fieldset.ask-set#q-adopt');
+  eq(set.querySelector('legend').textContent, 'Before a Tribe adopts an AI tool', 'its set');
+  const boxes = [...set.querySelectorAll('li > label > input[type="checkbox"][name="ask"] + span.ask-q')];
+  eq(boxes.length, 9, 'nine questions');
+  eq([...set.querySelectorAll('input[name="ask"]')].map((b) => b.value).join(), [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `q-adopt-${n}`).join(), 'named for the address');
+  ok([...set.querySelectorAll('li')].every((li) => li.querySelector('details.ask-why > summary') && li.querySelector('details.ask-why > p')), 'each with its principle and evidence');
+  ok(boxes.every((q) => q.textContent.endsWith('?') && !/\bour\b/i.test(q.textContent)), 'questions, never in the voice of a Nation');
+  // Youth: findings under their rating, and a row for what no study covers (ai-25).
+  eq([...document.querySelectorAll('#youth-education .evidence-row .evidence-name strong')].map((n) => n.textContent).join(), 'Strong,Moderate,Early,Advocacy,Record,Not yet studied', 'ratings, then the gap');
+  eq([...document.querySelectorAll('#youth-education .evidence-row.is-strong details')].map((d) => d.id).join(), 'yf-teens,yf-design', 'strong findings sit under Strong');
+  eq(document.querySelector('#youth-education .evidence-row.is-none details').id, 'yf-native', 'the missing Native evidence is its own row');
+  eq(document.querySelectorAll('#youth-education details.disclosure[id^="yf-"]').length, 14, 'all fourteen findings');
   // Without scripts a claim zone keeps all its words.
   for (const [id, words] of Object.entries(PROSE)) for (const part of words) ok(document.querySelector(`#${id} .plate-claim`).textContent.includes(part), `${id} without scripts: ${part}`);
-  // The streaming stops fit one line in the claim column.
-  for (const [plate, name] of [['ai-heavy-ai', 'heavy_intensity'], ['ai-per-day', 'day_intensity'], ['ai-scale', 'scale_intensity'], ['ai-same-hour', 'video_dc_intensity']]) eq([...document.querySelectorAll(`#${plate} [data-param="${name}"] span`)].map((n) => n.textContent).join(), 'Measured,DESNZ follow-up,Top-down', `${plate}: one set of stop words`);
+  // The streaming stops say the same three things on every plate.
+  for (const [plate, name] of [['ai-heavy-ai', 'heavy_intensity'], ['ai-per-day', 'day_intensity'], ['ai-scale', 'scale_intensity'], ['ai-same-hour', 'video_dc_intensity']]) eq([...document.querySelectorAll(`#${plate} [data-param="${name}"] span`)].map((n) => n.textContent).join(), STREAM_WORDS, `${plate}: one set of stop words`);
   // One rule for a computed figure, the same without scripts as with them.
   eq(document.querySelector('#ai-same-hour .ladder-row[data-row="video"] .ladder-value').textContent, '14 (7.2 to 203) Wh', 'video at the whole hour without scripts');
   ok(/(^|\s)\.climate-lockup \{[^}]*height: 40px/m.test(read('site/assets/css/site.css')), 'one size for the Climate lockup, 40px');
-  // The band, and what left it.
-  eq(document.querySelector('.page-band h1').textContent, 'Artificial Intelligence Task Force', 'the h1 in the band');
-  eq(document.querySelectorAll('.page-band-figures > li').length, 3, 'three figures');
-  ok(document.querySelector('#youth-education .ai-lede a[href*="2026-051"]') && document.querySelector('#data-sovereignty .ai-lede a[href*="2026-034"]') && document.querySelector('.page-band-figures a[href*="2026-039"]'), 'each resolution is linked where it matters');
+  ok(document.querySelector('#youth-education .ai-lede a[href*="2026-051"]') && document.querySelector('#data-sovereignty .ai-lede a[href*="2026-034"]') && document.querySelector('.brief-meta a[href*="2026-039"]'), 'each resolution is linked where it matters');
   // Place 2 of the direction's three, and only on the page ground.
   eq(document.querySelectorAll('#policy-watch .climate-voice > img.climate-lockup').length, 2, 'the Climate lockup, one per theme');
   ok(document.querySelector('#policy-watch .climate-voice a[href*="policy-sentinel"]'), 'beside the source it names');
   eq(document.querySelectorAll('.plate .climate-voice, .plate-detail .climate-voice').length, 0, 'never on a plate');
   eq(document.querySelectorAll('#policy-watch .climate-voice > p').length, 1, 'the Climate rule runs beside the source line only');
-  ok(document.querySelector('#policy-watch .watch-side > h3 + ol') && !document.querySelector('#policy-watch .climate-voice ol'), 'and the import steps sit outside it');
+  ok(!document.querySelector('#policy-watch ol') && document.querySelector('#policy-watch a[href="sources/#policy-sentinel"]') && document.querySelector('#policy-watch a[href="../data/policy-sentinel/follow-ai.json"][download]'), 'the import steps are on the Sources page, the follow list a download here');
+  ok(read('site/ai/sources/index.html').includes('id="policy-sentinel"'), 'where they stand');
   // A tier is a category: no sequential ramp on it, and the squares carry the state. The rating's key is on the page for print.
   ok(!/--stage-|--tier/.test(read('site/assets/css/ai.css')), 'no stage ramp on a tier');
-  ok(holds(document.querySelector('.evidence-key > .caption').textContent, ['three filled squares, Strong', 'two, Moderate', 'one, Early', 'hollow square, Advocacy or Record']), 'the three-square rating has its key');
+  ok(holds(document.querySelector('.youth-evidence > .caption').textContent, ['Three filled squares, Strong', 'two, Moderate', 'one, Early', 'hollow square, Advocacy or Record']), 'the three-square rating has its key');
   for (const id of ['ai-occupations', 'ai-jobs-sector']) eq(document.querySelector(`#${id} .plate-legend`).textContent, 'Dashed outline: BLS projection, 2025 to 2035', `${id}: the dashes are named without scripts`);
+  eq(document.querySelector('#ai-holdings .plate-legend').textContent, 'As the filing states itComputed here from a filing: its share count times a closing price', 'the holdings key says what a hollow bar is');
   for (const name of ['atni-climate-lockup-on-dark.svg', 'atni-climate-lockup.svg']) ok(read(`site/assets/img/${name}`).startsWith('<'), `${name} is on the site`);
   ok(/prefill/i.test(document.querySelector('#policy-watch [data-prefill-note] summary').textContent) && !document.querySelector('p.notice[data-prefill-note]'), 'the prefill notice folds');
-  ok(!document.querySelector('#ai-occupations .plate-claim').textContent.includes('in development') && [...document.querySelectorAll('#economics details.slot-fold summary')].some((n) => /status/i.test(n.textContent)), 'the status of the brief folds at the foot of the panel');
+  ok(!document.querySelector('#ai-occupations .plate-claim').textContent.includes('in development'), 'no status note in a claim zone');
   eq(document.querySelectorAll('#ai-same-hour .plate-facts .plate-seg').length, 4, 'without scripts the bar holds what the default boundary counts');
-  for (const id of ['purpose', 'working-with-ai', 'youth-education', 'data-sovereignty', 'economics', 'policy-watch', 'library', 'facts-title']) ok(document.getElementById(id), `old id ${id}`);
+  for (const id of ['overview', 'purpose', 'working-with-ai', 'youth-education', 'data-sovereignty', 'economics', 'policy-watch', 'tier-grid']) ok(document.getElementById(id), `old id ${id}`);
   eq(document.querySelector('[data-policy-watch="ai"] [data-policy-searches]') !== null, true, 'policy hooks');
-  ok(document.querySelector('[data-library-feed][data-area="ai"]'), 'library hook');
+  ok(html.includes('<!-- policy:watch -->') && html.indexOf('<!-- policy:watch -->') < html.indexOf('data-policy-searches') && html.indexOf('data-policy-follow') < html.indexOf('<!-- /policy:watch -->'), 'the list sits between its markers');
+  ok(!/library\.js/.test(html), 'no library feed script');
   ok(!document.querySelector('[data-pour] ') || ![...document.querySelectorAll('[data-pour]')].some((n) => n.textContent === 'x'), 'every figure is poured');
-  eq(document.querySelector('.page-band-figures .figure-num').textContent, '0.24 to 0.6 Wh', 'band figure');
-  ok(/fp-001, fp-015, verified/.test(document.querySelector('.page-band-figures .figure-label').textContent), 'with its claim ids and status');
   // The held slot is byte for byte what was committed.
   const committed = execSync(`git show ${SLOT_COMMIT}:site/ai/index.html`, { cwd: ROOT, encoding: 'utf8' });
   const slot = (raw) => { const text = raw.replace(/\r\n/g, '\n'); return text.slice(text.indexOf('          <!-- SLOT:ai:economics-frontier -->'), text.indexOf('<!-- /SLOT -->', text.indexOf('SLOT:ai:economics-frontier')) + 14); };
@@ -750,4 +861,4 @@ async function noScripts() {
 }
 
 
-module.exports = { groups: { tabs, deepLinks, model, sameHourPlate, rulersHold, countView, otherPlates, noScripts } };
+module.exports = { groups: { tabs, agenda, deepLinks, model, sameHourPlate, rulersHold, countView, otherPlates, noScripts } };

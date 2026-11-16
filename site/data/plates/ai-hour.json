@@ -1,0 +1,280 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-hour",
+ "model": "resource-model",
+ "by": "counted",
+ "default": "chat",
+ "eyebrow": "One hour on one phone, modeled 11/2026",
+ "title": "Counted to the screen, an hour of chat is about {now[chat][whole][value]:.0f} Wh, streamed video {now[video][whole][value]:.0f}, and agentic coding {now[coding][whole][value]:.0f}",
+ "title_template": "{counted}: chat about {chat} Wh, streamed video {video} Wh, agentic coding {coding} Wh",
+ "answer": "{counted}: chat with ten prompts is about {chat} Wh, streamed video {video} Wh, a short-video feed {short} Wh, and agentic coding {coding} Wh.",
+ "subtitle": "Watt-hours for one hour on a phone over Wi-Fi, on one fixed scale.",
+ "inputs": {
+  "now": {
+   "model": "computed_defaults.same_hour_stops"
+  }
+ },
+ "controls": [
+  {
+   "type": "segmented",
+   "name": "counted",
+   "label": "Counted",
+   "default": "whole",
+   "options": [
+    {
+     "value": "dc",
+     "label": "Data center only"
+    },
+    {
+     "value": "adds",
+     "label": "Data center and network"
+    },
+    {
+     "value": "whole",
+     "label": "Whole hour"
+    }
+   ]
+  }
+ ],
+ "plot": {
+  "type": "meter",
+  "domain": [
+   0,
+   25
+  ],
+  "ticks": [
+   0,
+   5,
+   10,
+   15,
+   20,
+   25
+  ],
+  "switch": "counted"
+ },
+ "reading": "{label}, counted as {counted}: about {display} for the hour.",
+ "rows": [
+  {
+   "id": "chat",
+   "label": "Chat, ten prompts",
+   "unit": "Wh",
+   "cites": [
+    "fp-001",
+    "fp-017",
+    "fp-134",
+    "fp-127",
+    "fp-126",
+    "fp-049"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.chat.dc.value",
+     "low": "now.chat.dc.low",
+     "high": "now.chat.dc.high"
+    },
+    "adds": {
+     "value": "now.chat.adds.value",
+     "low": "now.chat.adds.low",
+     "high": "now.chat.adds.high"
+    },
+    "whole": {
+     "value": "now.chat.whole.value",
+     "low": "now.chat.whole.low",
+     "high": "now.chat.whole.high"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.chat.layers.data_center",
+     "modeled": false,
+     "word": "measured at Google only"
+    },
+    {
+     "label": "Network",
+     "value": "now.chat.layers.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Your router and phone",
+     "value": "now.chat.layers.router + now.chat.layers.device",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "video",
+   "label": "Streamed video",
+   "unit": "Wh",
+   "cites": [
+    "fp-122",
+    "fp-130",
+    "fp-141",
+    "fp-127",
+    "fp-126",
+    "fp-049"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.video.dc.value",
+     "low": "now.video.dc.low",
+     "high": "now.video.dc.high"
+    },
+    "adds": {
+     "value": "now.video.adds.value",
+     "low": "now.video.adds.low",
+     "high": "now.video.adds.high"
+    },
+    "whole": {
+     "value": "now.video.whole.value",
+     "low": "now.video.whole.low",
+     "high": "now.video.whole.high"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.video.layers.data_center",
+     "modeled": true,
+     "word": "modeled from measured hours"
+    },
+    {
+     "label": "Network",
+     "value": "now.video.layers.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Your router and phone",
+     "value": "now.video.layers.router + now.video.layers.device",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "short",
+   "label": "Short-video feed",
+   "unit": "Wh",
+   "cites": [
+    "fp-053",
+    "fp-055",
+    "fp-059",
+    "fp-127",
+    "fp-126",
+    "fp-049"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.short.dc.value",
+     "low": "now.short.dc.low",
+     "high": "now.short.dc.high"
+    },
+    "adds": {
+     "value": "now.short.adds.value",
+     "low": "now.short.adds.low",
+     "high": "now.short.adds.high"
+    },
+    "whole": {
+     "value": "now.short.whole.value",
+     "low": "now.short.whole.low",
+     "high": "now.short.whole.high"
+    }
+   },
+   "segments": [
+    {
+     "label": "Data center",
+     "value": "now.short.layers.data_center",
+     "modeled": true,
+     "word": "modeled"
+    },
+    {
+     "label": "Network",
+     "value": "now.short.layers.network",
+     "modeled": true,
+     "at": [
+      "adds",
+      "whole"
+     ]
+    },
+    {
+     "label": "Your router and phone",
+     "value": "now.short.layers.router + now.short.layers.device",
+     "modeled": true,
+     "at": [
+      "whole"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "coding",
+   "label": "Agentic coding",
+   "unit": "Wh",
+   "off_scale": true,
+   "cites": [
+    "au-043",
+    "au-038",
+    "au-045",
+    "fp-132"
+   ],
+   "formula": {
+    "dc": {
+     "value": "now.coding.dc.value",
+     "low": "now.coding.dc.low",
+     "high": "now.coding.dc.high"
+    },
+    "adds": {
+     "value": "now.coding.adds.value",
+     "low": "now.coding.adds.low",
+     "high": "now.coding.adds.high"
+    },
+    "whole": {
+     "value": "now.coding.whole.value",
+     "low": "now.coding.whole.low",
+     "high": "now.coding.whole.high"
+    }
+   }
+  }
+ ],
+ "foot": [
+  {
+   "href": "#ai-same-hour",
+   "link": "Change the assumptions on the Energy tab"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Counted",
+    "field": "setting"
+   },
+   {
+    "label": "Watt-hours, with spread",
+    "field": "display"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

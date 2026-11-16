@@ -11,7 +11,7 @@
  "title": "An hour of chat and an hour of video overlap: about {now[chat][total]:.0f} and {now[video][total]:.0f} Wh, {fixed} Wh of each your own screen and router",
  "subtitle": "Energy for one hour, in watt-hours, one boundary at a time.",
  "text": [
-  "The first question most readers bring is whether their own chat use is the problem, so the page starts there. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled. Resolution #2026-039 calls for this task force to identify what member Tribes hold in common on AI."
+  "This is the hour from the first question at the top of the page, with every assumption open to change. It compares one hour of chat, video, and a short-video feed on the same phone, each segment labeled measured or modeled."
  ],
  "inputs": {
   "now": {
@@ -70,7 +70,7 @@
   {
    "type": "segmented",
    "name": "boundary",
-   "label": "Boundary",
+   "label": "Counted",
    "default": "whole",
    "options": [
     {
@@ -79,7 +79,7 @@
     },
     {
      "value": "adds",
-     "label": "Plus network"
+     "label": "Data center and network"
     },
     {
      "value": "whole",
@@ -90,7 +90,7 @@
   {
    "type": "range",
    "name": "prompts",
-   "label": "Prompts in the hour, the reader's assumption",
+   "label": "Prompts in the hour",
    "min": 1,
    "max": 60,
    "step": 1,
@@ -100,7 +100,8 @@
     10,
     30,
     60
-   ]
+   ],
+   "more": true
   },
   {
    "type": "segmented",
@@ -124,7 +125,8 @@
      "value": "high_reasoning",
      "label": "High reasoning"
     }
-   ]
+   ],
+   "more": true
   },
   {
    "type": "segmented",
@@ -144,7 +146,8 @@
      "value": "tv",
      "label": "TV"
     }
-   ]
+   ],
+   "more": true
   },
   {
    "type": "segmented",
@@ -166,45 +169,45 @@
   {
    "type": "segmented",
    "name": "network_mode",
-   "label": "Network accounting",
+   "label": "How the network is counted",
    "default": "average",
    "more": true,
    "options": [
     {
      "value": "average",
-     "label": "Average"
+     "label": "Average share"
     },
     {
      "value": "marginal",
-     "label": "Marginal"
+     "label": "Only what this adds"
     }
    ]
   },
   {
    "type": "segmented",
    "name": "router_allocation",
-   "label": "Home router",
+   "label": "Home router, counted",
    "default": "by_time",
    "more": true,
    "options": [
     {
      "value": "by_time",
-     "label": "By time"
+     "label": "For the whole hour"
     },
     {
      "value": "by_data",
-     "label": "By data"
+     "label": "By the data used"
     },
     {
      "value": "excluded",
-     "label": "Excluded"
+     "label": "Not counted"
     }
    ]
   },
   {
    "type": "segmented",
    "name": "video_dc_intensity",
-   "label": "Streaming data center energy",
+   "label": "Data center energy for video",
    "default": "measured_delivery",
    "more": true,
    "options": [
@@ -214,18 +217,18 @@
     },
     {
      "value": "desnz_followup",
-     "label": "DESNZ follow-up"
+     "label": "UK government scenario"
     },
     {
      "value": "top_down",
-     "label": "Top-down"
+     "label": "Averaged over all traffic"
     }
    ]
   },
   {
    "type": "range",
    "name": "chat_wh_per_prompt",
-   "label": "Wh per short text prompt",
+   "label": "Energy per short text prompt, Wh",
    "min": 0.24,
    "max": 0.6,
    "step": 0.01,
@@ -626,11 +629,6 @@
    "text": "What a building would run is a question for the project view.",
    "href": "../data-centers/#dc-project",
    "link": "Open the project view"
-  },
-  {
-   "text": "To take this comparison to a meeting, print it with its sources.",
-   "href": "../briefing/?add=ai-same-hour",
-   "link": "Add it to a Council Briefing"
   }
  ],
  "table": {
@@ -672,5 +670,7 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "more": "Change the assumptions",
+ "title_template": "{boundary}: an hour of chat is about {chat} Wh and an hour of streamed video about {video} Wh"
 }

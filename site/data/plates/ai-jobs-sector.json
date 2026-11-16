@@ -136,5 +136,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "title_template": "By 2035, BLS projects {jb-098[display]} in computing and hosting and {jb-101[display]} in office and administrative support"
 }

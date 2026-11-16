@@ -40,6 +40,16 @@
      300
     ]
    }
+  ],
+  "key": [
+   {
+    "shape": "solid",
+    "label": "As the filing states it"
+   },
+   {
+    "shape": "hollow",
+    "label": "Computed here from a filing: its share count times a closing price"
+   }
   ]
  },
  "reading": "{label}: {display}. {boundary} {evidence}",

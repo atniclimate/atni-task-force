@@ -46,7 +46,7 @@
   {
    "type": "segmented",
    "name": "day_intensity",
-   "label": "Streaming data center energy",
+   "label": "Data center energy for video",
    "default": "measured_delivery",
    "options": [
     {
@@ -55,18 +55,18 @@
     },
     {
      "value": "desnz_followup",
-     "label": "DESNZ follow-up"
+     "label": "UK government scenario"
     },
     {
      "value": "top_down",
-     "label": "Top-down"
+     "label": "Averaged over all traffic"
     }
    ]
   },
   {
    "type": "range",
    "name": "day_wh",
-   "label": "Wh per text prompt",
+   "label": "Energy per text prompt, Wh",
    "min": 0.24,
    "max": 0.6,
    "step": 0.01,
@@ -220,5 +220,6 @@
     "field": "claims"
    }
   ]
- }
+ },
+ "title_template": "An average weekly ChatGPT user's text prompts cost about {chat} Wh a day in the data center, an illustration"
 }

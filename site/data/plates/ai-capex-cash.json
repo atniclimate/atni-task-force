@@ -191,5 +191,6 @@
    "year": "Fiscal year",
    "end": "Year ends"
   }
- }
+ },
+ "answer": "The companies building it: {label} spent {display} on buildings and equipment in the fiscal year that ended {end}."
 }

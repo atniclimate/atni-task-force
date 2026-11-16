@@ -176,7 +176,7 @@ function countKey(plot, unit) {
     li.append(el('span', `count-sample ${cls}`), text);
     key.append(li);
   };
-  key.append(el('li', 'count-key-unit', `One square is one ${figure(unit)} Wh text prompt.`));
+  key.append(el('li', 'count-key-unit', `One square is one ${figure(unit)} Wh text prompt. A row too long to draw prints its count instead.`));
   sample('seg-dc', 'Data center');
   sample('', 'Network');
   sample('seg-band', 'Router and device, on every row');
@@ -264,12 +264,21 @@ plate.register('ai-heavy-ai', {
   },
 });
 
+// The video rows' spread is computed on measured delivery only; at another setting they print their figure alone and say why (ai-05).
+const UNRANGED = 'Range not computed for this setting.';
+let floors = null;
 plate.register('ai-per-day', {
   render(ctx) {
     const count = I.chat_messages_per_day[{ eight: 'high', panel: 'panel' }[ctx.state.day_count] ?? 'value'];
     const st = ctx.state;
+    floors ??= { video: ctx.inputs.video_floor, short: ctx.inputs.short_floor };
+    const ranged = st.day_intensity === BASE.video_dc_intensity;
     ctx.inputs.now = perDay({ ...BASE, chat_wh_per_prompt: st.day_wh, video_dc_intensity: st.day_intensity, chat_messages_per_day: count });
+    ctx.inputs.video_floor = ranged ? floors.video : null;
+    ctx.inputs.short_floor = ranged ? floors.short : null;
+    if (!ranged) Object.assign(ctx.inputs.now, { video_day_high: null, short_day_high: null });
     ctx.auto();
+    if (!ranged && (ctx.key === 'yt' || ctx.key === 'ig')) ctx.fact(UNRANGED);
     if (ctx.key === 'chat' && st.day_intensity !== BASE.video_dc_intensity) ctx.fact(STREAM_ONLY);
     if ((ctx.key === 'yt' || ctx.key === 'ig') && (st.day_count !== 'mean' || st.day_wh !== BASE.chat_wh_per_prompt)) ctx.fact(CHAT_ONLY);
     if ((ctx.key === 'yt' || ctx.key === 'ig') && st.day_intensity === 'top_down') ctx.fact(TOP_DOWN);

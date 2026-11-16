@@ -2,13 +2,6 @@
    Radius 0, no shadows or gradients, and only the detail panel rises. Orange stays the selection inside a plate. Square counts and static figures use text tokens and
    greys, so both themes and print follow by themselves. */
 
-/* The band: the lead keeps to one line, the figures to three short columns. */
-@media (min-width: 1100px) {
-  .page-band .lead { max-width: none; }
-  .page-band-figures { flex-wrap: nowrap; column-gap: 40px; }
-  .page-band-figures li { max-width: 12rem; }
-}
-
 /* Panels */
 .panel .slot { margin: 0 0 12px; }
 .panel .slot p { max-width: none; }
@@ -46,6 +39,7 @@
 
 /* Each ruler's columns, from what its rows print at 1440. */
 #ai-same-hour { --l: clamp(9.5rem, 24%, 14rem); --v: clamp(7rem, 17%, 11rem); } /* 9.5rem holds "Television, one hour" on one line at 1280 */
+#ai-hour { --l: clamp(9.25rem, 22%, 11rem); --v: clamp(5.5rem, 13%, 7.5rem); } /* four short names and "15 Wh (9.3 to 24)": the fixed scale keeps the width */
 /* The band's name runs beside it on two lines, clear of the needle, which stands inside the band, and of the plot's end. */
 #ai-same-hour .ladder-shared-label { left: calc(100% + 4px); width: max-content; max-width: 7.5rem; padding-inline: 4px; white-space: normal; background: var(--plot-ground); }
 #ai-same-hour .ladder-shared.is-flip > .ladder-shared-label { left: auto; right: calc(100% + 4px); }
@@ -121,6 +115,7 @@
 #ai-same-hour .m-count.seg-dc.is-hollow { fill: none; stroke: var(--atni-text-heading); }
 #ai-same-hour .is-on .m-count:not(.is-hollow, .seg-band) { fill: var(--energy-mark); }
 #ai-same-hour .is-on .m-count.is-hollow:not(.seg-band) { fill: none; stroke: var(--energy-mark); }
+#ai-same-hour p.count-key { display: none; } /* the page's own key over the squares says what one is, with its parts and its Wh, so the kit's shorter line would say it twice (ai-35) */
 .count-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; padding: 0; list-style: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .count-key li { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
 .count-key-unit { font-weight: 700; color: var(--atni-text-heading); }
@@ -135,94 +130,84 @@
 #ai-company-money .m-label { cursor: pointer; }
 #ai-company-footprint .m-end { display: none; } /* only the selected company is named; the rest are Others in the legend and the Table */
 
-/* Details under the plates: ruled rows of plain sentences, each a full statement a reader can skim. */
+/* Details under the plates: ruled rows of plain sentences, each a full statement a reader can skim. The marker is muted: orange is the reading's alone. */
 .panel .disclosure-grid { gap: 0 24px; margin-top: 8px; }
 .panel .disclosure-grid > .disclosure { margin: 0; padding-block: 10px; border-top: 1px solid var(--rule); }
 .panel .disclosure > summary { width: auto; font-size: 1rem; line-height: 1.35; color: var(--atni-text-heading); }
-.panel .disclosure > summary::marker { color: var(--energy-mark); }
-.panel .disclosure > summary:hover { color: var(--energy-text); }
+.panel .disclosure > summary::marker { color: var(--atni-text-muted); }
+.panel .disclosure > summary:hover { color: var(--atni-text-heading); text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
 .panel .disclosure :is(p, li) { font-size: 0.9375rem; line-height: 1.55; }
 .panel .disclosure .quote blockquote p { font-size: 1.0625rem; }
 
-/* Tabs with no plate: two or three sentences in the claim zone, the static figure in the plot zone on the page ground at the plates' type scale, the details grid under them. */
-.ai-spread { display: grid; gap: 16px 32px; margin-bottom: 16px; }
+/* The held slot is the panel's one Coming line: its label and its sentence on one ruled line. */
+.panel .slot { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 24px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); }
+.panel .slot p { max-width: var(--measure-wide); margin: 0; }
+.panel .slot .slot-label { flex: none; }
+
+/* Tabs with no plate: prose bands, two columns of at most 40rem from 1100px, left-aligned (DIRECTION-R2 2.4), so no line runs past its measure at 2560. */
+.ai-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px 48px; align-items: start; margin-bottom: 24px; }
+@media (min-width: 1100px) { .ai-band { grid-template-columns: repeat(2, minmax(0, 40rem)); } }
+.ai-band > * { min-width: 0; }
+.ai-band h3 { margin: 16px 0 4px; font-size: 1.1875rem; line-height: 1.25; }
+.ai-band .disclosure-grid { grid-template-columns: minmax(0, 1fr); }
 .ai-lede { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .ai-lede > * { margin-block: 0; }
 .ai-lede > p { max-width: var(--measure-wide); }
 .ai-lede .panel-title, .watch-side .panel-title { margin-block: 16px 0; }
 .ai-lede li::marker { color: var(--atni-text-muted); }
 .ai-lede .quote blockquote { font-size: 1.25rem; line-height: 1.35; }
-@media (min-width: 1100px) { .ai-spread, .watch-spread { grid-template-columns: minmax(18rem, 24fr) minmax(0, 76fr); align-items: start; } }
-:is(.tier-grid, .evidence-key, .tier-stair) { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding-top: 16px; }
-:is(.tier-grid, .evidence-key, .tier-stair) > figcaption { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--atni-text-heading); }
-/* A tier is a category, not a magnitude: grey rules and squares, and the filled or hollow square carries the state, open or not. */
-.tier-mark { flex: none; display: inline-block; width: 24px; height: 24px; border: 2.5px solid var(--series-context); }
-.tier-t0 .tier-mark { background: var(--series-context); }
+.ai-links { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+
 
 .two-ways { display: grid; gap: 12px; }
 .two-ways h3 { margin: 0 0 4px; font-size: 1.125rem; line-height: 1.25; }
 .two-ways ul { margin: 0; padding-left: 1.1rem; font-size: 0.9375rem; line-height: 1.45; }
 .two-ways li { margin: 0 0 4px; }
 
-.tier-grid table { width: 100%; border-collapse: collapse; }
-.tier-grid tbody tr { height: 88px; }
-@media (min-width: 1100px) { .tier-grid thead th:first-child { width: 13rem; } }
-.tier-grid thead th { padding: 0 16px 8px 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; text-align: left; color: var(--atni-text-secondary); border-bottom: 1px solid var(--control); }
-.tier-grid tbody :is(th, td) { padding: 12px 16px 12px 0; font-size: 1rem; line-height: 1.4; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--grid); }
-.tier-grid tbody th { padding-left: 16px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.15; white-space: nowrap; color: var(--atni-text-heading); border-left: 4px solid var(--series-context); }
-.tier-grid tbody th > span { display: block; font-weight: 500; font-size: 0.875rem; white-space: normal; color: var(--atni-text-secondary); }
-.tier-grid tbody .tier-verdict { position: relative; padding-left: 36px; font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.15; color: var(--atni-text-heading); }
-.tier-verdict::before { content: ""; position: absolute; left: 0; top: calc(50% - 12px); width: 24px; height: 24px; border: 2.5px solid var(--series-context); }
-.tier-verdict.is-yes::before { background: var(--series-context); }
-.tier-grid .caption { margin: 0; max-width: var(--measure-wide); }
+/* The tier stair, the third agenda face, is the kit's fieldset.stair (site.css). The page adds only the rule under it and its legend's link ink. */
+#face-tiers fieldset.stair { margin-bottom: 0; }
+#face-tiers fieldset.stair > legend a { color: inherit; }
+.tier-rule { max-width: 48rem; margin: 16px 0 0; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); }
+.tier-rule strong { font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
+.tier-rule a { margin-left: 8px; }
 
-.evidence-key > .caption { max-width: none; margin: 0; }
+/* Youth: the evidence by strength, each finding under its rating; the steps for schools, colleges, and families beside it. */
+.youth-evidence > .caption { max-width: none; margin: 0 0 8px; }
+.youth-evidence > h3:first-child { margin-top: 16px; }
+.youth-evidence > .disclosure { margin: 0; padding-block: 10px; border-top: 1px solid var(--rule); }
 .evidence-rows { display: grid; margin: 0; padding: 0; list-style: none; }
-.evidence-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 4px 16px; align-items: start; margin: 0; padding-block: 12px; border-top: 1px solid var(--grid); }
-.evidence-meter { display: flex; gap: 2px; padding-top: 2px; }
-.evidence-meter i { display: block; width: 20px; height: 20px; background: var(--atni-text-heading); }
-.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: none; border: 2.5px solid var(--series-context); }
-.is-other .evidence-meter i { background: none; border: 2.5px solid var(--series-context); }
-.evidence-name { font-size: 1rem; line-height: 1.4; color: var(--atni-text-secondary); }
-.evidence-name strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; color: var(--atni-text-heading); }
-.evidence-finds { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 1rem; line-height: 1.3; }
-.evidence-finds li { margin: 0; padding-block: 4px; }
-.evidence-finds a { color: var(--atni-text-heading); text-decoration-color: var(--control); }
-.evidence-finds a:hover { color: var(--atni-text-link-hover); text-decoration-color: currentColor; }
-@media (min-width: 1100px) {
-  .evidence-row { grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; }
-  .evidence-finds { grid-column: 3; margin: 0; }
-}
+.evidence-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 4px 16px; align-items: start; margin: 0; padding-block: 12px; border-top: 1px solid var(--rule); }
+.evidence-meter { display: flex; gap: 2px; padding-top: 4px; }
+.evidence-meter i { display: block; width: 18px; height: 18px; background: var(--atni-text-heading); }
+.is-moderate .evidence-meter i:nth-child(3), .is-early .evidence-meter i:nth-child(n + 2) { background: none; border: 2px solid var(--series-context); }
+.is-other .evidence-meter i { background: none; border: 2px solid var(--series-context); }
+.evidence-name { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.evidence-name strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.1875rem; line-height: 1.2; color: var(--atni-text-heading); }
+.evidence-finds { grid-column: 2; display: grid; }
+.evidence-finds > .disclosure { margin: 0; padding-block: 6px; }
+.panel .evidence-finds > .disclosure > summary { font-size: 1rem; }
+.youth-do > div > h3:first-child { margin-top: 16px; }
 
-.stair-body { display: grid; gap: 12px 32px; grid-template-columns: minmax(0, 1fr); align-content: start; }
-.stair { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
-.stair li { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: "mark name step" "mark what step"; column-gap: 16px; align-items: center; min-height: 72px; margin: 0; padding: 8px 16px; font-size: 1rem; line-height: 1.35; color: var(--atni-text-secondary); background: var(--atni-ground-raised); }
-.stair strong { grid-area: name; font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; color: var(--atni-text-heading); }
-.stair li > span:not(.tier-mark) { grid-area: what; }
-.stair .tier-mark { grid-area: mark; }
-/* The empty end of each step says which way a classification can move from it. The two notes under the stair say it in full. */
-.stair li::after { grid-area: step; font-size: 0.875rem; line-height: 1.4; text-align: right; white-space: pre-line; color: var(--atni-text-secondary); }
-.stair .tier-t3::after { content: "\2193  people only"; }
-.stair .tier-t2::after, .stair .tier-t1::after { content: "\2193  people only\A\2191  automated systems may"; }
-.stair .tier-t0::after { content: "\2191  automated systems may"; }
-.stair .tier-t3 { width: 64%; }
-.stair .tier-t2 { width: 76%; }
-.stair .tier-t1 { width: 88%; }
-.stair-note { max-width: none; margin: 0; font-size: 1rem; line-height: 1.45; }
-.stair-note strong { display: block; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
-@media (min-width: 1100px) { .stair-body { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stair { grid-column: 1 / -1; } }
-@media (max-width: 719px) { .stair li { width: auto !important; } .stair li::after { display: none; } }
+/* Working with AI: the questions to ask before adopting a tool, each with the principle and evidence behind it, in columns that keep a row together. */
+.ai-asks { display: block; margin-top: 8px; }
+.ai-asks .ask-set > legend { font-size: 1.375rem; }
+.ai-asks .ask-set > .ai-subnote { margin: 0 0 4px; }
+.ai-asks .ask-set > .ai-subnote + .ai-subnote { margin-bottom: 12px; }
+.ai-asks ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); column-gap: 48px; align-items: start; }
+.ai-asks .ask-q { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-heading); }
+.ai-asks .ask-why { margin: 0 0 12px 2.25rem; }
+.panel .ai-asks .ask-why > summary { font-size: 0.9375rem; color: var(--atni-text-secondary); }
 
 .ai-side { display: grid; gap: 12px; min-width: 0; }
-.ai-side .ai-subhead { margin: 12px 0 0; }
+.ai-side .ai-subhead { margin: 16px 0 0; }
 .named-risks { display: grid; gap: 0 24px; margin: 0; padding: 0; list-style: none; }
 @media (min-width: 720px) { .named-risks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) { .named-risks { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.named-risks li { margin: 0; padding-block: 12px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); border-top: 1px solid var(--grid); }
-.slot-fold { margin-top: 12px; }
+.named-risks li { margin: 0; padding-block: 12px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.25; color: var(--atni-text-heading); border-top: 1px solid var(--rule); }
 
 /* Policy Watch: how to use it in the claim zone, the searches and the follow list using the width beside it. */
-.watch-spread { display: grid; gap: 24px 32px; }
+.watch-spread { display: grid; gap: 24px 48px; }
+@media (min-width: 1100px) { .watch-spread { grid-template-columns: minmax(24rem, 32fr) minmax(0, 68fr); align-items: start; } } /* the side column holds a 44-character line at 1280 (ai-16) */
+.watch-side > p { max-width: var(--measure); }
 .watch-side { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .watch-main { padding-top: 16px; }
 .watch-main > h3:first-child { margin-top: 0; }
@@ -234,13 +219,12 @@
 
 /* High Contrast drops a background, so a filled square would read as an empty one. */
 @media (forced-colors: active) {
-  .evidence-meter i, .tier-mark, .tier-verdict::before, .count-sample { forced-color-adjust: none; }
+  .evidence-meter i, .count-sample { forced-color-adjust: none; }
 }
 
 @media print {
   .count-key { display: none; }
-  .stair li { background: none; }
-  .ai-spread, .watch-spread { display: block; }
+  .ai-band, .watch-spread { display: block; }
   #ai-company-money .plate-plot { min-height: 42rem; }
   #ai-company-footprint .plate-plot { min-height: 28rem; }
 }

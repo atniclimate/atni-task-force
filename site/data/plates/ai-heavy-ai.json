@@ -36,7 +36,7 @@
   {
    "type": "segmented",
    "name": "yard",
-   "label": "Yardstick",
+   "label": "Compare with",
    "default": "same",
    "options": [
     {
@@ -79,7 +79,7 @@
   {
    "type": "segmented",
    "name": "heavy_intensity",
-   "label": "Streaming data center energy",
+   "label": "Data center energy for video",
    "default": "measured_delivery",
    "options": [
     {
@@ -88,11 +88,11 @@
     },
     {
      "value": "desnz_followup",
-     "label": "DESNZ follow-up"
+     "label": "UK government scenario"
     },
     {
      "value": "top_down",
-     "label": "Top-down"
+     "label": "Averaged over all traffic"
     }
    ]
   }
