@@ -45,6 +45,7 @@ function land(raw) {
   let target = null;
   try { target = anchor && raw !== anchor ? document.getElementById(decodeURIComponent(anchor)) : null; } catch { /* a broken escape names nothing */ }
   if (!target || target.contains(document.activeElement)) return;
+  if (target.matches('details')) { target.open = true; target = target.querySelector('summary') || target; } // a disclosure the address names opens, its summary focused
   target.scrollIntoView?.();
   if (target.tabIndex < 0 && !target.hasAttribute('tabindex')) target.tabIndex = -1; // a plate or a heading takes focus without joining the Tab order
   target.focus({ preventScroll: true });
@@ -136,7 +137,8 @@ function initTabs(strip) {
     go(n, e);
     tabs[n].focus();
   });
-  on(window, 'hashchange', fromHash); // a link, Back, or Forward: the tab the address names comes forward
+  // A link, Back, or Forward: the tab the address names comes forward; Back to an entry that names none returns to the first tab, where that entry stood (system critic 6).
+  on(window, 'hashchange', () => { if (!fromHash() && window.siteAddress.traversed) show(0); });
   if (!fromHash()) show(0);
 }
 
@@ -281,7 +283,7 @@ function textOf(r, plus) {
   const { value: v, low: a, high: b } = r;
   if (!blank(v)) return !blank(a) && !blank(b) ? `${n(v)} (${n(a)} to ${n(b)})` : n(v);
   if (!blank(a) && !blank(b)) return sig(a, r.digits) === sig(b, r.digits) ? n(a) : `${n(a)} to ${n(b)}`;
-  if (!blank(a)) return `at least ${n(a)}`;
+  if (!blank(a)) return `${r.open === 'over' ? 'over' : 'at least'} ${n(a)}`; // a row's "open" word, as its source says it (build_plates.py OPEN_WORDS)
   return blank(b) ? null : `up to ${n(b)}`;
 }
 const axisOf = (p, r) => r.axis || (p.data.plot.groups || []).find((g) => g.id === r.group) || p.data.plot;
@@ -318,7 +320,7 @@ function fitRuler(p) {
 }
 // Fills a sentence's live names: {text}, {other[text]}, a setting, a field, an input, a branch {now[chat][total]:.0f}. figures: a row named by its id prints its
 // figure as the plate rounds it, as a title or an answer must (build_plates.py state_context is the twin).
-function live(p, r, template, figures = false) {
+function live(p, r, template, figures = false, blanks = null) {
   return template.replace(/\{([\w-]+)((?:\[[\w-]+\])*)(?::([^}]*))?\}/g, (m, name, path, spec) => {
     const parts = path.slice(1, -1).split('][').filter(Boolean);
     const dig = (start) => parts.reduce((o, k) => o?.[k], start);
@@ -332,6 +334,7 @@ function live(p, r, template, figures = false) {
       if (r.f && /^(value|low|high)$/.test(name)) v = sig(v, r.digits);
     }
     if (name === 'year' && typeof v === 'number') return String(v); // a year is never grouped: 2030, not 2,030 (row_fields hands the build the bare int)
+    if (blanks && (v === undefined || v === null || v === '' || v === 'blank')) blanks.push(name);
     if (typeof v !== 'number') return v ?? '';
     const places = /\.(\d+)f/.exec(spec || '');
     return places ? new Intl.NumberFormat('en-US', { minimumFractionDigits: +places[1], maximumFractionDigits: +places[1], useGrouping: spec.includes(',') }).format(v) : grouped(v);
@@ -449,10 +452,13 @@ function addControl(p, box) {
       const k = (text - min) / (step || 1);
       return +text >= +min && +text <= +max && Number.isInteger(+k.toFixed(9)) ? +text : undefined;
     },
-    write: (value, typing) => fields.forEach((f) => {
-      if (radio) f.checked = f.value === value;
-      else if (f !== typing) f.value = value ?? '';
-    }),
+    write: (value, typing) => {
+      fields.forEach((f) => {
+        if (radio) f.checked = f.value === value;
+        else if (f !== typing) f.value = value ?? '';
+      });
+      for (const b of all(box, '[data-preset]')) b.setAttribute('aria-pressed', String(+b.dataset.preset === value));
+    },
   };
   p.params.set(name, c);
   const apply = (value, typing) => {
@@ -478,7 +484,9 @@ function addControl(p, box) {
       const end = typed < +min ? +min : +max;
       apply(end);
       p.status.textContent = `${label} runs from ${grouped(+min)} to ${grouped(+max)}, so ${grouped(end)} is used.`;
-    }
+      p.status.id ||= `${p.id}-status`;
+      e.target.setAttribute('aria-describedby', p.status.id);
+    } else e.target.removeAttribute('aria-describedby');
     e.target.removeAttribute('aria-invalid');
     c.write(p.state[name]);
   });
@@ -497,8 +505,11 @@ const STATUS_WORDS = { verified: 'verified', partly: 'partly verified' };
 const glyph = (status) => h('span', { class: status === 'partly' ? 'st st-p' : 'st st-v', 'aria-hidden': 'true' });
 // The card for one chip: each claim the chip stands for, from the plate's own data. Its source as a link; the publisher and dates; status and limit; the claim id;
 // and the way on to the full receipt (quote, boundary, and date) on the Sources page. more: false leaves that link off, as a printed sheet does.
-function receiptNodes(p, claim, more = true) {
+function receiptNodes(p, claim, more = true, again = false) {
   const r = p.data.receipts[claim];
+  // A second claim from a document the card has already named is one line: its id, status and limit (system critic 4: a card repeated a document's title,
+  // publisher and Sources link once per claim and ran to 1,000px).
+  if (again) return [h('p', { class: 'caption plate-receipt-status' }, glyph(r.status), `${claim}: ${r.status === 'partly' ? 'partly verified.' : 'verified against the source.'}${r.limit ? ` Limit: ${r.limit}` : ''}`)];
   const dates = [r.published && `published ${r.published}`, r.year && `value year ${r.year}`].filter(Boolean).join(', ');
   return [
     h('p', { class: 'plate-source-title' }, /^https:\/\//.test(r.url || '') ? h('a', { href: r.url, text: r.title }) : r.title),
@@ -514,7 +525,13 @@ function openCard(p, chip) {
   const claims = chip ? chip.dataset.claims.split(' ') : [];
   p.open = chip ? chip.dataset.claims : null;
   p.receipt.hidden = !chip;
-  const cards = claims.slice(0, 4).map((claim) => h('div', { class: 'plate-receipt-item' }, ...receiptNodes(p, claim)));
+  const named = new Set();
+  const cards = claims.slice(0, 4).map((claim) => {
+    const { url, title } = p.data.receipts[claim];
+    const again = named.has(`${url} ${title}`);
+    named.add(`${url} ${title}`);
+    return h('div', { class: `plate-receipt-item${again ? ' is-again' : ''}` }, ...receiptNodes(p, claim, true, again));
+  });
   const rest = claims.length - cards.length;
   if (rest > 0 && p.sources) cards.push(h('p', { class: 'caption' }, h('a', { href: `${p.sources}#${p.id}`, text: `${rest} more from this publisher on the Sources page` })));
   p.receipt.replaceChildren(...cards);
@@ -533,24 +550,26 @@ function factNodes(p, rows, key) {
   const several = unique(rows.map((r) => r.series)).length > 1;
   if (rows.length > 1) out.push(list(rows.map((r) => h('li', {}, h('span', { class: `plate-square${r.hollow ? ' is-hollow' : ''}${several && hl && r.series === hl ? ' is-on' : ''}` }), h('strong', { text: r.display }), h('span', { text: r.name || r.series || '' })))));
   const parted = rows.find((r) => r.segments);
-  const parts = parted?.segments.filter((s) => !s.at || s.at.includes(p.state[p.data.by])); // only what this stop counts
+  // Only what this stop counts. On a meter each part wears the ink the plot gives its place, and measured or modeled is said in words (ai critic 6).
+  const parts = parted?.segments.map((s, i) => ({ ...s, ink: p.data.plot.type === 'meter' ? ` is-part is-p${Math.min(i, 2) + 1}` : s.hollow ? ' is-hollow' : '' }))
+    .filter((s) => !s.at || s.at.includes(p.state[p.data.by]));
   if (parts) {
     const unit = parted?.unit || '';
     const total = parts.reduce((sum, s) => sum + (s.value || 0), 0) || 1;
-    out.push(h('div', { class: 'plate-segments' }, ...parts.map((s) => h('span', { class: `plate-seg${s.hollow ? ' is-hollow' : ''}`, style: `flex-grow:${(s.value || 0) / total}` }))));
-    out.push(list(parts.filter((s) => !blank(s.value)).map((s) => h('li', {}, h('span', { class: `plate-square${s.hollow ? ' is-hollow' : ''}` }), h('strong', { text: `${fig(s.value)} ${unit}`.trim() }), h('span', { text: `${s.label}, ${s.word || (s.hollow ? 'modeled' : 'measured')}` })))));
+    out.push(h('div', { class: 'plate-segments' }, ...parts.map((s) => h('span', { class: `plate-seg${s.ink}`, style: `flex-grow:${(s.value || 0) / total}` }))));
+    out.push(list(parts.filter((s) => !blank(s.value)).map((s) => h('li', {}, h('span', { class: `plate-square${s.ink}` }), h('strong', { text: `${fig(s.value)} ${unit}`.trim() }), h('span', { text: `${s.label}, ${s.word || (s.hollow ? 'modeled' : 'measured')}` })))));
   }
   const say = (text) => h('p', { class: 'caption', text });
-  // How a figure was reached, and the figures beside it, open on request and stay open. They print, and their receipts stay in Sources.
+  // How a figure was reached, and the figures beside it, open on request and stay open. The figures beside it print once, with their claims, under the Table.
+  const beside = (p.data.also || []).filter((a) => !a.at || a.at === key).map((a) => h('p', { class: 'caption is-also', text: `${a.label}: ${a.display}` }));
   const notes = [
-    ...(p.data.also || []).filter((a) => !a.at || a.at === key).map((a) => `${a.label}: ${a.display}`),
     ...unique(rows.map((r) => r.note).filter(Boolean)).map((text) => `Assumption: ${text}`),
     ...unique(rows.map((r) => r.equation).filter(Boolean)).map((text) => `Equation: ${text}`),
     ...unique(rows.map((r) => r.detail).filter(Boolean)), ...(p.data.details || []), ...(p.override.facts || []),
   ];
-  if (notes.length) {
+  if (beside.length || notes.length) {
     const modeled = rows.some((r) => r.hollow || r.note || r.equation);
-    const more = h('details', { class: 'plate-more' }, h('summary', { text: modeled ? 'How this is modeled' : 'About this figure' }), ...notes.map(say));
+    const more = h('details', { class: 'plate-more' }, h('summary', { text: modeled ? 'How this is modeled' : 'About this figure' }), ...beside, ...notes.map(say));
     const old = p.facts.querySelector('.plate-more');
     if (old) p.moreOpen = old.open;
     more.open = !!p.moreOpen;
@@ -703,7 +722,9 @@ function paint(p) {
   drawShared(p, key);
   const lead = rows.find((r) => r.series === hl) || rows[0];
   const gapText = lead ? lead.display : p.data.not_counted;
-  const [figure, unit, range] = p.override.readout || (lead?.text ? readoutOf(lead) : ['', gapText]);
+  const due = cfg.type === 'countdown' && lead?.date ? daysUntil(lead.date) : null;
+  const countdown = due === null ? null : due > 0 ? [grouped(due), due === 1 ? 'day' : 'days', `(${lead.due})`] : [due ? 'Passed' : 'Today', '', `(${lead.due})`];
+  const [figure, unit, range] = p.override.readout || countdown || (lead?.text ? readoutOf(lead) : ['', gapText]);
   p.value.textContent = figure;
   // The words stay "(2.4 to 6.03) Wh" in this order; CSS puts the unit on the figure's baseline and the range on its own line.
   if (range) p.unit.replaceChildren(span('readout-range', range), ...(unit ? [' ', span('readout-u', unit)] : []));
@@ -775,13 +796,16 @@ const firstSentence = (text) => String(text).split(/(?<=\.) /)[0];
 // settings have already rewritten, else the old title said to be the starting one. CSV, print, and Copy reading use the same words (ai-04).
 function titleAt(p) {
   if (!changed(p)) return p.title0;
-  if (p.data.title_template) return fillState(p, p.data.title_template);
+  // A template with a field this state leaves blank would print a hole (data-centers critic 3): the Reading's first sentence says it instead.
+  const blanks = [];
+  const filled = p.data.title_template ? fillState(p, p.data.title_template, blanks) : '';
+  if (filled && !blanks.length) return filled;
   return firstSentence(p.reading.textContent).replace(/\.$/, '') || `At the starting settings: ${p.title0}`;
 }
 // A title or an answer at this state, from the selected row: each figure is one the plate prints now (the build's figure rule), a row by its id as the plate rounds it.
-function fillState(p, template) {
+function fillState(p, template, blanks = null) {
   const rows = focusOf(p, rowsAt(p, p.selected));
-  return live(p, rows.find((r) => r.series === p.data.plot.highlight) || rows[0] || {}, template, true).replace(/\s+/g, ' ').replace(/,\s*\./g, '.').trim();
+  return live(p, rows.find((r) => r.series === p.data.plot.highlight) || rows[0] || {}, template, true, blanks).replace(/\s+/g, ' ').replace(/,\s*\./g, '.').trim();
 }
 
 // "15 (9.28 to 24) Wh": figure and unit on one line, the range on the next. "240 to 320 million liters" and "28,740 Wh": the figures large and the unit small, in the same words.
@@ -1115,7 +1139,8 @@ const fileDate = () => usDay(isoToday()).replaceAll('/', '-');
 const GUARD_FOOT = 'This comparison does not decide a proposal.';
 // A date this page states for its sources: the briefing's section says it per plate, and a page band says it once.
 const checkedOf = (p) => p.root.closest('[data-checked]')?.dataset.checked ?? all(document, '.figure-label').find((n) => n.textContent.trim() === 'Sources checked')?.previousElementSibling.textContent.trim() ?? '';
-const guardLine = (p) => (checkedOf(p) ? `Settings chosen by the reader, sources checked ${checkedOf(p)}.` : 'Settings chosen by the reader.');
+const guardLine = (p) => `${changed(p) ? 'Settings chosen by the reader' : 'Default settings'}${checkedOf(p) ? `, sources checked ${checkedOf(p)}` : ''}.`;
+const footOf = (p) => p.data.print_foot || GUARD_FOOT;
 const settingWords = (p) => (p.data.setting || []).map((c) => `${c.label}: ${c.options?.[p.state[c.name]] ?? p.state[c.name] ?? 'not set'}`).join('; ');
 
 // One line of the Table per claim set: each line links its own claims (build_plates.py claim_refs), so the line says them itself.
@@ -1153,7 +1178,7 @@ function svgOf(p) {
   const [, , W, H] = from.getAttribute('viewBox').split(' ');
   set(copy, { width: W, height: H });
   const ground = add(copy, 'rect', { width: W, height: H, fill: getComputedStyle(p.plot).getPropertyValue('--plot-ground').trim() || '#FFFFFF' });
-  const desc = add(copy, 'desc', { text: `${guardLine(p)} ${GUARD_FOOT} Claims: ${Object.keys(p.data.receipts).join(', ')}.` });
+  const desc = add(copy, 'desc', { text: `${guardLine(p)} ${footOf(p)} Claims: ${Object.keys(p.data.receipts).join(', ')}.` });
   const title = add(copy, 'title', { text: titleAt(p) });
   copy.prepend(title, desc, ground);
   return new XMLSerializer().serializeToString(copy);
@@ -1166,7 +1191,7 @@ function printOne(p) {
   const from = p.root.closest('[data-from]')?.dataset.from ?? document.querySelector('main h1')?.textContent ?? '';
   const eyebrow = p.root.querySelector('.eyebrow')?.textContent ?? '';
   const head = h('div', { class: 'plate-print-head' }, h('p', { text: [from, eyebrow].filter(Boolean).join(': ') }), h('p', { text: guardLine(p) }));
-  const foot = h('p', { class: 'plate-print-foot', text: GUARD_FOOT });
+  const foot = h('p', { class: 'plate-print-foot', text: footOf(p) });
   p.root.prepend(head);
   p.root.append(foot);
   p.root.classList.add('is-print-one');
@@ -1266,18 +1291,22 @@ function arrange(p) {
   root.dataset.variant = variantOf(root);
   set(p.receipt, { tabindex: -1, role: 'group', 'aria-label': 'Source' });
   // A typed figure never rides in the address, so a shared link cannot carry one; the plate says so where a reader types (owner ruling 29).
-  if (!NO_ADDRESS && [...p.params.values()].some((c) => !c.stop)) p.detail.append(h('p', { class: 'caption plate-link-note', text: 'Figures you type stay on this screen: the link in Copy reading leaves them out.' }));
+  // The build writes the note, the switch in the bar, and the key under the plot, so the first paint is this one (CLS); a block built before that is moved here.
+  if (!NO_ADDRESS && !p.detail.querySelector('.plate-link-note') && [...p.params.values()].some((c) => !c.stop)) p.detail.append(h('p', { class: 'caption plate-link-note', text: 'Figures you type stay on this screen: the link in Copy reading leaves them out.' }));
   if (NO_ADDRESS) root.querySelector('[data-add-briefing]')?.remove(); // on the Briefing the plate is already in it
   // plot.switch: a control that is part of the picture sits over the plot, at its full width, beside the view buttons.
   const control = cfg.switch && root.querySelector(`.plate-controls [data-param="${cfg.switch}"]`);
-  if (control) {
-    root.querySelector('.plate-bar').prepend(h('div', { class: 'plate-switch' }, control));
-    root.classList.add('has-switch');
-  }
+  if (control) root.querySelector('.plate-bar').prepend(h('div', { class: 'plate-switch' }, control));
+  if (cfg.switch) root.classList.add('has-switch');
   // The key, and the ruler's caption where the ruler redraws itself, read under the axis.
-  p.note = cfg.fit === 'data' ? all(root, '.plate-claim > .caption').find((n) => n.textContent.startsWith('Each mark is ten times')) : null;
-  const under = [p.note, root.querySelector('.plate-claim .plate-legend'), p.scaleNote = h('p', { class: 'plate-scale-note', hidden: '' })].filter(Boolean);
-  plot.after(h('div', { class: 'plate-under' }, ...under));
+  p.note = cfg.fit === 'data' ? all(root, ':scope > .plate-claim > .caption, :scope > .plate-under > .caption').find((n) => n.textContent.startsWith('Each mark is ten times')) : null;
+  p.scaleNote = h('p', { class: 'plate-scale-note', hidden: '' });
+  const built = root.querySelector(':scope > .plate-under');
+  if (built) {
+    if (p.note && !built.contains(p.note)) built.prepend(p.note);
+    built.append(p.scaleNote);
+  }
+  else plot.after(h('div', { class: 'plate-under' }, ...[p.note, root.querySelector('.plate-claim .plate-legend'), p.scaleNote].filter(Boolean)));
   root.classList.add('has-under');
   describe(root, plot, `${p.id}-how`, cfg.type === 'matrix' ? 'cells' : /^(lines|multiples)$/.test(cfg.type) ? 'years' : 'rows');
   if (cfg.needle && cfg.type === 'instrument') plot.querySelector('.instrument').prepend(h('li', { class: 'needle', role: 'none', 'aria-hidden': 'true' }));
@@ -1493,6 +1522,7 @@ function apply(p, { render, defaults = {}, countParts } = {}) {
   update(p, 'init');
 }
 
+if (NO_ADDRESS) all(document, '.plate-link-note').forEach((n) => n.remove()); // the build writes it for a page with an address; site.css hides it here before the first paint
 // Tabs and the agenda first, so a closed panel's or face's plates wait; then a deep link's plate, so the reader's landing is drawn first; then every plate that shows.
 all(document, '.section-strip[data-workbench]').forEach(initTabs);
 all(document, '.agenda').forEach(initAgenda);
@@ -1509,15 +1539,14 @@ function initCountdown(root) {
   const here = Math.min(1, Math.max(0, (midnight(today) - midnight(from)) / (midnight(to) - midnight(from))));
   root.style.setProperty('--today', here.toFixed(4));
   root.classList.toggle('is-flip', here > 0.6);
-  let passed = 0;
   for (const row of all(root, '.countdown-row')) {
     const days = daysUntil(row.dataset.date);
     row.classList.toggle('is-passed', days < 0);
-    if (days < 0) passed += 1;
-    row.querySelector('.countdown-days').replaceChildren(...(days > 0 ? [span('countdown-n', grouped(days)), ` ${days === 1 ? 'day' : 'days'}`] : [span('countdown-n', days ? 'passed' : 'today')]));
+    row.querySelector('.countdown-days').replaceChildren(...(days > 0 ? [span('countdown-n', grouped(days)), ` ${days === 1 ? 'day' : 'days'}`] : [span('countdown-n', days ? 'date passed' : 'today')]));
   }
-  const count = root.querySelector('[data-lane="passed"] .countdown-n');
-  if (count) count.textContent = grouped(Number(count.dataset.built) + passed);
+  // A half-year label within 32px of today gives way to the needle's (energy critic 15).
+  const width = root.querySelector('.countdown-scale')?.clientWidth || 0;
+  for (const month of all(root, '.countdown-month')) month.classList.toggle('is-near', !!width && Math.abs(+month.style.getPropertyValue('--t') - here) * width < 32);
   const note = root.querySelector('.countdown-note');
   if (note) note.textContent = `Days counted from today, ${usDay(today)}.`;
   for (const list of all(root, '.countdown-rows, .countdown-names')) list.setAttribute('role', 'none');
@@ -1531,6 +1560,14 @@ on(window, 'hashchange', (e) => {
   if (!window.siteAddress.followed) reapply();
   if (!window.siteAddress.traversed && e.newURL) land(new URL(e.newURL).hash.slice(1));
 });
+// A strip whose questions would push a tab out of view shows the tab names alone (.is-tight; ai critic 1). Under 1600px site.css does so before the first paint.
+for (const strip of all(document, '.section-strip')) {
+  const list = strip.querySelector('ul');
+  const fit = () => { strip.classList.remove('is-tight'); strip.classList.toggle('is-tight', !!list && list.scrollWidth > list.clientWidth + 1); };
+  fit();
+  on(window, 'resize', fit);
+  document.fonts?.ready.then(fit);
+}
 // A strip that scrolls says so: its right edge fades while more waits past it.
 for (const list of all(document, '.section-strip ul, .toc ul')) {
   const cut = () => list.classList.toggle('is-cut', list.scrollLeft + list.clientWidth < list.scrollWidth - 1);

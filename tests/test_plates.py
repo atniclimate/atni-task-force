@@ -309,7 +309,9 @@ def test_a_row_can_change_claim_with_a_setting(tmp_path):
     doc = parse(page)
     assert bp.NOT_COUNTED in doc.texts(cls="ladder-value") and all(part in doc.one(cls="plate-setting").text() for part in ("Boundary", "Inside"))
     assert all(th.attrs["scope"] == "col" for th in doc.one("thead").all("th")) and "Whole chain" in doc.texts("td")
-    assert doc.one("input", value="dc", checked=True) and doc.one(data_param="boundary") and doc.one(cls="plate-controls", data_js=True, hidden=True)
+    controls = doc.one(cls="plate-controls", data_js=True)
+    assert doc.one("input", value="dc", checked=True) and doc.one(data_param="boundary") and "hidden" not in controls.attrs, \
+        "settings show under the js class before plate.js starts, so the claim zone has its final height at the first paint"
 
 
 def test_a_setting_outranks_a_built_in_sentence_field(tmp_path):
@@ -1644,3 +1646,18 @@ def test_an_over_budget_file_only_warns(tmp_path):
         check_budgets(tiny, tmp_path)
     assert [str(w.message).split(":")[0] for w in caught] == ["OVER BUDGET"] * 3, "over budget warns, and the test goes on"
     assert "site/assets/img/a.webp is 4 KB" in str(caught[2].message), "a pattern's line weighs each file it names"
+
+
+def test_the_first_paint_is_the_live_arrangement_and_a_whole_row_is_refused(tmp_path):
+    """R2 fix round: the build writes what plate.js would arrange (the key under the plot, the evidence line, the readout's length), a figure beside the
+    reading reaches its claim and status in the Table, and a template that names a whole row stops the build instead of printing its record."""
+    claims = [bp.sample_claim("s-1"), bp.sample_claim("s-2", 12, "partly"), bp.sample_claim("s-3", 30)]
+    page, _, _ = built(tmp_path, bp.sample_plate(also=[{"label": "Beside it", "claim": "s-3"}]), claims)
+    doc = parse(page)
+    figure = doc.one("figure", cls="plate")
+    parts = [c.attrs.get("class", "").split()[0] for c in figure.children if hasattr(c, "attrs") and c.attrs.get("class")]
+    assert parts.index("plate-under") == parts.index("plate-plot") + 1, "the key reads under the plot from the first paint"
+    assert doc.one(cls="plate-evidence").all("button", cls="receipt") and doc.one(cls="readout").style().get("--chars"), "the window is its final height"
+    assert any("s-3" in li.text() and "verified" in li.text() for li in doc.one(cls="plate-also").all("li")), "beside the reading, with its claim"
+    with pytest.raises(bp.BuildError, match="whole row"):
+        built(tmp_path / "again", bp.sample_plate(reading="{label}: {display}, beside {b}."), claims)

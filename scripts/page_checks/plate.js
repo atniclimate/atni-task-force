@@ -1341,9 +1341,9 @@ async function countdown() {
   const root = p.root.querySelector('.countdown');
   ok(root.classList.contains('has-today') && Math.abs(+root.style.getPropertyValue('--today') - 40 / 731) < 1e-4, 'the needle stands at today');
   const rows = [...root.querySelectorAll('.countdown-row')];
-  ok(rows[0].classList.contains('is-passed') && rows[0].querySelector('.countdown-days').textContent === 'passed', 'a deadline passed since the build keeps its row and says so');
+  ok(rows[0].classList.contains('is-passed') && rows[0].querySelector('.countdown-days').textContent === 'date passed', 'a deadline passed since the build keeps its row and says so');
   eq(rows[1].querySelector('.countdown-days').textContent, '59 days', 'the days count from today');
-  eq(root.querySelector('[data-lane="passed"] .countdown-n').textContent, '2', 'and the Passed lane counts it');
+  eq(root.querySelector('[data-lane="passed"] .countdown-n').textContent, '1', 'and the Passed lane counts only the names it lists, so no deadline is counted twice');
   eq(root.querySelector('.countdown-note').textContent, 'Days counted from today, 12/20/2026.', 'the last line names today');
   eq(p.plot.getAttribute('role'), 'listbox', 'the plot is the list box');
   eq([...p.plot.querySelectorAll('[role="option"]')].map((n) => n.dataset.row).join(), 'doe-heehr-tribal,doe-40101d,doe-tefp,bpa-tribal-iq,doe-wap,hhs-liheap', 'every program an option, in the order drawn');
@@ -1579,7 +1579,7 @@ async function downloads() {
   const root = new chart.window.DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
   eq(root.namespaceURI, 'http://www.w3.org/2000/svg', 'a file that stands alone');
   eq(root.querySelector('title').textContent, q.root.querySelector('.plate-title').textContent, 'titled with the claim sentence');
-  ok(root.querySelector('desc').textContent.startsWith('Settings chosen by the reader') && root.querySelector('desc').textContent.includes('does not decide') && root.querySelector('desc').textContent.includes(Object.keys(JSON.parse(chart.document.getElementById('plate-data-company-electricity').textContent).receipts)[0]), 'with the guard lines and the claim ids');
+  ok(/^(Default settings|Settings chosen by the reader)/.test(root.querySelector('desc').textContent) && root.querySelector('desc').textContent.includes('does not decide') && root.querySelector('desc').textContent.includes(Object.keys(JSON.parse(chart.document.getElementById('plate-data-company-electricity').textContent).receipts)[0]), 'with the guard lines and the claim ids');
   eq(root.children[2].tagName, 'rect', 'on its own ground');
   ok(root.getAttribute('width') && root.getAttribute('height'), 'at its size');
   ok(!/\s(aria-[a-z]+|role|data-[a-z-]+|tabindex|class)="/.test(svgText), 'with none of the page\'s roles, names, or classes');
@@ -1602,7 +1602,7 @@ async function printOne() {
   fire(window, press, 'click');
   eq(seen[0].attr, 'hour-demo', 'the press names the plate on the root');
   ok(seen[0].on, 'and marks it');
-  ok(seen[0].head.includes('Settings chosen by the reader') && seen[0].foot === 'This comparison does not decide a proposal.', 'it carries the guard lines');
+  ok(seen[0].head.includes('Default settings') && seen[0].foot === 'This comparison does not decide a proposal.', 'it carries the guard lines, and at the defaults says so (system critic 9)');
   eq(seen[0].title, before, 'at the defaults the title is the finding');
   ok(p.root.querySelectorAll('.plate-table .claim-ref').length >= p.root.querySelectorAll('.plate-table tbody tr').length, 'the sheet carries the Table, each line with its claims and their status');
   window.dispatchEvent(new window.Event('afterprint'));

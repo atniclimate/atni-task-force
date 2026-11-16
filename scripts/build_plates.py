@@ -130,7 +130,10 @@ def number(value):
     return f"{int(value):,}" if float(value).is_integer() else format(Decimal(str(value)), ",f")
 
 
-def value_text(value, low, high, plus=False):
+OPEN_WORDS = {"over": "over"}  # a row's "open": the word for a figure with only a floor, where its source says "over" (conductor decision 1, ru-121); plate.js textOf is the twin
+
+
+def value_text(value, low, high, plus=False, open_word="at least"):
     def n(v):
         return f"+{number(v)}" if plus and v > 0 else number(v)
     if value is not None:
@@ -138,7 +141,7 @@ def value_text(value, low, high, plus=False):
     if low is not None and high is not None:
         return n(low) if low == high else f"{n(low)} to {n(high)}"
     if low is not None:
-        return f"at least {n(low)}"
+        return f"{open_word} {n(low)}"
     return f"up to {n(high)}" if high is not None else None
 
 
@@ -209,11 +212,17 @@ def own_text(plate, field, text):
 def fill(plate, field, template, fields):
     """Fills a sentence of ours. Its numbers must arrive through placeholders, so they come from claims."""
     own_text(plate, field, template)
+    formatter = string.Formatter()
     try:
-        literals = [literal for literal, *_ in string.Formatter().parse(template)]
+        parsed = list(formatter.parse(template))
+        literals = [literal for literal, *_ in parsed]
+        # A bare row id names the whole row, which prints as a Python dict (home critic 1): name one of its fields, as {region[text]}.
+        whole = next((name for _, name, *_ in parsed if name and type(formatter.get_field(name, (), fields)[0]) is dict), None)
         text = template.format_map(fields)
     except (KeyError, IndexError, ValueError, TypeError, AttributeError) as error:
         raise BuildError(f"plate {plate}: {field} has a bad placeholder: {error!r}") from error
+    if whole:
+        raise BuildError(f"plate {plate}: {field} names {{{whole}}}, a whole row, which would print as its record; name one of its fields, as {{{whole}[text]}}")
     if any(re.search(r"\d", NAMED_DIGITS.sub(" ", literal)) for literal in literals):
         raise BuildError(f"plate {plate}: {field} writes a number in its own words; use a placeholder so it comes from a claim")
     return text
@@ -419,7 +428,10 @@ def claim_rows(ctx, spec, stop, claim, key=None):
     limit = limit_of(ctx, name, claim, spec)
     unit = claim.get("unit") if claim.get("unit") not in (None, "none") else ""
     unit = (plot.get("units") or {}).get(unit, unit)
-    base = compact({"claim": claim["id"], "when": stop, "limit": limit if claim["status"] == "partly" else None, **row_extras(ctx, spec)})
+    if spec.get("open") is not None and spec["open"] not in OPEN_WORDS:
+        raise BuildError(f"plate {plate}: row '{name}': open must be one of {sorted(OPEN_WORDS)}, the word the source uses for a figure with only a floor")
+    open_word = OPEN_WORDS.get(spec.get("open"), "at least")
+    base = compact({"claim": claim["id"], "when": stop, "limit": limit if claim["status"] == "partly" else None, "open": spec.get("open"), **row_extras(ctx, spec)})
     if isinstance(base.get("tag"), dict):  # a row's own words can follow the stop, as its claim does
         base["tag"] = base["tag"].get(stop)
     gap = spec.get("gap") or NO_MEASUREMENT
@@ -445,9 +457,9 @@ def claim_rows(ctx, spec, stop, claim, key=None):
         if factor:
             value, low, high = [None if v is None else v * factor for v in (value, low, high)]
             digits = spec.get("digits", 4)
-            text = value_text(rounded(value, digits), rounded(low, digits), rounded(high, digits), plot.get("signed"))
+            text = value_text(rounded(value, digits), rounded(low, digits), rounded(high, digits), plot.get("signed"), open_word)
         else:
-            text = value_text(value, low, high, plot.get("signed"))
+            text = value_text(value, low, high, plot.get("signed"), open_word)
         return {**extra, "key": key, **base, "value": value, "low": low, "high": high, "year": year, "text": text, "unit": unit, "converted": factor,
                 "display": f"{text} {unit}".strip() if text else gap, "hollow": modeled or None, "negated": sign < 0 or None, "projected": (projected and kind not in LINE_KINDS) or None}
 
@@ -1108,9 +1120,13 @@ def plate_field_values(ctx, row, fields):
 
 # Markup ---------------------------------------------------------------------------------------------
 
-def controls_html(defn):
+def controls_html(defn, skip=None, only=None):
+    """The claim zone's settings. skip: the plot's switch, which the build writes in the bar over the plot, where plate.js keeps it. Shown under the js class
+    before the plate starts (no hidden attribute), so the claim zone has its final height at the first paint."""
     plain, more = [], []
     for c in defn.get("controls") or []:
+        if (skip is not None and c.get("name") == skip) or (only is not None and c.get("name") != only):
+            continue
         name, label = escape(c["name"]), escape(own_text(defn["id"], "control label", c["label"]))
         default = control_default(c)
         if c.get("type") == "segmented":
@@ -1134,9 +1150,11 @@ def controls_html(defn):
         else:
             raise BuildError(f"plate {defn['id']}: unknown control type {c.get('type')!r}")
         (more if c.get("more") else plain).append(part)
+    if only is not None:  # the one control, bare, for the bar over the plot
+        return "".join(plain + more)
     if more:
-        plain.append(f'<details class="plate-more"><summary>{escape(own_text(defn["id"], "more", defn.get("more") or "More assumptions"))}</summary><div class="plate-controls">{"".join(more)}</div></details>')
-    return f'<div class="plate-controls" data-js hidden>{"".join(plain)}</div>' if plain else ""
+        plain.append(f'<details class="plate-more" id="{escape(defn["id"])}-more"><summary>{escape(own_text(defn["id"], "more", defn.get("more") or "More assumptions"))}</summary><div class="plate-controls">{"".join(more)}</div></details>')
+    return f'<div class="plate-controls" data-js>{"".join(plain)}</div>' if plain else ""
 
 
 def control_words(control):
@@ -1165,9 +1183,10 @@ def legend_html(data):
         shape = lambda k: '<span class="plate-square is-%s"></span>' % escape(k["shape"]) if k.get("shape") else ""
         return f'<ul class="legend plate-legend">{"".join(f"<li>{shape(k)}{escape(own_text(data['id'], 'key', k['label']))}</li>" for k in plot["key"])}</ul>'
     if plot["type"] == "meter":  # the parts by ink, what a stop leaves out, the spread, and a figure past the scale; never chart hues on a needle plate
-        first = next((r for r in data["rows"] if r.get("segments")), None)
         keys = ("plate-key is-part is-p1", "plate-key is-part is-p2", "plate-key is-part is-p3")
-        items += [f'<li><span class="{keys[min(i, 2)]}"></span>{escape(s["label"])}</li>' for i, s in enumerate((first or {}).get("segments") or [])]
+        # Every part a row draws is named, each with the ink its place gives it: a row that splits its parts differently adds its own words (resource-use critic 3).
+        parts = dict.fromkeys((min(i, 2), s["label"]) for r in data["rows"] for i, s in enumerate(r.get("segments") or []))
+        items += [f'<li><span class="{keys[i]}"></span>{escape(label)}</li>' for i, label in parts]
         if any(s.get("at") for r in data["rows"] for s in r.get("segments") or []):
             items.append('<li><span class="plate-key is-part is-ghost"></span>Not counted at this setting</li>')
         if any(r.get("low") is not None and r.get("high") is not None for r in data["rows"]):
@@ -1550,7 +1569,7 @@ def table_html(defn, data, caption=""):
                 cells.append(f'<th scope="row"{live}>{inner}</th>' if i == 0 else f"<td{live}>{inner}</td>")
             when = f' data-when="{escape(r["when"])}"' if r.get("when") else ""
             body.append(f'<tr data-key="{escape(r["key"])}"{when}>{"".join(cells)}</tr>')
-    also = "".join(f'<li>{escape(a["label"])}: {escape(a["display"])}</li>' for a in data.get("also") or [])
+    also = "".join(f'<li>{escape(a["label"])}: {escape(a["display"])} {claim_refs([a["claim"]], data)}</li>' for a in data.get("also") or [])  # each with its claim and status (briefing critic 3)
     also = f'<ul class="plate-also caption">{also}</ul>' if also else ""
     return (f'<div class="table-scroll" tabindex="0" role="region" aria-label="Table of values"><table class="data-table plate-table"><caption>{escape(caption)}</caption>'
             f'<thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div><p class="caption plate-count">{plural(len(body), "row")}</p>{also}')
@@ -1661,7 +1680,7 @@ def documents_html(prefix, receipts, claims, anchored):
         bodies = []
         for (boundary, check), members in runs.items():
             words = " ".join(t for t in (f"Boundary: {boundary}" if boundary else "", check or "") if t)
-            rows = [f'<tr class="source-run"><th scope="rowgroup" colspan="{3 + len(extra)}">{escape(words)}</th></tr>'] if words else []
+            rows = [f'<tr class="source-run"><th scope="rowgroup" colspan="{3 + len(extra)}"><span>{escape(words)}</span></th></tr>'] if words else []
             for claim_id in members:
                 r, claim = receipts[claim_id], claims[claim_id]
                 cells = "".join(f'<td>{verbatim(r.get(field) or "") if field == "quote" else escape(str(r.get(field) or ""))}</td>' for _, field in extra)
@@ -1679,7 +1698,7 @@ def documents_html(prefix, receipts, claims, anchored):
     return f'<ol class="plate-sources">{"".join(items)}</ol>'
 
 
-def census_html(receipts):
+def census_html(receipts, on_plates=None):
     """A Sources page's census (DIRECTION-R2 3.14): the distinct claims behind its plates and its text, their documents and publishers in a line, and the
     verified and partly verified split as one bar, each part labeled at its own end with its status square, word and count; the hub counts each page's row
     the same way. The bar is for the eye; the words under it hold every number."""
@@ -1688,8 +1707,16 @@ def census_html(receipts):
     docs, publishers = len({doc_key(r) for r in receipts.values()}), len({r["publisher"] for r in receipts.values()})
     bar = "".join('<span class="census-%s" style="flex-grow:%d"></span>' % (k, n) for k, n, _ in parts)
     key = "".join('<span><span class="st st-%s"></span> <b>%s</b> %s</span>' % (k, f"{n:,}", word) for k, n, word in parts)
-    return (f'<div class="census"><p class="census-line">{plural(len(receipts), "claim")} behind this page\'s figures, from {plural(docs, "document")} and '
-            f'{plural(publishers, "publisher")}.</p><div class="census-bar" aria-hidden="true">{bar}</div><p class="census-key">{key}</p></div>')
+    split = f": {on_plates:,} on its plates, {len(receipts) - on_plates:,} in its text" if on_plates is not None and 0 < on_plates < len(receipts) else ""
+    # One document holding over a quarter of the figures says so, so a long run of one dataset's rows is not read as the page's whole record (system critic 8).
+    counts = {}
+    for r in receipts.values():
+        counts[doc_key(r)] = counts.get(doc_key(r), 0) + 1
+    big_key, big = max(counts.items(), key=lambda kv: kv[1], default=(None, 0))
+    heavy = (f' <span class="census-note">{big:,} of them come from one document, {verbatim(big_key[1])}.</span>'
+             if len(receipts) >= 40 and big * 4 > len(receipts) else "")
+    return (f'<div class="census"><p class="census-line">{plural(len(receipts), "sourced figure")} on this page{split}, from {plural(docs, "document")} and '
+            f'{plural(publishers, "publisher")}.{heavy}</p><div class="census-bar" aria-hidden="true">{bar}</div><p class="census-key">{key}</p></div>')
 
 
 TAB_LINK = re.compile(r'<a\b(?P<attrs>[^>]*)\bhref="#(?P<id>[\w-]+)"[^>]*>(?P<inner>.*?)</a>', re.S)
@@ -1715,6 +1742,16 @@ def plate_groups(text, plates):
         at = (text or "").find(f"<!-- plate:{plate} -->")
         groups.setdefault(next((label for start, label in sorted(opens, reverse=True) if start < at), ""), []).append(plate)
     return groups
+
+
+QUESTION = re.compile(r'<a\b[^>]*\bhref="#face-[\w-]+"[^>]*>(?P<q>.*?)</a>\s*<p\b[^>]*\bdata-answer="(?P<plate>[\w-]+)"', re.S)
+
+
+def rail_label(summary, questions):
+    """What a plate's entry in a Sources page's rail says: the agenda question it answers, else its title to the first comma, semicolon or colon."""
+    if summary["id"] in questions:
+        return questions[summary["id"]]
+    return re.split(r"[,;:] ", summary["title"], maxsplit=1)[0]
 
 
 def az_key(title):
@@ -1757,16 +1794,17 @@ def sources_region(page, summaries, claims, files, text=""):
             f'{f", with its claims in {claim_files}" if claim_files else ""}.</p>{documents_html(plate, receipts, claims, anchored)}</section>')
     every = {c: r for s in summaries for c, r in s["receipts"].items()}
     by_id = {s["id"]: s for s in summaries}
+    questions = {m["plate"]: " ".join(unescape(re.sub(r"<[^>]+>", "", m["q"])).split()) for m in QUESTION.finditer(text or "")}
     rail = []
     for label, plates in plate_groups(text, [s["id"] for s in summaries]).items():
-        items = "".join(f'<li><a href="#{p}">{escape(by_id[p].get("eyebrow") or by_id[p]["title"])}</a></li>' for p in plates)
+        items = "".join(f'<li><a href="#{p}">{escape(rail_label(by_id[p], questions))}</a></li>' for p in plates)
         head = f'<p class="rail-group">{escape(label)}</p>' if label else ""
         rail.append(f'{head}<ul class="rail-list">{items}</ul>')
     body = (f'<section class="sources-plates" id="plates" aria-labelledby="plates-title"><h2 id="plates-title">Sources by Plate</h2>'
-            f'<p class="caption">{plural(len(summaries), "plate")}; {escape(tally_words(every))}</p>\n' + "\n".join(sections) + "\n</section>")
+            f'<p class="caption">On its {plural(len(summaries), "plate")}: {escape(tally_words(every))}</p>\n' + "\n".join(sections) + "\n</section>")
     marked = {c: {"status": claims[c]["status"], "url": claims[c]["source"]["url"], "title": claims[c]["source"]["title"], "publisher": claims[c]["source"]["publisher"],
                   "published": us_date(claims[c]["source"].get("published"))} for c in cited(text or "", claims) if c in claims and c not in every}
-    return census_html({**every, **marked}), "\n".join(rail), body, documents_az(summaries)
+    return census_html({**every, **marked}, len(every)), "\n".join(rail), body, documents_az(summaries)
 
 
 def facts_html(rows, data, key):
@@ -1779,23 +1817,25 @@ def facts_html(rows, data, key):
             f'<li><span class="plate-square{" is-hollow" if r.get("hollow") else ""}{" is-on" if several and lead and r.get("series") == lead else ""}"></span><strong>{escape(r["display"])}</strong><span>{escape(r.get("name") or r.get("series") or "")}</span></li>' for r in rows) + "</ul>")
     for r in rows:
         if r.get("segments"):
-            counted = [p for p in r["segments"] if not p.get("at") or r.get("when") in p["at"]]  # twin of plate.js: only what this stop counts
-            total = sum(p.get("value") or 0 for p in counted) or 1
+            counted = [(i, p) for i, p in enumerate(r["segments"]) if not p.get("at") or r.get("when") in p["at"]]  # twin of plate.js: only what this stop counts
+            total = sum(p.get("value") or 0 for _, p in counted) or 1
+            # On a meter the window draws each part in the ink the plot gives it, and says measured or modeled in words (ai critic 6); elsewhere hollow is modeled.
+            ink = (lambda i, p: f" is-part is-p{min(i, 2) + 1}") if data["plot"]["type"] == "meter" else (lambda i, p: " is-hollow" if p.get("hollow") else "")
             parts.append('<div class="plate-segments">' + "".join(
-                f'<span class="plate-seg{" is-hollow" if p.get("hollow") else ""}" style="flex-grow:{round((p.get("value") or 0) / total, 4)}"></span>' for p in counted) + "</div>")
+                f'<span class="plate-seg{ink(i, p)}" style="flex-grow:{round((p.get("value") or 0) / total, 4)}"></span>' for i, p in counted) + "</div>")
             parts.append('<ul class="plate-values">' + "".join(
-                f'<li><span class="plate-square{" is-hollow" if p.get("hollow") else ""}"></span><strong>{number(rounded(p["value"]))} {escape(r["unit"])}</strong><span>{escape(p["label"])}, {escape(p.get("word") or ("modeled" if p.get("hollow") else "measured"))}</span></li>' for p in counted if p.get("value") is not None) + "</ul>")
+                f'<li><span class="plate-square{ink(i, p)}"></span><strong>{number(rounded(p["value"]))} {escape(r["unit"])}</strong><span>{escape(p["label"])}, {escape(p.get("word") or ("modeled" if p.get("hollow") else "measured"))}</span></li>' for i, p in counted if p.get("value") is not None) + "</ul>")
             break
-    for a in data.get("also") or []:
-        if not a.get("at") or a["at"] == key:
-            parts.append(f'<p class="caption">{escape(a["label"])}: {escape(a["display"])}</p>')
-    # Twin of plate.js factNodes.
+    # Twin of plate.js factNodes: the figures beside this one open on request with how it was reached, so the window is the same height before and after scripts
+    # run (CLS); every one of them is also in the Table, with its claim and status.
+    beside = [f'{a["label"]}: {a["display"]}' for a in data.get("also") or [] if not a.get("at") or a["at"] == key]  # print shows these once, under the Table
     notes = [*(f"Assumption: {t}" for t in dict.fromkeys(r["note"] for r in rows if r.get("note"))),
              *(f"Equation: {t}" for t in dict.fromkeys(r["equation"] for r in rows if r.get("equation"))),
              *dict.fromkeys(r["detail"] for r in rows if r.get("detail")), *(data.get("details") or [])]
-    if notes:
+    if beside or notes:
         word = "How this is modeled" if any(r.get("hollow") or r.get("note") or r.get("equation") for r in rows) else "About this figure"
-        parts.append(f'<details class="plate-more"><summary>{word}</summary>' + "".join(f'<p class="caption">{escape(t)}</p>' for t in notes) + "</details>")
+        parts.append(f'<details class="plate-more"><summary>{word}</summary>' + "".join(f'<p class="caption is-also">{escape(t)}</p>' for t in beside)
+                     + "".join(f'<p class="caption">{escape(t)}</p>' for t in notes) + "</details>")
     return "".join(parts)
 
 
@@ -1827,8 +1867,39 @@ def foot_html(ctx, context):
 def readout_html(head):
     """The big number stands alone; its range sits in small type beside it."""
     big, paren, rest = (head["text"] or "").partition(" (")
-    small = f'({rest} {head["unit"]}'.strip() if paren else (head["unit"] if head["text"] else head["display"])
-    return f'<p class="readout{" is-long" if len(big) >= 9 else ""}"><span class="readout-value">{escape(big)}</span> <span class="readout-unit">{escape(small)}</span></p>'
+    if paren:  # twin of plate.js paint: the range on its own line, the unit on the figure's
+        small = f'<span class="readout-range">({escape(rest)}</span>' + (f' <span class="readout-u">{escape(head["unit"])}</span>' if head["unit"] else "")
+    else:
+        small = escape(head["unit"] if head["text"] else head["display"])
+    return (f'<p class="readout{" is-long" if len(big) >= 9 else ""}" style="--chars:{max(1, len(big))}"><span class="readout-value">{escape(big)}</span> '  # plate.js sets the same length
+            f'<span class="readout-unit">{small}</span></p>')
+
+
+def countdown_head(head, plot):
+    """A countdown's selected row as its readout says it: days left from the build day, or Passed, or Today, with its date; a row with no date as it is."""
+    if not head.get("date"):
+        return head
+    n = (countdown.day(head["date"], "date") - countdown.day(plot["from"], "plot.from")).days
+    return {**head, "text": f'{f"{n:,}" if n > 0 else "Passed" if n else "Today"} ({head["due"]})', "unit": ("day" if n == 1 else "days") if n > 0 else ""}
+
+
+def evidence_html(plate, rows, also, key, receipts):
+    """Twin of plate.js evidence(): the default selection's claims counted by status, then one chip per publisher with its count, written by the build so the
+    window has its final height at the first paint. Hidden without scripts, where the Table holds every claim and its status."""
+    ids = [c for r in rows for c in [r.get("claim"), *(r.get("cites") or [])] if c] + [a["claim"] for a in also if not a.get("at") or a["at"] == key]
+    claims = [c for c in dict.fromkeys(ids) if c in receipts]
+    if not claims:
+        return ""
+    glyph = lambda status: f'<span class="{"st st-p" if status == "partly" else "st st-v"}" aria-hidden="true"></span>'
+    tally, groups = {"verified": 0, "partly": 0}, {}
+    for c in claims:
+        tally[receipts[c]["status"]] += 1
+        groups.setdefault(receipts[c]["short"].split(": ")[-1], []).append(c)
+    counts = " ".join(f'<span class="plate-evidence-count">{glyph(s)}{n} {STATUS_WORD[s]}</span>' for s, n in tally.items() if n)
+    chips = "".join(f'<button type="button" class="receipt" data-claims="{escape(" ".join(group))}" aria-expanded="false" aria-controls="{plate}-receipt">'
+                    f'{glyph("partly" if any(receipts[c]["status"] == "partly" for c in group) else "verified")}{escape(name)}{f", {len(group)}" if len(group) > 1 else ""}</button>'
+                    for name, group in groups.items())
+    return f'<p class="plate-evidence-line">{counts}</p><div class="plate-chips">{chips}</div>'
 
 
 def plate_block(defn, claims, models=None):
@@ -1996,6 +2067,7 @@ def plate_block(defn, claims, models=None):
         "fields": {name: [spec["formula"], spec.get("digits")] for name, spec in fields_spec.items()} or None, "setting": setting_data(defn) or None, "readings": readings or None,
         "also": also or None, "cites": sorted(ctx.plate_cites) or None, "details": [own_text(plate, "details", t) for t in defn.get("details") or []] or None,
         "measures": measure(defn["measures"]) if defn.get("measures") else None,
+        "print_foot": own_text(plate, "print_foot", defn["print_foot"]) if defn.get("print_foot") else None,  # its own line on paper, else plate.js says no comparison decides a proposal
     })
     alt = {**data, "alt": f"{title} The table holds every value.", "stops_now": {c["name"]: control_default(c) for c in defn.get("controls") or []}}
     now_full = [r for r in rows if not r.get("when") or r["when"] == stop]
@@ -2038,22 +2110,30 @@ def plate_block(defn, claims, models=None):
     # The Sources page holds each receipt in full; the plate's scripts build the evidence line and a receipt's short card from these, so every limit and the link travel with it.
     light_receipts = {claim_id: compact({"short": r["short"], "title": r["title"], "status": r["status"], "limit": r.get("limit"), "url": r["url"], "published": r.get("published"), "year": r.get("year")})
                       for claim_id, r in receipts.items()}
-    views = ('<div class="plate-bar" data-js><div class="plate-views" role="group" aria-label="View">'
+    # The first paint is the live arrangement (CLS, every critic): the plot's switch in the bar, the key under the plot (with the ruler's caption where the ruler
+    # redraws itself), the settings shown under the js class, the evidence line for the default selection, the readout's length, and the typed-figure note.
+    # plate.js then fills and wires what is there; without scripts the same parts read in the same order, and the script-only ones stay hidden.
+    switch = plot.get("switch") and controls_html(defn, only=plot["switch"])
+    views = (f'<div class="plate-bar" data-js>{f"""<div class="plate-switch">{switch}</div>""" if switch else ""}<div class="plate-views" role="group" aria-label="View">'
              '<button type="button" data-view="chart" aria-pressed="true">Chart</button><button type="button" data-view="table" aria-pressed="false">Table</button></div></div>')
+    fit_note = log_note if plot.get("fit") == "data" else ""  # plate.js hides it in Count view and keeps it under the axis
+    typed = any(c.get("type") in ("range", "number") for c in defn.get("controls") or [])
+    link_note = '<p class="caption plate-link-note" data-js>Figures you type stay on this screen: the link in Copy reading leaves them out.</p>' if typed else ""
     variant_attr = f' data-variant="{variant}"' if variant else ""
     block = "\n".join([
-        f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}" id="{plate}" data-plate="{plate}" data-kind="{kind}"{variant_attr} aria-labelledby="{plate}-title">',
+        f'<figure class="plate{" plate-fit" if defn.get("fit") else ""}{" has-switch" if switch else ""} has-under" id="{plate}" data-plate="{plate}" data-kind="{kind}"{variant_attr} aria-labelledby="{plate}-title">',
         f'<div class="plate-claim">{eyebrow}<h3 class="plate-title" id="{plate}-title">{escape(title)}</h3>'
-        f'{subtitle}{log_note}{paragraphs}{controls_html(defn)}{legend_html({**data, "plot": plot})}{foot}</div>',
+        f'{subtitle}{"" if fit_note else log_note}{paragraphs}{controls_html(defn, skip=plot.get("switch") if switch else None)}{foot}</div>',
         views,
         f'<div class="plate-plot{"" if needs_needle else " no-needle"}"{spot}>{plot_html}</div>',
+        f'<div class="plate-under">{fit_note}{legend_html({**data, "plot": plot})}</div>',
         '<div class="plate-detail">',
-        f'{readout_html({**head, "text": checked["diff"], "unit": checked["diff_unit"]} if "diff" in checked else head)}<p class="reading">{escape(reading)}</p>'
+        f'{readout_html({**head, "text": checked["diff"], "unit": checked["diff_unit"]} if "diff" in checked else countdown_head(head, plot) if kind == "countdown" else head)}<p class="reading">{escape(reading)}</p>'
         f'<div class="plate-facts">{facts_html(focus, data, default)}</div>'
-        f'<div class="plate-evidence" data-js></div><div class="plate-receipt" id="{plate}-receipt" hidden></div>'
+        f'<div class="plate-evidence" data-js>{evidence_html(plate, focus, also, default, receipts)}</div><div class="plate-receipt" id="{plate}-receipt" hidden></div>'
         '<div class="plate-actions" data-js><button type="button" class="button button-secondary" data-copy>Copy reading</button>'
-        '<button type="button" class="button button-secondary" data-reset hidden>Back to the starting point</button><p class="caption plate-status" role="status"></p></div>'
-        f'{setting_line(defn)}',
+        f'<button type="button" class="button button-secondary" data-reset hidden>Back to the starting point</button><p class="caption plate-status" id="{plate}-status" role="status"></p></div>'
+        f'{setting_line(defn)}{link_note}',
         '</div>',
         f'<div class="plate-view" data-view="table"><p class="label">Table</p>{table_html(defn, data, re.split(r"(?<=[.]) ", reading)[0])}</div>',
         collar_html(plate, str(defn.get("page") or ""), receipts, kind in LINE_KINDS),
@@ -2062,7 +2142,7 @@ def plate_block(defn, claims, models=None):
         f'<script type="application/json" id="plate-data-{plate}">{inline_json({**data, "receipts": light_receipts, **templates})}</script>',
     ])
     return block, {"id": plate, "reading": reading, "readout": head["text"] or "", "unit": head["unit"], "frac": frac, "title": title, "answer": answer,
-                   "eyebrow": own_text(plate, "eyebrow", defn["eyebrow"]) if defn.get("eyebrow") else None, "receipts": receipts}
+                   "eyebrow": own_text(plate, "eyebrow", defn["eyebrow"]) if defn.get("eyebrow") else None, "receipts": receipts, "claims": row_ids(head)}
 
 
 def region(page, name, block, where):
@@ -2086,8 +2166,12 @@ def bench_html(summary, page, target):
     href = f'{posixpath.relpath(target, posixpath.dirname(page) or ".")}#{summary["id"]}'
     ruler = f'<span class="bench-ruler" style="--x:{summary["frac"]}"></span>' if summary["frac"] is not None else ""
     figure = f'<span class="bench-value">{escape(summary["readout"])}</span> <span class="bench-unit">{escape(summary["unit"])}</span>' if summary["readout"] else ""
+    # Its figure's claims and their status, linked to the plate's Sources page as a Table cell links them (the hard line; resource-use critic 2, data-centers 11).
+    sources = posixpath.relpath(f'{posixpath.dirname(target) or "."}/sources', posixpath.dirname(page) or ".")
+    refs = claim_refs(summary.get("claims") or [], {"id": summary["id"], "receipts": summary["receipts"]}).replace('href="sources/#', f'href="{sources}/#')
+    claims = f'<p class="bench-claims caption">{refs}</p>' if refs else ""
     return (f'<div class="bench-row"><div class="bench-figure">{figure}{ruler}</div><div class="bench-body"><p class="bench-reading">{escape(summary["reading"])}</p>'
-            f'<p class="bench-link"><a href="{escape(href)}">Open the plate</a></p></div></div>')
+            f'{claims}<p class="bench-link"><a href="{escape(href)}">Open the plate</a></p></div></div>')
 
 
 def poured_text(claim, field):
@@ -2273,6 +2357,7 @@ def self_test():
     vp.self_test()
     assert number(0.24) == "0.24" and number(1234.5) == "1,234.5" and number(3600.0) == "3,600" and number(0.00001) == "0.00001"
     assert value_text(None, 2, 9) == "2 to 9" and value_text(5, 2, 9) == "5 (2 to 9)" and value_text(None, 20, None) == "at least 20" and value_text(None, None, None) is None
+    assert value_text(None, 1200, None, open_word=OPEN_WORDS["over"]) == "over 1,200"
     assert us_date("2025-08-21") == "08/21/2025" and us_date("2021-06") == "06/2021"
     assert nice_domain([3, 87]) == [0, 100] and nice_ticks(0, 100) == [0, 20, 40, 60, 80, 100] and tick_text(20000, 40000) == "20K" and tick_text(0.25, 1) == "0.25"
     assert '</script' not in inline_json({"a": "</script> -- x"}) and json.loads(inline_json({"a": "</script> -- x"}))["a"] == "</script> -- x"

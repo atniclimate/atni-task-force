@@ -270,6 +270,13 @@ kit's rules are written on `fieldset.stair` so they win.
 **Tokens added in R2** (in `site.css`): `--window`, `--window-edge`, `--window-ring`, `--control-edge`, `--control-on`, `--paper`, `--on-paper`,
 `--paper-hover`, `--part-1`, `--part-2`, `--readout`, `--ease`, `--section-pad`, `--water`, `--water-label`, `--mark-quiet`. `--poster` is retired.
 
+**R2 fix round (11/16/2026).**
+- **The first paint is the live one.** `build_plates.py` writes what `plate.js` used to move after the first paint: the plot's switch in `.plate-bar`, `.plate-under` (key, and the log caption of a `fit: "data"` ruler) right after the plot, the settings without `hidden` (`data-js` hides them without scripts), the evidence line for the default selection (`evidence_html`, twin of `evidence()`), the readout's `--chars` and its range spans, and the typed-figure note. Under `html.js`, `site.css` hides a not-yet-live plate's Table, and a plate in `.agenda-faces` draws as a face before `plate.js` names it. Cold-load CLS measured with `capture.js --slow` (it now records `cls` per view) is under 0.01 on home, AI, Data Centers, Energy and Potential at 1280, 1440 and 2560.
+- **Templates:** a placeholder that names a whole row (`{region}`) stops the build; name a field (`{region[text]}`). A `title_template` with a field the state leaves blank falls back to the Reading's first sentence. A row's `"open": "over"` prints "over N" for a floor-only figure, as its source says it.
+- **Faces:** settings run in one row under the title (two lines' room); Chart and Table stand over the window unless a switch shares the bar; the plot takes `clamp(18rem, 40vh, 40rem)`.
+- **Figures beside a reading** (`also`) open in "About this figure" in the window and print once, under the Table, each with its claim and status; a bench row prints its figure's claims.
+- **Other:** a meter's legend names every part label its rows draw, and its window parts wear the plot's inks; a countdown's readout is days left with the date under it, and its Passed lane counts only its own names; `"print_foot"` sets a plate's foot line on paper; More assumptions is `#{plate}-more`, and an address naming a disclosure opens it.
+
 ## The system as built (11/05/2026)
 Superseded by the R2 section above where they differ: `--poster`, the page band, three views, the strip (until the Energy plates move to `countdown`).
 The direction is `work/site-refresh/design/lift/DIRECTION-FINAL.md`; `docs/DESIGN-SPEC.md` section C records what it changed and why.

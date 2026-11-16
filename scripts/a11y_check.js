@@ -65,7 +65,11 @@ async function scan(page, context) {
 async function hearPlots(page) {
   const cdp = await page.context().newCDPSession(page);
   const { root } = await cdp.send('DOM.getDocument');
-  const ids = await page.evaluate(() => [...document.querySelectorAll('.plate-plot[aria-activedescendant]')].filter((plot) => plot.clientWidth).map((plot) => plot.getAttribute('aria-activedescendant')));
+  // A plot in a closed face or tab panel (hidden="until-found", which is content-visibility: hidden) keeps its width but is out of the accessibility tree, so
+  // it is skipped, not reported: its selection is heard when its panel opens (the R2 critics' 320 false nodes).
+  const ids = await page.evaluate(() => [...document.querySelectorAll('.plate-plot[aria-activedescendant]')]
+    .filter((plot) => plot.clientWidth && (plot.checkVisibility ? plot.checkVisibility({ contentVisibilityAuto: true, visibilityProperty: true }) : !plot.closest('[hidden]')))
+    .map((plot) => plot.getAttribute('aria-activedescendant')));
   const nodes = [];
   for (const id of ids) {
     const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: `[id="${id}"]` });

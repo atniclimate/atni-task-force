@@ -34,6 +34,7 @@
   let undo = null;
   let opener = null;
   const ticked = () => boxes.filter((b) => b.checked);
+  const inSet = (adder) => boxes.filter((b) => b.closest('fieldset').id === adder.dataset.sheetAdd);
   const say = (text) => { status.textContent = text; };
   const legend = (set) => set.querySelector('legend').textContent.trim();
   // A question's words, a marked figure followed by its claim id in brackets, so the sheet carries its receipts onto paper.
@@ -48,6 +49,13 @@
     body.replaceChildren(...(sets.size ? [...sets].flatMap(([set, qs]) => [h('h3', { textContent: legend(set) }), h('ol', {}, ...qs.map((q) => h('li', { textContent: q })))]) : [h('p', { textContent: EMPTY })]));
     add.href = `${briefing}#add=${[...sets.keys()].map((set) => set.id).join('.')}`;
     document.querySelectorAll('[data-sheet-open]').forEach((b) => { b.textContent = `Meeting sheet (${ticked().length})`; });
+    // A set in the sheet: its button says so where it was pressed, and takes it out again.
+    document.querySelectorAll('[data-sheet-add]').forEach((b) => {
+      const set = inSet(b);
+      const on = set.length > 0 && set.every((x) => x.checked);
+      b.classList.toggle('is-added', on);
+      b.textContent = on ? `Remove this set from the sheet (${set.length})` : `Add this set to the sheet (${set.length})`;
+    });
     return sets;
   };
   const save = () => {
@@ -69,7 +77,9 @@
   document.addEventListener('click', (e) => {
     const adder = e.target.closest('[data-sheet-add]');
     if (adder) {
-      boxes.forEach((b) => { if (b.closest('fieldset').id === adder.dataset.sheetAdd) b.checked = true; });
+      const set = inSet(adder);
+      const on = set.every((b) => b.checked);
+      set.forEach((b) => { b.checked = !on; });
       fresh();
       save();
     }

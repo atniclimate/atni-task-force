@@ -30,6 +30,11 @@ import validate_public as vp  # noqa: E402
 HUB = "sources/index.html"
 TITLE = re.compile(r"<title>(.*?)(?: \| [^<]*)?</title>", re.S)
 
+# Each page by the name the nav and its own brief give it, so the hub, the nav and home's list agree (home critic 15, system 18); a page not named here keeps its title.
+NAMES = {"index.html": "Home", "ai/index.html": "AI", "data-centers/index.html": "Data Centers", "data-centers/resource-use/index.html": "Energy and Water Use",
+         "energy/index.html": "Tribal Energy", "energy/funding/index.html": "Tribal Energy: Funding", "energy/potential/index.html": "Tribal Energy: What Tribal plans say",
+         "explorer/index.html": "Explorer", "library/index.html": "Library"}
+EXPLORER_PLATE = re.compile(r'<section class="sources-plate" id="(?P<id>[\w-]+)"[^>]*>(?:<p class="eyebrow">[^<]*</p>)?<h3[^>]*>(?P<title>.*?)</h3>', re.S)
 PAGE_ORDER = ["ai/index.html", "data-centers/index.html", "energy/index.html"]  # the order a council reads them; other pages follow by name
 BAND_CHECKED = re.compile(r'<span class="figure-num">([^<]*)</span>\s*<span class="figure-label">Sources checked</span>')
 BUILT_BY = {
@@ -154,12 +159,21 @@ def hub_html(site, data):
         every |= distinct
         verified = sum(claims[c]["status"] == "verified" for c in distinct)
         docs = len({bp.doc_key(receipt(c)) for c in distinct})
-        name = "Home" if rel == "index.html" else unescape(TITLE.search(body)[1]) if TITLE.search(body) else rel
-        items = "".join(f'<li><a href="{here}#{p["id"]}">{escape(p["eyebrow"] or p["title"])}</a></li>' for p in plates)
+        name = NAMES.get(rel) or (unescape(TITLE.search(body)[1]) if TITLE.search(body) else rel)
+        # A plate is named by its title to the first comma or semicolon, not by an eyebrow such as "Jobs" (system critic 10); the Explorer's plates are its own
+        # Sources page's sections, which build_explorer.py writes (system critic 15).
+        named = [(p["id"], p["title"]) for p in plates] or ([(m["id"], unescape(re.sub(r"<[^>]+>", "", m["title"]))) for m in EXPLORER_PLATE.finditer(own.string)] if own else [])
+        asked = {m["plate"]: " ".join(unescape(re.sub(r"<[^>]+>", "", m["q"])).split()) for m in bp.QUESTION.finditer(body)}  # a face's agenda question, as its Sources rail says it
+        items = "".join(f'<li><a href="{here}#{plate}">{escape(asked.get(plate) or re.split(r"[,;:] ", title, maxsplit=1)[0])}</a></li>' for plate, title in named)
         items = f'<ul class="hub-plates">{items}</ul>' if items else ""
-        checked = f'<p class="caption">Sources checked {escape(plates[0]["checked"])}.</p>' if plates and plates[0]["checked"] else ""
+        copies = len({c for c in re.findall(r'data-copy-of="[^"#]*#([\w-]+)"', (site / rel).read_text(encoding="utf-8")) if any(p["id"] == c for p in data["plates"])}) if rel == "index.html" else 0
+        if copies:  # home shows copies of other pages' plates, which count there
+            items += f'<p class="caption">{bp.plural(copies, "plate")} shown as copies, counted on their own pages.</p>'
+        stamp = re.search(r"<!-- explorer:checked -->.*?(\d{2}/\d{2}/\d{4})", own.string, re.S) if own else None  # the Explorer's own Sources page says when
+        when = plates[0]["checked"] if plates and plates[0]["checked"] else stamp[1] if stamp else None
+        checked = f'<p class="caption">Sources checked {escape(when)}.</p>' if when else ""
         rows.append(f'<tr><th scope="row"><a class="hub-page" href="{here}">{escape(name)}</a>{status_bar(verified, len(distinct) - verified, "census-bar is-row")}{checked}{items}</th>'
-                    f'<td>{len(plates):,}</td><td>{figures:,}</td><td>{len(distinct):,}</td><td>{docs:,}</td><td>{verified:,}</td><td>{len(distinct) - verified:,}</td></tr>')
+                    f'<td>{len(plates) or len(named):,}</td><td>{figures:,}</td><td>{len(distinct):,}</td><td>{docs:,}</td><td>{verified:,}</td><td>{len(distinct) - verified:,}</td></tr>')
     verified = sum(claims[c]["status"] == "verified" for c in every)
     docs = {bp.doc_key(receipt(c)) for c in every}
     publishers = {claims[c]["source"]["publisher"] for c in every}

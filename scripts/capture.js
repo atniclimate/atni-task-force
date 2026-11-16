@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Serves site/ on an ephemeral port, takes screenshots, writes metrics.json, and closes its server. Use at integration, not per edit.
-//   node scripts/capture.js --out work/site-refresh/shots/x3 --pages ai,home --widths 1440,390 --themes dark,light [--tabs] [--full]
+//   node scripts/capture.js --out work/site-refresh/shots/x3 --pages ai,home --widths 1440,390 --themes dark,light [--tabs] [--full] [--slow]
+// Each view's metrics carry its cumulative layout shift since the load (cls, shifts a reader's own press caused left out), with the nodes of its largest shifts,
+// so DIRECTION-R2 section 6's "cold-load CLS under 0.1" is measured, not reasoned. --slow loads at 4x CPU and an 80 ms, 6 Mbps network, where the first paint
+// lands before the scripts run, as on a real connection; a local load often hides a shift that a slower one shows.
 // --pages takes names from PAGES below, paths under site/ such as ai/sources/, or "all": every page, each page's Sources page, and the hub (CW 8). Playwright
 // comes from local node_modules or else the global npm root, and drives the installed Chrome. A page's console errors and overflow go in the metrics and do
 // not change the exit code.
@@ -42,6 +45,21 @@ function serve() {
   return new Promise((resolve) => { server.listen(0, '127.0.0.1', () => resolve(server)); });
 }
 
+// Runs in the page, before its own scripts: every layout shift a reader did not cause, from the first paint on.
+function watchShifts() {
+  window.__cls = { value: 0, shifts: [] };
+  const name = (n) => (n ? `${n.nodeName.toLowerCase()}${n.id ? `#${n.id}` : ''}${typeof n.className === 'string' && n.className.trim() ? `.${n.className.trim().split(/\s+/).slice(0, 3).join('.')}` : ''}` : '?');
+  try {
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        if (e.hadRecentInput) continue;
+        window.__cls.value += e.value;
+        window.__cls.shifts.push({ at: Math.round(e.startTime), value: +e.value.toFixed(4), nodes: (e.sources || []).slice(0, 4).map((s) => name(s.node)) });
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  } catch (e) { /* a browser without layout-shift entries reports null */ }
+}
+
 // Runs in the page.
 function measure(vh) {
   const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && !e.closest('[hidden]') && getComputedStyle(e).visibility !== 'hidden'; };
@@ -62,6 +80,7 @@ function measure(vh) {
     fold: plate ? { plate: plate.dataset.plate, readout: edge(plate.querySelector('.readout, .reading')), plot: edge(plate.querySelector('.plate-plot')) } : null,
     clippedText: clipped.slice(0, 40),
     clippedTextCount: clipped.length,
+    cls: window.__cls ? { value: +window.__cls.value.toFixed(4), largest: [...window.__cls.shifts].sort((a, b) => b.value - a.value).slice(0, 5) } : null,
   };
 }
 
@@ -77,6 +96,7 @@ function args() {
     themes: take('themes', 'dark,light').split(','),
     tabs: process.argv.includes('--tabs'),
     full: process.argv.includes('--full'),
+    slow: process.argv.includes('--slow'),
   };
 }
 
@@ -101,7 +121,14 @@ async function main() {
           const height = heightFor(width);
           const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: theme });
           await ctx.addInitScript((t) => { try { localStorage.setItem('atni-energy-theme', t); } catch (e) { /* private window */ } }, theme);
+          await ctx.addInitScript(watchShifts);
           const page = await ctx.newPage();
+          if (opt.slow) {
+            const cdp = await ctx.newCDPSession(page);
+            await cdp.send('Network.enable');
+            await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 80, downloadThroughput: 750000, uploadThroughput: 750000 });
+            await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+          }
           const consoleErrors = [];
           const failedRequests = [];
           page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()); });
@@ -136,7 +163,8 @@ async function main() {
     await new Promise((resolve) => { server.close(resolve); });
   }
   fs.writeFileSync(path.join(opt.out, 'metrics.json'), JSON.stringify({ shots, views }, null, 2));
-  console.log(`${shots} screenshots and metrics.json in ${opt.out}`);
+  const shifty = Object.entries(views).filter(([, v]) => v.cls && v.cls.value >= 0.1).map(([k, v]) => `${k} ${v.cls.value}`);
+  console.log(`${shots} screenshots and metrics.json in ${opt.out}${shifty.length ? `; layout shift at or over 0.1: ${shifty.join(', ')}` : '; every view under 0.1 layout shift'}`);
 }
 
 main().catch((e) => { console.error(e.message || e); process.exit(1); });

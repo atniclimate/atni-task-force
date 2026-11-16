@@ -11,7 +11,7 @@
     "site/assets/js/energy-potential.js": 13500,
     "site/assets/js/explorer.js": 78000,
     "site/assets/js/library.js": 25000,
-    "site/assets/js/plate-svg.js": 10000,
+    "site/assets/js/plate-svg.js": 11200,
     "site/assets/js/plate.js": 104500,
     "site/assets/js/policy-watch.js": 500,
     "site/assets/js/resource-model.js": 80000,
@@ -43,6 +43,7 @@
   },
   "note": "The one place script and page budgets live. Scripts are bytes on disk; pages are the HTML file gzipped at level 9, in KB of 1024 bytes, inline data included; files_kb are other published files in KB of 1024 bytes, read by scripts/build_briefing_pdf.py, tests/test_plates.py, and scripts/page_check.js, and a name with one * in its last part is a line for each file it matches. Set 11/04/2026 at about 25 percent over measured sizes. Budgets warn at warn_at and louder when over; they never fail a test or set an exit code.",
   "reasons": {
+    "site/assets/js/plate-svg.js": "11/16/2026: R2 fix round, the small multiples' y labels kept 1.6 lines apart (ai critic 11), at 10,182 bytes; about 10 percent over.",
     "site/data-centers/sources/index.html": "11/15/2026: ruling 39 moved every plate's receipts here, 704 of them, 528 the Climate plate's from one NASA dataset, grouped by document; about 10 percent over its 88.2 KB gzipped, which the main page shed.",
     "site/ai/sources/index.html": "11/16/2026: DIRECTION-R2 section 6, at measured size plus 10 percent: the Sources page's brief, census, rail, and Documents A to Z, at 68.1 KB gzipped.",
     "site/explorer/sources/index.html": "11/16/2026: R2 P-explorer moved the method and each plate's notes here, at 90.0 KB gzipped; about 10 percent over.",

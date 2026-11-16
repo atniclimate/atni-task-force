@@ -36,10 +36,19 @@ function axes(f, x, y, yTicks, xs, inside = false) {
   const g = add(f.g, 'g', { 'aria-hidden': 'true' });
   const top = Math.max(...yTicks.map(Math.abs));
   const foot = Math.min(...yTicks);
-  for (const t of yTicks) {
-    add(g, 'line', { class: 'm-grid', x1: f.x0, x2: f.x1, y1: y(t), y2: y(t) });
+  for (const t of yTicks) add(g, 'line', { class: 'm-grid', x1: f.x0, x2: f.x1, y1: y(t), y2: y(t) });
+  // Labels stand at least 1.6 lines apart, from the foot up, and the top one is kept (ai critic 11: in a short panel 20, 40, 60, 80 and 100 overlapped).
+  const order = [...yTicks].sort((a, b) => a - b);
+  const kept = [];
+  let gap = 0;
+  for (const t of order) {
+    const close = kept.length && Math.abs(y(t) - y(kept.at(-1)[0])) < gap;
+    if (close && (t !== order.at(-1) || kept.length === 1)) continue;
+    if (close) kept.pop()[1].remove(); // the top label stands; the one under it gives way
     const zero = inside && t === 0 && t === foot;
-    add(g, 'text', { class: 'm-tick', x: zero ? f.x0 + 4 : f.x0 - 8, y: y(t), dy: zero ? '-.4em' : '.32em', 'text-anchor': zero ? 'start' : 'end', text: fmt(t, top) });
+    const label = add(g, 'text', { class: 'm-tick', x: zero ? f.x0 + 4 : f.x0 - 8, y: y(t), dy: zero ? '-.4em' : '.32em', 'text-anchor': zero ? 'start' : 'end', text: fmt(t, top) });
+    kept.push([t, label]);
+    gap = gap || 1.6 * (parseFloat(getComputedStyle(label).fontSize) || 16);
   }
   const base = y(Math.max(Math.min(...yTicks), 0));
   add(g, 'line', { class: 'm-base', x1: f.x0, x2: f.x1, y1: base, y2: base });

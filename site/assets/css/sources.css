@@ -16,6 +16,7 @@
    their squares are), each part labeled at its own end. The bar is aria-hidden: the line and the labels hold every number. */
 .census { margin-top: 16px; max-width: 48rem; }
 .census-line { margin: 0 0 8px; max-width: none; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
+.census-note { color: var(--atni-text-secondary); } /* one document holding over a quarter of the figures, said so */
 .census-bar { display: flex; gap: 2px; height: 12px; }
 .census-v { background: var(--part-1); }
 .census-p { background: linear-gradient(var(--part-1), var(--part-1)) bottom / 100% 50% no-repeat; box-shadow: inset 0 0 0 1.5px var(--part-1); }
@@ -62,6 +63,11 @@
 .source-claims tbody th[scope="row"] { white-space: nowrap; } /* a claim id never breaks at its hyphen */
 .source-claims thead th { white-space: nowrap; } /* a wide Quote column squeezed "Value year" to a letter a line */
 .source-claims .source-run th { color: var(--atni-text-secondary); }
+/* A claims table stops at 84rem, as the hub's does, and a run's shared words at a 72ch measure, so neither runs 170 to 300 characters a line (system critic 11);
+   a figure and its unit never break mid-word (resource-use critic 14): the Quote column takes the squeeze. */
+.source-claims { max-width: 84rem; }
+.source-claims .source-run th > span { display: block; max-width: 72ch; }
+.source-claims tbody td:nth-child(3) { white-space: nowrap; }
 .source-detail { margin: 0; }
 .source-detail > summary { display: list-item; width: fit-content; min-height: 28px; padding-block: 3px; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-heading); cursor: pointer; }
 .source-detail > p { margin: 2px 0 6px; }
@@ -83,7 +89,7 @@
 
 /* The hub: a row for each page, what the marks mean, the terms, and the files. */
 .sources-hub .table-scroll { max-width: 84rem; } /* the counts stay near the names they count at 2560 */
-.hub-pages { min-width: 44rem; }
+.hub-pages { min-width: 44rem; max-width: 70rem; } /* a row's figures stay near its page's name at 1440 and up (home critic 15) */
 .hub-pages tbody th { min-width: 18rem; }
 .hub-page { font-family: var(--display); font-weight: 600; font-size: 1.0625rem; color: var(--atni-text-heading); }
 .census-bar.is-row { width: min(100%, 14rem); height: 6px; margin: 6px 0 4px; }

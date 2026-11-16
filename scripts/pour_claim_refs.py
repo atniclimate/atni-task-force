@@ -180,13 +180,41 @@ def row(claim_id, claim, anchored):
             f'<span class="caption">{escape(claim_id)}. {publisher}. {status_words(claim)}</span></li>\n')
 
 
+def shared_limit(ids, claims):
+    """The sentences every claim's limit from one source opens and closes with, and each claim's own sentences between them: wording they share is said
+    once (library-summit-about-22). Returns (shared, {id: own}), shared empty when they share nothing or a claim has no limit."""
+    parts = {c: re.split(r"(?<=\.)\s+", str(claims[c].get("limit") or "").strip()) for c in ids}
+    if len(ids) < 2 or not all(p != [""] for p in parts.values()):
+        return "", {}
+    lists = list(parts.values())
+    head = 0
+    while all(len(p) > head for p in lists) and len({p[head] for p in lists}) == 1:
+        head += 1
+    tail = 0
+    while all(len(p) > head + tail for p in lists) and len({p[-1 - tail] for p in lists}) == 1:
+        tail += 1
+    if not head + tail:
+        return "", {}
+    shared = " ".join(lists[0][:head] + lists[0][len(lists[0]) - tail:])
+    return shared, {c: " ".join(p[head:len(p) - tail]) for c, p in parts.items()}
+
+
 def document_row(ids, claims, anchored):
-    """Several claims from one source: its title and publisher once, then a line per claim."""
+    """Several claims from one source: its title and publisher once, and the limit wording they share once, then a line per claim with its own."""
     source = claims[ids[0]]["source"]
     anchor = lambda claim_id: "" if claim_id in anchored else f' id="src-{escape(claim_id)}"'  # noqa: E731
-    lines = "".join(f'<li{anchor(claim_id)} data-status="{claims[claim_id]["status"]}"><span class="caption">{escape(claim_id)}. {status_words(claims[claim_id])}</span></li>' for claim_id in ids)
+    shared, own = shared_limit(ids, claims)
+
+    def words(claim_id):
+        claim = claims[claim_id]
+        if not shared:
+            return status_words(claim)
+        rest = own[claim_id]
+        return f'{"Partly verified." if claim["status"] == "partly" else "Verified against the source."}{f" Its own limit: {escape(rest)}" if rest else ""}'
+    lines = "".join(f'<li{anchor(claim_id)} data-status="{claims[claim_id]["status"]}"><span class="caption">{escape(claim_id)}. {words(claim_id)}</span></li>' for claim_id in ids)
+    note = f' Limit of each claim below: {escape(shared)}' if shared else ""
     return (f'          <li><a class="plate-source-title" href="{escape(source["url"])}">{verbatim(source.get("title") or source.get("publisher") or ids[0])}</a>'
-            f'<span class="caption">{verbatim(source.get("publisher") or "")}.</span><ul class="cited-claims">{lines}</ul></li>\n')
+            f'<span class="caption">{verbatim(source.get("publisher") or "")}.{note}</span><ul class="cited-claims">{lines}</ul></li>\n')
 
 
 def block(ids, claims, anchored, words=(escape(ON_PAGE[0]), escape(ON_PAGE[1]))):

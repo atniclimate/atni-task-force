@@ -380,6 +380,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
 /* Five jobs, five looks (DIRECTION-R2 3.11). The paper button is the one filled action on a screen, for what leaves the screen or assembles something to take;
    it is never disabled. Every other button is an edge: 1px --control-edge, heading ink, no fill. Orange is the reading's alone. */
 .button:hover, .paper:hover { color: var(--on-paper); background: var(--paper-hover); border-color: var(--paper-hover); }
+[data-sheet-add].is-added { color: var(--atni-text-heading); background: var(--control-on); border-color: var(--atni-text-heading); } /* its set is in the sheet */
 .paper { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 20px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; text-decoration: none; color: var(--on-paper); background: var(--paper); border: 1px solid var(--paper); border-radius: 0; cursor: pointer; }
 .button-secondary { color: var(--atni-text-heading); background: transparent; border-color: var(--control-edge); }
 .button-secondary:hover { color: var(--atni-text-heading); background: transparent; border-color: var(--atni-text-heading); }
@@ -467,11 +468,21 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .js .agenda:not(.is-live) .agenda-faces > :not(:first-child) { display: none; }
 .agenda-faces { min-width: 0; }
 .agenda-faces > * > .plate { margin-bottom: 0; }
-/* A face's claim zone splits as a narrow lead's does: its title at the left, its settings at the right over the window, so the plot stays on the first screen. */
+/* A face (R2 fix round): the plot starts under the title. The title and its captions keep the left 64 percent, with two lines' room so a rewrite moves
+   nothing (resource-use critic 17); the settings run in one row under them, never a column taller than the title beside it, which left a 200px dead band
+   over the plot (home 4, data-centers 4, ai 9, system 5); Chart and Table stand at the top of the window column, over the readout, unless a switch shares
+   their bar over the plot (system 2); and the plot takes 40vh, so the axis, the key and the readout fit a 1440 by 900 window (home 3, ai 4). */
+.plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) { --plot-h: clamp(18rem, 40vh, 40rem); }
 @media screen and (min-width: 1100px) {
-  .plate[data-variant="face"] > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
-  .plate[data-variant="face"] > .plate-claim > * { grid-column: 1; }
-  .plate[data-variant="face"] > .plate-claim > .plate-controls { grid-column: 2; grid-row: 1 / span 8; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > * { grid-column: 1; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-title { min-height: 2lh; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 32px; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > .slider { flex: 1 1 15rem; max-width: 24rem; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > details[open] { flex-basis: 100%; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch) { grid-template-areas: "claim claim" "plot bar" "plot window" "under window" ". window" "table table" "collar collar"; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch) > .plate-bar { padding: 0 0 12px 20px; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch).is-live > .plate-view[data-view="table"] { grid-row: window-start / under-end; }
 }
 @media screen and (min-width: 1100px) {
   .agenda { grid-template-columns: minmax(18rem, 25fr) minmax(0, 75fr); min-height: max(28rem, var(--plate-h, 0px)); }
@@ -481,7 +492,6 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 }
 .agenda-faces > :first-child :is(.needle, .ladder-needle) { animation: needle-draw 240ms ease-out backwards; }
 @media print {
-  .agenda.is-live .agenda-q:not(.is-on) { display: none; }
   .agenda-faces { padding: 0; box-shadow: none; }
 }
 
@@ -607,6 +617,15 @@ main > .section + .section { border-top: 1px solid var(--grid); }
     .stair-step:nth-of-type(6) { --rise: 7.5rem; }
     .stair-step.is-lit { border-top: 6px solid var(--atni-text-heading); }
     .stair-detail { padding-top: 16px; }
+    fieldset.stair > .stair-detail { grid-column: auto / span 1; max-width: none; padding: 16px 12px 0; border-top: 2px solid transparent; }
+    fieldset.stair > .stair-step:has(> .stair-pick:checked) + .stair-detail { border-top-color: var(--atni-text-heading); }
+    fieldset.stair > .stair-detail dl { grid-template-columns: minmax(0, 1fr); max-width: none; }
+    fieldset.stair > .stair-detail:nth-of-type(1) { grid-column: 1; }
+    fieldset.stair > .stair-detail:nth-of-type(2) { grid-column: 2; }
+    fieldset.stair > .stair-detail:nth-of-type(3) { grid-column: 3; }
+    fieldset.stair > .stair-detail:nth-of-type(4) { grid-column: 4; }
+    fieldset.stair > .stair-detail:nth-of-type(5) { grid-column: 5; }
+    fieldset.stair > .stair-detail:nth-of-type(6) { grid-column: 6; }
   }
 }
 @media (forced-colors: active) { :is(.track-step:has(> .track-pick:checked), .stair-step:has(> .stair-pick:checked)) { outline: 2px solid Highlight; outline-offset: -2px; } }
@@ -801,7 +820,18 @@ p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 5
 .section-strip { border-bottom-color: var(--grid); }
 .section-strip > .wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; } /* one 64px row: the tabs scroll under their fade before Sources or the sheet button wraps */
 .section-strip ul { flex: 1 1 auto; min-width: 0; }
-.section-strip > .wrap > a { margin-inline: -12px; } /* a link in the strip lines up as its tabs do */
+.section-strip > .wrap > a { margin-inline: 12px 0; } /* 24px of air after the last tab, and none taken from the sheet button beside it (data-centers critic 5) */
+.section-strip > .wrap > .paper { flex: none; align-self: center; margin-left: 12px; white-space: nowrap; }
+/* A strip too narrow for its tab questions shows the names alone, every tab in view, with a 1px rule where a group starts (ai critic 1): under 1600px,
+   and wherever plate.js finds the row still runs past its edge (.is-tight). The questions stay in each tab panel's heading. */
+@media (max-width: 1599px) {
+  .section-strip .tab-q { display: none; }
+  .section-strip .strip-group { width: 1px; margin: 18px 12px; padding: 0; overflow: hidden; font-size: 0; background: var(--rule); }
+  .section-strip .strip-group:first-child { display: none; }
+}
+.section-strip.is-tight .tab-q { display: none; }
+.section-strip.is-tight .strip-group { width: 1px; margin: 18px 12px; padding: 0; overflow: hidden; font-size: 0; background: var(--rule); }
+.section-strip.is-tight .strip-group:first-child { display: none; }
 .toc-title { display: none; margin: 0 0 8px; padding-left: 14px; color: var(--atni-text-muted); }
 .toc ul, .section-strip ul, .section-strip [role="tablist"] {
   list-style: none;
@@ -938,12 +968,12 @@ main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { co
 .plate > .plate-claim { padding-bottom: 16px; }
 @media screen and (min-width: 1100px) {
   .plate { grid-template-columns: minmax(0, 64fr) minmax(18rem, 36fr); grid-template-areas: "claim claim" "bar bar" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto 1fr auto auto; }
-  .plate[data-variant="face"] { grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) { grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); }
   /* A lead in a narrower container keeps the plot on the first screen: its title at the left, its settings at the right, over the window (a departure: the
      direction gives this split to the repeater; at 1280 a lead's settings stacked under its title pushed the plot below the fold). */
-  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(18rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
-  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim > * { grid-column: 1; }
-  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim > .plate-controls { grid-column: 2; grid-row: 1 / span 8; }
+  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(18rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
+  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-claim > * { grid-column: 1; }
+  .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-claim > .plate-controls { grid-column: 2; grid-row: 1 / span 8; }
   .plate:is([data-variant="repeater"], .plate:not([data-variant]) ~ .plate:not([data-variant])) { grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); }
   /* A repeater's claim zone: its title at the left, its settings at the right, over the window. */
   .plate:is([data-variant="repeater"], .plate:not([data-variant]) ~ .plate:not([data-variant])) > .plate-claim { display: grid; grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); column-gap: var(--plate-gap); align-items: start; }
@@ -959,14 +989,21 @@ main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { co
 /* A lead plate in a wide container: claim column, plot, window. The third row takes what is left, so a tall window never stretches the plot. */
 @container (min-width: 1360px) {
   @media screen and (min-width: 1100px) {
-    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) { grid-template-columns: minmax(17rem, 20fr) minmax(0, 52fr) minmax(19rem, 28fr); grid-template-areas: "claim bar bar" "claim plot window" "claim under window" "claim . window" "table table table" "collar collar collar"; grid-template-rows: auto auto auto 1fr auto auto; }
-    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim { display: grid; grid-template-columns: minmax(0, 1fr); padding: 0 0 16px; }
-    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim > .plate-controls { grid-column: 1; grid-row: auto; }
+    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) { grid-template-columns: minmax(17rem, 20fr) minmax(0, 52fr) minmax(19rem, 28fr); grid-template-areas: "claim bar bar" "claim plot window" "claim under window" "claim . window" "table table table" "collar collar collar"; grid-template-rows: auto auto auto 1fr auto auto; }
+    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-claim { display: grid; grid-template-columns: minmax(0, 1fr); padding: 0 0 16px; }
+    .plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-claim > .plate-controls { grid-column: 1; grid-row: auto; }
   }
 }
 /* A strip: one across under a 1680px container, two from 1680, three from 2400 (DIRECTION-R2 2.4); a pair is two. */
 .plate-strip, .plate-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 32px; }
 @container (min-width: 1680px) { .plate-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (max-width: 1679px) {
+  @media screen and (min-width: 1100px) {
+    .plate-strip > .plate[data-variant="strip"] { grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); grid-template-areas: "claim claim" "bar bar" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto 1fr auto auto; }
+    .plate-strip > .plate[data-variant="strip"] > .plate-detail { padding: 0 0 0 20px; border-top: 0; border-left: 1px solid var(--rule); }
+    .plate-strip > .plate[data-variant="strip"].is-live > .plate-view[data-view="table"] { grid-row: plot-start / under-end; }
+  }
+}
 @container (min-width: 2400px) { .plate-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media screen and (min-width: 1100px) { .plate-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (pointer: fine) { .plate .segmented label { min-height: 32px; } }
@@ -997,6 +1034,11 @@ main > .panel + .panel { border-top: 0; }
    back into the size it was measured from. */
 /* A part only a script can run (data-js) is hidden until theme.js marks the page as scripted, before it paints, so it never appears late (ai-08). */
 html:not(.js) [data-js] { display: none !important; }
+/* The first paint is the live one (the R2 critics' CLS, 0.12 to 0.55 on every page with plates). build_plates.py writes the live arrangement: the switch in the
+   bar, the key under the plot, the settings shown under the js class, the evidence line, the readout's length. Until plate.js starts a plate, the js class
+   hides the one part it hides, the Table under the window; without scripts and on paper the Table stands. A face guesses its variant above, as plate.js will. */
+@media screen { html.js .plate:not(.is-live) > .plate-view[data-view="table"] { display: none; } }
+html[data-address="none"] .plate-link-note { display: none; } /* the Briefing keeps nothing in the address; plate.js removes it there */
 .plate li::marker { color: var(--atni-text-muted); }
 .plate .reading { color: var(--atni-text-heading); }
 /* The Reading holds six lines whatever it says, so the actions under it never move (resource-use-02, explorer-03). The sentence with the figure, which plate.js
@@ -1029,11 +1071,12 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-views button[aria-pressed="true"] { position: relative; color: var(--atni-text-heading); background: var(--control-on); border-color: var(--atni-text-heading); }
 .plate-views button:focus-visible { position: relative; z-index: 1; }
 .plate-switch { flex: 1 1 24rem; min-width: 0; }
-.plate-switch .segmented { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; }
+.plate-switch .segmented { display: flex; flex-wrap: wrap; gap: 0; }
 .plate-switch legend { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .plate-switch .segmented label { display: flex; }
 .plate-switch .segmented label + label { margin-left: -1px; }
-.plate-switch .segmented span { width: 100%; text-align: center; }
+.plate-switch .segmented label { flex: 0 1 auto; max-width: 16rem; }
+.plate-switch .segmented span { padding: 0.5rem 1rem; }
 /* The axis caption and the key, under the plot. */
 .plate-under { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 24px; padding-top: 8px; }
 .plate-under > .caption { max-width: none; font-size: 0.875rem; }
@@ -1080,6 +1123,7 @@ html:not(.js) [data-js] { display: none !important; }
 .slider input[aria-invalid="true"] { border-color: var(--atni-text-heading); border-style: dashed; }
 .slider-stops { grid-column: 1; display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
 .slider-presets { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.slider-presets button[aria-pressed="true"] { position: relative; background: var(--control-on); box-shadow: inset 0 0 0 1px var(--atni-text-heading); } /* the preset the value matches */
 .slider-presets button { min-height: 32px; padding: 4px 8px; font-family: var(--body); font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--tag-bg); border: 0; border-radius: 0; cursor: pointer; }
 .slider.is-typed { grid-template-columns: minmax(0, 9rem); }
 
@@ -1087,9 +1131,9 @@ html:not(.js) [data-js] { display: none !important; }
    a setting moves, Back to the starting point; the privacy note. A lead's window is the one raised surface, its inset line at the top (a 1px ring in light);
    a repeater's or a strip's is flat behind a 1px rule; a face's is the agenda's to raise. */
 .plate-detail { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 20px 20px 16px; container-type: inline-size; }
-.plate:is([data-variant="lead"], [data-variant="atlas"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-detail { background: var(--window); box-shadow: var(--window-ring); }
+.plate:is([data-variant="lead"], [data-variant="atlas"], :not([data-variant]):not(.plate:not([data-variant]) ~ *):not(:where(.agenda-faces) *)) > .plate-detail { background: var(--window); box-shadow: var(--window-ring); }
 .plate:is([data-variant="repeater"], [data-variant="strip"], .plate:not([data-variant]) ~ .plate:not([data-variant])) > .plate-detail { padding: 16px 0 0; border-top: 1px solid var(--rule); }
-.plate[data-variant="face"] > .plate-detail { padding: 0 0 0 20px; }
+.plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-detail { padding: 0 0 0 20px; }
 @media screen and (min-width: 1100px) { .plate:is([data-variant="repeater"], .plate:not([data-variant]) ~ .plate:not([data-variant])) > .plate-detail { padding: 0 0 0 20px; border-top: 0; border-left: 1px solid var(--rule); } }
 .plate-detail > .readout { margin: 0; }
 .plate-view[data-view="table"] > .label { margin: 0 0 8px; }
@@ -1106,6 +1150,7 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-evidence { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--rule); }
 .plate-evidence:empty { display: none; }
 .plate-evidence-line { display: flex; flex-wrap: wrap; gap: 2px 16px; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.plate-evidence-line::before { content: "This reading:"; margin-right: -8px; }
 .plate-evidence-count { display: inline-flex; align-items: center; gap: 6px; }
 .st { display: inline-block; flex: none; box-sizing: border-box; width: 10px; height: 10px; border: 1.5px solid currentColor; vertical-align: -1px; }
 .st-v { background: currentColor; }
@@ -1120,6 +1165,7 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-collar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--rule); font-size: 0.875rem; }
 .plate-collar-sources { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; min-width: 0; }
 .plate-collar .plate-source-line { max-width: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.plate-collar .plate-source-line::before { content: "This plate: "; }
 .plate-sources-link a { font-family: var(--display); font-weight: 500; }
 .plate-out { display: flex; flex-wrap: wrap; gap: 0 24px; }
 .plate-out :is(button, a), .plate-more-rows { display: inline-flex; align-items: center; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.875rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.25em; cursor: pointer; }
@@ -1134,6 +1180,9 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-segments { display: flex; gap: 2px; height: 12px; }
 .plate-seg { flex: 0 1 0; min-width: 2px; background: var(--series-context); }
 .plate-seg.is-hollow { background: none; border: 1.5px solid var(--series-context); }
+:is(.plate-seg, .plate-square).is-part { background: var(--part-2); border: 0; }
+:is(.plate-seg, .plate-square).is-part.is-p1 { background: var(--part-1); }
+:is(.plate-seg, .plate-square).is-part.is-p3 { background: none; border: 2px solid var(--part-2); }
 .plate-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 /* A receipt chip (the Explorer's and a pull figure's; a plate's own are text buttons, above). Open, it is heading ink and a 2px underline, never an orange slab (data-centers-24). */
 .receipt {
@@ -1162,6 +1211,7 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-receipt { display: grid; gap: 12px; padding-top: 12px; border-top: 1px solid var(--rule); overflow-wrap: anywhere; } /* a filing's long field name must not widen the zone */
 .plate-receipt:not([hidden]) { animation: plate-enter 180ms var(--ease); }
 .plate-receipt-item { display: grid; gap: 2px; }
+.plate-receipt-item.is-again { margin-top: -8px; } /* another claim from the document above: one line under it */
 .plate-receipt .plate-source-title { font-family: var(--body); font-weight: 500; font-size: 0.9375rem; line-height: 1.35; }
 .plate-receipt .plate-source-title a { color: var(--atni-text-heading); }
 .plate-receipt .caption { font-size: 0.875rem; }
@@ -1189,6 +1239,8 @@ table.plate-table :is(th, td) { padding: 6px 8px; font-size: 0.8125rem; }
 @media screen { .plate-table tr.is-more { display: none; } }
 .plate-table tr[tabindex]:focus-visible > :first-child { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
 .claim-ref { white-space: nowrap; }
+.plate-table .claim-ref { white-space: normal; }
+.plate-table .claim-ref > a { white-space: nowrap; }
 .claim-ref .st { margin-right: 4px; }
 .plate-count { display: inline; margin: 0 16px 0 0; font-size: 0.875rem; }
 .plate-also { margin: 12px 0 0; padding: 0; list-style: none; }
@@ -1274,7 +1326,7 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .ladder[data-form="square"] { padding-top: 24px; } /* room for the needle's label */
 .ladder.has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 28px; }
 .ladder:is([data-form="square"], :not(.no-needle)).has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 48px; } /* the needle's name on the top line, the tick's on the next */
-.ladder-rows { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(var(--row-min), auto); margin: 0 0 24px; padding: 0; list-style: none; }
+.ladder-rows { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(var(--row-min), auto); row-gap: 0.5rem; margin: 0 0 24px; padding: 0; list-style: none; }
 .ladder-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; margin: 0; cursor: pointer; }
 .ladder-label { font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.2; color: var(--atni-text-heading); }
 .ladder-tag { display: block; margin-top: 2px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-secondary); }
@@ -1454,6 +1506,10 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .countdown-scale { border-bottom: 1px solid var(--baseline); }
 .countdown-scale > i { position: absolute; bottom: 0; left: calc(var(--t) * 100%); width: 1px; height: 6px; background: var(--grid); }
 .countdown-month { position: absolute; bottom: 8px; left: calc(var(--t) * 100%); font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); transform: translateX(-50%); }
+.countdown-month.is-near { visibility: hidden; }
+/* Within 32px of a ruler's end (plate.js near-start, near-end) the needle and its name stand where that end's label would, so the label gives way, on an
+   instrument's per-row ends as on a ladder's axis (data-centers-09; data-centers critic 10). */
+.plate-plot.near-start :is(.instrument-ends > :first-child, .ladder-axis > :first-child), .plate-plot.near-end :is(.instrument-ends > :last-child, .ladder-axis > :last-child) { visibility: hidden; }
 .countdown-rows, .countdown-names { margin: 0; padding: 0; list-style: none; }
 .countdown-row { align-items: center; min-height: 3.25rem; border-bottom: 1px solid var(--rule); cursor: pointer; }
 .countdown-when { display: flex; flex-direction: column; justify-content: center; margin: 0; padding-block: 6px; }
@@ -1603,6 +1659,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bench-body { min-width: 0; }
 .bench-reading { max-width: var(--measure-wide); margin: 0 0 4px; }
 .bench-link { margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; }
+.bench-claims { position: relative; z-index: 1; margin: 0 0 4px; font-size: 0.875rem; color: var(--atni-text-secondary); } /* above a row-wide link, so each claim opens its record */
 
 /* The starting point: where a moved figure stood at the defaults, a hollow 1px mark in context ink, never orange, behind the figure's own mark. Its name stands
    at its end on the selected row only, and the Reading gives its figure. A ruler of squares gets a square, a bar ruler and the Explorer's Wall the bar's outline,
@@ -1661,8 +1718,11 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .plate-detail { padding: 0; background: none; box-shadow: none; border: 0; }
   .plate-detail .reading { min-height: 0; }
   .plate, .tier-grid, .evidence-key, .tier-stair, .strip { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* marks are backgrounds */
-  .plate-claim, .plate-plot, .plate-under, .plate-detail { break-inside: avoid; }
-  .plate-claim, .plate-plot { break-after: avoid; } /* the title, the plot, and the Reading stay together */
+  .plate-plot, .plate-under, .plate-detail > :is(.readout, .reading) { break-inside: avoid; }
+  .plate-claim, .plate-plot, .plate-under, .plate-detail > .readout { break-after: avoid; } /* the title, the plot, its key, and the readout with its Reading stay together */
+  .plate-plot { overflow: clip; } /* a needle or a grid line never crosses onto the next sheet */
+  .plate-collar { break-before: avoid; }
+  .plate-facts .is-also { display: none; } /* they print once, with their claims, under the Table */
   .plate-plot { min-height: 16rem; }
   /* A drawing keeps its own proportions at the sheet's full width, so no letterbox opens above it. */
   .plate-svg { position: static; width: 100%; height: auto; }
@@ -1924,6 +1984,8 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
   .table-scroll, .table-wrap { overflow: visible; }
   h2, h3 { break-after: avoid; }
   .button { min-height: 0; padding: 0; border: 0; background: none; color: var(--atni-text-link); text-decoration: underline; }
+  a.paper { min-height: 0; padding: 0; border: 0; background: none; color: var(--atni-text-heading); text-decoration: underline; } /* plain ink on paper (home critic 8) */
+  button.paper { display: none; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; overflow-wrap: anywhere; }
   .card h3 a::after { content: none; }
   .entry-summary.is-clamped { display: block; overflow: visible; }

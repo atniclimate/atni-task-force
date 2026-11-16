@@ -4,7 +4,7 @@
  "cards": {
   "ai-same-hour": {
    "file": "assets/img/cards/ai-same-hour.png",
-   "alt": "An hour of chat and an hour of video overlap: about 15 and 14 Wh, 12 Wh of each your own screen and router",
+   "alt": "An hour of chat and an hour of video overlap, at about 15 and 14 Wh; 12 Wh of each is your own screen and router",
    "foot": "Modeled, 11/2026; sources checked 11/04/2026. Source: ATNI Energy Task Forces model\n46 claims, 29 verified, 17 partly verified: fp-001, fp-017, fp-012, fp-021 and more",
    "lead": [
     "fp-001",
