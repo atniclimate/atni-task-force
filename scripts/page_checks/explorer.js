@@ -98,7 +98,7 @@ function staticRules() {
   ok(!/font-size: 0\.(75|8125)rem/.test(css), 'nothing on a first screen is under the floor');
   ok(!/--atni-color-chart|--stage-|#2F7FC1/i.test(css), 'the Wall carries no chromatic ink but the selection');
   ok(/@container \(max-width: 120px\) \{ \.wall-axis-left span \{ display: none; \}/.test(css), 'a left side under 120px drops its ticks, by a container query that needs no script');
-  ok(!/class="plate-sources"|id="src-/.test(html) && /<template id="x-notes">/.test(html),'every receipt prints once, on the Sources page; the page keeps the row notes only for the window');
+  ok(!/class="plate-sources"|id="src-/.test(html) && !/id="x-notes"/.test(html) && /"notes": ?\{"note-use-screen"/.test(html), 'every receipt prints once, on the Sources page; the page keeps the row notes only as data for the window (explorer-19)');
   ok(!/\.section-strip > \.wrap \{ flex-wrap: nowrap/.test(css), 'on a phone the Settings button wraps under the tabs and never lies over them');
   ok(/prefers-reduced-motion/.test(read('site/assets/css/site.css')), 'reduced motion takes transitions to zero');
   const site = read('site/assets/css/site.css');
@@ -133,10 +133,14 @@ function noScript() {
   ok(/These are modeled estimates, not measurements/.test(text(brief.querySelector('.brief-lead'))) && /open-book model checked against published figures/.test(text(brief.querySelector('.brief-lead'))), 'the brief says modeled, and names the model as the owner ruled');
   ok(!document.querySelector('.page-band-figures, .x-band, .x-facts') && !brief.querySelector('a[href^="sources/#src-"]'), 'no figures or claim ids in the opener (explorer-28)');
   ok(/Sources checked/.test(text(brief.querySelector('.brief-meta'))) && brief.querySelector('.brief-meta a[data-sources][href="sources/"]') && brief.querySelector('.brief-meta a[href="sources/#method"]'), 'the brief links the Sources page and the method');
-  ok(waits(brief.querySelector('.x-presets')) && brief.querySelectorAll('.x-presets [data-preset-x]').length === 2, 'two starting points, which wait on a script');
   const bar = document.getElementById('scenario');
-  ok(bar && !bar.closest('[role="tabpanel"], section.panel') && /Ranges are spreads, not confidence intervals\./.test(text(bar)), 'the scenario bar stands on every tab and says what a range is');
+  ok(!brief.querySelector('.x-presets') && waits(bar.querySelector('.x-presets')) && bar.querySelectorAll('.x-presets [data-preset-x]').length === 2, 'two starting points, at the bar\'s left end (a scenario choice), which wait on a script');
+  ok(bar && !bar.closest('[role="tabpanel"], section.panel'), 'the scenario bar stands on every tab');
+  ok([...document.querySelectorAll('.wall-key-spread, .x-ruler + .wall-key')].every((n) => /Spread, not a confidence interval\. To test a limit/.test(text(n))) && document.querySelectorAll('.wall-key-spread').length > 10, 'every plot with spreads says what a spread is, beside its key, so the bar is one line');
   ok(waits(bar.querySelector('.x-measure')) && waits(bar.querySelector('[data-open-settings]')), 'its measure and Fine-tune wait on a script');
+  ok(['gf-001', 'gf-007', 'gf-062'].every((id) => src.querySelector(`#project-scale a[href="#src-${id}"]`)) && [...document.querySelectorAll('#p-grid option:not([value=""])')].every((o) => o.dataset.claims),
+    'every feed the proposal lists carries its grid factor\'s claims, and its Sources section lists them (explorer-03 hard line)');
+  ok([...document.querySelectorAll('#your-use tfoot [data-factors] a[data-claim]')].map((a) => a.dataset.claim).join() === 'gf-001,gf-007,gf-008,gf-040,gf-037,tr-009,tr-028,fp-006,tr-005', 'the week\'s Table names the grid and water factors behind its CO2e and water');
   ok(/Nothing you type or choose leaves this page\. GitHub, which hosts the site, logs each visitor's IP address\./.test(text(document.getElementById('all-sources'))), 'the page says nothing typed or chosen leaves it, and what GitHub logs, on every tab');
   ok(!/process model/i.test(text(document.body)), 'and the old name is gone from the page');
   // Method moves to the Sources page (DIRECTION-R2, the Explorer; explorer-23).
@@ -160,15 +164,17 @@ function noScript() {
   ok(/assumes, with no source, that a cloud seat's price includes sign-in, permissions, and access control, which a local suite has to provide itself/.test(admin) && /does not say how much of the 14 hours/.test(admin) && !/By 14 the local/.test(admin),
     'and say what a seat includes (owner ruling 23, 11/05/2026), as an assumption, with 14 not read as the tie');
   ok(!/Potawatomi|Data Holdings/.test(html), 'the facility is anonymized');
-  ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('x-notes').content.getElementById('note-where-node'))), 'and its figure attributed to its public source');
+  const pageData = JSON.parse(document.getElementById('explorer-data').textContent);
+  ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(pageData.notes['note-where-node'].l.join(' ')), 'and its figure attributed to its public source');
   ok(/Partly verified\. Limit: One operator/.test(receipt('src-lf-059')) && /sustainability report/i.test(receipt('src-lf-059')), 'with its receipt, status, and limit');
   ok(document.querySelectorAll('[data-row]').length > 80, 'rows print');
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) ok(text(r.querySelector('.ladder-value')).length > 0, `${r.dataset.row} shows a value without scripts`);
   ok(document.querySelectorAll('.wall-row .w:not([hidden])').length > 40, 'the Wall is drawn without scripts');
   ok(document.querySelector('#your-use .wall-track .w-rou:not([hidden])'), 'the router sits left of the wall');
-  eq([...document.querySelectorAll('#your-use .wall-key li')].map(text).join('|'), 'Your device|Home router|Network|Data center or node|Spread, not a confidence interval', 'the key sets each swatch beside its own word (explorer-27)');
+  eq([...document.querySelectorAll('#your-use .wall-key li')].map(text).join('|'), 'Your side: device, router|Beyond the wall: network, data center or node|Spread, not a confidence interval. To test a limit, such as a budget or a line\'s capacity, read the high end.', 'the key sets each swatch beside its own word, by side (explorer-26, -27)');
   eq([...document.querySelectorAll('#your-use .wall-key li .plate-square')].map((c) => c.className.replace('plate-square w-key-', '')).join(), 'dev,rou,net,dc', 'one swatch to a word');
-  ok(/^The wall in the middle is zero\./.test(text(document.querySelector('#your-use .wall-words'))), 'and says once how to read the Wall (explorer-34)');
+  ok(/^The wall is zero; one scale runs out both ways\.$/.test(text(document.querySelector('#your-use .wall-words'))) && document.querySelector('#your-use .wall-words').nextElementSibling.matches('.wall-rows'), 'and says once how to read the Wall, over its first row (explorer-34)');
+  ok(!/wall-key[^{]*\{[^}]*--w-on/.test(read('site/assets/css/explorer.css')), 'the key is never repainted by the selection (explorer-26)');
   eq([...document.querySelectorAll('#your-use .wall-axis .wall-zero')].map(text).join(), '0', 'its zero is printed once, at the wall (explorer-16)');
   ok(!/your side/.test(text(document.querySelector('[data-board="where.prompt"] .wall-axis'))), 'and no left tick names its side again');
   ok(document.querySelectorAll('tr[data-tr]').length > 80, 'tables hold every row');
@@ -236,9 +242,12 @@ function noScript() {
   eq(text(row(document, 'catalog.video_hour').querySelector('.ladder-label .ladder-tag')), 'platform revenue, not a cost', 'revenue says so on the row');
   ok(/^\S+ Wh \(\S+ to \S+\)$/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-value'))), 'the value cell keeps the figure and its spread');
   ok(!row(document, 'use.chat').querySelector('.ladder-label .ladder-tag'), 'Your Use has no such tag');
-  // Levers as dumbbells, in words (explorer-18): after as a share of before, then the two figures.
-  eq([...document.querySelectorAll('#levers .plate-plot .wall-key li')].map(text).join('|'), 'Before|After, at the same setting', 'the key holds the two marks');
-  eq(text(document.querySelector('#levers .plate-plot .x-lever-note')), 'Each line runs from before to after: left is a saving, right a cost. Each row has its own ruler from zero.', 'the rest is the ruler\'s caption');
+  // Levers on one scale (explorer-18): after as a share of before, each a bar from the before line at 100 to after, then the two figures in words.
+  eq([...document.querySelectorAll('#levers .plate-plot .wall-key li')].map(text).join('|'), 'Before, 100 percent|After, a saving|After, more than before', 'the key holds the line and the two bars');
+  eq(text(document.querySelector('#levers .plate-plot .x-lever-note')), 'One scale for every lever, in percent of before: each bar runs from before, the line at 100, to after. A bar left of the line is a saving; an outlined bar right of it is more than before.', 'the rest is the ruler\'s caption');
+  eq([...document.querySelectorAll('#levers .ladder-axis span')].map(text).join(), '0,25,50,75,100,125', 'one axis for every lever');
+  ok(document.querySelectorAll('#levers .ladder-grid i.is-zero').length === 1 && document.querySelectorAll('#levers .x-lever .ladder-mark').length === 0, 'with the before line once, and no per-row ruler or dumbbell');
+  ok(row(document, 'lever.cooling').classList.contains('is-up') && row(document, 'lever.cooling').querySelector('.ladder-bar.is-hollow'), 'a lever that adds is outlined past the line');
   ok(document.querySelector('.x-lever-note').classList.contains('caption'), 'set as a caption');
   ok(/^\S+ percent of before \(\S+ \S+ to \S+ \S+\)$/.test(text(row(document, 'lever.route_small').querySelector('.ladder-value'))), 'a lever reads as a share of before, from one figure to the other');
   ok(!/after over before/.test(text(document.getElementById('savings'))), 'and never as after over before');
@@ -327,7 +336,9 @@ async function cases() {
       const x = V.run.crossover(k, ['arch', 'E', 'payback']);
       for (const [mine, want] of [[x.value, value], [x.low, low], [x.high, high]]) { if (want === null) eq(mine, null, `case ${i} payback ${k}`); else near(mine, want, `case ${i} payback ${k}`); }
       eq(x.never.length, never, `case ${i} payback ${k} never`);
-      eq(text(document.querySelector(`[data-payback="${k}"]`)), ex.words(V.crossWords(x, 'years')), `case ${i} payback ${k} prints`);
+      for (const n of document.querySelectorAll(`[data-payback="${k}"]`)) { // what is shown is worked out; a closed tab or comparison, when it opens (explorer-19)
+        if (!n.closest('[role="tabpanel"]')?.hidden && !n.closest('[data-group][hidden]')) eq(text(n), ex.words(V.crossWords(x, 'years')), `case ${i} payback ${k} prints`);
+      }
     }
     for (const k of catalogKeys) {
       const tr = document.querySelector(`#catalog tr[data-tr="${k}"]`);
@@ -572,11 +583,12 @@ async function behavior() {
   ok(/coding, 1 hour/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'the Reading follows');
   ok(/Modeled, not measured/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'the Reading says modeled');
   // Under the Reading, the kit's evidence: the selected row's claims counted by status, then a chip per publisher (explorer-02, -22); no Sources view.
-  const notes = document.getElementById('x-notes').content;
-  const rowClaims = (key) => [...notes.getElementById(ex.data.rows[key].note).querySelectorAll('.receipt')].map(claimOf);
+  // A row's claims: its note's own, then the grid and water factors its CO2e and water read (explorer-03 hard line).
+  const rowClaims = (key) => { const f = ex.view.factorClaims(key); return [...new Set([...ex.data.notes[ex.data.rows[key].note].c, ...f.g, ...f.ml])]; };
   const useChips = [...document.querySelectorAll('[data-plate-x="use"] .plate-evidence .receipt')];
   ok(useChips.length > 0 && useChips.every((c) => c.tagName === 'BUTTON' && c.closest('.plate-detail')), 'the selected row\'s claims stand under its Reading, as chips');
   eq(useChips.flatMap((c) => c.dataset.claims.split(' ')).sort().join(), [...new Set(rowClaims('use.coding'))].sort().join(), 'each chip holds that row\'s claims, by publisher');
+  ok(rowClaims('use.coding').includes('gf-007') && rowClaims('use.screen').includes('gf-001') && !rowClaims('use.screen').includes('gf-007'), 'and a row\'s CO2e reaches the claim of its own grid factor, and no other\'s');
   const counts = text(document.querySelector('[data-plate-x="use"] .plate-evidence-line'));
   const partlyHere = rowClaims('use.coding').filter((id) => ex.data.receipts[id].status === 'partly').length;
   eq(counts, [rowClaims('use.coding').length - partlyHere && `${rowClaims('use.coding').length - partlyHere} verified`, partlyHere && `${partlyHere} partly verified`].filter(Boolean).join(' '), 'one line counts them by status');
@@ -678,7 +690,11 @@ async function behavior() {
   ok(!OVERFLOW.test(text(document.body)), 'and nothing on the page overflowed');
   fire(window, hours, 'change');
   eq(hours.value, '168', 'leaving the field takes the nearer end');
-  ok(hours.getAttribute('aria-invalid') === 'true' && /^Screen hours takes a number from 0 to 168, so 168 is used\.$/.test(text(document.querySelector('[data-why]'))) && /168 hours/.test(text(screen)), 'and says so, as the kit\'s typed figures do');
+  const clamp = document.getElementById('clamp-use');
+  ok(!hours.hasAttribute('aria-invalid') && !clamp.hidden && /^Screen hours takes a number from 0 to 168, so 168 is used\.$/.test(text(clamp)) && hours.getAttribute('aria-describedby') === 'clamp-use' && /168 hours/.test(text(screen)),
+    'and says so in a line the field is described by, with the good value no longer marked invalid (explorer-10)');
+  fire(window, document.getElementById('f-chat'), 'focusin');
+  ok(!clamp.hidden && /so 168 is used/.test(text(clamp)), 'the line stays when focus moves to the next field');
   setField(window, hours, -3);
   fire(window, hours, 'change');
   eq(`${hours.value} ${ex.state.fields.screen}`, '0 0', 'below the floor, the floor');
@@ -904,7 +920,7 @@ async function behavior() {
   eq(`${pf('mw').value} ${pf('lf').value} ${pf('wue').value} ${pf('load').value}`, `125 0.8 0.36 ${22000 * 8760}`, 'the example fills megawatts, load factor, the operator average, and the load');
   eq(pf('grid').value, '', 'and no feed');
   eq(text(document.querySelector('[data-po="mwh"]')), '876,000 MWh', 'the year prints');
-  eq(`${text(document.querySelector('[data-po-poster]'))} ${text(document.querySelector('[data-po-unit]'))}`, '876,000 MWh', 'on the poster');
+  eq(`${text(document.querySelector('[data-po-poster]'))} ${text(document.querySelector('[data-po-unit]'))}`, '0.45 percent', 'the poster leads with the share, as the answer does (explorer-20)');
   eq(text(document.querySelector('[data-po="water"]')), '315,000,000 liters', 'the water');
   eq(text(document.querySelector('[data-po="co2"]')), 'Choose a feed', 'CO2e waits for a feed');
   ok(document.querySelector('[data-po="co2"]').classList.contains('is-ask') && !document.querySelector('[data-po="mwh"]').classList.contains('is-ask'), 'and the prompt reads as words, not at a figure\'s size');
@@ -937,8 +953,7 @@ async function behavior() {
   eq(text(document.querySelector('[data-po="water"]')), '315,000,000 liters', 'site liters');
   pf('grid').value = '350';
   fire(window, pf('grid'), 'input');
-  eq(text(document.querySelector('[data-po="co2"]')), '307,000 tonnes CO2e', 'tonnes');
-  setField(window, pf('load'), 2000000);
+  eq(text(document.querySelector('[data-po="co2"]')), '307,000 tonnes CO2e (gf-007 verified)', 'tonnes, with the chosen feed\'s claim and status (explorer-03 hard line)');  setField(window, pf('load'), 2000000);
   eq(text(document.querySelector('[data-po="share"]')), '44 percent', 'share of the entered load');
   ok(/^100 MW at a load factor of 1 uses 876,000 MWh a year, 44 percent of the load entered\.$/.test(text(document.querySelector('[data-answer-x="proposal"]'))), 'the answer follows the fields, and no longer says example');
   const tryExample = document.querySelector('[data-plate-x="project"] [data-example]');

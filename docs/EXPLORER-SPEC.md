@@ -23,17 +23,27 @@ confidence bands; a line through the back-test; a total water figure anywhere; a
 ## 2. Page structure (R2, 11/16/2026: DIRECTION-R2, the Explorer; the old nine noun tabs are history)
 
 The brief (name line, h1 "Run the numbers for your own use, an office or a proposed data center", a two-sentence lead, Sources checked, Sources for this page,
-How the model works) holds two starting points as pressed buttons, "One person on a phone" and "A 50-seat Tribal office" (who is counted and the device). No
-figure or claim id stands in the opener. Then the tab strip, four question tabs (`a > span.tab-name + span.tab-q`) and the Sources link at its end; then the
-scenario bar, which does not stick: one measure for every tab (Energy, CO2e, Water, Price), the settings in a line, what a range is, and Fine-tune. Each tab
-opens with its question as an h2 and an answer at the settings shown (`V.answer` in resource-model.js; the proposal's from its fields), then its plates: the
-first a lead, the rest repeaters (the kit's variants). Prose that explains a plate stays in a `disclosure-grid` under it.
+How the model works). No figure or claim id stands in the opener. Then the tab strip, four question tabs (`a > span.tab-name + span.tab-q`) and the Sources link
+at its end; then the scenario bar, which does not stick, one row of controls from 1100px: the two starting points as pressed buttons, "One person on a phone"
+and "A 50-seat Tribal office" (a scenario choice, so they stand in the bar, fix round 11/16/2026); one measure for every tab (Energy, CO2e, Water, Price); the
+settings in plain words, naming only device, connection and the two grids plus any setting a reader moved (`D.bar`; print, the CSV and Copy name all of `D.line`);
+and Fine-tune. On A proposal the settings line gives way to "This tab uses only the fields below, and shows every measure at once." What a range is now stands
+beside each plot's key. Each tab opens with its question as an h2 and an answer at the settings shown (`V.answer` in resource-model.js; the proposal's from its
+fields), then its plates: the first a lead, the rest repeaters (the kit's variants). Prose that explains a plate stays in a `disclosure-grid` under it.
+
+**Fix round (11/16/2026), departures with their reasons.** A lead keeps its three columns (claim, plot, window) from a 1180px container, not the kit's 1360px,
+so at 1280 the plot and readout start on the first screen. Catalog, Architectures and Crossovers set their settings at the head of the window column, so the plot
+starts under the title with no empty band. The window's readout is the page-wide measure's figure, with the other three measures small beside it (energy among
+them), so the plot and the window never disagree. CO2e and water reach the claims of the factors they are multiplied by (`V.factorClaims`, from
+`D.factor_claims`, which `build_explorer.py` reads from the model's parameters): in the selected row's chips, in each Table's foot, in the CSV, and, for a
+proposal, beside its tonnes for the chosen feed. The selection on the Wall is one orange, filled on the main parts and a hollow 2px outline on the lighter ones,
+in both themes; the key keeps the grey steps, by side, and is never repainted. Savings selects the row its answer names until a reader chooses.
 
 | Tab, panel | Question | Plates, in order (element id; `data-plate-x`) |
 |---|---|---|
 | Your use `#use` | What does your use cost? | `#your-use` (use), the Wall of your week; `#catalog` (catalog), by the hour and by the unit; `#not-the-building` (building), the waffles and the place strip |
 | Where it runs `#where` | Where should computing run? | `#where-it-runs` (where), one workload by place; `#architectures` (arch), five comparisons, the custody setting in its bar, what the rule leaves out and what wins, loses, and reverses it open under it, D's rows under three heads; `#crossovers` (cross), a count a year on one log ruler per row, its breakeven a square, the count also said a day |
-| Savings `#savings` | What actually saves energy? | `#levers` (lever), dumbbells: hollow before, filled after, an arrowhead at after, "N percent of before (a to b)" |
+| Savings `#savings` | What actually saves energy? | `#levers` (lever), every lever on one scale, 0 to 125 percent of before: a bar from the before line at 100 to after, outlined past the line where after is more; "N percent of before (a to b)" |
 | A proposal `#proposal` | What would a proposed data center draw? | `#project-scale` (project), opening on the Data Centers example, said to be an illustration; "Clear the fields" takes it blank |
 
 Each plate is the kit's: a claim zone, a bar with Chart and Table (two pressed buttons; the Table takes the plot's and the window's place), the plot, the window
@@ -41,7 +51,8 @@ Each plate is the kit's: a claim zone, a bar with Chart and Table (two pressed b
 starting point once a choice moves, what moves it most, how it is modeled), the Table (every row, each with its claims, a status square and word), and the collar
 (the plate's sources line, All sources for this plate at `sources/#{id}`, Print this plate, Download CSV). A hover outlines a row and changes nothing. The Wall
 prints its zero once at the wall, its left ticks as bare figures, arrows on the head's two sides, the needle's figure over the plot, and one sentence on how to
-read it; each key swatch stands beside its own word. Every row's note rides in `template#x-notes` for the window and prints on the Sources page.
+read it, under the head and over the first row; each key swatch stands beside its own word. The track stops at 48rem, so a value stays near its bar at 2560.
+Every row's note rides in the data block (`D.notes`), built as text for the selected row only, and prints on the Sources page.
 
 **Fine-tune** is a modal `<dialog>` on the left (site.css `dialog.drawer-left`), opened from the bar: Close in its head; groups Your Side, Rates, Grids, Money,
 Node Already On, Files (outputs.csv, the scenario file); Your Own Readings; Illustrative Carbon Damage; Done (paper) and Reset settings in its foot. The plots

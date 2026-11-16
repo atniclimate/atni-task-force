@@ -1020,17 +1020,28 @@ function Views(D) {
     const span = m === 'ml' ? '' : `, ${plainFig(top.at_low * k, m)} to ${plainFig(top.at_high * k, m)}`;
     return top.type === 'setting' ? `${name}: ${D.sel[top.name].say[top.low_option]} to ${D.sel[top.name].say[top.high_option]}${span}` : `${name}${span}`;
   };
+  // The window's readout is the page-wide measure's figure (explorer-06, -11); the small figures beside it are the other three, so the plot and the window agree.
+  const bare = (tag) => (/^\(.*\)$/.test(tag) ? tag.slice(1, -1) : tag);
+  const spreadWords = (key, m) => {
+    if (m === 'ml') {
+      const parts = V.water(key).map((p) => ({ ...figure(p.v, p.lo, p.hi, 'ml'), place: p.place })).filter((f) => f.tag);
+      return parts.length ? `Spread, not a confidence interval: ${parts.map((f) => `${bare(f.tag)} ${f.unit} (${basinWord(f.place)})`).join('; ')}.` : 'No spread on this row\'s water at these settings.';
+    }
+    const f = figure(val(key, m), ...V.spread(key, m), m);
+    return f.tag ? `Spread, not a confidence interval: ${bare(f.tag)}${f.unit ? ` ${f.unit}` : ''}.` : `No spread on this row's ${D.words.measure[m]} at these settings.`;
+  };
   V.detailOf = (key, m = 'wh') => {
     const wh = V.cell(key, 'wh');
     const price = V.cell(key, 'usd');
     const g = V.cell(key, 'g');
+    const shown = V.cell(key, m);
     const water = V.water(key);
     const parts = V.parts(key, 'wh');
     const by = row(key).by || {};
-    const wall = TAGS.includes('dev') && row(key).by?.dev && V.S.settings.device === 'phone' && !key.startsWith('where.') && !key.startsWith('arch.') ? parts.dev * (1 + V.p.charger_overhead) : null;
-    const spread = wh.tag ? `Spread, not a confidence interval: ${wh.tag.slice(1, -1)} ${wh.unit}.` : 'No spread on this row\'s energy at these settings.';
+    const wall = m === 'wh' && TAGS.includes('dev') && row(key).by?.dev && V.S.settings.device === 'phone' && !key.startsWith('where.') && !key.startsWith('arch.') ? parts.dev * (1 + V.p.charger_overhead) : null;
+    const spread = spreadWords(key, m);
     return {
-      value: wh.num, unit: wh.unit, qual: [D.rows[key].unit, wh.tag.slice(1, -1)].filter(Boolean).join(', '),
+      value: shown.num, unit: shown.unit, qual: [D.rows[key].unit, bare(shown.tag)].filter(Boolean).join(', '), energy: wh,
       price: price.num, priceTag: blank(val(key, 'usd')) ? D.rows[key].pn || D.words.priceLong.none : `${D.rows[key].pt || D.words.priceLong[V.basis(key)]}, ${D.price_date}`,
       co2: g, co2Tag: `${V.grids(key)}, location-based`,
       water: water.map((part) => ({ ...figure(part.v, null, null, 'ml'), tag: V.basin(part.place) })),
@@ -1090,17 +1101,55 @@ function Views(D) {
       if (m === 'ml') return w.noWater ? `${head}: no water figure, because one feed has none in the record.` : `${head}: water ${plainFig(w.water.home, 'ml')} in the home basin and ${plainFig(w.water.cloud, 'ml')} in the data center's, never summed.`;
       return `${head}: ${usd(w.list)} of work at API list${w.seat ? `, ${usd(w.seat)} at seat and storage list` : ''}, and ${usd(w.earned)} that platforms earn in those hours, which is revenue, not a cost.`;
     }
-    if (tab === 'where') {
+    if (tab === 'where') { // read off the lead plate beside it, in the measure shown; the crossover, from Crossovers, is counted in energy and said so (explorer-36)
+      const w = V.S.opts.workload;
+      const say = (key) => { const f = V.cell(key, m); return m === 'usd' ? (blank(val(key, 'usd')) ? 'no price' : `${f.num} at ${D.rows[key].pt || D.words.price[V.basis(key)]}`) : [f.num, f.unit].filter(Boolean).join(' '); };
+      const [cloud, node] = [`where.${w}.hyper`, `where.${w}.node`];
+      const head = `For ${(D.boards[`where.${w}`].label || 'one unit of the work').toLowerCase()}, ${D.rows[cloud].label.toLowerCase()}: ${say(cloud)}; ${D.rows[node].label.toLowerCase()}: ${say(node)}.`;
       const c = V.run.crossover('prompts_energy_vs_hyper');
-      return blank(c.value) ? 'At these settings a community node never uses less energy per answer than a hyperscale cloud.'
-        : `A community node uses less energy per answer than a hyperscale cloud only above ${words(V.crossWords(c, 'prompts a year'))}, at these settings.`;
+      if (blank(c.value)) return `${head} At these settings the node never uses less energy per prompt than the cloud.`;
+      const f = V.crossWords(c, 'prompts a year');
+      return `${head} The node uses less energy only above about ${num(c.value / 365, 2)} prompts a day: ${f.num} a year${f.tag ? ` ${f.tag}` : ''}.`;
     }
     if (tab === 'savings') {
-      const best = D.boards.lever.rows.filter((key) => !D.rows[key].bound).map((key) => [key, V.lever(key, m)]).filter(([, r]) => !blank(r.ratio) && r.ratio < 1).sort((a, b) => a[1].ratio - b[1].ratio)[0]; // an upper bound or a scenario never heads it
-      return best ? `${D.rows[best[0]].label} saves the most per unit at these settings: ${leverText(best[1].before, m)} before, ${leverText(best[1].after, m)} after, ${num(best[1].ratio * 100)} percent of before.`
-        : `No lever saves ${D.words.measure[m]} per unit at these settings.`;
+      const best = V.bestLever(m);
+      if (!best) return `No lever saves ${D.words.measure[m]} per unit at these settings.`;
+      const r = V.lever(best, m);
+      return `${D.rows[best].label} saves the most per unit at these settings: ${leverText(r.before, m)} before, ${leverText(r.after, m)} after, ${num(r.ratio * 100)} percent of before.`;
     }
     return '';
+  };
+  // The lever that saves the most per unit in a measure: the Savings answer names it and the plot selects it (explorer-18). An upper bound or a scenario never heads it.
+  V.bestLever = (m = V.S.m) => D.boards.lever.rows.filter((key) => !D.rows[key].bound).map((key) => [key, V.lever(key, m)])
+    .filter(([, r]) => !blank(r.ratio) && r.ratio < 1).sort((a, b) => a[1].ratio - b[1].ratio)[0]?.[0] ?? null;
+  // The claims of the factors a row's CO2e and water are multiplied by (the grid factor of each feed; on-site water, generation water and its convention), at the
+  // settings shown, so those figures reach their claims as the energy does. build_explorer.py ships D.factor_claims from the model's inputs; a lever's own notes
+  // name its cooling factors.
+  V.factorClaims = (key) => {
+    const F = D.factor_claims;
+    const r = row(key);
+    if (!F || !r || key.startsWith('cross.')) return { g: [], ml: [] }; // a crossover is a count; its rows' notes name what it compares
+    const sides = key.startsWith('lever.') ? [r.before, r.after].filter(Boolean) : [r];
+    const pick = (name) => F.sel[name]?.[V.S.settings[name]] || [];
+    const g = [];
+    const ml = [];
+    for (const side of sides) {
+      for (const f of side.feeds || ['dc']) {
+        if (f === 'hydro') { g.push(...F.in.grid_hydro); ml.push(...F.in.wue_local, ...pick('hydro_convention')); continue; }
+        const [grid, gen] = FEED[f];
+        g.push(...pick(grid));
+        if (key !== 'lever.cooling') { // on-site water: a data center's, unless the row runs on the reader's own devices or a dry-cooled node
+          if (f === 'local' && !/same_grid/.test(key)) ml.push(...F.in.wue_local);
+          else if (f !== 'home') ml.push(...F.in.wue_site);
+        }
+        const kind = gen ? V.p[gen] : 'fixed';
+        if (kind === 'mix') ml.push(...pick('hydro_share'), ...pick('hydro_convention'), ...F.in.gas_water);
+        else if (kind === 'fixed') ml.push(...pick('dc_generation_water'));
+        else if (kind === 'hydro') ml.push(...pick('hydro_convention'));
+      }
+    }
+    const has = (m) => sides.some((s) => !blank(s[m]));
+    return { g: has('g') ? [...new Set(g)] : [], ml: has('ml') ? [...new Set(ml)] : [] };
   };
   V.table = (key) => {
     const r = row(key);
@@ -1128,8 +1177,8 @@ function Views(D) {
     const m = name.includes('usd') ? 'usd' : /(^|_)g(_|$)/.test(name) ? 'g' : name.includes('ml') ? 'ml' : 'wh';
     return words(figure(v, lo, hi, m));
   };
-  V.line = () => {
-    const names = [...D.line, ...Object.keys(D.sel).filter((name) => !D.line.includes(name) && V.S.settings[name] !== D.sel[name].def)];
+  V.line = (line = D.line) => { // the settings in words: the named ones, then any other the reader moved; the scenario bar names fewer (D.bar, explorer-35)
+    const names = [...line, ...Object.keys(D.sel).filter((name) => !line.includes(name) && V.S.settings[name] !== D.sel[name].def)];
     const text = `${names.map(sayOf).join(', ')}.`;
     return text[0].toUpperCase() + text.slice(1);
   };

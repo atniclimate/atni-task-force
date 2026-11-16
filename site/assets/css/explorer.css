@@ -5,43 +5,57 @@
    The Wall's layers are two grey steps, and two orange steps on the selected row: a pair on each side of the wall, always 2px apart. Each pair passes validate_palette.js --ordinal on its ground, stands at least 15 L* apart, and clears 3:1:
    #5B6472, #8A94A6 on #010B13 (19.0 L*; 3.32, 6.49). #8D5532, #FF914C on #010B13 (29.1 L*; 3.29, 8.89). #808A9C, #525C6E on #F4F7FB (18.4 L*; 3.24, 6.27). #E85500, #A53C00 on #F4F7FB (15.8 L*; 3.41, 6.02); on white, 3.66 and 6.47.
    The light ground leaves no room above #E85500, so its second step goes darker, as the light greys do. */
-:root, [data-theme="dark"] { --w-dc: var(--series-context); --w-net: #5B6472; --w-rou: var(--series-context); --w-dev: #5B6472; --w-on: var(--energy-mark); --w-on-dim: color-mix(in srgb, var(--energy-mark) 55%, var(--plot-ground)); }
-[data-theme="light"] { --w-dc: #525C6E; --w-net: #808A9C; --w-rou: #525C6E; --w-dev: #808A9C; --w-on: #A53C00; --w-on-dim: #E85500; }
-@media print { :root, [data-theme] { --w-dc: #525C6E; --w-net: #808A9C; --w-rou: #525C6E; --w-dev: #808A9C; --w-on: #A53C00; --w-on-dim: #E85500; } }
+/* The selected row: its main parts filled orange, its lighter parts a hollow 2px orange outline (DIRECTION-R2 2.2: a third part is a hollow outline), in both
+   themes, so the selection is one color and never a brown second step (explorer-32). The key keeps the grey steps and is never repainted (explorer-26). */
+:root, [data-theme="dark"] { --w-dc: var(--series-context); --w-net: #5B6472; --w-rou: var(--series-context); --w-dev: #5B6472; --w-on: var(--energy-mark); }
+[data-theme="light"] { --w-dc: #525C6E; --w-net: #808A9C; --w-rou: #525C6E; --w-dev: #808A9C; --w-on: var(--energy-mark); }
+@media print { :root, [data-theme] { --w-dc: #525C6E; --w-net: #808A9C; --w-rou: #525C6E; --w-dev: #808A9C; --w-on: #E85500; } }
 
-/* The brief's two starting points: pressed buttons, the edge style, under the lead. */
-.x-presets { grid-area: credit; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 14px; }
-.x-presets > span { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
-.x-presets .button { min-height: 40px; padding: 8px 16px; }
+/* The scenario bar, under the tabs and not sticky: the starting points at its left end (a scenario choice), one measure for every tab, the settings in a few
+   plain words, and Fine-tune at its right; one row of controls from 1100px. */
+.x-bar { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 8px 28px; align-items: center; padding-block: 12px; border-bottom: 1px solid var(--rule); }
+.x-presets { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; }
+.x-presets > span { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); white-space: nowrap; }
+.x-presets .button { min-height: 40px; padding: 8px 14px; white-space: nowrap; }
 .x-presets .button[aria-pressed="true"] { color: var(--atni-text-heading); background: var(--control-on); border-color: var(--atni-text-heading); }
-/* From 1100px the starting points stand under the h1, beside the meta line, so the brief keeps to about 200px (DIRECTION-R2 3.1). */
-@media (min-width: 1100px) {
-  .brief.x-brief { grid-template-areas: "name name" "title lead" "presets meta"; grid-template-rows: auto auto auto; align-items: end; }
-  .brief.x-brief > h1 { align-self: start; }
-  .brief.x-brief > .brief-meta { align-self: center; }
-  .x-presets { grid-area: presets; margin-top: 10px; }
-}
-
-/* The scenario bar, under the tabs and not sticky: one measure for every tab, the settings in a line, and Fine-tune at its right. */
-.x-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 32px; align-items: center; padding-block: 14px; border-bottom: 1px solid var(--rule); }
 .x-measure { flex-wrap: nowrap; gap: 0; }
 .x-measure legend { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .x-measure label + label { margin-left: -1px; }
-.x-measure span { min-width: 5.5rem; justify-content: center; font-size: 1rem; }
+.x-measure span { min-width: 4.75rem; justify-content: center; font-size: 1rem; }
 .x-summary p { max-width: none; margin: 0; }
-.x-summary-line { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
+.x-summary-line { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); text-wrap: pretty; }
 .x-summary-line b { font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); }
-.x-ranges { margin-top: 2px; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .x-fine-open { min-height: 40px; padding: 8px 20px; }
 .x-bar > .x-settings-now, .x-bar > .x-check-top { grid-column: 1 / -1; }
 html:not(.js) .x-bar { grid-template-columns: minmax(0, 1fr); }
-@media (max-width: 1099px) { .x-bar { grid-template-columns: minmax(0, 1fr); } }
+/* Under a 1360px container the settings line takes a row of its own under the controls, so it never wraps to four lines beside them. */
+@media (min-width: 1100px) and (max-width: 1399px) { .x-bar { grid-template-columns: auto auto minmax(0, 1fr) auto; } .x-summary { grid-column: 1 / -1; grid-row: 2; } .x-fine-open { grid-column: 4; } }
+@media (max-width: 1099px) { .x-bar { grid-template-columns: minmax(0, 1fr); } .x-presets { flex-wrap: wrap; } }
 .x-check-top { max-width: none; margin: 0; }
 
 /* Each tab opens with its question and an answer at the settings shown. */
-.x-question { margin: 28px 0 6px; font-size: 1.625rem; line-height: 1.15; }
-.x-answer { max-width: 52rem; margin: 0 0 24px; font-family: var(--body); font-weight: 500; font-size: 1.125rem; line-height: 1.4; color: var(--atni-text-heading); text-wrap: pretty; }
+.x-question { margin: 24px 0 6px; font-size: 1.625rem; line-height: 1.15; }
+.x-answer { max-width: 52rem; margin: 0 0 20px; font-family: var(--body); font-weight: 500; font-size: 1.125rem; line-height: 1.4; color: var(--atni-text-heading); text-wrap: pretty; }
+.x-answer > a { font-size: 1rem; white-space: nowrap; }
 [data-theme="light"] .x-answer { font-weight: 400; }
+
+/* The three repeaters with settings (catalog, Architectures, Crossovers): the settings head the window column and the window starts under them, so the plot
+   starts right under the title and no band stands empty beside the claim (explorer-12). A departure from the kit's repeater, whose claim zone spans the plate,
+   because these settings stand taller than their titles. The Table, when pressed, still spans plot and window, under the settings. */
+@media screen and (min-width: 1100px) {
+  .x-plate:is(#catalog, #architectures, #crossovers) { grid-template-columns: minmax(0, 70fr) minmax(18rem, 30fr); grid-template-areas: "claim controls" "claim window" "bar window" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto auto 1fr auto auto; }
+  .x-plate:is(#catalog, #architectures, #crossovers) > .plate-claim { display: block; }
+  .x-plate > .plate-controls { grid-area: controls; padding-bottom: 16px; }
+}
+/* A lead plate keeps its claim column, plot and window side by side from a 1180px container, not the kit's 1360px, so at 1280 the plot (about 590px, over
+   resource-use-01's 500px floor) and the readout start on the first screen as they do at 1440 (explorer-14). The same grid as site.css's wide lead. */
+@container (min-width: 1180px) {
+  @media screen and (min-width: 1100px) {
+    .x-plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) { grid-template-columns: minmax(17rem, 20fr) minmax(0, 52fr) minmax(19rem, 28fr); grid-template-areas: "claim bar bar" "claim plot window" "claim under window" "claim . window" "table table table" "collar collar collar"; grid-template-rows: auto auto auto 1fr auto auto; }
+    .x-plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim { display: grid; grid-template-columns: minmax(0, 1fr); padding: 0 0 16px; }
+    .x-plate:is([data-variant="lead"], :not([data-variant]):not(.plate:not([data-variant]) ~ *)) > .plate-claim > .plate-controls { grid-column: 1; grid-row: auto; }
+  }
+}
 
 /* The window names the measure it shows, and links to the bar. */
 .x-measure-now { margin: 0 0 -4px; font-size: 0.875rem; color: var(--atni-text-secondary); }
@@ -77,8 +91,14 @@ main .disclosure > summary::marker { color: var(--atni-text-muted); }
 
 /* The Wall: one track per row, a 2px rule at --wall, the reader's side left of it, beyond it right. Rows share the zone's height, so the rule runs unbroken from the head to the axis, and the
    selected row's needle runs the same height: it stands in its row and the rows' box cuts it at the plot's top and foot. */
-.wall { --row: var(--row-min); --bar: 24px; container-type: inline-size; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
-.wall-head { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; max-width: none; margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); }
+/* The track stops at 48rem, so at 1920 and 2560 a short bar's figure stays near it rather than across an empty half of the plot (explorer-15). */
+.wall { --row: var(--row-min); --bar: 24px; --track: 48rem; container-type: inline-size; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+/* Nine one-line rows, the figure and its spread on one line: 40px a row (2.5rem), so the whole week fits the plot at 1920 (explorer first screen). */
+[data-board="use"] { --row: 2.5rem; --l: clamp(9rem, 30%, 17rem); --v: clamp(10rem, 26%, 14rem); }
+[data-board="use"] .wall-row { box-sizing: border-box; padding-block: 2px; } /* a label that wraps keeps its rows apart, inside the row's 40px */
+[data-board="use"] .ladder-value { font-size: 1.25rem; }
+[data-board="use"] .ladder-value > .ladder-tag { order: 0; flex-basis: auto; margin-top: 0; font-size: 0.9375rem; }
+.wall-head { display: grid; grid-template-columns: var(--l) minmax(0, var(--track)) var(--v); column-gap: 12px; max-width: none; margin: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); }
 .wall-sides { position: relative; display: block; min-height: 3.2em; }
 .wall-sides::before { content: ""; position: absolute; left: calc(var(--wall) * 100% - 1px); top: 1.6em; bottom: 0; width: 2px; background: var(--baseline); }
 .wall.is-plain .wall-sides::before { width: 1px; }
@@ -95,8 +115,8 @@ main .disclosure > summary::marker { color: var(--atni-text-muted); }
 .wall.is-plain .wall-sides { min-height: 3.6em; }
 .wall.is-plain .wall-sides > span:not(.wall-needle-label) { max-width: calc(100% - 8px); white-space: normal; }
 .wall-rows { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; overflow: hidden; overflow: clip; }
-.wall-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; flex: 1 0 var(--row); margin: 0; cursor: pointer; }
-[data-board="arch.D"] { --row: 3rem; } /* eleven rows or more, under three heads: as many on the first screen as the type allows */
+.wall-row { display: grid; grid-template-columns: var(--l) minmax(0, var(--track)) var(--v); column-gap: 12px; align-items: center; flex: 1 0 var(--row); margin: 0; cursor: pointer; }
+[data-board="arch.D"] .wall-row { padding-block: 4px; } /* a value and its range take two lines, so a row never touches the next (explorer-13) */
 [data-board^="arch."] { --v: clamp(9rem, 24%, 15rem); }
 /* A Catalog row's price basis is the tag under its label, so the label takes the room and the value cell keeps the figure and its spread. A price names its own basis in the value cell, so the tag steps aside there. */
 [data-board^="catalog."] { --l: clamp(9rem, 37%, 18rem); --v: clamp(8.5rem, 20%, 13rem); --row: 3rem; }
@@ -113,7 +133,7 @@ main .disclosure > summary::marker { color: var(--atni-text-muted); }
 .w-net, .w-key-net { background-color: var(--w-net); }
 .w-dc, .w-key-dc { background-color: var(--w-dc); }
 .wall-row.is-on .w-dc, .wall-row.is-on .w-rou { background-color: var(--w-on); }
-.wall-row.is-on .w-net, .wall-row.is-on .w-dev { background-color: var(--w-on-dim); }
+.wall-row.is-on .w-net, .wall-row.is-on .w-dev { background-color: transparent; box-shadow: inset 0 0 0 2px var(--w-on); } /* inside the 1px gap, so the two parts stay apart */
 .plate-square.w-key-dev, .plate-square.w-key-rou, .plate-square.w-key-net, .plate-square.w-key-dc, .wall-key .plate-square { box-sizing: border-box; width: 12px; height: 12px; }
 .plate-square.is-hollow { background: none; border: 1.5px solid var(--series-context); }
 .is-beside .w { background: none; border: 1.5px solid var(--w-dc); }
@@ -133,7 +153,7 @@ main .disclosure > summary::marker { color: var(--atni-text-muted); }
 .wall[data-measure="usd"] .wall-needle { display: none; }
 .wall[data-measure="usd"] .wall-track::before, .wall[data-measure="usd"] .wall-sides::before { opacity: 0.25; }
 .wall[data-measure="usd"] .wall-sides > span { visibility: hidden; } /* a price has no side of the wall */
-.wall[data-measure="usd"] :is(.wall-axis, .wall-off, .wall-key, .wall-words) { display: none; } /* a price draws no layer, so the key has nothing to name */
+.wall[data-measure="usd"] :is(.wall-axis, .wall-off, .wall-words, .wall-key > li:not(.wall-key-spread), .wall-key-range) { display: none; } /* a price draws no layer, so the key names none; how to read a range still holds */
 .wall-row.is-beside .ladder-value > .ladder-tag { color: var(--atni-text-body); }
 .wall-group { flex: none; grid-column: 1 / -1; align-self: end; margin: 8px 0 0; padding: 4px 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); border-bottom: 1px solid var(--rule); list-style: none; }
 .wall-rows > .wall-group { align-self: stretch; }
@@ -151,43 +171,38 @@ main .disclosure > summary::marker { color: var(--atni-text-muted); }
 @container (max-width: 34rem) { .wall-axis > span:not(:last-child, .wall-zero) { display: none; } } /* a narrow ruler keeps its zero and its far tick: ticks would run together */
 .wall-off { flex: none; max-width: none; margin: 4px 0 0; font-size: 0.875rem; }
 .wall-gridnote { margin: 6px 0 0; max-width: none; color: var(--atni-text-body); }
-/* How to read the Wall, once under it (explorer-34), then the key: each layer's swatch beside its own word (explorer-27). */
-.wall-words { flex: none; max-width: 52rem; margin: 10px 0 0; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-body); }
+/* How to read the Wall, once, under the head's two sides and over the first row, in the track's column (explorer-34). Then, under the axis, the key: by side,
+   each part's grey swatch beside its own word, never repainted by the selection (explorer-26, -27), then the spread and how to read it. */
+.wall-words { flex: none; max-width: none; margin: 0 0 4px calc(var(--l) + 12px); font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-body); }
 .wall-key { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 6px 0 0; padding: 0; list-style: none; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
-.wall-key li { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.wall-key li { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; margin: 0; }
+.wall-key li:is(.wall-key-side, .wall-key-spread) { flex-basis: 100%; } /* two lines by side, then the spread */
+.wall-key li.wall-key-spread { flex-wrap: nowrap; align-items: baseline; }
+.wall-key-spread > .wall-key-range { flex: none; }
 .wall-key-range { width: 16px; height: 8px; background: var(--series-context); opacity: 0.4; }
-/* With a row selected the swatches take that row's steps, so the key describes the bar the reader is looking at. Nothing is selected without scripts, so they stay grey there. */
-.wall:has(.wall-row.is-on) .wall-key :is(.w-key-rou, .w-key-dc) { background-color: var(--w-on); }
-.wall:has(.wall-row.is-on) .wall-key :is(.w-key-dev, .w-key-net) { background-color: var(--w-on-dim); }
+.x-key-line { width: 2px; height: 14px; background: var(--baseline); }
 .x-plot > [data-group] { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
 .x-plot .ladder-group-label { margin: 0 0 4px; }
-html:not(.x-live) .x-plot > [data-group="scale:unit"] { margin-top: 24px; } /* one view at a time with scripts, the two stacked without */
+html:not(.js) .x-plot > [data-group="scale:unit"] { margin-top: 24px; } /* one view at a time with scripts, the two stacked without */
 .x-ruler { flex: 1 1 auto; }
 .x-ruler .ladder-axis span { white-space: nowrap; }
 @media (max-width: 1799px) { [data-board^="cross."] .ladder-axis span:nth-child(even) { display: none; } } /* nine-digit ticks would run together, so every second one names itself; the grid keeps every decade */
 .x-ruler[data-measure="usd"] .ladder-axis, .x-ruler[data-measure="usd"] .ladder-grid { display: none; }
 .x-ruler .wall-group { position: relative; z-index: 1; align-self: end; background: var(--plot-ground); } /* the group's words sit over the grid lines, under the needle */
-.x-ruler[data-board="lever"] .ladder-rows { margin-bottom: 0; }
 .x-lever-note { flex: none; max-width: none; margin: 8px 0 0; }
-/* A ruler's needle stands at the selected row's mark. Levers have none: each lever runs its own ruler. */
+/* A ruler's needle stands at the selected row's mark. Levers have none: the before line at 100 percent stands for every row. */
 .x-ruler:not([data-board="lever"]) .ladder-rows { position: relative; overflow: hidden; overflow: clip; }
 .x-ruler:not([data-board="lever"], [data-measure="usd"]) .ladder-row.is-on:has(.ladder-mark:not([hidden])) .ladder-track::after { content: ""; position: absolute; z-index: 1; top: -100vh; bottom: -100vh; left: calc(var(--x) * 100%); width: 2px; margin-left: -1px; background: var(--energy-mark); pointer-events: none; }
 [data-board="lever"] { --l: clamp(10rem, 30%, 17rem); --v: clamp(11rem, 28%, 16rem); }
 [data-board^="cross."] { --l: clamp(10rem, 28%, 17rem); --v: clamp(11rem, 26%, 16rem); container-type: inline-size; }
 [data-board^="cross."] .ladder-row { min-height: 4.25rem; } /* the count and its range each hold a line, and rows never touch (explorer-12) */
 [data-board^="cross."] .ladder-value { font-size: 1.25rem; }
-/* Levers as dumbbells (explorer-18): a hollow square before, a filled one after, and a line between them that ends in an arrowhead at after: leftward a saving,
-   rightward a cost. No track runs the row's width, so nothing reads as a slider; a short tick marks each row's own zero. */
-.x-lever .ladder-mark.is-b { background: var(--plot-ground); border: 2.5px solid var(--series-context); }
-.x-lever.is-on .ladder-mark.is-b { background: var(--plot-ground); border-color: var(--energy-mark); }
-.x-lever .ladder-track::before { content: ""; position: absolute; left: 0; top: calc(50% - 6px); width: 1px; height: 12px; background: var(--baseline); }
-.x-lever .ladder-track::after { content: ""; position: absolute; left: calc(min(var(--x), var(--x2)) * 100%); width: calc((max(var(--x), var(--x2)) - min(var(--x), var(--x2))) * 100%); top: calc(50% - 1px); height: 2px; background: var(--series-context); }
-.x-lever.is-on .ladder-track::after { background: var(--energy-mark); }
-.x-lever .ladder-mark:not(.is-b)::after { content: ""; position: absolute; top: 50%; right: 100%; margin-top: -5px; border-block: 5px solid transparent; border-right: 7px solid var(--series-context); }
-.x-lever.is-up .ladder-mark:not(.is-b)::after { right: auto; left: 100%; border-right: 0; border-left: 7px solid var(--series-context); }
-.x-lever.is-on .ladder-mark:not(.is-b)::after { border-right-color: var(--energy-mark); }
-.x-lever.is-on.is-up .ladder-mark:not(.is-b)::after { border-left-color: var(--energy-mark); }
-.x-lever .ladder-mark[hidden]::after { display: none; }
+/* Levers on one scale (explorer-18): 0 to 125 percent of before, the before line at 100 percent through every row (the kit's zero line), and each lever a bar
+   from that line to after. A saving runs left; more than before is an outlined bar past the line; past 125 percent the bar fades at the scale's end and the
+   row prints its figure. The answer ranks the levers, so the plot lets a reader rank them by eye. */
+.x-lever .ladder-bar { height: min(20px, 50%); }
+.x-lever.is-off .ladder-bar { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+.x-ruler[data-board="lever"] .ladder-grid i.is-zero { width: 2px; margin-left: -1px; }
 /* A crossover that may never come: the high end stays open, the band fades, and the words stand where it would end, unless the ruler is too narrow for them. */
 .x-ruler .ladder-row.is-or-never .ladder-range { -webkit-mask-image: linear-gradient(to right, #000 60%, transparent); mask-image: linear-gradient(to right, #000 60%, transparent); }
 .x-or-never { position: absolute; z-index: 2; left: min(calc(var(--hi, var(--x)) * 100% + 6px), calc(100% - 3.5rem)); top: 50%; transform: translateY(-50%); font-style: normal; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; color: var(--atni-text-body); }
@@ -239,7 +254,10 @@ tr.is-ghost > td { font-size: 0.875rem; color: var(--atni-text-secondary); }
 /* What wins, what loses, and what reverses it: open under the Architectures plate for the comparison shown (explorer-37), in two prose columns. */
 .x-verdict { margin: -8px 0 24px; padding-top: 16px; border-top: 1px solid var(--rule); }
 .x-verdict > h3 { margin: 0 0 8px; font-size: 1.25rem; }
-.x-verdict .x-arch-words { max-width: 56rem; }
+/* Two prose columns of at most 36rem (DIRECTION-R2 2.4's prose band), not one 150-character line (explorer-31). */
+.x-verdict .x-arch-words { display: block; max-width: calc(72rem + 48px); columns: 2 22rem; column-gap: 48px; }
+.x-verdict .x-arch-words > * { margin-block: 0 8px; break-inside: avoid; }
+.x-verdict .x-arch-words > .label { break-after: avoid; }
 .x-verdict .caption { max-width: none; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-body); }
 /* The illustrative damage: its own line under the figures, never beside the price. The DOM keeps the model's words exact; only the first letter is raised. */
 .x-damage { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid var(--rule); }
@@ -251,6 +269,7 @@ tr.is-ghost > td { font-size: 0.875rem; color: var(--atni-text-secondary); }
 /* The window: the energy large, then three figures in one row, each with its basis in few words, then the sentence. */
 .x-measures { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr)); gap: 8px 16px; align-items: start; }
 .x-water { display: contents; }
+.x-measures > [hidden] { display: none; } /* the measure the readout shows */
 .x-figure { display: grid; gap: 2px; align-content: start; }
 .x-figure .caption { font-size: 0.875rem; line-height: 1.3; }
 .x-big { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); overflow-wrap: anywhere; }
@@ -338,6 +357,8 @@ a.x-c { white-space: nowrap; }
 .x-project-actions [data-example]:hover { border-color: var(--atni-text-heading); }
 .x-project-actions .plate-status { flex-basis: 100%; }
 .x-plate[data-plate-x="project"] .plate-detail { display: grid; gap: 12px; align-content: start; }
+.x-plate[data-plate-x="project"] .plate-detail .reading { min-height: 0; } /* no actions under it to hold still, so no empty band (explorer-20) */
+.brief.x-brief { padding-bottom: 10px; } /* the starting points moved to the bar; the brief keeps under 200px at 1440 (DIRECTION-R2 3.1) */
 .x-outputs { flex: none; grid-auto-rows: minmax(64px, auto); margin: 0; }
 .x-outputs .instrument-row { grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); cursor: default; }
 .x-outputs .instrument-row.is-fixed .ladder-value { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 1.1rem + 0.8vw, 2.25rem); line-height: 1.1; color: var(--atni-text-heading); }
@@ -346,7 +367,11 @@ a.x-c { white-space: nowrap; }
 .slider-presets-button:hover { border-color: var(--atni-text-heading); }
 .x-all-sources { margin-block: 8px 32px; }
 .x-settings-now { display: none; columns: 2; margin: 0; font-size: 0.875rem; }
-html:not(.x-live) .x-settings-now { display: block; }
+/* With scripts, the first paint lays out one tab and no Table, as the page will stand once the kit's tabs and the plates are live, not the whole page twice
+   (explorer-19, and no jump). Without scripts every panel and Table shows; with them, the kit's hidden governs once a panel has its role, and setView once a
+   plate is live. */
+html.js section.panel:not([role="tabpanel"]):not(:first-of-type), html.js .x-plate:not(.is-live) > .plate-view[data-view="table"] { display: none; }
+html:not(.js) .x-settings-now { display: block; } /* keyed on theme.js's class in the head, so the first paint has the bar's final height (explorer CLS) */
 
 /* Fine-tune: the kit's left drawer (site.css dialog.drawer-left), its settings in headed groups, each setting's reason shown while its group has focus. */
 .x-fine .drawer-body { display: grid; gap: 14px; align-content: start; }
@@ -413,14 +438,16 @@ html:not(.x-live) .x-settings-now { display: block; }
 @media print {
   .x-presets, .x-measure, .x-fine-open, .x-fine, .x-why, .x-start, .x-measure-now, .wall-needle-label, .plate-views { display: none !important; }
   .x-bar { display: block; padding-block: 0 8pt; }
-  .x-live .x-settings-now { display: block; }
+  .x-settings-now { display: block; }
+  .x-summary, .x-presets { display: none; } /* the list above says every setting */
+  .x-question, .x-answer { break-after: avoid; } /* a tab's question and answer stay with its first plate (explorer print) */
   .plate-setting { display: block; }
   .x-plate { break-inside: auto; }
   .x-plate .plate-table, .x-backtest table { min-width: 0; }
   .wall-row { break-inside: avoid; }
   .wall-needle { top: 0; bottom: 0; }
   .x-ruler .ladder-row .ladder-track::after { top: 0; bottom: 0; }
-  .x-lever .ladder-track::after { top: calc(50% - 1px); bottom: auto; }
+  .x-lever .ladder-bar { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .x-note-slot { display: none; }
   .x-custody[data-rule="any"] { display: none; } /* nothing left out, so nothing to list */
   .x-measured-line { margin-top: 8pt; }

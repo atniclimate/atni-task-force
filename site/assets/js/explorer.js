@@ -13,13 +13,23 @@ const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls)
 const D = JSON.parse($('#explorer-data').textContent);
 const V = Views(D);
 const S = V.fresh();
-const V0 = Views(D); // the model at its defaults: where a moved bar started
-V0.set(V0.fresh());
+let V0start = null; // the model at its defaults: where a moved bar started; worked out the first time a figure has moved, so a cold load runs the model once (explorer-19)
+const start = () => { if (!V0start) { V0start = Views(D); V0start.set(V0start.fresh()); } return V0start; };
 window.explorer = { ...window.resourceModel, view: V, state: S, data: D };
 const plateOf = (name) => $(`.x-plate[data-plate-x="${name}"]`);
 const claimOf = (a) => a.getAttribute('href').split('#src-')[1]; // a receipt's link, sources/#src-ID: the page's receipts are on its Sources page (owner ruling 39)
-const notes = $('#x-notes')?.content; // every row's note, cloned into the window for the selected row; the Sources page prints them all
-const noteOf = (id) => (id && notes ? notes.getElementById(id) : null);
+// Every row's note is data (D.notes: title, lines, claims), so the page builds no nodes it may never show (explorer-19): the selected row's note is made
+// here, as text, with each claim id in a line linked to its receipt. The Sources page prints them all.
+const CLAIM_IN = /\b([a-z]{2,3}-\d{3})\b/; // validate_public.py CLAIM_ID
+function noteOf(id) {
+  const n = id && D.notes?.[id];
+  if (!n) return null;
+  const linked = (line) => line.split(CLAIM_IN).map((part, i) => (i % 2 && D.receipts[part] ? Object.assign(el('a', 'x-c', part), { href: `sources/#src-${part}` }) : part));
+  const box = el('div', 'x-note');
+  box.append(el('p', 'x-note-title', n.t), ...n.l.map((line) => { const p = el('p'); p.append(...linked(line)); return p; }));
+  box.claims = n.c;
+  return box;
+}
 const rowNodes = new Map($$('.plate-plot [data-row]').map((n) => [n.dataset.row, n]));
 const tableRows = new Map($$('tr[data-tr]').map((n) => [n.dataset.tr, n]));
 const shown = {}; // the keys a plate's arrows step through, in the order they stand
@@ -77,12 +87,13 @@ function byPhase(board, groups, keys, wordsOnly) { // a move row is one time and
 // no bar, so it leaves none; water is said by basin, never summed.
 const BOARD = new Map(Object.entries(D.boards).flatMap(([id, b]) => (b.kind === 'wall' ? b.rows.map((key) => [key, id]) : [])));
 const said = (W, key, m) => (m === 'ml' ? W.water(key).map((w) => `${plainFig(w.v, 'ml')} (${D.words.basin[w.place] || 'basin not stated'})`).join(' and ') : plainFig(W.val(key, m), m));
-const moved = (key, m = S.m) => m !== 'usd' && BOARD.has(key) && V0.boardKeys(BOARD.get(key), m).includes(key) && said(V, key, m) !== said(V0, key, m);
+const sameModel = () => S.mode === 'person' && !Object.keys(S.inputs).length && !Object.keys(S.measured).length && Object.keys(D.sel).every((k) => S.settings[k] === D.sel[k].def) && Object.keys(D.fields).every((k) => S.fields[k] === D.fields[k]);
+const moved = (key, m = S.m) => m !== 'usd' && BOARD.has(key) && !sameModel() && start().boardKeys(BOARD.get(key), m).includes(key) && said(V, key, m) !== said(start(), key, m);
 const crossDay = (key) => { // a crossover's count a year, in a day's terms (explorer-36): the same figure, divided by 365
   const c = V.run.crossover(key.slice(6));
   return blank(c.value) ? '' : ` That is about ${num(c.value / 365, 2)} ${D.boards[`cross.${S.opts.crossover}`].noun.replace(' a year', '')} a day.`;
 };
-const spoken = (key, r = detailFor(key)) => V.copied(`${r.reading}${key.startsWith('cross.') ? crossDay(key) : ''}${moved(key) ? ` From a starting point of ${said(V0, key, S.m)}.` : ''}`, key);
+const spoken = (key, r = detailFor(key)) => V.copied(`${r.reading}${key.startsWith('cross.') ? crossDay(key) : ''}${moved(key) ? ` From a starting point of ${said(start(), key, S.m)}.` : ''}`, key);
 const rulerScale = (lay, m) => { // the Wall's scale, read off the first row it draws with a length
   for (const [k, item] of Object.entries(lay.items)) {
     const p = V.parts(k, m);
@@ -96,7 +107,7 @@ function startMark(n, key, m, lay, sc, first) {
   const live = sc > 0 && !!lay.items[key] && moved(key, m);
   n.classList.toggle('has-start', live);
   if (!live) return;
-  const p = V0.parts(key, m);
+  const p = start().parts(key, m);
   const [left, right] = [p.dev + p.rou, p.net + p.dc];
   const [from, to] = [lay.wall - left * sc, lay.wall + right * sc];
   mark.classList.toggle('is-left', !right && left > 0); // all on the reader's side: its end is the far left
@@ -228,15 +239,19 @@ function paintRuler(id) {
 // A lever in words (explorer-18): after as a share of before, then the two figures, from before to after. build_explorer.py lever_value writes the same.
 const leverCell = (r, m) => (blank(r.ratio) ? { num: 'no figure', unit: '', tag: `(${leverText(r.before, m)} then ${leverText(r.after, m)})` }
   : { num: num(r.ratio * 100), unit: 'percent of before', tag: `(${leverText(r.before, m)} to ${leverText(r.after, m)})` });
+const LEVER_TOP = 1.25; // every lever on one scale, 0 to 125 percent of before; build_explorer.py LEVER_TOP is the same
 function paintLevers() {
   const { m } = S;
   for (const key of D.boards.lever.rows) {
     const n = rowNodes.get(key);
     const r = V.lever(key, m);
-    const has = !blank(r.xAfter) && !blank(r.xBefore);
-    if (has) { n.style.setProperty('--x', r.xAfter.toFixed(4)); n.style.setProperty('--x2', r.xBefore.toFixed(4)); } else { n.style.removeProperty('--x'); n.style.removeProperty('--x2'); } // no figures, no line
-    $$('.ladder-mark', n).forEach((mark) => { mark.hidden = !has; });
-    n.classList.toggle('is-up', !blank(r.ratio) && r.ratio > 1);
+    const has = !blank(r.ratio);
+    const bar = $('.ladder-bar', n);
+    bar.hidden = !has; // no figures, no bar
+    if (has) n.style.setProperty('--x', (Math.min(r.ratio, LEVER_TOP) / LEVER_TOP).toFixed(4)); else n.style.removeProperty('--x');
+    n.classList.toggle('is-up', has && r.ratio > 1);
+    n.classList.toggle('is-off', has && r.ratio > LEVER_TOP);
+    bar.classList.toggle('is-hollow', has && r.ratio > 1); // more than before: outlined, past the line
     cell($('.ladder-value', n), leverCell(r, m));
   }
   return D.boards.lever.rows;
@@ -269,6 +284,25 @@ const painters = {
   catalog: () => (S.opts.scale === 'unit' ? paintRuler('catalog.unit') : paintWall('catalog.hour')), // the view shown; a switch redraws the other
 };
 const measuredTag = (key) => (V.isMoved(key) ? [el('span', 'x-measured-tag', D.measured.label)] : []); // the label comes from the model, on every row a reading moved
+// A Table's foot: the grid and water factors its shown rows' CO2e and water read at these settings, each with its claim and status. build_explorer.py
+// factors_foot writes the same at the defaults.
+const FACTOR_HEADS = [['g', 'For the CO2e column, the grid factors: '], ['ml', 'For the water column, the water factors: ']];
+function claimLink(id) {
+  const r = D.receipts[id];
+  const span = el('span', 'x-claim');
+  const a = el('a', '', id);
+  a.href = `sources/#src-${id}`;
+  a.dataset.claim = id;
+  span.append(glyph(r?.status), a, ` ${STATUS[r?.status === 'partly' ? 'partly' : 'verified']}`);
+  return span;
+}
+const joined = (ids) => ids.flatMap((id, i) => (i ? ['; ', claimLink(id)] : [claimLink(id)]));
+function factorsInto(td) {
+  const keys = $$('tbody tr[data-tr]', td.closest('table')).filter((tr) => !tr.hidden && !tr.classList.contains('is-ghost')).map((tr) => tr.dataset.tr);
+  const f = keys.map(V.factorClaims);
+  td.replaceChildren(...FACTOR_HEADS.map(([m, head]) => [head, [...new Set(f.flatMap((x) => x[m]))].filter((id) => D.receipts[id])]).filter(([, ids]) => ids.length)
+    .map(([head, ids]) => { const s = el('span', 'x-claim-for', head); s.append(...joined(ids), '.'); return s; }));
+}
 function paintTables(live) {
   const dmg = S.damage !== 'off';
   for (const [key, tr] of tableRows) {
@@ -285,6 +319,7 @@ function paintTables(live) {
     const td = $('td[data-c="damage"]', tr);
     if (td && dmg) td.textContent = gone ? '' : V.damageFig(V.damage(key));
   }
+  for (const td of $$('td[data-factors]')) if (live.has(td.closest('.x-plate')?.dataset.plateX)) factorsInto(td); // a grid or water setting changes which factor's claim stands behind CO2e and water
   if (live.has('cross')) {
     for (const id of ['cross.prompts', 'cross.views']) {
       const { items } = V.crossings(D.boards[id].rows);
@@ -454,6 +489,8 @@ function detail(name, key) {
   if (key.startsWith('lever.')) d('lines').replaceChildren(...r.lines.map((line) => el('li', '', line)));
   else if (key.startsWith('cross.')) text('ends', r.ends);
   else {
+    if (d('energy')) big(d('energy'), r.energy);
+    $$('[data-fig]', plate).forEach((n) => { n.hidden = n.dataset.fig === S.m; }); // the readout shows the page-wide measure; the small figures, the other three
     text('price', r.price); text('price-word', priceWord(key)); text('price-tag', r.priceTag); big(d('co2'), r.co2); text('co2-tag', r.co2Tag);
     d('water').replaceChildren(...(r.water.length ? r.water.map((w) => { const s = el('span', 'x-figure'); s.append(big(el('strong', 'x-big'), w), el('span', 'caption', basinWord(w.tag))); return s; }) : [el('span', 'caption', 'No water figure: the record holds no generation water for this feed.')]));
     text('water-basis', r.water.map((w) => w.tag).join('; ') || 'no figure');
@@ -475,13 +512,12 @@ function detail(name, key) {
   }
   long();
   const master = noteOf(noteId);
-  const parts = master ? [...master.cloneNode(true).children] : [];
   const note = d('note');
-  note.replaceChildren(...parts.filter((n) => !n.matches('.plate-chips')));
+  note.replaceChildren(...(master ? master.children : []));
   if (Object.keys(D.sel).some((k) => S.settings[k] !== D.sel[k].def)) note.prepend(el('p', 'x-note-title', 'These notes describe the default settings.'));
-  const chips = parts.find((n) => n.matches('.plate-chips'));
   const receipt = d('receipt');
-  evidenceInto(d('chips'), chips ? $$('a.receipt', chips).map(claimOf) : [], receipt.id);
+  const f = V.factorClaims(key); // the window prints CO2e and water whatever the measure, so their factors' claims join the row's own (explorer-03 hard line)
+  evidenceInto(d('chips'), [...new Set([...(master?.claims || []), ...f.g, ...f.ml])], receipt.id);
   receipt.hidden = true;
   receipt.replaceChildren();
 }
@@ -524,15 +560,18 @@ let stale = new Set();
 function refresh(reason) {
   if (reason === 'settings') V.set(S);
   $$('.plate-status').forEach((n) => { n.textContent = ''; }); // what it reported is no longer the state
-  const line = V.line();
-  $$('[data-setting-line]').forEach((n) => { n.textContent = line; });
+  const [line, bar] = [V.line(), V.line(D.bar)]; // the bar names fewer settings (explorer-35); each plate's line, for print, names them all
+  $$('[data-setting-line]').forEach((n) => { n.textContent = n.dataset.settingLine === 'bar' ? bar : line; });
+  barLine();
   $('[data-mode-word]').textContent = S.mode === 'office' ? `An office of ${grouped(S.seats)} seats` : 'One person';
   const also = [S.custody !== D.custody.default && `${D.custody.label}: ${D.custody.options[S.custody].label}`, S.damage !== 'off' && `${D.carbon_damage.label}: ${D.carbon_damage.families[S.damage].label}`, ...Object.entries(S.inputs).map(([k, v]) => `${D.names[k]}, typed: ${v}`)].filter(Boolean);
   $$('[data-setting-list]').forEach((n) => n.replaceChildren(...[...Object.keys(D.sel).map((name) => `${D.names[name]}: ${D.sel[name].say[S.settings[name]]}`), ...also].map((text) => el('li', '', text))));
   $$('[data-if]').forEach((n) => { const [k, v] = n.dataset.if.split(':'); n.hidden = String(V.p[k]) !== v; });
-  $$('[data-reading]').forEach((n) => { n.textContent = V.reading(n.dataset.reading); });
   $$('[data-group]').forEach((n) => { const [k, v] = n.dataset.group.split(':'); n.hidden = S.opts[k] !== v; });
-  $$('[data-payback]').forEach((n) => { n.textContent = V.payback(n.dataset.payback); });
+  // Figures beside the rows and paybacks spread every input, so only those shown are worked out; a tab that opens redraws its own (explorer-19).
+  const shownNow = (n) => !n.closest('[role="tabpanel"]')?.hidden && !n.closest('[data-group][hidden]'); // a Table out of view still counts: pressing it redraws nothing
+  $$('[data-reading]').filter(shownNow).forEach((n) => { n.textContent = V.reading(n.dataset.reading); });
+  $$('[data-payback]').filter(shownNow).forEach((n) => { n.textContent = V.payback(n.dataset.payback); });
   const live = new Set(Object.keys(painters).filter(isLive));
   stale = new Set(Object.keys(painters).filter((name) => !live.has(name)));
   for (const [key, n] of rowNodes) if (D.rows[key] && live.has(n.closest('.x-plate').dataset.plateX)) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : []), ...measuredTag(key)); }
@@ -552,11 +591,20 @@ function paintPlate(name) {
   shown[name].forEach((key, i) => { const n = rowNodes.get(key); n.setAttribute('aria-posinset', i + 1); n.setAttribute('aria-setsize', shown[name].length); }); // rows sort by CSS order, so the count a reader hears must not come from the source order
   if (name === 'where') S.sel.where = `where.${S.opts.workload}.${S.sel.where.split('.').pop()}`;
   if (name === 'arch' && S.sel.arch !== picked && D.boards[`arch.${S.opts.comparison}`].scenario?.includes(S.sel.arch)) S.sel.arch = null; // a scenario is never the main comparison: only a reader's own click lands there
+  if (name === 'lever' && !picked0.lever) S.sel.lever = V.bestLever(S.m) ?? S.sel.lever; // until the reader chooses, Savings selects the row its answer names
   if (!shown[name].includes(S.sel[name])) [S.sel[name]] = shown[name];
   selectRow(name, S.sel[name]);
 }
+function barLine() { // A proposal reads only its own fields, so the bar says so on its tab, where the settings line would mislead (explorer-35)
+  const proposal = !$('#proposal')?.hidden;
+  const line = $('[data-bar-line]');
+  if (line.hidden === proposal) return; // only a change writes: the observer that calls this watches hidden
+  line.hidden = proposal;
+  $('[data-proposal-line]').hidden = !proposal;
+}
 // A tab that opens draws the plates that waited (the kit's tabs conceal and reveal the panels).
 function wake() {
+  barLine();
   const now = [...stale].filter(isLive);
   if (!now.length) return;
   now.forEach((name) => stale.delete(name));
@@ -674,16 +722,30 @@ function project(example) {
   const big = (v, unit, missing) => (blank(v) ? ask(missing) : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
   const out = { mwh: big(r.mwh, 'MWh'), water: big(r.water, 'liters', 'Enter site water'), co2: big(r.co2, 'tonnes CO2e', 'Choose a feed'), share: blank(r.share) ? ask('Enter a load to compare') : `${num(r.share * 100)} percent` };
   for (const [k, v] of Object.entries(out)) { const n = $(`[data-po="${k}"]`, box); n.textContent = v; n.classList.toggle('is-ask', /^(Enter|Choose)/.test(v)); } // a prompt reads as words, not as a figure (explorer-20)
+  const feed = $('[data-pf="grid"]', box).selectedOptions[0];
+  if (!blank(r.co2) && feed?.dataset.claims) { // the chosen feed's grid factor, with its claim and status, as every CO2e on the page carries (explorer-03 hard line)
+    const ids = feed.dataset.claims.split(' ').filter((id) => D.receipts[id]);
+    const said = el('span', 'x-po-claims', ' (');
+    said.append(...joined(ids), ')');
+    $('[data-po="co2"]', box).append(said);
+  }
   $('[data-project-hint]', box).hidden = !blank(r.mwh);
-  $('[data-po-poster]', box).textContent = blank(r.mwh) ? '' : grouped(Number(r.mwh.toPrecision(3)));
-  $('[data-po-poster]', box).parentElement.classList.toggle('is-long', !blank(r.mwh) && r.mwh >= 1e7);
-  $('[data-po-unit]', box).textContent = blank(r.mwh) ? '' : 'MWh';
-  $('[data-po-qual]', box).textContent = blank(r.mwh) ? 'Enter megawatts and a load factor.' : 'a year, at the load factor entered';
+  const fields = ['mw', 'lf'].map((k) => $(`[data-pf="${k}"]`, box).value);
+  const exampleBtn = $('[data-example]', box);
+  const isExample = ['mw', 'lf', 'wue', 'load'].every((k) => $(`[data-pf="${k}"]`, box).value === exampleBtn.dataset[k]);
+  // The readout leads with what the answer leads with: the share of the load, once there is one; else the year's energy (explorer-20).
+  const share = !blank(r.share);
+  $('[data-po-poster]', box).textContent = blank(r.mwh) ? '' : share ? num(r.share * 100) : grouped(Number(r.mwh.toPrecision(3)));
+  $('[data-po-poster]', box).parentElement.classList.toggle('is-long', !share && !blank(r.mwh) && r.mwh >= 1e7);
+  $('[data-po-unit]', box).textContent = blank(r.mwh) ? '' : share ? 'percent' : 'MWh';
+  $('[data-po-qual]', box).textContent = blank(r.mwh) ? 'Enter megawatts and a load factor.' : share ? `of ${isExample ? 'the region\'s load today' : 'the load entered'}, ${out.mwh} a year` : 'a year, at the load factor entered';
+  // The example's button stands only while the fields hold something else, and then says it goes back (explorer-20).
+  exampleBtn.dataset.try ??= exampleBtn.textContent;
+  exampleBtn.hidden = isExample;
+  exampleBtn.textContent = ['mw', 'lf', 'wue', 'load'].every((k) => $(`[data-pf="${k}"]`, box).value === '') ? exampleBtn.dataset.try : 'Back to the Data Centers example';
   const damage = blank(r.co2) ? null : V.damageOf(r.co2 * 1e6); // a project shows its tonnes first, and any dollar beside them
   $('[data-po-damage-row]', box).hidden = !damage;
   if (damage) { $('[data-po-damage-label]', box).textContent = `${damage.column}, as of ${damage.as_of}`; $('[data-po="damage"]', box).textContent = V.damageWords(damage, 'this project\'s CO2e'); }
-  const fields = ['mw', 'lf'].map((k) => $(`[data-pf="${k}"]`, box).value);
-  const isExample = ['mw', 'lf', 'wue', 'load'].every((k) => $(`[data-pf="${k}"]`, box).value === $('[data-example]', box).dataset[k]);
   $('[data-answer-x="proposal"]').textContent = blank(r.mwh) ? 'Enter a project\'s megawatts and load factor, or start from the Data Centers example, to see its year in energy, site water and CO2e.'
     : `${isExample ? 'The Data Centers example, an illustration and not a proposal: ' : ''}${fields[0]} MW at a load factor of ${fields[1]} uses ${out.mwh} a year${blank(r.share) ? '' : `, ${out.share} of ${isExample ? 'the region\'s load today' : 'the load entered'}`}.`;
 }
@@ -752,7 +814,8 @@ function csvOf(plate) {
   const of = (ids, part) => [...new Set(ids.map((id) => D.receipts[id]?.[part]).filter(Boolean))].join('; ');
   const head = [...$$('thead th', tables[0]).filter((n) => !n.hidden).map((n) => n.textContent.trim()), 'claim_ids', 'status', 'limit']; // a column the page hides, the damage one when it is off, stays out
   const rows = tables.flatMap((t) => $$('tbody tr', t).filter((tr) => !tr.hidden).map((tr) => {
-    const ids = $$('a[data-claim]', tr).map((a) => a.dataset.claim);
+    const f = tr.dataset.tr ? V.factorClaims(tr.dataset.tr) : { g: [], ml: [] }; // the row's own claims, then the factors its CO2e and water read
+    const ids = [...new Set([...$$('a[data-claim]', tr).map((a) => a.dataset.claim), ...f.g, ...f.ml])].filter((id) => D.receipts[id]);
     return [...[...tr.children].filter((n) => !n.hidden).map((n) => n.textContent.trim()), ids.join('; '), of(ids, 'status'), of(ids, 'limit')];
   }));
   const checked = $('.brief-meta .figure-num')?.textContent.trim() ?? '';
@@ -826,6 +889,7 @@ function onInput(e) {
     if (t.dataset.opt === 'waffle') $('[data-waffle-status]').textContent = $('.x-waffle:not([hidden]) figcaption strong').textContent; // no Reading on this plate says what changed
   } else if (t.dataset.field) { // the model's one rule for a typed figure, the same a scenario file meets, so nothing typed can overflow; a week holds 168 hours
     const name = t.dataset.field;
+    unclamp(t);
     const bad = t.value === '' || !fieldOk(name, +t.value);
     t.setAttribute('aria-invalid', bad);
     const [low, high] = fieldRange(name);
@@ -861,9 +925,17 @@ function settleField(t) {
   const end = t.value === '' || !Number.isFinite(v) ? (name === 'seats' ? S.seats : S.fields[name]) : Math.min(high, Math.max(low, v));
   if (name === 'seats') S.seats = end; else S.fields[name] = end;
   t.value = end;
-  t.setAttribute('aria-invalid', 'true');
-  $('[data-why]').textContent = `${fieldLabel(t)} takes a number from ${grouped(low)} to ${grouped(high)}, so ${grouped(end)} is used.`;
+  t.removeAttribute('aria-invalid'); // the field now holds a good value; the line under the fields says what happened, and stays until it is typed in again
+  const say = $('#clamp-use');
+  say.textContent = `${fieldLabel(t)} takes a number from ${grouped(low)} to ${grouped(high)}, so ${grouped(end)} is used.`;
+  say.hidden = false;
+  t.setAttribute('aria-describedby', say.id);
   refresh();
+}
+function unclamp(t) { // typing in a clamped field again retires its line
+  if (t.getAttribute('aria-describedby') !== 'clamp-use') return;
+  t.removeAttribute('aria-describedby');
+  $('#clamp-use').hidden = true;
 }
 function choose(plate, key) { // a reader's own selection: the figure they asked for shows at the top of the detail
   picked = key;
@@ -894,6 +966,7 @@ function startFrom(name) { // a starting point: who is counted and the device; t
 function resetAll(status) {
   Object.assign(S, V.fresh());
   Object.keys(picked0).forEach((k) => delete picked0[k]);
+  $$('[aria-describedby="clamp-use"]').forEach(unclamp);
   refresh('settings');
   $('[data-measured-why]').textContent = '';
   $('[data-scenario-status]').textContent = '';
@@ -916,7 +989,7 @@ function onClick(e) {
   else if (hit('[data-reset]')) { resetAll($('.plate-status', hit('.x-plate'))); announce(hit('.x-plate')); }
   else if (hit('[data-reset-all]')) resetAll($('[data-fine-status]'));
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
-  else if (hit('[data-example]')) project(true);
+  else if (hit('[data-example]')) { project(true); $('[data-pf="mw"]').focus(); $('[data-plate-x="project"] .plate-status').textContent = 'The Data Centers example is back in the fields.'; } // the button steps aside, so focus goes to the first field
   else if (hit('[data-outputs]')) window.plate.save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv'); // the kit's: made in the browser, sent nowhere, its blob URL let go
   else if (hit('[data-clear-measured]')) { S.measured = {}; refresh('settings'); $('[data-measured-why]').textContent = 'Your readings are cleared, and the model\'s figures are back.'; $('input[data-measured]').focus(); }
   else if (hit('[data-scenario-save]')) { $('[data-scenario-status]').textContent = ''; $('[data-scenario-warn]').hidden = false; $('[data-scenario-confirm]').focus(); } // the warning comes before the file exists
@@ -990,7 +1063,11 @@ if (D.carbon_damage) {
     td.hidden = true;
     tr.insertBefore(td, $('[data-c="claims"]', tr));
     const headRow = $('thead tr', tr.closest('table'));
-    if (!$('[data-damage-col]', headRow)) { const th = el('th', '', 'Damage'); th.scope = 'col'; th.dataset.damageCol = ''; th.hidden = true; headRow.insertBefore(th, headRow.lastElementChild); } // the head names the currency, and the caption the family, once
+    if (!$('[data-damage-col]', headRow)) { // the head names the currency, and the caption the family, once
+      const th = el('th', '', 'Damage'); th.scope = 'col'; th.dataset.damageCol = ''; th.hidden = true; headRow.insertBefore(th, headRow.lastElementChild);
+      const foot = $('td[data-factors]', tr.closest('table'));
+      if (foot) foot.colSpan += 1; // the foot spans the column too
+    }
     const caption = $('caption', tr.closest('table'));
     if (caption && !$('[data-damage-col]', caption)) { const note = el('span'); note.dataset.damageCol = ''; note.hidden = true; caption.append(note); }
   }

@@ -11,7 +11,7 @@ const lows = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[1
 const highs = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[2]]));
 const spreadAt = (spec, i) => V.run.spread(`pour:${spec}`, (t) => at(t, spec))[i];
 
-const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tags: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords(),
+const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tags: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), barLine: V.line(D.bar), adminWords: V.adminWords(),
   answers: { use: V.answer('use', 'wh'), where: V.answer('where', 'wh'), savings: V.answer('savings', 'wh') } };
 // The home ladder: each row at each boundary, from the same layers and spreads the Explorer prints, so the three boundaries cannot drift from it.
 const BOUNDARY = { dc: (l) => l.data_center, adds: (l) => l.data_center + l.network, whole: (l) => l.data_center + l.network + l.router + l.device };
@@ -45,6 +45,8 @@ for (const [id, spec] of Object.entries(D.boards)) {
   }
 }
 for (const name of ['use', 'where', 'arch', 'catalog']) out.details[name] = V.detailOf(D.first[name]);
+out.bestLever = V.bestLever('wh'); // the Savings answer's row, which the plot selects at the start
+out.factors = Object.fromEntries(Object.keys(D.rows).map((key) => [key, V.factorClaims(key)])); // each row's grid and water factor claims at the defaults, for its Table cell
 // What moves it most, at the defaults: the same rows explorer.js's movesOf draws live, line for line (the Explorer page check holds the two equal).
 function movesOf(key, m) {
   const r = V.at(V.t, key);
