@@ -1,7 +1,7 @@
 // The Energy and Water Use page (R2, Council Agenda). It opens with a brief and an agenda of four questions: the streamed hour (ru-hour, a meter), the 2030
 // forecasts (ru-forecasts), water counting the power plant (ru-water, a meter), and what to ask a developer or utility to disclose (a list face that ticks the
 // page's form). Six chapters follow under the rail, with ru-electricity and ru-boundary leading theirs; the rest is the page's own: closed disclosures that a
-// deep link opens, the rail, poured figures and claim marks, bench rows, three hand-kept figures, the meeting sheet's form, and the no-script page.
+// deep link opens, the rail, poured figures and claim marks, bench rows, four hand-kept figures, the meeting sheet's form, and the no-script page.
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +18,7 @@ const old = execFileSync('git', ['-C', ROOT, 'show', `${OLD_COMMIT}:${REL}`], { 
 const CLAIMS = {};
 for (const name of fs.readdirSync(path.join(ROOT, 'site/data/claims'))) for (const c of JSON.parse(read(`site/data/claims/${name}`)).claims || []) CLAIMS[c.id] = c;
 // The plates in page order, with their rows on the plot: the three faces, then the two chapter leads.
-const PLATES = { 'ru-hour': 4, 'ru-forecasts': 5, 'ru-water': 2, 'ru-electricity': 3, 'ru-boundary': 16 };
+const PLATES = { 'ru-hour': 4, 'ru-forecasts': 5, 'ru-water': 3, 'ru-electricity': 3, 'ru-boundary': 16 };
 const FACES = { 'face-hour': 'ru-hour', 'face-growth': 'ru-forecasts', 'face-water': 'ru-water', 'face-ask': null };
 const CHAPTERS = ['what-data-centers-use', 'what-drives-that-use', 'streaming-and-ai-compared-carefully', 'water', 'what-this-means-for-tribal-decisions', 'what-is-not-known'];
 
@@ -118,6 +118,9 @@ async function content() {
   for (const box of document.querySelectorAll('input[name="ask"]')) ok(box.value.startsWith(`${box.closest('fieldset').id}-`), `a question's value names its set: ${box.value}`);
   eq(new Set([...document.querySelectorAll('input[name="ask"]')].map((b) => b.value)).size, document.querySelectorAll('input[name="ask"]').length, 'no question twice');
   ok(document.querySelector('script[src$="sheet.js"]') && document.querySelectorAll('button.paper[data-sheet-open][data-js]').length >= 1, 'the sheet loads, with its button');
+  ok(document.querySelector('#what-this-means-for-tribal-decisions ~ .ru-intro a[href="#face-ask"]'), 'the prose names the disclosure table by a link to its face (P-ru critic 9)');
+  ok(/columns: 3 19rem/.test(read('site/assets/css/ru.css')), 'the question sets pack into columns, not grid rows (P-ru critic 8)');
+  ok(document.querySelector('#the-short-version > h2.sr-only#agenda-title') && document.getElementById('the-short-version').getAttribute('aria-labelledby') === 'agenda-title', 'an h2 stands between the h1 and the face titles (P-ru critic 18)');
   // The chapters and the rail.
   eq([...document.querySelectorAll('.ru-section > h2')].map((h) => h.id).join(), CHAPTERS.join(), 'six chapters, in order');
   eq([...document.querySelectorAll('.toc-chapters a')].map((a) => a.hash.slice(1)).join(), CHAPTERS.join(), 'the rail names each chapter');
@@ -182,7 +185,12 @@ async function content() {
   }
   // Table regions can be scrolled by keyboard and carry a name: the hand-kept figures' and each plate's.
   const regions = [...document.querySelectorAll('.table-wrap')];
-  eq(regions.length, 3, 'three hand-kept figures with tables: drivers, companies, disclosure');
+  eq(regions.length, 4, 'four hand-kept figures with tables: the resource ledger, drivers, companies, disclosure');
+  // The resource ledger: each resource at three scales, every figure a claim mark, every row opening its section (P-ru critic 15).
+  const ledger = document.getElementById('ru-ledger-title').closest('figure');
+  eq([...ledger.querySelectorAll('tbody th a')].map((a) => a.getAttribute('href')).join(), '#electricity,#water-use,#land,#materials', 'the ledger names the four resources');
+  for (const a of ledger.querySelectorAll('tbody th a')) ok(document.getElementById(a.hash.slice(1)).closest('details.ru-detail'), `${a.hash} opens its section`);
+  for (const td of ledger.querySelectorAll('tbody td')) ok(td.classList.contains('is-gap') ? /^None in this review$/.test(td.textContent) : td.querySelector('a.cr[data-claim]'), `a ledger cell is a claim mark or says there is none: ${td.textContent.slice(0, 30)}`);
   for (const r of regions) {
     eq(r.getAttribute('role'), 'region', 'region role');
     eq(r.getAttribute('tabindex'), '0', 'keyboard stop');
@@ -242,7 +250,7 @@ async function plates() {
     }
     ok(root.querySelector('.reading').textContent.length > 20, `${id}: a default Reading`);
     ok(root.querySelector('.plate-title').textContent.length <= 120, `${id}: a title of at most 120 characters`);
-    eq(root.querySelectorAll('.plate-controls').length, def.controls ? 1 : 0, `${id}: ${def.controls ? 'one setting, the meter\'s stop' : 'no setting to keep in the address'}`);
+    eq(root.querySelectorAll('.plate-controls, .plate-switch').length > 0, !!def.controls,`${id}: ${def.controls ? 'one setting, the meter\'s stop' : 'no setting to keep in the address'}`);
   }
   const plate = (id) => document.getElementById(id);
   // The hour (a meter): Carbon Trust's parts add up to its whole, the UK follow-up's two parts to its, and the data center's ruler is the hour's a hundred times larger.
@@ -252,11 +260,22 @@ async function plates() {
   eq(hour.plot.domain[1] / hour.plot.groups.find((g) => g.id === 'dc').domain[1], 100, 'the inset is the hour a hundred times larger');
   ok(holds(plate('ru-hour').querySelector('.plate-title').textContent, [`${num(v('fp-037'))} Wh`, `${num(v('fp-035'))} Wh`, figureOf(CLAIMS['fp-141'])]), 'the hour: 1 Wh of 188, and 0.6 (0.3 to 3.1) Wh');
   ok(row(plate('ru-hour'), 'ct-whole').querySelectorAll('.meter-part').length === 3 && row(plate('ru-hour'), 'desnz-whole').querySelectorAll('.meter-part').length === 2, 'the parts are drawn');
-  eq(row(plate('ru-hour'), 'ct-whole').querySelector('.ladder-value').textContent, `${v('fp-035')} Wh`, 'the hour starts whole');
+  eq(row(plate('ru-hour'), 'ct-whole').querySelector('.ladder-value').textContent, `${v('fp-037')} Wh`, 'the hour starts on the data center alone, the question it answers (P-ru critic 4)');
+  eq(row(plate('ru-hour'), 'ct-whole').querySelectorAll('.meter-part.is-ghost').length, 2, 'and the parts it leaves out are dashed');
+  // The UK follow-up's remainder is not split, so it has its own key, not the Network ink (P-ru critic 3).
+  const hourKey = [...plate('ru-hour').querySelectorAll('.plate-legend li')].map((li) => [li.firstElementChild.className, li.textContent]);
+  ok(hourKey.some(([cls, text]) => /is-p2/.test(cls) && text === 'Network') && hourKey.some(([cls, text]) => /is-p4/.test(cls) && /not split/.test(text)), 'the key names the unsplit remainder apart from Network');
+  ok(hour.rows.find((r) => r.id === 'desnz-whole').segments[1].label.includes('not split') && read('site/assets/css/ru.css').includes('[data-row="desnz-whole"] .meter-part.is-p2:not(.is-ghost)'), 'and its part wears that key');
   // Water (a meter): on site, then the power plant on the same scale.
   const water = plateFile('ru-water');
   eq(water.plot.domain.join(), '0,1000', 'one fixed scale for water');
   eq(row(plate('ru-water'), 'us-2023').querySelector('.ladder-value').textContent, `${num(v('tr-001') + v('tr-004'))} billion liters`, 'with the power plant, 66 and nearly 800');
+  // 2014 has no power plant figure, so it stands with 2023 on the on-site ruler, drawn at both settings (P-ru critic 6).
+  eq(water.plot.domain[1] / water.plot.groups.find((g) => g.id === 'site').domain[1], 10, 'the on-site ruler is the whole ten times larger');
+  ok(['site-2023', 'site-2014'].every((k) => !row(plate('ru-water'), k).classList.contains('is-gap') && row(plate('ru-water'), k).querySelector('.ladder-bar')), 'both years draw a bar');
+  ok(document.querySelector('.agenda-a[data-answer="ru-water"]').textContent.trim().endsWith(`about ${Math.round(v('ru-118'))} times as much.`), 'the answer rounds the ratio as its limit does');
+  // The growth face's answer is in its Reading: the AI figures, from the plate's own inputs (P-ru critic 5).
+  ok(holds(plate('ru-forecasts').querySelector('.reading').textContent, [`${num(v('dem-043'))} percent in 2025`, `${num(v('ru-005'))} percent of data center electricity`]), 'the growth face reads its AI figures beside the plot');
   ok(holds(plate('ru-water').querySelector('.plate-facts').textContent, [`${num(v('ru-027'))} billion gallons`, `${num(v('ru-118'))} times`, CLAIMS['ru-118'].limit]), 'gallons beside the plot, and the ratio with its limit');
   // Titles say the default's figures, from their claims.
   ok(holds(plate('ru-electricity').querySelector('.plate-title').textContent, [`${num(v('dem-040'))} TWh`, '2025', '2030']), 'electricity: 485 TWh in 2025');
@@ -343,16 +362,17 @@ async function behavior() {
     ok(p.plot.getAttribute('role') === 'listbox' && p.plot.getAttribute('tabindex') === '0' && p.plot.getAttribute('aria-labelledby') === `${id}-title`, `${id}: the plot is one named stop`);
     eq(p.plot.getAttribute('aria-activedescendant'), row(p.root, plateFile(id).default).id, `${id}: the default row is selected`);
   }
-  // The streamed hour: the whole hour, then the data center alone, the axis held and the parts outside it dashed.
+  // The streamed hour: the data center alone, the question it answers, then the whole hour, the axis held and the parts outside the data center dashed.
   const hour = part('ru-hour');
-  eq(`${hour.value.textContent} ${hour.unit.textContent}`, `${num(CLAIMS['fp-035'].value)} Wh`, 'the hour opens whole');
-  const reach = hour.root.querySelector('input[name="reach"][value="dc"]');
-  reach.checked = true;
-  fire(d.window, reach, 'input');
-  eq(`${hour.value.textContent} ${hour.unit.textContent}`, `${num(CLAIMS['fp-037'].value)} Wh`, 'Data center only: 1 Wh');
+  eq(`${hour.value.textContent} ${hour.unit.textContent}`, `${num(CLAIMS['fp-037'].value)} Wh`, 'the hour opens on the data center: 1 Wh');
   ok(holds(hour.reading.textContent, ['Carbon Trust', 'Data center only', `${num(CLAIMS['fp-037'].value)} Wh`]),`the Reading says the setting: ${hour.reading.textContent}`);
   eq(row(hour.root, 'ct-whole').querySelectorAll('.meter-part.is-ghost').length, 2, 'the network and the home are dashed, not counted');
-  ok(hour.root.querySelector('.plate-title').textContent.includes('Data center only'), 'the title follows the setting');
+  const reach = hour.root.querySelector('input[name="reach"][value="whole"]');
+  reach.checked = true;
+  fire(d.window, reach, 'input');
+  eq(`${hour.value.textContent} ${hour.unit.textContent}`, `${num(CLAIMS['fp-035'].value)} Wh`, 'Whole hour: 188 Wh');
+  eq(row(hour.root, 'ct-whole').querySelectorAll('.meter-part.is-ghost').length, 0, 'every part counted');
+  ok(hour.root.querySelector('.plate-title').textContent.includes('Whole hour'), 'the title follows the setting');
   fire(d.window, row(hour.root, 'desnz-dc'), 'click');
   ok(leads(hour.reading.textContent, ['UK follow-up, data center part', figureOf(CLAIMS['fp-141'])]), 'the inset row reads its claim');
   // Water: the power plant, then the site alone.
@@ -365,13 +385,13 @@ async function behavior() {
   // The boundary ruler: arrows cross from one ruler to the other, and stop at the ends.
   const edge = part('ru-boundary');
   key(d.window, edge.plot, 'ArrowDown');
-  ok(leads(edge.reading.textContent, ['One video hour, DIMPACT', `${num(CLAIMS['fp-122'].value)} Wh`]) && edge.reading.textContent.includes(CLAIMS['fp-122'].limit), 'ArrowDown moves to DIMPACT, with its limit');
+  ok(leads(edge.reading.textContent, ['Video hour, DIMPACT', `${num(CLAIMS['fp-122'].value)} Wh`]) && edge.reading.textContent.includes(CLAIMS['fp-122'].limit), 'ArrowDown moves to DIMPACT, with its limit');
   key(d.window, edge.plot, 'End');
   eq(`${edge.value.textContent} ${edge.unit.textContent}`, `${num(CLAIMS['fp-143'].value)} (${num(CLAIMS['fp-143'].low)} to ${num(CLAIMS['fp-143'].high)}) Wh`, 'End reaches the whole chain\'s last row');
   key(d.window, edge.plot, 'ArrowDown');
   eq(edge.plot.getAttribute('aria-activedescendant'), row(edge.root, 'desnz-whole').id, 'and stops there');
   key(d.window, edge.plot, 'Home');
-  ok(leads(edge.reading.textContent, ['One video hour, Carbon Trust, 2020', `${num(CLAIMS['fp-037'].value)} Wh`]), 'Home goes back to the first row');
+  ok(leads(edge.reading.textContent, ['Video hour, Carbon Trust, 2020', `${num(CLAIMS['fp-037'].value)} Wh`]), 'Home goes back to the first row');
   ok(row(edge.root, 'ct-dc').classList.contains('is-on') && !row(edge.root, 'ct-whole').classList.contains('is-on'), 'one row takes the orange: the selection');
   // Electricity: the projection names the IEA's other 2030 figure, with its limit.
   const power = part('ru-electricity');
@@ -423,7 +443,7 @@ async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   eq(document.querySelectorAll('.ru-section').length, 6, 'every chapter renders');
   eq(document.querySelectorAll('details').length, document.querySelectorAll('details summary').length, 'every disclosure has a summary');
-  eq([...document.querySelectorAll('summary')].filter((s) => s.textContent.trim().length < 20).length, 0, 'a summary is a sentence');
+  eq([...document.querySelectorAll('summary')].filter((s) => !s.closest('[data-plate]') && s.textContent.trim().length < 20).length, 0, 'a summary is a sentence');
   // The agenda: its questions are jump links and every face is in the page, whole.
   for (const a of document.querySelectorAll('.agenda-q > a')) ok(document.getElementById(a.hash.slice(1)), `${a.hash} lands`);
   for (const face of Object.keys(FACES)) ok(document.getElementById(face).textContent.trim().length > 100, `${face} reads without scripts`);

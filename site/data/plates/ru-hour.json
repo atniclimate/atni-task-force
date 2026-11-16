@@ -60,7 +60,7 @@
    "type": "segmented",
    "name": "reach",
    "label": "Counted",
-   "default": "whole",
+   "default": "dc",
    "options": [
     {
      "value": "dc",
@@ -84,6 +84,14 @@
   "units": {
    "Wh/hour": "Wh"
   },
+  "key": [
+   {"shape": "p1", "label": "Data center"},
+   {"shape": "p2", "label": "Network"},
+   {"shape": "p3", "label": "Home router, screen, and TV peripherals"},
+   {"shape": "p4", "label": "Network, router, and TV together (UK follow-up, not split)"},
+   {"shape": "ghost", "label": "Not counted at this setting"},
+   {"shape": "spread", "label": "Spread, not a confidence interval"}
+  ],
   "groups": [
    {
     "id": "hour",
@@ -178,7 +186,7 @@
      "modeled": true
     },
     {
-     "label": "Network, router, and TV, not split",
+     "label": "Network, router, and TV together, not split",
      "value": "desnz_rest",
      "modeled": true,
      "at": [

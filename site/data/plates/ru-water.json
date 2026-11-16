@@ -7,18 +7,15 @@
  "default": "us-2023",
  "eyebrow": "Water consumed by US data centers, billion liters",
  "title": "US data centers consumed {c[tr-001][text]} billion liters on site in 2023, and the power plants serving them nearly {c[tr-004][text]} billion more",
- "title_template": "{label}, counted {water}: {display}",
- "answer": "About {site} billion liters on site in 2023, and nearly {plant} billion more at the power plants: about {ratio} times as much.",
- "subtitle": "One fixed scale. Both parts are modeled from regional grid averages, not metered at any site.",
+ "title_template": "{water}, {label}: {display}",
+ "answer": "About {site} billion liters on site in 2023, and nearly {plant} billion more at the power plants: about {ratio:.0f} times as much.",
+ "subtitle": "One fixed scale, with the on-site water drawn ten times larger below it. All modeled by LBNL, not metered at any site.",
  "inputs": {
   "site": {
    "claim": "tr-001"
   },
   "plant": {
    "claim": "tr-004"
-  },
-  "site14": {
-   "claim": "tr-002"
   },
   "ratio": {
    "claim": "ru-118"
@@ -33,28 +30,44 @@
    "options": [
     {
      "value": "site",
-     "label": "on site only"
+     "label": "On site only"
     },
     {
      "value": "all",
-     "label": "with the power plant"
+     "label": "With the power plant"
     }
    ]
   }
  ],
- "not_counted": "No power plant figure for this year",
+ "not_counted": "Not counted at this setting",
  "plot": {
   "type": "meter",
   "domain": [
    0,
    1000
   ],
-  "switch": "water"
+  "switch": "water",
+  "groups": [
+   {
+    "id": "us",
+    "label": "On site and at the power plants, 2023"
+   },
+   {
+    "id": "site",
+    "label": "On site alone, drawn ten times larger",
+    "domain": [
+     0,
+     100
+    ],
+    "mark": "bar"
+   }
+  ]
  },
- "reading": "{label}, counted {water}: {display}, modeled. {evidence}",
+ "reading": "{label}: {display}, modeled. {boundary} {evidence}",
  "rows": [
   {
    "id": "us-2023",
+   "group": "us",
    "label": "US data centers, 2023",
    "unit": "billion liters",
    "digits": 3,
@@ -87,26 +100,20 @@
    ]
   },
   {
-   "id": "us-2014",
+   "id": "site-2023",
+   "group": "site",
+   "label": "US data centers, 2023",
+   "boundary": "On site only.",
+   "claim": "tr-001",
+   "modeled": true
+  },
+  {
+   "id": "site-2014",
+   "group": "site",
    "label": "US data centers, 2014",
-   "unit": "billion liters",
-   "digits": 3,
-   "cites": [
-    "tr-002"
-   ],
-   "formula": {
-    "site": {
-     "value": "site14"
-    },
-    "all": null
-   },
-   "segments": [
-    {
-     "label": "On site",
-     "value": "site14",
-     "modeled": true
-    }
-   ]
+   "boundary": "On site only. No power plant figure for this year.",
+   "claim": "tr-002",
+   "modeled": true
   }
  ],
  "also": [
@@ -130,7 +137,7 @@
  "table": {
   "columns": [
    {
-    "label": "Year",
+    "label": "Figure",
     "field": "label"
    },
    {

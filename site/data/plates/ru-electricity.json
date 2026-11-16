@@ -3,6 +3,7 @@
  "tier": "T0",
  "id": "ru-electricity",
  "page": "data-centers/resource-use/index.html",
+ "variant": "repeater",
  "default": "w-2025",
  "eyebrow": "Data center electricity, world, TWh a year",
  "title": "Worldwide use reached {c[dem-040][display]} in 2025, and the IEA's base case roughly doubles it by 2030",

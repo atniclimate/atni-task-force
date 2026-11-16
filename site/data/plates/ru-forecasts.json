@@ -24,7 +24,7 @@
    }
   ]
  },
- "reading": "{label}: {display}, modeled. {tag}. {evidence}",
+ "reading": "{label}: {display}, modeled. {boundary} Worldwide, AI-focused data centers grew {ai_growth} percent in 2025, and servers with AI chips drew {ai_share} percent of data center electricity in 2024. {evidence}",
  "rows": [
   {
    "id": "iea-2025",
@@ -35,7 +35,8 @@
    "modeled": true,
    "cols": {
     "scope": "World"
-   }
+   },
+   "boundary": "The IEA's last estimated year."
   },
   {
    "id": "iea-2030",
@@ -52,7 +53,8 @@
      "claim": "dem-041",
      "label": "The IEA's 2026 text for 2030"
     }
-   ]
+   ],
+   "boundary": "Projected in the IEA's base case."
   },
   {
    "id": "lbnl-2024",
@@ -63,30 +65,33 @@
    "modeled": true,
    "cols": {
     "scope": "United States"
-   }
+   },
+   "boundary": "LBNL's last historical year."
   },
   {
    "id": "lbnl-2030",
    "group": "us",
    "label": "LBNL, reference case, 2030",
-   "tag": "Projected; uncertainty range",
+   "tag": "Projected, range",
    "claim": "dem-029",
    "range_from": "dem-030",
    "projected": true,
    "cols": {
     "scope": "United States"
-   }
+   },
+   "boundary": "Projected; the range is LBNL's uncertainty range."
   },
   {
    "id": "epri-2030",
    "group": "us",
    "label": "EPRI, 2030",
-   "tag": "Projected; scenario range",
+   "tag": "Projected, range",
    "claim": "dem-051",
    "projected": true,
    "cols": {
     "scope": "United States"
-   }
+   },
+   "boundary": "Projected; the range spans EPRI's scenarios."
   }
  ],
  "also": [
@@ -104,7 +109,8 @@
   },
   {
    "claim": "ru-121",
-   "label": "Gartner, 06/2026, for 2030, world, a later forecast off the ruler"
+   "label": "Gartner, 06/2026, for 2030, world, a later forecast off the ruler",
+   "open": "over"
   },
   {
    "claim": "ru-089",
@@ -127,7 +133,7 @@
    },
    {
     "label": "Note",
-    "field": "tag"
+    "field": "boundary"
    },
    {
     "label": "Claims",

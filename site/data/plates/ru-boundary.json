@@ -6,11 +6,7 @@
  "default": "ct-dc",
  "eyebrow": "Energy per hour or per task, Wh, log ruler",
  "title": "Hold one boundary at a time: the data center alone, or the whole chain of a streamed hour",
- "subtitle": "A log ruler: each step is ten times the one before, so a short distance is a large difference. The open research model's video clip at {c[fp-067][text]} Wh sits more than three steps past the {c[fp-001][text]} Wh text prompt.",
- "text": [
-  "Inside the data center, a video hour is near {c[fp-037][text]} Wh on bottom-up accounts and far more on a top-down average, a median text prompt is {c[fp-001][text]} Wh, measured, and an AI video clip is about {c[fp-070][value]} to {c[fp-067][text]} Wh depending on the model.",
-  "With the screen and the network counted, an hour of streaming runs from {c[fp-120][text]} to {c[fp-143][value]} Wh by source, all modeled. No source measures a chat hour on this boundary."
- ],
+ "subtitle": "On this log ruler a short distance is a large difference: the open research model's video clip at {c[fp-067][text]} Wh sits more than three marks past the {c[fp-001][text]} Wh text prompt.",
  "plot": {
   "type": "ladder",
   "scale": "log",
@@ -39,7 +35,7 @@
   {
    "id": "ct-dc",
    "group": "dc",
-   "label": "One video hour, Carbon Trust, 2020",
+   "label": "Video hour, Carbon Trust, 2020",
    "boundary": "Data centers and delivery servers",
    "tag": "modeled",
    "claim": "fp-037",
@@ -51,7 +47,7 @@
   {
    "id": "dimpact",
    "group": "dc",
-   "label": "One video hour, DIMPACT",
+   "label": "Video hour, DIMPACT",
    "boundary": "Participants' own assessments",
    "tag": "company-reported",
    "claim": "fp-122",
@@ -62,7 +58,7 @@
   {
    "id": "desnz-dc",
    "group": "dc",
-   "label": "One video hour, DESNZ follow-up, 2026",
+   "label": "Video hour, UK follow-up, 2026",
    "boundary": "IT and non-IT energy, with shared processes apportioned across viewers",
    "tag": "modeled",
    "claim": "fp-141",
@@ -74,7 +70,7 @@
   {
    "id": "gemini",
    "group": "dc",
-   "label": "One median Gemini text prompt",
+   "label": "Gemini text prompt, median",
    "boundary": "Accelerators, host machine, idle capacity, data center overhead",
    "tag": "measured, in production",
    "claim": "fp-001",
@@ -85,8 +81,8 @@
   {
    "id": "frontier",
    "group": "dc",
-   "label": "One median query, frontier-scale models",
-   "boundary": "Bottom-up model of H100 servers, interquartile range",
+   "label": "Frontier-scale query, median",
+   "boundary": "Modeled from H100 server power; the range is the middle half of estimates",
    "tag": "modeled",
    "claim": "fp-017",
    "modeled": true,
@@ -98,7 +94,7 @@
    "id": "longer",
    "group": "dc",
    "label": "A query 15 times longer",
-   "boundary": "Same bottom-up model, interquartile range",
+   "boundary": "Same model; the range is the middle half of estimates",
    "tag": "modeled",
    "claim": "fp-019",
    "cites": [
@@ -228,7 +224,7 @@
   {
    "id": "desnz-whole",
    "group": "whole",
-   "label": "DESNZ follow-up, UK, 2026",
+   "label": "UK follow-up, 2026",
    "boundary": "Data center, network, television, low to high cases",
    "tag": "modeled",
    "claim": "fp-143",
