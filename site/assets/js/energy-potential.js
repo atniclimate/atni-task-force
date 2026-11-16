@@ -1,281 +1,227 @@
-// Energy types by stage across Tribes (the energy overview and energy/potential/): stacked bars and the alphabetical detail on the plate, then the Tribe-by-Tribe list on the
-// potential page. The plate's static table and the plain links to the JSON and CSV files stay when this script cannot run.
+// Energy types by stage (the overview and energy/potential/): each type's stages laid over its bar, inside the bar's own box, so nothing moves when they come.
+// On energy/potential/, the Tribe-by-type grid the build wrote (scripts/build_energy_pages.py): one Tab stop, arrows to move, the chosen cell's passages in
+// the side column, and marks that highlight rather than hide. Nothing is fetched; without scripts the grid is a table and every passage follows it.
 
-import { esc, href, fold, plural, STATES, getJSON, linkFilters, addOptions, closedDetail, hashTarget } from './util.js';
+import { esc, plural, STATES, linkFilters, address, writeAddress } from './util.js';
 
-const FILTERS = ['q', 'state', 'type', 'stage', 'check', 'has'];
-const CHECKS = { verified: 'Verified', needs_review: 'Needs review' };
-const STAGE_KEYS = { installed: 'Installed or operating', planned: 'Planned or funded', assessed: 'Assessed or sited', goal: 'Goal or interest' };
-let dataFile;
-const loadData = () => (dataFile ??= getJSON('data/energy-potential.json'));
+const STAGE_KEYS = ['installed', 'planned', 'assessed', 'goal']; // most advanced first, as the plate's columns hold them
+const STAGES = { 4: 'Installed or operating', 3: 'Planned or funded', 2: 'Assessed or sited', 1: 'Goal or interest' };
 
-// Stage classes run 1 (goal or interest) to 4 (installed or operating); data lists stages most advanced first.
-const stageClass = (stages, label) => {
-  const i = stages.findIndex((s) => s.label === label);
-  return i < 0 ? 0 : stages.length - i;
-};
-
-// Excerpts are verbatim cuts of page text: whitespace is collapsed for reading, and an ellipsis
-// marks a cut that starts or ends inside a sentence.
-function quote(text) {
-  const t = String(text).replace(/\s+/g, ' ').trim();
-  return `${/^[A-Z0-9"(“•]/.test(t) ? '' : '…'}${t}${/[.!?:;)"”]$/.test(t) ? '' : '…'}`;
-}
-
-function counts(data) {
-  const { energy_types: types, stages } = data.method;
-  const rows = new Map(types.map((t) => [t.id, stages.map(() => 0)]));
-  for (const tribe of data.tribes) {
-    for (const f of tribe.top) {
-      const i = stages.findIndex((s) => s.label === f.stage_label);
-      if (rows.has(f.type) && i >= 0) rows.get(f.type)[i] += 1;
-    }
-  }
-  return rows;
-}
-
-function citationHTML(c) {
-  return `<figure class="citation"><blockquote cite="${href(c.url)}"><p>${esc(quote(c.excerpt))}</p></blockquote>
-<figcaption><a href="${href(c.url)}">${esc(c.title)}</a>${c.year ? `, ${esc(c.year)}` : ''}, page ${esc(c.page)}</figcaption></figure>`;
-}
-
-function tribeHTML(tribe, stages, hit) {
-  const states = tribe.states.map((s) => STATES[s] || s).join(', ');
-  const pending = tribe.documents_pending_extraction
-    ? `; ${plural(tribe.documents_pending_extraction, 'more awaits', 'more await')} text extraction`
-    : '';
-  const meta = `${states || 'State not recorded'}. ${plural(tribe.documents_examined, 'document')} read${pending}.`;
-  const findings = tribe.top
-    .map((f) => `<li${hit(f) ? ' class="is-match"' : ''}><span class="finding-rank" aria-hidden="true">${esc(f.rank)}</span>
-<span class="finding-type"><span class="sr-only">Rank ${esc(f.rank)}: </span>${esc(f.label)}</span>
-<span class="tag stage stage-${stageClass(stages, f.stage_label)}">${esc(f.stage_label)}</span>
-<span class="tag${f.status === 'verified' ? '' : ' is-hollow'}">${esc(CHECKS[f.status] || f.status)}</span></li>`)
-    .join('');
-  const excerpts = tribe.top.reduce((n, f) => n + f.citations.length, 0);
-  const docs = new Set(tribe.top.flatMap((f) => f.citations.map((c) => c.doc_id))).size;
-  const evidence = tribe.top
-    .map((f) => `<h4>${esc(f.label)}: ${esc(f.stage_label.toLowerCase())}</h4>${f.citations.map(citationHTML).join('')}`)
-    .join('');
-  const documents = tribe.documents.length
-    ? `<details class="disclosure"><summary>Documents read (${tribe.documents.length})</summary><ul class="doc-list">${tribe.documents
-        .map((d) => `<li><a href="${href(d.url)}">${esc(d.title)}</a>${d.year ? ` (${esc(d.year)})` : ''}</li>`)
-        .join('')}</ul></details>`
-    : '';
-  const body = tribe.top.length
-    ? `<ol class="findings" role="list" aria-label="Energy types, ranked">${findings}</ol>
-${tribe.note ? `<p class="record-note">${esc(tribe.note)}</p>` : ''}
-<details class="disclosure"><summary>Evidence: ${esc(plural(excerpts, 'excerpt'))} from ${esc(plural(docs, 'document'))}</summary>${evidence}</details>
-${documents}
-<p class="record-links"><a href="../funding/?tribe=${encodeURIComponent(tribe.slug)}#by-tribe">Funding programs matched to these energy types</a></p>`
-    : `<p class="record-note"><strong>No energy type found.</strong> ${esc(tribe.note)}</p>${documents}`;
-  return `<li class="record tribe" id="${esc(tribe.slug)}"><h3>${esc(tribe.name)}</h3><p class="record-meta">${esc(meta)}</p>${body}</li>`;
-}
-
-function renderList(data, rows) {
-  const app = document.getElementById('potential-app');
-  if (!app) return null;
-  const form = app.querySelector('form');
-  const field = (name) => form.elements.namedItem(name);
-  const results = document.getElementById('potential-results');
-  const status = document.getElementById('potential-status');
-  const { energy_types: types, stages } = data.method;
-  const tribes = [...data.tribes].sort((a, b) => a.name.localeCompare(b.name));
-  const label = new Map(types.map((t) => [t.id, t.label]));
-  const text = new Map(
-    tribes.map((t) => [
-      t,
-      fold([
-        t.name,
-        ...t.states.map((s) => STATES[s] || s),
-        ...t.top.map((f) => f.label),
-        ...t.documents.map((d) => d.title),
-        ...t.top.flatMap((f) => f.citations.map((c) => c.excerpt)),
-      ].join(' ')),
-    ]),
-  );
-
-  const stateCodes = [...new Set(tribes.flatMap((t) => t.states))].sort((a, b) => (STATES[a] || a).localeCompare(STATES[b] || b));
-  addOptions(field('state'), stateCodes.map((s) => [s, STATES[s] || s, tribes.filter((t) => t.states.includes(s)).length]));
-  addOptions(field('type'), types.map((t) => [t.id, t.label, rows.get(t.id).reduce((a, b) => a + b, 0)]));
-  addOptions(field('stage'), stages.map((s) => [s.label, s.label, tribes.filter((t) => t.top.some((f) => f.stage_label === s.label)).length]));
-  addOptions(field('check'), Object.entries(CHECKS).map(([k, v]) => [k, v, tribes.filter((t) => t.top.some((f) => f.status === k)).length]));
-  const writeParams = linkFilters(form, FILTERS);
-
-  const render = () => {
-    const [q, state, type, stage, check, has] = FILTERS.map((n) => field(n).value);
-    const words = fold(q).split(/\s+/).filter(Boolean);
-    const narrowed = Boolean(type || stage || check);
-    const hit = (f) => narrowed && (!type || f.type === type) && (!stage || f.stage_label === stage) && (!check || f.status === check);
-    const shown = tribes.filter(
-      (t) =>
-        (!state || t.states.includes(state)) &&
-        (has !== 'yes' || t.top.length) &&
-        (has !== 'no' || !t.top.length) &&
-        (!narrowed || t.top.some(hit)) &&
-        words.every((w) => text.get(t).includes(w)),
-    );
-    results.innerHTML = shown.map((t) => tribeHTML(t, stages, hit)).join('');
-    const filtered = Boolean(words.length || state || has || narrowed);
-    const about = type ? ` with ${label.get(type).toLowerCase()} in their plans` : '';
-    status.textContent = shown.length
-      ? `Showing ${shown.length} of ${plural(tribes.length, 'Tribe')}${filtered ? about : ''}.`
-      : 'No Tribe matches. Clear the filters or change the search.';
-    writeParams();
-  };
-
-  let typing;
-  form.addEventListener('input', (event) => {
-    window.clearTimeout(typing);
-    if (event.target === field('q')) typing = window.setTimeout(render, 250);
-    else render();
-  });
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    window.clearTimeout(typing);
-    render();
-  });
-  form.querySelector('[data-clear]').addEventListener('click', () => {
-    for (const name of FILTERS) field(name).value = '';
-    render();
-    field('q').focus();
-  });
-
-  render();
-  app.hidden = false;
-  // The list is drawn after load, so the browser's own jump to a Tribe's #id has nothing to land on yet.
-  hashTarget()?.scrollIntoView();
-
-  return (type) => {
-    for (const name of FILTERS) field(name).value = name === 'type' ? type : '';
-    render();
-    document.getElementById('tribes')?.focus();
-  };
-}
-
-// One Tribe in a plate's detail: its name links to its existing entry, with its stage, its check, and its cited excerpts. Alphabetical by name, so the list is never a ranking.
-function tribeLine(tribe, finding, stages, entry) {
-  const cites = finding.citations;
-  return `<li><a href="${entry}#${encodeURIComponent(tribe.slug)}">${esc(tribe.name)}</a>
-<span class="tag stage stage-${stageClass(stages, finding.stage_label)}">${esc(finding.stage_label)}</span>
-<span class="tag${finding.status === 'verified' ? '' : ' is-hollow'}">${esc(CHECKS[finding.status] || finding.status)}</span>
-<details class="plate-more"><summary>${esc(plural(cites.length, 'cited excerpt'))}</summary>${cites.map(citationHTML).join('')}</details></li>`;
-}
-
-// The plate is drawn by the build as bars of totals, which is what shows without scripts. The stage ramp, the key, and the list of Tribes are this page's own: see docs/PLATE-KIT.md, "Page script".
-function typesPlate(figure, pick) {
-  const id = figure.dataset.plate;
-  const onThisPage = id === 'energy-types-by-stage-plans';
-  const entry = onThisPage ? '' : 'potential/';
-  let shown = null;
-  let timer;
-  const parts = {};
-
-  const fillTribes = async () => {
-    const key = shown;
-    try {
-      const data = await loadData();
-      if (key !== shown) return;
-      const list = data.tribes
-        .flatMap((t) => t.top.filter((f) => f.type === key).map((f) => [t, f]))
-        .sort(([a], [b]) => a.name.localeCompare(b.name));
-      parts.tribes.innerHTML = list.length
-        ? `<ul class="energy-tribe-list" role="list">${list.map(([t, f]) => tribeLine(t, f, data.method.stages, entry)).join('')}</ul>`
-        : '<p class="caption">No published finding names this type. That reflects the documents in the library, not Tribal positions.</p>';
-    } catch (error) {
-      parts.tribes.innerHTML = `<p class="caption">The list could not load. It is in <a href="${href('data/energy-potential.json')}">energy-potential.json</a>.</p>`;
-      console.warn(error);
-    }
-  };
-
-  const setUp = (ctx) => {
-    const [, top] = ctx.data.plot.domain;
-    for (const row of ctx.data.rows) {
-      const node = ctx.plot.querySelector(`[data-row="${row.key}"]`);
-      const bar = document.createElement('span');
-      bar.className = 'stack-bar';
-      bar.setAttribute('aria-hidden', 'true');
-      Object.keys(STAGE_KEYS).forEach((key, i) => {
-        const n = +row.cols[key];
-        if (!n) return;
-        const part = document.createElement('i');
-        part.className = `stage-${4 - i}`;
-        part.style.setProperty('--w', n / top);
-        bar.append(part);
-      });
-      node.querySelector('.ladder-track').append(bar);
-      node.classList.toggle('is-zero', !row.value);
-    }
-    // The key leads the row the kit keeps under the plot for Read as a table; a second row of its own would lie over that one.
-    figure.querySelector(':scope > .plate-under').insertAdjacentHTML('afterbegin', `<ul class="legend plate-legend" aria-label="Most advanced stage found">${Object.values(STAGE_KEYS).map((label, i) => `<li><i class="plate-square stage-${4 - i} energy-key"></i>${esc(label)}</li>`).join('')}</ul>`);
-    // The figures the build wrote as sentences stand large; a sentence stays one sentence aloud.
-    for (const p of figure.querySelectorAll('.plate-claim > p:not([class])')) {
-      const match = /^([\d,]+) (.+)$/.exec(p.textContent);
-      if (!match) continue;
-      const big = document.createElement('span');
-      big.className = 'energy-figure';
-      big.textContent = match[1];
-      p.replaceChildren(big, ` ${match[2]}`);
-    }
-    // What the build leaves in the claim zone for no scripts moves beside the Reading, where selecting a row asks about it. The button stays beside the figures, on the first screen.
-    const reading = figure.querySelector('.plate-detail');
-    const actions = reading.querySelector('.plate-actions');
-    const feet = [...figure.querySelectorAll('.plate-claim > .plate-foot')];
-    parts.read = feet.map((p) => p.querySelector('a[href$="#tribes"]')).find(Boolean);
-    parts.read.classList.add('button');
-    const states = document.createElement('div');
-    states.className = 'energy-states';
-    states.append(...feet.filter((p) => !p.querySelector('a')));
-    parts.more = document.createElement('details');
-    parts.more.className = 'plate-more energy-tribes';
-    parts.summary = document.createElement('summary');
-    parts.tribes = document.createElement('div');
-    parts.more.append(parts.summary, parts.tribes);
-    parts.more.addEventListener('toggle', () => { if (parts.more.open) fillTribes(); });
-    actions.before(states, feet.find((p) => p.querySelector('a[href$=".json"]')), parts.more); // B1 (R2 kit): the window's parts may sit in closedDetail's disclosure
-    if (onThisPage) {
-      parts.read.addEventListener('click', (event) => {
-        event.preventDefault();
-        pick(shown);
-      });
-      // An entry a filter has hidden is not there to land on, so the filter clears first.
-      parts.tribes.addEventListener('click', (event) => {
-        const link = event.target.closest('a[href^="#"]');
-        if (link && !document.getElementById(decodeURIComponent(link.hash.slice(1)))) pick('');
-      });
-    }
-  };
-
-  closedDetail(figure);
-  window.plate.register(id, {
+// The stages over each bar: a segment per stage with a count, in the key's ramp; the row's words and the Table say the same aloud.
+function stacks(figure) {
+  window.plate.register(figure.dataset.plate, {
     render(ctx) {
       ctx.auto();
-      if (!parts.more) setUp(ctx);
-      const [row] = ctx.rows;
-      const [, top] = ctx.data.plot.domain;
-      const at = row.value / top;
-      ctx.plot.style.setProperty('--stack-at', at);
-      const needle = ctx.plot.querySelector('.ladder-needle');
-      needle.classList.toggle('is-flip', at > 0.6);
-      const label = needle.querySelector('.needle-label') || needle.appendChild(document.createElement('span'));
-      label.className = 'needle-label';
-      label.textContent = `${row.label}, ${plural(row.value, 'Tribe')}`;
-      shown = ctx.key;
-      parts.read.href = onThisPage ? `?type=${encodeURIComponent(shown)}#tribes` : `potential/?type=${encodeURIComponent(shown)}#tribes`;
-      parts.summary.textContent = `${row.label}: the Tribes, alphabetically (${row.value})`;
-      clearTimeout(timer); // a pointer passing over rows previews them; the list waits for it to settle
-      if (parts.more.open) timer = setTimeout(fillTribes, 150);
+      if (figure.querySelector('.stack-bar')) return;
+      for (const row of ctx.data.rows) {
+        const track = ctx.plot.querySelector(`[data-row="${row.key}"] .ladder-track`);
+        if (!track || !row.value) continue;
+        const bar = Object.assign(document.createElement('span'), { className: 'stack-bar' });
+        bar.setAttribute('aria-hidden', 'true');
+        STAGE_KEYS.forEach((key, i) => {
+          const n = Number(row.cols?.[key]);
+          if (!n) return;
+          const part = Object.assign(document.createElement('i'), { className: `stage-${4 - i}` });
+          part.style.setProperty('--n', n);
+          part.append(Object.assign(document.createElement('b'), { textContent: n }));
+          bar.append(part);
+        });
+        track.append(bar);
+      }
     },
   });
 }
+document.querySelectorAll('[data-plate^="energy-types"]').forEach(stacks);
 
-const plates = [...document.querySelectorAll('[data-plate^="energy-types"]')];
-let pick = () => {};
-plates.forEach((figure) => typesPlate(figure, (type) => pick(type)));
-if (document.getElementById('potential-app')) {
-  loadData()
-    .then((data) => { pick = renderList(data, counts(data)) || pick; })
-    .catch((error) => {
-      for (const note of document.querySelectorAll('[data-load-error]')) note.hidden = false;
-      console.warn(error);
-    });
+// The grid. Cells are the table's own; a roving tabindex keeps one Tab stop, and the side column follows the chosen cell.
+function grid(table) {
+  const form = document.getElementById('tt-filters');
+  const side = document.getElementById('tt-side');
+  const title = side.querySelector('.tt-side-title');
+  const body = side.querySelector('.tt-side-body');
+  const status = document.getElementById('tt-status');
+  const evidence = document.getElementById('tt-evidence');
+  const tbody = table.tBodies[0];
+  const original = [...tbody.rows];
+  const heads = [...table.tHead.rows[0].cells].slice(1);
+  const types = heads.map((th) => [th.dataset.type, th.textContent.trim()]);
+  const field = (name) => form.elements.namedItem(name);
+  const total = original.length;
+  let active = null;
+
+  table.setAttribute('role', 'grid');
+  table.setAttribute('aria-describedby', 'tt-status');
+  for (const a of table.querySelectorAll('tbody th a')) a.tabIndex = -1; // the row's cells are its stops; the link stays for a pointer and for print
+  const cells = () => [...tbody.rows].filter((r) => !r.classList.contains('is-group')).map((r) => [...r.querySelectorAll('td[data-tt]')]);
+  for (const td of table.querySelectorAll('td[data-tt]')) td.tabIndex = -1;
+
+  // Options from the grid itself, so the lists and the grid cannot disagree. Each select's width is set by the form's columns, so filling it moves nothing.
+  const fill = (select, rows) => select.insertAdjacentHTML('beforeend', rows.map(([v, label]) => `<option value="${esc(v)}">${esc(label)}</option>`).join(''));
+  fill(field('tribe'), original.map((r) => [r.dataset.tribe, r.querySelector('th a').textContent]));
+  const states = [...new Set(original.flatMap((r) => r.dataset.states.split(' ').filter(Boolean)))].sort((a, b) => (STATES[a] || a).localeCompare(STATES[b] || b));
+  fill(field('state'), states.map((s) => [s, STATES[s] || s]));
+  fill(field('type'), types);
+  fill(field('stage'), Object.entries(STAGES).reverse()); // most advanced first
+
+  const section = (slug) => evidence.querySelector(`#${CSS.escape(slug)}`);
+  const strip = (node) => { node.removeAttribute('id'); for (const n of node.querySelectorAll('[id]')) n.removeAttribute('id'); return node; };
+  const typeName = (id) => types.find(([t]) => t === id)?.[1] || id;
+
+  function show(td) {
+    const [slug, type] = td.dataset.tt.split('--');
+    const tribe = section(slug);
+    const finding = tribe?.querySelector(`#${CSS.escape(td.dataset.tt)}`);
+    title.textContent = tribe?.querySelector('h3').textContent || slug;
+    const parts = [strip(tribe.querySelector('.record-meta').cloneNode(true))];
+    if (finding) parts.push(strip(finding.cloneNode(true)));
+    else {
+      const none = Object.assign(document.createElement('p'), { textContent: `No finding for ${typeName(type).toLowerCase()} in this Tribe’s public plans in the library. That is not evidence of opposition or disinterest.` });
+      parts.push(none, ...[...tribe.querySelectorAll(':scope > .record-note')].map((n) => strip(n.cloneNode(true))));
+    }
+    const others = [...tribe.querySelectorAll('.tt-finding')];
+    if (others.length) {
+      const list = Object.assign(document.createElement('ul'), { className: 'tt-others' });
+      list.setAttribute('aria-label', 'This Tribe’s energy types');
+      for (const f of others) {
+        const b = Object.assign(document.createElement('button'), { type: 'button', textContent: typeName(f.dataset.type) });
+        b.setAttribute('aria-pressed', String(f === finding));
+        b.addEventListener('click', () => choose(table.querySelector(`td[data-tt="${CSS.escape(`${slug}--${f.dataset.type}`)}"]`), { focus: true }));
+        const li = document.createElement('li');
+        li.append(b);
+        list.append(li);
+      }
+      parts.push(list);
+    }
+    parts.push(strip(tribe.querySelector('.record-links').cloneNode(true)));
+    body.replaceChildren(...parts);
+  }
+
+  function choose(td, { focus = false, write = true } = {}) {
+    if (!td) return;
+    if (active) { active.classList.remove('is-on'); active.tabIndex = -1; active.removeAttribute('aria-selected'); }
+    active = td;
+    td.classList.add('is-on');
+    td.tabIndex = 0;
+    td.setAttribute('aria-selected', 'true');
+    show(td);
+    if (focus) td.focus({ preventScroll: false });
+    if (write) {
+      const { anchor, params } = address();
+      params.set('tt', td.dataset.tt);
+      writeAddress(anchor && !section(anchor) && !table.querySelector(`[data-tt="${CSS.escape(anchor)}"]`) ? anchor : '', params);
+    }
+  }
+
+  table.addEventListener('click', (event) => {
+    const td = event.target.closest('td[data-tt]');
+    const row = event.target.closest('tbody th');
+    if (td) choose(td, { focus: true });
+    else if (row) { event.preventDefault(); choose(firstOf(row.parentElement), { focus: true }); }
+  });
+  table.addEventListener('keydown', (event) => {
+    const td = event.target.closest('td[data-tt]');
+    if (!td) return;
+    const grid = cells();
+    const r = grid.findIndex((row) => row.includes(td));
+    const c = grid[r].indexOf(td);
+    const last = grid.length - 1;
+    const width = grid[r].length - 1;
+    const to = {
+      ArrowRight: [r, Math.min(width, c + 1)], ArrowLeft: [r, Math.max(0, c - 1)], ArrowDown: [Math.min(last, r + 1), c], ArrowUp: [Math.max(0, r - 1), c],
+      Home: event.ctrlKey ? [0, 0] : [r, 0], End: event.ctrlKey ? [last, grid[last].length - 1] : [r, width],
+      PageDown: [Math.min(last, r + 10), c], PageUp: [Math.max(0, r - 10), c],
+    }[event.key];
+    if (to) {
+      event.preventDefault();
+      choose(grid[to[0]][to[1]], { focus: true });
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      title.focus(); // the passages are next in the reading order of the side column
+    }
+  });
+  side.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && active) { event.preventDefault(); active.focus(); }
+  });
+
+  const firstOf = (row) => row.querySelector('td[data-stage]') || row.querySelector('td[data-tt]');
+
+  // Marks: a filter highlights what matches and dims the rest, so nothing a reader is looking at disappears. The order moves rows, never their cells.
+  const writeParams = linkFilters(form, ['order', 'tribe', 'state', 'type', 'stage', 'check']);
+  function order() {
+    for (const g of tbody.querySelectorAll('tr.is-group')) g.remove();
+    if (form.elements.namedItem('order').value !== 'state') { tbody.append(...original); return; }
+    const first = (r) => r.dataset.states.split(' ')[0] || 'ZZ';
+    const name = (s) => STATES[s] || (s === 'ZZ' ? 'State not recorded' : s);
+    const sorted = [...original].sort((a, b) => name(first(a)).localeCompare(name(first(b))));
+    let current = '';
+    for (const row of sorted) {
+      if (first(row) !== current) {
+        current = first(row);
+        const head = document.createElement('tr');
+        head.className = 'is-group';
+        head.innerHTML = `<th scope="colgroup" colspan="${heads.length + 1}">${esc(name(current))}</th>`;
+        tbody.append(head);
+      }
+      tbody.append(row);
+    }
+  }
+  function mark() {
+    const [state, type, stage, check] = ['state', 'type', 'stage', 'check'].map((n) => field(n).value);
+    const narrowed = Boolean(type || stage || check);
+    let matched = 0;
+    const tribes = new Set();
+    for (const row of original) {
+      const inState = !state || row.dataset.states.split(' ').includes(state);
+      row.classList.toggle('is-dim', !inState);
+      for (const td of row.querySelectorAll('td[data-tt]')) {
+        const [, t] = td.dataset.tt.split('--');
+        const hit = inState && narrowed && td.dataset.stage && (!type || t === type) && (!stage || td.dataset.stage === stage) && (!check || td.dataset.check === check);
+        td.classList.toggle('is-dim', (narrowed && !hit) || !inState);
+        if (hit) { matched += 1; tribes.add(row); }
+      }
+      if (!narrowed && inState && state) tribes.add(row);
+    }
+    for (const th of heads) th.classList.toggle('is-mark', th.dataset.type === type);
+    const where = state ? ` in ${STATES[state] || state}` : '';
+    status.textContent = narrowed
+      ? `${plural(matched, 'cell')} marked, in ${tribes.size} of ${plural(total, 'Tribe')}${where}. The others are dimmed, not removed.`
+      : state ? `${plural(tribes.size, 'Tribe')} of ${total} marked${where}. The others are dimmed, not removed.` : '';
+    writeParams();
+  }
+  form.addEventListener('change', (event) => {
+    if (event.target.name === 'order') order();
+    if (event.target.name === 'tribe') {
+      const row = original.find((r) => r.dataset.tribe === event.target.value);
+      if (row) { choose(firstOf(row), { focus: false }); row.scrollIntoView({ block: 'nearest', behavior: 'instant' }); }
+      writeParams();
+      return;
+    }
+    mark();
+  });
+  form.addEventListener('submit', (event) => event.preventDefault());
+  form.querySelector('[data-clear]').addEventListener('click', () => {
+    for (const name of ['state', 'type', 'stage', 'check', 'tribe']) field(name).value = '';
+    mark();
+    field('state').focus();
+  });
+
+  // Where the address lands: a cell (tt=), a Tribe's entry (#slug or #slug--type, as old links and the Funding page write them), or the first finding.
+  function land() {
+    const { anchor, params } = address();
+    let id = '';
+    try { id = decodeURIComponent(anchor); } catch { /* names nothing */ }
+    const named = params.get('tt') || id;
+    const cell = named && table.querySelector(`td[data-tt="${CSS.escape(named)}"]`);
+    const row = !cell && id && original.find((r) => r.dataset.tribe === id);
+    const pick = field('tribe').value && original.find((r) => r.dataset.tribe === field('tribe').value);
+    const target = cell || (row && firstOf(row)) || (pick && firstOf(pick));
+    choose(target || table.querySelector('td[data-stage]'), { write: false, focus: Boolean(cell && !params.get('tt') || row) });
+    if (target && (cell || row)) target.closest('tr').scrollIntoView({ block: 'center', behavior: 'instant' });
+  }
+  order();
+  mark();
+  land();
+  window.addEventListener('hashchange', () => { if (!window.siteAddress.followed || section(address().anchor)) land(); });
 }
+const table = document.getElementById('tt-grid');
+if (table && document.getElementById('tt-side')) grid(table);

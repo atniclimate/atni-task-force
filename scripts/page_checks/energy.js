@@ -1,11 +1,14 @@
-// The Energy pages with their real scripts and data: stacked bars and the needle, the alphabetical detail, the deadlines strip at fixed dates, and what shows without scripts.
-// jsdom cannot run a module, so each page's modules run here as plain scripts with the imports inlined; nothing else about them changes. The clock is fixed, so no check goes stale.
-const { JSDOM, ok, eq, read, receiptsOn, open, fire, key, wait, settle, settings } = require('./lib');
+// The Energy pages with their real scripts and data (DIRECTION-R2 section 4, P-energy): the overview's agenda with nothing fetched, the stage bars, the
+// countdown by keyboard, Funding's catalog as one list box with marks that never hide a program, the Tribe picker, Potential's Tribe-by-type grid, and what
+// shows without scripts. jsdom cannot run a module, so each page's module runs here as a plain script with util.js inlined. The clock is fixed.
+const { JSDOM, ok, eq, read, receiptsOn, open, fire, key, wait, settings } = require('./lib');
 
 const util = read('site/assets/js/util.js').replace(/^export (async function|function|const) /gm, '$1 ').replace('import.meta.url', "'http://localhost/site/assets/js/util.js'");
 const classic = (rel) => read(rel).replace(/^import .*$/m, '');
 const claims = Object.fromEntries(['potential', 'funding'].flatMap((name) => JSON.parse(read(`site/data/claims/${name}.json`)).claims.map((c) => [c.id, c])));
 const POTENTIAL = JSON.parse(read('site/data/energy-potential.json'));
+const FUNDING = JSON.parse(read('site/data/energy-funding.json'));
+const SCRIPTS = ['energy-potential.js', 'energy-funding.js', 'policy-watch.js'];
 
 function page(rel, modules) {
   const others = /<script type="module"[^>]*><\/script>\s*/g;
@@ -13,8 +16,8 @@ function page(rel, modules) {
   return read(rel).replace(others, '').replace('</body>', `${inline}</body>`);
 }
 
-async function load(rel, modules, query = '', today = [2026, 10, 5]) {
-  const loaded = await open(page(rel, modules), `http://localhost/${rel}${query}`, (window) => {
+async function load(rel, modules, hash = '', today = [2026, 10, 16]) {
+  const loaded = await open(page(rel, modules), `http://localhost/${rel}${hash}`, (window) => {
     const Real = window.Date;
     const now = new Real(...today, 12).getTime();
     window.Date = class extends Real {
@@ -22,246 +25,272 @@ async function load(rel, modules, query = '', today = [2026, 10, 5]) {
       static now() { return now; }
     };
     window.ResizeObserver = class { observe() {} };
-    window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id; };
-    window.fetch = async (url) => ({ ok: true, json: async () => JSON.parse(read(new URL(url).pathname.slice(1))) });
+    window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id || this.dataset?.tribe || this.tagName; };
+    window.fetched = [];
+    window.fetch = async (url) => { window.fetched.push(String(url)); throw new Error(`fetched ${url}`); };
+    window.CSS = window.CSS || {};
+    window.CSS.escape = window.CSS.escape || ((s) => String(s).replace(/[^\w-]/g, (c) => `\\${c}`));
   });
-  await wait(20); // the promises of a module that reads a data file
+  await wait(20);
   return loaded;
 }
-const overview = (query, today) => load('site/energy/index.html', ['energy-potential.js', 'energy-funding.js'], query, today);
+const overview = (hash, today) => load('site/energy/index.html', ['energy-potential.js'], hash, today);
+const funding = (hash, today) => load('site/energy/funding/index.html', ['energy-funding.js'], hash, today);
+const potential = (hash) => load('site/energy/potential/index.html', ['energy-potential.js'], hash);
 const row = (root, name) => root.querySelector(`[data-row="${name}"]`);
 const reading = (root) => root.querySelector('.reading').textContent;
-const panel = (root) => root.querySelector('.plate-detail > details');
-const view = (root) => root.dataset.view;
 
+// Without scripts every page reads in full: the agenda's faces stack, each plate shows its plot, Reading and Table, the catalog lists every program and
+// then each detail, and the grid is a table with every passage after it.
 async function noScripts() {
-  for (const [rel, types, deadlines] of [['site/energy/index.html', 'energy-types-by-stage', 'energy-deadlines'], ['site/energy/potential/index.html', 'energy-types-by-stage-plans', null], ['site/energy/funding/index.html', null, 'energy-deadlines-catalog']]) {
-    const { document } = new JSDOM(read(rel)).window;
-    ok(!document.querySelector('.plate-detail details.energy-detail'), 'without scripts the panel stands open, as the build wrote it');
-    if (types) {
-      const plate = document.getElementById(types);
-      eq(plate.querySelectorAll('.ladder-row').length, 13, 'every type is in the list');
-      ok(row(plate, 'efficiency').textContent.includes(`${claims['ep-032'].value} Tribes`), 'each row prints its count');
-      eq(row(plate, 'offshore-wind').querySelector('.ladder-value').textContent, '0 Tribes', 'a row with no finding prints 0');
-      ok(plate.querySelector('.ladder-bar'), 'a bar of the total stands for the stages');
-      const table = plate.querySelector('.plate-table').textContent;
-      ok(table.includes('Installed or operating') && table.includes('ep-032'), 'the Table holds the stages and the claim');
-      ok(/machine-assisted reading of public plans/.test(plate.textContent) && /absence is not evidence/.test(plate.textContent), 'the caveats are there');
-      ok(/No finding after search: 9 Tribes/.test(plate.textContent) && /Pending text extraction: 22 documents, held by 11 Tribes/.test(plate.textContent), 'the states are there');
-      ok(!POTENTIAL.tribes.some((t) => plate.textContent.includes(t.name)), 'no Tribe is named');
-    }
-    if (deadlines) {
-      const plate = document.getElementById(deadlines);
-      for (const date of ['11/05/2026', '12/11/2026', '02/17/2027', '08/31/2028']) ok(plate.querySelector('.plate-plot').textContent.includes(date), `the static page shows ${date}`);
-      ok(!/\bdays\b/.test(plate.querySelector('.plate-plot').textContent), 'days until need the browser');
-      ok(plate.querySelector('.plate-title').textContent.includes('the first on 11/05/2026; 8 more programs'), 'the static title cannot go stale');
-      ok(!document.querySelector('[data-strip]'), 'the strip is built with scripts');
-    }
-  }
+  const doc = (rel) => new JSDOM(read(rel)).window.document;
+  const energy = doc('site/energy/index.html');
+  eq(energy.querySelectorAll('.agenda-q').length, 3, 'three questions on the overview');
+  for (const face of ['face-plans', 'face-money', 'face-work']) ok(energy.getElementById(face), `${face} stands`);
+  ok(!energy.querySelector('.section-strip') && energy.querySelectorAll('.brief-name a').length === 3, 'the family row replaces the section strip');
+  ok(!energy.querySelector('[data-library-feed], .energy-bench, .bench-row'), 'the library feed and the climate row are gone');
+  ok(energy.querySelector('a[href="../data-centers/#climate"]'), 'the climate figure is a link to its Where tab');
+  eq(energy.querySelectorAll('.climate-voice').length, 1, 'one Climate mark on the page (energy-18)');
+  eq(energy.querySelectorAll('.agenda-a[data-answer]').length, 2, 'two answers read from their plates');
+  ok([...energy.querySelectorAll('.agenda-a[data-answer]')].every((p) => p.textContent.trim()), 'each holds its starting answer');
+  const types = energy.getElementById('energy-types-by-stage');
+  eq(types.querySelectorAll('.ladder-row').length, 13, 'every type is in the list');
+  ok(row(types, 'efficiency').textContent.includes(`${claims['ep-032'].value} Tribes`), 'each row prints its count');
+  eq(row(types, 'offshore-wind').querySelector('.ladder-value').textContent, '0 Tribes', 'a row with no finding prints 0');
+  eq(types.querySelectorAll('.plate-legend li').length, 4, 'the key of the stages is built');
+  const top = JSON.parse(energy.getElementById('plate-data-energy-types-by-stage').textContent).plot.domain[1];
+  ok(top / claims['ep-032'].value <= 1.25, `the axis ends near the longest bar: ${top} for ${claims['ep-032'].value} (energy-06)`);
+  ok(!types.querySelector('.ladder-needle:not([hidden])') || types.querySelector('.plate-plot').classList.contains('no-needle'), 'no line stands across the bars');
+  ok(/machine-assisted reading of public plans/.test(types.textContent) && /absence is not evidence/.test(types.textContent), 'the caveats are on the plate');
+  ok(!POTENTIAL.tribes.some((t) => types.textContent.includes(t.name)), 'no Tribe is named on the plate');
+  const money = energy.getElementById('energy-deadlines');
+  eq(money.dataset.kind, 'countdown', 'the deadlines are a countdown');
+  for (const date of ['11/05/2026', '12/11/2026', '02/17/2027', '08/31/2028']) ok(money.querySelector('.plate-plot').textContent.includes(date), `the static page shows ${date}`);
+  ok(!/the first on/.test(money.querySelector('.plate-title').textContent), 'the title says nothing the clock can change');
+  eq(energy.querySelectorAll('[data-policy-searches] .watch-item').length, 13, 'the saved searches are on the page');
+  eq(energy.querySelectorAll('[data-policy-follow] .watch-item').length, 12, 'and the follow list');
+  ok(!energy.querySelector('[data-prefill-note]'), 'no development note');
+  for (const script of ['energy-funding.js', 'policy-watch.js', 'library.js']) ok(!read('site/energy/index.html').includes(`assets/js/${script}`), `the overview loads no ${script}`);
+
+  const fund = doc('site/energy/funding/index.html');
+  eq(fund.querySelectorAll('.catalog-item').length, FUNDING.programs.length, 'every program is in the list');
+  eq(fund.querySelectorAll('.catalog-details > .program').length, FUNDING.programs.length, 'and each has its detail');
+  ok([...fund.querySelectorAll('.catalog-item a.catalog-pick')].every((a) => fund.getElementById(a.getAttribute('href').slice(1))), 'each row links to its detail');
+  const statuses = [...fund.querySelectorAll('.catalog-item')].map((li) => li.dataset.status);
+  const firstClosed = statuses.indexOf('closed');
+  ok(firstClosed > 0 && statuses.slice(firstClosed).every((s) => s === 'closed') && fund.querySelectorAll('.catalog-item.is-closed').length === statuses.filter((s) => s === 'closed').length, 'closed programs come last, marked');
+  ok(fund.querySelectorAll('.pays').length >= 4 && [...fund.querySelectorAll('.pays-list a')].every((a) => fund.getElementById(a.getAttribute('href').slice(1))), 'open programs by how they pay, each linking to its detail');
+  ok(fund.querySelectorAll('#filter-type option').length > 5 && fund.querySelectorAll('#filter-status option').length > 2, 'the filters are whole before scripts');
+  eq(fund.querySelectorAll('#pick-tribe option').length, FUNDING.tribes.length + 1, 'every Tribe is a choice');
+  ok(!fund.getElementById('tribe-results').hasAttribute('aria-live'), 'the Tribe list is not a live region (energy-12)');
+  eq(fund.getElementById('tribe-status').getAttribute('role'), 'status', 'its one-line status is');
+  eq(fund.querySelectorAll('.notice-list > .record').length, FUNDING.live.opportunities.length || 1, 'the Grants.gov notices are on the page');
+  ok(receiptsOn('site/energy/funding/sources/index.html')('energy-deadlines-catalog-source-ef-012'), 'a deadline\'s receipt is on the Sources page');
+  const fundSources = doc('site/energy/funding/sources/index.html');
+  ok(FUNDING.programs.every((p) => fundSources.getElementById(`prog-${p.id}`)), 'each program\'s sources have an anchor on the Sources page');
+  ok(fundSources.getElementById('method') && fundSources.getElementById('grants-gov'), 'the method and the search moved there');
+
+  const plans = doc('site/energy/potential/index.html');
+  const grid = plans.getElementById('tt-grid');
+  eq(grid.tBodies[0].rows.length, POTENTIAL.tribes.length, 'one row per Tribe');
+  eq(grid.tHead.rows[0].cells.length - 1, POTENTIAL.method.energy_types.length, 'one column per type');
+  const names = [...grid.tBodies[0].rows].map((r) => r.querySelector('th a').textContent);
+  eq(names.join('|'), [...names].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).join('|'), 'A to Z, never ranked');
+  eq(grid.querySelectorAll('td[data-stage]').length, POTENTIAL.tribes.reduce((n, t) => n + t.top.length, 0), 'a mark for every finding');
+  const order = [...grid.tHead.rows[0].cells].slice(1).map((th) => th.dataset.type);
+  const bars = JSON.parse(read('site/data/plates/energy-types-by-stage-plans.json')).rows.map((r) => r.id);
+  eq(order.join(), bars.join(), 'the columns run in the bars\' order, so each bar totals its column');
+  eq(plans.querySelectorAll('.tt-tribe').length, POTENTIAL.tribes.length, 'every Tribe\'s passages follow');
+  eq(plans.querySelectorAll('.tt-tribe blockquote').length, POTENTIAL.tribes.reduce((n, t) => n + t.top.reduce((m, f) => m + f.citations.length, 0), 0), 'every cited excerpt');
+  ok(![...plans.querySelectorAll('blockquote')].some((b) => /[�]/.test(b.textContent)), 'no stray symbol-font bullet or replacement character');
+  ok(!plans.getElementById('read-first') && plans.querySelector('.brief-lead a[href="sources/#method"]'), 'Read This First is one sentence and a link (energy-23)');
+  const plansSources = doc('site/energy/potential/sources/index.html');
+  ok(plansSources.getElementById('method') && plansSources.getElementById('corrections'), 'the method and corrections are on the Sources page');
+  ok(POTENTIAL.tribes.filter((t) => t.documents.length).every((t) => plansSources.getElementById(`docs-${t.slug}`)), 'each Tribe\'s documents read have an anchor there');
+
+  for (const name of SCRIPTS) ok(!/\bfetch\(|getJSON\(/.test(read(`site/assets/js/${name}`)), `${name} fetches nothing`);
 }
 
-async function typesPlate() {
-  const { document, window, errors } = await overview();
-  eq(errors.length, 0, `no errors: ${errors[0]}`);
+// The overview: nothing fetched, the stages over the bars, the answers following their plates, and the countdown as a list box.
+async function overviewPage() {
+  const { window, document, errors } = await overview();
+  eq(errors.join(), '', 'no script errors');
+  eq(window.fetched.length, 0, 'nothing is fetched on /energy/ (energy-01)');
   const plate = document.getElementById('energy-types-by-stage');
-  const plot = plate.querySelector('.plate-plot');
   const parts = [...row(plate, 'efficiency').querySelectorAll('.stack-bar i')];
   const stages = claims['ep-032'].stages;
   eq(parts.length, Object.values(stages).filter(Boolean).length, 'one segment per stage with a count');
-  ok(Math.abs(parts.reduce((sum, p) => sum + +p.style.getPropertyValue('--w'), 0) - claims['ep-032'].value / 40) < 1e-9, 'segments add to the total on the axis');
-  eq(parts[0].className, 'stage-4', 'installed first, at the top of the ramp');
+  eq(parts.reduce((sum, p) => sum + Number(p.textContent), 0), claims['ep-032'].value, 'the counts add to the total');
+  eq(parts[0].className, 'stage-4', 'installed first');
   eq(row(plate, 'efficiency').querySelector('.stack-bar').getAttribute('aria-hidden'), 'true', 'the row\'s words carry it aloud');
-  ok(row(plate, 'marine').classList.contains('is-zero') && !row(plate, 'marine').querySelector('.stack-bar i'), 'a zero row draws nothing');
-  eq(plate.querySelectorAll('.plate-legend li').length, 4, 'a key for the stages');
-  ok(plate.querySelectorAll(':scope > .plate-under').length === 1 && plate.querySelector(':scope > .plate-under > .plate-legend') && !plate.querySelector('.plate-to-table'), 'in the one row under the plot; the Table is a button over it');
-  eq(plate.querySelector('.ladder-needle .needle-label').textContent, 'Efficiency, 32 Tribes', 'the needle names the row');
-  eq(plot.style.getPropertyValue('--stack-at'), String(32 / 40), 'and stands at its total');
-  ok(reading(plate).includes('8 installed or operating, 15 planned or funded, 2 assessed or sited, 7 goal or interest'), 'the Reading gives the stages');
-  ok(reading(plate).includes('Limit: A machine-assisted reading'), 'and the limit');
-  ok(plate.querySelector('.energy-states').textContent.includes('No document held: 1 Tribe'), 'selecting a row shows the states');
-  ok(plate.querySelector('a.button').closest('.plate-claim'), 'the button stays beside the figures, on the first screen');
-  ok(plate.querySelector('.plate-detail a[href$="energy-potential.json"]'), 'and the data link waits in the window');
-  ok(!panel(plate).open, 'the panel starts closed');
-  eq(panel(plate).querySelector('summary').textContent, 'Energy efficiency and weatherization: 32 Tribes, by the most advanced stage found', 'one line: the Reading\'s first');
-  ok(panel(plate).contains(plate.querySelector('.reading')) && !panel(plate).contains(plate.querySelector('.plate-collar')), 'the window is inside it, the collar is not');
-  ok(plate.querySelector(':scope > output') && !panel(plate).contains(plate.querySelector('output')), 'nor the live region, so a selection is still spoken');
-  fire(window, row(plate, 'solar'), 'click');
-  ok(panel(plate).open, 'selecting a row opens it');
-  await wait(0);
-  eq(panel(plate).querySelector('summary').textContent, 'Solar energy: 30 Tribes, by the most advanced stage found', 'and its line follows');
-  eq(plate.querySelector('.ladder-needle .needle-label').textContent, 'Solar, 30 Tribes', 'selection moves the needle');
-  await settle();
-  ok(settings(window).includes('energy-types-by-stage=solar'), 'and the address');
-  eq(plate.querySelector('a.button').getAttribute('href'), 'potential/?type=solar#tribes', 'Read it Tribe by Tribe goes to that filter');
-  ok(!panel(document.getElementById('energy-deadlines')).open, 'the other plate\'s panel stays closed');
-  const deadlines = document.getElementById('energy-deadlines');
-  fire(window, deadlines.querySelector('.plate-views [data-view="table"]'), 'click');
-  ok(view(deadlines) === 'table' && !deadlines.querySelector('.plate-view[data-view="table"]').hidden, 'the Table button opens the Table, in the plot and window\'s place');
-  panel(plate).open = false;
+  ok(!row(plate, 'marine').querySelector('.stack-bar'), 'a zero row draws nothing');
+  eq(document.querySelectorAll('.stack-bar').length, 11, 'once, however often the plate draws');
+  const answer = document.querySelector('.agenda-a[data-answer="energy-types-by-stage"]');
+  const plot = plate.querySelector('.plate-plot');
   plot.focus();
-  key(window, plot, 'Tab');
-  ok(!panel(plate).open, 'moving on opens nothing');
   key(window, plot, 'ArrowDown');
-  ok(reading(plate).startsWith('Electrification'), 'arrow keys step');
-  ok(panel(plate).open, 'and open it');
-  key(window, plot, 'End');
-  ok(reading(plate).startsWith('Marine') && reading(plate).includes('no finding'), 'End reaches the last row, in words');
   await wait(0);
-  eq(panel(plate).querySelector('summary').textContent, 'Marine energy (tidal or wave): no finding', 'a row with no finding has its line too');
-  eq(plate.querySelector('.ladder-needle .needle-label').textContent, 'Marine, 0 Tribes', 'a zero is said as a zero');
-  key(window, plot, 'Home');
-  ok(reading(plate).startsWith('Energy efficiency'), 'Home returns');
-  ok(!POTENTIAL.tribes.some((t) => plate.textContent.includes(t.name)), 'no Tribe is named before a reader asks');
-}
-
-// A link into a closed panel opens it: a selection in the address, a view, or a source's own place.
-async function panelLinks() {
-  const selected = (await overview('?energy-types-by-stage=wind')).document;
-  ok(panel(selected.getElementById('energy-types-by-stage')).open, 'a selected row in the address opens its panel');
-  ok(!panel(selected.getElementById('energy-deadlines')).open, 'and only its own');
-  const asked = (await overview('?energy-deadlines=doe-40101d')).document.getElementById('energy-deadlines');
-  ok(panel(asked).open && reading(asked).startsWith('Grid Resilience'), 'so does a selected deadline');
-  ok(asked.querySelector('[data-key="doe-40101d"]').classList.contains('is-on'), 'with its row marked');
-  const sources = (await overview('?energy-deadlines-view=sources')).document.getElementById('energy-deadlines');
-  ok(view(sources) === 'chart' && sources.querySelector('.plate-evidence').contains(sources.ownerDocument.activeElement), 'and an old link to its Sources view opens the Chart, with focus on the evidence');
-  ok(panel(sources).open, 'in its open panel');
-  // A receipt is on the Sources page now: an old link to one here goes on to the same id there.
-  eq(selected.defaultView.plate.movedTo('energy-deadlines-source-ef-011'), 'http://localhost/site/energy/sources/#energy-deadlines-source-ef-011', 'and an old link to a source goes on to the Sources page');
-  // Settings after the anchor, as Copy Reading writes them, name no element: the kit lands on the plate as the browser would on a plain #id (a11y A1).
-  const deep = await overview('#energy-deadlines&energy-deadlines=doe-40101d');
-  const plate = deep.document.getElementById('energy-deadlines');
-  ok(deep.window.scrolled === 'energy-deadlines' && deep.document.activeElement === plate, 'a link with settings scrolls to its plate and starts focus there');
-  ok(panel(plate).open && plate.querySelector('[data-key="doe-40101d"]').classList.contains('is-on'), 'with its row selected and its panel open');
-  eq(deep.errors.join(), '', 'no script errors');
-}
-
-async function tribesList() {
-  const { document, window } = await overview('?energy-types-by-stage=wind');
-  const plate = document.getElementById('energy-types-by-stage');
-  const more = plate.querySelector('.energy-tribes');
-  eq(more.querySelector('summary').textContent, 'Wind: the Tribes, alphabetically (11)', 'the summary counts them');
-  eq(more.querySelector('li'), null, 'the file is not read until a reader asks');
-  more.open = true;
-  fire(window, more, 'toggle');
-  await wait(20);
-  const links = [...more.querySelectorAll('.energy-tribe-list > li > a')];
-  const expected = POTENTIAL.tribes.filter((t) => t.top.some((f) => f.type === 'wind')).map((t) => t.name).sort((a, b) => a.localeCompare(b));
-  eq(links.length, 11, 'one line per Tribe');
-  eq(JSON.stringify(links.map((a) => a.textContent)), JSON.stringify(expected), 'alphabetical, never a ranking');
-  ok(links.every((a) => a.getAttribute('href').startsWith('potential/#')), 'each links to its entry');
-  const first = POTENTIAL.tribes.find((t) => t.name === expected[0]);
-  const line = links[0].parentElement;
-  eq(line.querySelector('.tag.stage').textContent, first.top.find((f) => f.type === 'wind').stage_label, 'with its stage');
-  eq(line.querySelector('blockquote').getAttribute('cite'), first.top.find((f) => f.type === 'wind').citations[0].url, 'and its cited excerpt');
-  ok(!line.textContent.includes('Rank'), 'and no rank');
-  fire(window, row(plate, 'marine'), 'click');
-  await wait(200);
-  eq(more.querySelector('.energy-tribe-list'), null, 'a type with no finding lists nobody');
-  ok(more.textContent.includes('not Tribal positions'), 'and says what that means');
-}
-
-async function strip() {
-  const { document, window, errors } = await overview();
-  eq(errors.length, 0, `no errors: ${errors[0]}`);
-  const plate = document.getElementById('energy-deadlines');
-  ok(plate.querySelector('.plate-plot').hidden, 'the static list gives way');
-  ok(plate.querySelector('.strip').classList.contains('is-live'), 'to the strip');
-  const rows = [...plate.querySelectorAll('.strip-rows .strip-row')];
-  eq(rows.map((r) => r.querySelector('.strip-n').textContent).join(), 'today,36,104,665', 'days until, soonest first, from a fixed today');
-  ok(rows.every((r) => r.querySelector('.strip-body > .strip-when > .strip-n') && r.style.getPropertyValue('--drop')), 'the days stand in their own column, and each stem has its drop');
-  eq(rows[1].querySelector('.strip-when').textContent.trim().replace(/\s+/, ' '), '36 days', 'with their word');
-  ok(!panel(plate).open, 'the panel starts closed');
-  eq(panel(plate).querySelector('summary').textContent, 'Dated deadlines in the catalog: 4 programs', 'one line: the Reading\'s first');
-  fire(window, rows[0].querySelector('.strip-name'), 'click');
-  ok(!panel(plate).open, 'a program\'s name just goes to its record');
-  fire(window, rows[1].querySelector('.strip-what'), 'click');
-  ok(panel(plate).open && reading(plate).startsWith('Tribal HEEHR home rebates (IRA 50122): 12/11/2026'), 'a row selects its deadline, and opens the panel');
-  ok(rows[1].classList.contains('is-on') && view(plate) === 'chart', 'marked, on its Chart');
+  ok(reading(plate).startsWith('Solar'), 'arrow keys step the bars');
+  ok(row(plate, 'solar').classList.contains('is-on'), 'the selection is on the row');
+  ok(answer.textContent.startsWith('Solar: 30 Tribes'), `the answer follows the plate: ${answer.textContent}`);
+  fire(window, row(plate, 'wind'), 'click');
+  await wait(300); // the kit writes the address a quarter second after a change
+  ok(settings(window).includes('energy-types-by-stage=wind'), 'a chosen row rides in the address');
+  const money = document.getElementById('energy-deadlines');
+  ok(money.closest('[hidden]') || !money.closest('.agenda-faces > :first-child'), 'the second face waits, so its plate starts when shown');
+  fire(window, document.querySelector('.agenda-q a[href="#face-money"]'), 'click');
   await wait(0);
-  eq(panel(plate).querySelector('summary').textContent, 'Tribal HEEHR home rebates (IRA 50122): 12/11/2026', 'and the line follows');
-  fire(window, plate.querySelectorAll('.strip-mark')[2], 'click');
-  ok(reading(plate).startsWith('Grid Resilience') && rows[2].classList.contains('is-on') && !rows[1].classList.contains('is-on'), 'its mark does too');
-  const pressed = fire(window, rows[3].querySelector('.strip-claim'), 'click');
-  ok(reading(plate).startsWith('DOE Tribal Energy Financing') && view(plate) === 'chart', 'and its receipt, the keyboard\'s way, in the window');
-  ok(pressed.defaultPrevented && plate.querySelector('.plate-receipt').textContent.includes(`Claim ${rows[3].querySelector('.strip-claim').textContent}`), 'the card opens here, with the way on to the Sources page');
-  plate.querySelector('[data-reset]').click();
-  ok(reading(plate).startsWith('Dated deadlines in the catalog') && !rows.some((r) => r.classList.contains('is-on')), 'Reset returns');
-  eq(plate.querySelector('.strip-name').getAttribute('href'), 'funding/#prog-bpa_tribal_iq', 'the name links to its record');
-  ok(rows[1].textContent.includes('12/11/2026') && rows[1].textContent.includes('Checked 11/05/2026') && rows[1].textContent.includes('ef-012, verified'), 'a row keeps its date, its check, and its claim');
-  eq(plate.querySelector('.strip-claim').getAttribute('href'), 'sources/#energy-deadlines-source-ef-011', 'the claim links to its source on the Sources page');
-  ok(receiptsOn('site/energy/sources/index.html')('energy-deadlines-source-ef-011'), 'which is there');
-  eq(plate.querySelectorAll('.strip-mark.is-soon').length, 1, 'only today is soon');
-  eq(plate.querySelector('.strip .needle-label').textContent, 'today, 11/05/2026', 'the needle stands at today');
-  eq(plate.querySelector('.plate-title').textContent, '4 dated deadlines in the next 24 months, and the first is today; 8 more programs carry no date in the catalog', 'the title says today');
-  eq(plate.querySelectorAll('.strip-undated li').length, 8, 'eight in the lane');
-  ok([...plate.querySelectorAll('.strip-undated li')].some((li) => li.textContent === 'HUD ICDBG (forecasted)'), 'a forecasted program says so');
-  ok(plate.querySelector('.strip-foot').textContent.includes('other statuses checked 10/29/2026, 7 days ago'), 'the foot counts its days');
-  eq(plate.querySelectorAll('.strip-foot').length, 1, 'one foot');
-  ok(plate.querySelector('.plate-collar .plate-source-line').textContent.includes('4 verified, 14 partly verified'), 'the collar counts every claim');
-  ok(reading(plate).includes('The catalog holds 22 programs: 11 open, 10 closed, and 1 forecasted'), 'the Reading holds the counts');
+  const list = money.querySelector('.plate-plot');
+  eq(list.getAttribute('role'), 'listbox', 'the countdown is one list box');
+  eq(list.getAttribute('tabindex'), '0', 'one Tab stop');
+  ok(reading(money).startsWith('Tribal HEEHR'), 'it starts on the next deadline');
+  key(window, list, 'ArrowDown');
+  ok(reading(money).startsWith('Grid Resilience'), 'the arrows choose');
+  key(window, list, 'End');
+  ok(row(money, 'irs-elective-pay').classList.contains('is-on'), 'End reaches the last program with no date');
+  key(window, list, 'Home');
+  ok(reading(money).startsWith('BPA Tribal efficiency grants') && row(money, 'bpa-tribal-iq').classList.contains('is-passed'), 'Home the first, passed by the fixed day');
+  ok(money.querySelector('.countdown').classList.contains('has-today'), 'today stands on the ruler');
+  ok(document.querySelector('.agenda-a[data-answer="energy-deadlines"]').textContent.includes(`${claims['ef-002'].value} of ${claims['ef-001'].value} programs`), 'the money answer counts from its claims');
 }
 
-async function stripOverTime() {
-  const next = await overview('', [2026, 10, 6]);
-  const plate = next.document.getElementById('energy-deadlines');
-  eq([...plate.querySelectorAll('.strip-rows .strip-n')].map((n) => n.textContent).join(), '35,103,664', 'a passed date leaves the track');
-  ok([...plate.querySelectorAll('.strip-undated li')].some((li) => li.textContent.includes('BPA Tribal efficiency grants') && li.textContent.includes('passed 11/05/2026; confirm with the agency')), 'for the lane, saying so');
-  eq(plate.querySelector('.plate-title').textContent, '3 dated deadlines in the next 24 months, the next in 35 days; 8 more programs carry no date in the catalog, and 1 passed', 'the title follows');
-  const late = await overview('', [2026, 11, 15]);
-  ok(late.document.querySelector('#energy-deadlines .strip-foot').textContent.startsWith('Stale: '), 'past 30 days the foot says so in words');
-  const soon = await overview('', [2026, 10, 30]);
-  ok(soon.document.querySelector('#energy-deadlines .strip-mark.is-soon'), 'inside 14 days a mark fills');
-  eq(soon.document.querySelector('#energy-deadlines .plate-title').textContent.includes('the next in 11 days'), true, 'and the title counts');
-}
-
-async function potentialPage() {
-  const { document, window, errors } = await load('site/energy/potential/index.html', ['energy-potential.js']);
-  eq(errors.length, 0, `no errors: ${errors[0]}`);
-  const plate = document.getElementById('energy-types-by-stage-plans');
-  eq(document.querySelectorAll('#potential-results > li').length, 56, 'the list holds every Tribe');
-  const names = [...document.querySelectorAll('#potential-results > li h3')].map((h) => h.textContent);
-  eq(JSON.stringify(names), JSON.stringify([...names].sort((a, b) => a.localeCompare(b))), 'alphabetical');
-  fire(window, row(plate, 'hydropower'), 'click');
-  const read = plate.querySelector('a.button');
-  eq(read.getAttribute('href'), '?type=hydropower#tribes', 'the button names the filter');
-  fire(window, read, 'click');
-  eq(document.querySelectorAll('#potential-results > li').length, 7, 'and applies it, in place');
-  ok(document.getElementById('potential-status').textContent.includes('hydropower'), 'and says so');
-  ok(document.querySelector('#read-first ~ .energy-caveat').textContent.includes('ranks no Tribe against another'), 'Read This First opens on its caveat');
-  ok(!document.querySelector('#read-first ~ .notice'), 'in no box');
-  for (const [claim, text] of [['ep-002', '56'], ['ep-001', '44'], ['ep-004', '279'], ['ep-003', '22']]) {
-    eq(document.querySelector(`.page-band-figures [data-pour="${claim}"]`).textContent, text, `the band pours ${claim}`);
-    ok(document.querySelector(`.energy-limits [data-pour="${claim}"][data-field="limit"]`).textContent.trim(), `with the limit of ${claim} on the page`);
-  }
-  ok(!document.querySelector('.chart, #potential-chart'), 'the old chart is gone');
-}
-
+// Funding: the catalog list box, marks, a #prog- link that clears what would dim it, the passed date said once, and the Tribe picker.
 async function fundingPage() {
-  const { window, document, errors } = await load('site/energy/funding/index.html', ['energy-funding.js']);
-  eq(errors.length, 0, `no errors: ${errors[0]}`);
-  // CW 4: Back, Forward, or a typed address puts the catalog's filters and the Tribe picker where the address says, as a reader's change would.
-  const data = JSON.parse(read('site/data/energy-funding.json'));
-  const slug = data.tribes.find((t) => t.matches.length).slug;
-  window.history.replaceState(null, '', `#tribe=${slug}&status=open`);
-  fire(window, window, 'hashchange');
-  eq(document.getElementById('tribe-form').elements.namedItem('tribe').value, slug, 'Back sets the Tribe the address names');
-  ok(document.querySelector('#tribe-results h3'), 'and its programs show');
-  eq(document.querySelectorAll('#catalog-results > li').length, data.programs.filter((p) => p.status === 'open').length, 'and the catalog follows its filter');
-  window.history.replaceState(null, '', window.location.pathname);
-  fire(window, window, 'hashchange');
-  ok(!document.querySelector('#tribe-results h3') && document.querySelectorAll('#catalog-results > li').length === 22, 'an address without them clears both');
-  const plate = document.getElementById('energy-deadlines-catalog');
-  eq([...document.querySelectorAll('.content > section > h2')].slice(0, 2).map((h) => h.id).join(), 'deadlines,read-first', 'the deadlines come first');
-  eq([...document.querySelectorAll('.toc a')].slice(0, 2).map((a) => a.getAttribute('href')).join(), '#deadlines,#read-first', 'and the rail says so');
-  eq(document.querySelectorAll('#read-first ~ .energy-flow').length, 2, 'Read This First flows in two columns of its own');
-  eq(document.querySelectorAll('.energy-flow [data-pour$="1"][data-field="limit"], .energy-flow [data-pour$="2"][data-field="limit"]').length, 2, 'with both limits');
-  ok(!panel(plate).open, 'the panel starts closed');
-  eq(plate.querySelector('.strip-name').getAttribute('href'), '#prog-bpa_tribal_iq', 'the name links in this page');
-  ok(document.getElementById('prog-bpa_tribal_iq'), 'to a record that is there');
-  eq(document.querySelectorAll('#catalog-results > li').length, 22, 'the catalog holds every program');
-  ok(document.getElementById('catalog-status').textContent.includes('Statuses checked 10/29/2026, with 4 rechecked 11/05/2026'), 'the catalog says which dates moved');
-  ok(document.querySelector('#prog-doe_heehr_tribal .status-line').textContent.includes('11/05/2026'), 'a rechecked program shows its date');
-  ok(document.querySelector('#prog-hud_icdbg .status-line').textContent.includes('10/29/2026'), 'and one not rechecked keeps its own');
+  const { window, document, errors } = await funding();
+  eq(errors.join(), '', 'no script errors');
+  eq(window.fetched.length, 0, 'nothing is fetched');
+  const list = document.getElementById('catalog-list');
+  eq(list.getAttribute('role'), 'listbox', 'the catalog is one list box');
+  eq(list.querySelectorAll('[role="option"]').length, FUNDING.programs.length, 'every program an option');
+  eq(list.querySelectorAll('a').length, 0, 'with no link inside an option');
+  const shown = () => [...document.querySelectorAll('.catalog-details > .program.is-on')].map((a) => a.id);
+  eq(shown().length, 1, 'one detail shows');
+  const first = list.querySelector('[aria-selected="true"]');
+  eq(shown()[0], `prog-${first.dataset.program}`, 'the chosen one');
+  key(window, list, 'ArrowDown');
+  const second = list.querySelector('[aria-selected="true"]');
+  ok(second !== first && shown()[0] === `prog-${second.dataset.program}`, 'the arrows choose the next');
+  eq(list.getAttribute('aria-activedescendant'), second.id, 'and name it');
+  const field = (name) => document.getElementById(`filter-${name}`);
+  field('status').value = 'closed';
+  fire(window, field('status'), 'change');
+  const dim = list.querySelectorAll('.is-dim').length;
+  eq(dim, FUNDING.programs.filter((p) => p.status !== 'closed').length, 'a mark dims the rest');
+  eq(list.querySelectorAll('.catalog-item').length, FUNDING.programs.length, 'and removes none');
+  ok(settings(window).includes('status=closed'), 'it rides in the address');
+  const link = document.querySelector('.pays-list a[href="#prog-doe_wap"]');
+  fire(window, link, 'click');
+  eq(shown()[0], 'prog-doe_wap', 'a #prog- link opens its program');
+  eq(field('status').value, '', 'a mark that would dim it is cleared');
+  ok(document.getElementById('catalog-status').textContent.startsWith('Marks cleared to show Weatherization Assistance Program.'), 'and the status says so (energy-08)');
+  eq(document.activeElement.id, 'prog-doe_wap', 'focus goes to the program');
+  const bpaDue = document.querySelector('#prog-bpa_tribal_iq .program-due');
+  ok(bpaDue.classList.contains('is-passed') && bpaDue.textContent.startsWith('Passed 11/05/2026:'), 'BPA\'s date reads passed in its detail');
+  ok(list.querySelector('[data-program="bpa_tribal_iq"] .catalog-date').textContent === '11/05/2026, passed' && list.querySelector('[data-program="bpa_tribal_iq"] .tag').textContent === 'Open', 'and in the list, with its status open (energy-14)');
+  ok(document.querySelector('#energy-deadlines-catalog [data-row="bpa-tribal-iq"]').classList.contains('is-passed'), 'as the countdown says');
+
+  const deep = await funding('#prog-hud_ihbg&status=closed');
+  eq([...deep.document.querySelectorAll('.catalog-details > .program.is-on')].map((a) => a.id).join(), 'prog-hud_ihbg', 'a shared link with a mark lands on its program');
+  ok(deep.document.getElementById('catalog-status').textContent.includes('Marks cleared'), 'and says the mark was cleared');
+  eq(deep.errors.join(), '', 'no script errors');
+
+  const pick = document.getElementById('pick-tribe');
+  const tribe = FUNDING.tribes.find((t) => t.matches.length >= 3);
+  pick.value = tribe.slug;
+  fire(window, pick, 'change');
+  const status = document.getElementById('tribe-status').textContent;
+  ok(status.startsWith(`${tribe.name}: ${tribe.matches.length} energy types in its public plans;`), `one line of status: ${status}`);
+  const links = [...document.querySelectorAll('#tribe-results a')].map((a) => a.getAttribute('href'));
+  eq(new Set(links).size, links.length, 'each program once (energy-21)');
+  ok(links.every((h) => document.getElementById(h.slice(1))), 'each linking to its detail');
+  ok(settings(window).includes(`tribe=${tribe.slug}`), 'the Tribe rides in the address');
+  const lens = await funding(`#face-fit&tribe=${tribe.slug}`);
+  ok(lens.document.getElementById('tribe-status').textContent.startsWith(tribe.name), 'a link from Potential opens with its Tribe');
+}
+
+// Potential: one Tab stop in the grid, arrows, Home, End, Ctrl+Home, Ctrl+End; Enter goes to the passages; marks highlight; links land.
+async function potentialPage() {
+  const { window, document, errors } = await potential();
+  eq(errors.join(), '', 'no script errors');
+  eq(window.fetched.length, 0, 'nothing is fetched');
+  const grid = document.getElementById('tt-grid');
+  eq(grid.getAttribute('role'), 'grid', 'the table is a grid');
+  eq(grid.querySelectorAll('[tabindex="0"]').length, 1, 'one Tab stop');
+  const on = () => grid.querySelector('td.is-on');
+  const side = document.getElementById('tt-side');
+  const firstTribe = [...POTENTIAL.tribes].sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).find((t) => t.top.length);
+  ok(on().dataset.tt.startsWith(`${firstTribe.slug}--`), 'it starts on the first finding, A to Z');
+  eq(side.querySelector('.tt-side-title').textContent, firstTribe.name, 'the side column names its Tribe');
+  ok(side.querySelector('blockquote'), 'with the passages behind the cell');
+  ok(side.querySelector('.record-links a[href^="sources/#docs-"]'), 'and the way to its documents');
+  ok(!side.querySelector('[id]:not(#tt-side-title)'), 'a copy keeps no id');
+  const start = on();
+  key(window, start, 'ArrowRight');
+  ok(on() !== start && on().parentElement === start.parentElement, 'Right moves along the row');
+  key(window, on(), 'ArrowDown');
+  ok(on().parentElement === start.parentElement.nextElementSibling, 'Down to the next Tribe');
+  key(window, on(), 'Home');
+  eq(on(), on().parentElement.querySelector('td'), 'Home to the row\'s first cell');
+  key(window, on(), 'End');
+  eq(on(), [...on().parentElement.querySelectorAll('td')].at(-1), 'End to its last');
+  fire(window, on(), 'keydown', { key: 'End', ctrlKey: true });
+  eq(on(), [...grid.querySelectorAll('td')].at(-1), 'Ctrl+End to the last cell');
+  fire(window, on(), 'keydown', { key: 'Home', ctrlKey: true });
+  eq(on(), grid.querySelector('tbody td'), 'Ctrl+Home to the first');
+  eq(grid.querySelectorAll('[tabindex="0"]').length, 1, 'still one Tab stop');
+  eq(document.activeElement, on(), 'focus follows');
+  ok(side.textContent.includes('not evidence of opposition or disinterest') || side.querySelector('blockquote'), 'an empty cell says what absence means');
+  const finding = grid.querySelector('td[data-stage]');
+  fire(window, finding, 'click');
+  key(window, finding, 'Enter');
+  eq(document.activeElement, side.querySelector('.tt-side-title'), 'Enter goes to the passages');
+  key(window, side.querySelector('.tt-side-title'), 'Escape');
+  eq(document.activeElement, finding, 'Escape returns to the cell');
+  ok(settings(window).includes(`tt=${finding.dataset.tt}`), 'the cell rides in the address');
+  const form = document.getElementById('tt-filters');
+  form.elements.namedItem('state').value = 'ID';
+  fire(window, form.elements.namedItem('state'), 'change');
+  const idaho = POTENTIAL.tribes.filter((t) => t.states.includes('ID')).length;
+  eq(grid.querySelectorAll('tbody tr:not(.is-dim)').length, idaho, 'a state mark leaves its Tribes in ink');
+  eq(grid.tBodies[0].rows.length, POTENTIAL.tribes.length, 'and removes none (energy-09)');
+  ok(document.getElementById('tt-status').textContent.includes(`${idaho} Tribes of ${POTENTIAL.tribes.length} marked in Idaho`), 'the status says so');
+  form.elements.namedItem('type').value = 'solar';
+  fire(window, form.elements.namedItem('type'), 'change');
+  ok(grid.querySelector('th[data-type="solar"]').classList.contains('is-mark'), 'a type mark names its column');
+  ok(settings(window).includes('state=ID') && settings(window).includes('type=solar'), 'marks ride in the address');
+  const link = grid.querySelector('tbody tr.is-dim th a');
+  fire(window, link, 'click');
+  eq(form.elements.namedItem('state').value, 'ID', 'a Tribe link keeps the marks');
+  ok(on().closest('tr') === link.closest('tr'), 'and chooses its row');
+  const byState = form.querySelector('input[name="order"][value="state"]');
+  byState.checked = true;
+  fire(window, byState, 'change');
+  ok(grid.querySelectorAll('tr.is-group').length >= 5, 'by state, with a heading row per state');
+  eq(grid.querySelectorAll('tbody tr:not(.is-group)').length, POTENTIAL.tribes.length, 'every Tribe still there');
+
+  const tribe = POTENTIAL.tribes.find((t) => t.top.length >= 2);
+  const deep = await potential(`#${tribe.slug}`);
+  ok(deep.document.querySelector('#tt-grid td.is-on').dataset.tt.startsWith(`${tribe.slug}--`), 'an old link to a Tribe\'s entry chooses its row');
+  eq(deep.document.activeElement, deep.document.querySelector('#tt-grid td.is-on'), 'with focus there');
+  const cell = `${tribe.slug}--${tribe.top[1].type}`;
+  const exact = await potential(`#${cell}`);
+  eq(exact.document.querySelector('#tt-grid td.is-on').dataset.tt, cell, 'a link to one finding chooses its cell');
+  eq(exact.errors.join(), '', 'no script errors');
+}
+
+// Policy Watch is built into each task force page; the script that once filled it only hides a development note now (data-centers-18).
+async function policyWatch() {
+  for (const [rel, force] of [['site/ai/index.html', 'ai'], ['site/data-centers/index.html', 'data-centers'], ['site/energy/index.html', 'energy-feasibility']]) {
+    const text = read(rel);
+    if (!text.includes('<!-- policy:watch -->')) continue;
+    const { document } = new JSDOM(text).window;
+    const expected = JSON.parse(read('site/data/policy-watch.json')).task_forces[force];
+    const built = document.querySelectorAll('[data-policy-searches] .watch-item').length;
+    if (built) eq(built, expected.searches.length, `${rel}: every saved search is built in`);
+  }
+  const { document } = new JSDOM('<details data-prefill-note><summary>x</summary></details>', { runScripts: 'outside-only' }).window;
+  document.defaultView.eval(read('site/assets/js/policy-watch.js'));
+  ok(document.querySelector('[data-prefill-note]').hidden, 'the prefill note hides');
 }
 
 // The stage ramp, at the numbers that fail silently: dataviz validate_palette.js's normal-vision floor on every adjacent pair, and 3:1 for the step nearest each ground.
@@ -288,8 +317,11 @@ async function stageRamp() {
     });
     for (const ground of grounds) ok(ratio(ramp[0], token(ground)) >= 3, `${theme} stage 1 on ${ground}`);
   }
+  // A count's ink on its segment (energy.css): 4.5:1 on every step of both ramps.
+  const ink = { dark: ['#FFFFFF', '#010B13', '#010B13', '#010B13'], light: ['#010B13', '#FFFFFF', '#FFFFFF', '#FFFFFF'] };
+  for (const [theme, ramp] of [['dark', dark], ['light', light]]) ramp.forEach((step, i) => ok(ratio(step, ink[theme][i]) >= 4.5, `${theme} count on stage ${i + 1}: ${ratio(step, ink[theme][i]).toFixed(2)}`));
   ok(!css.includes('[data-theme="auto"] {'), 'nothing sets auto, so no ramp waits for it (home-shell-11)');
   eq(steps('@media print {\n  :root, [data-theme] {').join(), light.join(), 'print repeats it');
 }
 
-module.exports = { groups: { noScripts, typesPlate, panelLinks, tribesList, strip, stripOverTime, potentialPage, fundingPage, stageRamp } };
+module.exports = { groups: { noScripts, overviewPage, fundingPage, potentialPage, policyWatch, stageRamp } };

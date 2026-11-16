@@ -14,6 +14,9 @@ SITE = ROOT / "site"
 _spec = importlib.util.spec_from_file_location("energy_claims", ROOT / "scripts" / "energy_claims.py")
 ec = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(ec)
+_pages_spec = importlib.util.spec_from_file_location("build_energy_pages", ROOT / "scripts" / "build_energy_pages.py")
+bep = importlib.util.module_from_spec(_pages_spec)
+_pages_spec.loader.exec_module(bep)
 
 POTENTIAL = json.loads((SITE / "data" / "energy-potential.json").read_text(encoding="utf-8"))
 FUNDING = json.loads((SITE / "data" / "energy-funding.json").read_text(encoding="utf-8"))
@@ -68,7 +71,8 @@ def test_a_types_plate_holds_its_claims_and_names_no_tribe(plate_id):
     figure = parse(page).one("figure", id=plate_id)
     assert not [name for name in names if name in figure.text()]
     assert "machine-assisted reading of public plans" in figure.text() and "absence is not evidence" in figure.text(), "the caveats stay on the plate without scripts"
-    assert "pending text extraction" in figure.text(), "pending documents keep their own state"
+    assert "awaiting text extraction" in figure.text(), "pending documents keep their own state"
+    assert defn["plot"]["domain"][1] <= 1.25 * max(values), "the axis ends near the longest bar (energy-06)"
 
 
 def test_no_finding_states_add_up_and_carry_a_limit_of_their_own():
@@ -78,20 +82,27 @@ def test_no_finding_states_add_up_and_carry_a_limit_of_their_own():
 
 @pytest.mark.parametrize("plate_id", ["energy-deadlines", "energy-deadlines-catalog"])
 def test_a_deadlines_plate_keeps_each_date_with_its_receipt(plate_id):
+    """A countdown (scripts/plate_countdown.py): a row's date is its claim's, counted from the day the dated programs were rechecked, and the title says
+    nothing the clock can change, so the built page and the live one agree (energy-14)."""
     defn = plate(plate_id)
     programs = {p["id"]: p for p in FUNDING["programs"]}
-    dated = [r for r in defn["rows"] if r.get("group") == "dated"]
-    lane = [r for r in defn["rows"] if r.get("group") == "undated"]
-    assert [r["cols"]["iso"] for r in dated] == sorted(r["cols"]["iso"] for r in dated)
+    assert defn["plot"] == {"type": "countdown", "from": max(p["status_checked"]["date"] for p in FUNDING["programs"])}
+    assert not any(r.get("group") for r in defn["rows"]), "a countdown has no summary rows; their claims are in the title"
+    assert "{c[ef-005][text]}" in defn["title"] and "{c[ef-006][text]}" in defn["title"] and "first" not in defn["title"] and "next" not in defn["title"]
+    dated = [r for r in defn["rows"] if CLAIMS[r["claim"]].get("date")]
+    lane = [r for r in defn["rows"] if not CLAIMS[r["claim"]].get("date")]
+    assert [CLAIMS[r["claim"]]["date"] for r in dated] == sorted(CLAIMS[r["claim"]]["date"] for r in dated)
     for r in dated:
         p, c = programs[r["cols"]["program"]], CLAIMS[r["claim"]]
-        assert c["date"] == r["cols"]["iso"] == p["deadline"]["date"] and r["gap"] == c["date_us"] == ec.us(c["date"])
+        assert c["date"] == p["deadline"]["date"] and c["date_us"] == ec.us(c["date"])
         assert r["cols"]["checked"] == ec.us(p["deadline"].get("checked", p["status_checked"])["date"])
         assert (c["status"] == "verified") == bool(p["deadline"].get("checked")), "a date is verified only with the sentence read on the agency's page"
     assert {r["cols"]["program"] for r in lane} == {p["id"] for p in FUNDING["programs"] if not p.get("deadline") and p["status"] != "closed"}
     assert any(r["cols"]["status"] == "forecasted" for r in lane) and not any(programs[r["cols"]["program"]]["status"] == "closed" for r in lane)
     for r in lane:
         assert CLAIMS[r["claim"]]["status"] == "partly" and CLAIMS[r["claim"]]["limit"]
+    upcoming = [r for r in dated if CLAIMS[r["claim"]]["date"] > defn["plot"]["from"]]
+    assert defn["default"] == (upcoming or dated)[0]["id"], "it starts on the next deadline after the check"
 
 
 def test_a_checked_date_moves_only_with_a_receipt():
@@ -143,8 +154,11 @@ def test_every_figure_in_a_pages_own_words_is_poured(page):
         for child in node.children:
             if isinstance(child, str):
                 yield child
-            elif child.tag in ("script", "style", "figure") or "data-pour" in child.attrs or {"cr", "bench-row"} & set((child.attrs.get("class") or "").split()):
-                continue  # a plate holds its own checks, and a bench row is a plate's default Reading built from its claims; a poured figure is held to its claim by test_plates, and a claim mark by pour_claim_refs.check_page
+            elif child.tag in ("script", "style", "figure") or {"data-pour", "data-answer", "data-from"} & set(child.attrs) or {"cr", "bench-row"} & set((child.attrs.get("class") or "").split()):
+                # A plate holds its own checks, and a bench row or an agenda answer is a plate's Reading built from its claims (the figure rule in build_plates.py);
+                # a poured figure is held to its claim by test_plates, a claim mark by pour_claim_refs.check_page; a data-from region is a data file's records,
+                # quoted with their sources by build_energy_pages.py (its tests below).
+                continue
             else:
                 yield from words(child)
 
@@ -156,3 +170,44 @@ def test_every_figure_in_a_pages_own_words_is_poured(page):
         claim_id = node.attrs["data-pour"]
         if CLAIMS.get(claim_id, {}).get("status") == "partly":
             assert claim_id in limits, f"{page}: {claim_id} is partly verified, so its limit is on the page"
+
+
+# scripts/build_energy_pages.py: the regions a page script only filters and selects.
+
+ENERGY_PAGES = ["energy/index.html", "energy/funding/index.html", "energy/potential/index.html", "energy/funding/sources/index.html", "energy/potential/sources/index.html"]
+
+
+def test_the_energy_pages_regions_are_current():
+    assert bep.main(["--check", *(arg for page in ENERGY_PAGES for arg in ("--page", page))]) == 0, "run python scripts/build_energy_pages.py"
+    assert set(bep.WATCH) <= set(bep.regions(FUNDING, POTENTIAL, json.loads((SITE / "data" / "policy-watch.json").read_text(encoding="utf-8")))), "every Policy Watch page has its region"
+
+
+def test_the_catalog_lists_every_program_once_open_first():
+    html = bep.catalog(FUNDING)
+    ids = re.findall(r'data-program="([^"]+)"', html)
+    assert sorted(ids) == sorted(p["id"] for p in FUNDING["programs"]) and len(set(ids)) == len(ids)
+    statuses = [next(p["status"] for p in FUNDING["programs"] if p["id"] == i) for i in ids]
+    assert statuses == sorted(statuses, key=lambda s: bep.ORDER.index(s)), "open, then forecasted, then closed"
+    assert all(f'id="prog-{i}"' in html for i in ids), "each row's link has its detail"
+
+
+def test_how_a_program_pays():
+    kinds = {p["id"]: bep.pays(p) for p in FUNDING["programs"]}
+    assert kinds["irs_elective_pay"] == "tax" and kinds["doe_tefp"] == "loan" and kinds["fema_hmgp"] == "disaster" and kinds["doe_wap"] == "formula"
+    assert all(kinds[p["id"]] == "competitive" for p in FUNDING["programs"] if p["kind"].startswith("competitive grant") and "formula" not in p["kind"])
+    assert not [p for p in FUNDING["programs"] if p["status"] == "open" and kinds[p["id"]] == "competitive"], "the first face's answer: no competitive grant was open at the check"
+
+
+def test_an_excerpt_reads_as_cut_and_drops_stray_marks():
+    assert bep.quote("the array\nwas built") == "…the array was built…"
+    assert bep.quote("Solar was installed.") == "Solar was installed."
+    assert bep.quote("\uf0b7 Heat pumps \ufffdinstalled.") == "Heat pumps installed."
+
+
+def test_the_grid_is_every_tribe_a_to_z_with_a_cell_per_type():
+    html = bep.grid(POTENTIAL)
+    rows = re.findall(r'<tr data-tribe="([^"]+)"', html)
+    names = {t["slug"]: t["name"] for t in POTENTIAL["tribes"]}
+    assert [names[r] for r in rows] == sorted(names.values(), key=str.lower)
+    assert html.count("<td data-tt=") == len(rows) * len(POTENTIAL["method"]["energy_types"])
+    assert html.count("data-stage=") == sum(len(t["top"]) for t in POTENTIAL["tribes"])

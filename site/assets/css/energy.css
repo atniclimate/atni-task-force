@@ -1,136 +1,227 @@
-/* The Energy pages: two plates side by side on the overview, the same plates at full content width on What Tribal Plans Say and Funding, and the rest of the overview in a
-   details grid. Sizes and tokens are the kit's (site.css); this holds only what these plates say differently. The kit reads a plate's row height from --row-min. */
+/* The Energy pages (DIRECTION-R2 section 4, P-energy): the overview's agenda, Funding's catalog as list and detail, and Potential's Tribe-by-type grid. Plates,
+   the brief, the agenda, the countdown and the window are the kit's (site.css); this holds what these pages say differently. Orange is the reading only: the
+   selected row, cell, program or deadline and the countdown's "today". Every other state is ink. Nothing here moves on hover or after a key press. */
 
-/* Energy types by stage: thirteen rows of stacked bars. Thirteen at the kit's 56px would not fit a first screen, so a row is the bar and its 2px gap, and larger on a phone. */
-[data-plate^="energy-types"] { --row-min: 44px; --l: clamp(7rem, 34%, 11rem); --v: 3.5rem; }
-[data-plate^="energy-types"] .ladder { padding-top: 24px; }
-[data-plate^="energy-types"] .ladder-label { font-size: 1.0625rem; }
-[data-plate^="energy-types"] .ladder-value { font-size: 1.25rem; text-align: right; }
-[data-plate^="energy-types"] .ladder-value:has(> .ladder-num) { justify-content: flex-end; }
-[data-plate^="energy-types"] .ladder-unit { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-/* A row with no finding stays on the plot and keeps its 0. It can still be selected, so its label stays legible rather than going to 40 percent. */
+/* Energy types by stage. The bar is each type's total; with scripts its stages lie over it in the same box (energy-potential.js), so nothing reflows when they
+   come. Each stage is separated by a 2px gap in the plot's ground and carries its count where the segment is wide enough to hold it (energy-07); the
+   Reading and the Table give every count. The selected row takes a 2px orange ring, never a line across the plot (energy-06). */
+[data-plate^="energy-types"] { --row-min: 1.75rem; }
+[data-plate^="energy-types"] .ladder-label { font-size: 1rem; }
 [data-plate^="energy-types"] :is(.ladder-row.is-zero, .ladder-row[style="--x:0.0"]) .ladder-label { color: var(--atni-text-muted); }
-[data-plate^="energy-types"]:not(.is-live) { --v: 6.5rem; } /* the build prints "32 Tribes"; with scripts the unit is for screen readers */
-[data-plate^="energy-types"] .ladder-row.is-on .ladder-label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; text-decoration-color: var(--energy-mark); }
-
-/* With scripts the bar of a row's total gives way to its stages. The needle stands at the selected row's total. */
-.is-live[data-plate^="energy-types"] .ladder-bar { display: none; }
-[data-plate^="energy-types"] .stack-bar { position: absolute; top: 50%; left: 0; right: 0; gap: 0; height: min(24px, 90%); transform: translateY(-50%); z-index: 2; }
-[data-plate^="energy-types"] .stack-bar > i { border-right: 2px solid var(--plot-ground); } /* the gap sits inside each segment, so a bar's end stays on the axis */
-/* The ticks start under the needle's name, in the ladder's top 24px, so the name lies over nothing. */
-[data-plate^="energy-types"] .ladder-grid { top: 24px; }
-.is-live[data-plate^="energy-types"] .ladder-grid .ladder-needle { display: block; top: -24px; left: calc(var(--stack-at, 0) * 100%); }
-.energy-key { width: 12px; height: 12px; background: var(--stage); }
-[data-plate^="energy-types"] .plate-under .legend { gap: 2px 16px; }
-
-/* Its figures, the caveats beside them, and what selecting a row shows. */
-.energy-figure { display: block; font-family: var(--display); font-weight: 600; font-size: 3rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
-[data-plate^="energy-types"] .plate-claim > p:not([class]) { font-size: 0.9375rem; line-height: 1.35; color: var(--atni-text-secondary); }
-.energy-states { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--rule); }
-.energy-tribes > summary { font-size: 1rem; }
-.energy-tribe-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 12px 32px; margin: 12px 0 0; padding: 0; list-style: none; }
-.energy-tribe-list > li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0; padding-top: 8px; border-top: 1px solid var(--rule); }
-.energy-tribe-list > li > a { flex-basis: 100%; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; }
-.energy-tribe-list .plate-more { flex-basis: 100%; }
-.energy-tribe-list .citation { margin: 8px 0 0; }
-.energy-limits { margin: 0 0 16px; padding: 0; list-style: none; font-size: 0.9375rem; color: var(--atni-text-secondary); }
-.energy-limits li { margin: 0 0 4px; }
-
-/* The detail panel, once scripts have closed it (closedDetail in util.js): one raised line until a reader selects something. Print has no use for the line: the Reading follows it. */
-@media screen { .plate-detail:has(> .energy-detail) { padding: 0 16px; } }
-.energy-detail > summary { min-height: 44px; padding-block: 10px; font-size: 1.0625rem; line-height: 1.35; }
-.energy-detail[open] { padding-bottom: 16px; }
-.energy-detail > .plate-views { margin-bottom: 8px; }
-@media print { .energy-detail > summary { display: none; } }
-
-/* The deadlines plate: no poster, since its picture is the strip, at the plate's full width. */
-[data-plate^="energy-deadlines"] .readout { display: none; }
-[data-plate^="energy-deadlines"] .strip-claim { font-size: 0.875rem; }
-[data-plate^="energy-deadlines"] .strip-what { max-width: var(--measure-wide); }
-:is([data-plate^="energy-deadlines"] .strip-claim, .energy-band .figure-label a) { white-space: nowrap; } /* a claim id stays whole */
+.is-live[data-plate^="energy-types"] .ladder-bar { visibility: hidden; }
+.stack-bar { position: absolute; z-index: 2; top: 50%; left: 0; display: flex; width: calc(var(--x) * 100%); height: min(1.375rem, 86%); transform: translateY(-50%); }
+.stack-bar > i { container-type: inline-size; position: relative; display: flex; align-items: center; justify-content: center; flex: var(--n) 0 0; min-width: 0; background: var(--stage); }
+.stack-bar > i + i { border-left: 2px solid var(--plot-ground); }
+.stack-bar > i > b { font-family: var(--display); font-weight: 600; font-size: 0.8125rem; line-height: 1; font-variant-numeric: tabular-nums; color: var(--on-stage); }
+@container (width < 1.5rem) { .stack-bar > i > b { display: none; } }
+/* A count's ink on its segment: 4.5:1 or more on each step of each theme's ramp (dark steps 2 to 4 are light, light steps 2 to 4 dark). */
+.stage-4 { --stage: var(--stage-4); }
+.stage-3 { --stage: var(--stage-3); }
+.stage-2 { --stage: var(--stage-2); }
+.stage-1 { --stage: var(--stage-1); }
+:is(.stage-4, .stage-3, .stage-2) { --on-stage: #010B13; }
+.stage-1 { --on-stage: #FFFFFF; }
+[data-theme="light"] :is(.stage-4, .stage-3, .stage-2) { --on-stage: #FFFFFF; }
+[data-theme="light"] .stage-1 { --on-stage: #010B13; }
+@media print { :is(.stage-4, .stage-3, .stage-2) { --on-stage: #FFFFFF; } .stage-1 { --on-stage: #010B13; } }
+.ladder-row.is-on .stack-bar { outline: 2px solid var(--energy-mark); outline-offset: 2px; }
+[data-plate^="energy-types"] .plate-square:is(.is-stage-4, .is-stage-3, .is-stage-2, .is-stage-1) { width: 12px; height: 12px; }
+.plate-square.is-stage-4 { background: var(--stage-4); }
+.plate-square.is-stage-3 { background: var(--stage-3); }
+.plate-square.is-stage-2 { background: var(--stage-2); }
+.plate-square.is-stage-1 { background: var(--stage-1); }
+:is(.stack-bar > i, .plate-square[class*="is-stage-"]) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--atni-text-heading) 18%, transparent); }
 .plate[data-plate^="energy-"] .plate-table td:last-child { white-space: nowrap; } /* a claim id stays whole */
 [data-plate^="energy-deadlines"] .plate-table td { text-align: left; } /* words and dates, not figures to compare */
-/* Tighter than the kit, so the first screen at 1440 by 900 holds the strip, the lane, the foot, and the panel's one line. */
-[data-plate^="energy-deadlines"] .strip { margin-top: 4px; gap: 8px; }
-[data-plate^="energy-deadlines"] .strip-lane { padding-top: 8px; }
-[data-plate^="energy-deadlines"] .strip-lane-title { margin-bottom: 4px; }
-[data-plate^="energy-deadlines"] .strip-foot { font-size: 0.875rem; }
-[data-plate^="energy-deadlines"] .instrument { --l: minmax(0, 1fr); --v: 8rem; grid-auto-rows: auto; }  /* the list without scripts: a program and its words, then the date */
-[data-plate^="energy-deadlines"] .instrument-row { grid-template-columns: minmax(0, 1fr) 0 var(--v); column-gap: 8px; padding-block: 6px; }
-/* Departure from the kit's strip, which staggers each row to its mark. Every row starts at the track's left edge, nearest first, with its days in a column and then its words, under a
-   1px --grid rule across the width. A stem is one 1px L in context ink at 60 percent, a connector over those rules: down from the mark to its row's rule, then along it to the left edge,
-   so the lit length is how far along the track its date falls. A stem passes behind the rows above it, whose ground hides it, so it crosses no word; --drop is its length, measured in
-   energy-funding.js. The needle stops at the first row, since it moves with the days and would otherwise run through the words. On a phone and in print the strip is the kit's list. */
-@media screen and (min-width: 720px) {
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-area { margin-inline: 0 12px; }
-  [data-plate^="energy-deadlines"] .strip.is-live .needle { bottom: auto; height: calc(24px + var(--sq) + 26px); }
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-months { height: 20px; }
-  [data-plate^="energy-deadlines"] .strip-months span { z-index: 1; padding-inline: 4px; background: var(--plot-ground); }
-  [data-plate^="energy-deadlines"] .strip-mark { cursor: pointer; }
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-rows { display: block; margin-right: -12px; } /* out of the area's 12px, so a row's rule meets the lane's right edge; the stem's width takes it back */
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-row { height: auto; cursor: pointer; border-top: 1px solid var(--grid); }
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-row + .strip-row { margin-top: 7px; }
-  /* The L's foot lies on its row's rule: a positioned child starts under the border, so the stem's 1px more reaches back to the track. */
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-row::before { left: 0; bottom: 100%; width: calc(var(--t) * (100% - 12px)); height: calc(var(--drop, 0px) + 1px); background: none; border: solid var(--series-context); border-width: 0 1px 1px 0; opacity: 0.6; }
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-row:is(:hover, .is-on, :has(a:focus-visible))::before { border-color: var(--atni-text-heading); opacity: 1; }
-  [data-plate^="energy-deadlines"] .strip.is-live .strip-row .strip-body { position: relative; z-index: 1; left: auto; right: auto; display: grid; grid-template-columns: 6.25rem minmax(0, 1fr); width: auto; padding: 4px 0 0; text-align: left; background: var(--plot-ground); }
-  [data-plate^="energy-deadlines"] .strip-when { grid-row: 1 / span 2; white-space: nowrap; }
-  [data-plate^="energy-deadlines"] .strip-body > :is(.strip-name, .strip-what) { grid-column: 2; }
+/* In a face the plot has two thirds of the width, so the gutter and the names give the ruler more of it, and the months keep apart. */
+[data-plate^="energy-deadlines"] .countdown { --cd-when: 6rem; --cd-name: clamp(9rem, 28%, 15rem); }
+/* The kit stacks a row's name over its track below 34rem; these names wrap to three lines in a face at 1280 and 1440, so they stack up to 46rem. */
+@container (max-width: 46rem) {
+  [data-plate^="energy-deadlines"] :is(.countdown-ruler, .countdown-row, .countdown-lane) { grid-template-columns: var(--cd-when) minmax(0, 1fr); }
+  [data-plate^="energy-deadlines"] .countdown-scale { grid-column: 2; }
+  [data-plate^="energy-deadlines"] .countdown-row { grid-template-rows: auto 1.5rem; }
+  [data-plate^="energy-deadlines"] .countdown-row > .countdown-when { grid-row: 1 / span 2; }
+  [data-plate^="energy-deadlines"] .countdown-row > .countdown-name { grid-column: 2; padding-top: 6px; }
+  [data-plate^="energy-deadlines"] .countdown-row > .countdown-track { grid-column: 2; grid-row: 2; }
 }
 
-/* Read This First: on Funding two columns that each flow on their own, on Potential a caveat in one column, a rule and no box. */
-.energy-flow { min-width: 0; }
-.energy-flow > .rail-details { margin-block: 0; }
-.content > .prose > .energy-caveat { grid-column: 1 / -1; max-width: var(--measure-wide); margin: 0 0 16px; padding-left: 16px; font-size: 1.125rem; line-height: 1.45; color: var(--atni-text-heading); border-left: 2px solid var(--energy-mark); }
+/* The overview's third face: what the task force is, in five ruled rows. */
+.energy-status { display: grid; align-content: start; gap: 12px; }
+.status-title, .face-title { margin: 0; font-size: 1.375rem; line-height: 1.2; }
+.status-rows { display: grid; margin: 0; max-width: 60rem; border-top: 1px solid var(--rule); }
+.status-rows > div { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: 24px; padding-block: 12px; border-bottom: 1px solid var(--rule); }
+.status-rows dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.status-rows dd { margin: 0; max-width: var(--measure-wide); line-height: 1.5; }
 
-@media screen and (min-width: 1100px) {
-  /* Without scripts a plate simply stacks, every view showing. */
-  .plate[data-plate^="energy-"]:not(.is-live) { grid-template-columns: minmax(0, 1fr); }
-  /* With them, both plates drop the kit's three zones: claim and plot on top, the detail under them. On the overview that is half a window each; on a rail page, the content's width. */
-  [data-plate^="energy-types"], [data-plate^="energy-deadlines"], .plate-pair > .plate { gap: 0 24px; align-items: start; }
-  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) { min-height: 0; }
-  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) > .plate-plot { min-height: 0; }
-  .plate.is-live:is([data-plate^="energy-types"], [data-plate^="energy-deadlines"]) .plate-view { position: static; }
-  /* The title runs the plate's width; the figures keep the left column beside the plot, with the button under them. */
-  [data-plate^="energy-types"] { --row-min: 26px; }
-  /* B1 (R2 kit): the zones take the kit's variant areas now; P-energy lays these plates out again on the agenda. */
-  .is-live[data-plate^="energy-types"] .plate-claim > .plate-foot .button { padding: 8px; }
-  .is-live[data-plate^="energy-types"] .plate-title { margin-bottom: 8px; }
-  [data-plate^="energy-types"] .ladder-rows { margin-bottom: 24px; }
-  .plate-pair > .is-live[data-plate^="energy-types"] .readout { display: none; } /* the Reading says the figure, and at this width the sentence is what fits the first screen */
-  /* A rail page has the width for the Reading beside what selecting a row shows; the list of Tribes takes the panel's width when it opens. */
-  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
-  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > * { grid-column: 1; }
-  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-states { grid-column: 2; grid-row: 1 / span 3; align-content: start; border-top: 0; padding-top: 0; }
-  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .plate-foot { grid-column: 2; grid-row: 4; }
-  [data-plate="energy-types-by-stage-plans"] .plate-view[data-view="reading"] > .energy-tribes { grid-column: 1 / -1; }
-  /* One column: each zone in it, in source order, title, strip, Read as a table, then the panel; the kit's .has-under rows would send them to columns it lacks. */
-  .plate[data-plate^="energy-deadlines"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
-  .plate.is-live[data-plate^="energy-deadlines"] > .plate-claim { padding-top: 0; row-gap: 4px; }
-  .plate-pair > .plate { align-self: start; align-content: start; } /* the shorter plate keeps its own rows rather than stretching them to its neighbor's height */
-  /* The band: a title that must not wrap, beside figures that may. */
-  .energy-band { grid-template-columns: minmax(36rem, 1fr) minmax(0, auto); }
-  .energy-band .lead { max-width: none; }
-  .energy-band .page-band-figures { gap: 8px 32px; flex-wrap: nowrap; }
-  .energy-band .page-band-figures li { flex: 0 1 auto; max-width: 16rem; }
-  .energy-band:has(.figure-label a) .page-band-figures li { max-width: 13rem; }
-  .energy-band .figure-num { white-space: nowrap; }
-  /* Below the plates, the page in columns. */
-  .energy-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; align-items: start; }
-  .energy-details > .energy-library { grid-column: 1 / -1; }
+/* Why the task force exists: one band, the resolution's words at the left as its anchor, the purpose and its folds at the right (energy-17). */
+.energy-why { display: grid; gap: 24px 48px; border-top: 1px solid var(--rule); }
+.energy-quote { margin: 0; }
+.energy-quote blockquote { margin: 0; }
+.energy-quote blockquote p { max-width: 30ch; margin: 0; font-family: var(--display); font-weight: 500; font-size: clamp(1.375rem, 1.1rem + 0.5vw, 1.75rem); line-height: 1.3; text-wrap: pretty; color: var(--atni-text-heading); }
+.energy-quote figcaption { margin-top: 12px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.energy-why-text > h2 { margin-top: 0; }
+.energy-why-text > p { max-width: var(--measure); }
+.energy-folds { margin-top: 16px; }
+@media (min-width: 1100px) { .energy-why { grid-template-columns: minmax(0, 36rem) minmax(0, 44rem); } .energy-quote { position: sticky; top: 24px; align-self: start; } }
+
+/* Focus areas and Programs and Tools: two columns of ruled items, so no column runs on alone (energy-17, -20). */
+.energy-focus, .energy-tools, .energy-watch { border-top: 1px solid var(--rule); }
+.energy-fold-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr)); align-items: start; }
+.energy-fold-grid > .disclosure[open] { grid-column: auto; }
+.energy-focus > .slot { margin-top: 24px; }
+.tool-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr)); gap: 0 48px; margin: 0; padding: 0; list-style: none; }
+.tool-list > li { margin: 0; padding-block: 16px 20px; border-top: 1px solid var(--rule); }
+.tool-list h3 { margin: 0 0 6px; font-size: 1.125rem; line-height: 1.3; }
+.tool-list h3 a { color: var(--atni-text-heading); }
+.tool-list p { margin: 0; }
+.tool-list > .climate-voice { padding-left: 16px; } /* the one Climate mark on the page (energy-18) */
+.tool-list .climate-lockup { height: 32px; }
+
+/* Policy Watch: the saved searches and the follow list side by side, each a column of short records, built by build_energy_pages.py. */
+@media (min-width: 1100px) { .watch-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; align-items: start; } }
+.watch-columns > h3 { grid-row: 1; margin: 0 0 8px; font-size: 1.125rem; }
+.watch-columns > [data-policy-searches], .watch-columns > [data-policy-follow] { grid-row: 2; }
+.watch-list { margin: 0; padding: 0; list-style: none; }
+.watch-list > .watch-item { margin: 0; padding-block: 12px 16px; border-top: 1px solid var(--rule); }
+.watch-list .watch-item h4 { margin: 0 0 4px; font-size: 1rem; line-height: 1.3; }
+.watch-list .watch-item > p { margin: 0 0 4px; font-size: 0.9375rem; }
+.watch-list .watch-item > .record-meta, .watch-list .watch-item > .record-note { font-size: 0.875rem; }
+.watch-list .query { font-family: var(--body); color: var(--atni-text-body); }
+
+/* Funding, the first face: open and forecasted programs grouped by how they pay. */
+.energy-pays { display: grid; align-content: start; gap: 12px; }
+.pays-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; }
+.pays { margin: 0; padding-block: 12px 16px; border-top: 1px solid var(--rule); }
+.pays-name { margin: 0 0 8px; font-size: 1rem; line-height: 1.3; }
+.pays-list { margin: 0; padding: 0; list-style: none; }
+.pays-list > li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0 0 6px; }
+.pays-list a { color: var(--atni-text-heading); }
+.pays-list .catalog-date { font-size: 0.875rem; color: var(--atni-text-secondary); }
+
+/* Funding, the third face: one Tribe's plans against the catalog, with a one-line status a screen reader hears and a list it does not re-read (energy-12). */
+.energy-fit { display: grid; align-content: start; gap: 12px; }
+.energy-fit .filters { grid-template-columns: minmax(0, 32rem); }
+.energy-fit .data-status { margin: 0; }
+.fit-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 32px; }
+.fit-group { margin: 0; padding-block: 10px 12px; border-top: 1px solid var(--rule); }
+.fit-group h3 { margin: 0 0 6px; font-size: 1rem; }
+.fit-group ul { margin: 0; padding: 0; list-style: none; }
+.fit-group li { margin: 0 0 6px; }
+.fit-group a { color: var(--atni-text-heading); }
+.fit-types { display: block; font-size: 0.875rem; color: var(--atni-text-secondary); }
+#pick-tribe { max-width: 32rem; }
+
+/* The catalog: the list at the left, open first and closed last in muted ink with its tag, and the chosen program's detail beside it (energy-13, -16).
+   Without scripts every program's detail follows the list, whole; with them only the chosen one shows, held from the first paint by the js class. */
+.catalog-filters { margin-bottom: 8px; }
+@media (min-width: 1024px) { .catalog-filters { grid-template-columns: repeat(3, minmax(0, 18rem)) auto; } }
+.catalog { display: grid; gap: 24px 48px; align-items: start; }
+@media (min-width: 1100px) { .catalog { grid-template-columns: minmax(28rem, 5fr) minmax(0, 7fr); } }
+.catalog-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+.catalog-item { margin: 0; border-bottom: 1px solid var(--rule); }
+.catalog-pick { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name tag" "pays date"; gap: 2px 16px; padding: 10px 12px 10px 16px; color: var(--atni-text-body); text-decoration: none; cursor: pointer; }
+.catalog-name { grid-area: name; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.catalog-pays { grid-area: pays; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.catalog-pick .catalog-date { grid-area: date; justify-self: end; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.catalog-pick .tag { grid-area: tag; justify-self: end; }
+.catalog-item.is-closed .catalog-name { color: var(--atni-text-secondary); }
+.catalog-pick:hover { outline: 1px solid var(--atni-text-muted); outline-offset: -1px; }
+.catalog-pick:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
+.catalog-item.is-on .catalog-name { color: var(--atni-text-heading); }
+.catalog-item.is-on .catalog-pick::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--energy-mark); }
+.catalog-item.is-dim .catalog-pick > * { opacity: 0.45; }
+.catalog-list:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
+.catalog-details > .program { padding: 20px 24px 24px; background: var(--window); box-shadow: var(--window-ring); }
+.catalog-details > .program + .program { margin-top: 24px; }
+html.js .catalog-details > .program { display: none; }
+html.js .catalog-details > .program.is-on, html.js .catalog-details:not(:has(> .is-on)) > .program:first-child { display: block; }
+@media screen and (min-width: 1100px) { html.js .catalog-details { position: sticky; top: 16px; max-height: calc(100svh - 32px); overflow-y: auto; overscroll-behavior: contain; } }
+.program h3 { margin: 0 0 4px; font-size: 1.375rem; line-height: 1.2; }
+.program h3 a { color: var(--atni-text-heading); }
+.program h4 { margin: 20px 0 6px; font-size: 1rem; }
+.program > p, .program > ul { max-width: var(--measure-wide); }
+.program .status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.program-due { padding-left: 12px; border-left: 3px solid var(--atni-text-heading); }
+.program-due.is-passed strong { color: var(--atni-text-secondary); }
+.program .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 0 24px; margin: 16px 0 0; }
+.program .facts > div { padding-block: 8px; border-top: 1px solid var(--rule); }
+.program .facts dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.program .facts dd { margin: 2px 0 0; font-size: 0.9375rem; }
+.catalog-moved { margin: 0 0 12px; }
+.notice-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 0 32px; margin: 0; padding: 0; }
+.notice-list > .record { margin: 0; padding-block: 12px 16px; border-top: 1px solid var(--rule); }
+.notice-list .facts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; margin: 8px 0 0; font-size: 0.875rem; }
+.notice-list .facts > div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); }
+.notice-list .facts dt { color: var(--atni-text-secondary); }
+.notice-list .facts dd { margin: 0; }
+
+/* Potential: the Tribe-by-type grid. One row per Tribe, A to Z; one column per type, in the bars' order. A cell's mark fills from its foot by stage, a quarter
+   for a goal up to whole for installed or operating, in the stage ramp, so height and ink both say the stage and print and forced colors keep it. The
+   selected cell takes a 2px orange ring, focus a 2px ink ring; marks are highlights, so nothing a filter misses disappears (energy-09). */
+.tt-filters { margin-bottom: 8px; }
+@media (min-width: 1024px) { .tt-filters { grid-template-columns: auto minmax(0, 20rem) repeat(4, minmax(0, 12rem)) auto; } }
+.tt-filters select { min-width: 0; }
+.tt-filters .segmented legend { margin-bottom: 4px; }
+.tt-layout { display: grid; gap: 24px 48px; align-items: start; }
+@media (min-width: 1100px) { .tt-layout { grid-template-columns: minmax(0, 1fr) clamp(22rem, 28vw, 34rem); } }
+.tt-grid-box { min-width: 0; }
+.tt-key { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0 0 12px; padding: 0; list-style: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.tt-key > li { display: flex; align-items: center; gap: 8px; margin: 0; }
+.tt-grid { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.875rem; }
+.tt-grid > caption { margin-bottom: 8px; text-align: left; font-size: 0.875rem; color: var(--atni-text-secondary); caption-side: top; }
+.tt-grid .tt-corner { width: 19rem; } /* a fixed table takes its column widths from the first row: the names' column, then the types share the rest */
+.tt-grid thead th { height: 8.5rem; padding: 0 0 8px; vertical-align: bottom; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.tt-grid thead th > span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; text-align: left; }
+.tt-grid thead th.is-mark > span { color: var(--atni-text-heading); text-decoration: underline 2px; text-underline-offset: 0.3em; }
+.tt-grid tbody th { padding: 4px 12px 4px 0; text-align: left; font-family: var(--body); font-weight: 500; line-height: 1.25; }
+.tt-grid tbody th a { color: var(--atni-text-heading); text-decoration: none; }
+.tt-grid tbody th a:hover { text-decoration: underline 1px var(--control-edge); }
+.tt-state { margin-left: 4px; font-size: 0.8125rem; font-weight: 400; color: var(--atni-text-muted); }
+.tt-grid tbody tr { border-top: 1px solid var(--rule); }
+.tt-grid tbody tr.is-group > th { padding-top: 16px; font-family: var(--display); font-weight: 600; color: var(--atni-text-secondary); }
+.tt-grid td { position: relative; height: 2rem; padding: 0; text-align: center; vertical-align: middle; cursor: pointer; }
+.tt-grid td:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
+.tt-mark { display: inline-block; vertical-align: middle; box-sizing: border-box; width: 1rem; height: 1rem; border: 1px solid var(--control-edge);
+  background: linear-gradient(to top, var(--st, transparent) calc(var(--lvl, 0) * 25%), transparent 0); }
+[data-stage="1"] { --lvl: 1; --st: var(--stage-1); }
+[data-stage="2"] { --lvl: 2; --st: var(--stage-2); }
+[data-stage="3"] { --lvl: 3; --st: var(--stage-3); }
+[data-stage="4"] { --lvl: 4; --st: var(--stage-4); }
+td[data-stage] > .tt-mark { --lvl: inherit; --st: inherit; }
+.tt-grid td.is-on > .tt-mark, .tt-grid td.is-on:not([data-stage])::after { outline: 2px solid var(--energy-mark); outline-offset: 2px; }
+.tt-grid td.is-on:not([data-stage])::after { content: ""; position: absolute; inset: 25%; }
+.tt-grid .is-dim > .tt-mark { opacity: 0.22; }
+.tt-grid tr.is-dim > th { color: var(--atni-text-muted); }
+.tt-grid tr.is-dim > th a { color: var(--atni-text-muted); }
+.tt-grid tbody tr:hover > th { text-decoration: underline 1px var(--control-edge); }
+.tt-side { padding: 20px 24px 24px; background: var(--window); box-shadow: var(--window-ring); }
+@media screen and (min-width: 1100px) { .tt-side { position: sticky; top: 16px; max-height: calc(100svh - 32px); overflow-y: auto; overscroll-behavior: contain; } }
+.tt-side-title { margin: 0 0 4px; font-size: 1.375rem; line-height: 1.2; }
+.tt-side-title:focus { outline: none; }
+.tt-side-title:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: 4px; }
+.tt-side-body > p { max-width: none; }
+.tt-side .tt-finding h4 { margin: 16px 0 8px; font-size: 1.0625rem; line-height: 1.3; }
+.tt-side .tt-others { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 12px 0 0; padding: 12px 0 0; list-style: none; border-top: 1px solid var(--rule); font-size: 0.875rem; }
+.tt-side .tt-others li { margin: 0; }
+.tt-side .tt-others button { padding: 0; font: inherit; color: var(--atni-text-heading); text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; background: none; border: 0; cursor: pointer; }
+.tt-side .tt-others button[aria-pressed="true"] { text-decoration: underline 2px var(--energy-mark); }
+.tt-check { margin-left: 8px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-secondary); }
+/* The passages, Tribe by Tribe: the page without scripts reads them here whole; with scripts they open in the side column, one cell at a time. */
+.tt-evidence-box { margin-top: 32px; }
+.tt-evidence { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 32rem), 1fr)); gap: 0 48px; }
+.tt-tribe { padding-block: 16px 20px; border-top: 1px solid var(--rule); }
+.tt-tribe h3 { margin: 0 0 4px; font-size: 1.125rem; }
+.tt-tribe h4 { margin: 12px 0 4px; font-size: 1rem; }
+html.js .tt-evidence-box { display: none; }
+
+@media print {
+  .tt-side, .catalog-filters, .tt-filters { display: none; }
+  html.js .catalog-details > .program { display: block; break-inside: avoid; }
+  .tt-grid thead th { height: 7rem; }
+  .energy-quote { position: static; }
 }
-@media screen and (min-width: 1400px) { .energy-details { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.energy-plates { padding-block: 12px 0; }
-.energy-details { padding-block: 24px 48px; border-top: 1px solid var(--grid); }
-.energy-details > section { min-width: 0; }
-.energy-details > section + section { margin-top: 32px; }
-@media screen and (min-width: 1100px) { .energy-details > section + section { margin-top: 0; } }
-.energy-details .prose > p, .energy-details > section > p { max-width: var(--measure-wide); }
-/* Climate voice, place 1: the lockup at the row's left edge, above the marker and the name, so the name keeps its neighbors' indent. */
-.rail-details > .climate-voice > summary > .climate-lockup { grid-column: 1 / -1; grid-row: 1; margin-bottom: 8px; }
-.rail-details > .climate-voice > summary::before { grid-row: 2; }
-
 @media (forced-colors: active) {
-  .stack-bar > i, .energy-key, .strip-track { forced-color-adjust: none; }
-  .stack-bar > i, .energy-key { outline: 1px solid CanvasText; outline-offset: -1px; } /* the ramp's far step is near white or near black, and the canvas may match it */
+  .stack-bar > i, .tt-mark, .plate-square[class*="is-stage-"] { forced-color-adjust: none; outline: 1px solid CanvasText; outline-offset: -1px; }
+  .ladder-row.is-on .stack-bar, .tt-grid td.is-on > .tt-mark, .catalog-item.is-on .catalog-pick { outline: 2px solid Highlight; }
 }
+@media (prefers-reduced-motion: reduce) { .catalog-details, .tt-side { scroll-behavior: auto; } }

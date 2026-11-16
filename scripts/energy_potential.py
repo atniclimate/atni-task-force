@@ -55,6 +55,9 @@ TOP_N, VERIFY_DEPTH = 5, 7          # publish 5; verify 2 more so a dropped clai
 PER_TYPE, PER_DOC_TYPE, PER_TRIBE = 6, 3, 45
 PASSAGE_MIN, PASSAGE_MAX, MERGED_MAX = 600, 1500, 1800
 EXCERPT_MAX, CITATIONS_MAX = 280, 3
+# Word's Symbol-font bullets (U+F09F, U+F0B7) and decoding's replacement character (U+FFFD) are list marks and damage, not words: page text drops them
+# before anything is matched or cut, so an excerpt stays a substring of its page (check) and no face is asked to draw them (tests/test_fonts.py).
+STRAY = dict.fromkeys(map(ord, "\uf09f\uf0b7\ufffd"))
 USABLE_PAGE_CHARS, USABLE_SHARE = 100, 0.5  # a document is readable when half its pages hold 100+ characters
 MAX_REQUESTS, WORKERS = 4000, 4
 STAGE_READING = "mode"  # stage per passage = most probable level (see docs/ENERGY-POTENTIAL.md)
@@ -412,12 +415,12 @@ def load_pages(root: Path, row: dict) -> tuple[list[tuple[int, str]], str]:
             outcome = None  # an attempt still being written
         if outcome == "extracted":
             pages = read_json(attempts[-1] / "extraction" / "extraction.json")["pages"]
-            return [(int(p["number"]), p.get("raw_text") or "") for p in pages], f"campaign extraction attempt {attempts[-1].name}"
+            return [(int(p["number"]), (p.get("raw_text") or "").translate(STRAY)) for p in pages], f"campaign extraction attempt {attempts[-1].name}"
     import fitz  # PyMuPDF
     with fitz.open(row["local_path"]) as pdf:
         pages = [(i + 1, "\n\n".join(b[4].strip() for b in page.get_text("blocks", sort=True)
                                      if b[6] == 0 and b[4].strip())) for i, page in enumerate(pdf)]
-    return pages, "pdf text layer"
+    return [(n, text.translate(STRAY)) for n, text in pages], "pdf text layer"
 
 
 def readable(pages: list[tuple[int, str]]) -> tuple[bool, int]:

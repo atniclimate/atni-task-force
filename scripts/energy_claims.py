@@ -11,7 +11,6 @@ Writes  work/site-refresh/evidence/potential.json and funding.json, the local ev
 A count from a data file is partly verified: the arithmetic is exact, but what it counts is a machine-assisted reading or a catalog read on a stated date, so each carries
 a limit written for the public. A deadline is verified only when its record holds the sentence read on the agency's own page (deadline.checked). Standard library only.
 """
-from datetime import date, timedelta
 import json
 from pathlib import Path
 import sys
@@ -203,12 +202,12 @@ def and_list(words, word="and"):
     return words[0] if len(words) == 1 else f"{', '.join(words[:-1])}, {word} {words[-1]}" if len(words) > 2 else f" {word} ".join(words)
 
 
-def types_plate(plate_id, page, data_href, tribes_href, potential, claims):
+def types_plate(plate_id, page, tribes_href, potential, claims, answer=None):
     rows = type_rows(potential, claims)
     totals = {c["id"]: c["value"] for c in claims}
     zero = [r["label"].lower() for r in rows if not totals[r["claim"]]]
     lead = [r["label"] for r in rows[:3]]
-    top = (max(totals[r["claim"]] for r in rows) // 10 + 1) * 10
+    top = -(-max(totals[r["claim"]] for r in rows) // 5) * 5  # the next five up, so the longest bar fills the plot (energy-06: at most 1.25 times the data)
     reading_for = {}
     for r in rows:
         c = r["claim"]
@@ -216,61 +215,60 @@ def types_plate(plate_id, page, data_href, tribes_href, potential, claims):
                                     f"{{c[{c}][stages][assessed]}} assessed or sited, {{c[{c}][stages][goal]}} goal or interest." if totals[c] else
                                     f"{{c[{c}][entity]}}: no finding. That reflects the documents in the library, not Tribal positions.")
     no_finding = f"; no finding concerns {and_list(zero, 'or')} energy" if zero else ""
-    states = [("No finding after search", "ep-007"), ("No finding yet, documents pending", "ep-008"), ("No document held", "ep-009")]
-    also = [("Documents read", "ep-004"), ("Findings published", "ep-005"), *((f"Findings, {label.lower()}", f"ep-{11 + i:03d}") for i, label in enumerate(STAGES)),
-            *((f"First type in the entry, {next(c['entity'] for c in claims if c['id'] == f'ep-{15 + i:03d}').lower()}", f"ep-{15 + i:03d}") for i in range(2))]
+    # What the window says beside every row: the three states a Tribe with no finding is in, and the documents still unread. Each keeps its own limit.
+    also = [("Tribes covered", "ep-002"), ("No finding after search", "ep-007"), ("No finding yet, documents pending", "ep-008"), ("No document held", "ep-009"),
+            ("Documents read", "ep-004"), ("Documents awaiting text extraction", "ep-003")]
     return {
         **base_plate(plate_id, page),
         "title": f"{and_list(lead)} lead {{c[ep-001][text]}} Tribes' public plans{no_finding}".capitalize().replace("tribes", "Tribes"),
-        "text": ["{c[ep-001][text]} Tribes with at least one type", "{c[ep-002][text]} ATNI-listed Tribes covered", "{c[ep-003][text]} documents pending text extraction", f"Built {us(potential['generated'])}",
-                 "A machine-assisted reading of public plans, not a Tribe's own assessment. It endorses no project and ranks no Tribe. A type's absence is not evidence of opposition or disinterest."],
-        "plot": {"type": "bars", "domain": [0, top]},
+        "subtitle": f"A machine-assisted reading of public plans built {us(potential['generated'])}, not a Tribe's own assessment: it endorses no project and ranks no Tribe, and a type's absence is not evidence of opposition or disinterest.",
+        # The bar is each type's total; the page script lays its stages over it, in the key's ramp, inside the same box.
+        "plot": {"type": "bars", "domain": [0, top], "key": [{"label": label, "shape": f"stage-{4 - i}"} for i, label in enumerate(STAGES)]},
         "default": rows[0]["id"],
         "rows": rows,
         "reading_group": "{label}: {display}.",
         "reading_for": reading_for,
         "details": ["A Tribe counts once per type, at the most advanced stage found, from an entry that lists up to five types. Types are ranked within one Tribe's entry; no Tribe is ranked against another."],
         "also": [{"claim": c, "label": label, "say": "{display}."} for label, c in also],
-        "foot": [*({"text": f"{label}: {{c[{c}][display]}}. {{c[{c}][limit]}}"} for label, c in states), {"text": "Pending text extraction: {c[ep-003][display]}, held by {c[ep-010][display]}. {c[ep-003][limit]}"},
-                 {"href": tribes_href, "link": "Read it Tribe by Tribe"}, {"text": "Data:", "href": data_href, "link": "energy-potential.json"}],
+        "foot": [{"href": tribes_href, "link": "See each Tribe's types and the passages behind them"}],
         "table": {"columns": [{"label": "Energy type", "field": "label"}, *({"label": label, "field": key} for label, key in STAGES.items()), {"label": "All", "field": "text"}, {"label": "Claim", "field": "claims"}]},
+        **({"answer": answer} if answer else {}),
     }
 
 
-def deadlines_plate(plate_id, page, data_href, funding, claims):
+def deadlines_plate(plate_id, page, funding, claims, answer):
+    """A countdown (scripts/plate_countdown.py): each dated deadline on a 24-month ruler from the day the dates were rechecked, then the open or forecasted programs
+    with no date. A row's date is its claim's, so the title states only what the clock cannot change: how many dates the catalog holds, and the last."""
     dated, undated = dated_rows(funding), undated_programs(funding)
     ids = {c["entity"]: c["id"] for c in claims if "ef-011" <= c["id"] < "ef-041"}
-    rows = [{"id": "dated-count", "label": "Dated deadlines in the catalog", "claim": "ef-005", "group": "sum"}, {"id": "no-date-count", "label": "Programs with no date in the catalog", "claim": "ef-006", "group": "sum"}]
-    for r in dated:
-        rows.append({"id": r["key"], "label": r["name"], "claim": ids[r["name"]], "group": "dated", "gap": us(r["iso"]), "tag": f"Status checked {us(r['checked'])}. {r['what']}.",
-                     "cols": {"iso": r["iso"], "checked": us(r["checked"]), "what": r["what"], "status": r["status"], **({"program": r["program"]} if r.get("program") else {"link": r["link"]})}})
-    for p in undated:
-        rows.append({"id": p["id"].replace("_", "-"), "label": p["short_name"], "claim": ids[p["short_name"]], "group": "undated", "gap": "No date in the catalog", "tag": f"Status {p['status']}, checked {us(p['status_checked']['date'])}.",
-                     "cols": {"program": p["id"], "checked": us(p["status_checked"]["date"]), "status": p["status"]}})
     checks = checked_dates(funding["programs"])
+    start = checks[-1]  # the day the dated programs were read on their agencies' pages
+    rows = [{"id": r["key"], "label": r["name"], "claim": ids[r["name"]], "cols": {"status": r["status"], "checked": us(r["checked"]), **({"program": r["program"]} if r.get("program") else {"link": r["link"]})}} for r in dated]
+    rows += [{"id": p["id"].replace("_", "-"), "label": p["short_name"], "claim": ids[p["short_name"]], "cols": {"status": p["status"], "checked": us(p["status_checked"]["date"]), "program": p["id"]}} for p in undated]
+    upcoming = [r for r in dated if r["iso"] > start]
     recheck = f"Dated programs rechecked {us(checks[-1])}; other statuses checked {us(checks[0])}." if len(checks) > 1 else f"Statuses checked {us(checks[0])}."
-    span = f" through {us(dated[-1]['iso'])}, the first on {us(dated[0]['iso'])}" if dated else ""
-    checked_from = funding["source"]["programs_status_as_of"]
+    last = f" through {us(dated[-1]['iso'])}" if dated else ""
     return {
         **base_plate(plate_id, page),
-        "title": f"{{c[ef-005][text]}} dated deadlines{span}; {{c[ef-006][text]}} more programs carry no date in the catalog",
-        "plot": {"type": "instrument", "groups": [{"id": "sum", "label": "In the catalog"}, {"id": "dated", "label": "Dated deadlines"}, {"id": "undated", "label": "No date in the catalog"}],
-                 "strip": {"from": checked_from, "to": (date.fromisoformat(checked_from) + timedelta(days=731)).isoformat(), "checked": checks[0]}},
-        "default": "dated-count",
+        "title": f"{{c[ef-005][text]}} dated deadlines in the catalog{last}; {{c[ef-006][text]}} more open or forecasted programs carry no date",
+        "subtitle": f"{recheck} Program facts, not eligibility determinations; confirm each with the agency.",
+        "inputs": {"open": {"claim": "ef-002"}, "total": {"claim": "ef-001"}},
+        "plot": {"type": "countdown", "from": start},
+        "default": (upcoming or dated or [{"key": rows[0]["id"]}])[0]["key"],
         "rows": rows,
-        # No row is selected on the strip, so this one sentence is the Reading, and the build ends it with the row's limit.
-        "reading_group": "{label}: {display}. {c[ef-006][text]} more open or forecasted programs carry no date, and {c[ef-003][text]} closed programs are not shown. The catalog holds {c[ef-001][text]} programs: {c[ef-002][text]} open, {c[ef-003][text]} closed, and {c[ef-004][text]} forecasted.",
-        "foot": [{"text": f"{recheck} Confirm each with the agency. Program facts, not eligibility determinations. Source:", "href": data_href, "link": "energy-funding.json"}],
-        "table": {"columns": [{"label": "Program", "field": "label"}, {"label": "Deadline", "field": "display"}, {"label": "Status", "field": "status"}, {"label": "Status checked", "field": "checked"}, {"label": "Source", "field": "source"}, {"label": "Claim", "field": "claims"}]},
+        "reading": "{label}: {display}. {boundary} {evidence}",
+        "answer": answer,
+        "table": {"columns": [{"label": "Program", "field": "label"}, {"label": "Deadline", "field": "display"}, {"label": "Status", "field": "status"}, {"label": "Status checked", "field": "checked"}, {"label": "Claim", "field": "claims"}]},
     }
 
 
 def plates_for(potential, funding, potential_list, funding_list):
+    # The answers stand beside the agenda's questions, filled from each plate's own state (DIRECTION-R2 3.2); Potential's plate leads its page, outside an agenda.
     made = [
-        types_plate("energy-types-by-stage", "energy/index.html", "../data/energy-potential.json", "potential/#tribes", potential, potential_list),
-        types_plate("energy-types-by-stage-plans", "energy/potential/index.html", "../../data/energy-potential.json", "#tribes", potential, potential_list),
-        deadlines_plate("energy-deadlines", "energy/index.html", "../data/energy-funding.json", funding, funding_list),
-        deadlines_plate("energy-deadlines-catalog", "energy/funding/index.html", "../../data/energy-funding.json", funding, funding_list),
+        types_plate("energy-types-by-stage", "energy/index.html", "potential/#tribes", potential, potential_list, answer="{label}: {display} name it in their public plans."),
+        types_plate("energy-types-by-stage-plans", "energy/potential/index.html", "#tribes", potential, potential_list),
+        deadlines_plate("energy-deadlines", "energy/index.html", funding, funding_list, "{open} of {total} programs in the catalog were open at the check. {label}: {display}."),
+        deadlines_plate("energy-deadlines-catalog", "energy/funding/index.html", funding, funding_list, "{label}: {display}."),
     ]
     return {plate["id"]: plate for plate in made}
 

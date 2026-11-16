@@ -160,7 +160,7 @@ For each ranked type, the best one to three admissible passages from distinct do
 higher with a higher stage, then a higher own value, then a newer document. Each excerpt is a verbatim cut of at
 most 280 characters from that page's text, around a match of the type, preferring words that show the stage
 reached. Excerpts containing an email address or phone number are skipped. Code asserts that each excerpt is a
-substring of its page text, and `check` asserts it again.
+substring of its page text, and `check` asserts it again. Page text drops Word's Symbol-font bullets (U+F09F, U+F0B7) and the replacement character (U+FFFD) before anything is matched or cut (`STRAY`); the 11/16/2026 files had those five characters removed from three excerpts to match.
 
 Links point to the publisher's address where the library recorded one, otherwise a Wayback copy, and end in
 `#page=N`. Years come from the title (a range such as 2016-2026 counts as its first year), then the file name, then
@@ -220,6 +220,10 @@ judgments are in `work/energy-potential/spot-check.json`.
   - 1,100 passage requests: the 927 final passages, plus re-sends after the year and shared-plan fixes.
   - 549 verification requests, across four rounds while the verification design changed.
 - The hard cap is 4,000 requests.
+
+## On the Site
+
+What Tribal Plans Say (DIRECTION-R2, 11/16/2026) opens on the stage bars, a plate of claims, then a Tribe-by-type grid that `scripts/build_energy_pages.py` writes from this file: one row per Tribe, A to Z, never ranked; one column per type, in the bars' order, so each bar totals its column; a mark that fills from its foot by stage. The passages behind each cell follow the grid, and `site/assets/js/energy-potential.js` shows the chosen cell's in a side column; filters mark rather than remove. The method, the corrections route and each Tribe's documents read (`#docs-{slug}`) are on the page's Sources page. Rerun the builder after this file changes.
 
 ## Rerun after the extraction campaign finishes
 

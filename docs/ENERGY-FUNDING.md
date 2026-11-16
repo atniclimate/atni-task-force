@@ -90,6 +90,7 @@ python scripts\energy_funding.py --self-test   # offline checks
 python scripts\energy_claims.py            # the claims and plates behind the Energy pages' figures; also after scripts\energy_potential.py
 python scripts\build_plates.py --export-claims potential funding
 python scripts\build_plates.py --page energy/index.html   # and energy/potential/index.html, energy/funding/index.html
+python scripts\build_energy_pages.py     # the catalog, the open programs by how they pay, the notices, the Tribe picker's data, Policy Watch
 python scripts\validate_public.py
 ```
 
@@ -106,6 +107,10 @@ python scripts\check_t1_leak.py
 ```
 
 With `--include-heat` the heat section goes into `site/data/energy-funding.json` and the T1 heat files are not written. Without it, `check_t1_leak.py` reported 0 overlaps on 2026-10-29 and `validate_public.py` passed with the new file in `site/data/`.
+
+## On the Site
+
+The Funding page (DIRECTION-R2, 11/16/2026) is built from this file and fetches nothing. `scripts/build_energy_pages.py` writes the agenda's first face (open and forecasted programs grouped by how they pay: formula and non-competitive grants, loans, a tax credit, technical help, after a declared disaster, competitive grants), the catalog as one list (open, then forecasted, then closed) with each program's detail beside it, the catalog's filter choices, the Grants.gov notices, and each Tribe's matches as inline JSON for the Tribe picker. Each program's source pages go to the Funding Sources page under `#prog-{id}`, with the method and how Grants.gov was searched. `site/assets/js/energy-funding.js` only chooses and marks: a filter highlights what matches and dims the rest, a `#prog-` link opens its program and clears a mark that would dim it, saying so, and a deadline the countdown counts as passed reads as passed in the list and the detail. The deadlines are a `countdown` plate (`scripts/plate_countdown.py`) counted from the day the dated programs were rechecked.
 
 ## Limits
 
