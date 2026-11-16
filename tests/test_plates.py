@@ -440,6 +440,37 @@ def test_an_instrument_builds_its_default_setting_statically(tmp_path):
     assert "aMW = MW x load factor" in doc.one(cls="plate-facts").text(), "the default row's equation prints without scripts"
 
 
+COUNTDOWN_CLAIMS = [bp.sample_claim("s-1", None, date="2027-02-17"), bp.sample_claim("s-2", None, date="2026-10-01"), bp.sample_claim("s-3", None),
+                    bp.sample_claim("s-4", None, date="2026-11-05"), bp.sample_claim("s-5", None, date="2029-01-01")]
+
+
+def countdown_plate(**extra):
+    return bp.sample_plate(**{"plot": {"type": "countdown", "from": "2026-10-29"}, "default": "d", "title": "Deadlines", "reading": "{label}: {display}.",
+                              "rows": [{"id": key, "label": key.upper(), "claim": f"s-{n}"} for n, key in enumerate("abcde", 1)], **extra})
+
+
+def test_a_countdown_reads_each_date_from_its_claim_and_sorts_rows_into_lanes(tmp_path):
+    page, data, _ = built(tmp_path, countdown_plate(), COUNTDOWN_CLAIMS)
+    assert [(r["key"], r["lane"], r.get("due"), r["display"]) for r in data["rows"]] == [
+        ("d", "dated", "11/05/2026", "11/05/2026"), ("a", "dated", "02/17/2027", "02/17/2027"), ("e", "dated", "01/01/2029", "01/01/2029"),
+        ("b", "passed", "10/01/2026", "10/01/2026"), ("c", "undated", None, "No date")], "soonest first, then passed, then no date: the keyboard's and the Table's order"
+    assert data["plot"]["to"] == "2028-10-29", "24 months from the day the build counts from, never the clock"
+    doc = parse(page)
+    rows = doc.all(cls="countdown-row")
+    assert [r.attrs["data-row"] for r in rows] == ["d", "a", "e"] and [r.one(cls="countdown-days").text() for r in rows] == ["7 days", "111 days", "795 days"]
+    assert rows[0].attrs["style"] == "--t:0.0096" and rows[2].attrs["style"] == "--t:1" and "is-beyond" in rows[2].attrs["class"], "past the ruler's end, a mark at the end"
+    lanes = {lane.attrs["data-lane"]: lane for lane in doc.all(cls="countdown-lane")}
+    assert lanes["passed"].one(cls="countdown-when").text() == "1 Passed" and lanes["undated"].one(cls="countdown-when").text() == "1 No date"
+    assert [li.attrs["data-row"] for li in lanes["undated"].all("li")] == ["c"] and doc.one(cls="countdown-note").text() == "Days counted from 10/29/2026."
+    assert [tr.attrs["data-key"] for tr in doc.one(cls="plate-table").all("tr") if "data-key" in tr.attrs] == ["d", "a", "e", "b", "c"], "the Table lists every program"
+
+
+def test_a_countdown_needs_its_build_day_and_one_program_a_row(tmp_path):
+    rejected(tmp_path, "plot.from", countdown_plate(plot={"type": "countdown"}), COUNTDOWN_CLAIMS)
+    rejected(tmp_path, "does not take a by control", countdown_plate(by="when", controls=[{"type": "segmented", "name": "when", "label": "When", "default": "x", "options": [{"value": "x", "label": "X"}]}]), COUNTDOWN_CLAIMS)
+    rejected(tmp_path, "s-1's date", countdown_plate(), [bp.sample_claim("s-1", None, date="soon"), *COUNTDOWN_CLAIMS[1:]])
+
+
 def test_a_ruler_runs_to_what_the_settings_can_reach(tmp_path):
     _, data, _ = built(tmp_path, instrument_plate(), INSTRUMENT_CLAIMS)
     rows = {r["key"]: r for r in data["rows"]}

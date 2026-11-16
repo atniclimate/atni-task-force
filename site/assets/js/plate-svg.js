@@ -45,7 +45,7 @@ function axes(f, x, y, yTicks, xs, inside = false) {
   add(g, 'line', { class: 'm-base', x1: f.x0, x2: f.x1, y1: base, y2: base });
   let right = Infinity; // newest year first; one that would touch is left out
   for (const t of (xs.length > 12 ? xs.filter((v) => v % 5 === 0) : [...xs]).sort((a, b) => b - a)) {
-    if (right - x(t) >= 36) {
+    if (right - x(t) >= 48) { // a year label is about 32px wide; 36 let two nearly touch (ai-06)
       const edge = f.W - x(t) < 24;
       add(g, 'text', { class: 'm-tick', x: x(t), y: f.y0 + 20, 'text-anchor': edge ? 'end' : 'middle', text: t });
       right = edge ? x(t) - 18 : x(t);

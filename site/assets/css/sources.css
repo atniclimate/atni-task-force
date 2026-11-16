@@ -60,6 +60,7 @@
 .source-claims td { text-align: left; }
 .source-claims :is(th, td) { font-size: 0.8125rem; }
 .source-claims tbody th[scope="row"] { white-space: nowrap; } /* a claim id never breaks at its hyphen */
+.source-claims thead th { white-space: nowrap; } /* a wide Quote column squeezed "Value year" to a letter a line */
 .source-claims .source-run th { color: var(--atni-text-secondary); }
 .source-detail { margin: 0; }
 .source-detail > summary { display: list-item; width: fit-content; min-height: 28px; padding-block: 3px; font-family: var(--display); font-weight: 500; font-size: 0.8125rem; color: var(--atni-text-heading); cursor: pointer; }

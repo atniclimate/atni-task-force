@@ -117,6 +117,36 @@ named below and measured. This replaces the old "no text on a photo, no scrim" d
   `preload="none"`. A trial needs video types added to `validate_public.py` with a size cap (2 MB is the starting point
   in section 5) and the owner's approval before anything is published. Until then, clips stay off the site.
 
+## D. Council Agenda (R2, 11/15/2026; overrides C and sections 0 to 6)
+
+The direction is `work/site-refresh/r2/direction/DIRECTION-R2.md` (local). Each main page opens like an agenda item: up to four questions, each answered in one
+plain sentence read off a live plate beside it, every figure's record one link away on its Sources page. Hard lines do not move (tier, claim ids, no external
+loads, no Indigenous motif, the seal). Where a row departs from A or B it says so: those rows are built and wait on the owner's carve, and A and B stand until
+the owner rules. The kit as built is in `docs/PLATE-KIT.md`, "The system as built, R2".
+
+| Default | Now | Reason |
+|---|---|---|
+| Orange on links, buttons, tabs, chosen settings, chips, and urgency (2; the Energy orange ruling) | **For the owner.** Orange marks the reading only: the needle and its label, the selected mark, bar, row, cell, year, or county (a fill or a 2px ring, never a row wash), the countdown's "today", the reader's example project, a Sources page's followed claim, and ENERGY in the lockup. Links, the paper button, the current nav item and tab, chosen settings, the open chip, focus, map squares, and urgency are heading ink; bullets are muted | The eye lands on the warmest thing first, and a needle that shares its color with forty links is not a needle. Whether the Energy pages' links may leave orange is the owner's call |
+| `--poster` readout, 7rem at 1440 and 8.5rem at 1920 (C; A) | **For the owner.** 3 to 3.75rem on a face or a lead (`--readout`), 2.25rem on a repeater or a strip; `--poster` is retired and kept only as an alias | 96 to 136px numerals beside 14px text were the first thing a reader noticed, and the number crowded its own sentence |
+| Root 16px at every width (2) | `html { font-size: clamp(100%, 87.5% + 0.15625vw, 112.5%) }`: 16, 16.25, 17, and 18px at 1280, 1440, 1920, and 2560; h1 `clamp(2.25rem, 1.75rem + 0.625vw, 2.625rem)`; body 1rem, line height 1.6, measure 36rem; a 0.875rem floor on a first screen | 16px text at 2560 read as fine print; percent keeps the reader's own default |
+| Raised ground #141414 under the detail panel and the footer (2, C) | One raised surface, the window (`--window`, #0B1825 dark and #FFFFFF light, with an inset top line); the footer is flat behind a 1px rule | A grey slab on navy read as a surface of another temperature (home-shell-14) |
+| Light body #636363, light secondary #3B3B3B (tokens) | Swapped in `site.css`: body #3B3B3B (10.4 to 1), secondary #636363 (5.6 to 1) | A caption read darker than the sentence above it (resource-use-10, library-summit-about-21) |
+| A page band of key figures (C) | The brief: name line, h1, at most two sentences of lead, the meta line (Sources checked, Sources for this page), no figures; then the agenda on the pages that have one | A cold reader needs an answer first, and a band figure is a claim with nowhere to show its status |
+| One plate layout, three views (Chart, Sources, Table) (4, C) | Five variants by where a plate sits (face, lead, repeater, strip, atlas), set by container queries; two views, Chart and Table, as pressed buttons; the Table takes the plot's and the window's place with no inner scroll, 25 rows and then "Show all N rows"; evidence chips under the Reading | One workbench stacked three to five times a tab; Tables were crammed into 313 to 428px; the Sources view hid the evidence a press away |
+| A title fixed at the default setting (4) | Titles and answers follow the state (`title_template`, `answer`), under the figure rule: a field names only a row field, a control's value, or an input with a claim or model source | A moved setting left a title that contradicted the readout beside it |
+| An axis that rescales with the setting (4) | Each domain is the union over every setting and stop; `"rescale": true` opts out and prints "The scale changed" | Home's values moved right as the boundary narrowed, so a smaller figure looked the same |
+| Hover previews a row (5) | Hover outlines a row in 1px muted ink and changes nothing else | The readout and the actions moved under the pointer (CD 1) |
+| Needle 160ms ease-out, one stroke on load (C) | Press 120ms, swap 180ms, draw 240ms once per load on the first face; nothing animates after a key press; reduced motion is 0ms | One motion vocabulary, and a key press must answer at once |
+| Tabs as names, a sticky header (3) | Each tab a name over its question in one fixed 64px strip with a 3px heading-ink underline; the header is static | One sticky bar, and sticking changes no height |
+| The deadline strip, stems measured after load (C, the strip) | The `countdown` plate kind, drawn at build: each deadline's mark on its own row, its days and date in a gutter; scripts move only today | The strip was built and measured after first paint, one of the jumps that took a page's CLS to 0.70 |
+| The governance loop, `.loop` (3) | `.track`, a numbered horizontal sequence whose steps open in place, and `.stair`, the tier stair; radios in labels and `:has()`, no script | Cycles are horizontal numbered tracks, never circles or wheels, and detail opens beside what it describes, never over it |
+| Receipts and Claims Cited on main pages (4) | Each page's Sources page (owner ruling 39) and, under each plate, the collar: its sources line, "All sources for this plate", Print, CSV, SVG, and "Add to a briefing" on the AI, Data Centers, and Energy pages. Prose figures open one tip (`cite.js`); terms link to the hub's glossary | One answer, one source, and a main page that reads as an agenda |
+| Budget lines from the direction (`sheet.js` 5,500 bytes) | `sheet.js` 6,400 bytes, measured size plus 10 percent as for the other built scripts | The sheet as built does every action section 3.12 names (print a clone, copy, the briefing link, clear and undo, the address) |
+| 3D (B) | None, 0 bytes; no texture except the relief under the Data Centers atlas (a Should, a new image place for the owner) | No R2 measure has a depth a reader needs |
+
+**For the owner's carve:** ink links and buttons and the reach of the Energy orange ruling; the retired poster readout (A); the relief as a new image place (B2);
+an Energy photo band; whether the Summit and About get Sources pages; the Summit date.
+
 ## C. Instrument at Full Power, 11/05/2026 (overrides sections 0 to 6)
 
 The art director's decision is `work/site-refresh/design/lift/DIRECTION-FINAL.md` (local). Sections A and B stand, and this is the record of what the

@@ -309,13 +309,13 @@ def test_the_rebuild_runs_in_the_documented_order():  # 17
     order = [" ".join(make) for _, make, _, _ in ra.STEPS]
     at = lambda command: order.index(f"scripts/{command}")  # noqa: E731  (a step's first run)
     export = at("build_plates.py --export-claims")
-    assert max(at("energy_claims.py"), at("climate_claims.py"), at("project_claims.py")) < export < at("build_project_map.py") < at("build_plates.py")
+    assert max(at("energy_claims.py"), at("climate_claims.py"), at("project_claims.py")) < export < at("build_project_map.py") < at("build_plates.py") < at("build_energy_pages.py")
     model = [at(f"resource_model.py{flag}") for flag in (" --self-test", " --export", " --oracle", "")]
     assert model == sorted(model) and model[-1] < at("build_explorer.py") < at("build_home.py") < at("build_index.py") < at("build_whats_new.py")
     counts = [n for n, command in enumerate(order) if command == "scripts/site_count_claims.py"]
     assert counts[0] < at("build_plates.py") and at("build_whats_new.py") < counts[1] < at("pour_claim_refs.py"), "before the pages read the counts, and after the rows it counts"
-    assert at("pour_claim_refs.py") < at("build_share_cards.py") < at("build_briefing.py") < at("build_briefing_pdf.py") < at("add_page_meta.py") == len(order) - 1
-    assert {make[0] for _, make, _, stale_only in ra.STEPS if stale_only} == {"scripts/build_project_map.py", "scripts/build_share_cards.py", "scripts/build_briefing_pdf.py"}
+    assert at("build_energy_pages.py") < at("pour_claim_refs.py") < at("build_share_cards.py") < at("build_briefing.py") < at("build_briefing_pdf.py") < at("add_page_meta.py") == len(order) - 1
+    assert {make[0] for _, make, _, stale_only in ra.STEPS if stale_only} == {"scripts/bake_relief.py", "scripts/build_project_map.py", "scripts/build_share_cards.py", "scripts/build_briefing_pdf.py"}
     assert all((ROOT / make[0]).is_file() for _, make, _, _ in ra.STEPS)
 
 

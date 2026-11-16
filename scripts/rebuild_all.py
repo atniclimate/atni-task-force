@@ -5,8 +5,8 @@
 
 The claim generators come first, where the data products table in CLAUDE.md places them. site_count_claims.py runs twice: before the plates and
 the home page read its library and policy counts (build_home.py stops if those differ from the data files), and after build_whats_new.py,
-whose rows it counts and whose page mark pour_claim_refs.py checks. The project map, the share cards (they need VectorCraft), and the Briefing
-PDF (it needs Chrome) are rebuilt only when their own --check says stale. In --check mode the freshness tests stand in for the claims export,
+whose rows it counts and whose page mark pour_claim_refs.py checks. The relief images (they need numpy and the inputs in H:/raw-data/relief), the
+project map, the share cards (they need VectorCraft), and the Briefing PDF (it needs Chrome) are rebuilt only when their own --check says stale. In --check mode the freshness tests stand in for the claims export,
 the plate build, and the model export, which have no check flag; a builder with no check at all is named, never counted as passed.
 """
 import argparse
@@ -29,8 +29,10 @@ STEPS = [
     ("project claims and plate", ["scripts/project_claims.py"], None, False),
     ("site/data/claims", ["scripts/build_plates.py", "--export-claims"], fresh("test_claims_match_evidence"), False),
     ("site counts, before the pages read them", ["scripts/site_count_claims.py"], None, False),
+    ("Data Centers relief images", ["scripts/bake_relief.py"], ["scripts/bake_relief.py", "--check"], True),
     ("project map", ["scripts/build_project_map.py"], ["scripts/build_project_map.py", "--check"], True),
     ("plate blocks in the pages", ["scripts/build_plates.py"], fresh("test_plate_build_changes_nothing"), False),
+    ("Energy pages' regions and Policy Watch", ["scripts/build_energy_pages.py"], ["scripts/build_energy_pages.py", "--check"], False),
     ("resource model self-test", ["scripts/resource_model.py", "--self-test"], ["scripts/resource_model.py", "--self-test"], False),
     ("site/data/resource-model.json and resource-model-inputs.csv", ["scripts/resource_model.py", "--export"], fresh("test_resource_model_matches_export"), False),
     ("Explorer oracle", ["scripts/resource_model.py", "--oracle"], None, False),

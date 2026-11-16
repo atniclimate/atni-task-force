@@ -9,6 +9,8 @@ Its sentences and figures are test data, not site copy, and nothing here is publ
 It holds every contract a page builds against (DIRECTION-R2 sections 3.1 to 3.12), so a change to the kit that breaks one fails here first:
 the brief with its Sources link; the agenda (the meter as a face, a list face with each set's Add, a face of words), above the tab strip;
 tabs as a name and a question, group labels, and the strip's Sources link and Meeting sheet button; each variant (face, lead, `repeat-demo` as a
-repeater, `shift-demo` in a `.plate-strip`, `capital-history` named `atlas`); the page's one `form.asks` in its Questions panel, with `sheet.js`;
+repeater, `shift-demo` in a `.plate-strip`, `capital-history` named `atlas`); `countdown-demo`, the countdown kind on the shipped funding claims
+(`data/claims/funding.json`, a copy), dated from 11/10/2026 so one deadline is already passed; a `.track` and a `.stair` in the Track and stair panel;
+the page's one `form.asks` in its Questions panel, with `sheet.js`;
 and a claim mark and a term with the prose tip's `#cr-data` and `cite.js`. That block is `pour_claim_refs.tip_data()`'s output for the brief's and the
 form's marks, written once by hand, since `pour_claim_refs.py` runs only on `site/`: write it again with that function if the marks change.

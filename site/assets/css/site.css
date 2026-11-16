@@ -274,7 +274,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
-.readout-unit { font-family: var(--body); font-weight: 500; font-size: max(1rem, 0.42em); line-height: 1.2; letter-spacing: 0; color: var(--atni-text-body); }
+.readout-unit { font-family: var(--body); font-weight: 500; font-size: max(1rem, 0.42em); line-height: 1.4; letter-spacing: 0; /* 1.4 holds Noto's 1.36em of ascent and descent, which ran 2px out of a 1.2 box at 2560 */ color: var(--atni-text-body); }
 .readout-unit:has(> .readout-range) { display: contents; } /* the unit stays on the figure's baseline and the range takes its own line */
 .readout-u { color: var(--atni-text-body); }
 .readout-range { order: 1; flex-basis: 100%; font-weight: 400; font-size: 1rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
@@ -391,7 +391,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .section-head h2 { margin-bottom: 8px; }
 .section-head p { max-width: none; margin: 0; }
 @media (min-width: 900px) {
-  .section-head { display: grid; grid-template-columns: auto minmax(0, var(--measure-wide)); column-gap: 48px; align-items: end; max-width: none; }
+  .section-head { display: grid; grid-template-columns: auto minmax(0, var(--measure-wide)); column-gap: 48px; align-items: end; justify-content: start; max-width: none; }
   .section-head h2 { margin-bottom: 0; }
 }
 
@@ -532,26 +532,9 @@ main > .section + .section { border-top: 1px solid var(--grid); }
   :root:not([data-theme="light"]) .page-band.photo-ai::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 30%, rgba(1, 11, 19, .58) min(46%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .30) 84px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .88) calc(100% - 56px), #010B13); }
   :root:not([data-theme="light"]) .page-band.photo-dc::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 26%, rgba(1, 11, 19, .54) min(42%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .34) 82px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .90) calc(100% - 56px), #010B13); }
 }
-@media screen and (min-width: 1100px) and (min-height: 800px) and (forced-colors: none) {
-  .home-instrument { position: relative; }
-  /* 1 / 2 makes the reader's column the credit's box (a bare 1 runs it to the stage's right edge), so it wraps before the plot at any width. */
-  .home-instrument > .photo-credit { position: absolute; grid-column: 1 / 2; inset: auto 0 16px; display: block; visibility: hidden; margin: 0; max-width: 36rem; line-height: 1.3; }
-  :root:not([data-theme="light"]) .home-instrument > .photo-credit { visibility: visible; }
-  :root:not([data-theme="light"]) .home-instrument::before, :root:not([data-theme="light"]) .home-instrument::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-  :root:not([data-theme="light"]) .home-instrument::before { right: 52%; background: url("../img/bg/home-night-sky-960.webp") 50% 100% / cover no-repeat; }
-  /* Lighter than the review's .86 and .90 (and .42 at 38 percent), which hid the sky; solid by 40 percent, so the plot, from about 42, is on true ground. */
-  :root:not([data-theme="light"]) .home-instrument::after { background: linear-gradient(90deg, rgba(1, 11, 19, .70), rgba(1, 11, 19, .80) 30%, #010B13 40%), linear-gradient(180deg, #010B13, rgba(1, 11, 19, .74) 14%, rgba(1, 11, 19, .34) 38%, rgba(1, 11, 19, .78) 72%, #010B13); }
-}
 @media screen and (min-width: 1700px) and (forced-colors: none) {
   :root:not([data-theme="light"]) .page-band.photo-ai::before { background-image: url("../img/bg/ai-server-wall-2400.webp"); }
   :root:not([data-theme="light"]) .page-band.photo-dc::before { background-image: url("../img/bg/dc-server-cabinet-2400.webp"); }
-}
-@media screen and (min-width: 1700px) and (min-height: 800px) and (forced-colors: none) {
-  :root:not([data-theme="light"]) .home-instrument::before { background-image: url("../img/bg/home-night-sky-1200.webp"); }
-}
-/* Past 2560px the stage stops short of the window's left edge, so the sky fades in there instead of starting at a line. */
-@media screen and (min-width: 2561px) and (min-height: 800px) and (forced-colors: none) {
-  :root:not([data-theme="light"]) .home-instrument::before { mask-image: linear-gradient(90deg, transparent, #000 240px); }
 }
 
 /* Callouts. A held slot marks unfilled work with a hollow square and never holds a plot. */
@@ -567,37 +550,67 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .slot-label::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--accent); }
 .slot p:last-child { margin-bottom: 0; color: var(--atni-text-secondary); }
 
-/* The governance loop: a rail of four steps, each number a 24px square on it, and one line that says it returns. No frame. */
-.loop-diagram { position: relative; margin-top: 32px; }
-.loop { list-style: none; margin: 0; padding: 0; counter-reset: step; }
-.loop-step { position: relative; margin: 0; padding: 0 0 32px 40px; counter-increment: step; }
-.loop-step::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1;
-  color: var(--energy-on-fill);
-  background: var(--series-context);
+/* The track and the stair (DIRECTION-R2 4; docs/PLATE-KIT.md, "The system as built"): steps a reader opens in place, one at a time, with no script. Each is
+   a fieldset of label.track-step (or .stair-step) holding its radio (.track-pick, .stair-pick), each followed by its .track-detail (.stair-detail). The track
+   is a numbered sequence on a horizontal rail (home's How the Work Moves, the Summit's stops, About's life of a claim); the stair is the tier stair, its steps
+   rising in their order, a lit one (.is-lit) drawn with a heavy tread (About's T0). From 720px the steps stand in one row and every detail shares the one cell
+   under them, the unchosen hidden but holding their room, so a choice moves nothing below; under 720px each opens under its step. Without :has(), and on
+   paper, every step and detail reads in order as a list, radios showing. Chosen is the chosen-setting look (control-on and heading ink); no orange. */
+:is(.track, fieldset.stair) { --steps: 4; display: block; min-width: 0; margin: 0 0 24px; padding: 0; border: 0; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(2)) { --steps: 2; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(3)) { --steps: 3; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(4)) { --steps: 4; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(5)) { --steps: 5; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(6)) { --steps: 6; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(7)) { --steps: 7; }
+:is(.track, fieldset.stair):has(> label:nth-of-type(8)) { --steps: 8; }
+:is(.track, fieldset.stair) > legend { margin: 0 0 12px; padding: 0; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+:is(.track-step, .stair-step) { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 0; cursor: pointer; }
+:is(.track-detail, .stair-detail) { margin: 0 0 12px; padding: 12px 0 0; max-width: var(--measure-wide); border-top: 1px solid var(--rule); }
+:is(.track-detail, .stair-detail) > :last-child { margin-bottom: 0; }
+:is(.track-detail, .stair-detail) dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 12px 32px; margin: 0; max-width: none; }
+:is(.track-detail, .stair-detail) dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
+:is(.track-detail, .stair-detail) dd { margin: 4px 0 0; }
+.track-n { display: grid; place-items: center; flex: none; box-sizing: border-box; width: 2rem; height: 2rem; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; line-height: 1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--atni-ground-base); border: 1px solid var(--control-edge); }
+:is(.track-name, .stair-name) { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.stair-code { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; color: var(--atni-text-heading); }
+.stair-tag { flex-basis: 100%; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.stair-step.is-lit .stair-tag { color: var(--atni-text-heading); }
+@supports selector(:has(*)) {
+  :is(.track-pick, .stair-pick) { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+  :is(.track-step, .stair-step):has(> :focus-visible) { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
+  .track-step:has(> .track-pick:checked) .track-n { color: var(--atni-ground-base); background: var(--atni-text-heading); border-color: var(--atni-text-heading); }
+  :is(.track-step:has(> .track-pick:checked), .stair-step:has(> .stair-pick:checked)) :is(.track-name, .stair-name) { font-weight: 600; }
+  .stair-step:has(> .stair-pick:checked) { background: var(--control-on); }
+  @media screen {
+    :is(.track-step:not(:has(> .track-pick:checked)) + .track-detail, .stair-step:not(:has(> .stair-pick:checked)) + .stair-detail) { display: none; }
+  }
+  @media screen and (min-width: 720px) {
+    :is(.track, fieldset.stair) { display: grid; grid-template-columns: repeat(var(--steps), minmax(0, 1fr)); }
+    :is(.track, fieldset.stair) > legend { grid-column: 1 / -1; }
+    :is(.track-step, .stair-step) { grid-row: 1; }
+    :is(.track-detail, .stair-detail) { grid-row: 2; grid-column: 1 / -1; align-self: start; margin: 0; }
+    :is(.track-step:not(:has(> .track-pick:checked)) + .track-detail, .stair-step:not(:has(> .stair-pick:checked)) + .stair-detail) { display: block; visibility: hidden; }
+    /* The track: a rail through the numbers, each step a column; the chosen one's 3px heading-ink bar joins it to the detail under the row. */
+    .track-step { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; padding: 0 16px 16px 0; }
+    .track-step::before { content: ""; position: absolute; left: 0; right: 0; top: calc(1rem - 1px); height: 2px; background: var(--baseline); }
+    .track-step:last-of-type::before { right: auto; width: 2rem; }
+    .track-n { position: relative; }
+    .track-step:has(> .track-pick:checked)::after { content: ""; position: absolute; left: 0; right: 16px; bottom: 0; height: 3px; background: var(--atni-text-heading); }
+    /* The stair: each step one tread higher than the last, a 2px tread and a 1px riser; the lit step's tread is 6px of heading ink. */
+    fieldset.stair { align-items: end; column-gap: 2px; }
+    .stair-step { align-self: end; align-content: flex-start; box-sizing: border-box; min-height: calc(5.5rem + var(--rise, 0rem)); padding: 10px 12px; border-top: 2px solid var(--control-edge); border-left: 1px solid var(--rule); }
+    .stair-step:nth-of-type(2) { --rise: 1.5rem; }
+    .stair-step:nth-of-type(3) { --rise: 3rem; }
+    .stair-step:nth-of-type(4) { --rise: 4.5rem; }
+    .stair-step:nth-of-type(5) { --rise: 6rem; }
+    .stair-step:nth-of-type(6) { --rise: 7.5rem; }
+    .stair-step.is-lit { border-top: 6px solid var(--atni-text-heading); }
+    .stair-detail { padding-top: 16px; }
+  }
 }
-.loop-step::after { content: ""; position: absolute; left: 11px; top: 24px; bottom: 0; width: 2px; background: var(--baseline); }
-.loop-step h3 { margin-bottom: 4px; }
-.loop-step p { margin: 0; }
-.loop-return { max-width: none; margin: 0; padding-left: 40px; font-family: var(--display); font-weight: 500; color: var(--atni-text-heading); }
-@media (min-width: 1024px) {
-  .loop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .loop-step { padding: 40px 24px 16px 0; }
-  .loop-step::after { left: 24px; right: 0; top: 11px; bottom: auto; width: auto; height: 2px; }
-  .loop-return { padding-left: 0; }
-}
+@media (forced-colors: active) { :is(.track-step:has(> .track-pick:checked), .stair-step:has(> .stair-pick:checked)) { outline: 2px solid Highlight; outline-offset: -2px; } }
+@media (hover: hover) { :is(.track-step, .stair-step):hover :is(.track-name, .stair-name) { text-decoration: underline; text-decoration-color: var(--control-edge); text-underline-offset: 0.2em; } }
 
 /* The ruled row, the one list grammar: no boxes, and lists flow into as many columns as fit. A row is a
    left cell (figure, date, number, or status) and a right cell (title, text, meta). */
@@ -786,8 +799,8 @@ p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 5
 .page-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 24px 48px; }
 .toc, .section-strip { min-width: 0; font-family: var(--display); background: var(--atni-ground-base); border-bottom: 1px solid var(--rule); }
 .section-strip { border-bottom-color: var(--grid); }
-.section-strip > .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; }
-.section-strip ul { flex: 0 1 auto; min-width: 0; }
+.section-strip > .wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; } /* one 64px row: the tabs scroll under their fade before Sources or the sheet button wraps */
+.section-strip ul { flex: 1 1 auto; min-width: 0; }
 .section-strip > .wrap > a { margin-inline: -12px; } /* a link in the strip lines up as its tabs do */
 .toc-title { display: none; margin: 0 0 8px; padding-left: 14px; color: var(--atni-text-muted); }
 .toc ul, .section-strip ul, .section-strip [role="tablist"] {
@@ -977,7 +990,6 @@ main > .panel + .panel { border-top: 0; }
 .plate.is-live > :is(.plate-plot, .plate-detail, .plate-view):not([hidden]) { animation: plate-enter 180ms var(--ease); }
 .plate:has(:focus-visible) *, .agenda:has(:focus-visible) * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 @keyframes plate-enter { from { opacity: 0; } to { opacity: 1; } }
-.home-instrument :is(.needle, .ladder-needle) { animation: needle-draw 240ms ease-out backwards; }
 @keyframes needle-draw { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 
 /* ========== Plate kit: everything site/assets/js/plate.js and scripts/build_plates.py write. ==========
@@ -992,6 +1004,7 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-detail .reading { min-height: 6lh; font-family: var(--body); font-weight: 400; font-size: 1rem; line-height: 1.45; color: var(--atni-text-body); }
 .plate-detail .reading b { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; color: var(--atni-text-heading); }
 .plate-claim, .plate-view, .plate-controls { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.plate-claim > .plate-controls:not(:has(> *)) { display: none; } /* emptied when its one view control moves to the bar above the plot; it held 8 grid rows */
 .plate-claim p, .plate-detail p { margin: 0; }
 .plate-plot {
   position: relative;
@@ -1112,8 +1125,6 @@ html:not(.js) [data-js] { display: none !important; }
 .plate-out :is(button, a), .plate-more-rows { display: inline-flex; align-items: center; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.875rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.25em; cursor: pointer; }
 .plate-out :is(button, a):hover, .plate-more-rows:hover { text-decoration-color: var(--atni-text-heading); }
 @media (pointer: coarse) { .plate-out :is(button, a), .plate-more-rows { min-height: 44px; } }
-/* The Explorer's plots keep Read as a table under the plot until their views take Chart and Table (P-explorer). */
-.plate-to-table { min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.9375rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; cursor: pointer; }
 .plate-facts { display: grid; gap: 8px; }
 .plate-facts:empty { display: none; }
 .plate-values { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 1rem; }
@@ -1225,6 +1236,12 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .ask-set li { margin: 0; border-top: 1px solid var(--rule); }
 .ask-set label { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 10px; padding: 10px 0; cursor: pointer; }
 .ask-set input { width: 1.125rem; height: 1.125rem; margin: 0.2rem 0 0; accent-color: var(--atni-text-heading); }
+/* An agenda face of question sets, each by its first question and the set's own Add (Data Centers, and home's copy of it), in columns that fit the face. */
+.ask-firsts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; }
+.ask-firsts li { display: grid; grid-template-rows: 1fr auto; gap: 8px; margin: 0; padding: 12px 0 14px; border-top: 1px solid var(--rule); }
+.ask-firsts p { max-width: none; margin: 0; line-height: 1.4; }
+.ask-firsts b { font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); }
+.ask-firsts .button { justify-self: start; min-height: 36px; padding-block: 4px; font-size: 0.875rem; }
 .sheet .drawer-body h3 { margin: 20px 0 6px; font-size: 1.0625rem; }
 .sheet .drawer-body h3:first-child { margin-top: 0; }
 .sheet .drawer-body ol { margin: 0; padding-left: 1.5rem; }
@@ -1424,6 +1441,56 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .strip-body > * { display: inline; }
 .strip-body > .strip-what { display: block; margin-top: 2px; }
 
+/* The countdown (DIRECTION-R2 3.7, item 5; scripts/plate_countdown.py): a 24-month ruler from the day the build counts from, then a row per dated deadline,
+   soonest first: a gutter of its days (a fixed 7ch slot) over its date, its name, and its own track with its mark, so no stem crosses a row. Then the Passed
+   and No date lanes, each counted in its gutter, their programs as names beside a hollow square. Orange is today's needle, one line down the scale and every
+   track at --today (plate.js sets it), and the selected deadline's mark. A deadline passed since the build keeps its row, its mark hollow; one past the
+   ruler's end is hatched at the end. Without scripts there is no needle, and the days count from the day the last line names. In a plot narrower than
+   34rem the track drops under the name. */
+.countdown { --cd-when: 7.5rem; --cd-name: clamp(9rem, 36%, 18rem); --cd-mark: 12px; container-type: inline-size; position: relative; flex: 1; }
+.countdown-ruler, .countdown-row, .countdown-lane { display: grid; grid-template-columns: var(--cd-when) var(--cd-name) minmax(0, 1fr); column-gap: 16px; margin: 0; }
+.countdown-ruler { height: 3rem; }
+.countdown-scale, .countdown-track { position: relative; grid-column: 3; margin-inline: 8px; }
+.countdown-scale { border-bottom: 1px solid var(--baseline); }
+.countdown-scale > i { position: absolute; bottom: 0; left: calc(var(--t) * 100%); width: 1px; height: 6px; background: var(--grid); }
+.countdown-month { position: absolute; bottom: 8px; left: calc(var(--t) * 100%); font-size: 0.875rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--atni-text-secondary); transform: translateX(-50%); }
+.countdown-rows, .countdown-names { margin: 0; padding: 0; list-style: none; }
+.countdown-row { align-items: center; min-height: 3.25rem; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.countdown-when { display: flex; flex-direction: column; justify-content: center; margin: 0; padding-block: 6px; }
+.countdown-days { display: block; min-width: 7ch; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); }
+.countdown-n { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.countdown-date { font-size: 0.875rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.countdown-name { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.countdown-track { align-self: stretch; }
+.countdown-track::after { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--grid); }
+.countdown-mark { position: absolute; z-index: 2; top: 50%; left: calc(var(--t) * 100%); box-sizing: border-box; width: var(--cd-mark); height: var(--cd-mark); background: var(--series-context); outline: 2px solid var(--plot-ground); transform: translate(-50%, -50%); }
+.countdown-row.is-passed .countdown-mark { background: var(--plot-ground); border: 2px solid var(--series-context); }
+.countdown-row.is-passed :is(.countdown-n, .countdown-name) { color: var(--atni-text-secondary); }
+.countdown-row.is-beyond .countdown-mark { background: repeating-linear-gradient(135deg, var(--series-context) 0 2px, var(--plot-ground) 2px 4px); border: 1px solid var(--series-context); }
+.countdown-row.is-on .countdown-mark { background: var(--energy-mark); border-color: var(--energy-mark); }
+.countdown-row.is-on.is-passed .countdown-mark { background: var(--plot-ground); }
+.countdown-lane { align-items: start; padding-block: 8px; border-bottom: 1px solid var(--rule); }
+.countdown-names { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 0 24px; align-self: center; }
+.countdown-names > li { position: relative; margin: 0; padding: 6px 4px 6px 20px; cursor: pointer; }
+.countdown-names > li::before { content: ""; position: absolute; left: 2px; top: calc(6px + 0.4em); box-sizing: border-box; width: 10px; height: 10px; border: 2px solid var(--series-context); }
+.countdown-names > li.is-on::before { background: var(--energy-mark); border-color: var(--energy-mark); }
+.countdown-names .countdown-name { font-size: 1rem; }
+.countdown-note { margin: 8px 0 0; max-width: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
+.countdown-today { display: none; }
+.countdown.has-today :is(.countdown-scale, .countdown-track)::before { content: ""; position: absolute; z-index: 1; top: 0; bottom: -1px; left: calc(var(--today) * 100%); width: 2px; margin-left: -1px; background: var(--energy-mark); }
+.countdown.has-today .countdown-today { display: block; position: absolute; top: 0; bottom: 0; left: calc(var(--today) * 100%); }
+.countdown.is-flip .countdown-today .needle-label { left: auto; right: 8px; }
+@container (max-width: 34rem) {
+  .countdown-ruler, .countdown-row, .countdown-lane { grid-template-columns: var(--cd-when) minmax(0, 1fr); }
+  .countdown-scale { grid-column: 2; }
+  .countdown-row { grid-template-rows: auto 1.5rem; }
+  .countdown-row > .countdown-when { grid-row: 1 / span 2; }
+  .countdown-row > .countdown-name { grid-column: 2; padding-top: 6px; }
+  .countdown-row > .countdown-track { grid-column: 2; grid-row: 2; }
+}
+@media (forced-colors: active) { .countdown-mark, :is(.countdown-scale, .countdown-track)::before { forced-color-adjust: none; } }
+@media print { .countdown { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+
 /* Count: the second view of a ladder, one square per unit. */
 .count-rows { flex: 1; display: grid; grid-auto-rows: auto; align-content: start; gap: 2px; margin: 0; padding: 0; list-style: none; }
 .count-over { font-size: 0.875rem; line-height: 1.35; color: var(--atni-text-secondary); }
@@ -1582,7 +1649,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 /* Print (DIRECTION-R2 3.7, item 10): Ctrl+P prints the open tab panel, and each plate on it as its plot, its Reading, its Table (every row, each claim id with
    its status) and its collar, which writes out the Sources page's address. What only a script runs stays off the paper. */
 @media print {
-  .plate-controls, .plate-switch, .plate-bar, .plate-actions, .plate-evidence, .plate-receipt, .plate-out, .count-rows, .count-key, .plate-to-table, .plate-more-rows { display: none !important; }
+  .plate-controls, .plate-switch, .plate-bar, .plate-actions, .plate-evidence, .plate-receipt, .plate-out, .count-rows, .count-key, .plate-more-rows { display: none !important; }
   .plate > :is(.plate-plot, .plate-detail, .plate-under, .plate-view)[hidden] { display: block !important; }
   .plate > .plate-detail[hidden] { display: flex !important; }
   :not([role="tabpanel"])[hidden="until-found"] { content-visibility: visible; } /* the browser's own rule skips what a findable view holds; paper shows it, and a closed tab stays closed */

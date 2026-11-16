@@ -331,6 +331,7 @@ function live(p, r, template, figures = false) {
       v = c ? c.options?.[p.state[name]] ?? p.state[name] ?? 'blank' : r[name] ?? r.fields?.[name] ?? p.env[name];
       if (r.f && /^(value|low|high)$/.test(name)) v = sig(v, r.digits);
     }
+    if (name === 'year' && typeof v === 'number') return String(v); // a year is never grouped: 2030, not 2,030 (row_fields hands the build the bare int)
     if (typeof v !== 'number') return v ?? '';
     const places = /\.(\d+)f/.exec(spec || '');
     return places ? new Intl.NumberFormat('en-US', { minimumFractionDigits: +places[1], maximumFractionDigits: +places[1], useGrouping: spec.includes(',') }).format(v) : grouped(v);
@@ -856,7 +857,7 @@ function drawRulers(p) {
 function meterParts(p, node, r) {
   const box = node?.querySelector('.meter-parts');
   if (!box || !r || r.off_scale) return;
-  const [lo, hi] = p.data.plot.domain;
+  const [lo, hi] = axisOf(p, r).domain; // the row's group keeps its own scale, as meter_parts draws it
   const stop = p.state[p.data.by];
   let at = 0;
   [...box.children].forEach((part, i) => {
@@ -1249,22 +1250,6 @@ const describe = (root, plot, id, form) => {
   plot.setAttribute('aria-describedby', id);
   root.append(h('p', { id, hidden: '', text: HOW[form] }));
 };
-// The Explorer's plots: the description, and Read as a table under the plot, until its own views take the kit's Chart and Table buttons (P-explorer).
-function aid(root, plot, id, toTable, form = 'rows') {
-  describe(root, plot, id, form);
-  const press = h('button', { type: 'button', class: 'plate-to-table', text: 'Read as a table' });
-  on(press, 'click', () => {
-    toTable();
-    const table = root.querySelector('.plate-view[data-view="table"] .table-scroll');
-    const shut = table?.closest('details:not([open])'); // a page may keep the panel in a closed disclosure (util.js closedDetail)
-    if (shut) shut.open = true;
-    table?.focus();
-  });
-  let under = root.querySelector(':scope > .plate-under');
-  if (!under) plot.after(under = h('div', { class: 'plate-under' }));
-  under.append(press);
-  root.classList.add('has-under');
-}
 // Where a plate sits gives its variant (docs/PLATE-KIT.md): a face in an agenda, a column of a strip, a lead as a tab's or a section's first plate and on the
 // Briefing, a repeater after it. A definition's "variant" wins. site.css draws the same guess before this runs, so nothing jumps.
 function variantOf(root) {
@@ -1515,6 +1500,31 @@ const landing = (() => { try { return document.getElementById(decodeURIComponent
 if (landing && !landing.closest('[hidden]')) start(landing);
 all(document, '[data-plate]').filter((root) => !root.closest('[hidden]')).forEach(start);
 all(document, '[data-strip]').forEach(initStrip);
+// The countdown (scripts/plate_countdown.py, docs/PLATE-KIT.md): the build drew the ruler from plot.from, each dated deadline's mark and date, and its days
+// counted from that day. Here only today moves: the needle (--today), the days in their fixed slots, and a deadline passed since, which keeps its row and is
+// counted in the Passed lane; nothing reflows. The plot is the plate's list box, so its lists give up their roles and each lane is a group its gutter names.
+function initCountdown(root) {
+  const { from, to } = root.dataset;
+  const today = isoToday();
+  const here = Math.min(1, Math.max(0, (midnight(today) - midnight(from)) / (midnight(to) - midnight(from))));
+  root.style.setProperty('--today', here.toFixed(4));
+  root.classList.toggle('is-flip', here > 0.6);
+  let passed = 0;
+  for (const row of all(root, '.countdown-row')) {
+    const days = daysUntil(row.dataset.date);
+    row.classList.toggle('is-passed', days < 0);
+    if (days < 0) passed += 1;
+    row.querySelector('.countdown-days').replaceChildren(...(days > 0 ? [span('countdown-n', grouped(days)), ` ${days === 1 ? 'day' : 'days'}`] : [span('countdown-n', days ? 'passed' : 'today')]));
+  }
+  const count = root.querySelector('[data-lane="passed"] .countdown-n');
+  if (count) count.textContent = grouped(Number(count.dataset.built) + passed);
+  const note = root.querySelector('.countdown-note');
+  if (note) note.textContent = `Days counted from today, ${usDay(today)}.`;
+  for (const list of all(root, '.countdown-rows, .countdown-names')) list.setAttribute('role', 'none');
+  for (const lane of all(root, '.countdown-lane')) set(lane, { role: 'group', 'aria-labelledby': lane.querySelector('.countdown-when').id });
+  root.classList.add('has-today');
+}
+all(document, '.countdown').forEach(initCountdown);
 on(document, 'DOMContentLoaded', () => land(location.hash.slice(1))); // after an old ?query has moved into the fragment, and after a tab has opened
 // A link the reader followed lands; Back, Forward, or a typed address puts every plate where the address says (theme.js tells the two apart).
 on(window, 'hashchange', (e) => {
@@ -1557,6 +1567,6 @@ function onReading(id, fn) {
 // the findable hiding, and a plot's aids.
 window.plate = {
   register, onReading, draw, strip: initStrip, readingInto, read, reset: (id) => reset(plateOf(id)), start: plateOf, save, fig, today: () => usDay(isoToday()),
-  address: { read: readAddress, write: writeAddress }, conceal, aid, movedTo,
+  address: { read: readAddress, write: writeAddress }, conceal, movedTo,
 };
 })();

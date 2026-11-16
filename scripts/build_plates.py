@@ -37,6 +37,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_public as vp  # noqa: E402  (the release rules; it reads no PDF on import)
 from pour_claim_refs import cited, load_claims, verbatim  # noqa: E402,F401  (one copy of each; other builders reach them as bp.verbatim and bp.load_claims)
+import plate_countdown as countdown  # noqa: E402  (the countdown kind, in its own module)
 
 EVIDENCE = vp.ROOT / "work" / "site-refresh" / "evidence"
 # The keys a shipped claim carries; any other evidence-file field (today note and recheck, working notes and check logs) stays local, and a public limit travels as "limit".
@@ -50,7 +51,7 @@ HELD_BACK = {"ec-055", "ec-056", "lf-059", "lf-070", "lf-071", "sf-053", "sf-054
 HOUSE_WORDS = re.compile(r"\b(?:tribes?|tribal|indigenous|[iI]ntertribal|treat(?:y|ies))\b")
 LINE_KINDS = {"lines", "multiples"}
 RULER_KINDS = {"ladder", "bars"}
-PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix", "meter"}  # a meter is a ruler of stacked parts on a fixed scale (docs/PLATE-KIT.md)
+PLOT_KINDS = LINE_KINDS | RULER_KINDS | {"instrument", "matrix", "meter", "countdown"}  # a meter is a ruler of stacked parts on a fixed scale; a countdown, dated rows on 24 months (docs/PLATE-KIT.md)
 BINARY = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
 CALLS = {"min", "max", "ifblank"}
 # Digits our own sentences may type: years, dates, resolution numbers, and names like CO2, GPT-5, or Scope 2. shortcut: a bare
@@ -1049,6 +1050,11 @@ def finish_plot(ctx, rows):
         finish_rulers(ctx, rows, plot)
     elif kind == "instrument":
         finish_instrument(ctx, rows, plot)
+    elif kind == "countdown":
+        try:
+            countdown.finish(defn, rows, ctx.claims, plot, NO_MEASUREMENT)
+        except ValueError as error:
+            raise BuildError(f"plate {ctx.plate}: {error}") from None
     if plot.get("count"):
         count = plot["count"]
         ctx.plate_cites.update(c for n in names_in(count["unit"]) for c in ctx.cites.get(n, []))
@@ -1575,7 +1581,7 @@ def tally_words(receipts):
     return f"{plural(len(receipts), 'sourced figure')} from {plural(len({doc_key(r) for r in receipts.values()}), 'document')}: {mix}."
 
 
-BRIEFING_PAGES = {"ai/index.html", "data-centers/index.html", "energy/index.html"}  # the pages scripts/build_briefing.py copies plates from (its PAGES)
+BRIEFING_PAGES = {"ai/index.html", "data-centers/index.html", "data-centers/resource-use/index.html", "energy/index.html"}  # the pages scripts/build_briefing.py copies plates from (its PAGES)
 
 
 def collar_html(plate, page, receipts, svg):
@@ -1585,7 +1591,7 @@ def collar_html(plate, page, receipts, svg):
     out = ['<button type="button" data-print-plate>Print this plate</button>', '<button type="button" data-csv>Download CSV</button>',
            f'<button type="button" data-svg{"" if svg else " hidden"}>Download SVG</button>']
     if page in BRIEFING_PAGES:  # plate.js drops it on the Briefing itself
-        out.append(f'<a href="../briefing/#add={plate}" data-add-briefing>Add to a briefing</a>')
+        out.append(f'<a href="{posixpath.relpath("briefing", folder or ".")}/#add={plate}" data-add-briefing>Add to a briefing</a>')  # ../../ from Resource Use
     return (f'<div class="plate-collar"><div class="plate-collar-sources"><p class="caption plate-source-line">{escape(tally_words(receipts))}</p>'
             f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{escape(url)}">All sources for this plate</a></p></div>'
             f'<div class="plate-out" data-js>{"".join(out)}</div></div>')
@@ -1692,7 +1698,7 @@ PAGE_NAV = re.compile(r'<nav class="(?:section-strip|toc)\b.*?</nav>', re.S)
 
 def plate_groups(text, plates):
     """Each plate's tab, or its section on a page with a section rail, in the page's order: a plate belongs to the last panel its page's strip or rail names
-    that opens before it. A page with neither, or a plate before every panel, gives an unnamed group. Returns {label: [plate, ...]}."""
+    that opens before it; a plate in the agenda, before every panel, is in "Questions". A page with none of these gives an unnamed group. Returns {label: [plate, ...]}."""
     opens = []
     for nav in PAGE_NAV.finditer(text or ""):
         for link in TAB_LINK.finditer(nav[0]):
@@ -1701,6 +1707,9 @@ def plate_groups(text, plates):
             at = text.find(f'id="{link["id"]}"')
             if "data-not-tab" not in link["attrs"] and label and at >= 0:
                 opens.append((at, label))
+    agenda = re.search(r'<section class="(?:[^"]*\s)?agenda[\s"]', text or "")
+    if agenda:  # the agenda's faces come before every tab, so their plates take the agenda's name, not an unnamed group
+        opens.append((agenda.start(), "Questions"))
     groups = {}
     for plate in plates:
         at = (text or "").find(f"<!-- plate:{plate} -->")
@@ -1998,6 +2007,8 @@ def plate_block(defn, claims, models=None):
         plot_html = multiples_svg(alt, now_full)
     elif kind == "instrument":
         plot_html = instrument_html(alt, now_full, defn)
+    elif kind == "countdown":
+        plot_html = countdown.html(plate, now_full, plot)
     else:
         plot_html = matrix_html(alt, defn)
 

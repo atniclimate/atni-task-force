@@ -1,0 +1,63 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "countdown-demo",
+ "page": "index.html",
+ "eyebrow": "Deadlines",
+ "title": "Deadlines on a two-year ruler, soonest first, then the passed and the undated",
+ "subtitle": "Each row is one program; its date is its claim's.",
+ "plot": {
+  "type": "countdown",
+  "from": "2026-11-10"
+ },
+ "default": "doe-heehr-tribal",
+ "reading": "{label}: {display}. {boundary} {evidence}",
+ "rows": [
+  {
+   "id": "doe-tefp",
+   "label": "DOE Tribal Energy Financing (loans)",
+   "claim": "ef-014"
+  },
+  {
+   "id": "bpa-tribal-iq",
+   "label": "BPA Tribal efficiency grants",
+   "claim": "ef-011"
+  },
+  {
+   "id": "doe-wap",
+   "label": "Weatherization Assistance Program",
+   "claim": "ef-022"
+  },
+  {
+   "id": "doe-heehr-tribal",
+   "label": "Tribal HEEHR home rebates (IRA 50122)",
+   "claim": "ef-012"
+  },
+  {
+   "id": "hhs-liheap",
+   "label": "LIHEAP",
+   "claim": "ef-023"
+  },
+  {
+   "id": "doe-40101d",
+   "label": "Grid Resilience formula grants (IIJA 40101(d))",
+   "claim": "ef-013"
+  }
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Program",
+    "field": "label"
+   },
+   {
+    "label": "Deadline",
+    "field": "display"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

@@ -7,6 +7,39 @@ the dataviz skill's form table (one axis; emphasis over categorical; diverging f
 
 ## 1. Site Map, Titles, and Tabs
 
+**R2, Council Agenda (11/16/2026).** This block holds where it and the older text below disagree; the conductor completes it from the page lanes' returns.
+Sources: `work/site-refresh/r2/direction/DIRECTION-R2.md` sections 3.1, 3.2, 3.10, 3.13 to 3.15, and 4 (local); the markup is in `docs/PLATE-KIT.md`,
+"The system as built, R2".
+
+- **Shell, one on every page** (a test holds it): a 56px header that does not stick; the nav in groups behind hairlines, Tribal Energy, Data Centers, AI |
+  Explorer, Briefing | Summit, Library, About | Sources (the hub); "Use light theme" with `aria-pressed`. The footer is flat behind a 1px rule, on every page
+  including Resource Use, the Explorer, and the hub, with "Updated MM/DD/YYYY" from the newest What's New date and "Top". The labels match the name lines.
+- **The brief** opens every page: the name line (a link to the parent on a subpage; on the Energy family a row of Overview, What Tribal plans say, Funding,
+  in place of Resource Use's old header subnav and Energy's strip), the h1 below, at most two sentences of lead, and the meta line (Sources checked, Sources
+  for this page, resolution PDFs). No figures.
+- **The agenda** follows the brief on home, Data Centers, Resource Use, AI, Energy, and Funding, above any tab strip: the page's questions, each answered from
+  a plate's state, beside its face. It replaces Overview tabs.
+- **Tabs** are a name over a question in one fixed 64px strip, with Sources as a link at its end and the Meeting sheet button where a page has questions.
+- **Sources pages:** every page with plates or claim marks has `{folder}/sources/` (below); `site/sources/` is the hub (a census, a row per page, home's
+  prose claims, the claim and data files, the resolutions and the Briefing PDF, the glossary and the marks). The Summit, About, and the Briefing link the hub.
+
+| Page | h1 | Agenda questions | Below the agenda | Sources page |
+|---|---|---|---|---|
+| Home `site/` | ATNI Energy Task Forces | Is everyday AI use the problem? / What would one data center draw here? / What can a Tribe apply for, and by when? / What should leaders ask a developer? | How the Work Moves (a four-step `.track`), The Task Forces, What's New, Take part | the hub |
+| Data Centers `site/data-centers/` | What a data center would draw on here, and what to ask before one is approved | How much new load is planned for the region? / What would one proposal mean? / What should be asked before saying yes? | Tabs: Why now (Why is this arriving now?), Growth (How fast is it growing?), Tradeoffs (What does it trade off?), Where (Where are the proposals, and how hot will it get there?), Jobs (Who works there, and for how long?), Policy (Who sets the rules?), Questions (What should be asked?) | `data-centers/sources/` |
+| Resource Use `site/data-centers/resource-use/` | What a data center uses, how well it is known, and what to ask for | How much of an hour of video happens inside the data center? / Is AI why data centers are growing? / How much water, counting the power plant? / What can a utility or developer be asked to disclose? | Chapters under a sticky rail: What data centers use; What drives that use; Streaming and AI compared carefully; Water; What this means for Tribal decisions; What is not known | `data-centers/resource-use/sources/` |
+| AI `site/ai/` | Who an AI tool serves, what it uses, and whether the Tribe controls it | Is everyday AI use the problem? / Who is paying for the buildout? / How does a Tribe keep control of its data? | Tabs, Measure: Energy (What does AI use?), Work (What happens to jobs?), Companies (Who is building it, and with whose money?); Decide: Data Sovereignty (Who controls the data?), Working with AI (How should staff use it?), Youth and Education (What should students and families know?), Policy Watch (What is changing in the rules?) | `ai/sources/` |
+| Energy `site/energy/` | Energy projects, funding and grid decisions on Tribal terms | What are Tribes planning? / What money is open now? / What is the task force doing? | The resolution band; Programs and Tools | `energy/sources/` |
+| Funding `site/energy/funding/` | What a Tribe can apply for now, and by when | What is open now? / What deadlines are coming? / What fits a Tribe's plans? | The catalog as list and detail | `energy/funding/sources/` |
+| Potential `site/energy/potential/` | What Tribes' own public plans say about energy | none; the matrix leads | The stage bars, then the matrix | `energy/potential/sources/` |
+| Explorer `site/explorer/` | Run the numbers for your own use, an office or a proposed data center | none; its tabs ask them | Tabs: Our use (What does our use cost?), Where it runs (Where should computing run?), Savings (What actually saves energy?), A proposal (What would a proposed data center draw?) | `explorer/sources/` |
+| Library `site/library/` | Find the document behind a decision | none | Shelves and the selected entry's preview | `library/sources/` |
+| Summit `site/summit/` | The proposed Tribal Energy Summit | none | Six stops on a `.track`; preparation lists per role | none; the hub |
+| About `site/about/` | How this site handles data and claims | none | The tier stair (`.stair`, T0 lit); a claim's life as a `.track`; data governance; People; Credits; licenses | none; the hub |
+| Briefing `site/briefing/` | Build a council briefing | none | The packets, then Customize | none; the hub |
+
+**Before R2** (the text and table below are the 11/04/2026 plan, kept as history where R2 changed them: Overview tabs, the page band, and DC's subnav are gone).
+
 **Sources subpages (owner ruling 39, 11/15/2026).** Every page with plates or claim marks has a Sources page beside it, `{folder}/sources/index.html` (AI, Data Centers, Resource
 Use, Energy, Funding, Potential, Explorer, Library), linked from a line under its title (`a[data-sources]`) and from its footer; `site/sources/` is the site-wide hub and the
 home page's own. A Sources page holds each plate's receipts grouped by source document (`#{plate}`, `#{plate}-source-{claim}`, and one `#src-{claim}` per claim), the

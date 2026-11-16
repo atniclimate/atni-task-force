@@ -92,7 +92,7 @@
   "energy-types-by-stage": {
    "file": "assets/img/cards/energy-types-by-stage.png",
    "alt": "Efficiency, solar, and electrification lead 44 Tribes' public plans; no finding concerns offshore wind or marine energy",
-   "foot": "Sources checked 10/29/2026. Source: ATNI Energy Task Forces\nep-001 partly verified\nA machine-assisted reading of public plans, not a Tribe's own assessment",
+   "foot": "Sources checked 11/05/2026. Source: ATNI Energy Task Forces\nep-001 partly verified\nA machine-assisted reading of public plans, not a Tribe's own assessment",
    "lead": [
     "ep-001"
    ],
@@ -114,17 +114,9 @@
     "ep-002",
     "ep-003",
     "ep-004",
-    "ep-005",
     "ep-007",
     "ep-008",
-    "ep-009",
-    "ep-010",
-    "ep-011",
-    "ep-012",
-    "ep-013",
-    "ep-014",
-    "ep-015",
-    "ep-016"
+    "ep-009"
    ]
   },
   "explorer": {

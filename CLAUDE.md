@@ -32,8 +32,9 @@ At an integration checkpoint, in a browser: `node scripts\a11y_check.js --out DI
 After changing plates, claims, the model, or a data file they read, run `python scripts\rebuild_all.py`: it stops at the first step that fails, with that
 step's exit code, and `--check` writes nothing and exits 1 naming each stale output. Its order, since later steps copy or count earlier ones:
 `energy_claims.py`, `climate_claims.py`, `project_claims.py`, `build_plates.py --export-claims`, `site_count_claims.py` (the library and policy counts the
-pages read), `build_project_map.py` (when its `--check` says stale), `build_plates.py` (`--page PATH` by hand for one page), `resource_model.py --self-test`,
-`--export`, `--oracle`, and a plain run, `build_explorer.py`, `build_index.py`, `build_whats_new.py`, `site_count_claims.py` again (it counts What's New's
+pages read), `bake_relief.py` (when its `--check` says stale; needs numpy and the inputs in `H:\raw-data\relief`), `build_project_map.py` (when its `--check`
+says stale), `build_plates.py` (`--page PATH` by hand for one page), `build_energy_pages.py`, `resource_model.py --self-test`, `--export`, `--oracle`, and a
+plain run, `build_explorer.py`, `build_home.py`, `build_index.py`, `build_whats_new.py`, `site_count_claims.py` again (it counts What's New's
 rows), `build_library_strip.py`, `pour_claim_refs.py`, `build_share_cards.py` (when its `--check` names a stale card; needs VectorCraft), `build_briefing.py`,
 `build_briefing_pdf.py` (when its `--check` names a stale PDF; needs Chrome), `add_page_meta.py`.
 `tests\test_index_briefing.py` fails with the fix if the briefing or the manifest has fallen behind, and `tests\test_briefing_pdf.py` if the PDF has. Pushing
@@ -74,7 +75,11 @@ A day-level `source.published` (YYYY-MM-DD) carries `source.date_words`, the wor
 | `site/assets/img/cards/` | `scripts/build_share_cards.py` (needs VectorCraft; `--check` does not) | T0 |
 | page-meta blocks, `robots.txt`, `sitemap.txt` | `scripts/add_page_meta.py` | T0 |
 | `site/data/resource-model.json`, `resource-model-inputs.csv` | `scripts/resource_model.py --export` (process model; Python is the oracle for `site/assets/js/resource-model.js`, the page's pure model, which `explorer.js` draws) | T0 |
-| `site/explorer/index.html` blocks, home band | `scripts/build_explorer.py` (words and geometry from `resource-model.js` through `scripts/explorer_static.js`) | T0 |
+| `site/explorer/index.html` blocks | `scripts/build_explorer.py` (words and geometry from `resource-model.js` through `scripts/explorer_static.js`) | T0 |
+| `site/index.html` agenda faces: copies of `ai-hour`, `dc-project`, `energy-deadlines` and the Data Centers question sets | `scripts/build_home.py` (build-time copies marked `data-copy-of`, so home loads no data; `--check`), after `build_explorer.py` and before `build_index.py` and `pour_claim_refs.py` | T0 |
+| Energy pages' generated regions (Funding's open programs, Tribe picker, catalog, notices, program sources; Potential's grid, excerpts, documents) and the `policy:watch` region on Energy, AI and Data Centers | `scripts/build_energy_pages.py` from `energy-funding.json`, `energy-potential.json` and `policy-watch.json` (`--page PATH`, `--check`), after `energy_claims.py` and `build_plates.py`, so the pages fetch nothing | T0 |
+| `site/assets/img/relief/nw-{dark,light}-{1600,2520}.webp`, the Data Centers atlas relief, and `scripts/fixtures/relief/PROVENANCE.json` | `scripts/bake_relief.py` (numpy; NOAA ETOPO 2022 and Natural Earth rivers and lakes from `H:\raw-data\relief`; `--check` needs neither and compares each image's hash with the record), rebuilt only when stale | T0 (ETOPO free to use and redistribute; Natural Earth public domain) |
+| countdown plots (`"plot": {"type": "countdown"}`: the Energy deadline plates) | `scripts/plate_countdown.py`, which `build_plates.py` calls (standard library; each date from its claim, counted from `plot.from`, never the clock) | T0 |
 | `site/library/index.html` strip and band | `scripts/build_library_strip.py`, by name after any change to `library.json`; `merge_library.py` does not call it | T0 |
 
 EIA and SEC pulls: `scripts/eia_outlook.py`, `scripts/sec_financials.py` (generic User-Agent, no email).

@@ -18,12 +18,12 @@ NODE = shutil.which("node")
 FONT_FACE = re.compile(r"@font-face\s*\{([^}]*)\}")
 JS_ESCAPE = re.compile(r"\\u\{([0-9a-fA-F]+)\}|\\u([0-9a-fA-F]{4})|\\x([0-9a-fA-F]{2})")
 CSS_ESCAPE = re.compile(r"\\([0-9a-fA-F]{1,6})")
-# Drawn by no face, whole or cut, and kept as they are: U+F09F and U+F0B7 are Word's Symbol-font bullets and U+FFFD three replacement characters, all in
-# the generated data/energy-potential.json (to be fixed at its source, never in that file); U+FEFF is the byte order mark plate.js puts at a CSV's head.
-EXCEPTIONS = {0xF09F, 0xF0B7, 0xFFFD, 0xFEFF}
+# Drawn by no face, whole or cut, and kept as it is: U+FEFF, the byte order mark plate.js puts at a CSV's head. (Word's Symbol-font bullets U+F09F and
+# U+F0B7 and the replacement character U+FFFD left with R2, when energy_potential.py stopped writing them, so a new one fails here.)
+EXCEPTIONS = {0xFEFF}
 # Never in the vendored faces (Noto Sans 2.015, League Spartan 2.002), so a browser draws these from the next font in the stack, as it always has:
 # fractions, arrows, ∼ ≈ ≤, ▶ ●. League Spartan's own gaps fall to Noto Sans, the next face in the display stack.
-NOTO_NEVER = {0x2156, 0x2157, 0x2191, 0x2192, 0x2193, 0x223C, 0x2248, 0x2264, 0x25B6, 0x25CF}
+NOTO_NEVER = {0x2156, 0x2157, 0x2190, 0x2191, 0x2192, 0x2193, 0x223C, 0x2248, 0x2264, 0x25B6, 0x25CF}
 NEVER = {"Noto Sans": NOTO_NEVER, "League Spartan": NOTO_NEVER - {0x2264} | {0x2010, 0x2011, 0x2076, 0x2079, 0x2082}}
 WOFF2_TAGS = {0: b"cmap", 10: b"glyf", 11: b"loca"}  # the known-tag indexes this reader needs
 INFLATE = "process.stdout.write(require('zlib').brotliDecompressSync(require('fs').readFileSync(0)))"

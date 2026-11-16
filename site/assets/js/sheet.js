@@ -18,7 +18,7 @@
   const status = h('p', { className: 'caption sheet-status' });
   const print = button('Print the sheet', 'paper');
   const copy = button('Copy the questions');
-  const add = h('a', { className: 'button button-secondary', textContent: 'Add these sets to a council briefing' });
+  const add = h('a', { className: 'button button-secondary', textContent: 'Add these sets to a Council briefing' });
   const clear = button('Clear');
   dialog.setAttribute('aria-labelledby', 'meeting-sheet-title');
   dialog.setAttribute('closedby', 'any');

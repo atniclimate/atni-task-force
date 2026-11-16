@@ -66,7 +66,7 @@ async function tabs() {
   const list = document.querySelector('.section-strip [role="tablist"]'); // the agenda above it is a tablist of its own
   const links = [...list.querySelectorAll('[role="tab"]')];
   const panels = links.map((a) => document.getElementById(a.getAttribute('aria-controls')));
-  ok(list && links.length === 15 && panels.every((n) => n?.getAttribute('role') === 'tabpanel'), 'tab list and panels');
+  ok(list && links.length === 17 && panels.every((n) => n?.getAttribute('role') === 'tabpanel'), 'tab list and panels');
   // A tab is its name over its question; a group label is a muted word out of the tab order; the Sources link and the sheet's button are not tabs.
   ok(links.every((a) => a.querySelector(':scope > .tab-name + .tab-q')), 'each tab is a name and a question');
   eq(links[0].textContent, 'Ladder and a page script How does a row read?', 'with a space between, so its name reads as two phrases');
@@ -489,7 +489,7 @@ async function api() {
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   const root = document.getElementById('session-energy');
-  ok(document.querySelectorAll('section.section').length === 15, 'all panels in the page');
+  ok(document.querySelectorAll('section.section').length === 17, 'all panels in the page');
   // Script-only parts carry data-js, which site.css hides until theme.js marks the page as scripted (html.js), so nothing appears late (ai-08).
   ok(!document.documentElement.classList.contains('js') && ['.plate-controls', '.plate-bar', '.plate-evidence', '.plate-actions', '.plate-out'].every((s) => root.querySelector(s).hasAttribute('data-js')), 'controls, view buttons, chips, and actions stay hidden');
   ok(read('site/assets/css/site.css').includes('html:not(.js) [data-js]'), 'by the one rule in site.css');
@@ -1312,6 +1312,78 @@ async function checklists() {
   ok(!other.document.getElementById('first').open, 'another address leaves it closed');
 }
 
+// The countdown (DIRECTION-R2 3.7, item 5; scripts/plate_countdown.py): the build drew the ruler from plot.from (11/10/2026 in the fixture), a row per dated
+// deadline, and the lanes; at runtime only today moves. Here the clock stands at noon on 12/20/2026, so the 12/11/2026 deadline passed after the build.
+const clockAt = (iso) => (w) => {
+  const Real = w.Date;
+  const [y, m, d] = iso.split('-').map(Number);
+  const now = new Real(y, m - 1, d, 12).getTime();
+  w.Date = class extends Real {
+    constructor(...a) { super(...(a.length ? a : [now])); }
+    static now() { return now; }
+  };
+};
+async function countdown() {
+  const still = new JSDOM(html).window.document.querySelector('#countdown-demo .countdown');
+  const keys = (root, selector) => [...root.querySelectorAll(selector)].map((n) => n.dataset.row).join();
+  eq(keys(still, '.countdown-row'), 'doe-heehr-tribal,doe-40101d,doe-tefp', 'without scripts the dated rows stand soonest first, whatever the order written');
+  eq(keys(still, '[data-lane="passed"] li'), 'bpa-tribal-iq', 'a date before the build day is in the Passed lane');
+  eq(keys(still, '[data-lane="undated"] li'), 'doe-wap,hhs-liheap', 'a claim with no date is in the No date lane');
+  eq(still.querySelector('.countdown-row .countdown-days').textContent, '31 days', 'days counted from the build day');
+  eq(still.querySelector('.countdown-row .countdown-date').textContent, '12/11/2026', 'beside the date, in the gutter');
+  eq(still.querySelector('[data-lane="undated"] .countdown-when').textContent, '2 No date', 'each lane counted in its gutter');
+  eq(still.querySelector('.countdown-note').textContent, 'Days counted from 11/10/2026.', 'and the last line names that day');
+  ok(still.querySelectorAll('.countdown-row > .countdown-track > .countdown-mark').length === 3 && !still.querySelector('[class*="stem"]'), 'each mark stands on its own row, so no stem crosses one');
+  eq([...still.querySelectorAll('.countdown-month')].map((n) => n.textContent).join(), '01/2027,07/2027,01/2028,07/2028', 'half-year labels on the ruler');
+  ok(still.querySelectorAll('.countdown-scale > i').length === 24 && still.querySelector('.countdown-ruler').getAttribute('aria-hidden') === 'true', 'a tick a month for 24 months, a drawing the rows speak for');
+  const { window, document, errors } = await load('#countdown', { before: clockAt('2026-12-20') });
+  const p = parts(document, 'countdown-demo');
+  const root = p.root.querySelector('.countdown');
+  ok(root.classList.contains('has-today') && Math.abs(+root.style.getPropertyValue('--today') - 40 / 731) < 1e-4, 'the needle stands at today');
+  const rows = [...root.querySelectorAll('.countdown-row')];
+  ok(rows[0].classList.contains('is-passed') && rows[0].querySelector('.countdown-days').textContent === 'passed', 'a deadline passed since the build keeps its row and says so');
+  eq(rows[1].querySelector('.countdown-days').textContent, '59 days', 'the days count from today');
+  eq(root.querySelector('[data-lane="passed"] .countdown-n').textContent, '2', 'and the Passed lane counts it');
+  eq(root.querySelector('.countdown-note').textContent, 'Days counted from today, 12/20/2026.', 'the last line names today');
+  eq(p.plot.getAttribute('role'), 'listbox', 'the plot is the list box');
+  eq([...p.plot.querySelectorAll('[role="option"]')].map((n) => n.dataset.row).join(), 'doe-heehr-tribal,doe-40101d,doe-tefp,bpa-tribal-iq,doe-wap,hhs-liheap', 'every program an option, in the order drawn');
+  ok([...root.querySelectorAll('.countdown-rows, .countdown-names')].every((n) => n.getAttribute('role') === 'none'), 'its lists give way to it');
+  const lane = root.querySelector('[data-lane="undated"]');
+  ok(lane.getAttribute('role') === 'group' && document.getElementById(lane.getAttribute('aria-labelledby')).textContent === '2 No date', 'a lane is a group its gutter names');
+  eq(p.plot.getAttribute('aria-activedescendant'), rows[0].id, 'the default deadline is the active option');
+  key(window, p.plot, 'ArrowDown');
+  ok(rows[1].classList.contains('is-on') && !rows[0].classList.contains('is-on'), 'Down selects the next deadline');
+  ok(p.reading.textContent.startsWith('Grid Resilience formula grants (IIJA 40101(d)): 02/17/2027.'), `and its Reading: ${p.reading.textContent}`);
+  key(window, p.plot, 'End');
+  const last = root.querySelector('[data-row="hhs-liheap"]');
+  ok(last.classList.contains('is-on') && p.plot.getAttribute('aria-activedescendant') === last.id, 'End reaches the last program with no date');
+  ok(p.chips().some((c) => claimsOf(c).includes('ef-023')), 'with its claim in the evidence');
+  eq(p.table.querySelectorAll('tbody tr').length, 6, 'the Table lists every program');
+  eq(errors.join(), '', 'no script errors');
+}
+
+// The track and the stair (site.css): a radio in each step's label, its detail after it, so a step opens in place with no script of its own.
+async function steps() {
+  const doc = new JSDOM(html).window.document;
+  for (const kind of ['track', 'stair']) {
+    const box = doc.querySelector(`#steps fieldset.${kind}`);
+    const labels = [...box.querySelectorAll(`:scope > label.${kind}-step`)];
+    ok(labels.length === 4 && labels.every((l) => l.querySelector(`:scope > input.${kind}-pick[type="radio"]`) && l.nextElementSibling?.classList.contains(`${kind}-detail`)), `${kind}: four steps, each a radio in its label with its detail after it`);
+    eq(labels.filter((l) => l.querySelector('input').checked).length, 1, `${kind}: one step open`);
+    ok(new Set(labels.map((l) => l.querySelector('input').name)).size === 1 && box.querySelector(':scope > legend'), `${kind}: one radio group, named by its legend`);
+  }
+  eq([...doc.querySelectorAll('#steps .track-n')].map((n) => n.textContent).join(), '1,2,3,4', 'the track is numbered, since it is a sequence');
+  ok(doc.querySelector('#steps .stair-step.is-lit .stair-pick:checked'), 'the stair lights one step');
+  const css = read('site/assets/css/site.css');
+  ok(['.track-step:has(> .track-pick:checked) .track-n', '.stair-step:has(> .stair-pick:checked) { background: var(--control-on); }', '.stair-pick:checked)) + .stair-detail) { display: block; visibility: hidden; }', '.stair-step.is-lit { border-top: 6px solid var(--atni-text-heading); }'].every((s) => css.includes(s)),
+    'the stylesheet opens the chosen step, keeps the others\' room, and lights the lit one');
+  const { document: live, errors } = await load('#steps');
+  const picks = [...live.querySelectorAll('#steps .track-pick')];
+  picks[1].click();
+  ok(picks[1].checked && !picks[0].checked, 'choosing a step closes the last');
+  eq(errors.join(), '', 'no script errors');
+}
+
 // The strip: built from a list a generator writes, so without scripts it is that list.
 function stripPage(rows, checked = -7) {
   const day = (offset) => { const n = new Date(); n.setDate(n.getDate() + offset); return [n.getFullYear(), n.getMonth() + 1, n.getDate()].map((v) => String(v).padStart(2, '0')).join('-'); };
@@ -1849,7 +1921,7 @@ async function sheet() {
   fire(window, opener, 'click');
   eq([...dialog.querySelectorAll('.drawer-body h3')].map((n) => n.textContent).join(), 'Water,Land', 'the sheet lists the ticked questions by set');
   ok(dialog.querySelector('.drawer-body li').textContent.includes('3 Wh [fp-001]'), 'a figure keeps its claim id');
-  ok(button('Add these sets to a council briefing').href.endsWith('/site/briefing/#add=q-water.q-land'), 'the briefing link carries the sets');
+  ok(button('Add these sets to a Council briefing').href.endsWith('/site/briefing/#add=q-water.q-land'), 'the briefing link carries the sets');
   fire(window, button('Copy the questions'), 'click');
   await wait(10);
   ok(window.clip.startsWith('Water\n1. How much water, counting 3 Wh [fp-001]?'), 'Copy puts the questions on the clipboard');
@@ -1934,4 +2006,4 @@ async function tip() {
   eq(errors.join(), '', 'no script errors');
 }
 
-module.exports = { groups: { agenda, sheet, meter, variants, tip, charts, fragment, history, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address, moved } };
+module.exports = { groups: { countdown, steps, agenda, sheet, meter, variants, tip, charts, fragment, history, findable, aids, tabs, ladder, preview, live, copy, query, svgPlots, untrusted, api, noScripts, instrument, matrix, count: countView, band, panels, rulers, pair, jobs, points, fit, zones, detailViews, ghosts, fitData, sharedGround, needleLabel, arranged, figures, checklists, strip, contrast, printAndMotion, tokens, trailingZero, downloads, printOne, address, moved } };

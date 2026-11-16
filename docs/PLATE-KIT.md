@@ -65,6 +65,8 @@ Zones, built for you: `.plate-claim` (eyebrow, title, subtitle, text, controls, 
 ```
 Fixed rows below a `"group": "ctx"`: `{"id", "label", "claim"}`, `{"id", "label", "figures": [{"claim": "jb-073", "name": "permanent jobs"}]}`, or a sparkline `{"id", "label", "spark": ["jb-041", "jb-042"]}` (claim ids, or `"claim"` with a series field name). The plate's `reading` serves formula rows; fixed rows keep a row's own sentence.
 
+**`meter`** and **`countdown`** (R2): see "The system as built, R2" below.
+
 **`matrix`**: `plot: {"type": "matrix", "columns": [{"id": "national", "label": "National scale"}, {"id": "open", "label": "Open question"}]}`, `default: "water--national"`. `{"id": "water", "label": "Water", "cells": {"national": [{"claim": "tr-001", "say": "about {display} on site", "modeled": true}], "open": "Watershed and season"}}`. A list holds figures with evidence squares; a string is words. Keys are `row--column`. Arrows move in two dimensions. Sentences get `{column}`; `reading_words` is the word-cell template.
 
 ## Numbers in sentences and formulas
@@ -122,7 +124,7 @@ plate.register('ai-same-hour', { render(ctx) { ctx.inputs.now = compute(ctx.stat
 - Roles: `listbox` with `option`, or `grid` with `row`, `rowheader`, `columnheader`, and `gridcell`. Focus stays on the plot and `aria-activedescendant` names the selected row or cell, because a row of a drawn plot is an SVG group that cannot hold focus well, and the ladder and the drawn plots should behave alike. Ruler captions become `group` labels, so with two rulers the ruler's name is said on the way into its rows.
 - Keys on a list box: Right or Down is next, Left or Up is previous, Home and End are the ends, and it stops at both ends. Both axes work so a reader never has to know which way a plot runs; `aria-orientation` is `horizontal` on `lines` and `multiples`, where years run across. Keys on a grid: arrows move one cell and stop at the edges without wrapping, Home and End go to the ends of the row, Ctrl+Home and Ctrl+End to the corners. On both: Enter or Space brings the Reading view forward; Escape closes the receipt, then restores the default; Alt, Ctrl, and Meta combinations stay the browser's. The selected row scrolls into view, since focus does not move.
 - What is said: an HTML row's name is its own text. A drawn band has no words, so `plate.js` names it with the Reading for that key; other cells of small multiples drawing the same key are `aria-hidden`, so one option stands for all of them. `plate.js` also sets `role="none"` on every SVG group between the `svg` and a band, a page script's drawing included: Chrome exposes an option under a plain `g` as a `group`, which keeps its name and loses its selection. `scripts/a11y_check.js` reads the browser's accessibility tree to hold this. After a pause the `output` region speaks the Reading, except when focus is on a drawn plot, whose band has just said it.
-- Each plot is described once, by `aria-describedby` on a hidden paragraph, in the words of its form (the voice lead's, 11/06/2026): rows for ladders, bars, and instruments; years for `lines` and `multiples` ("Use the left and right arrow keys to move between years"); cells for a matrix, with Home and End for a row's ends and Ctrl with Home or End for the corners. `plate.aid(root, plot, id, toTable, form)` writes it and Read as a table (`.plate-to-table`) right under the plot, which opens the Table view, and a closed disclosure around it (the Energy plates' panel), and moves focus to its named region; the Explorer's plots, all lists of rows, use it too.
+- Each plot is described once, by `aria-describedby` on a hidden paragraph, in the words of its form (the voice lead's, 11/06/2026): rows for ladders, bars, and instruments; years for `lines` and `multiples` ("Use the left and right arrow keys to move between years"); cells for a matrix, with Home and End for a row's ends and Ctrl with Home or End for the corners. Read as a table and `plate.aid` are gone since R2 (11/16/2026): the Chart and Table buttons above the plot replace them.
 - Tabs: `tablist`, `tab`, `tabpanel`, with roving `tabindex`. The anchors stay anchors, so with no script the strip is a jump list. A closed panel, and a plate's closed view, is `hidden="until-found"` (plain `hidden` in Safari) with `tabindex="-1"`, so it leaves the Tab order while find-in-page still reaches it; a match opens its tab or view, radio and `aria-selected` with it. Enter arrives as the link's own click and Space is handled once, on keydown.
 - Landing: a link with settings after its anchor (`#ID&name=value`, which Copy Reading writes) names no element, so the browser lands nowhere. On load and on a change of fragment `plate.js` lands on the anchor as the browser does on a plain `#id`: its tab open, `scrollIntoView`, and focus on it (with `tabindex="-1"` where it takes none), so Tab and a screen reader start there. A plain `#id` stays the browser's own, and a page that has already taken the reader inside (the Explorer's drawer) keeps its focus.
 
@@ -134,7 +136,142 @@ plate.register('ai-same-hour', { render(ctx) { ctx.inputs.now = compute(ctx.stat
 
 **Checks.** `node scripts/a11y_check.js --out FOLDER` runs axe-core on each tab panel in both themes with disclosures open and each plate's Sources and Table views shown, and exits 1 on a serious or critical issue. `node scripts/page_check.js --page plate` holds the keys, the names, and every Energy orange pairing's contrast without a browser.
 
+## The system as built, R2 (11/16/2026)
+The direction is `work/site-refresh/r2/direction/DIRECTION-R2.md` (local); `docs/DESIGN-SPEC.md` section D records each changed default and why. Where this
+section and the 11/05/2026 one below disagree, this one holds. The working example of every contract is `scripts/fixtures/plate-demo/`, checked by
+`node scripts/page_check.js --page plate`.
+
+**Parts and load order.** `theme.js` (blocking, in the head: the `js` class before first paint, the address as `window.siteAddress`, the theme toggle), then
+`plate-svg.js` and `plate.js` (deferred, in that order; `validate_public.py` checks it), then the page's script. `cite.js` comes with `#cr-data`; `sheet.js`
+(deferred) with a page's `form.asks`. CSS: the kit block in `site.css`, and `sources.css` on Sources pages. Build: `scripts/build_plates.py`, which calls
+`scripts/plate_countdown.py` for the countdown kind. `html:not(.js) [data-js] { display: none }` hides what only a script runs, so nothing appears late.
+
+**Variants.** `plate.js` sets `data-variant` from where a plate sits, and `site.css` draws the same guess before it runs, so nothing jumps. A definition's
+`"variant"` wins. Rules ask the nearest container (`main > section`, a tab panel, `.agenda-faces`, `.plate-strip`), never the plate; below 1100px it all stacks.
+
+| Variant | Where | Raised | Readout | Evidence |
+|---|---|---|---|---|
+| face | inside `.agenda-faces` | the face area | 3 to 3.75rem | block under the Reading |
+| lead | the first plate in a tab panel or section; every plate on the Briefing | the window column | 3 to 3.75rem | block under the Reading |
+| repeater | a later plate in the same panel | no; a 1px rule before the Reading | 2.25rem | one chip line |
+| strip | a column of `.plate-strip` or `.plate-pair` | no | 2.25rem | one chip line |
+| atlas | named only (Data Centers' Where tab) | the side column | a count line | the county card |
+
+**The window, in order:** readout; the Reading (six lines tall whatever it says, so the actions never move), with a partly verified row's limit; the facts
+caption; the parts bar; the evidence line and the card; "Copy reading" and, once a setting moves, "Back to the starting point"; the privacy note where a reader
+types figures. **Views:** "Chart" and "Table" are pressed buttons over the plot. The Table takes the plot's and the window's place (the plot's and the
+Reading's in a repeater) while the claim zone stays: its caption is the Reading's lead sentence, the selected row has a 3px orange rule, and past 25 rows
+it opens on 25 with "Show all N rows", which appends in place and focuses the first new row; without scripts and on paper every row shows. `ID-view=table`
+in the address opens it; an old `=sources` or `=reading` opens the Chart with focus on the evidence.
+
+**Evidence and the card.** Under the Reading: the selection's claims counted by status, then one text button per short publisher with its glyph and ", N" for
+repeats. A button opens that source's card in the window (title as link, publisher and dates, status and limit, claim id, "Quote, boundary and date on the
+Sources page"); one card at a time, never pre-opened, closed by a new selection; Escape returns focus to its button. Chips are built at runtime from the
+inline data. A page script's render may add claims through `data.cites`.
+
+**The collar** (`.plate-collar`, across the foot): "N sourced figures from D documents: V verified, P partly verified.", "All sources for this plate"
+(`sources/#ID`, which prints its address), then "Print this plate", "Download CSV", "Download SVG" (SVG plots only), and, on the AI, Data Centers, and Energy
+pages, "Add to a briefing" (`briefing/#add=ID`; hidden on the Briefing).
+
+**Titles and answers follow the state.** A setting off its default sets `data-moved`; the title becomes `"title_template"` filled from the state, else the
+Reading's first sentence, else the original tagged "At the starting settings", and "Back to the starting point" shows. Choosing a row is not a setting.
+`"answer"` is the sentence an agenda prints: write `<p class="agenda-a" data-answer="ID"></p>` and the build fills it at the defaults; `plate.js` refills it
+on every change, chosen face or not. **The figure rule:** a field in either template names only a row field, a control's value, or an input with a claim or
+model source (`build_plates.py` refuses others), so every figure it prints is one the plate prints at that state, with that state's evidence; it takes no
+`.cr` mark. A page reads a plate with `plate.read(id)` and hears it with `plate.onReading(id, fn)` (once at once, then after each settled change).
+
+**Fixed axes.** Each domain is the union over every setting and stop, so a ruler never re-ranges under the reader; `"rescale": true` opts out and the plate
+prints "The scale changed". The needle label flips within 32px of an end, where the end tick gives way, and ticks thin before they collide.
+
+**`meter`.** A ruler of stacked parts on one fixed linear scale: `plot: {"type": "meter", "domain": [0, 25]}` (the domain is required). A row's
+`"segments": [{"label": "Data center", "value": "formula"}, {"label": "Network", "value": "formula", "modeled": true, "at": ["whole"]}]` stack from zero
+with 2px gaps; a part whose `at` leaves out the current stop is a dashed ghost and the needle moves to the counted total. `"off_scale": true` draws a hatched
+bar to the end with an arrow and prints the figure. The spread is keyed "spread, not a confidence interval". Example: `scripts/fixtures/plate-demo/data/plates/meter-demo.json`.
+
+**`countdown`.** Deadlines on a 24-month ruler, built at build time so nothing reflows:
+```json
+{"plot": {"type": "countdown", "from": "2026-10-29"}, "default": "bpa-tribal-iq",
+ "rows": [{"id": "bpa-tribal-iq", "label": "BPA Tribal efficiency grants", "claim": "ef-011"}, {"id": "doe-wap", "label": "Weatherization Assistance Program", "claim": "ef-022"}],
+ "table": {"columns": [{"label": "Program", "field": "label"}, {"label": "Deadline", "field": "display"}, {"label": "Claims", "field": "claims"}]}}
+```
+- Each row is one program and needs a claim; its date is that claim's `"date"` (YYYY-MM-DD), so a deadline is sourced the way a figure is. No `by`.
+- `plot.from` is the day the build counts from: the day the dates were checked, written by the plate's generator, never the clock, so a rebuild on another
+  day writes the same page. The ruler runs 24 months from it (`plot.to` is written for you), ticked monthly and labeled at January and July.
+- A row dated on or after `from` is a row of its own, soonest first: a gutter of its days from `from` (a fixed 7ch slot) over its date, its name, and its own
+  track with its mark, so no stem crosses a row; past the ruler's end the mark is hatched at the end. A row dated before `from` goes to the **Passed** lane,
+  latest first; a row whose claim has no date to the **No date** lane, as listed. Each lane is counted in its gutter; the Passed lane always stands.
+- The data rows, the keyboard, and the Table follow that order, and the Table lists every program. A row with no figure of its own reads its date (or "No
+  date") where it would have read the plate's gap; `{display}` in a reading gives it. A count of the catalog (ef-005) is a title's `{c[ef-005][text]}` or a
+  `cites` entry, not a row: the lanes count the plate's own rows.
+- At runtime `plate.js` only sets `--today` (the orange needle down the scale and every track, labeled "today"), rewrites each day slot from today
+  ("N days", "today", "passed"), marks a deadline passed since the build (`is-passed`, a hollow mark, its row kept and counted in the Passed lane), and
+  rewrites the last line from "Days counted from MM/DD/YYYY." to "Days counted from today, MM/DD/YYYY.". The plot is the plate's list box: every row and
+  lane name is an option, arrows and Home and End move the selection, each lane is a group its gutter names.
+- The Energy pages' `energy-deadlines` and `energy-deadlines-catalog` move to it by setting `plot` to `{"type": "countdown", "from": "<the strip's from>"}`,
+  dropping the two `"group": "sum"` rows (their claims go to the title or `cites`), and choosing a dated `default`; `energy-funding.js` `deadlineStrip()` and,
+  once no page has a `[data-strip]`, `initStrip` and the `.strip-*` rules then go. Example: `scripts/fixtures/plate-demo/data/plates/countdown-demo.json`.
+
+**The Table's cells** (`table_html()`): each claim id links to `sources/#ID-source-{claim}` with its status square and word; a cell holds short words, and the
+build warns past 80 characters. Sortable headers are not built (a Should).
+
+**Print.** Ctrl+P prints the brief, the chosen face, and the open tab panel; each plate as plot, Reading, Table (every row, ids with status), and collar with
+the Sources address. "Print this plate" fits one sheet up to 25 rows, title, plot, and Reading together; a longer Table runs on with its head and foot lines
+repeated. A `@page` rule sets the margins.
+
+**Lazy start.** A plate in a closed tab panel or agenda face starts when it shows; a deep link's plate starts first. A page script's `plate.register(id, ...)`
+waits for its plate, so a page script must not assume its plates are running at load.
+
+**The address.** One grammar, `#anchor&name=value&...`, read and written only through `window.siteAddress` (`theme.js`; `util.js` wraps it for modules). The
+anchor lands, opens what holds it, and takes focus. Settings take the control's `data-param`; a selection is `ID=row`; a view `ID-view=table`. Reserved:
+`ask`, `tribe`, `m`, `preset`, `add`, `agenda`, and the filters (`build_plates.py` refuses a control that takes one, and two plates on a page that share a
+name). A tab pushes a history entry; a face, setting, selection, view, filter, or tick replaces one; Back and Forward reapply all of it, and each filter field
+that changes fires `input` and `change`. Typed figures and anything in `?query` never ride in it (owner ruling 29).
+
+**Prose tips and terms.** `pour_claim_refs.py` writes `script#cr-data` (title, URL, publisher, date, status, limit for each marked claim, and each marked
+term's definition). An `a.cr` has a dotted underline and no glyph; a plain click opens one `dialog#cr-tip[popover="auto"]` under it, with "Full record on the
+Sources page"; Escape, an outside click, or focus leaving closes it and gives focus back; a modified click or no popover support follows the link. Mark a
+term's first use in the brief and in each tab panel as `<span class="term" data-term="amw">`; the build links it to the hub's glossary (`site/sources/#term-amw`), whose anchors `build_index.py` writes from `GLOSSARY`.
+
+**Copies.** A block copied whole onto another page (home's faces, the Briefing) carries `data-copy-of`; `validate_public.py`, `build_index.py`, and
+`pour_claim_refs.py` skip it, so its marks and plates count on the page it comes from, while its links are still checked where it stands.
+
+**Page contracts** (each is in the fixture):
+- Brief: `header.wrap.brief` (with `.photo-*` for a ruled place) holding `p.brief-name`, `h1`, `p.brief-lead`, and `p.brief-meta`: a date span, a "Sources checked" span, then `a[data-sources]`.
+- Agenda: `section.wrap.agenda` > `.agenda-qs` > `.agenda-q` (each `a[href="#face-X"]` and `p.agenda-a[data-answer]`), then `.agenda-faces` > `#face-X`. At
+  most four faces; an answer is plain text with no links; the chosen face rides in `agenda=`.
+- Tabs: `nav.section-strip[data-workbench]`, each `li > a > span.tab-name + " " + span.tab-q` (the space keeps the spoken name two phrases); group labels
+  `li.strip-group[aria-hidden="true"]`; at the end `a.strip-out[data-not-tab]` (Sources) and `button.paper[data-sheet-open][data-js]`.
+- Meeting sheet: one `form.asks[data-sheet]` > `fieldset.ask-set#q-SET` > `legend` + `ol > li > label > input[type=checkbox][name=ask]` + `span.ask-q`; an
+  Add is `[data-sheet-add="q-SET"]`; load `sheet.js` with `defer`.
+- Drawers: `dialog.drawer.drawer-right` or `drawer-left`, opened with `showModal()`, a visible Close in `<form method="dialog">`.
+
+**`.track` and `.stair`** (no script; `site.css`). Steps a reader opens in place, one at a time. A radio sits in each step's label and the step's detail
+follows it; `:has()` opens the chosen one. From 720px the steps stand in one row and every detail shares the one cell under them, the unchosen hidden but
+holding their room, so a choice moves nothing below; under 720px the chosen detail opens under its step; without `:has()` and on paper every step and detail
+reads in order. Two to eight steps; the column count follows the labels. Chosen is the chosen-setting look (control-on and heading ink); no orange.
+```html
+<fieldset class="track">
+  <legend>How the work moves</legend>
+  <label class="track-step"><input class="track-pick" type="radio" name="track-work" checked> <span class="track-n">1</span> <span class="track-name">Ask</span></label>
+  <div class="track-detail"><p>One step's words, a link or two.</p></div>
+  <!-- a label and its detail for each step; one name per track, one step checked -->
+</fieldset>
+<fieldset class="stair">
+  <legend>Data tiers</legend>
+  <label class="stair-step is-lit"><input class="stair-pick" type="radio" name="stair-tier" checked> <span class="stair-code">T0</span> <span class="stair-name">Open</span> <span class="stair-tag">What you see here</span></label>
+  <div class="stair-detail"><dl><div><dt>What may touch the data</dt><dd>...</dd></div><div><dt>Who decides</dt><dd>...</dd></div><div><dt>Example</dt><dd>...</dd></div></dl></div>
+</fieldset>
+```
+The track is numbered because it is a sequence: home's How the Work Moves, the Summit's stops (a word tag such as "In development" goes in the detail), About's
+life of a claim. The stair rises in its order, each step one tread higher; `.is-lit` gives one step a 6px heading-ink tread (About's T0); a legend may be
+`.sr-only` where an h2 already names it. On the AI page the old `ol.stair` rules in `ai.css` still match the `.stair` class until P-ai removes them; the
+kit's rules are written on `fieldset.stair` so they win.
+
+**Tokens added in R2** (in `site.css`): `--window`, `--window-edge`, `--window-ring`, `--control-edge`, `--control-on`, `--paper`, `--on-paper`,
+`--paper-hover`, `--part-1`, `--part-2`, `--readout`, `--ease`, `--section-pad`, `--water`, `--water-label`, `--mark-quiet`. `--poster` is retired.
+
 ## The system as built (11/05/2026)
+Superseded by the R2 section above where they differ: `--poster`, the page band, three views, the strip (until the Energy plates move to `countdown`).
 The direction is `work/site-refresh/design/lift/DIRECTION-FINAL.md`; `docs/DESIGN-SPEC.md` section C records what it changed and why.
 
 **Tokens** (in `site.css`). `--poster`, `--mark` (on `.plate`), `--row-min` (on `.plate`; set your own for a plate that needs it, as home's 88px), `--plot-ground`, `--unit` and `--unit-gap`, `--grid`, `--baseline`, `--series-context`, `--energy-text`, `--energy-mark`, `--energy-fill`, `--energy-on-fill`, `--energy-hover`.
