@@ -32,18 +32,31 @@ async function load(query = '', source = html) {
     window.URL.createObjectURL = (blob) => { window.lastBlob = blob; return 'blob:x'; };
     window.URL.revokeObjectURL = () => {}; // the kit's save lets the URL go a second later, and jsdom has neither
     window.navigator.clipboard = { writeText: async (t) => { window.copied = t; } };
+    window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); }; // jsdom has no modal; the browser's own focus handling is not tested here
+    window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); this.dispatchEvent(new window.Event('close')); };
+    window.print = () => { window.printed = (window.printed || 0) + 1; };
   });
-  await wait();
+  await wait(5); // the self-check runs after the first draw
   eq(page.errors.length, 0, `page errors: ${page.errors.slice(0, 3).join(' | ')}`);
   return page;
 }
+// The four question tabs (DIRECTION-R2, the Explorer) and the plates under them. A plate draws when its tab opens; showAll opens every panel at once, as a reader
+// who has visited each tab has them drawn, so a check can read any plate.
+const PANELS = ['use', 'where', 'savings', 'proposal'];
+const PLATES = { 'your-use': 'use', catalog: 'use', 'not-the-building': 'use', 'where-it-runs': 'where', architectures: 'where', crossovers: 'where', levers: 'savings', 'project-scale': 'proposal' };
+const showAll = async (document) => { for (const p of document.querySelectorAll('[role="tabpanel"]')) p.removeAttribute('hidden'); await wait(); };
+// What a fragment carries, by name: a reader's choices ride in it; a typed figure never does (owner ruling 29).
+const params = (window) => new URLSearchParams(settings(window));
+const pick = (window, names) => [...params(window)].filter(([n]) => names.includes(n)).map(([n, v]) => `${n}=${v}`).join('&');
+const TYPED_NAMES = ['screen', 'chat', 'coding', 'images', 'clips', 'searches', 'social', 'streaming', 'gb', 'seats', 'mode', 'wage', 'tariff', 'cloud_admin_h_month', 'exit_tb', 'exit_admin_h', 'exit_other_usd', 'mw', 'lf', 'wue', 'grid', 'load'];
+const noTyped = (window, message) => ok(![...params(window).keys()].some((n) => TYPED_NAMES.includes(n) || /^f_|_w$|^u_|^dev_/.test(n)), `${message}: ${settings(window)}`);
 
 const text = (node) => node.textContent.replace(/\s+/g, ' ').trim();
 const OVERFLOW = new RegExp(`NaN|Infinity|${String.fromCharCode(0x221e)}`); // what a number past a finite range prints
 const setRadio = (window, node) => { node.checked = true; fire(window, node, 'input'); };
 const setField = (window, node, v) => { node.value = String(v); fire(window, node, 'input'); };
 const setting = (document, name, v) => document.querySelector(`#settings input[data-setting="${name}"][value="${v}"]`);
-const measure = (document, tab, v) => document.querySelector(`input[name="m-${tab}"][value="${v}"]`);
+const measure = (document, tab, v) => document.querySelector(`#scenario input[name="m"][value="${v}"]`); // one measure for every tab (explorer-06); tab names the plate a check reads
 const row = (document, k) => document.querySelector(`.plate-plot [data-row="${k}"]`);
 // Two printed figures agree when their words match and each number is within one unit of its last printed place: Python rounds at 12 digits, so a boundary can tip.
 const NUM = /\$?[\d,]*\.?\d+/g;
@@ -78,13 +91,14 @@ function staticRules() {
   ok(!/<iframe|<script[^>]+src="http|<link(?![^>]+rel="canonical")[^>]+href="http/.test(html), 'no outside load'); // a canonical link names this page and loads nothing
   ok(!/\u2014| -- /.test(html) && !/\u2014| -- /.test(js + model), 'no em dash');
   const css = read('site/assets/css/explorer.css');
-  ok(/@media print/.test(css) && /\[data-group\]\[hidden\]/.test(css), 'print opens every comparison');
-  ok(/@media print[\s\S]*\.x-backtest table, \.plate-table \{ min-width: 0; \}/.test(css), 'and no table keeps a screen width on paper');
+  ok(/@media print/.test(css) && !/\[data-group\]\[hidden\]/.test(css), 'print shows the comparison the reader chose, on the open tab (explorer-01)');
+  ok(!/beforeprint/.test(js), 'and no script opens anything for print (explorer-19)');
+  ok(/@media print[\s\S]*\.x-plate \.plate-table, \.x-backtest table \{ min-width: 0; \}/.test(css), 'and no table keeps a screen width on paper');
   ok(/@media \(prefers-reduced-motion: reduce\) \{\s*\.w,/.test(css), 'explorer.css has its own reduced-motion guard');
   ok(!/font-size: 0\.(75|8125)rem/.test(css), 'nothing on a first screen is under the floor');
   ok(!/--atni-color-chart|--stage-|#2F7FC1/i.test(css), 'the Wall carries no chromatic ink but the selection');
   ok(/@container \(max-width: 120px\) \{ \.wall-axis-left span \{ display: none; \}/.test(css), 'a left side under 120px drops its ticks, by a container query that needs no script');
-  ok(/@media print[\s\S]*\.x-plate \[data-d="sources"\] \{ display: none; \}/.test(css), 'every receipt prints once, on the Sources page');
+  ok(!/class="plate-sources"|id="src-/.test(html) && /<template id="x-notes">/.test(html),'every receipt prints once, on the Sources page; the page keeps the row notes only for the window');
   ok(!/\.section-strip > \.wrap \{ flex-wrap: nowrap/.test(css), 'on a phone the Settings button wraps under the tabs and never lies over them');
   ok(/prefers-reduced-motion/.test(read('site/assets/css/site.css')), 'reduced motion takes transitions to zero');
   const site = read('site/assets/css/site.css');
@@ -101,19 +115,33 @@ function staticRules() {
 function noScript() {
   const { window } = new JSDOM(html);
   const { document } = window;
-  const panels = ['your-use', 'not-the-building', 'where-it-runs', 'architectures', 'levers', 'crossovers', 'catalog', 'project-scale', 'method'];
-  for (const id of panels) {
+  const src = new JSDOM(listed).window.document; // the Sources page: the method, each plate's claims and notes, every receipt
+  const waits = (n) => !!n.closest('[data-js]') || n.hidden || !!n.closest('[hidden]'); // html:not(.js) [data-js] { display: none } (site.css), or hidden outright
+  for (const id of PANELS) {
     const panel = document.getElementById(id);
     ok(panel && !panel.hidden && !panel.closest('[hidden]'), `panel ${id} shows without scripts`);
     ok(text(panel).length > 200, `panel ${id} has content without scripts`);
+    ok(panel.querySelector('h2.x-question') && panel.querySelector('.x-answer') && text(panel.querySelector('.x-answer')).length > 40, `panel ${id} opens with its question and an answer`);
   }
-  eq([...document.querySelectorAll('.section-strip a')].map((a) => a.getAttribute('href').slice(1)).join(), panels.join(), 'the tabs follow the spec\'s nine, in order');
-  eq([...document.querySelectorAll('section.panel')].map((n) => n.id).join(), panels.join(), 'and so do the panels');
-  ok(/Modeled estimates, not measurements\. Ranges are spreads, not confidence intervals\./.test(text(document.querySelector('.x-band'))), 'disclaimer band');
-  // Owner ruling of 11/05/2026: the model's public name is the Open-book model, and the Method tab keeps one technical line.
-  ok(/An open-book model, checked against published figures\./.test(text(document.querySelector('.x-band'))), 'the model is named as the owner ruled, on every tab');
+  for (const [plate, panel] of Object.entries(PLATES)) ok(document.getElementById(plate)?.closest(`#${panel}`), `the ${plate} plate stands on the ${panel} tab`);
+  eq([...document.querySelectorAll('.section-strip a:not([data-not-tab])')].map((a) => a.getAttribute('href').slice(1)).join(), PANELS.join(), 'four question tabs, in order (explorer-33)');
+  eq([...document.querySelectorAll('.section-strip .tab-q')].map(text).join('|'), 'What does your use cost?|Where should computing run?|What actually saves energy?|What would a proposed data center draw?', 'each tab names its question');
+  eq([...document.querySelectorAll('section.panel')].map((n) => n.id).join(), PANELS.join(), 'and so do the panels');
+  ok(document.querySelector('.section-strip a.strip-out[data-not-tab][href="sources/"]'), 'and the Sources page is the strip\'s last link');
+  const brief = document.querySelector('header.brief');
+  ok(brief && /^Run the numbers for your own use, an office or a proposed data center$/.test(text(brief.querySelector('h1'))), 'the brief states what the page settles');
+  ok(/These are modeled estimates, not measurements/.test(text(brief.querySelector('.brief-lead'))) && /open-book model checked against published figures/.test(text(brief.querySelector('.brief-lead'))), 'the brief says modeled, and names the model as the owner ruled');
+  ok(!document.querySelector('.page-band-figures, .x-band, .x-facts') && !brief.querySelector('a[href^="sources/#src-"]'), 'no figures or claim ids in the opener (explorer-28)');
+  ok(/Sources checked/.test(text(brief.querySelector('.brief-meta'))) && brief.querySelector('.brief-meta a[data-sources][href="sources/"]') && brief.querySelector('.brief-meta a[href="sources/#method"]'), 'the brief links the Sources page and the method');
+  ok(waits(brief.querySelector('.x-presets')) && brief.querySelectorAll('.x-presets [data-preset-x]').length === 2, 'two starting points, which wait on a script');
+  const bar = document.getElementById('scenario');
+  ok(bar && !bar.closest('[role="tabpanel"], section.panel') && /Ranges are spreads, not confidence intervals\./.test(text(bar)), 'the scenario bar stands on every tab and says what a range is');
+  ok(waits(bar.querySelector('.x-measure')) && waits(bar.querySelector('[data-open-settings]')), 'its measure and Fine-tune wait on a script');
+  ok(/Nothing you type or choose leaves this page\. GitHub, which hosts the site, logs each visitor's IP address\./.test(text(document.getElementById('all-sources'))), 'the page says nothing typed or chosen leaves it, and what GitHub logs, on every tab');
   ok(!/process model/i.test(text(document.body)), 'and the old name is gone from the page');
-  const whatItIs = text(document.getElementById('method'));
+  // Method moves to the Sources page (DIRECTION-R2, the Explorer; explorer-23).
+  ok(!document.getElementById('method') && src.getElementById('method'), 'Method stands on the Sources page');
+  const whatItIs = text(src.getElementById('method'));
   ok(/from an open-book model checked against published figures: every input is a published figure or a labeled assumption, shown with its receipt, every other number is arithmetic on those inputs, and nothing is fitted\./.test(whatItIs), 'Method says once, plainly, what the name means');
   eq(whatItIs.match(/a bottom-up engineering model; it estimates no coefficient from data, so it is not econometric\./g)?.length, 1, 'and keeps exactly one technical line');
   eq(whatItIs.match(/econometric/g).length, 1, 'with no other word on it');
@@ -121,60 +149,70 @@ function noScript() {
   eq(whatItIs.match(/Change a setting and the answer changes/g).length, 1, 'and its setting sentence once');
   ok(/has no published measurement behind it yet\./.test(whatItIs), 'and still says the idle term is unmeasured');
   ok(/Its ranges are spreads, not distributions\./.test(whatItIs), 'and what its ranges are');
+  for (const a of src.querySelectorAll('#method a.x-c')) ok(a.getAttribute('href').startsWith('#src-') && src.getElementById(a.getAttribute('href').slice(1)), `Method's ${text(a)} links its receipt on the same page`);
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) if (/hydro/i.test(text(r.querySelector('.ladder-label')))) ok(/scenario/i.test(text(r.querySelector('.ladder-label'))), `${r.dataset.row} is labeled a scenario`);
   for (const k of ['arch.A.local_hydro', 'arch.D.node_100k_hydro', 'arch.D.node_1m_hydro']) ok(row(document, k).hidden, `${k} is not in the main comparison`);
   for (const q of document.querySelectorAll('.x-pairs li > span:first-child')) if (/hydro/.test(text(q))) ok(/scenario/.test(text(q)), `a hydro pair says scenario: ${text(q)}`);
   ok(/declared clean feed, a scenario/.test(text(document.querySelector('.x-arch-words[data-group="comparison:A"]'))), 'the office row\'s clean feed says scenario');
+  ok(document.querySelector('.x-verdict .x-arch-words') && !document.querySelector('.x-verdict').closest('details, .x-plate'), 'what wins, what loses, and what reverses it stands open under the plate (explorer-37)');
   const admin = text(document.querySelector('.x-admin-note'));
   ok(/2 paid hours a month/.test(admin) && /flips by 14/.test(admin) && /tie at about 3\.1 hours/.test(admin), 'the two admin hours print beside the flip point');
   ok(/assumes, with no source, that a cloud seat's price includes sign-in, permissions, and access control, which a local suite has to provide itself/.test(admin) && /does not say how much of the 14 hours/.test(admin) && !/By 14 the local/.test(admin),
     'and say what a seat includes (owner ruling 23, 11/05/2026), as an assumption, with 14 not read as the tie');
   ok(!/Potawatomi|Data Holdings/.test(html), 'the facility is anonymized');
-  ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('where-it-runs'))), 'and its figure attributed to its public source');
+  ok(/one self-reports a power usage effectiveness \(PUE\) of 1\.28 in its public sustainability report/.test(text(document.getElementById('x-notes').content.getElementById('note-where-node'))), 'and its figure attributed to its public source');
   ok(/Partly verified\. Limit: One operator/.test(receipt('src-lf-059')) && /sustainability report/i.test(receipt('src-lf-059')), 'with its receipt, status, and limit');
   ok(document.querySelectorAll('[data-row]').length > 80, 'rows print');
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) ok(text(r.querySelector('.ladder-value')).length > 0, `${r.dataset.row} shows a value without scripts`);
   ok(document.querySelectorAll('.wall-row .w:not([hidden])').length > 40, 'the Wall is drawn without scripts');
   ok(document.querySelector('#your-use .wall-track .w-rou:not([hidden])'), 'the router sits left of the wall');
-  eq([...document.querySelectorAll('#your-use .wall-key li')].map(text).join('|'), 'Your device, Home router|Network, Data center or node|Spread, not a confidence interval', 'the key names each layer and the spread');
-  eq([...document.querySelectorAll('#your-use .wall-key-steps')].map((steps) => [...steps.children].map((c) => c.className.replace('plate-square w-key-', '')).join()).join('|'), 'dev,rou|net,dc', 'its swatches stand as the bar does, a pair on each side');
+  eq([...document.querySelectorAll('#your-use .wall-key li')].map(text).join('|'), 'Your device|Home router|Network|Data center or node|Spread, not a confidence interval', 'the key sets each swatch beside its own word (explorer-27)');
+  eq([...document.querySelectorAll('#your-use .wall-key li .plate-square')].map((c) => c.className.replace('plate-square w-key-', '')).join(), 'dev,rou,net,dc', 'one swatch to a word');
+  ok(/^The wall in the middle is zero\./.test(text(document.querySelector('#your-use .wall-words'))), 'and says once how to read the Wall (explorer-34)');
+  eq([...document.querySelectorAll('#your-use .wall-axis .wall-zero')].map(text).join(), '0', 'its zero is printed once, at the wall (explorer-16)');
+  ok(!/your side/.test(text(document.querySelector('[data-board="where.prompt"] .wall-axis'))), 'and no left tick names its side again');
   ok(document.querySelectorAll('tr[data-tr]').length > 80, 'tables hold every row');
-  ok(document.getElementById('settings') && !document.getElementById('settings').hidden, 'settings read as a list');
-  ok(document.querySelectorAll('#settings input[data-setting]').length >= 60, 'every option prints');
+  for (const tr of document.querySelectorAll('tr[data-tr]')) {
+    const cell = tr.querySelector('td[data-c="claims"]');
+    ok(cell, `${tr.dataset.tr}: its table row has a claims cell`);
+    for (const a of cell.querySelectorAll('a[data-claim]')) ok(receipt(`src-${a.dataset.claim}`) && /^(verified|partly verified)$/.test(a.nextSibling.textContent.trim()) && a.parentElement.querySelector('.st'), `${tr.dataset.tr}: ${a.dataset.claim} links its receipt, with its status in a word and a square`);
+  }
+  ok(document.querySelectorAll('[data-setting-list] li').length === 21, 'the settings read as a list');
+  ok(document.getElementById('settings').tagName === 'DIALOG' && !document.getElementById('settings').open, 'Fine-tune is a modal, closed until opened (explorer-04)');
+  ok(document.querySelectorAll('#settings input[data-setting]').length >= 60, 'every option stands in it');
+  eq([...document.querySelectorAll('#settings .x-fine-group > h3')].map(text).join('|'), 'Your Side|Rates|Grids|Money|Node Already On|Files', 'in headed groups');
   ok((listed.match(/ id="src-/g) || []).length > 80 && document.querySelector('#all-sources a[href="sources/"]'), 'receipts print on the Sources page, which the page points to');
-  ok(!document.querySelector('a[href^="#src-"], .x-sources'), 'and the page keeps no list of its own');
+  ok(!document.querySelector('a[href^="#src-"], .x-sources, .plate-view[data-view="sources"]'), 'and the page keeps no list of its own, and no Sources view (explorer-02)');
   for (const a of document.querySelectorAll('a[href^="sources/#src-"]')) ok(receipt(`src-${claimOf(a)}`), `receipt for ${a.getAttribute('href')}`);
+  for (const [plate, name] of Object.entries(PLATES)) {
+    const collar = document.querySelector(`#${plate} > .plate-collar`);
+    ok(collar && /^[\d,]+ sourced figures? from [\d,]+ documents?: /.test(text(collar.querySelector('.plate-source-line'))), `${plate}: its collar counts its sources`);
+    eq(collar.querySelector('.plate-sources-link a').getAttribute('href'), `sources/#${plate}`, `${plate}: and links its section of the Sources page`);
+    ok(src.getElementById(plate)?.matches('.sources-plate') && src.querySelector(`#${plate} a[href="../#${plate}"]`), `${plate}: whose section opens the plate again`);
+    for (const a of src.querySelectorAll(`#${plate} .x-claim-list a`)) ok(src.getElementById(a.getAttribute('href').slice(1)), `${plate}: ${text(a)} reaches its receipt`);
+    ok(name, plate);
+  }
   ok(document.querySelectorAll('.x-waffle').length === 4, 'all four waffles print');
   ok(document.querySelectorAll('.x-place').length === 5, 'the place strip prints');
-  // The direction's first screen, and that nothing waits on a script: four inputs in the grid, all nine in the page, every disclosure of the plate open.
+  // The first screen, and that nothing waits on a script: four inputs in the grid, all nine in the page, every disclosure of the plate open.
   const fieldsIn = (selector) => [...document.querySelectorAll(`${selector} input[data-field]`)].map((n) => n.dataset.field).filter((k) => k !== 'seats');
   eq(fieldsIn('#your-use .plate-controls > .x-fields').join(), 'screen,chat,coding,streaming', 'the four that move the number most lead');
   eq(fieldsIn('#your-use .x-more-inputs').join(), 'images,clips,searches,social,gb', 'the other five follow');
+  eq(document.querySelector('input[data-field="screen"]').max, '168', 'a week holds 168 screen hours (explorer-10)');
   ok(document.querySelector('.x-more-inputs').open, 'open without scripts, so all nine show');
   ok([...document.querySelectorAll('.x-plate .x-modeled')].every((n) => n.open), 'and How this is modeled too');
   ok(!/Model default/.test(text(document.getElementById('your-use'))), 'no default under each field');
   eq(text(document.querySelector('#your-use .x-defaults')), 'Defaults: 7 screen hours, 10 prompts, 1 coding hour, 1 streaming hour', 'the defaults print once, under the grid');
-  const bandFigures = [...document.querySelectorAll('.page-band-figures > li')];
-  eq(bandFigures.length, 3, 'three figures in the band');
-  for (const li of bandFigures) {
-    ok(li.querySelector('.figure-num [data-m]') && li.querySelector('.figure-label'), 'poured, with a label');
-    const ids = [...li.querySelectorAll('.figure-label a[href^="sources/#src-"]')].map(claimOf);
-    ok(ids.length > 1 && ids.every((id) => receipt(`src-${id}`)), `${text(li.querySelector('.figure-num'))} in the band carries its claims, each with a receipt`);
-  }
-  ok(!document.querySelector('.x-band').closest('.x-plate') && !document.querySelector('.key-facts, .x-facts'), 'the band has no box, and the notice is one line');
-  ok(document.querySelector('[data-d="week"]').closest('.plate-view').dataset.view === 'table', 'the week across the rows moves to the Table view');
+  ok(document.querySelector('[data-d="week"]').closest('.plate-detail'), 'the week across the rows stands in the window, under the Reading');
   ok(/7 hours/.test(text(row(document, 'use.screen'))), 'the screen row');
-  ok(/coding hour/.test(text(document.querySelector('[data-title="use"]'))), 'the claim sentence is poured');
+  ok(/coding hour/.test(text(document.querySelector('[data-title="use"]'))), 'the answer is poured');
   for (const n of document.querySelectorAll('main [data-m]')) ok(text(n) !== 'x' && text(n) !== '', `poured ${n.dataset.m}`);
-  for (const q of document.querySelectorAll('.x-sources > li')) {
-    const hasStatus = /Partly verified\. Limit: \S|Verified against the source\./.test(text(q));
-    ok(hasStatus, `${q.id} states its status and any limit`);
-  }
+  for (const n of src.querySelectorAll('main [data-m]')) ok(text(n) !== 'x' && text(n) !== '', `poured on the Sources page ${n.dataset.m}`);
   ok(!/\bFor scale\b/.test(text(document.getElementById('project-scale'))), 'project scale fills in no sentence for scale');
-  ok(document.querySelectorAll('#project-scale input[value]:not([value=""])').length === 0, 'project scale has no defaults');
+  ok(document.querySelectorAll('#project-scale input[value]:not([value=""])').length === 0, 'project scale types nothing into its fields without a script');
   // Its one example waits on a script, and its numbers are the plate's it names and the claim's it cites.
   const example = document.querySelector('#project-scale [data-example]');
-  ok(example.closest('[data-js]').hidden && document.querySelector('.x-project-form').hidden, 'the example and the form wait on a script');
+  ok(waits(example) && waits(document.querySelector('.x-project-form')), 'the example and the form wait on a script');
   const projectControls = Object.fromEntries(JSON.parse(read('site/data/plates/dc-project.json')).controls.map((c) => [c.name, c.default]));
   const demand = JSON.parse(read('site/data/claims/demand.json')).claims.find((c) => c.id === 'dem-058');
   const model = JSON.parse(read('site/data/resource-model.json'));
@@ -188,8 +226,8 @@ function noScript() {
   ok(/not a proposal/.test(exampleNote) && /picks no feed/.test(exampleNote), 'and says it is no proposal and picks no feed');
   ok(document.querySelector('#project-scale .x-start a[href="sources/#src-dem-058"]') && /Verified against the source/.test(receipt('src-dem-058')), 'with its receipt');
   // Method: the first sentence is the bold one, and the words stay the model's.
-  eq(text(document.querySelector('.x-disclaimer')), model.disclaimer.replace(/\s+/g, ' ').trim(), 'the disclaimer is word for word');
-  eq(text(document.querySelector('.x-disclaimer strong')), `${model.disclaimer.split('. ')[0]}.`, 'and only its first sentence is bold');
+  eq(text(src.querySelector('.x-disclaimer')), model.disclaimer.replace(/\s+/g, ' ').trim(), 'the disclaimer is word for word');
+  eq(text(src.querySelector('.x-disclaimer strong')), `${model.disclaimer.split('. ')[0]}.`, 'and only its first sentence is bold');
   // The Catalog: the price basis under the label, the figure and its spread in the value cell.
   for (const r of document.querySelectorAll('#catalog .plate-plot [data-row]')) {
     ok(r.querySelector('.ladder-label .ladder-tag'), `${r.dataset.row} names its price basis under its label`);
@@ -198,36 +236,37 @@ function noScript() {
   eq(text(row(document, 'catalog.video_hour').querySelector('.ladder-label .ladder-tag')), 'platform revenue, not a cost', 'revenue says so on the row');
   ok(/^\S+ Wh \(\S+ to \S+\)$/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-value'))), 'the value cell keeps the figure and its spread');
   ok(!row(document, 'use.chat').querySelector('.ladder-label .ladder-tag'), 'Your Use has no such tag');
-  // Levers: two words in the key, the ruler's sentence on its own line.
+  // Levers as dumbbells, in words (explorer-18): after as a share of before, then the two figures.
   eq([...document.querySelectorAll('#levers .plate-plot .wall-key li')].map(text).join('|'), 'Before|After, at the same setting', 'the key holds the two marks');
-  eq(text(document.querySelector('#levers .plate-plot .x-lever-note')), 'The line runs left for a saving and right for a cost; each row has its own ruler from zero.', 'the rest is the ruler\'s caption');
+  eq(text(document.querySelector('#levers .plate-plot .x-lever-note')), 'Each line runs from before to after: left is a saving, right a cost. Each row has its own ruler from zero.', 'the rest is the ruler\'s caption');
   ok(document.querySelector('.x-lever-note').classList.contains('caption'), 'set as a caption');
+  ok(/^\S+ percent of before \(\S+ \S+ to \S+ \S+\)$/.test(text(row(document, 'lever.route_small').querySelector('.ladder-value'))), 'a lever reads as a share of before, from one figure to the other');
+  ok(!/after over before/.test(text(document.getElementById('savings'))), 'and never as after over before');
 
   // The second version, without scripts: every word a reader needs is on the page, and no control pretends to work.
-  // The GitHub report, Part 1: GitHub logs each visitor's IP address, so the page promises what this page sends, and names the host for what it sees.
-  ok(/Nothing you type or choose leaves this page\. GitHub, which hosts the site, logs each visitor's IP address\./.test(text(document.querySelector('.x-band'))), 'the band says nothing typed or chosen leaves the page, and what GitHub logs, on every tab');
-  ok(/Nothing you type or choose is sent anywhere: the site has no form, no upload, and no account/.test(text(document.getElementById('method'))) && /GitHub, which hosts the site, logs each visitor's IP address, as its own documentation states\./.test(text(document.getElementById('method'))), 'and so does Method');
-  ok(document.querySelector('#method a[href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection"]'), 'with GitHub\'s own page a press away');
+  ok(/Nothing you type or choose is sent anywhere: the site has no form, no upload, and no account/.test(text(src.getElementById('method'))) && /GitHub, which hosts the site, logs each visitor's IP address, as its own documentation states\./.test(text(src.getElementById('method'))), 'and so does Method');
+  ok(src.querySelector('#method a[href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection"]'), 'with GitHub\'s own page a press away');
   ok(/these readings never leave your machine through this site/.test(text(document.getElementById('settings'))), 'the readings say what this site can promise of them');
-  ok(!/receives nothing/.test(text(document.body)), 'and no sentence says the site receives nothing');
+  ok(!/receives nothing/.test(text(document.body)) && !/receives nothing/.test(text(src.body)), 'and no sentence says the site receives nothing');
   for (const file of ['docs/FIELD-PROTOCOL.md', 'scripts/fit_idle.py']) {
     ok(fs.existsSync(path.join(ROOT, file)), `${file} is in the repository`);
-    eq(document.querySelectorAll(`#method a[href$="${file}"], #settings a[href$="${file}"]`).length, 2, `${file} is reachable from Method and from Settings`);
+    ok(src.querySelector(`#method a[href$="${file}"]`) && document.querySelector(`#settings a[href$="${file}"]`), `${file} is reachable from Method and from Fine-tune`);
     ok(document.querySelector(`a[href="https://github.com/atniclimate/atni-task-force/blob/main/${file}"]`), `${file} at its public address`);
   }
   ok(document.getElementById('architectures').querySelector('[data-group="comparison:E"].plate-title'), 'comparison E has its claim sentence');
   eq([...document.querySelectorAll('[data-board="arch.E"] .wall-group')].map((n) => n.dataset.phase).join(), 'move,year', 'its one-time rows and year rows stand apart without scripts');
+  eq([...document.querySelectorAll('[data-board="arch.D"] .wall-group[data-phase]')].map(text).join('|'), 'In a data center|On a community node|On your own devices', 'the AI compute rows stand in three groups (explorer-13)');
   ok(document.querySelector('[data-board="arch.E"]').classList.contains('is-plain'), 'and on no hour axis');
   const keysOf = (selector) => [...document.querySelectorAll(selector)].map((n) => n.dataset.row);
   eq(keysOf('[data-board="arch.E"] .wall-row:not([hidden])').join(), ['move_s3_node', 'move_s3_federated', 'year_s3', 'year_node', 'year_federated'].map((k) => `arch.E.${k}`).join(), 'one store stands for all three on energy');
   ok(/same from R2 or B2/.test(text(document.querySelector('[data-board="arch.E"] [data-phase="move"]'))), 'and the head says so');
   ok(document.querySelectorAll('.x-paybacks [data-payback]').length === 6 && /never/.test(text(document.querySelector('[data-payback="federated_vs_r2"]'))), 'the paybacks print, never as words');
   ok(document.querySelector('.x-paybacks').closest('.plate-view').dataset.view === 'table', 'all six stand in the Table view');
-  ok(/^One copy on the Nation's node pays back against S3 in .+; against R2 .+; against B2 .+\. Each range is one change at a time\.$/.test(text(document.querySelector('[data-payback-line]'))) && document.querySelector('[data-payback-line]').closest('.plate-view').dataset.view === 'reading', 'and the Reading carries one holder\'s three in one sentence');
+  ok(/^One copy on the Nation's node pays back against S3 in .+; against R2 .+; against B2 .+\. Each range is one change at a time\.$/.test(text(document.querySelector('[data-payback-line]'))) && document.querySelector('[data-payback-line]').closest('.plate-detail'), 'and the window carries one holder\'s three in one sentence');
   ok(/^Rows that leave, each with why it does not meet the rule$/.test(text(document.querySelector('.x-custody-block .x-custody-grid .label'))), 'the list of rows that leave is labeled');
   ok(/mostly people's time/.test(text(document.querySelector('.disclosure[data-group="comparison:E"]'))) && /never subtracted/.test(text(document.querySelector('.disclosure[data-group="comparison:E"]'))), 'the plain account of comparison E prints');
-  eq(text(document.querySelector('.x-custody-line')), model.custody.fixed_line, 'the fixed line stands with the setting, word for word');
-  ok(document.querySelector('[data-custody]').closest('[data-js]').hidden, 'the custody control waits on a script');
+  eq(text(document.querySelector('.x-custody-line')), model.custody.fixed_line, 'the fixed line stands with the plate, word for word');
+  ok(waits(document.querySelector('[data-custody]')), 'the custody control waits on a script');
   const rules = document.querySelectorAll('.x-custody-block');
   eq(rules.length, 10, 'what each rule leaves out prints for every comparison, without scripts');
   for (const block of rules) ok(block.querySelector('li') && /Where this data may be held: /.test(text(block)), `${block.dataset.group}: names its rule and lists what leaves`);
@@ -237,19 +276,20 @@ function noScript() {
     ok(input.hidden, `${input.dataset.measured}: the field waits on a script`);
     ok(/^Model /.test(text(input.parentElement.querySelector('.caption'))) && input.parentElement.querySelector('label').getAttribute('for') === input.id, `${input.dataset.measured}: and the model's figure stands beside it`);
   }
-  ok(document.querySelector('[data-scenario-save]').closest('[data-js]').hidden, 'the scenario file waits on a script');
-  ok(/Illustrative Carbon Damage, Off by Default/.test(text(document.getElementById('method'))) && /not a damage estimate/.test(text(document.getElementById('method'))), 'the damage families print in Method, each saying what it is');
-  ok(document.querySelector('[data-damage]').closest('[data-js]').hidden && document.querySelector('[data-d="damage"]').hidden, 'and the control and its line wait on a script');
+  ok(waits(document.querySelector('[data-scenario-save]')), 'the scenario file waits on a script');
+  ok(/Illustrative Carbon Damage, Off by Default/.test(text(src.getElementById('method'))) && /not a damage estimate/.test(text(src.getElementById('method'))), 'the damage families print in Method, each saying what it is');
+  ok(waits(document.querySelector('[data-damage]')) && document.querySelector('[data-d="damage"]').hidden, 'and the control and its line wait on a script');
   ok(receipt('src-mv-001') && receipt('src-ex-002') && receipt('src-mv-005'), 'the second version\'s receipts ship');
   ok(document.querySelector('a[href="sources/#src-mv-004"]') && /sf-035/.test(text(document.querySelector('#not-the-building .x-picture:last-child'))), 'the spread of a session and the cloud share name their claims');
-  ok(!/twenty watts|a hundred watts|about three times|doubles the coding/.test(text(document.getElementById('method'))), 'the sentences the rerun overturned are gone');
-  ok(/halves at 19 W and doubles at 82 W/.test(text(document.getElementById('method'))) && /misses by 3\.2 times/.test(text(document.getElementById('method'))) && /1\.9 times and the coding hour's 1\.7 times/.test(text(document.getElementById('method'))), 'and their replacements are poured');
-  ok(/vendor's app sends its readings to that vendor/.test(text(document.getElementById('method'))), 'and the smart plug says a vendor\'s app sends the readings on');
+  ok(!/twenty watts|a hundred watts|about three times|doubles the coding/.test(text(src.getElementById('method'))), 'the sentences the rerun overturned are gone');
+  ok(/halves at 19 W and doubles at 82 W/.test(text(src.getElementById('method'))) && /misses by 3\.2 times/.test(text(src.getElementById('method'))) && /1\.9 times and the coding hour's 1\.7 times/.test(text(src.getElementById('method'))), 'and their replacements are poured');
+  ok(/vendor's app sends its readings to that vendor/.test(text(src.getElementById('method'))), 'and the smart plug says a vendor\'s app sends the readings on');
 }
 
 // Python's 300 cases through the real controls --------------------------------------------------------
 async function cases() {
   const { window, document } = await load();
+  await showAll(document); // every tab drawn, so every plate and Table follows each case
   const ex = window.explorer;
   const V = ex.view;
   const S = ex.state;
@@ -266,6 +306,7 @@ async function cases() {
     S.seats = c.fields.seats;
     S.custody = c.custody_rule;
     S.m = ['wh', 'g', 'ml', 'usd'][i % 4];
+    S.opts.comparison = 'ABCDE'[i % 5]; // the plate draws the comparison shown, so the cases walk all five
     // The last control goes through the page, so the whole refresh runs as it does for a reader.
     setRadio(window, setting(document, name, c.settings[name]));
     const flat = ex.flatten(V.t);
@@ -277,7 +318,7 @@ async function cases() {
     for (const view of Object.values(c.custody.comparisons)) {
       for (const { key } of view.left) {
         const n = row(document, key);
-        ok(n.hidden || (n.classList.contains('is-ghost') && [...n.querySelectorAll('.w, .wall-range, .wall-needle')].every((p) => p.hidden) && text(n.querySelector('.ladder-value')).startsWith(`${ex.data.words.ghost}: `)), `case ${i} ${key} leaves the plate, or stays as a ghost with no figure`);
+        if (key.startsWith(`arch.${S.opts.comparison}.`)) ok(n.hidden || (n.classList.contains('is-ghost') && [...n.querySelectorAll('.w, .wall-range, .wall-needle')].every((p) => p.hidden) && text(n.querySelector('.ladder-value')).startsWith(`${ex.data.words.ghost}: `)), `case ${i} ${key} leaves the plate, or stays as a ghost with no figure`);
         const tr = document.querySelector(`tr[data-tr="${key}"]`);
         ok(tr.classList.contains('is-ghost') && text(tr.querySelector('[data-c="usd"]')) === '', `case ${i} ${key} keeps no figure in the table`);
       }
@@ -422,6 +463,10 @@ async function measuredOracle() {
 async function behavior() {
   const { window, document } = await load();
   const ex = window.explorer;
+  // A plate in a closed tab waits until its tab opens (explorer-19): on load only the first tab's plates are drawn.
+  ok(row(document, 'use.screen').hasAttribute('aria-posinset') && !row(document, 'arch.A.cloud').hasAttribute('aria-posinset'),'the open tab\'s plates draw on load, and a closed tab\'s wait');
+  await showAll(document);
+  ok(row(document, 'arch.A.cloud').hasAttribute('aria-posinset'), 'and draw when it opens');
   // Static and live agree at the defaults.
   const still = new JSDOM(html).window.document;
   for (const r of document.querySelectorAll('.plate-plot [data-row]')) {
@@ -434,7 +479,9 @@ async function behavior() {
     const other = still.querySelector(`tr[data-tr="${tr.dataset.tr}"]`);
     for (const td of tr.querySelectorAll('[data-c]:not([data-damage-col])')) eq(text(td), text(other.querySelector(`[data-c="${td.dataset.c}"]`)), `static and live table ${tr.dataset.tr} ${td.dataset.c}`);
   }
-  eq(text(document.querySelector('[data-title="use"]')), text(still.querySelector('[data-title="use"]')), 'static and live title');
+  eq(text(document.querySelector('[data-title="use"]')), text(still.querySelector('[data-title="use"]')), 'static and live answer');
+  for (const tab of ['use', 'where', 'savings']) eq(text(document.querySelector(`[data-answer-x="${tab}"]`)), text(still.querySelector(`[data-answer-x="${tab}"]`)), `static and live answer on ${tab}`);
+  eq(text(document.querySelector('[data-answer-x="use"]')), ex.view.title(), 'at energy the answer is the week\'s sentence');
   for (const n of ['value', 'unit', 'qual', 'price', 'co2', 'reading', 'spread', 'moves']) eq(text(document.querySelector(`[data-plate-x="use"] [data-d="${n}"]`)), text(still.querySelector(`[data-plate-x="use"] [data-d="${n}"]`)), `static and live detail ${n}`);
   for (const plate of ['where', 'arch', 'catalog', 'lever', 'cross']) for (const n of ['value', 'unit', 'qual', 'reading']) eq(text(document.querySelector(`[data-plate-x="${plate}"] [data-d="${n}"]`)), text(still.querySelector(`[data-plate-x="${plate}"] [data-d="${n}"]`)), `static and live readout ${plate} ${n}`);
 
@@ -452,9 +499,13 @@ async function behavior() {
   ok(![...document.querySelectorAll('.plate-plot [data-row] .ladder-value')].some((n) => /runs off this ruler/.test(text(n))), 'and never row by row');
   eq(still.querySelector('[data-board="use"] .wall-off').hidden, false, 'without scripts too');
   ok(/\(\S+ to \S+\)/.test(text(row(document, 'use.screen').querySelector('.ladder-value'))), 'the row prints the whole spread in words');
-  ok(![...document.querySelectorAll('.wall-axis span')].some((n) => /^0( |$)/.test(text(n))), 'the wall itself is the zero');
+  for (const axis of document.querySelectorAll('.wall:not(.is-plain) .wall-axis')) eq([...axis.querySelectorAll('span')].filter((n) => /^0( |$)/.test(text(n))).map((n) => n.className).join(), 'wall-zero', `${axis.closest('.wall').dataset.board}: the wall is the zero, printed once (explorer-16)`);
   ok(/ Wh$/.test([...document.querySelectorAll('[data-board="use"] .wall-axis span')].reduce((a, b) => (+b.style.getPropertyValue('--x') > +a.style.getPropertyValue('--x') ? b : a)).textContent), 'the far tick carries the unit');
-  ok(/side/i.test(text(document.querySelector('[data-board="use"] .wall-sides > span:first-child'))), 'the left head');
+  ok(/side/i.test(text(document.querySelector('[data-board="use"] .wall-sides > span:nth-last-child(2)'))), 'the left head');
+  const needleName = document.querySelector('[data-board="use"] .wall-needle-label');
+  eq(text(needleName), `${text(row(document, 'use.screen').querySelector('.ladder-num'))} ${text(row(document, 'use.screen').querySelector('.ladder-unit'))}`, 'the needle names the selected row\'s figure over the plot (explorer-17)');
+  ok(!needleName.hidden && Math.abs(parseFloat(needleName.style.getPropertyValue('--x')) - parseFloat(row(document, 'use.screen').querySelector('.wall-needle').style.left) / 100) < 0.001, 'where the needle stands');
+  ok(still.querySelector('[data-board="use"] .wall-needle-label').closest('[data-js]'), 'and without scripts, where nothing is selected, it waits');
   // One ruler across the wall: a watt-hour is as long on both sides, and one step runs out both ways.
   const V0 = ex.view;
   const useLay = V0.layout(V0.boardKeys('use', 'wh'), 'wh', false, V0.boardScale('use', 'wh'));
@@ -468,8 +519,8 @@ async function behavior() {
   const whereRight = whereLay.ticks.filter((t) => !t.left);
   near(whereLay.wall - whereLeft[0].x, whereRight[0].x - whereLay.wall, 'the first tick either side stands as far from the wall');
   near(whereRight[1].x - whereRight[0].x, whereRight[0].x - whereLay.wall, 'at the same step');
-  eq(text(document.querySelector('[data-board="where.prompt"] .wall-axis-left span')), `${whereRight[0].t} Wh, your side`, 'a left tick names its unit and its side');
-  eq([...document.querySelectorAll('[data-board="where.prompt"] .wall-axis > span')].map(text).join(), whereRight.map((t) => t.t).join(), 'and the right side keeps its own');
+  eq(text(document.querySelector('[data-board="where.prompt"] .wall-axis-left span')), whereRight[0].t.split(' ')[0], 'a left tick is its figure: the zero and the head\'s arrows say the side (explorer-16)');
+  eq([...document.querySelectorAll('[data-board="where.prompt"] .wall-axis > span:not(.wall-zero)')].map(text).join(), whereRight.map((t) => t.t).join(), 'and the right side keeps its own');
   for (const wall of document.querySelectorAll('.wall')) {
     const mine = still.querySelector(`.wall[data-board="${wall.dataset.board}"] .wall-axis`);
     eq(text(wall.querySelector('.wall-axis')), text(mine), `static and live axis ${wall.dataset.board}`);
@@ -488,21 +539,24 @@ async function behavior() {
   // Tabs.
   const strip = document.querySelector('.section-strip');
   const tabs = [...strip.querySelectorAll('[role="tab"]')];
-  eq(tabs.length, 9, 'nine tabs');
+  eq(tabs.length, 4, 'four question tabs');
   eq(strip.querySelector('[role="tablist"]') !== null, true, 'a tab list');
-  eq(tabs[0].getAttribute('aria-selected'), 'true', 'Your Use leads');
-  ok(!document.getElementById('your-use').hidden && document.getElementById('method').hidden, 'one panel at a time');
+  eq(tabs[0].getAttribute('aria-selected'), 'true', 'Your use leads');
+  fire(window, tabs[0], 'click');
+  ok(!document.getElementById('use').hidden && document.getElementById('proposal').hidden, 'one panel at a time');
   key(window, tabs[0], 'ArrowRight');
-  ok(!document.getElementById('not-the-building').hidden && document.getElementById('your-use').hidden, 'arrow moves the tab');
+  ok(!document.getElementById('where').hidden && document.getElementById('use').hidden, 'arrow moves the tab');
   eq(document.activeElement, tabs[1], 'focus follows');
   key(window, tabs[1], 'End');
-  ok(!document.getElementById('method').hidden, 'End');
-  key(window, tabs[8], 'Home');
-  ok(!document.getElementById('your-use').hidden, 'Home');
-  fire(window, tabs[3], 'click');
-  eq(window.location.hash, '#architectures', 'the hash follows');
+  ok(!document.getElementById('proposal').hidden, 'End');
+  key(window, tabs[3], 'Home');
+  ok(!document.getElementById('use').hidden, 'Home');
+  const before = window.history.length;
+  fire(window, tabs[1], 'click');
+  ok(/^#where(&|$)/.test(window.location.hash) && window.history.length === before + 1, 'the hash follows, and a tab is a place in the history (explorer-07)');
   fire(window, tabs[0], 'click');
-  ok(document.querySelector('.x-band').closest('[role="tabpanel"]') === null, 'the band stays on every tab');
+  ok(document.getElementById('scenario').closest('[role="tabpanel"]') === null, 'the scenario bar stays on every tab');
+  await showAll(document);
 
   // The Wall: one stop, arrows select, the detail follows.
   const plot = document.querySelector('[data-plate-x="use"] .plate-plot');
@@ -517,31 +571,22 @@ async function behavior() {
   eq(row(document, 'use.coding').getAttribute('aria-selected'), 'true', 'aria-selected');
   ok(/coding, 1 hour/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'the Reading follows');
   ok(/Modeled, not measured/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'the Reading says modeled');
-  const useChips = [...document.querySelectorAll('[data-plate-x="use"] [data-d="chips"] .receipt')];
-  ok(useChips.length > 0 && useChips.every((c) => c.closest('.plate-view').dataset.view === 'sources'), 'receipts reach the detail, in its Sources view');
-  ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="reading"] .receipt'), 'and the Reading view holds no chip');
-  const useTally = document.querySelector('[data-plate-x="use"] [data-tally]');
-  const partlyChips = useChips.filter((c) => c.classList.contains('is-hollow')).length;
-  const plateSources = (name) => new Set([...document.querySelectorAll(`[data-plate-x="${name}"] .plate-plot [data-row]`)].flatMap((r) => [...document.getElementById(ex.data.rows[r.dataset.row].note).querySelectorAll('.receipt')].map(claimOf)));
-  const lineOf = (n) => new RegExp(`^${n.toLocaleString('en-US')} sources? from [\\d,]+ documents?: `); // the kit's line, from the data block
-  const useSources = plateSources('use');
-  ok(useSources.size > useChips.length, 'a plate holds more sources than a row');
-  eq(text(useTally), `This row: ${[useChips.length - partlyChips && `${useChips.length - partlyChips} verified`, partlyChips && `${partlyChips} partly verified`].filter(Boolean).join(', ')}; ${useSources.size} sources on the plate`, 'one line counts the row by status and names the plate\'s count');
-  eq(text(document.querySelector('[data-plate-x="use"] .plate-views input[value="sources"] + span')), `Sources (${useSources.size})`, 'the same count as the view\'s name');
-  ok(lineOf(useSources.size).test(text(document.querySelector('[data-plate-x="use"] [data-d="sources"]'))), 'and the view counts that many in one line');
-  eq(document.querySelector('[data-plate-x="use"] .plate-sources-link a').getAttribute('href'), 'sources/', 'beside the link to every receipt');
-  for (const name of ['where', 'arch', 'lever', 'cross', 'catalog']) {
-    const n = plateSources(name).size;
-    const plate = document.querySelector(`[data-plate-x="${name}"]`);
-    eq(text(plate.querySelector('.plate-views input[value="sources"] + span')), `Sources (${n})`, `${name}: the view's name counts the plate`);
-    ok(lineOf(n).test(text(plate.querySelector('[data-d="sources"]'))), `${name}: and its line counts them`);
-    ok(new RegExp(`^This row: .*; ${n} sources on the plate$`).test(text(plate.querySelector('[data-tally]'))), `${name}: and the line says the same`);
+  // Under the Reading, the kit's evidence: the selected row's claims counted by status, then a chip per publisher (explorer-02, -22); no Sources view.
+  const notes = document.getElementById('x-notes').content;
+  const rowClaims = (key) => [...notes.getElementById(ex.data.rows[key].note).querySelectorAll('.receipt')].map(claimOf);
+  const useChips = [...document.querySelectorAll('[data-plate-x="use"] .plate-evidence .receipt')];
+  ok(useChips.length > 0 && useChips.every((c) => c.tagName === 'BUTTON' && c.closest('.plate-detail')), 'the selected row\'s claims stand under its Reading, as chips');
+  eq(useChips.flatMap((c) => c.dataset.claims.split(' ')).sort().join(), [...new Set(rowClaims('use.coding'))].sort().join(), 'each chip holds that row\'s claims, by publisher');
+  const counts = text(document.querySelector('[data-plate-x="use"] .plate-evidence-line'));
+  const partlyHere = rowClaims('use.coding').filter((id) => ex.data.receipts[id].status === 'partly').length;
+  eq(counts, [rowClaims('use.coding').length - partlyHere && `${rowClaims('use.coding').length - partlyHere} verified`, partlyHere && `${partlyHere} partly verified`].filter(Boolean).join(' '), 'one line counts them by status');
+  ok(!document.querySelector('.plate-view[data-view="sources"], [data-tally], .plate-to-table'), 'with no Sources view, tally, or second way to the Table');
+  for (const [plate, name] of Object.entries(PLATES)) {
+    const collar = document.querySelector(`#${plate} > .plate-collar`);
+    const out = [...collar.querySelectorAll('.plate-out button')].map(text).join('|');
+    eq(out, ['your-use', 'catalog', 'where-it-runs', 'architectures', 'crossovers', 'levers'].includes(plate) ? 'Print this plate|Download CSV' : 'Print this plate',`${plate}: the collar prints the plate, and a plate with a Table gives its CSV`);
+    ok(name, plate);
   }
-  fire(window, useTally, 'click');
-  ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="sources"]').hidden, 'the line opens Sources');
-  eq(document.activeElement, document.querySelector('[data-plate-x="use"] .plate-views input[value="sources"]'), 'with focus on the view switch');
-  document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]').checked = true;
-  fire(window, document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]'), 'change');
   ok(text(document.querySelector('[data-plate-x="use"] [data-d="moves"]')).length > 0, 'what moves it most');
   ok(!document.querySelector('[data-plate-x="use"] [data-d="tokens"]').hidden, 'AI rows read per million tokens');
   ok(/No vetted standard/.test(text(document.querySelector('[data-plate-x="use"] [data-d="tokens"]'))), 'the token warning prints');
@@ -553,55 +598,56 @@ async function behavior() {
   fire(window, row(document, 'use.streaming'), 'click');
   ok(row(document, 'use.streaming').classList.contains('is-on'), 'click selects');
   await settle();
-  eq(settings(window), '', 'a selection stays off the address');
+  eq(pick(window, ['your-use']), 'your-use=use.streaming', 'a selection rides in the address (DIRECTION-R2 3.8)');
   fire(window, row(document, 'use.coding'), 'pointerover');
-  ok(/coding/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'hover previews');
+  ok(/Streaming, 1 hour \(phone\)/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'a hover changes no Reading (explorer-03)');
   fire(window, plot, 'pointerleave');
-  ok(/Streaming, 1 hour \(phone\)/.test(text(document.querySelector('[data-plate-x="use"] [data-d="reading"]'))), 'leaving returns to the selection');
   ok(/Instagram or TikTok/.test(text(document.getElementById('f-social').closest('.x-field'))) && /Netflix or YouTube/.test(text(document.getElementById('f-streaming').closest('.x-field'))), 'the fields name the platforms');
-  const chip = document.querySelector('[data-plate-x="use"] [data-d="chips"] .receipt');
+  const chip = document.querySelector('[data-plate-x="use"] .plate-evidence .receipt');
   fire(window, chip, 'click');
   const card = document.querySelector('[data-plate-x="use"] [data-d="receipt"]');
-  ok(!card.hidden && /(Verified against the source|Partly verified)/.test(text(card)) && /Claim [a-z]{2,3}-\d{3}\./.test(text(card)), 'a chip opens its receipt in place, from the data block');
-  ok(card.querySelector('.plate-source-title a').href.startsWith('https://') && card.querySelector('.plate-receipt-more a').getAttribute('href') === `sources/#src-${claimOf(chip)}`, 'with its source linked and the way on to the full receipt');
-  ok(!card.closest('.plate-view').hidden && card.closest('.plate-view').dataset.view === 'sources', 'in the Sources view');
+  const first = chip.dataset.claims.split(' ')[0];
+  ok(!card.hidden && /(Verified against the source|Partly verified)/.test(text(card)) && new RegExp(`Claim ${first}`).test(text(card)), 'a chip opens its card in place, from the data block');
+  ok(card.querySelector('.plate-source-title a').href.startsWith('https://') && card.querySelector('.plate-receipt-more a').getAttribute('href') === `sources/#src-${first}`, 'with its source linked and the way on to the full receipt');
+  ok(card.closest('.plate-detail') && chip.getAttribute('aria-expanded') === 'true', 'in the window, its chip marked open');
   eq(document.activeElement, card, 'with focus in it');
   key(window, plot, 'Escape');
   ok(card.hidden, 'Escape closes it');
   eq(document.activeElement, chip, 'and focus returns to the chip');
+  key(window, plot, 'Home'); // back to the default row, which the address leaves out
+  await settle();
+  eq(pick(window, ['your-use']), '', 'and the default row leaves the address');
 
-  // Views.
-  const views = document.querySelectorAll('[data-plate-x="use"] .plate-views input');
-  views[2].checked = true;
-  fire(window, views[2], 'change');
-  ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="table"]').hidden && document.querySelector('[data-plate-x="use"] .plate-view[data-view="reading"]').hidden, 'Table view');
-  views[1].checked = true;
-  fire(window, views[1], 'change');
-  ok(!document.querySelector('[data-plate-x="use"] .plate-view[data-view="sources"]').hidden && /^\d+ sources? from /.test(text(document.querySelector('[data-plate-x="use"] [data-d="sources"]'))), 'Sources view counts the plate\'s sources');
-  views[0].checked = true;
-  fire(window, views[0], 'change');
-
-  // The drawer.
-  const opener = document.querySelector('[data-plate-x="use"] [data-open-settings]');
+  // Chart and Table: two pressed buttons; the Table takes the plot's and the window's place (DIRECTION-R2 3.4).
+  const usePlate = document.getElementById('your-use');
+  const [chartButton, tableButton] = usePlate.querySelectorAll('.plate-views button');
+  fire(window, tableButton, 'click');
+  ok(!usePlate.querySelector(':scope > .plate-view[data-view="table"]').hidden && usePlate.querySelector(':scope > .plate-plot').hidden && usePlate.querySelector(':scope > .plate-detail').hidden, 'Table takes the plot and the window');
+  ok(tableButton.getAttribute('aria-pressed') === 'true' && chartButton.getAttribute('aria-pressed') === 'false' && !usePlate.querySelector(':scope > .plate-claim').hidden, 'pressed, and the claim zone stays');
+  await settle();
+  eq(pick(window, ['your-use-view']), 'your-use-view=table', 'the view rides in the address');
+  fire(window, chartButton, 'click');
+  ok(usePlate.querySelector(':scope > .plate-view[data-view="table"]').hidden && !usePlate.querySelector(':scope > .plate-plot').hidden, 'Chart brings the plot back');
+  await settle();
+  eq(pick(window, ['your-use-view']), '', 'and leaves the address');
+  // Fine-tune: a modal on the left (explorer-04), opened from the scenario bar, the plots updating behind it, focus back to its opener on close.
+  const opener = document.querySelector('#scenario [data-open-settings]');
   const drawer = document.getElementById('settings');
-  ok(drawer.hidden, 'the drawer starts closed');
+  ok(drawer.tagName === 'DIALOG' && !drawer.open && drawer.classList.contains('drawer-left'), 'Fine-tune starts closed, a left drawer');
+  ok(drawer.getAttribute('aria-labelledby') === 'settings-title' && text(document.getElementById('settings-title')) === 'Fine-tune' && drawer.querySelector('.drawer-head form[method="dialog"] button') && drawer.querySelector('.drawer-foot form[method="dialog"] button.paper'), 'named by its heading, with a visible Close and Done');
   opener.focus();
   fire(window, opener, 'click');
-  ok(!drawer.hidden, 'Change opens the drawer');
-  ok(document.documentElement.classList.contains('has-drawer'), 'and the plates compress beside it');
-  eq(document.activeElement, drawer, 'focus moves in');
+  ok(drawer.open, 'Fine-tune opens');
   setRadio(window, setting(document, 'device', 'laptop'));
-  ok(!drawer.hidden, 'a setting keeps the drawer open');
+  ok(drawer.open, 'a setting keeps it open');
   await settle();
   ok(/device=laptop/.test(settings(window)), 'settings live in the fragment, which no browser sends');
   ok(/^Laptop, Wi-Fi/.test(text(document.querySelector('[data-setting-line]'))), 'the setting line follows');
-  ok(/laptop/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-label'))), 'row labels follow the device');
-  key(window, drawer, 'Escape');
-  ok(drawer.hidden, 'Escape closes');
-  ok(!document.documentElement.classList.contains('has-drawer'), 'the plates take the width back');
-  eq(document.activeElement, opener, 'focus returns to the link');
-  for (const b of document.querySelectorAll('[data-open-settings]')) ok(b, 'every plate reaches Settings');
-  ok(document.querySelectorAll('[data-plate-x] [data-open-settings]').length >= 6, 'a Change link on every model plate');
+  ok(/laptop/.test(text(row(document, 'catalog.video_hour').querySelector('.ladder-label'))), 'row labels follow the device, behind it');
+  drawer.close();
+  ok(!drawer.open, 'it closes');
+  eq(document.activeElement, opener, 'focus returns to Fine-tune');
+  eq(document.querySelectorAll('.x-plate [data-to-measure]').length, 6, 'each window names its measure and links the bar');
   setRadio(window, setting(document, 'device', 'phone'));
 
   // Every option of every setting moves through the page without error, and what it changes reaches a row.
@@ -618,21 +664,27 @@ async function behavior() {
   setField(window, hours, 14);
   await settle(); // a typed figure redraws once the typing pauses
   ok(/14 hours/.test(text(screen)), 'the screen row counts');
-  ok(/14 screen hours/.test(text(document.querySelector('[data-title="use"]'))), 'the claim sentence refills');
+  ok(/14 screen hours/.test(text(document.querySelector('[data-title="use"]'))), 'the answer refills');
   await settle();
   eq(settings(window), '', 'a typed number stays off the address');
   setField(window, hours, -3);
   eq(hours.getAttribute('aria-invalid'), 'true', 'a bad field says so');
-  ok(/Enter a number from 0 to 1,000,000,000\./.test(text(document.querySelector('[data-why]'))), 'and how to fix it, in the model\'s one rule for a typed figure');
+  ok(/^Screen hours takes a number from 0 to 168\. The Wall keeps the last good value\.$/.test(text(document.querySelector('[data-why]'))), 'and how to fix it: a week holds 168 hours (explorer-10)');
   ok(/14 hours/.test(text(screen)), 'the Wall keeps the last good value');
-  for (const big of ['1e308', '1e400', '1000000001']) { // a finite number past the ceiling, one that parses to infinity, and one just over: refused live as a scenario file refuses them
+  for (const big of ['250', '1e308', '1e400', '1000000001']) { // past a week, a finite number past the ceiling, one that parses to infinity, and one just over
     setField(window, hours, big);
     ok(hours.getAttribute('aria-invalid') === 'true' && /14 hours/.test(text(screen)), `a screen count of ${big} is refused, and the Wall keeps the last good value`);
   }
   ok(!OVERFLOW.test(text(document.body)), 'and nothing on the page overflowed');
   fire(window, hours, 'change');
-  eq(hours.value, '14', 'the field returns to it');
+  eq(hours.value, '168', 'leaving the field takes the nearer end');
+  ok(hours.getAttribute('aria-invalid') === 'true' && /^Screen hours takes a number from 0 to 168, so 168 is used\.$/.test(text(document.querySelector('[data-why]'))) && /168 hours/.test(text(screen)), 'and says so, as the kit\'s typed figures do');
+  setField(window, hours, -3);
+  fire(window, hours, 'change');
+  eq(`${hours.value} ${ex.state.fields.screen}`, '0 0', 'below the floor, the floor');
   setField(window, hours, 7);
+  fire(window, hours, 'change');
+  ok(hours.getAttribute('aria-invalid') !== 'true', 'a good figure clears the mark');
   const prompts = document.querySelector('input[data-field="chat"]');
   fire(window, prompts, 'focusin');
   ok(text(document.querySelector('[data-why]')).length > 20, 'a why on focus');
@@ -647,9 +699,12 @@ async function behavior() {
   ok(!/total/i.test(text(week)), 'no total in the week');
   ok(document.querySelector('[data-w="seat"]').parentElement.hidden, 'no seat line for one person');
 
-  // The office builder.
-  const office = document.querySelector('input[data-opt="mode"][value="office"]');
-  setRadio(window, office);
+  // The office builder: a starting point in the brief (explorer-38).
+  const office = document.querySelector('[data-preset-x="office"]');
+  fire(window, office, 'click');
+  ok(office.getAttribute('aria-pressed') === 'true' && document.querySelector('[data-preset-x="phone"]').getAttribute('aria-pressed') === 'false', 'the office is pressed');
+  eq(ex.state.settings.device, 'laptop', 'on laptops');
+  eq(text(document.querySelector('[data-mode-word]')), 'An office of 50 seats', 'and the bar says who is counted');
   ok(!row(document, 'use.seat').hidden, 'Office adds the seat row');
   ok(!document.querySelector('[data-field="seats"]').closest('[data-office]').hidden, 'and the seats field');
   ok(/50 seats/.test(text(document.querySelector('[data-title="use"]'))), 'the sentence names the seats');
@@ -664,10 +719,13 @@ async function behavior() {
   const w = ex.view.week();
   near(w.added, ['chat', 'coding', 'images', 'clips', 'searches', 'social', 'streaming', 'seat'].reduce((s, k) => s + ex.view.val(`use.${k}`, 'wh'), 0), 'the activities exclude the storage row in Office');
   await settle();
-  eq(settings(window), '', 'an office and its size stay off the address');
-  setRadio(window, document.querySelector('input[data-opt="mode"][value="person"]'));
+  eq(settings(window), 'preset=office&device=laptop', 'the starting point rides in the address (explorer-05), and the office\'s size never does');
+  fire(window, document.querySelector('[data-preset-x="phone"]'), 'click');
   ok(row(document, 'use.seat').hidden, 'One person drops the seat row');
   eq(ex.state.fields.gb, 0, 'and the storage default returns');
+  eq(ex.state.settings.device, 'phone', 'on a phone again');
+  await settle();
+  eq(settings(window), '', 'and the address is the default\'s');
 
   // Measures: price never a bar, water never a total, carbon names its grid.
   setRadio(window, measure(document, 'use', 'usd'));
@@ -799,7 +857,8 @@ async function behavior() {
   ok(document.querySelector('[data-group="scale:hour"]').hidden && !document.querySelector('[data-group="scale:unit"]').hidden, 'By the unit takes the zone');
   ok(ex.data.boards['catalog.unit'].rows.includes(ex.state.sel.catalog), 'and the selection moves with it');
   await settle();
-  eq(settings(window), '', 'a view stays off the address');
+  eq(pick(window, ['scale']), 'scale=unit', 'a view rides in the address (explorer-05)');
+  noTyped(window, 'and no typed figure does');
   setRadio(window, document.querySelector('input[name="scale"][value="hour"]'));
   fire(window, row(document, 'catalog.chat_hour'), 'click');
   ok(/scenario/i.test(text(document.querySelector('[data-board="cross.prompts"] .wall-group[data-scenario]'))), 'hydro lines in a scenario group');
@@ -840,10 +899,31 @@ async function behavior() {
   ok(document.querySelector('.x-places .x-place svg').getAttribute('viewBox').startsWith('0 0 68 '), 'at 12px squares on a 14px pitch');
   ok(/PUE/.test(text(document.querySelector('.x-place-notes'))) && /Small model/.test(text(document.querySelector('.x-place-notes'))), 'and what each assumes under them');
 
-  // Project scale: nothing until entered, then the formula.
+  // A proposal: it opens on the Data Centers example, said to be an illustration (explorer-20, -39); Clear takes it to blank, and the formula fills it again.
   const pf = (k) => document.querySelector(`[data-pf="${k}"]`);
-  for (const k of ['mwh', 'water', 'co2', 'share']) eq(text(document.querySelector(`[data-po="${k}"]`)), '–', `no output before input: ${k}`);
-  eq(text(document.querySelector('[data-po-poster]')), '', 'and no figure on the poster');
+  eq(`${pf('mw').value} ${pf('lf').value} ${pf('wue').value} ${pf('load').value}`, `125 0.8 0.36 ${22000 * 8760}`, 'the example fills megawatts, load factor, the operator average, and the load');
+  eq(pf('grid').value, '', 'and no feed');
+  eq(text(document.querySelector('[data-po="mwh"]')), '876,000 MWh', 'the year prints');
+  eq(`${text(document.querySelector('[data-po-poster]'))} ${text(document.querySelector('[data-po-unit]'))}`, '876,000 MWh', 'on the poster');
+  eq(text(document.querySelector('[data-po="water"]')), '315,000,000 liters', 'the water');
+  eq(text(document.querySelector('[data-po="co2"]')), 'Choose a feed', 'CO2e waits for a feed');
+  ok(document.querySelector('[data-po="co2"]').classList.contains('is-ask') && !document.querySelector('[data-po="mwh"]').classList.contains('is-ask'), 'and the prompt reads as words, not at a figure\'s size');
+  eq(text(document.querySelector('[data-po="share"]')), '0.45 percent', 'and the share of the region is the one the home page states');
+  ok(/^The Data Centers example, an illustration and not a proposal: 125 MW at a load factor of 0\.8 uses 876,000 MWh a year, 0\.45 percent of the region's load today\.$/.test(text(document.querySelector('[data-answer-x="proposal"]'))), 'the tab\'s answer says it is an illustration');
+  await settle();
+  noTyped(window, 'a project stays off the address');
+  const blankProject = (message) => {
+    for (const k of ['mw', 'lf', 'wue', 'grid', 'load']) eq(pf(k).value, '', `${message}: ${k}`);
+    for (const k of ['mwh', 'water', 'co2', 'share']) eq(text(document.querySelector(`[data-po="${k}"]`)), '–', `${message}: ${k} prints no figure`);
+    eq(text(document.querySelector('[data-po-poster]')), '', `${message}: and no poster`);
+    ok(!document.querySelector('[data-project-hint]').hidden, `${message}: and the hint is back`);
+  };
+  const projectReset = document.querySelector('[data-plate-x="project"] [data-reset]');
+  eq(text(projectReset), 'Clear the fields', 'one button clears the fields');
+  fire(window, projectReset, 'click');
+  blankProject('Clear takes the example away');
+  ok(/fields are clear/.test(text(document.querySelector('[data-plate-x="project"] .plate-status'))), 'and says so');
+  ok(/^Enter a project's megawatts and load factor/.test(text(document.querySelector('[data-answer-x="proposal"]'))), 'and the answer asks for them');
   ok(!document.querySelector('[data-project-hint]').hidden && /megawatts/.test(text(document.querySelector('[data-project-hint]'))), 'one line says what to enter');
   setField(window, pf('mw'), 100);
   setField(window, pf('lf'), 1);
@@ -860,75 +940,73 @@ async function behavior() {
   eq(text(document.querySelector('[data-po="co2"]')), '307,000 tonnes CO2e', 'tonnes');
   setField(window, pf('load'), 2000000);
   eq(text(document.querySelector('[data-po="share"]')), '44 percent', 'share of the entered load');
-
-  // The one example: it fills what it names, picks no feed, stays off the address, and Reset takes the panel back to blank.
-  const blankProject = (message) => {
-    for (const k of ['mw', 'lf', 'wue', 'grid', 'load']) eq(pf(k).value, '', `${message}: ${k}`);
-    for (const k of ['mwh', 'water', 'co2', 'share']) eq(text(document.querySelector(`[data-po="${k}"]`)), '–', `${message}: ${k} prints no figure`);
-    eq(text(document.querySelector('[data-po-poster]')), '', `${message}: and no poster`);
-    ok(!document.querySelector('[data-project-hint]').hidden, `${message}: and the hint is back`);
-  };
-  const projectReset = document.querySelector('[data-plate-x="project"] [data-reset]');
-  fire(window, projectReset, 'click');
-  blankProject('Reset clears what was typed');
-  ok(/default settings/.test(text(document.querySelector('[data-plate-x="project"] .plate-status'))), 'and says so');
+  ok(/^100 MW at a load factor of 1 uses 876,000 MWh a year, 44 percent of the load entered\.$/.test(text(document.querySelector('[data-answer-x="proposal"]'))), 'the answer follows the fields, and no longer says example');
   const tryExample = document.querySelector('[data-plate-x="project"] [data-example]');
   ok(!tryExample.closest('[data-js]').hidden, 'the example shows with scripts');
   fire(window, tryExample, 'click');
-  eq(`${pf('mw').value} ${pf('lf').value} ${pf('wue').value} ${pf('load').value}`, `125 0.8 0.36 ${22000 * 8760}`, 'the example fills megawatts, load factor, the operator average, and the load');
-  eq(pf('grid').value, '', 'and no feed');
-  eq(text(document.querySelector('[data-po="mwh"]')), '876,000 MWh', 'the year prints');
-  eq(`${text(document.querySelector('[data-po-poster]'))} ${text(document.querySelector('[data-po-unit]'))}`, '876,000 MWh', 'on the poster');
-  eq(text(document.querySelector('[data-po="water"]')), '315,000,000 liters', 'the water');
-  eq(text(document.querySelector('[data-po="co2"]')), 'Choose a feed', 'CO2e waits for a feed');
-  eq(text(document.querySelector('[data-po="share"]')), '0.45 percent', 'and the share of the region is the one the home page states');
-  await settle();
-  eq(settings(window), '', 'a project stays off the address');
+  eq(`${pf('mw').value} ${pf('lf').value} ${pf('wue').value} ${pf('load').value}`, `125 0.8 0.36 ${22000 * 8760}`, 'the example comes back');
   fire(window, projectReset, 'click');
-  blankProject('Reset clears the example');
-
+  blankProject('Clear clears the example');
   // Reset, copy, downloads, deep links.
+  const SETTINGS = Object.keys(ex.data.sel);
   setRadio(window, setting(document, 'tariff', 'bpa_wholesale'));
   await settle();
-  eq(settings(window), '', 'the tariff stays off the address');
+  eq(pick(window, SETTINGS), '', 'the tariff stays off the address');
   setRadio(window, setting(document, 'device', 'laptop'));
   setField(window, adminField, 9);
   await settle(); // the typed hours redraw,
   await settle(); // then the address follows
-  eq(settings(window), 'device=laptop', 'only the selector reaches it');
-  fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
+  eq(pick(window, SETTINGS), 'device=laptop', 'only the selector reaches it');
+  noTyped(window, 'and no typed hours');
+  const back = document.querySelector('[data-plate-x="use"] [data-reset]');
+  ok(!back.hidden && text(back) === 'Back to the starting point', 'once a setting moves, the window offers the starting point');
+  fire(window, back, 'click');
   await settle();
-  eq(settings(window), '', 'Reset clears the address');
+  eq(settings(window), '', 'it clears the address');
+  ok(back.hidden, 'and goes');
   eq(ex.state.settings.tariff, ex.data.sel.tariff.def, 'and the settings');
   ok(document.querySelector('#settings input[data-setting="tariff"]:checked').value === ex.data.sel.tariff.def, 'and the radios');
   eq(adminField.value, '2', 'and the typed admin hours');
   fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click');
   await wait();
-  ok(/Modeled, not measured/.test(window.copied) && /Sources: /.test(window.copied) && /localhost/.test(window.copied), 'Copy Reading carries the sentence, the link, and the sources');
+  ok(/Modeled, not measured/.test(window.copied) && /Sources: /.test(window.copied) && /localhost/.test(window.copied), 'Copy reading carries the sentence, the link, and the sources');
   setRadio(window, setting(document, 'device', 'laptop'));
+  setRadio(window, measure(document, 'use', 'ml'));
   fire(window, document.querySelector('[data-plate-x="use"] [data-copy]'), 'click'); // inside the address's quarter second
   await wait();
   const copiedLink = window.copied.split('\n')[1];
-  ok(/#[^?]*\bdevice=laptop\b/.test(copiedLink) && !copiedLink.includes('?'), `Copy Reading right after a change carries the new setting, in the fragment: ${copiedLink}`);
-  fire(window, document.querySelector('[data-plate-x="use"] [data-reset]'), 'click');
+  ok(/#[^?]*\bm=ml\b/.test(copiedLink) && /\bdevice=laptop\b/.test(copiedLink) && !copiedLink.includes('?'), `Copy reading right after a change carries the measure and the setting, in the fragment (explorer-05): ${copiedLink}`);
+  const shared = await load(copiedLink.slice(copiedLink.indexOf('#')));
+  ok(shared.window.explorer.state.m === 'ml' && shared.document.querySelector('#scenario input[value="ml"]').checked && shared.window.explorer.state.settings.device === 'laptop', 'and the link opens on that measure and setting');
+  fire(window, document.querySelector('[data-reset-all]'), 'click');
   await settle();
-  eq(settings(window), '', 'and Reset clears it again');
+  eq(settings(window), '', 'Fine-tune\'s Reset settings clears it again');
+  eq(ex.state.m, 'wh', 'the measure with it');
   fire(window, document.querySelector('[data-outputs]'), 'click');
   ok(window.lastBlob, 'outputs.csv is built in the browser');
   const csv = await window.lastBlob.text();
   ok(/^row,measure,value,low,high,price_basis,settings/.test(csv) && /catalog\.chat_hour,wh,/.test(csv), 'outputs.csv holds every row');
-  // An old link with a ?query still opens; its query moves into the fragment, after the tab, and leaves the request line (owner ruling 29).
+  // A plate's CSV: its Table at these settings, each row with its claims, status, and limit, then its title, the settings, and the date checked.
+  fire(window, document.querySelector('#your-use [data-csv]'), 'click');
+  const plateCsv = (await window.lastBlob.text()).replace(/^﻿/, '').split('\r\n');
+  ok(/^Row,Energy,"Price, with its basis",CO2e,"Water, by basin",Claims and status,claim_ids,status,limit$/.test(plateCsv[0]), `the plate's CSV heads its columns: ${plateCsv[0]}`);
+  ok(plateCsv.some((l) => /^"Your screen and router, 7 hours",.*fp-049.*verified/.test(l)) && plateCsv.some((l) => /^settings,/.test(l)) && plateCsv.some((l) => /^checked,\d{2}\/\d{2}\/\d{4}$/.test(l)), 'with each row\'s claims, the settings, and the date its sources were checked');
+  fire(window, document.querySelector('#your-use [data-print-plate]'), 'click');
+  ok(window.printed && document.documentElement.dataset.printOne === 'your-use' && document.getElementById('your-use').classList.contains('is-print-one'), 'Print this plate prints that plate alone, by the kit\'s rule');
+  window.dispatchEvent(new window.Event('afterprint'));
+  ok(!document.documentElement.dataset.printOne && !document.querySelector('.is-print-one, .plate-print-head'), 'and lets go after');
+  // An old link with a ?query still opens; its query moves into the fragment, after the anchor, and leaves the request line (owner ruling 29).
   const deep = await load('?device=laptop&grid_dc=nwpp#architectures');
-  ok(!deep.document.getElementById('architectures').hidden, 'an old deep link opens its tab');
+  ok(!deep.document.getElementById('where').hidden, 'an old deep link to a plate opens its tab');
   eq(deep.window.explorer.state.settings.device, 'laptop', 'and its settings');
   ok(deep.document.querySelector('#settings input[data-setting="grid_dc"][value="nwpp"]').checked, 'the radios agree');
   await settle();
   eq(settings(deep.window), 'device=laptop&grid_dc=nwpp', 'the address round-trips, out of the request line');
-  eq(deep.window.location.hash, '#architectures&device=laptop&grid_dc=nwpp', 'with the tab first and the settings after it');
+  eq(deep.window.location.hash, '#architectures&device=laptop&grid_dc=nwpp', 'with the anchor first and the settings after it');
   const again = await load(deep.window.location.hash);
-  ok(!again.document.getElementById('architectures').hidden && again.window.explorer.state.settings.grid_dc === 'nwpp' && again.window.explorer.state.settings.device === 'laptop', 'and that fragment opens the same tab and settings');
+  ok(!again.document.getElementById('where').hidden && again.window.explorer.state.settings.grid_dc === 'nwpp' && again.window.explorer.state.settings.device === 'laptop', 'and that fragment opens the same tab and settings');
   fire(again.window, again.document.querySelector('[role="tab"]'), 'click');
-  eq(again.window.location.hash, '#your-use&device=laptop&grid_dc=nwpp', 'a tab takes the anchor and keeps the settings');
+  eq(again.window.location.hash, '#use&device=laptop&grid_dc=nwpp', 'a tab takes the anchor and keeps the settings');
   for (const name of Object.keys(deep.window.explorer.data.sel)) {
     if (name === 'wage' || name === 'tariff') continue;
     const other = Object.keys(deep.window.explorer.data.sel[name].opts).find((o) => o !== deep.window.explorer.data.sel[name].def);
@@ -939,28 +1017,34 @@ async function behavior() {
     await settle();
     ok(!new URLSearchParams(settings(deep.window)).has(name), `and leaves it at its default`);
   }
-  // Back within the page: an address that names a selector holds the truth for them all, typed numbers stay as typed, and no tab named means the first tab.
+  // Back within the page: an address that names a choice holds the truth for them all, typed numbers stay as typed, and no tab named means the first tab.
   setField(deep.window, deep.document.querySelector('input[data-field="chat"]'), 33);
-  deep.window.history.replaceState(null, '', '#architectures&device=tv&grid_dc=__proto__');
+  deep.window.history.replaceState(null, '', '#architectures&device=tv&grid_dc=__proto__&m=g&comparison=D');
   fire(deep.window, deep.window, 'popstate');
   eq(deep.window.explorer.state.settings.device, 'tv', 'Back re-reads the address');
+  eq(`${deep.window.explorer.state.m} ${deep.window.explorer.state.opts.comparison}`, 'g D', 'the measure and the comparison with it');
   eq(deep.window.explorer.state.settings.grid_dc, deep.window.explorer.data.sel.grid_dc.def, 'a selector it no longer names returns to its default');
-  ok(deep.document.querySelector('#settings input[data-setting="device"][value="tv"]').checked, 'and the radios follow');
+  ok(deep.document.querySelector('#settings input[data-setting="device"][value="tv"]').checked && deep.document.querySelector('#scenario input[value="g"]').checked, 'and the controls follow');
   eq(deep.window.explorer.state.fields.chat, 33, 'a typed number is not in the address, so Back leaves it alone');
   deep.window.history.replaceState(null, '', '#levers&device=tv');
   fire(deep.window, deep.window, 'popstate');
-  ok(!deep.document.getElementById('levers').hidden, 'Back moves the tab with the address');
-  // A link within the page (the band's Method, a claim) takes the whole fragment, and Chrome and Firefox fire popstate for it: the settings stay, and the address takes them back.
-  deep.window.history.replaceState(null, '', '#method');
+  ok(!deep.document.getElementById('savings').hidden, 'Back moves the tab with the address');
+  eq(deep.window.explorer.state.m, 'wh', 'and a measure it no longer names returns to energy');
+  // A link within the page (a claim, a plate) takes the whole fragment, and Chrome and Firefox fire popstate for it: the choices stay, and the address takes them back.
+  deep.window.history.replaceState(null, '', '#crossovers');
   fire(deep.window, deep.window, 'popstate');
-  ok(!deep.document.getElementById('method').hidden && deep.window.explorer.state.settings.device === 'tv', 'a jump within the page opens its tab and keeps the settings');
-  eq(deep.window.location.hash, '#method&device=tv', 'and the address takes them back, after the anchor');
+  ok(!deep.document.getElementById('where').hidden && deep.window.explorer.state.settings.device === 'tv', 'a jump within the page opens its tab and keeps the settings');
+  eq(deep.window.location.hash, '#crossovers&device=tv', 'and the address takes them back, after the anchor');
   deep.window.location.hash = '';
   await wait(20);
-  ok(!deep.document.getElementById('your-use').hidden && deep.document.getElementById('architectures').hidden, 'no tab named shows the first tab');
+  ok(!deep.document.getElementById('use').hidden && deep.document.getElementById('where').hidden, 'no tab named shows the first tab');
   eq(deep.window.explorer.state.settings.device, 'tv', 'with the settings kept');
+  // A note's link opens the waffle it describes (explorer-09).
+  const about = await load('#about-lbnl_2030');
+  eq(about.window.explorer.state.opts.waffle, 'lbnl_2030', 'a link to a figure\'s note chooses its waffle first');
+  ok(!about.document.getElementById('about-lbnl_2030').closest('[data-group]').hidden, 'so the note it lands on shows');
   // A link is untrusted: bad options and prototype names do nothing, and no figure of a Nation's rides in on one, or stays in the address.
-  const bad = await load('?device=toaster&grid_dc=__proto__&connection=constructor&network_mode=toString&wage=25&tariff=bpa_wholesale&f_chat=40&f_screen=-4&mode=office&seats=12&row_use=use.coding&m=g&comparison=D&cloud_admin_h_month=14&nope=1#levers');
+  const bad = await load('?device=toaster&grid_dc=__proto__&connection=constructor&network_mode=toString&wage=25&tariff=bpa_wholesale&f_chat=40&f_screen=-4&mode=office&seats=12&row_use=use.coding&your-use=use.toString&m=toString&comparison=Z&custody=__proto__&damage=off&cloud_admin_h_month=14&levers-view=sources&nope=1#levers');
   const badState = bad.window.explorer.state;
   const defaults = bad.window.explorer.data.sel;
   for (const name of Object.keys(defaults)) eq(badState.settings[name], defaults[name].def, `a link cannot set ${name} to that`);
@@ -968,13 +1052,15 @@ async function behavior() {
   eq(badState.fields.screen, 7, 'nor a bad field');
   eq(badState.mode, 'person', 'nor an office');
   eq(badState.seats, bad.window.explorer.data.scenario.office_users, 'nor its size');
-  eq(badState.m, 'wh', 'nor a measure');
-  eq(badState.opts.comparison, 'A', 'nor a comparison');
+  eq(badState.m, 'wh', 'nor a measure it does not offer');
+  eq(badState.opts.comparison, 'A', 'nor a comparison it does not offer');
+  eq(badState.custody, 'any', 'nor a rule');
   eq(badState.sel.use, 'use.screen', 'nor a selection');
+  eq(bad.document.getElementById('levers').dataset.view, 'chart', 'nor a view');
   eq(Object.keys(badState.inputs).length, 0, 'nor a model input');
   await settle();
   eq(settings(bad.window), '', 'and the address drops what it did not read');
-  eq(bad.window.location.hash, '#levers', 'keeping the tab');
+  eq(bad.window.location.hash, '#levers', 'keeping the anchor');
   ok(!/\bfunction\b|\bobject\b/.test(text(bad.document.querySelector('[data-setting-line]'))), 'the setting line reads as words');
   // A browser that throttles replaceState throws: the page has already redrawn, and the throw is caught.
   const throttled = await load();
@@ -984,15 +1070,15 @@ async function behavior() {
   await settle();
   eq(throttled.errors.join(), '', 'and its throw is caught');
   const drawerLink = await load('#settings');
-  ok(!drawerLink.document.getElementById('settings').hidden, 'a link to Settings opens the drawer');
+  ok(drawerLink.document.getElementById('settings').open, 'a link to Fine-tune opens it');
   const drawerWith = await load('#settings&device=laptop');
-  ok(!drawerWith.document.getElementById('settings').hidden && drawerWith.window.explorer.state.settings.device === 'laptop', 'and a link to Settings with a setting opens the drawer at that setting');
+  ok(drawerWith.document.getElementById('settings').open && drawerWith.window.explorer.state.settings.device === 'laptop', 'and a link to Fine-tune with a setting opens it at that setting');
 
-  // The self-check, true and tampered.
+  // The self-check, true and tampered: after the first draw (explorer-19).
   const box = document.querySelector('[data-plate-x="use"] [data-check]');
   ok(/^Builder matches the model: [\d,]+ figures within 0\.5 percent/.test(text(box)), 'the page says it matches the model');
   ok(!box.classList.contains('is-warn'), 'with no warning');
-  ok(box.closest('.plate-view').dataset.view === 'table', 'the line waits in the Table view');
+  ok(box.closest('[data-d="week"]'), 'the line waits under the week');
   ok(document.querySelector('[data-check-top]').hidden, 'and nothing stands over the panels');
   const data = JSON.parse(html.match(/<script type="application\/json" id="explorer-data">([\s\S]*?)<\/script>/)[1]);
   data.inputs.e_prompt[0] *= 1.5;
@@ -1002,13 +1088,12 @@ async function behavior() {
   ok(warn.classList.contains('is-warn') && /does not match the model/.test(text(warn)) && /catalog\.chat_prompt/.test(text(warn)), 'a mismatch warns and names the row');
   ok(!/Builder matches/.test(text(warn)), 'and never says it matches');
   const warnTop = broken.document.querySelector('[data-check-top]');
-  ok(!warnTop.hidden && warnTop.closest('[role="tabpanel"]') === null && /does not match the model/.test(text(warnTop)), 'a warning does not wait in a view: it stands over every panel');
+  ok(!warnTop.hidden && warnTop.closest('[role="tabpanel"]') === null && /does not match the model/.test(text(warnTop)), 'a warning does not wait in a plate: it stands over every panel');
 
-  // Print: the content is in the page whichever tab is open.
+  // Print: the open tab, its plates whole, and the settings.
   ok(document.querySelectorAll('[data-setting-list] li').length === 21, 'the settings list prints');
   ok(document.querySelector('.wall-row .w-dc[style]'), 'print has the Wall');
 }
-
 // The screen-reader report, R2 to R4, and the platform report's finding 4, on the Explorer -------------------------------------------------
 // One hidden output speaks the selected row's Reading after a pause, never on a hover; each plot says how it is used, with its Table one press away; a closed tab or view stays findable.
 async function access() {
@@ -1030,51 +1115,52 @@ async function access() {
   const said = out.textContent;
   fire(window, row(document, 'use.streaming'), 'pointerover');
   await wait(600);
-  ok(/Streaming/.test(text(reading)) && out.textContent === said, 'a hover previews the visible Reading and speaks nothing');
+  ok(text(reading) === said && out.textContent === said, 'a hover changes no Reading and speaks nothing (explorer-03)');
   fire(window, plot, 'pointerleave');
-  key(window, plot, 'ArrowUp');
-  const chosen = text(reading);
-  fire(window, row(document, 'use.streaming'), 'pointerover');
-  await wait(600);
-  eq(out.textContent, chosen, 'and a hover inside the pause cannot change what is spoken');
-  fire(window, plot, 'pointerleave');
+  ok(text(reading) === said, 'nor does leaving the plot');
   setField(window, document.querySelector('input[data-field="chat"]'), 20); // the Reading names every measure, so a count is what changes its words
+  key(window, plot, 'ArrowUp');
   await wait(600);
-  ok(out.textContent === text(reading) && out.textContent !== chosen && /^Chat, 20 prompts/.test(out.textContent), `a typed count speaks the new Reading the same way, once it has redrawn: ${out.textContent.slice(0, 40)}`);
+  ok(out.textContent === text(reading) && /^Chat, 20 prompts/.test(out.textContent), `a typed count speaks the new Reading the same way, once it has redrawn: ${out.textContent.slice(0, 40)}`);
+  await showAll(document);
   for (const name of ['use', 'where', 'arch', 'lever', 'cross', 'catalog']) {
     const p = document.querySelector(`[data-plate-x="${name}"]`);
     const x = p.querySelector('.x-plot');
     const how = document.getElementById(x.getAttribute('aria-describedby'));
     ok(how && how.hidden && how.textContent === 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.', `${name}: the plot is described by the instruction, out of view`);
-    ok(p.classList.contains('has-under') && p.querySelector(':scope > .plate-under').previousElementSibling === x && p.querySelector(':scope > .plate-under > .plate-to-table').textContent === 'Read as a table', `${name}: Read as a table stands right under the plot`);
-    eq(p.querySelector('.plate-view[data-view="table"] .table-scroll').getAttribute('aria-label'), `Table of values: ${text(p.closest('.panel').querySelector('.panel-title'))}`, `${name}: the table it opens is named after its plate, as the kit names its regions (a11y A10)`);
+    const buttons = [...p.querySelectorAll(':scope > .plate-bar .plate-views button')];
+    eq(buttons.map((b) => `${text(b)}:${b.getAttribute('aria-pressed')}`).join(), 'Chart:true,Table:false', `${name}: Chart and Table, two pressed buttons over the plot, the one way to the Table (explorer-22)`);
+    const title = [...p.querySelectorAll('.plate-title')].find((t) => !t.closest('[hidden]'));
+    eq(p.querySelector(':scope > .plate-view[data-view="table"] .table-scroll').getAttribute('aria-label'), `Table of values: ${text(title)}`, `${name}: the table is named after its plate, as the kit names its regions (a11y A10)`);
   }
-  fire(window, plate.querySelector('.plate-to-table'), 'click');
-  ok(!plate.querySelector('.plate-view[data-view="table"]').hidden && plate.querySelector('.plate-view[data-view="reading"]').hidden && plate.querySelector('.plate-views input[value="table"]').checked, 'the button opens the Table view, and the radio follows');
-  eq(document.activeElement, plate.querySelector('.plate-view[data-view="table"] .table-scroll'), 'and focus goes to the table');
+  fire(window, plate.querySelector('.plate-views button[data-view="table"]'), 'click');
+  ok(!plate.querySelector(':scope > .plate-view[data-view="table"]').hidden && plate.querySelector(':scope > .plate-detail').hidden && plate.querySelector('.plate-views button[data-view="table"]').getAttribute('aria-pressed') === 'true', 'the button opens the Table, pressed');
   const found = await load(); // jsdom reveals hidden="until-found", as Chrome and Firefox do
   const panels = [...found.document.querySelectorAll('[role="tabpanel"]')];
+  eq(panels.length, 4, 'four panels');
   ok(panels.slice(1).every((n) => n.getAttribute('hidden') === 'until-found' && n.tabIndex === -1), 'where the browser can reveal one, a closed tab is hidden until found, out of the Tab order');
-  panels[6].dispatchEvent(new found.window.Event('beforematch'));
-  ok(!panels[6].hidden && panels[0].getAttribute('hidden') === 'until-found' && found.document.querySelectorAll('[role="tab"]')[6].getAttribute('aria-selected') === 'true', 'a match in a closed tab opens it and selects its tab');
+  panels[2].dispatchEvent(new found.window.Event('beforematch'));
+  ok(!panels[2].hidden && panels[0].getAttribute('hidden') === 'until-found' && found.document.querySelectorAll('[role="tab"]')[2].getAttribute('aria-selected') === 'true', 'a match in a closed tab opens it and selects its tab');
+  await wait();
+  ok(found.document.querySelector('#row-lever-route_small').hasAttribute('aria-posinset'), 'and its plates draw');
   const catalog = found.document.querySelector('[data-plate-x="catalog"]');
-  const sources = catalog.querySelector('.plate-view[data-view="sources"]');
-  eq(sources.getAttribute('hidden'), 'until-found', 'a closed view is hidden until found');
-  sources.dispatchEvent(new found.window.Event('beforematch'));
-  ok(!sources.hidden && catalog.querySelector('.plate-views input[value="sources"]').checked && catalog.dataset.view === 'sources', 'a match in Sources opens it, radio and all');
+  const table = catalog.querySelector(':scope > .plate-view[data-view="table"]');
+  eq(table.getAttribute('hidden'), 'until-found', 'a closed Table is hidden until found');
+  table.dispatchEvent(new found.window.Event('beforematch'));
+  ok(!table.hidden && catalog.querySelector('.plate-views button[data-view="table"]').getAttribute('aria-pressed') === 'true' && catalog.dataset.view === 'table', 'a match in the Table opens it, its button pressed');
 }
-
 // The owner's chart ideas (ruling 31) in the Explorer: what moves it most in every row plate's detail, and the starting point behind a moved bar ----------
 const INTRO = 'Each row shows how far this result moves when one input goes from its low end to its high end, with the others held where they are. Settings are not ranked here; the darker part of each bar lies below your figure, the lighter above it.'; // the voice lead's words, E4 and L3
 async function charts() {
   const { window, document } = await load();
+  await showAll(document);
   const ex = window.explorer;
   const still = new JSDOM(html).window.document;
   const ranked = (doc, name) => [...doc.querySelectorAll(`[data-plate-x="${name}"] [data-d="moves"] > tr`)];
   for (const name of ['use', 'where', 'arch', 'catalog']) {
     for (const doc of [still, document]) {
       const box = doc.querySelector(`[data-plate-x="${name}"] .x-drivers`);
-      ok(box && box.tagName === 'DETAILS' && text(box.querySelector('summary')) === 'What moves it most' && box.closest('.plate-view').dataset.view === 'reading', `${name}: what moves it most stands in the detail, under the Reading`);
+      ok(box && box.tagName === 'DETAILS' && text(box.querySelector('summary')) === 'What moves it most' && box.closest('.plate-detail'), `${name}: what moves it most stands in the window, under the Reading`);
       eq(text(box.querySelector('caption')), INTRO, `${name}: its intro is the table's caption, word for word`);
       eq([...box.querySelectorAll('thead th')].map(text).join('|'), 'Input|Low end to high end|Sources', `${name}: a table, so its rows read as rows, and the claims under their own head (a11y A9)`);
       const rows = ranked(doc, name);
@@ -1114,9 +1200,8 @@ async function charts() {
   setRadio(window, measure(document, 'use', 'wh'));
   const link = ranked(document, 'use')[0].querySelector('a.x-c');
   fire(window, link, 'click');
-  ok(!document.querySelector('[data-plate-x="use"] [data-d="receipt"]').hidden && document.querySelector('[data-plate-x="use"] .plate-view[data-view="sources"]').hidden === false, 'a claim in the ranking opens its receipt in Sources');
-  setRadio(window, document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]'));
-  fire(window, document.querySelector('[data-plate-x="use"] .plate-views input[value="reading"]'), 'change');
+  ok(!document.querySelector('[data-plate-x="use"] [data-d="receipt"]').hidden && new RegExp(`Claim ${claimOf(link)}`).test(text(document.querySelector('[data-plate-x="use"] [data-d="receipt"]'))), 'a claim in the ranking opens its card in the window');
+  key(window, document.querySelector('[data-plate-x="use"] .plate-plot'), 'Escape');
 
   // The starting point: nothing at the defaults; a typed count leaves the row's default bar behind it, faint, named on the selected row and said in its Reading.
   eq(document.querySelectorAll('.has-start').length, 0, 'no starting point at the defaults');
@@ -1162,6 +1247,8 @@ async function charts() {
 // Comparison E, the custody setting, a reader's own reading, the damage control, and the scenario file ------------------
 async function secondVersion() {
   const { window, document } = await load();
+  await showAll(document);
+  const SETTINGS = Object.keys(window.explorer.data.sel);
   const ex = window.explorer;
   const V = ex.view;
   const S = ex.state;
@@ -1174,7 +1261,7 @@ async function secondVersion() {
 
   // Comparison E: a row or a comparison on the tab that fits, no new tab.
   eq(document.querySelectorAll('input[name="comparison"]').length, 5, 'five comparisons on the Architectures tab');
-  eq(document.querySelectorAll('.section-strip [role="tab"]').length, 9, 'and no new tab');
+  eq(document.querySelectorAll('.section-strip [role="tab"]').length, 4, 'and no new tab');
   compare('E');
   ok(!document.querySelector('[data-group="comparison:E"].plate-title').hidden && document.querySelector('[data-group="comparison:A"].plate-title').hidden, 'E takes the title');
   ok(!document.querySelector('.x-admin-note[data-group="comparison:E"]').hidden, 'and its typed fields');
@@ -1245,7 +1332,7 @@ async function secondVersion() {
   await settle();
   ok(V.val('arch.E.year_s3', 'usd') > s3Before, 'a typed size recomputes');
   await settle(); // the address follows the redraw
-  eq(settings(window), '', 'and stays off the address');
+  noTyped(window, 'and stays off the address');
   setField(window, tb, -1);
   eq(tb.getAttribute('aria-invalid'), 'true', 'a bad size says so');
   ok(/Enter a number from 0 to 80 terabytes, the most one four-bay box holds per copy\./.test(text(document.querySelector('.x-admin-note[data-group="comparison:E"] [data-input-why]'))), 'in its own note, with the model\'s limit');
@@ -1289,7 +1376,7 @@ async function secondVersion() {
   rule('node');
   eq(flatNow(), untouched, 'a rule moves no figure');
   await settle();
-  eq(settings(window), '', 'and stays off the address');
+  eq(pick(window, ['custody']), 'custody=node', 'and rides in the address, as every choice but a typed figure does (explorer-05)');
   for (const letter of Object.keys(D.comparisons)) {
     compare(letter);
     for (const name of Object.keys(D.custody.options)) {
@@ -1345,14 +1432,11 @@ async function secondVersion() {
 
   // A reader's own reading: the field beside the figure, the label from the model, and off the address.
   const tabs = [...document.querySelectorAll('.section-strip [role="tab"]')];
-  fire(window, tabs[8], 'click');
-  const opener = document.querySelector('#method [data-at="readings"]');
-  ok(!opener.closest('[data-js]').hidden, 'Method offers the way in');
-  fire(window, opener, 'click');
-  eq(document.activeElement, document.getElementById('readings'), 'the Method link opens Settings at the readings');
-  key(window, document.getElementById('settings'), 'Escape');
-  eq(document.activeElement, opener, 'and Escape comes back to it');
-  fire(window, tabs[3], 'click');
+  const way = await load('#settings');
+  ok(way.document.getElementById('settings').open && way.document.getElementById('readings'), 'the Sources page\'s way in, a link to Fine-tune, opens it, with the readings in it');
+  ok(/href="\.\.\/#settings"/.test(listed), 'and the method links it');
+  fire(window, tabs[1], 'click');
+  await showAll(document);
   const reading = (k) => document.querySelector(`[data-measured="${k}"]`);
   const foot = (name) => document.querySelector(`[data-plate-x="${name}"] [data-measured-line]`);
   ok(!reading('node_w').hidden && reading('node_w').value === '', 'the field shows, empty');
@@ -1378,7 +1462,7 @@ async function secondVersion() {
   eq(text(foot('use')), `${want.line_unused} No row on this plate uses it.`, 'and a plate with no moved row names the reading without saying it includes it');
   ok(/Includes your measurement, not verified by ATNI/.test(text(document.querySelector('[data-measured-why]'))), 'Settings confirms it');
   await settle(); // the address follows the redraw
-  eq(settings(window), '', 'it stays off the address');
+  noTyped(window, 'it stays off the address');
   eq(document.querySelector('[data-setting-line]').textContent.includes('62'), false, 'and out of the setting line');
   // A setting cannot overwrite it, and a change of settings keeps the label true.
   setRadio(window, setting(document, 'device', 'laptop'));
@@ -1455,7 +1539,7 @@ async function secondVersion() {
   setDamage('epa_2020');
   eq(flatNow(), untouched, 'it moves no figure');
   await settle();
-  eq(settings(window), '', 'and stays off the address');
+  eq(pick(window, ['damage']), 'damage=epa_2020', 'and rides in the address, a family\'s name and no figure');
   const line = document.querySelector('[data-plate-x="arch"] [data-d="damage"]');
   ok(!line.hidden, 'the line shows');
   eq(text(line.querySelector('.x-damage-head')), `${D.carbon_damage.column}, as of ${D.carbon_damage.as_of}`, 'it says what it is, dated');
@@ -1502,7 +1586,7 @@ async function secondVersion() {
   compare('D');
 
   // The scenario file: a warning before the file exists, a local file, and nothing in the address.
-  fire(window, document.querySelector('.x-settings-button'), 'click');
+  fire(window, document.querySelector('#scenario [data-open-settings]'), 'click');
   const save = document.querySelector('[data-scenario-save]');
   const warn = document.querySelector('[data-scenario-warn]');
   const status = document.querySelector('[data-scenario-status]');
@@ -1521,7 +1605,7 @@ async function secondVersion() {
   setRadio(window, setting(document, 'device', 'laptop'));
   setRadio(window, setting(document, 'wage', '25'));
   setRadio(window, setting(document, 'tariff', 'bpa_wholesale'));
-  setRadio(window, document.querySelector('input[data-opt="mode"][value="office"]'));
+  fire(window, document.querySelector('[data-preset-x="office"]'), 'click');
   setField(window, document.querySelector('input[data-field="seats"]'), 12);
   setField(window, document.querySelector('input[data-field="chat"]'), 33);
   setField(window, document.getElementById('a-admin'), 9);
@@ -1531,7 +1615,9 @@ async function secondVersion() {
   setDamage('uba_4');
   await settle(); // the typed figures redraw,
   await settle(); // then the address follows
-  eq(settings(window), 'device=laptop', 'the address holds the global selector, and nothing else');
+  eq(pick(window, SETTINGS), 'device=laptop', 'the address holds the global selector of the settings');
+  noTyped(window, 'and no typed figure, wage, or tariff');
+  const addressed = settings(window);
   const stateNow = () => JSON.stringify([S.settings, S.fields, S.inputs, S.measured, S.mode, S.seats, S.custody, S.damage]);
   const whole = stateNow();
   const wholeTree = flatNow();
@@ -1548,7 +1634,7 @@ async function secondVersion() {
   eq(file.settings.wage, '25', 'wage travels in the file, where the address never carries it');
   ok(!saved.includes(label), 'no label is written, so none can be read back');
   await settle();
-  eq(settings(window), 'device=laptop', 'saving changes no address');
+  eq(settings(window), addressed, 'saving changes no address');
   const choose = async (text_, name = 'scenario.json') => {
     const input = document.querySelector('[data-scenario-load]');
     Object.defineProperty(input, 'files', { configurable: true, value: [new window.File([text_], name, { type: 'application/json' })] });
@@ -1564,7 +1650,8 @@ async function secondVersion() {
   eq(stateNow(), whole, 'the file loads back whole');
   eq(flatNow(), wholeTree, 'to the same figures');
   await settle();
-  eq(settings(window), 'device=laptop', 'the address keeps the global selectors only');
+  eq(pick(window, SETTINGS), 'device=laptop', 'the address keeps the global selectors');
+  noTyped(window, 'and nothing typed');
   ok(/Scenario loaded from your own machine\./.test(text(status)) && text(status).includes(label), 'the page says so, and the reading is stamped again');
   eq(text(foot('arch')), `Includes ${label}: AI node idle 62 W (model 40).`, 'by the model, not the file');
   eq(document.querySelector('input[data-custody]:checked').value, 'federated', 'the controls follow');
@@ -1628,7 +1715,7 @@ async function secondVersion() {
   await choose(JSON.stringify({ kind: ex.SCENARIO_KIND, schema: 1 }));
   eq(S.settings.device, D.sel.device.def, 'a file naming no settings loads the defaults');
   await settle();
-  eq(settings(window), '', 'and the address follows');
+  eq(pick(window, [...SETTINGS, 'preset', 'custody', 'damage']), '', 'and the address follows');
   fire(window, document.querySelector('[data-plate-x="arch"] [data-reset]'), 'click');
   eq(flatNow(), home, 'the figures end where they began');
 

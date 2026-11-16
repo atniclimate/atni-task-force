@@ -1,8 +1,10 @@
 // Resource Use Explorer: the page around the model, which is resource-model.js. Text by textContent only.
+// Four question tabs (DIRECTION-R2, the Explorer): one page-wide measure and starting point in the scenario bar, Fine-tune as a modal, each plate with the kit's
+// Chart and Table, evidence under its Reading, and a collar; every choice but a typed figure rides in the address.
 (function () {
 'use strict';
-const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario, typedOk, typedWords } = window.resourceModel;
-const { address, conceal, aid } = window.plate; // the kit's address in the fragment, its findable hiding, and a plot's spoken instruction and Table button
+const { MS, TAGS, FEED, SCENARIO_WARNING, blank, Run, Views, projectScale, num, usd, pct, grouped, figure, words, leverText, plainFig, applyMeasured, readScenario, typedOk, typedWords, typedRange } = window.resourceModel;
+const { address, conceal } = window.plate; // the kit's address in the fragment and its findable hiding
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -16,10 +18,17 @@ V0.set(V0.fresh());
 window.explorer = { ...window.resourceModel, view: V, state: S, data: D };
 const plateOf = (name) => $(`.x-plate[data-plate-x="${name}"]`);
 const claimOf = (a) => a.getAttribute('href').split('#src-')[1]; // a receipt's link, sources/#src-ID: the page's receipts are on its Sources page (owner ruling 39)
+const notes = $('#x-notes')?.content; // every row's note, cloned into the window for the selected row; the Sources page prints them all
+const noteOf = (id) => (id && notes ? notes.getElementById(id) : null);
 const rowNodes = new Map($$('.plate-plot [data-row]').map((n) => [n.dataset.row, n]));
 const tableRows = new Map($$('tr[data-tr]').map((n) => [n.dataset.tr, n]));
 const shown = {}; // the keys a plate's arrows step through, in the order they stand
+const layouts = {}; // each Wall's geometry as last drawn, for the needle's name
 let picked = null; // the row the reader last chose
+const views = {}; // each plate's view, chart or table
+const MEASURE = { wh: 'Energy', g: 'CO2e', ml: 'Water', usd: 'Price' };
+const PRESETS = { phone: { mode: 'person', device: 'phone' }, office: { mode: 'office', device: 'laptop' } }; // the brief's two starting points
+const FIELD_TOP = { screen: 168 }; // a week has 168 hours (explorer-10)
 
 function cell(node, f) {
   const parts = [el('span', 'ladder-num', f.num)];
@@ -31,13 +40,15 @@ function seg(node, range) {
   node.hidden = !(range && range[1] > 0);
   if (!node.hidden) { node.style.left = pct(range[0]); node.style.width = pct(range[1]); }
 }
-function axisInto(board, ticks) {
+const LEFT_TICK = / \S+, your side$/; // the zero at the wall and the head's arrows say the side, so a left tick is its figure (explorer-16); build_explorer.py axis_html writes the same
+function axisInto(board, ticks, wall) {
   const axis = $('.wall-axis, .ladder-axis', board);
   const place = (n, t) => { n.style.setProperty('--x', t.x.toFixed(4)); return n; };
-  const span = (t) => place(el('span', '', t.t), t);
+  const span = (t) => place(el('span', '', t.left ? t.t.replace(LEFT_TICK, '') : t.t), t);
   const left = $('.wall-axis-left', axis); // as wide as the left side, so a container query can drop its ticks when it is narrow
   left?.replaceChildren(...ticks.filter((t) => t.left).map(span), $('i', left));
-  axis.replaceChildren(...(left ? [left] : []), ...ticks.filter((t) => !t.left).map(span));
+  const zero = left && !blank(wall) ? [place(el('span', 'wall-zero', '0'), { x: wall })] : [];
+  axis.replaceChildren(...(left ? [left] : []), ...zero, ...ticks.filter((t) => !t.left).map(span));
   const grid = $('.ladder-grid', board);
   if (grid) grid.replaceChildren(...ticks.map((t) => place(el('i'), t)));
 }
@@ -67,7 +78,11 @@ function byPhase(board, groups, keys, wordsOnly) { // a move row is one time and
 const BOARD = new Map(Object.entries(D.boards).flatMap(([id, b]) => (b.kind === 'wall' ? b.rows.map((key) => [key, id]) : [])));
 const said = (W, key, m) => (m === 'ml' ? W.water(key).map((w) => `${plainFig(w.v, 'ml')} (${D.words.basin[w.place] || 'basin not stated'})`).join(' and ') : plainFig(W.val(key, m), m));
 const moved = (key, m = S.m) => m !== 'usd' && BOARD.has(key) && V0.boardKeys(BOARD.get(key), m).includes(key) && said(V, key, m) !== said(V0, key, m);
-const spoken = (key, r = detailFor(key)) => V.copied(`${r.reading}${moved(key) ? ` From a starting point of ${said(V0, key, S.m)}.` : ''}`, key);
+const crossDay = (key) => { // a crossover's count a year, in a day's terms (explorer-36): the same figure, divided by 365
+  const c = V.run.crossover(key.slice(6));
+  return blank(c.value) ? '' : ` That is about ${num(c.value / 365, 2)} ${D.boards[`cross.${S.opts.crossover}`].noun.replace(' a year', '')} a day.`;
+};
+const spoken = (key, r = detailFor(key)) => V.copied(`${r.reading}${key.startsWith('cross.') ? crossDay(key) : ''}${moved(key) ? ` From a starting point of ${said(V0, key, S.m)}.` : ''}`, key);
 const rulerScale = (lay, m) => { // the Wall's scale, read off the first row it draws with a length
   for (const [k, item] of Object.entries(lay.items)) {
     const p = V.parts(k, m);
@@ -78,9 +93,9 @@ const rulerScale = (lay, m) => { // the Wall's scale, read off the first row it 
 };
 function startMark(n, key, m, lay, sc, first) {
   const mark = $('.start-mark', n);
-  const on = sc > 0 && !!lay.items[key] && moved(key, m);
-  n.classList.toggle('has-start', on);
-  if (!on) return;
+  const live = sc > 0 && !!lay.items[key] && moved(key, m);
+  n.classList.toggle('has-start', live);
+  if (!live) return;
   const p = V0.parts(key, m);
   const [left, right] = [p.dev + p.rou, p.net + p.dc];
   const [from, to] = [lay.wall - left * sc, lay.wall + right * sc];
@@ -138,6 +153,7 @@ function paintWall(id) {
   }
   if (scenario.length) { $('.wall-group[data-scenario]', board).style.order = 5000; scenario.forEach((key, i) => { rowNodes.get(key).style.order = 5001 + i; }); }
   const lay = V.layout(m === 'usd' ? [] : visible.filter((key) => !wordsOnly.includes(key)), m, spec.plain, at);
+  layouts[id] = { ...lay, at };
   board.style.setProperty('--wall', lay.wall.toFixed(4));
   const sc = rulerScale(lay, m);
   const top = order.find((key) => lay.items[key]); // the first row drawn: a starting point's name goes under its bar, where the plot's top would cut it
@@ -164,14 +180,28 @@ function paintWall(id) {
     const extra = wordsOnly.includes(key) && id !== 'arch.E' ? 'on another grid, no bar' : beside ? 'inside the seat figure; printed beside, not added' : ''; // E's group head says it once
     cell($('.ladder-value', n), { ...f, tag: [f.tag, extra].filter(Boolean).join(' ') });
   }
-  axisInto(board, lay.ticks);
+  axisInto(board, lay.ticks, spec.plain ? null : lay.wall);
   $('.wall-off', board).hidden = !visible.some((key) => lay.items[key]?.range?.[2]); // the ruler says so once; each row prints its whole spread
   const note = $('.wall-gridnote', board);
   if (note) {
     note.hidden = !wordsOnly.length;
-    note.textContent = wordsOnly.length ? `Rows on different grids carry no bar: ${[...new Set(wordsOnly.map(V.grids))].join(' against ')}, and the local grid is ${V.p.grid_local} g per kWh. Set them to one feed in Settings to draw them.` : '';
+    note.textContent = wordsOnly.length ? `Rows on different grids carry no bar: ${[...new Set(wordsOnly.map(V.grids))].join(' against ')}, and the local grid is ${V.p.grid_local} g per kWh. Set them to one feed in Fine-tune to draw them.` : '';
   }
   return [...order.filter((key) => !scenario.includes(key) && !ghosts.includes(key)), ...scenario]; // the arrows step past a ghost
+}
+// The needle's name (explorer-17): the selected row's figure, over the plot where the needle stands, read away from the near end. A price draws no needle.
+function nameNeedle(key) {
+  const id = BOARD.get(key);
+  const board = id && $(`[data-board="${id}"]`);
+  const label = board && $('.wall-needle-label', board);
+  if (!label) return;
+  const item = layouts[id]?.items[key];
+  label.hidden = !item || S.m === 'usd' || !V.keeps(key);
+  if (label.hidden) return;
+  const f = V.cell(key, S.m, layouts[id].at);
+  label.textContent = [f.num, f.unit].filter(Boolean).join(' ');
+  label.style.setProperty('--x', item.end.toFixed(4));
+  label.classList.toggle('is-flip', item.end > 0.7);
 }
 function paintRuler(id) {
   const spec = D.boards[id];
@@ -195,6 +225,9 @@ function paintRuler(id) {
   axisInto(board, lay.ticks);
   return order;
 }
+// A lever in words (explorer-18): after as a share of before, then the two figures, from before to after. build_explorer.py lever_value writes the same.
+const leverCell = (r, m) => (blank(r.ratio) ? { num: 'no figure', unit: '', tag: `(${leverText(r.before, m)} then ${leverText(r.after, m)})` }
+  : { num: num(r.ratio * 100), unit: 'percent of before', tag: `(${leverText(r.before, m)} to ${leverText(r.after, m)})` });
 function paintLevers() {
   const { m } = S;
   for (const key of D.boards.lever.rows) {
@@ -203,7 +236,8 @@ function paintLevers() {
     const has = !blank(r.xAfter) && !blank(r.xBefore);
     if (has) { n.style.setProperty('--x', r.xAfter.toFixed(4)); n.style.setProperty('--x2', r.xBefore.toFixed(4)); } else { n.style.removeProperty('--x'); n.style.removeProperty('--x2'); } // no figures, no line
     $$('.ladder-mark', n).forEach((mark) => { mark.hidden = !has; });
-    cell($('.ladder-value', n), { num: blank(r.ratio) ? 'no figure' : num(r.ratio), unit: 'after over before', tag: `(${leverText(r.before, m)} then ${leverText(r.after, m)})` });
+    n.classList.toggle('is-up', !blank(r.ratio) && r.ratio > 1);
+    cell($('.ladder-value', n), leverCell(r, m));
   }
   return D.boards.lever.rows;
 }
@@ -226,23 +260,19 @@ function paintCross(id) {
   axisInto($(`[data-board="${id}"]`), ticks);
   return spec.rows;
 }
-const allOf = (prefix, paint, current) => { // every board stays live, so print and a later switch never show stale rows
-  let order;
-  for (const id of Object.keys(D.boards)) if (id.startsWith(prefix)) { const o = paint(id); if (id === current) order = o; }
-  return order;
-};
 const painters = {
   use: () => paintWall('use'),
-  where: () => allOf('where.', paintWall, `where.${S.opts.workload}`),
-  arch: () => allOf('arch.', paintWall, `arch.${S.opts.comparison}`),
+  where: () => paintWall(`where.${S.opts.workload}`),
+  arch: () => paintWall(`arch.${S.opts.comparison}`),
   lever: paintLevers,
-  cross: () => allOf('cross.', paintCross, `cross.${S.opts.crossover}`),
-  catalog: () => { const hour = paintWall('catalog.hour'); const unit = paintRuler('catalog.unit'); return S.opts.scale === 'unit' ? unit : hour; }, // both stay live; the arrows step the view shown
+  cross: () => paintCross(`cross.${S.opts.crossover}`),
+  catalog: () => (S.opts.scale === 'unit' ? paintRuler('catalog.unit') : paintWall('catalog.hour')), // the view shown; a switch redraws the other
 };
 const measuredTag = (key) => (V.isMoved(key) ? [el('span', 'x-measured-tag', D.measured.label)] : []); // the label comes from the model, on every row a reading moved
-function paintTables() {
-  const on = S.damage !== 'off';
+function paintTables(live) {
+  const dmg = S.damage !== 'off';
   for (const [key, tr] of tableRows) {
+    if (!live.has(tr.closest('.x-plate')?.dataset.plateX)) continue;
     if (key === 'use.seat') tr.hidden = S.mode !== 'office';
     const gone = key.startsWith('arch.') && !V.keeps(key); // as on the plot: the row stays, with its reason and no figure
     tr.classList.toggle('is-ghost', gone);
@@ -253,19 +283,21 @@ function paintTables() {
     else if (gone) MS.forEach((m, i) => fill(m, i ? '' : ghostWords(key)));
     else if (!key.startsWith('cross.')) { const t = V.table(key); for (const m of MS) fill(m, t[m]); }
     const td = $('td[data-c="damage"]', tr);
-    if (td && on) td.textContent = gone ? '' : V.damageFig(V.damage(key));
+    if (td && dmg) td.textContent = gone ? '' : V.damageFig(V.damage(key));
   }
-  for (const id of ['cross.prompts', 'cross.views']) {
-    const { items } = V.crossings(D.boards[id].rows);
-    for (const [key, c] of Object.entries(items)) { const td = $('[data-c="count"]', tableRows.get(key)); td.textContent = words(V.crossWords(c, D.boards[id].noun)); $('[data-c="ends"]', tableRows.get(key)).textContent = V.crossEnds(c); }
+  if (live.has('cross')) {
+    for (const id of ['cross.prompts', 'cross.views']) {
+      const { items } = V.crossings(D.boards[id].rows);
+      for (const [key, c] of Object.entries(items)) { const td = $('[data-c="count"]', tableRows.get(key)); td.textContent = words(V.crossWords(c, D.boards[id].noun)); $('[data-c="ends"]', tableRows.get(key)).textContent = V.crossEnds(c); }
+    }
   }
-  $$('[data-damage-col]').forEach((n) => { n.hidden = !on; });
-  if (!on) return;
+  $$('[data-damage-col]').forEach((n) => { n.hidden = !dmg; });
+  if (!dmg) return;
   const c = V.damageOf(1); // the family's own words, its head among them, so an avoidance cost never reads as a damage; the figure is each row's
   $$('th[data-damage-col]').forEach((th) => { th.textContent = `${c.head}, ${V.damageCurrency(c)}`; });
   $$('caption [data-damage-col]').forEach((n) => { n.textContent = ` ${c.head} column: ${c.family}, ${c.kind}; ${c.column}, as of ${c.as_of}.`; });
 }
-// What the custody rule leaves out, always listed under the plate with its reason, and what the rule costs. One block for each comparison, so print holds them all.
+// What the custody rule leaves out, always listed under the plate with its reason, and what the rule costs. The chosen comparison's block, as print shows it.
 function custodyBlock(letter) {
   const c = V.custody(letter);
   const block = el('div', 'x-custody-block');
@@ -306,9 +338,10 @@ function paintCustody() {
   $('[data-custody-now]').textContent = !left ? '' : `${left} ${left === 1 ? 'row leaves' : 'rows leave'} this comparison at this setting. ${left === 1 ? 'It stays faint on the plot, and is' : 'Each stays faint on the plot, and is'} listed under the plate with its reason.`;
 }
 // The one sentence a reading carries, at the foot of every plate of rows, and whether this plate holds a row it moved.
-function paintMeasured() {
+function paintMeasured(live) {
   const line = V.measuredLine();
   for (const name of Object.keys(painters)) {
+    if (!live.has(name)) continue;
     const plate = plateOf(name);
     const foot = $('[data-measured-line]', plate);
     foot.hidden = !line;
@@ -374,8 +407,41 @@ function movesInto(body, key) { // a table, so its rows read as rows; the bar un
 const priceWord = (key) => (blank(V.val(key, 'usd')) ? D.rows[key].pn || D.words.price.none : D.rows[key].pt || D.words.price[V.basis(key)]);
 const basinWord = (tag) => tag.slice(0, tag.lastIndexOf(',')); // the model writes "basin, convention", and a convention has no comma
 
-// The detail zone reads the same on every plate: the energy large, then price, carbon, and water at their bases, then the sentence. How it is modeled folds up; receipts live in Sources.
-const detailFor = (key) => (key.startsWith('lever.') ? V.leverDetail(key, S.m) : key.startsWith('cross.') ? V.crossDetail(key, D.boards[`cross.${S.opts.crossover}`].noun) : V.detailOf(key, S.m));
+// The window reads the same on every plate: the measure, the energy large, then price, carbon, and water at their bases, then the sentence, then the selected row's
+// evidence. How it is modeled folds up; each receipt's quote and boundary are on the Sources page.
+const leverDetail = (key) => { // a lever's readout in the row's words: after as a share of before
+  const r = V.leverDetail(key, S.m);
+  const f = leverCell(V.lever(key, S.m), S.m);
+  return { ...r, value: f.num, unit: f.unit ? 'percent' : '', qual: `${f.unit ? 'of before, ' : ''}${D.words.measure[S.m]}` };
+};
+const detailFor = (key) => (key.startsWith('lever.') ? leverDetail(key) : key.startsWith('cross.') ? V.crossDetail(key, D.boards[`cross.${S.opts.crossover}`].noun) : V.detailOf(key, S.m));
+const STATUS = { verified: 'verified', partly: 'partly verified' };
+const glyph = (status) => { const s = el('span', status === 'partly' ? 'st st-p' : 'st st-v'); s.setAttribute('aria-hidden', 'true'); return s; };
+// Under the Reading, as the kit's evidence line: the selected row's claims counted by status, then one chip per publisher, each opening its card here.
+function evidenceInto(box, ids, receiptId) {
+  const groups = new Map();
+  const tally = { verified: 0, partly: 0 };
+  for (const id of ids) {
+    const r = D.receipts[id];
+    if (!r) continue;
+    tally[r.status === 'partly' ? 'partly' : 'verified'] += 1;
+    groups.set(r.short, [...(groups.get(r.short) || []), id]);
+  }
+  const counts = Object.entries(tally).filter(([, n]) => n).map(([status, n]) => { const s = el('span', 'plate-evidence-count'); s.append(glyph(status), `${n} ${STATUS[status]}`); return s; });
+  const chips = [...groups].map(([publisher, list]) => {
+    const b = el('button', 'receipt');
+    b.type = 'button';
+    Object.entries({ 'data-claims': list.join(' '), 'aria-expanded': 'false', 'aria-controls': receiptId }).forEach(([k, v]) => b.setAttribute(k, v));
+    b.append(glyph(list.some((id) => D.receipts[id].status === 'partly') ? 'partly' : 'verified'), `${publisher}${list.length > 1 ? `, ${list.length}` : ''}`);
+    return b;
+  });
+  if (!counts.length) { box.replaceChildren(); return; }
+  const line = el('p', 'plate-evidence-line');
+  counts.forEach((n, i) => line.append(...(i ? [' ', n] : [n])));
+  const row = el('div', 'plate-chips');
+  row.append(...chips);
+  box.replaceChildren(line, row);
+}
 function detail(name, key) {
   const plate = plateOf(name);
   const d = (k) => $(`[data-d="${k}"]`, plate);
@@ -408,35 +474,16 @@ function detail(name, key) {
     damage.hidden = !damage.children.length;
   }
   long();
-  const master = noteId && document.getElementById(noteId);
+  const master = noteOf(noteId);
   const parts = master ? [...master.cloneNode(true).children] : [];
   const note = d('note');
   note.replaceChildren(...parts.filter((n) => !n.matches('.plate-chips')));
   if (Object.keys(D.sel).some((k) => S.settings[k] !== D.sel[k].def)) note.prepend(el('p', 'x-note-title', 'These notes describe the default settings.'));
   const chips = parts.find((n) => n.matches('.plate-chips'));
-  d('chips').replaceChildren(...(chips ? chips.children : []));
-  const receipts = $$('.receipt', d('chips'));
-  for (const chip of receipts) { const id = claimOf(chip); chip.lastElementChild.textContent = `${id}, ${D.receipts[id].short}`; }
-  const partly = receipts.filter((chip) => chip.classList.contains('is-hollow')).length;
-  const verified = receipts.length - partly;
-  const tally = $('[data-tally]', plate);
-  tally.hidden = !receipts.length;
-  tally.textContent = `This row: ${[verified && `${verified} verified`, partly && `${partly} partly verified`].filter(Boolean).join(', ')}; ${plate.dataset.sources} sources on the plate`;
   const receipt = d('receipt');
+  evidenceInto(d('chips'), chips ? $$('a.receipt', chips).map(claimOf) : [], receipt.id);
   receipt.hidden = true;
   receipt.replaceChildren();
-  $$('.receipt, a.x-c', plate).forEach((c) => c.setAttribute('aria-expanded', false));
-}
-// As on every plate of the kit: the Sources view counts the whole plate in one line, beside the link to the full receipts, and its chips are the selected row's. So the view's count and the line under the Reading count one thing each.
-const plural = (n, one) => `${grouped(n)} ${n === 1 ? one : `${one}s`}`;
-function listSources(plate) {
-  const ids = new Set($$('.plate-plot [data-row]', plate).flatMap((row) => { const note = document.getElementById(D.rows[row.dataset.row]?.note); return note ? $$('.receipt', note).map(claimOf) : []; }));
-  plate.dataset.sources = ids.size;
-  $('.plate-views input[value="sources"] + span', plate).textContent = `Sources (${ids.size})`;
-  const rs = [...ids].map((id) => D.receipts[id]);
-  const partly = rs.filter((r) => r.status === 'partly').length;
-  const mix = [ids.size > partly && `${grouped(ids.size - partly)} verified`, partly && `${grouped(partly)} partly verified`].filter(Boolean).join(' and ');
-  $('[data-d="sources"]', plate).textContent = `${plural(ids.size, 'source')} from ${plural(new Set(rs.map((r) => `${r.url} ${r.title}`)).size, 'document')}: ${mix}.`; // the kit's line, in its words
 }
 function selectRow(name, key) {
   S.sel[name] = key;
@@ -448,12 +495,18 @@ function selectRow(name, key) {
     n.setAttribute('aria-selected', hit);
     if (hit) $('.plate-plot', plate).setAttribute('aria-activedescendant', n.id);
   });
+  nameNeedle(key);
   detail(name, key);
 }
-function paintWeek() {
+// Each tab's answer to its question, in the measure and at the settings shown (V.answer); the proposal's, from its fields.
+function paintAnswers(live) {
+  for (const tab of ['use', 'where', 'savings']) {
+    const node = $(`[data-answer-x="${tab}"]`);
+    if (node && !node.closest('[hidden]')) node.textContent = V.answer(tab);
+  }
+  if (!live.has('use')) return;
   const w = V.week();
   const box = $('[data-d="week"]');
-  $('[data-title="use"]').textContent = V.title();
   const line = (name, v) => { const n = $(`[data-w="${name}"]`, box); n.parentElement.hidden = !v; n.textContent = usd(v); };
   line('list', w.list);
   line('earned', w.earned);
@@ -465,67 +518,118 @@ function paintWeek() {
     $(`[data-w="${place}-tag"]`, box).textContent = V.basin(place);
   }
 }
+// The plates on the open tab draw now; the rest wait until their tab opens, so a change costs one tab's redraw (explorer-19).
+const isLive = (name) => !plateOf(name).closest('[hidden]:not(.plate-view)');
+let stale = new Set();
 function refresh(reason) {
   if (reason === 'settings') V.set(S);
   $$('.plate-status').forEach((n) => { n.textContent = ''; }); // what it reported is no longer the state
   const line = V.line();
   $$('[data-setting-line]').forEach((n) => { n.textContent = line; });
+  $('[data-mode-word]').textContent = S.mode === 'office' ? `An office of ${grouped(S.seats)} seats` : 'One person';
   const also = [S.custody !== D.custody.default && `${D.custody.label}: ${D.custody.options[S.custody].label}`, S.damage !== 'off' && `${D.carbon_damage.label}: ${D.carbon_damage.families[S.damage].label}`, ...Object.entries(S.inputs).map(([k, v]) => `${D.names[k]}, typed: ${v}`)].filter(Boolean);
-  $$('[data-setting-list]').forEach((n) => n.replaceChildren(...[...Object.keys(D.sel).map((name) => `${D.names[name]}: ${D.sel[name].say[S.settings[name]]}`), ...also].map((line) => el('li', '', line))));
+  $$('[data-setting-list]').forEach((n) => n.replaceChildren(...[...Object.keys(D.sel).map((name) => `${D.names[name]}: ${D.sel[name].say[S.settings[name]]}`), ...also].map((text) => el('li', '', text))));
   $$('[data-if]').forEach((n) => { const [k, v] = n.dataset.if.split(':'); n.hidden = String(V.p[k]) !== v; });
   $$('[data-reading]').forEach((n) => { n.textContent = V.reading(n.dataset.reading); });
   $$('[data-group]').forEach((n) => { const [k, v] = n.dataset.group.split(':'); n.hidden = S.opts[k] !== v; });
   $$('[data-payback]').forEach((n) => { n.textContent = V.payback(n.dataset.payback); });
-  for (const [key, n] of rowNodes) if (D.rows[key]) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : []), ...measuredTag(key)); }
-  for (const name of Object.keys(painters)) {
-    const order = painters[name]();
-    shown[name] = order.filter((key) => !rowNodes.get(key).hidden);
-    shown[name].forEach((key, i) => { const n = rowNodes.get(key); n.setAttribute('aria-posinset', i + 1); n.setAttribute('aria-setsize', shown[name].length); }); // rows sort by CSS order, so the count a reader hears must not come from the source order
-    if (name === 'where') S.sel.where = `where.${S.opts.workload}.${S.sel.where.split('.').pop()}`;
-    if (name === 'arch' && S.sel.arch !== picked && D.boards[`arch.${S.opts.comparison}`].scenario?.includes(S.sel.arch)) S.sel.arch = null; // a scenario is never the main comparison: only a reader's own click lands there
-    if (!shown[name].includes(S.sel[name])) [S.sel[name]] = shown[name];
-    selectRow(name, S.sel[name]);
-  }
+  const live = new Set(Object.keys(painters).filter(isLive));
+  stale = new Set(Object.keys(painters).filter((name) => !live.has(name)));
+  for (const [key, n] of rowNodes) if (D.rows[key] && live.has(n.closest('.x-plate').dataset.plateX)) { const tag = V.rowTag(key); $('.ladder-label', n).replaceChildren(V.label(key), ...(tag ? [el('span', 'ladder-tag', tag)] : []), ...measuredTag(key)); }
+  for (const name of live) paintPlate(name);
   $$('[data-pair-m]').forEach((n) => { n.hidden = n.dataset.pairM !== S.m; }); // one measure's pairs at a time, each with what reverses it
   $$('[data-admin-tie]').forEach((n) => { n.textContent = V.adminWords(); });
-  paintWeek();
-  paintTables();
-  paintCustody();
-  paintMeasured();
+  paintAnswers(live);
+  paintTables(live);
+  if (live.has('arch')) paintCustody();
+  paintMeasured(live);
   syncControls();
-  if (reason === 'settings') writeQuery(); // after the redraw, so the address can never stop one
+  writeQuery(); // after the redraw, so the address can never stop one
 }
+function paintPlate(name) {
+  const order = painters[name]();
+  shown[name] = order.filter((key) => !rowNodes.get(key).hidden);
+  shown[name].forEach((key, i) => { const n = rowNodes.get(key); n.setAttribute('aria-posinset', i + 1); n.setAttribute('aria-setsize', shown[name].length); }); // rows sort by CSS order, so the count a reader hears must not come from the source order
+  if (name === 'where') S.sel.where = `where.${S.opts.workload}.${S.sel.where.split('.').pop()}`;
+  if (name === 'arch' && S.sel.arch !== picked && D.boards[`arch.${S.opts.comparison}`].scenario?.includes(S.sel.arch)) S.sel.arch = null; // a scenario is never the main comparison: only a reader's own click lands there
+  if (!shown[name].includes(S.sel[name])) [S.sel[name]] = shown[name];
+  selectRow(name, S.sel[name]);
+}
+// A tab that opens draws the plates that waited (the kit's tabs conceal and reveal the panels).
+function wake() {
+  const now = [...stale].filter(isLive);
+  if (!now.length) return;
+  now.forEach((name) => stale.delete(name));
+  refresh();
+}
+const changed = () => S.m !== 'wh' || S.mode !== 'person' || S.custody !== D.custody.default || S.damage !== 'off' || Object.keys(S.inputs).length > 0 || Object.keys(S.measured).length > 0
+  || Object.keys(D.sel).some((k) => S.settings[k] !== D.sel[k].def) || Object.entries(D.fields).some(([k, v]) => S.fields[k] !== v && !(k === 'gb' && S.mode === 'office')) || S.seats !== D.scenario.office_users;
 function syncControls() {
   $$('input[data-setting]').forEach((n) => { n.checked = S.settings[n.dataset.setting] === n.value; });
   $$('input[data-opt]').forEach((n) => { n.checked = (n.dataset.opt === 'm' ? S.m : n.dataset.opt === 'mode' ? S.mode : S.opts[n.dataset.opt]) === n.value; });
-  $$('input[data-field]').forEach((n) => { if (document.activeElement !== n) n.value = n.dataset.field === 'seats' ? S.seats : S.fields[n.dataset.field]; });
+  $$('input[data-field]').forEach((n) => { if (document.activeElement !== n && n.getAttribute('aria-invalid') !== 'true') n.value = n.dataset.field === 'seats' ? S.seats : S.fields[n.dataset.field]; });
   $$('input[data-input]').forEach((n) => { if (document.activeElement !== n) n.value = S.inputs[n.dataset.input] ?? D.inputs[n.dataset.input]?.[0] ?? D.scenario[n.dataset.input]; });
   $$('input[data-measured]').forEach((n) => { if (document.activeElement !== n) n.value = S.measured[n.dataset.measured] ?? ''; });
   $$('input[data-custody]').forEach((n) => { n.checked = S.custody === n.value; });
   $$('select[data-damage]').forEach((n) => { n.value = S.damage; });
   $$('[data-office]').forEach((n) => { n.hidden = S.mode !== 'office'; });
+  $$('[data-preset-x]').forEach((n) => { const p = PRESETS[n.dataset.presetX]; n.setAttribute('aria-pressed', String(S.mode === p.mode && S.settings.device === p.device)); });
+  $$('[data-measure-word]').forEach((n) => { n.textContent = MEASURE[S.m]; });
+  const moves = changed();
+  $$('.x-plate [data-reset]').forEach((n) => { if (!n.closest('[data-plate-x="project"]')) n.hidden = !moves; });
 }
 const fieldDefault = (k) => (k === 'gb' && S.mode === 'office' ? D.inputs.seat_gb[0] : D.fields[k]);
-// The address carries the global selectors and nothing else: never wage, tariff, office size, a project's load, or a typed number, so a shared link cannot carry a Nation's figures.
-// They ride in the fragment, after the tab, as on every plate page, so not even a menu choice reaches the server.
+// The address (DIRECTION-R2 3.8): the measure, the starting point, the global selectors, each plate's switches, what each plate shows and which row it has chosen,
+// the custody rule, and the damage layer. Never wage, tariff, office size, a project's load, or a typed number, so a shared link cannot carry a Nation's figures.
+// They ride in the fragment, after the tab, so not even a menu choice reaches the server.
 const LINKED = Object.keys(D.sel).filter((name) => name !== 'wage' && name !== 'tariff');
-let addressTimer; // as on a plate: a quarter second after the last change, and a throttled replaceState is let go
+const PLATES = $$('.x-plate[data-plate-x]').filter((p) => p.id && Object.hasOwn(painters, p.dataset.plateX)).map((p) => [p.dataset.plateX, p.id]);
+const VIEWED = $$('.x-plate').filter((p) => $('.plate-views', p)).map((p) => p.id);
+const OPTS = Object.keys(V.fresh().opts);
+let addressTimer; // a quarter second after the last change, and a throttled replaceState is let go
 function writeQuery() {
   clearTimeout(addressTimer);
   addressTimer = setTimeout(flushQuery, 250);
 }
-function flushQuery(now) { // Copy Reading and a jump within the page write it at once, so the address carries the settings shown
+function flushQuery(now) { // Copy reading and a jump within the page write it at once, so the address carries what is shown
   if (!addressTimer && !now) return;
   clearTimeout(addressTimer);
   addressTimer = 0;
-  const q = new URLSearchParams();
+  const fresh = V.fresh();
+  const q = new URLSearchParams(); // what it did not read, it drops
+  if (S.m !== fresh.m) q.set('m', S.m);
+  if (S.mode === 'office') q.set('preset', 'office');
   for (const name of LINKED) if (S.settings[name] !== D.sel[name].def) q.set(name, S.settings[name]);
-  address.write(address.read().anchor, q); // replace, never push: Back leaves the page, not a trail of radio clicks
+  for (const name of OPTS) if (S.opts[name] !== fresh.opts[name]) q.set(name, S.opts[name]);
+  if (S.custody !== D.custody.default) q.set('custody', S.custody);
+  if (S.damage !== 'off') q.set('damage', S.damage);
+  for (const [name, id] of PLATES) if (S.sel[name] && S.sel[name] !== fresh.sel[name] && S.sel[name] === picked0[name]) q.set(id, S.sel[name]);
+  for (const id of VIEWED) if (views[id] === 'table') q.set(`${id}-view`, 'table');
+  address.write(address.read().anchor, q); // replace: a tab change is the kit's, and pushes
 }
-function readQuery() { // a link is untrusted: only a named selector, only one of its own options
-  const q = address.read().params;
-  for (const name of LINKED) S.settings[name] = Object.hasOwn(D.sel[name].opts, q.get(name) ?? '') ? q.get(name) : D.sel[name].def;
+const picked0 = {}; // the row a reader chose on each plate, which the address keeps
+const mine = (name) => ['m', 'preset', 'custody', 'damage', ...LINKED, ...OPTS, ...PLATES.map(([, id]) => id), ...VIEWED.map((id) => `${id}-view`)].includes(name);
+function readQuery() { // a link is untrusted: only a named choice, only one of its own options
+  const { params: q } = address.read();
+  const fresh = V.fresh();
+  const pick = (v, ok, fallback) => (ok(v ?? '') ? v : fallback);
+  for (const name of LINKED) S.settings[name] = pick(q.get(name), (v) => Object.hasOwn(D.sel[name].opts, v), D.sel[name].def);
+  S.m = pick(q.get('m'), (v) => MS.includes(v), fresh.m);
+  S.mode = q.get('preset') === 'office' ? 'office' : 'person';
+  const boards = { workload: (v) => Object.hasOwn(D.boards, `where.${v}`), comparison: (v) => Object.hasOwn(D.comparisons, v), crossover: (v) => Object.hasOwn(D.boards, `cross.${v}`),
+    scale: (v) => ['hour', 'unit'].includes(v), sort: (v) => ['value', 'tag'].includes(v), waffle: isWaffle };
+  for (const name of OPTS) S.opts[name] = pick(q.get(name), boards[name] || (() => false), fresh.opts[name]);
+  S.custody = pick(q.get('custody'), (v) => Object.hasOwn(D.custody.options, v), D.custody.default);
+  S.damage = pick(q.get('damage'), (v) => v !== 'off' && !!D.carbon_damage && Object.hasOwn(D.carbon_damage.families, v), 'off');
+  for (const [name, id] of PLATES) {
+    const v = q.get(id);
+    if (v && rowNodes.get(v)?.closest(`[data-plate-x="${name}"]`)) { S.sel[name] = v; picked0[name] = v; } else delete picked0[name];
+  }
+  for (const id of VIEWED) views[id] = q.get(`${id}-view`) === 'table' ? 'table' : 'chart';
+  const about = /^about-(.+)$/.exec(address.read().anchor); // a figure's note opens on its own waffle (explorer-09)
+  if (about && isWaffle(about[1])) S.opts.waffle = about[1];
 }
+const isWaffle = (v) => /^[\w-]+$/.test(v) && !!$(`input[name="waffle"][value="${v}"]`);
 function selfCheck() {
   const run = new Run(D, null);
   const fails = [];
@@ -538,38 +642,27 @@ function selfCheck() {
       if (blank(row?.[m]) || Math.abs(row[m] - want[i]) > 0.005 * Math.abs(want[i])) fails.push(`${key} ${m}`);
     });
   }
-  const said = fails.length ? `Warning: this page does not match the model at ${fails.slice(0, 3).join(', ')}${fails.length > 3 ? `, and ${fails.length - 3} more` : ''}. Do not rely on these figures.` : `Builder matches the model: ${grouped(n)} figures within 0.5 percent of the published file.`;
+  const verdict = fails.length ? `Warning: this page does not match the model at ${fails.slice(0, 3).join(', ')}${fails.length > 3 ? `, and ${fails.length - 3} more` : ''}. Do not rely on these figures.` : `Builder matches the model: ${grouped(n)} figures within 0.5 percent of the published file.`;
   $$('[data-check]').forEach((box) => {
     box.hidden = false;
     box.classList.toggle('is-warn', fails.length > 0);
-    box.textContent = said;
+    box.textContent = verdict;
   });
-  const top = $('[data-check-top]'); // the reassurance can wait in the Table view; a warning cannot
+  const top = $('[data-check-top]'); // the reassurance can wait under the week; a warning cannot
   top.hidden = !fails.length;
-  if (fails.length) top.textContent = said;
+  if (fails.length) top.textContent = verdict;
 }
-// The drawer starts under the disclaimer band. From 1600px the plate compresses beside it; below, it covers the detail column only, so the plot keeps its width and the reader sees rows move.
-const placeDrawer = () => document.documentElement.style.setProperty('--drawer-top', `${Math.max(0, $('.x-band').getBoundingClientRect().bottom)}px`);
-const drawerSaid = (open) => $$('[data-open-settings]').forEach((n) => { n.setAttribute('aria-controls', 'settings'); n.setAttribute('aria-expanded', open); });
-function openDrawer(from) {
-  const drawer = $('#settings');
-  drawer.from = from;
-  drawer.hidden = false;
-  drawerSaid(true);
-  document.documentElement.classList.add('has-drawer');
-  placeDrawer();
-  (from.dataset.at ? document.getElementById(from.dataset.at) : drawer).focus();
+// Fine-tune: a modal on the left (DIRECTION-R2 3.12), the plots updating behind it. The browser contains focus and Escape closes it; focus goes back to its opener.
+const fine = $('#settings');
+function openFine(from) {
+  fine.from = from;
+  if (!fine.open) fine.showModal(); // the browser puts focus on its first control, Close
+  if (from?.dataset.at) document.getElementById(from.dataset.at)?.focus();
 }
-function closeDrawer() {
-  const drawer = $('#settings');
-  if (drawer.hidden) return;
-  drawer.hidden = true;
-  drawerSaid(false);
-  document.documentElement.classList.remove('has-drawer');
-  drawer.from?.focus();
-}
-function project() {
+on(fine, 'close', () => { fine.from?.focus(); });
+function project(example) {
   const box = $('[data-plate-x="project"]');
+  if (example) for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`, box).value = $('[data-example]', box).dataset[k];
   const read = (k) => { // outside the field's own bounds (a load factor of 80 against its max of 1) or past the typed ceiling, a figure waits, as for a blank, and the field says so
     const n = $(`[data-pf="${k}"]`, box);
     const bad = !n.checkValidity() || (n.value !== '' && !typedOk(D, 'field', +n.value));
@@ -580,7 +673,7 @@ function project() {
   const ask = (say) => (blank(r.mwh) ? '–' : say); // once a year prints, an empty row says what it waits for
   const big = (v, unit, missing) => (blank(v) ? ask(missing) : `${grouped(Number(v.toPrecision(3)))} ${unit}`);
   const out = { mwh: big(r.mwh, 'MWh'), water: big(r.water, 'liters', 'Enter site water'), co2: big(r.co2, 'tonnes CO2e', 'Choose a feed'), share: blank(r.share) ? ask('Enter a load to compare') : `${num(r.share * 100)} percent` };
-  for (const [k, v] of Object.entries(out)) $(`[data-po="${k}"]`, box).textContent = v;
+  for (const [k, v] of Object.entries(out)) { const n = $(`[data-po="${k}"]`, box); n.textContent = v; n.classList.toggle('is-ask', /^(Enter|Choose)/.test(v)); } // a prompt reads as words, not as a figure (explorer-20)
   $('[data-project-hint]', box).hidden = !blank(r.mwh);
   $('[data-po-poster]', box).textContent = blank(r.mwh) ? '' : grouped(Number(r.mwh.toPrecision(3)));
   $('[data-po-poster]', box).parentElement.classList.toggle('is-long', !blank(r.mwh) && r.mwh >= 1e7);
@@ -589,6 +682,10 @@ function project() {
   const damage = blank(r.co2) ? null : V.damageOf(r.co2 * 1e6); // a project shows its tonnes first, and any dollar beside them
   $('[data-po-damage-row]', box).hidden = !damage;
   if (damage) { $('[data-po-damage-label]', box).textContent = `${damage.column}, as of ${damage.as_of}`; $('[data-po="damage"]', box).textContent = V.damageWords(damage, 'this project\'s CO2e'); }
+  const fields = ['mw', 'lf'].map((k) => $(`[data-pf="${k}"]`, box).value);
+  const isExample = ['mw', 'lf', 'wue', 'load'].every((k) => $(`[data-pf="${k}"]`, box).value === $('[data-example]', box).dataset[k]);
+  $('[data-answer-x="proposal"]').textContent = blank(r.mwh) ? 'Enter a project\'s megawatts and load factor, or start from the Data Centers example, to see its year in energy, site water and CO2e.'
+    : `${isExample ? 'The Data Centers example, an illustration and not a proposal: ' : ''}${fields[0]} MW at a load factor of ${fields[1]} uses ${out.mwh} a year${blank(r.share) ? '' : `, ${out.share} of ${isExample ? 'the region\'s load today' : 'the load entered'}`}.`;
 }
 const closeWarning = () => { $('[data-scenario-warn]').hidden = true; $('[data-scenario-save]').focus(); };
 function saveScenario() {
@@ -623,17 +720,23 @@ async function loadScenario(input) {
   project();
   status.textContent = `Scenario loaded from your own machine.${V.records.length ? ` Its readings carry the label: ${D.measured.label}.` : ''}${read.otherBuild ? ' It was saved against another build of the model, so its figures follow this page\'s model.' : ''}`;
 }
+// Chart or Table, as the kit's two pressed buttons: the Table takes the plot's and the window's place, and the claim zone stays (DIRECTION-R2 3.4).
 function setView(plate, name) {
-  plate.dataset.view = name;
-  $$('.plate-view', plate).forEach((n) => conceal(n, n.dataset.view !== name)); // a word found in a closed view brings it forward (its beforematch, below)
-  $$('.plate-views input', plate).forEach((n) => { n.checked = n.value === name; });
+  const table = name === 'table';
+  plate.dataset.view = table ? 'table' : 'chart';
+  views[plate.id] = plate.dataset.view;
+  const tableView = $(':scope > .plate-view[data-view="table"]', plate);
+  if (tableView) conceal(tableView, !table);
+  for (const part of $$(':scope > :is(.plate-plot, .plate-detail, .plate-under)', plate)) conceal(part, table && !!tableView);
+  $$('.plate-views button', plate).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === plate.dataset.view)));
 }
+const titleOf = (plate) => $$('.plate-title', plate).find((t) => !t.closest('[data-group][hidden]'))?.textContent.trim() ?? ''; // the comparison shown; a closed tab still has its title
 async function copyReading(plate) {
   commit(); // a typed figure not yet drawn, then the address it brings
   flushQuery(true);
   const reading = $('[data-d="reading"]', plate);
   const status = $('.plate-status', plate);
-  const titles = $$('[data-d="chips"] .receipt', plate).map((chip) => D.receipts[claimOf(chip)].title);
+  const titles = $$('[data-d="chips"] .receipt', plate).flatMap((chip) => chip.dataset.claims.split(' ')).map((id) => D.receipts[id].title);
   try {
     await navigator.clipboard.writeText(`${reading.textContent}\n${location.href}${titles.length ? `\nSources: ${[...new Set(titles)].join('; ')}` : ''}`);
     status.textContent = 'Copied with its link and sources.';
@@ -642,6 +745,32 @@ async function copyReading(plate) {
     status.textContent = 'Copy is blocked here. The Reading is selected: press Ctrl+C.';
   }
 }
+// A plate's Table as a file: every row as it stands, each with its claims and their status and limit, then the title, the settings, and the date its sources were checked.
+function csvOf(plate) {
+  const tables = $$(':scope > .plate-view[data-view="table"] table.plate-table', plate).filter((t) => !t.closest('[data-group][hidden]')); // the comparison or workload shown
+  const cellOf = (v) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+  const of = (ids, part) => [...new Set(ids.map((id) => D.receipts[id]?.[part]).filter(Boolean))].join('; ');
+  const head = [...$$('thead th', tables[0]).filter((n) => !n.hidden).map((n) => n.textContent.trim()), 'claim_ids', 'status', 'limit']; // a column the page hides, the damage one when it is off, stays out
+  const rows = tables.flatMap((t) => $$('tbody tr', t).filter((tr) => !tr.hidden).map((tr) => {
+    const ids = $$('a[data-claim]', tr).map((a) => a.dataset.claim);
+    return [...[...tr.children].filter((n) => !n.hidden).map((n) => n.textContent.trim()), ids.join('; '), of(ids, 'status'), of(ids, 'limit')];
+  }));
+  const checked = $('.brief-meta .figure-num')?.textContent.trim() ?? '';
+  const lines = [head, ...rows, ['title', titleOf(plate)], ['settings', `${MEASURE[S.m]}; ${V.line()}`], ['checked', checked]];
+  return `﻿${lines.map((r) => r.map(cellOf).join(',')).join('\r\n')}\r\n`; // the mark tells Excel it is UTF-8
+}
+// Print this plate: everything but this plate leaves the paper (site.css html[data-print-one]); its Table prints under it, every row with its claims.
+function printPlate(plate) {
+  const head = el('div', 'plate-print-head');
+  head.append(el('p', '', `Resource Use Explorer: ${titleOf(plate)}`), el('p', '', `Settings chosen by the reader: ${MEASURE[S.m]}; ${V.line()}`));
+  const foot = el('p', 'plate-print-foot', 'Modeled estimates, not measurements. This comparison does not decide a proposal.');
+  plate.prepend(head);
+  plate.append(foot);
+  plate.classList.add('is-print-one');
+  document.documentElement.dataset.printOne = plate.id;
+  on(window, 'afterprint', () => { head.remove(); foot.remove(); plate.classList.remove('is-print-one'); delete document.documentElement.dataset.printOne; }, { once: true });
+  window.print();
+}
 function closeReceipt(box) {
   const inside = box.contains(document.activeElement);
   box.hidden = true;
@@ -649,26 +778,32 @@ function closeReceipt(box) {
   box.from?.setAttribute('aria-expanded', false);
   if (inside) box.from?.focus(); // back to the chip the reader came from
 }
+// The kit's short card, from the data block: the source, linked; status, limit, and claim; and the way on to the full receipt on the Sources page. One at a time.
 function openReceipt(chip) {
   const plate = chip.closest('.x-plate');
   const box = $('[data-d="receipt"]', plate);
-  const id = claimOf(chip);
-  const closing = box.dataset.open === id && !box.hidden;
+  const ids = chip.dataset.claims ? chip.dataset.claims.split(' ') : [claimOf(chip)];
+  const closing = box.dataset.open === ids.join(' ') && !box.hidden;
   closeReceipt(box);
   if (closing) return;
-  setView(plate, 'sources'); // a chip in the claim zone may be pressed from another view
+  if (views[plate.id] === 'table') setView(plate, 'chart'); // a claim in the claim zone may be pressed from the Table
   box.hidden = false;
-  box.dataset.open = id;
+  box.dataset.open = ids.join(' ');
   box.from = chip;
-  // The kit's short card, from the data block: the source, linked; status, limit, and claim; and the way on to the full receipt on the Sources page.
-  const r = D.receipts[id];
-  const title = el('p', 'plate-source-title');
-  if (/^https:\/\//.test(r.url || '')) title.append(Object.assign(el('a', '', r.title), { href: r.url }));
-  else title.textContent = r.title;
-  const more = el('p', 'caption plate-receipt-more');
-  more.append(Object.assign(el('a', '', 'Quote, boundary, and date'), { href: `sources/#src-${id}` }));
-  box.replaceChildren(title, el('p', 'caption', `${r.short}. ${r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.'}${r.limit ? ` Limit: ${r.limit}` : ''} Claim ${id}.`), more);
-  chip.setAttribute('aria-expanded', true);
+  box.replaceChildren(...ids.slice(0, 4).map((id) => {
+    const r = D.receipts[id];
+    const item = el('div', 'plate-receipt-item');
+    const title = el('p', 'plate-source-title');
+    if (/^https:\/\//.test(r.url || '')) title.append(Object.assign(el('a', '', r.title), { href: r.url }));
+    else title.textContent = r.title;
+    const status = el('p', 'caption plate-receipt-status');
+    status.append(glyph(r.status), `${r.short}. ${r.status === 'partly' ? 'Partly verified.' : 'Verified against the source.'}${r.limit ? ` Limit: ${r.limit}` : ''}`);
+    const more = el('p', 'caption plate-receipt-more');
+    more.append(Object.assign(el('a', '', 'Quote, boundary and date on the Sources page'), { href: `sources/#src-${id}` }));
+    item.append(title, status, el('p', 'caption plate-receipt-id', `Claim ${id}`), more);
+    return item;
+  }), ...(ids.length > 4 ? [el('p', 'caption', `${ids.length - 4} more from this publisher on the Sources page`)] : []));
+  $$('.receipt, a.x-c', plate).forEach((c) => c.setAttribute('aria-expanded', c === chip));
   box.focus(); // the reader goes to it, and Escape comes back
 }
 // A typed figure or reading redraws once the typing pauses, as the library's search does; its change, which a blur or Enter brings, draws it at once.
@@ -676,33 +811,31 @@ let typed = null;
 let typing;
 function soon(draw) { clearTimeout(typing); typed = draw; typing = setTimeout(commit, 250); }
 function commit() { clearTimeout(typing); const draw = typed; typed = null; draw?.(); }
+const fieldRange = (key) => { const [low, high] = typedRange(D, key === 'seats' ? 'seats' : 'field'); return [low, Math.min(high, FIELD_TOP[key] ?? high)]; };
+const fieldOk = (key, v) => { const [low, high] = fieldRange(key); return Number.isFinite(v) && v >= low && v <= high; };
+const fieldLabel = (t) => t.closest('.x-field')?.querySelector('label')?.textContent ?? 'This field';
 function onInput(e) {
   const t = e.target;
-  const said = () => announce(t.closest('.x-plate') || shownPlate()); // its sentence is made when spoken, after a typed figure has redrawn
-  if (t.dataset.setting) { S.settings[t.dataset.setting] = t.value; refresh('settings'); said(); }
-  else if (t.dataset.opt === 'm') { S.m = t.value; refresh(); said(); }
-  else if (t.dataset.opt === 'mode') {
-    const was = fieldDefault('gb');
-    S.mode = t.value;
-    if (S.fields.gb === was) S.fields.gb = fieldDefault('gb');
-    refresh();
-    said();
-  } else if (t.dataset.opt) {
+  const tell = () => announce(t.closest('.x-plate') || shownPlate()); // its sentence is made when spoken, after a typed figure has redrawn
+  if (t.dataset.setting) { S.settings[t.dataset.setting] = t.value; refresh('settings'); tell(); }
+  else if (t.dataset.opt === 'm') { S.m = t.value; refresh(); tell(); }
+  else if (t.dataset.opt) {
     S.opts[t.dataset.opt] = t.value;
     refresh();
-    said();
+    tell();
     if (t.dataset.opt === 'waffle') $('[data-waffle-status]').textContent = $('.x-waffle:not([hidden]) figcaption strong').textContent; // no Reading on this plate says what changed
-  } else if (t.dataset.field) { // the model's one rule for a typed figure, the same a scenario file meets, so nothing typed can overflow
-    const name = t.dataset.field === 'seats' ? 'seats' : 'field';
-    const bad = t.value === '' || !typedOk(D, name, +t.value);
+  } else if (t.dataset.field) { // the model's one rule for a typed figure, the same a scenario file meets, so nothing typed can overflow; a week holds 168 hours
+    const name = t.dataset.field;
+    const bad = t.value === '' || !fieldOk(name, +t.value);
     t.setAttribute('aria-invalid', bad);
-    $('[data-why]').textContent = bad ? `Enter ${typedWords(D, name)}. The Wall keeps the last good value.` : t.dataset.whyText;
-    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[t.dataset.field] = +t.value; soon(() => refresh()); said(); }
+    const [low, high] = fieldRange(name);
+    $('[data-why]').textContent = bad ? `${fieldLabel(t)} takes a number from ${grouped(low)} to ${grouped(high)}. The Wall keeps the last good value.` : t.dataset.whyText;
+    if (!bad) { if (name === 'seats') S.seats = +t.value; else S.fields[name] = +t.value; soon(() => refresh()); tell(); }
   } else if (t.dataset.input) {
     const bad = t.value === '' || !typedOk(D, t.dataset.input, +t.value);
     t.setAttribute('aria-invalid', bad);
     $('[data-input-why]', t.closest('.x-admin-note')).textContent = bad ? `Enter ${typedWords(D, t.dataset.input)}. The figures keep the last good value.` : '';
-    if (!bad) { S.inputs[t.dataset.input] = +t.value; soon(() => refresh('settings')); said(); }
+    if (!bad) { S.inputs[t.dataset.input] = +t.value; soon(() => refresh('settings')); tell(); }
   } else if (t.dataset.measured) {
     const why = $('[data-measured-why]');
     try {
@@ -710,58 +843,101 @@ function onInput(e) {
       else Object.assign(S.measured, applyMeasured(D, { [t.dataset.measured]: t.value }).values);
       t.removeAttribute('aria-invalid');
       soon(() => { refresh('settings'); if (!t.hasAttribute('aria-invalid')) why.textContent = V.measuredLine(); }); // a bad value typed since keeps its own words
-      said();
+      tell();
     } catch (error) { // the model says what it allows; the figures keep the last good value
       t.setAttribute('aria-invalid', true);
       why.textContent = `${error.message}. The figures keep the last good value.`;
     }
-  } else if (t.dataset.custody !== undefined) { S.custody = t.value; refresh(); said(); }
-  else if (t.dataset.damage !== undefined) { S.damage = t.value; refresh(); project(); said(); }
+  } else if (t.dataset.custody !== undefined) { S.custody = t.value; refresh(); tell(); }
+  else if (t.dataset.damage !== undefined) { S.damage = t.value; refresh(); project(); tell(); }
   else if (t.dataset.pf) project();
+}
+// A count left out of bounds clamps to its nearer end when the reader leaves it, and says so, as the kit's typed figures do (explorer-10).
+function settleField(t) {
+  const name = t.dataset.field;
+  const v = +t.value;
+  if (t.value !== '' && fieldOk(name, v)) { t.removeAttribute('aria-invalid'); return; }
+  const [low, high] = fieldRange(name);
+  const end = t.value === '' || !Number.isFinite(v) ? (name === 'seats' ? S.seats : S.fields[name]) : Math.min(high, Math.max(low, v));
+  if (name === 'seats') S.seats = end; else S.fields[name] = end;
+  t.value = end;
+  t.setAttribute('aria-invalid', 'true');
+  $('[data-why]').textContent = `${fieldLabel(t)} takes a number from ${grouped(low)} to ${grouped(high)}, so ${grouped(end)} is used.`;
+  refresh();
 }
 function choose(plate, key) { // a reader's own selection: the figure they asked for shows at the top of the detail
   picked = key;
-  setView(plate, 'reading');
+  picked0[plate.dataset.plateX] = key;
+  if (views[plate.id] === 'table') setView(plate, 'chart');
   selectRow(plate.dataset.plateX, key);
+  writeQuery();
   announce(plate);
 }
 // As on every plate of the kit: the plate's one hidden output speaks the selected row's Reading half a second after the last selection or setting, so an arrow
-// speaks its row and then the sentence once. A hover rewrites the visible Reading only, and the sentence is made when it is spoken, so a hover cannot change it.
+// speaks its row and then the sentence once.
 function announce(plate) {
   const out = plate && $('.plate-detail > output', plate);
   if (!out) return; // a plate with no Reading
   clearTimeout(out.timer);
   out.timer = setTimeout(() => { out.textContent = spoken(S.sel[plate.dataset.plateX]); }, 500);
 }
-const shownPlate = () => $('[role="tabpanel"]:not([hidden]) .x-plate'); // a setting in the drawer reaches every tab; the open one says what it changed
+const shownPlate = () => $('[role="tabpanel"]:not([hidden]) .x-plate[data-plate-x]'); // a setting in Fine-tune reaches every tab; the open one says what it changed
+function startFrom(name) { // a starting point: who is counted and the device; the rest stays as the reader set it
+  const p = PRESETS[name];
+  const was = fieldDefault('gb');
+  S.mode = p.mode;
+  S.settings.device = p.device;
+  if (S.fields.gb === was) S.fields.gb = fieldDefault('gb');
+  refresh('settings');
+  announce(shownPlate());
+}
+function resetAll(status) {
+  Object.assign(S, V.fresh());
+  Object.keys(picked0).forEach((k) => delete picked0[k]);
+  refresh('settings');
+  $('[data-measured-why]').textContent = '';
+  $('[data-scenario-status]').textContent = '';
+  if (status) status.textContent = 'Back to the starting point.';
+}
 function onClick(e) {
   const t = e.target;
   const hit = (selector) => t.closest?.(selector);
-  if (hit('[data-open-settings]')) { e.preventDefault(); openDrawer(hit('[data-open-settings]')); }
-  else if (hit('[data-close-settings]')) closeDrawer();
-  else if (hit('.x-plate .receipt, .x-plate a.x-c') && $('[data-d="receipt"]', hit('.x-plate'))) { e.preventDefault(); openReceipt(hit('.x-plate .receipt, .x-plate a.x-c')); }
+  if (hit('[data-open-settings]')) { e.preventDefault(); openFine(hit('[data-open-settings]')); }
+  else if (hit('[data-to-measure]')) { e.preventDefault(); const m = $('#scenario input[name="m"]:checked'); m.scrollIntoView?.({ block: 'nearest' }); m.focus(); } // the bar, without losing the tab from the address
+  else if (hit('[data-preset-x]')) startFrom(hit('[data-preset-x]').dataset.presetX);
+  else if (hit('.plate-views button[data-view]')) { setView(hit('.x-plate'), hit('[data-view]').dataset.view); writeQuery(); }
+  else if (hit('.x-plate button.receipt, .x-plate .x-c, .x-plate a.receipt') && $('[data-d="receipt"]', hit('.x-plate'))) { e.preventDefault(); openReceipt(hit('.x-plate button.receipt, .x-plate .x-c, .x-plate a.receipt')); }
   else if (hit('.plate-plot [data-row]:not(.is-ghost)')) choose(hit('.x-plate'), hit('[data-row]').dataset.row);
-  else if (hit('[data-tally]')) { setView(hit('.x-plate'), 'sources'); $('.plate-views input[value="sources"]', hit('.x-plate')).focus(); } // the button leaves with its view, so focus goes to the view switch
   else if (hit('[data-about]')) { e.preventDefault(); const about = $(hit('[data-about]').getAttribute('href')); about.open = true; $('summary', about).focus(); } // folded with scripts, and a link to a details does not open it
   else if (hit('[data-copy]')) copyReading(hit('.x-plate'));
-  else if (hit('[data-reset]')) { Object.assign(S, V.fresh()); $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); refresh('settings'); $('[data-measured-why]').textContent = ''; $('[data-scenario-status]').textContent = ''; $('.plate-status', hit('.x-plate')).textContent = 'Back to the default settings.'; announce(hit('.x-plate')); }
+  else if (hit('[data-print-plate]')) printPlate(hit('.x-plate'));
+  else if (hit('[data-csv]')) window.plate.save(`explorer-${hit('.x-plate').id}.csv`, csvOf(hit('.x-plate')), 'text/csv');
+  else if (hit('[data-plate-x="project"] [data-reset]')) { $$('[data-pf]').forEach((n) => { n.value = ''; }); project(); $('[data-plate-x="project"] .plate-status').textContent = 'The fields are clear.'; }
+  else if (hit('[data-reset]')) { resetAll($('.plate-status', hit('.x-plate'))); announce(hit('.x-plate')); }
+  else if (hit('[data-reset-all]')) resetAll($('[data-fine-status]'));
   else if (hit('[data-preset]')) { $(`[data-pf="${t.dataset.for}"]`).value = t.dataset.preset; project(); }
-  else if (hit('[data-example]')) { for (const k of ['mw', 'lf', 'wue', 'load']) $(`[data-pf="${k}"]`).value = t.dataset[k]; project(); }
+  else if (hit('[data-example]')) project(true);
   else if (hit('[data-outputs]')) window.plate.save('resource-model-outputs.csv', V.outputsCsv(), 'text/csv'); // the kit's: made in the browser, sent nowhere, its blob URL let go
   else if (hit('[data-clear-measured]')) { S.measured = {}; refresh('settings'); $('[data-measured-why]').textContent = 'Your readings are cleared, and the model\'s figures are back.'; $('input[data-measured]').focus(); }
   else if (hit('[data-scenario-save]')) { $('[data-scenario-status]').textContent = ''; $('[data-scenario-warn]').hidden = false; $('[data-scenario-confirm]').focus(); } // the warning comes before the file exists
   else if (hit('[data-scenario-confirm]')) saveScenario();
   else if (hit('[data-scenario-cancel]')) closeWarning();
 }
+// A plot's spoken instruction, as the kit gives its own (plate.js HOW.rows), and the Table one press away on the bar.
+const HOW = 'Use arrow keys to move between rows, Home and End to reach the first and last, and the Table view for all values.';
 function wirePlot(plot) {
   const plate = plot.closest('.x-plate');
   const name = plate.dataset.plateX;
   plot.tabIndex = 0;
   plot.setAttribute('role', 'listbox');
-  aid(plate, plot, `how-${name}`, () => setView(plate, 'table'));
-  $('.plate-view[data-view="table"] .table-scroll', plate)?.setAttribute('aria-label', `Table of values: ${$('.panel-title', plate.closest('.panel'))?.textContent ?? name}`); // named after its plate, as the kit names its regions (a11y A10)
+  const how = el('p', '', HOW);
+  how.id = `how-${name}`;
+  how.hidden = true;
+  plate.append(how);
+  plot.setAttribute('aria-describedby', how.id);
+  $(':scope > .plate-view[data-view="table"] .table-scroll', plate)?.setAttribute('aria-label', `Table of values: ${titleOf(plate)}`); // named after its plate, as the kit names its regions (a11y A10)
   $$('ol, .wall-group', plot).forEach((n) => n.setAttribute('role', 'none'));
-  $$('.wall-key, .x-lever-note', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the detail's layer list, and the claim zone says each row has its own ruler
+  $$('.wall-key, .x-lever-note, .wall-words', plot).forEach((n) => { n.setAttribute('aria-hidden', 'true'); n.removeAttribute('aria-label'); }); // a list box holds options; the key's words are in the window's layer list
   on(plot, 'keydown', (e) => {
     const keys = shown[name];
     const i = keys.indexOf(S.sel[name]);
@@ -772,12 +948,6 @@ function wirePlot(plot) {
     choose(plate, key);
     rowNodes.get(key).scrollIntoView({ block: 'nearest' }); // the arrows are the keyboard's scroll here, so the row they reach must come into view
   });
-  const holding = () => $$('[data-d="note"], [data-d="chips"], [data-d="receipt"], [data-d="moves"]', plate).some((n) => n.contains(document.activeElement)); // a preview rebuilds these, which would drop the keyboard's place
-  on(plot, 'pointerover', (e) => { const row = e.target.closest('[data-row]:not(.is-ghost)'); if (row && !holding()) detail(name, row.dataset.row); });
-  on(plot, 'pointerleave', () => { if (!holding()) detail(name, S.sel[name]); });
-}
-function fit() {
-  if (innerWidth >= 1100) document.documentElement.style.setProperty('--plate-h', `${Math.round(Math.max(544, innerHeight - $('.x-band').getBoundingClientRect().bottom - scrollY - 24))}px`);
 }
 
 for (const n of $$('[data-js]')) n.hidden = false;
@@ -802,19 +972,15 @@ for (const [id, spec] of Object.entries(D.boards)) {
   if (spec.scenario) head('Scenario: a declared feed, not the default').dataset.scenario = '';
 }
 document.documentElement.classList.add('x-live');
-$('#settings').hidden = true;
-drawerSaid(false);
-$$('.x-plate.plate-fit').forEach((n) => n.classList.add('is-live'));
+$$('.x-plate').forEach((n) => n.classList.add('is-live'));
 for (const zone of $$('.x-plate.is-live > :is(.plate-claim, .plate-detail, .plate-plot:not(.x-plot))')) {
   zone.setAttribute('role', 'group');
   zone.setAttribute('aria-label', zone.matches('.plate-claim') ? 'Finding and settings' : zone.matches('.plate-detail') ? 'Detail' : 'Plot');
 }
-$$('.x-plate').forEach((plate) => { if ($('.plate-views', plate)) { setView(plate, 'reading'); listSources(plate); } });
-$$('.x-plate .plate-view').forEach((n) => on(n, 'beforematch', () => setView(n.closest('.x-plate'), n.dataset.view)));
 $$('[data-d="tokens"]').forEach((slot) => slot.append(...$('#x-tokens').cloneNode(true).children));
-for (const name of Object.keys(painters)) { const foot = el('p', 'plate-foot x-measured-line'); foot.dataset.measuredLine = ''; foot.hidden = true; plateOf(name).append(foot); }
+for (const name of Object.keys(painters)) { const foot = el('p', 'plate-foot x-measured-line'); foot.dataset.measuredLine = ''; foot.hidden = true; $('.plate-detail', plateOf(name)).append(foot); }
 $('[data-scenario-warning]').textContent = SCENARIO_WARNING;
-// The damage column stands in every table of rows, waiting on the control. It is its own column and never joins the price.
+// The damage column stands in every table of rows, before the claims, waiting on the control. It is its own column and never joins the price.
 if (D.carbon_damage) {
   for (const [key, tr] of tableRows) {
     if (key.startsWith('lever.') || key.startsWith('cross.')) continue;
@@ -822,51 +988,47 @@ if (D.carbon_damage) {
     td.dataset.c = 'damage';
     td.dataset.damageCol = '';
     td.hidden = true;
-    tr.append(td);
+    tr.insertBefore(td, $('[data-c="claims"]', tr));
     const headRow = $('thead tr', tr.closest('table'));
-    if (!$('[data-damage-col]', headRow)) { const th = el('th', '', 'Damage'); th.scope = 'col'; th.dataset.damageCol = ''; th.hidden = true; headRow.append(th); } // the head names the currency, and the caption the family, once
+    if (!$('[data-damage-col]', headRow)) { const th = el('th', '', 'Damage'); th.scope = 'col'; th.dataset.damageCol = ''; th.hidden = true; headRow.insertBefore(th, headRow.lastElementChild); } // the head names the currency, and the caption the family, once
     const caption = $('caption', tr.closest('table'));
     if (caption && !$('[data-damage-col]', caption)) { const note = el('span'); note.dataset.damageCol = ''; note.hidden = true; caption.append(note); }
   }
 }
 readQuery();
+for (const plate of $$('.x-plate')) if ($('.plate-views', plate)) setView(plate, views[plate.id] || 'chart');
+$$('.x-plate > .plate-view').forEach((n) => on(n, 'beforematch', () => setView(n.closest('.x-plate'), 'table')));
 on(document, 'input', onInput);
 on(document, 'focusin', (e) => { if (e.target.dataset?.whyText) $('[data-why]').textContent = e.target.dataset.whyText; });
 on(document, 'change', (e) => {
-  if (e.target.dataset.field || e.target.dataset.input || e.target.dataset.measured) { commit(); e.target.removeAttribute('aria-invalid'); syncControls(); }
+  if (e.target.dataset.input || e.target.dataset.measured) { commit(); e.target.removeAttribute('aria-invalid'); syncControls(); }
+  if (e.target.dataset.field) { commit(); settleField(e.target); }
   if (e.target.dataset.input) $('[data-input-why]', e.target.closest('.x-admin-note')).textContent = '';
   if (e.target.dataset.scenarioLoad !== undefined) loadScenario(e.target);
-  if (e.target.closest?.('.plate-views')) setView(e.target.closest('.x-plate'), e.target.value);
 });
 on(document, 'click', onClick);
 on(document, 'keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (!$('#settings').hidden) closeDrawer();
-  else $$('[data-d="receipt"]:not([hidden])').forEach((box) => closeReceipt(box));
+  if (e.key === 'Escape' && !fine.open) $$('[data-d="receipt"]:not([hidden])').forEach((box) => closeReceipt(box));
 });
-// Back within the page: an address that names a selector holds the truth for them all, and with no tab named the first tab shows, which plate.js does not do by itself.
-// One that names none came from a link within the page (Method, a claim), which takes the whole fragment: the settings stay, and the address takes them back.
-on(window, 'popstate', () => {
-  const { params } = address.read();
-  if (!LINKED.some((name) => params.has(name))) flushQuery(true);
-  else {
-    const was = JSON.stringify(S.settings);
-    readQuery();
-    if (JSON.stringify(S.settings) !== was) refresh('settings');
-  }
-  window.dispatchEvent(new Event('hashchange')); // so the tab follows the address on every Back, whatever the browser fired
+// Back, Forward, or a typed address puts the page where the address says (CW 4, explorer-07). An address that names none of this page's choices came from a link
+// within the page (a claim, a plate), which takes the whole fragment: the choices stay, and the address takes them back. With no tab named, the first tab shows.
+function fromAddress() {
+  if (![...address.read().params.keys()].some(mine)) { flushQuery(true); return; }
+  readQuery();
+  for (const plate of $$('.x-plate')) if ($('.plate-views', plate)) setView(plate, views[plate.id]);
+  refresh('settings');
+}
+on(window, 'hashchange', () => {
+  if (window.siteAddress.followed) flushQuery(true);
+  else fromAddress();
+  if (!address.read().anchor) $('[role="tab"]')?.click();
 });
-on(window, 'hashchange', () => { if (!address.read().anchor) $('[role="tab"]').click(); });
+on(window, 'popstate', () => { fromAddress(); window.dispatchEvent(new Event('hashchange')); }); // so the tab follows the address on every Back, whatever the browser fired
 $$('.x-plot').forEach(wirePlot);
-let opened = [];
-on(window, 'beforeprint', () => { opened = $$('details:not([open])'); opened.forEach((n) => { n.open = true; }); });
-on(window, 'afterprint', () => opened.forEach((n) => { n.open = false; }));
-on(window, 'resize', () => { fit(); placeDrawer(); });
-on(window, 'scroll', () => { if (!$('#settings').hidden) placeDrawer(); });
-document.fonts?.ready.then(fit);
-fit();
+// The kit's tabs reveal a panel by removing hidden: the plates in it draw then.
+new MutationObserver(wake).observe($('main'), { attributes: true, attributeFilter: ['hidden'], subtree: true });
 refresh('settings');
-selfCheck();
-project();
-if (address.read().anchor === 'settings') openDrawer($('[data-open-settings]'));
+project(true); // the proposal opens on the Data Centers example, said to be an illustration (explorer-20)
+(window.requestIdleCallback || ((fn) => setTimeout(fn, 1)))(selfCheck); // after the first draw (explorer-19)
+if (address.read().anchor === 'settings') openFine($('[data-open-settings]'));
 }());

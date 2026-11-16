@@ -11,7 +11,8 @@ const lows = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[1
 const highs = Object.fromEntries(Object.entries(D.inputs).map(([k, v]) => [k, v[2]]));
 const spreadAt = (spec, i) => V.run.spread(`pour:${spec}`, (t) => at(t, spec))[i];
 
-const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tags: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords() };
+const out = { walls: {}, rulers: {}, levers: {}, cross: {}, cells: {}, tags: {}, tables: {}, details: {}, pours: {}, week: V.week(), title: V.title(), line: V.line(), adminWords: V.adminWords(),
+  answers: { use: V.answer('use', 'wh'), where: V.answer('where', 'wh'), savings: V.answer('savings', 'wh') } };
 // The home ladder: each row at each boundary, from the same layers and spreads the Explorer prints, so the three boundaries cannot drift from it.
 const BOUNDARY = { dc: (l) => l.data_center, adds: (l) => l.data_center + l.network, whole: (l) => l.data_center + l.network + l.router + l.device };
 out.band = Object.fromEntries(['chat_hour', 'video_hour', 'short_hour', 'coding_hour'].map((k) => {
@@ -34,13 +35,13 @@ for (const [id, spec] of Object.entries(D.boards)) {
       out.levers[key] = {};
       for (const m of ['wh', 'usd', 'g', 'ml']) {
         const r = V.lever(key, m);
-        out.levers[key][m] = { ...r, before_text: ex.leverText(r.before, m), after_text: ex.leverText(r.after, m), ratio_text: r.ratio === null ? null : ex.num(r.ratio) };
+        out.levers[key][m] = { ...r, before_text: ex.leverText(r.before, m), after_text: ex.leverText(r.after, m), ratio_text: r.ratio === null ? null : ex.num(r.ratio), pct_text: r.ratio === null ? null : ex.num(r.ratio * 100) };
       }
     }
   } else {
     const { items, ticks } = V.crossings(spec.rows);
     out.cross[id] = { ticks, items: {} };
-    for (const [key, c] of Object.entries(items)) out.cross[id].items[key] = { ...c, words: V.crossWords(c, spec.noun), text: ex.words(V.crossWords(c, spec.noun)), ends: V.crossEnds(c) };
+    for (const [key, c] of Object.entries(items)) out.cross[id].items[key] = { ...c, words: V.crossWords(c, spec.noun), text: ex.words(V.crossWords(c, spec.noun)), ends: V.crossEnds(c), day: ex.blank(c.value) ? null : ex.num(c.value / 365, 2) };
   }
 }
 for (const name of ['use', 'where', 'arch', 'catalog']) out.details[name] = V.detailOf(D.first[name]);

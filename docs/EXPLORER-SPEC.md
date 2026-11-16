@@ -20,38 +20,47 @@ permanent one-line band under the tab strip, on every tab, never dismissed.
 **Refused** (from the model): a ratio between hour rows; a bar across price bases; a carbon bar between rows on different grids; water summed across basins;
 confidence bands; a line through the back-test; a total water figure anywhere; any number that reads as a measurement without its basis.
 
-## 2. Page structure (all tabs are `role="tablist"` panels per DESIGN-SPEC A3; print and no-JS render every panel in order)
+## 2. Page structure (R2, 11/16/2026: DIRECTION-R2, the Explorer; the old nine noun tabs are history)
 
-Header 64 | hero band (h1 2.25rem, one-line lead beside it, Key Facts aside) 120 at 1920, 96 at 1440 | tab strip 44 | disclaimer band 36 | one plate per
-tab with `"fit": true`, so the plate reaches the window foot at 1920x1080 (plate 816 tall) and 1440x900 (660). Below each plate, a `disclosure-grid` of
-`<details>` holds the panel's longer text (A5). Tab order and labels:
+The brief (name line, h1 "Run the numbers for your own use, an office or a proposed data center", a two-sentence lead, Sources checked, Sources for this page,
+How the model works) holds two starting points as pressed buttons, "One person on a phone" and "A 50-seat Tribal office" (who is counted and the device). No
+figure or claim id stands in the opener. Then the tab strip, four question tabs (`a > span.tab-name + span.tab-q`) and the Sources link at its end; then the
+scenario bar, which does not stick: one measure for every tab (Energy, CO2e, Water, Price), the settings in a line, what a range is, and Fine-tune. Each tab
+opens with its question as an h2 and an answer at the settings shown (`V.answer` in resource-model.js; the proposal's from its fields), then its plates: the
+first a lead, the rest repeaters (the kit's variants). Prose that explains a plate stays in a `disclosure-grid` under it.
 
-| # | Tab, hash | Plot (center zone) | Claim zone controls | Detail zone |
-|---|---|---|---|---|
-| 1 | Your Use `#your-use` | the Wall, linear Wh, rows: "Your screen and router, N hours" then one row per activity | Person or Office (seats), the eight count fields plus screen hours, all 44px tall, each with the model's default shown and a "why" on focus | readout, four measures (section 4), price by basis, water by basin, layer list, "matches the model" check |
-| 2 | AI Is Not the Building `#not-the-building` | two pictures side by side: Who uses the building (waffles), Where AI runs (place strip) | year (2025, 2030 added) and source (IEA world, LBNL US) as segmented controls, never mixed on one waffle | the figure, its definition line (facility class or workload class), receipt |
-| 3 | Where It Runs `#where-it-runs` | four places as Wall rows for one workload, same model | workload (prompt, coding session, image, clip); measure | the place profile (PUE, U, site water, grid), "node unpriced: needs a yearly count, see Architectures", banner "same model; the multipliers are untested" |
-| 4 | Architectures `#architectures` | options of one comparison as Wall rows (A, B, D), terabyte-year bars (C, no hour axis), or one-time rows and year rows under their own heads (E, no hour axis), one measure at a time; the custody setting stands over the plot | comparison A to E; measure; wage; node already on; E's typed size, hours, and other bill | wins, loses, note, `readings`, E's paybacks, stability ("reverses on"), Named alternatives (section 6); what the custody rule leaves out stands under the plate |
-| 5 | Levers `#levers` | ten rows, before and after as two squares on one linear ruler per row with `after_over_before` printed | measure | term moved, size in record, note; reasoning off tagged "upper bound" |
-| 6 | Crossovers `#crossovers` | log ruler of annual count: central square, low to high range line, "or never" as words at the row end; hydro lines in a separate "Scenario" group; one grid first | comparison (views, prompts) | the one input or setting at each end |
-| 7 | Catalog `#catalog` | two rulers in one plate: By the hour (the Wall, linear) and By the unit (log, squares); the price basis as a tag on every row | sort (value, tag) within a ruler; measure | the table view (Row, Wh, $ with basis, g, mL by basin, claims); price column not sortable |
-| 8 | Project Scale `#project-scale` | instrument rows, blank by default; one button fills the Data Centers plate's example and picks no feed; Reset clears it | MW, load factor, site water (three presets named), grid factor, load to compare with | "hosting and serving are separate decisions" |
-| 9 | Method `#method` | the back-test as a table, held-out rows first, not-held-out rows marked, no line | none | disclaimer, method text, calibration, regression (no t, interval, R2, "elasticity"), sensitivity, field protocol, downloads, version, cite |
+| Tab, panel | Question | Plates, in order (element id; `data-plate-x`) |
+|---|---|---|
+| Your use `#use` | What does your use cost? | `#your-use` (use), the Wall of your week; `#catalog` (catalog), by the hour and by the unit; `#not-the-building` (building), the waffles and the place strip |
+| Where it runs `#where` | Where should computing run? | `#where-it-runs` (where), one workload by place; `#architectures` (arch), five comparisons, the custody setting in its bar, what the rule leaves out and what wins, loses, and reverses it open under it, D's rows under three heads; `#crossovers` (cross), a count a year on one log ruler per row, its breakeven a square, the count also said a day |
+| Savings `#savings` | What actually saves energy? | `#levers` (lever), dumbbells: hollow before, filled after, an arrowhead at after, "N percent of before (a to b)" |
+| A proposal `#proposal` | What would a proposed data center draw? | `#project-scale` (project), opening on the Data Centers example, said to be an illustration; "Clear the fields" takes it blank |
 
-The 21 global selectors live in a **Settings drawer**: a 22rem `<aside>` on `#1E242C` (light `#EEF1F6`) that opens from the right under the disclaimer band, so the
-reader sees the Wall move. From 1600px the plate compresses beside it; below 1600px (W9 critique, 11/05/2026: compressed, the label column fell to about 110px) it is
-`min(22rem, 26vw)` and covers the detail column only, so the claim and plot keep their width and each field prints the model figure it stands in for. 1px `--rule` at its left, opened by the "Change" link in every plate's setting line ("Phone, Wi-Fi,
-router by time, US grid for the data center, NWPP at home, Columbia convention, $60 an hour, node not on. Change") and by a "Settings" button at the right end of
-the tab strip. Groups, in order: the scenario file (section 8); Your side (device, connection, network accounting, router rule); Rates (prompts, kind of chat, turns, images, clips, searches,
-streaming intensity); Grids (data center, colocation, node, home, generation water, hydro convention, hydro share); Money (wage, tariff); Node already on; Your Own Readings (section 8); Illustrative
-Carbon Damage (section 8). Segmented radios, 44px, the `why` under each on focus. Escape closes; focus returns to the link. Print: the drawer prints as a list of the current settings under the first plate.
+Each plate is the kit's: a claim zone, a bar with Chart and Table (two pressed buttons; the Table takes the plot's and the window's place), the plot, the window
+(the measure it shows with a link to the bar, the readout, the Reading at six lines, the selected row's evidence chips and their card, Copy reading, Back to the
+starting point once a choice moves, what moves it most, how it is modeled), the Table (every row, each with its claims, a status square and word), and the collar
+(the plate's sources line, All sources for this plate at `sources/#{id}`, Print this plate, Download CSV). A hover outlines a row and changes nothing. The Wall
+prints its zero once at the wall, its left ticks as bare figures, arrows on the head's two sides, the needle's figure over the plot, and one sentence on how to
+read it; each key swatch stands beside its own word. Every row's note rides in `template#x-notes` for the window and prints on the Sources page.
 
-**The address.** Settings reach every tab. They ride in the fragment, after the tab's anchor (`#your-use&device=laptop&grid_dc=nwpp`), since a browser never sends a
-fragment to the server (owner ruling 29, 11/06/2026); an old `?device=laptop#your-use` link is read once and moved into the fragment, and nothing in the request line carries a setting. The address carries the global selectors only, and never wage, tariff, office
-size, a project's load, the custody setting, a reader's readings, the damage family, or any typed number, so a shared link cannot carry a Nation's figures. Measures, comparisons, views, and the selected row stay off it too. A link
-is untrusted input: an unknown name or an option a selector does not hold is ignored and dropped from the address on load. Changes replace the current history entry, so
-Back leaves the page rather than walking back through radio clicks; a Back step inside the page re-reads the address, and with no anchor the first tab shows. A link within the page takes the
-whole fragment, and the settings come back after its anchor. Tabs stay deep-linkable by anchor; since no element has the whole fragment as its id, the kit lands on the anchor itself, its tab open, in view and with focus, as the browser does on a plain `#id`.
+**Fine-tune** is a modal `<dialog>` on the left (site.css `dialog.drawer-left`), opened from the bar: Close in its head; groups Your Side, Rates, Grids, Money,
+Node Already On, Files (outputs.csv, the scenario file); Your Own Readings; Illustrative Carbon Damage; Done (paper) and Reset settings in its foot. The plots
+update behind it; Escape or Done closes it and focus goes back to Fine-tune. A link to `#settings` opens it.
+
+**The address.** Every choice but a typed figure rides in the fragment, after the anchor (`#where&m=ml&preset=office&device=laptop&comparison=D&architectures=arch.D.laptop&levers-view=table`):
+`m`, `preset=office`, the selectors (never wage or tariff), each plate's switch (`workload`, `comparison`, `crossover`, `scale`, `sort`, `waffle`),
+`custody`, `damage`, a row the reader chose (`{id}={row}`), and a Table view (`{id}-view=table`). Typed counts, seats, hours, sizes, a project's fields, and
+readings never ride in it (owner ruling 29). A link is untrusted: a name or option the page does not hold is dropped. A tab change pushes a history entry (the
+kit's); every other change replaces it. Back re-reads the address; an address naming none of the page's choices came from a link within the page, so the
+choices stay and the address takes them back; with no anchor the first tab shows. `#about-{waffle}` chooses its waffle first.
+
+**Drawing and print.** Plates on the open tab draw on load and on each change; a closed tab's wait until it opens. The self-check runs after the first draw.
+Ctrl+P prints the brief, the bar's settings, and the open tab, each plate as plot, Reading, Table, and collar with the Sources page's address, at the comparison
+and view the reader chose; nothing opens for print. Without scripts every panel and plate shows, the Table under the window, the settings as a list.
+
+**The Sources page** (`explorer/sources/`) holds the census; each plate's section (its sources line, Open the plate, its claims each linked to its receipt with
+its status, and how each row is counted); How the Model Works (the disclaimer, method, calibration, sensitivity, illustrations, the back-test, Measure It
+Yourself, downloads, version, how to cite, regression, carbon damage); every receipt by source document; and the data files.
 
 ## 3. The Wall (the one new plot kind; `plate.register` with a custom draw, `plate.draw` primitives)
 

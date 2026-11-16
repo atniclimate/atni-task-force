@@ -1079,6 +1079,29 @@ function Views(D) {
     const largest = w.largest ? `${w.share > 0.5 ? 'most of it' : 'the largest share'} ${D.rows[w.largest].lower}` : 'none of it yet';
     return `In a week ${who}with ${grouped(V.S.fields.screen)} screen hours: screen and router ${plainFig(w.screen, 'wh')}, activities ${plainFig(w.added, 'wh')}, ${largest}.`;
   };
+  // Each Explorer tab's answer to its question, in the measure shown and at the settings shown (DIRECTION-R2, the Explorer). Every figure is one the tab's plates
+  // print at that state: the week's lines, a crossover's count, a lever's two figures.
+  V.answer = (tab, m = V.S.m) => {
+    if (tab === 'use') {
+      const w = V.week();
+      const head = `In a week ${V.S.mode === 'office' ? `for ${grouped(V.S.seats)} seats ` : ''}with ${grouped(V.S.fields.screen)} screen hours`;
+      if (m === 'wh') return V.title();
+      if (m === 'g') return `${head}: ${plainFig(w.g, 'g')} across the rows, location-based.`;
+      if (m === 'ml') return w.noWater ? `${head}: no water figure, because one feed has none in the record.` : `${head}: water ${plainFig(w.water.home, 'ml')} in the home basin and ${plainFig(w.water.cloud, 'ml')} in the data center's, never summed.`;
+      return `${head}: ${usd(w.list)} of work at API list${w.seat ? `, ${usd(w.seat)} at seat and storage list` : ''}, and ${usd(w.earned)} that platforms earn in those hours, which is revenue, not a cost.`;
+    }
+    if (tab === 'where') {
+      const c = V.run.crossover('prompts_energy_vs_hyper');
+      return blank(c.value) ? 'At these settings a community node never uses less energy per answer than a hyperscale cloud.'
+        : `A community node uses less energy per answer than a hyperscale cloud only above ${words(V.crossWords(c, 'prompts a year'))}, at these settings.`;
+    }
+    if (tab === 'savings') {
+      const best = D.boards.lever.rows.filter((key) => !D.rows[key].bound).map((key) => [key, V.lever(key, m)]).filter(([, r]) => !blank(r.ratio) && r.ratio < 1).sort((a, b) => a[1].ratio - b[1].ratio)[0]; // an upper bound or a scenario never heads it
+      return best ? `${D.rows[best[0]].label} saves the most per unit at these settings: ${leverText(best[1].before, m)} before, ${leverText(best[1].after, m)} after, ${num(best[1].ratio * 100)} percent of before.`
+        : `No lever saves ${D.words.measure[m]} per unit at these settings.`;
+    }
+    return '';
+  };
   V.table = (key) => {
     const r = row(key);
     const price = V.cell(key, 'usd');
