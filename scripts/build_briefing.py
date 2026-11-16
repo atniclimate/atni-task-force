@@ -30,7 +30,8 @@ MODELS = {"comparison-model": "the comparison model", "resource-model": "the ope
 CHECKLISTS_PAGE = "data-centers/index.html"
 FOOT = "This comparison does not decide a proposal."
 GUARD = "Default settings, sources checked {checked}."  # briefing.js says "Settings chosen by the reader" once a setting moves
-EMPTY = "Nothing is in the packet yet. Start from one of the packets above, or tick plates and checklists in the list."
+EMPTY = "Start from a ready-made packet above, or tick plates and checklists in the list, and the packet builds here as you tick."
+FROM = "from the {page} web page"  # after "Section N, ", which briefing.css numbers as the cover does; "web page", since on paper a page is a sheet
 MODELED = "Figures marked modeled are computed from the receipts and the reader's settings, not measured."
 # What each plate answers, as the rail and the packet's headings ask it (briefing-plates-21). A plate not named here falls back to its eyebrow, with a warning.
 ASKS = {
@@ -77,8 +78,12 @@ PACKETS = [
     ("energy", "Energy planning and funding", ["energy-types-by-stage", "energy-deadlines", "dc-pnw-load"], []),
 ]
 READY_NAME = "One plate from each page, and every checklist"
-# Printed sheets, for the page estimate: a plate's title, plot, and Reading fill one sheet with its first rows (DIRECTION-R2 3.7, item 10); more rows run on.
-ROWS_ON_FIRST, ROWS_A_SHEET, DOCS_A_SHEET = 15, 40, 20
+# Printed sheets, for the page estimates (briefing-plates-07): measured in Chrome by `python scripts/build_briefing_pdf.py --measure`, which prints each plate alone
+# and measures the checklists, the cover's lines, and the appendix on paper. A plate it has not measured falls back to a guess from its rows: its title, plot, and
+# Reading fill one sheet with its first rows, and more rows run on.
+SHEETS_FILE = ROOT / "scripts" / "fixtures" / "briefing-sheets.json"
+ROWS_ON_FIRST, ROWS_A_SHEET = 15, 40
+GUESS, GUESS_SHARE = {"sheets": {}, "share": {}, "cover": {"base": 0.5, "item": 0.04}, "docs_a_sheet": 20}, 0.3
 NOTE = re.compile(r'<p class="dc-wide-note">((?:(?!</p>).)*)</p>\s*<div class="disclosure-grid[^"]*" id="checklists">', re.S)  # the page has other notes, so this one may not run past its own paragraph
 LIST = re.compile(r'<details class="disclosure" id="(q-[a-z-]+)">\s*<summary><h3>(.*?)</h3></summary>\s*<ul>(.*?)</ul>\s*</details>', re.S)
 # The meeting sheet's form (DIRECTION-R2 3.12): a set is a fieldset with its name as the legend and one span.ask-q a question. Where a set comes from is the
@@ -157,13 +162,31 @@ def sheets(block):
     return 1 + math.ceil(max(0, len(ROW.findall(block)) - ROWS_ON_FIRST) / ROWS_A_SHEET)
 
 
-def plate_section(entry, block, data, from_name, label, ask):
+def measured(blocks, list_ids):
+    """What the last measure found on paper, with a guess for each plate or checklist it did not measure."""
+    try:
+        found = json.loads(SHEETS_FILE.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        found = {}
+    paper = {**GUESS, **found}
+    return {**paper, "sheets": {i: paper["sheets"].get(i) or sheets(block) for i, block in blocks.items()},
+            "share": {i: paper["share"].get(i) or GUESS_SHARE for i in list_ids}}
+
+
+def estimate(paper, plates, lists, docs):
+    """Sheets a packet prints to: the cover (its fixed lines, and a line a section), each plate's own sheets, the checklists running on together (a share of a
+    sheet each), then the appendix. briefing.js counts the bar's estimate the same way, from the same numbers, which the page carries."""
+    cover = math.ceil(paper["cover"]["base"] + paper["cover"]["item"] * (len(plates) + len(lists)))
+    return cover + sum(paper["sheets"][i] for i in plates) + math.ceil(sum(paper["share"][i] for i in lists)) + math.ceil(docs / paper["docs_a_sheet"])
+
+
+def plate_section(entry, block, data, from_name, label, ask, paper):
     plate_id, checked = entry["id"], entry["checked"] or ""
     model = MODELS.get(entry.get("model"), entry.get("model") or "")
     attrs = (f'id="packet-{plate_id}" data-packet="{plate_id}" data-from="{escape(from_name)}" data-label="{escape(label)}" data-model="{escape(model)}"'
-             f'{" data-formula" if any(r.get("f") for r in data["rows"]) else ""} data-sheets="{sheets(block)}"')
+             f'{" data-formula" if any(r.get("f") for r in data["rows"]) else ""} data-sheets="{paper["sheets"][plate_id]}"')
     return page_section("packet-plate", attrs, (
-        f'<p class="packet-from">From the {escape(from_name)} page</p>\n<h2 class="packet-ask">{escape(ask)}</h2>\n<p class="caption packet-settings">Settings: defaults</p>\n'
+        f'<p class="packet-from">{FROM.format(page=escape(from_name))}</p>\n<h2 class="packet-ask">{escape(ask)}</h2>\n<p class="caption packet-settings">Settings: defaults</p>\n'
         f'<!-- plate:{plate_id} -->\n{block}\n<!-- /plate:{plate_id} -->'), checked)
 
 
@@ -209,7 +232,7 @@ def said(entry, receipts):
     partly = sum(r["status"] == "partly" for r in receipts.values())
     standing = f"{len(receipts):,} sourced figures" + (f", {partly:,} partly verified" if partly else "")
     return (f'<li data-for="{entry["id"]}"><a href="#{entry["id"]}"><span data-title="{entry["id"]}">{escape(entry["title"])}</span></a>'
-            f'<span class="packet-says-from"> {escape(PAGES[entry["page"]])} page; {standing}.</span></li>')
+            f'<span class="packet-says-from"> F{FROM.format(page=escape(PAGES[entry["page"]]))[1:]}; {standing}, each with its claim id in the Table.</span></li>')
 
 
 def ready_ids(entries, list_ids):
@@ -224,13 +247,15 @@ def preset(key, name, plate_ids, list_ids, asks, list_names, pages, actions):
     plural = lambda n, one, many: f"{n} {one if n == 1 else many}"  # noqa: E731
     count = " and ".join(filter(None, [plural(len(plate_ids), "plate", "plates") if plate_ids else "", plural(len(list_ids), "checklist", "checklists") if list_ids else ""]))
     holds = "".join(f"<li>{escape(asks[i])}</li>" for i in plate_ids)
-    if 0 < len(list_ids) <= 8:
-        holds += f'<li>{"Checklists" if len(list_ids) > 1 else "Checklist"}: {escape(", ".join(list_names[i] for i in list_ids))}</li>'
-    elif list_ids:
+    if len(list_ids) <= 3:  # a few, each by its full name, as the cover names them
+        holds += "".join(f"<li>Checklist: {escape(list_names[i])}</li>" for i in list_ids)
+    elif len(list_ids) <= 8:
+        holds += f'<li>Checklists: {escape(", ".join(list_names[i] for i in list_ids))}</li>'
+    else:
         holds += f"<li>Every checklist, {len(list_ids)} in all</li>"
     estimate = f", about {pages} pages" if pages else ""
-    return (f'<li class="preset" id="preset-{key}"><h3 class="preset-name">{escape(name)}</h3><p class="preset-count">{count}{estimate}</p>'
-            f'<ul class="preset-holds">{holds}</ul><div class="preset-acts" data-ids="{" ".join([*plate_ids, *list_ids])}">{actions}</div></li>')
+    return (f'<li class="preset" id="preset-{key}"><h3 class="preset-name" id="preset-{key}-name">{escape(name)}</h3><p class="preset-count">{count}{estimate}</p>'
+            f'<ul class="preset-holds">{holds}</ul><div class="preset-acts" data-ids="{" ".join([*plate_ids, *list_ids])}">{actions.replace("{key}", key)}</div></li>')
 
 
 def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
@@ -262,6 +287,7 @@ def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
     sections = {e["id"]: posixpath.dirname(e["page"]) for e in entries} | {list_id: posixpath.dirname(rel) for list_id, _, _, rel in lists}
     here = set(sections) | {i for block in blocks.values() for i in ID.findall(block)}
 
+    paper = measured(blocks, [list_id for list_id, *_ in lists])
     labels, asks, packet, rail = {}, {}, [], {}
     for entry in entries:
         label = entry["eyebrow"] or LABELS.get(entry["id"])
@@ -270,7 +296,7 @@ def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
         labels[entry["id"]], asks[entry["id"]] = label, ask_of(entry["id"], label)
         from_name = PAGES[entry["page"]]
         block = rehome(blocks[entry["id"]], posixpath.dirname(entry["page"]), here, sections)
-        packet.append(plate_section(entry, block, data[entry["id"]], from_name, label, asks[entry["id"]]))
+        packet.append(plate_section(entry, block, data[entry["id"]], from_name, label, asks[entry["id"]], paper))
         rail.setdefault(from_name, []).append(rail_item("plate", entry["id"], asks[entry["id"]]))
     rail_html = [rail_group(name, "plate", [("", items)]) for name, items in rail.items()]
     list_names, list_items = {}, {}
@@ -290,8 +316,8 @@ def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
         provenance = f'<p class="caption packet-provenance">{notes[list_id]}</p>\n' if notes[list_id] else ""
         body = rehome(f'{provenance}<ol class="packet-list">{items}</ol>', source_dir, here, sections)
         count = len(re.findall(r"<li>", items))
-        packet.append(page_section("packet-checklist", f'id="{list_id}" data-packet="{list_id}" data-from="{escape(PAGES[rel])}" data-label="{escape(list_names[list_id])}" data-questions="{count}" data-sheets="1"',
-                                   f'<p class="packet-from">From the {escape(PAGES[rel])} page</p>\n<h2 class="packet-h">{name}</h2>\n{body}', latest))
+        packet.append(page_section("packet-checklist", f'id="{list_id}" data-packet="{list_id}" data-from="{escape(PAGES[rel])}" data-label="{escape(list_names[list_id])}" data-questions="{count}" data-share="{paper["share"][list_id]}"',
+                                   f'<p class="packet-from">{FROM.format(page=escape(PAGES[rel]))}</p>\n<h2 class="packet-h">{name}</h2>\n{body}', latest))
     rail_html.append(rail_group("Checklists", "list", list(list_items.items())))
 
     receipts = {claim_id: r for d in data.values() for claim_id, r in d["receipts"].items()}
@@ -299,7 +325,8 @@ def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
     models = sorted({MODELS.get(e["model"], e["model"]) for e in entries if e["model"]})
     says = [said(e, data[e["id"]]["receipts"]) for e in entries]
     says +=[f'<li data-for="{list_id}"><a href="#{list_id}">Checklist: {escape(list_names[list_id])}</a><span class="packet-says-from"> {len(re.findall(r"<li>", items))} questions to ask.</span></li>' for list_id, _, items, _ in lists]
-    cover = page_section("packet-cover", 'id="packet-cover"', (
+    on_paper = f'data-cover-base="{paper["cover"]["base"]}" data-cover-item="{paper["cover"]["item"]}" data-docs-a-sheet="{paper["docs_a_sheet"]}"'  # briefing.js's estimate
+    cover = page_section("packet-cover", f'id="packet-cover" {on_paper}', (
         '<h2 class="packet-title">Council Briefing</h2>\n<p class="packet-assembled">Assembled<span data-assembled></span> from the ATNI Energy Task Forces site.</p>\n'
         f'<p class="packet-empty" data-empty>{escape(EMPTY)}</p>\n<div data-filled>\n<h2 class="packet-says-h">What this packet says</h2>\n<ol class="packet-says" data-contents>\n' + "\n".join(says) + '\n</ol>\n'
         '<dl class="packet-rows">\n'
@@ -315,14 +342,16 @@ def compose(site, pdf_slot="<!-- briefing:pdf -->\n<!-- /briefing:pdf -->"):
     gone = [i for _, _, plates, ids in PACKETS for i in [*plates, *ids] if i not in in_packet]
     if gone:
         raise bp.BuildError(f"PACKETS names {', '.join(dict.fromkeys(gone))}, which no page offers now: update PACKETS here")
-    sheet_of = {e["id"]: sheets(blocks[e["id"]]) for e in entries} | {i: 1 for i in list_names}
     docs_of = lambda ids: len({claims[c]["source"]["url"] for c, (_, by, _) in cites.items() if set(by) & set(ids)})  # noqa: E731
-    estimate = lambda ids: 1 + sum(sheet_of[i] for i in ids) + math.ceil(docs_of(ids) / DOCS_A_SHEET)  # noqa: E731
-    act = '<button type="button" class="button button-secondary" data-print-preset data-js>Print this packet</button><a class="button button-secondary" href="#customize" data-customize>Customize</a>'
-    presets = [preset(key, name, plates, ids, asks, list_names, estimate([*plates, *ids]), act) for key, name, plates, ids in PACKETS]
+    order = [*labels, *list_names]  # a packet lists what it holds in the order it prints (critic 11)
+    customize = '<a class="button button-secondary" href="#customize-title" data-customize aria-describedby="preset-{key}-name">Customize</a>'
+    act = f'<button type="button" class="button button-secondary" data-print-preset data-js aria-describedby="preset-{{key}}-name">Print this packet</button>{customize}'
+    presets = []
+    for key, name, plates, ids in PACKETS:
+        plates, ids = sorted(plates, key=order.index), sorted(ids, key=order.index)
+        presets.append(preset(key, name, plates, ids, asks, list_names, estimate(paper, plates, ids, docs_of([*plates, *ids])), act))
     ready = ready_ids(entries, [i for i, _, _, _ in lists])
-    presets.append(preset("ready", READY_NAME, [i for i in ready if i in labels], [i for i in ready if i in list_names], asks, list_names, 0,
-                          f'{pdf_slot}<a class="button button-secondary" href="#customize" data-customize>Customize</a>'))
+    presets.append(preset("ready", READY_NAME, [i for i in ready if i in labels], [i for i in ready if i in list_names], asks, list_names, 0, f"{pdf_slot}{customize}"))
     meta = f'<span class="figure-num">{escape(latest)}</span> <span class="figure-label">Sources checked</span>'
     return {"meta": meta, "presets": "\n".join(presets), "rail": "\n".join(rail_html), "packet": "\n".join([cover, *packet, appendix])}, claims
 

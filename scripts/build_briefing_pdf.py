@@ -9,7 +9,9 @@ page draws with, and reads the file back: every sheet says "Default settings" an
 tagged with a language, and every outline title reads as its heading does. Run after scripts/build_briefing.py:
    python scripts/build_briefing_pdf.py           # needs Chrome and Playwright, as scripts/capture.js does; leaves the PDF alone when nothing it was built from has changed (--force prints it again)
    python scripts/build_briefing_pdf.py --check   # needs no browser; exit 1 and name the fix if any of those, or the link on the page, has moved since the PDF was built
-Add --site DIR to either to work on a copy of site/.
+   python scripts/build_briefing_pdf.py --measure # needs Chrome; measures each plate, checklist, cover line, and the appendix on paper into scripts/fixtures/briefing-sheets.json,
+                                                  # which build_briefing.py reads for the packets' page estimates; then run build_briefing.py and this script again
+Add --site DIR to any of them to work on a copy of site/.
 """
 import datetime
 import hashlib
@@ -140,13 +142,14 @@ def stale(site=SITE, pdf=None):
     return out
 
 
-def render(site, ids, date, out):
+def render(site, *args):
     node = shutil.which("node")
     if not node:
         raise bp.BuildError("node is not on PATH; it drives Chrome through Playwright")
-    done = subprocess.run([node, str(RENDERER), "--out", str(out), "--ids", ",".join(ids), "--date", date, "--base", BASE, "--note", note(), "--site", str(site)], capture_output=True, text=True, encoding="utf-8", check=False)
+    done = subprocess.run([node, str(RENDERER), *map(str, args), "--site", str(site)], capture_output=True, text=True, encoding="utf-8", check=False)
     if done.returncode:
         raise bp.BuildError(f"Chrome could not print the packet: {(done.stderr or done.stdout).strip()}")
+    return done.stdout.strip()
 
 
 def stamp(path, digest, date):
@@ -213,13 +216,13 @@ def build(site=SITE, force=False):
         date = datetime.date.today().strftime("%m/%d/%Y")
         with tempfile.TemporaryDirectory() as tmp:
             raw = Path(tmp) / NAME
-            render(site, ids, date, raw)
+            render(site, "--out", raw, "--ids", ",".join(ids), "--date", date, "--base", BASE, "--note", note())
             stamp(raw, digest, date)
             errors, notes = verify(raw, date)
             if errors:
                 raise bp.BuildError("the PDF does not keep its promises:\n  " + "\n  ".join(errors[:12]))
-            for note in notes:
-                print(f"note: {note}", file=sys.stderr)
+            for line in notes:  # not "note": that name is the cover-note function called above
+                print(f"note: {line}", file=sys.stderr)
             shutil.copyfile(raw, path)
     have = facts(path)
     page = site / "briefing" / "index.html"
@@ -235,6 +238,9 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     where = Path(args[args.index("--site") + 1]) if "--site" in args else SITE
     try:
+        if "--measure" in args:
+            print(render(where, "--measure", bb.SHEETS_FILE))
+            sys.exit(0)
         if "--check" in args:
             behind = stale(where)
             print(json.dumps({"stale": behind, "plates": default_ids(where)}))

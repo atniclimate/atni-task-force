@@ -179,6 +179,23 @@ def test_the_appendix_lists_each_document_once_with_its_claims_by_status_and_lim
     assert rows[0].text().endswith("verified") and "limit" not in rows[0].text()
 
 
+def test_a_packet_estimate_counts_the_cover_each_plate_the_checklists_run_on_and_the_appendix(monkeypatch, tmp_path):
+    paper = {"sheets": {"p1": 2, "p2": 3}, "share": {"q1": 0.4, "q2": 0.5, "q3": 0.3}, "cover": {"base": 0.25, "item": 0.06}, "docs_a_sheet": 10}
+    assert bb.estimate(paper, ["p1", "p2"], ["q1", "q2", "q3"], 12) == 1 + 5 + 2 + 2, "the cover, two plates, three checklists on two sheets, 12 documents"
+    assert bb.estimate(paper, [], ["q1"], 0) == 1 + 1, "a checklist alone takes a sheet, and no appendix without documents"
+    monkeypatch.setattr(bb, "SHEETS_FILE", tmp_path / "none.json")
+    guessed = bb.measured({"p9": '<tr data-key="a">' * 20}, ["q9"])
+    assert guessed["sheets"] == {"p9": 2} and guessed["share"] == {"q9": bb.GUESS_SHARE}, "unmeasured: a guess from the rows, and a share a checklist"
+
+
+def test_the_real_page_estimates_come_from_the_measure_and_name_every_section():
+    paper = json.loads(bb.SHEETS_FILE.read_text(encoding="utf-8"))
+    page = (SITE / "briefing" / "index.html").read_text(encoding="utf-8")
+    for plate_id, n in paper["sheets"].items():
+        assert f'data-packet="{plate_id}"' in page and f'data-sheets="{n}"' in page, plate_id
+    assert all(f'id="{list_id}" data-packet="{list_id}"' in page for list_id in paper["share"]), "a share for each checklist on the page"
+
+
 def test_the_ready_made_packet_is_the_first_plate_of_each_page_then_every_set():
     entries = [{"id": "a1", "page": "ai/index.html"}, {"id": "a2", "page": "ai/index.html"}, {"id": "d1", "page": "data-centers/index.html"}]
     assert bb.ready_ids(entries, ["q-one", "q-two"]) == ["a1", "d1", "q-one", "q-two"]

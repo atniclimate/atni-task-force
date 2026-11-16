@@ -17,7 +17,6 @@
   const list = (items) => new Intl.ListFormat('en-US').format(items);
   const chosen = (name) => boxes.filter((b) => (!name || b.name === name) && b.checked).map((b) => b.value);
   const tick = (ids, keep = false) => { for (const b of boxes) b.checked = ids.includes(b.value) || (keep && b.checked); };
-  const DOCS_A_SHEET = 20; // as scripts/build_briefing.py estimates the appendix
   // A group of the rail opens when it holds a tick; one the reader opened stays open.
   const openGroups = () => { for (const group of all('.rail-group', form)) if (one('input:checked', group)) group.open = true; };
   const show = () => {
@@ -36,7 +35,8 @@
     const section = target?.closest('.packet-page[data-packet]');
     if (section) ids.push(section.dataset.packet);
     if (params.toString() || location.search) window.siteAddress.write(ids.length && !anchor ? 'customize' : anchor, new URLSearchParams());
-    return { ids, target: section ? target : ids.length ? one('#customize') : null, missing: ids.filter((id) => !boxes.some((b) => b.value === id)) };
+    // The list's heading, not the builder's top, so the bar stands stuck at the top with the list under it (critic 8).
+    return { ids, target: section ? target : ids.length || anchor === 'customize' ? one('#customize-title') : null, missing: ids.filter((id) => !boxes.some((b) => b.value === id)) };
   }
   const landing = asked();
   tick(landing.ids);
@@ -104,7 +104,9 @@
         const guard = `${reads.some((r) => r.changed) ? 'Settings chosen by the reader' : 'Default settings'}, sources checked ${checkedWords(plates)}.`;
         for (const node of all('.packet-guard')) node.textContent = guard;
         for (const r of reads) {
-          one('.packet-settings', pageOf(r.id)).textContent = !r.settings.length ? 'Settings: none on this plate' : r.changed ? `Settings: ${r.settings.map((s) => `${s.label}: ${s.word}`).join('; ')}; chosen by the reader` : 'Settings: defaults';
+          const line = one('.packet-settings', pageOf(r.id)); // only a plate the reader moved says so; the guard line covers the defaults
+          line.hidden = !r.changed;
+          line.textContent = r.changed ? `Settings: ${r.settings.map((s) => `${s.label}: ${s.word}`).join('; ')}; chosen by the reader` : 'Settings: defaults';
           for (const node of all(`[data-title="${r.id}"]`)) node.textContent = r.title;
         }
         // The cover: what the packet says, then how to read it. Measured and Modeled stand only while a plate is chosen (briefing-plates-05).
@@ -140,7 +142,10 @@
           const ticks = all('input', group);
           one('[data-count]', group).textContent = `${ticks.filter((b) => b.checked).length} of ${ticks.length}`;
         }
-        const sheets = 1 + [...on].reduce((n, id) => n + Number(pageOf(id).dataset.sheets || 1), 0) + Math.ceil(docs / DOCS_A_SHEET);
+        // Sheets, as scripts/build_briefing.py estimates a packet from the same measured numbers: the cover, each plate, the checklists running on, the appendix.
+        const { coverBase, coverItem, docsASheet } = cover.dataset;
+        const sum = (ids, key) => ids.reduce((n, id) => n + Number(pageOf(id).dataset[key]), 0);
+        const sheets = Math.ceil(Number(coverBase) + Number(coverItem) * on.size) + sum(plates, 'sheets') + Math.ceil(sum(lists, 'share')) + Math.ceil(docs / Number(docsASheet));
         const parts = [plates.length ? count(plates.length, 'plate', 'plates') : '', lists.length ? count(lists.length, 'checklist', 'checklists') : ''].filter(Boolean);
         one('[data-packet-count]').textContent = on.size ? `${list(parts)}, about ${sheets} pages` : 'Nothing is in the packet yet.';
         return { plates, lists, reads };
@@ -148,10 +153,19 @@
         syncing = false;
       }
     }
+    const held = () => say(`The packet now holds ${one('[data-packet-count]').textContent}. Tick or untick to change it.`);
     const empty = () => {
       if (chosen().length) return false;
       say('The packet is empty. Tick a plate or a checklist, or start from one of the packets above.');
       return true;
+    };
+    // Paper: the packet takes the sheet's width (briefing.css) and its plates redraw at the size they print, then the browser prints; after, the page comes back.
+    // Ctrl+P on its own prints too, with drawings scaled from the screen.
+    const printAtSheetSize = (after) => {
+      const root = document.documentElement;
+      root.classList.add('is-printing');
+      window.addEventListener('afterprint', () => { root.classList.remove('is-printing'); after?.(); }, { once: true });
+      requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(print, 100))); // the kit redraws a resized plot in the frame after it is measured
     };
 
     one('[data-assembled]').textContent = ` ${plate.today()}`;
@@ -170,6 +184,7 @@
       tick(more.ids, true);
       openGroups();
       sync();
+      held();
       more.target?.scrollIntoView();
     });
 
@@ -181,23 +196,22 @@
         tick(preset);
         openGroups();
         sync();
-        say(`The packet now holds ${one('[data-packet-count]').textContent}. Tick or untick to change it.`);
+        held();
       } else if (button.matches('[data-print-preset]')) { // prints that packet and leaves the reader's own ticks as they were
         const before = chosen();
         tick(preset);
         sync();
-        window.addEventListener('afterprint', () => { tick(before); sync(); }, { once: true });
-        print();
+        printAtSheetSize(() => { tick(before); sync(); });
       } else if (button.matches('[data-print-packet]')) {
         if (empty()) return;
         sync();
-        print();
+        printAtSheetSize();
       } else if (button.matches('[data-download-packet]')) {
         if (empty()) return;
         const { plates, lists, reads } = sync();
         const assembled = plate.today();
         plate.save(`council-briefing-${assembled.replaceAll('/', '-')}.json`, `${JSON.stringify({ assembled, checked: checkedWords(plates), plates: reads.map(({ id, state, selected }) => ({ id, state, selected })), checklists: lists }, null, 2)}\n`, 'application/json');
-        say("The packet file is downloaded. It holds the settings you typed: share it only where your Nation's figures may go.");
+        say('These settings are saved as a file.');
       } else if (button.matches('[data-untick]')) {
         tick([]);
         sync();

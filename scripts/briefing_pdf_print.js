@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Prints the Council Briefing's default packet to a PDF with headless Chrome. scripts/build_briefing_pdf.py names the plates and the date, then sets the PDF's metadata and checks it.
 //   node scripts/briefing_pdf_print.js --out FILE --ids a,b,c --date MM/DD/YYYY --base https://atniclimate.github.io/atni-task-force/briefing/ --note "what the cover says" [--site DIR]
+//   node scripts/briefing_pdf_print.js --measure FILE [--site DIR]   # what each part of the packet takes on paper, for the page estimates (see measure())
 // Serves the site on an ephemeral port as capture.js does, ticks the plates in the Briefing's own rail, and prints what the page's own scripts drew, so the sheet is the one Print
 // packet gives at the defaults: Letter, light, with 1rem set to 10.5pt, the design system's Report anchor. Playwright comes from local node_modules or the global npm root,
 // and drives the installed Chrome. Any script error or failed request stops the build, since the sheet would be missing something.
@@ -76,14 +77,64 @@ function prepare({ date, base, title, replaces, note }) {
   document.head.prepend(origin);
 }
 
+// Prints at the sheet's size, as the Briefing's own Print buttons do: the packet narrows to the sheet's width and the plates redraw before the page prints.
+async function atSheetSize(page) {
+  await page.waitForFunction(() => [...document.querySelectorAll('.packet-plate:not([hidden]) .plate')].every((p) => p.classList.contains('is-live')));
+  await page.evaluate(() => document.documentElement.classList.add('is-printing'));
+  await page.evaluate(() => new Promise((resolve) => { requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
+  await page.waitForTimeout(500); // the kit redraws a plate once its section has its new width
+}
+
+const pagesOf = (pdf) => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+const tickOnly = (page, ids) => page.evaluate((want) => {
+  for (const b of document.querySelectorAll('.briefing-rail input[type="checkbox"]')) b.checked = want.includes(b.value);
+  document.querySelector('.briefing-rail form').dispatchEvent(new Event('change', { bubbles: true }));
+}, ids);
+
+// --measure FILE: what the packet takes on paper, for build_briefing.py's page estimates. On a Letter sheet in print media: the cover's fixed lines and its line a
+// section, each checklist's share of a sheet (they run on together), and the appendix's documents a sheet; then each plate printed alone, its sheets counted.
+async function measure(page, file) {
+  const sizes = await page.evaluate(() => {
+    const h = (node) => node.getBoundingClientRect().height;
+    const cover = document.querySelector('.packet-cover');
+    cover.classList.add('is-filled');
+    for (const node of document.querySelectorAll('[data-contents] > li, .packet-checklist, .packet-appendix, .packet-doc, .packet-doc-claims > li')) node.hidden = false;
+    const sheet = 1056 - 1.5 * 96 - h(cover.querySelector('thead')) - h(cover.querySelector('tfoot')); // Letter, less the 0.7in and 0.8in margins and the lines each sheet repeats
+    const items = [...cover.querySelectorAll('[data-contents] > li')];
+    const gap = parseFloat(getComputedStyle(cover.querySelector('[data-contents]')).rowGap) || 0;
+    const lines = items.reduce((n, li) => n + h(li) + gap, 0);
+    const round = (n) => Math.round(n * 1000) / 1000;
+    const share = Object.fromEntries([...document.querySelectorAll('.packet-checklist')].map((s) => [s.dataset.packet, round((h(s.querySelector('.packet-body')) + 32) / sheet)]));
+    const docs = document.querySelectorAll('.packet-doc').length;
+    return { cover: { base: round((h(cover.querySelector('.packet-body')) - lines) / sheet), item: round(lines / items.length / sheet) }, docs_a_sheet: round(docs / (h(document.querySelector('.packet-appendix .packet-body')) / sheet)), share };
+  });
+  await page.emulateMedia({ media: null }); // not 'screen', which page.pdf would then print in
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.addStyleTag({ content: '@media print { .site-header, .packet-cover, .packet-appendix { display: none !important; } }' }); // the plate's sheets alone
+  const ids = await page.evaluate(() => [...document.querySelectorAll('.packet-plate')].map((s) => s.dataset.packet));
+  const sheets = {};
+  for (const id of ids) {
+    await page.evaluate(() => document.documentElement.classList.remove('is-printing'));
+    await tickOnly(page, [id]);
+    await atSheetSize(page);
+    sheets[id] = pagesOf(await page.pdf({ format: 'Letter', printBackground: true, preferCSSPageSize: true }));
+  }
+  const today = new Date();
+  const measured = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+  fs.writeFileSync(file, `${JSON.stringify({ measured, by: 'python scripts/build_briefing_pdf.py --measure', ...sizes, sheets }, null, 2)}\n`);
+  return { file, plates: ids.length };
+}
+
 async function main() {
+  const measuring = take('measure');
   const out = take('out');
   const ids = take('ids').split(',').filter(Boolean);
   const date = take('date');
   const base = take('base');
   const note = take('note');
   const site = path.resolve(take('site') || path.join(ROOT, 'site'));
-  if (!out || !ids.length || !/^\d{2}\/\d{2}\/\d{4}$/.test(date) || !base.startsWith('https://') || !note) throw new Error('Usage: node scripts/briefing_pdf_print.js --out FILE --ids a,b,c --date MM/DD/YYYY --base https://.../briefing/ --note "what the cover says" [--site DIR]');
+  if (!measuring && (!out || !ids.length || !/^\d{2}\/\d{2}\/\d{4}$/.test(date) || !base.startsWith('https://') || !note)) throw new Error('Usage: node scripts/briefing_pdf_print.js --out FILE --ids a,b,c --date MM/DD/YYYY --base https://.../briefing/ --note "what the cover says" [--site DIR], or --measure FILE [--site DIR]');
   const { chromium } = loadPlaywright();
   const server = await serve(site);
   const problems = [];
@@ -97,19 +148,26 @@ async function main() {
     page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
     page.on('requestfailed', (r) => problems.push(`request failed: ${r.url()}`));
     page.on('response', (r) => { if (r.status() >= 400) problems.push(`${r.status()}: ${r.url()}`); });
+    if (measuring) { // the sheet's width in print media first, with nothing ticked, so no plate starts or redraws while the lines are measured
+      await page.setViewportSize({ width: 672, height: 1056 });
+      await page.emulateMedia({ media: 'print' });
+    }
     await page.goto(`http://127.0.0.1:${server.address().port}/briefing/`, { waitUntil: 'networkidle' });
+    if (measuring) {
+      const done = await measure(page, path.resolve(measuring));
+      if (problems.length) throw new Error(`the page reported ${problems.length} problem(s) while it was measured:\n${problems.slice(0, 8).join('\n')}`);
+      console.log(JSON.stringify(done));
+      return;
+    }
     await page.addStyleTag({ content: SHEET });
     const picked = await page.evaluate((want) => {
       const boxes = [...document.querySelectorAll('.briefing-rail input[type="checkbox"]')];
       const missing = want.filter((id) => !boxes.some((b) => b.value === id));
       if (missing.length) throw new Error(`the Briefing offers no ${missing.join(', ')}`);
-      for (const b of boxes) b.checked = want.includes(b.value);
-      document.querySelector('.briefing-rail form').dispatchEvent(new Event('change', { bubbles: true }));
-      return boxes.filter((b) => b.checked).length;
+      return want.length;
     }, ids);
-    await page.waitForFunction(() => [...document.querySelectorAll('.packet-plate:not([hidden]) .plate')].every((p) => p.classList.contains('is-live')));
-    await page.evaluate(() => new Promise((resolve) => { requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
-    await page.waitForTimeout(500); // the kit redraws a plate once its section has a width
+    await tickOnly(page, ids);
+    await atSheetSize(page);
     await page.evaluate(prepare, { date, base, title: TITLE, replaces: REPLACES, note });
     await page.evaluate(async () => { await Promise.all([...document.fonts].map((f) => f.load())); await document.fonts.ready; });
     fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });

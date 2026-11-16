@@ -23,9 +23,10 @@ html:not(.js) [data-empty] { display: none; }
 }
 .preset-name { margin: 0; font-family: var(--display); font-weight: 600; font-size: 1.1875rem; line-height: 1.25; letter-spacing: 0; text-wrap: balance; color: var(--atni-text-heading); }
 .preset-count, .preset-file { margin: 0; max-width: none; font-size: 0.875rem; line-height: 1.4; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
-.preset-holds { flex: 1; margin: 4px 0 0; padding-left: 1.1em; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
-.preset-holds li { margin: 0 0 4px; }
-.preset-holds li::marker { color: var(--atni-text-muted); }
+.preset-holds { flex: 1; margin: 4px 0 0; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-body); }
+/* A short muted rule marks an item: the site's square marker reads as the verified status square. */
+.preset-holds li { position: relative; margin: 0 0 4px; padding-left: 1.1em; }
+.preset-holds li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 0.5em; height: 1px; background: var(--atni-text-muted); }
 .preset-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
 .preset-acts > :is(.button, .paper) { padding-inline: 16px; } /* a pair fits one row of a quarter column at 1280 */
 .preset-acts > .preset-file { order: -1; flex-basis: 100%; } /* the PDF's pages and size, over its buttons, so every packet's buttons share one row */
@@ -37,15 +38,18 @@ html:not(.js) [data-empty] { display: none; }
 @media (min-width: 1100px) { .packet-bar { grid-template-columns: minmax(0, 1fr) auto; } }
 .packet-bar-count { margin: 0; max-width: none; font-family: var(--display); font-weight: 600; font-size: 1.1875rem; line-height: 1.25; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .packet-bar-acts { display: flex; flex-wrap: wrap; gap: 8px; }
-.packet-bar-note { grid-column: 1 / -1; margin: 0; max-width: none; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.packet-bar-note { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0 24px; margin: 0; max-width: none; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.packet-bar-note [data-packet-status] { color: var(--atni-text-heading); }
+.packet-bar-note [data-packet-status]:empty { display: none; }
 
+/* The rail beside the packet only from 1600px, where a plate's Table fits the packet column whole; narrower, the rail's groups run across the page above the
+   packet and their items in columns, so the packet takes the full width and no Table scrolls sideways (DIRECTION-R2 3.4). */
 .briefing { display: grid; gap: 24px; padding-top: 20px; align-items: start; }
 .briefing > * { min-width: 0; }
-@media (min-width: 1100px) { .briefing { grid-template-columns: minmax(20rem, 24%) minmax(0, 1fr); gap: 32px; } }
-@media (min-width: 1600px) { .briefing { gap: 48px; } }
+@media (min-width: 1600px) { .briefing { grid-template-columns: minmax(20rem, 24%) minmax(0, 1fr); gap: 48px; } }
 
 /* Rail: a group a page, folded to its name and count until it holds a tick or the reader opens it. Each item says what its plate answers (briefing-plates-21). */
-.rail-title { margin: 0 0 12px; }
+.rail-title { margin: 0 0 12px; scroll-margin-top: 0; } /* Customize lands here: the page's scroll padding (the bar's height) puts it just under the bar, stuck at the top */
 .rail-group { border-top: 1px solid var(--rule); }
 .rail-group:last-child { border-bottom: 1px solid var(--rule); }
 .rail-group > summary { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; min-height: 44px; padding-block: 12px; list-style: none; cursor: pointer; }
@@ -70,6 +74,12 @@ html:not(.js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the link s
   .rail-item input:checked { forced-color-adjust: none; background: Highlight; border-color: Highlight; }
   .rail-item input:checked::before { border-color: Canvas; }
 }
+/* Above the packet (under 1600px): a group's count beside its name, and its items in columns across the page. */
+@media (max-width: 1599px) {
+  .rail-group > summary { grid-template-columns: 12px max-content max-content; }
+  .rail-items { columns: 3 18rem; column-gap: 32px; }
+  .rail-item { break-inside: avoid; }
+}
 
 /* Packet: sections in reading order, a hairline apart. On screen the guard and foot lines stand once, on the cover; paper repeats them on every sheet. */
 .briefing-packet { container-type: inline-size; }
@@ -79,7 +89,7 @@ html:not(.js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the link s
 .packet-foot { margin-top: 12px; }
 @media screen { .packet-page:not(.packet-cover) :is(.packet-guard, .packet-foot) { display: none; } }
 .js .packet-cover:not(.is-filled) :is(.packet-guard, .packet-foot) { display: none; } /* nothing chosen: no line says anything was (briefing-plates-05) */
-:is(.builder, .packet-page)[tabindex="-1"]:focus { outline: none; } /* a landing, not a control */
+:is(.builder, .packet-page, .rail-title)[tabindex="-1"]:focus { outline: none; } /* a landing, not a control */
 
 /* The cover: what the packet says, in the order it prints (briefing-plates-24), then how to read it. */
 .packet-title { display: none; font-size: 2.25rem; }
@@ -104,8 +114,12 @@ html:not(.js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the link s
 .packet-chosen li { margin: 0; }
 .packet-chosen b { font-weight: 500; color: var(--atni-text-heading); }
 
-/* A section: its page, the question it answers, its settings, then the plate or the list. */
+/* A section: its number, page, the question it answers, its settings, then the plate or the list. The number is the cover's: both count only the sections
+   chosen, in the same order, so "2" on the cover is Section 2 on paper (briefing-plates-24). */
+.briefing-packet { counter-reset: packet-section; }
+.packet-page[data-packet]:not([hidden]) { counter-increment: packet-section; }
 .packet-from { margin: 0 0 2px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.packet-from::before { content: "Section " counter(packet-section) ", "; color: var(--atni-text-heading); }
 .packet-ask { margin: 0 0 6px; font-family: var(--display); font-weight: 500; font-size: 1.1875rem; line-height: 1.3; letter-spacing: 0; text-wrap: balance; color: var(--atni-text-secondary); }
 .packet-settings { max-width: none; margin: 0 0 16px; }
 .packet-h { margin: 0 0 12px; }
@@ -133,21 +147,56 @@ html:not(.js) .rail-item > a { grid-column: 1 / -1; } /* with scripts the link s
 /* A section's frame is a real table only on paper, where its head and foot repeat. */
 @media screen { .packet-sheet, .packet-sheet > *, .packet-sheet > * > tr, .packet-sheet > * > tr > td { display: block; } }
 
+/* Paper. The sheet is the PDF's (scripts/briefing_pdf_print.js): its margins and its 10.5pt, the design system's Report body, so the browser's own Print and
+   the file give the same sheets and the packets' page counts hold for both. A plate prints as its question and title, then the plot beside the readout and
+   Reading, so the three share a sheet (briefing-plates-08); then the key, the Table with every row and claim id, and the collar. The window's notes print
+   once, under the Table, as the kit's Print this plate does. */
+@page { margin: 0.7in 0.75in 0.8in; }
 @media print {
+  html { font-size: 10.5pt; }
   .brief, .presets, .packet-bar, .briefing-rail, .site-footer, .skip-link { display: none !important; }
   .builder, .briefing { display: block; padding: 0; }
   .packet-page, .packet-page + .packet-page { margin: 0; padding: 0; border: 0; break-before: page; }
   .packet-cover { break-before: auto; }
+  /* Checklists run on, 24pt apart, each whole on its sheet, rather than one to a sheet. */
+  .packet-checklist:not([hidden]) ~ .packet-checklist:not([hidden]) { break-before: auto; margin-top: 24pt; }
+  .packet-checklist .packet-body { break-inside: avoid; }
   .packet-sheet { width: 100%; table-layout: fixed; border-collapse: collapse; }
   .packet-sheet > * > tr > td { padding: 0; }
   .packet-guard { margin: 0 0 8pt; font-size: 0.875rem; }
   .packet-foot { margin: 8pt 0 0; font-size: 0.875rem; }
   .packet-title { display: block; margin: 0 0 8pt; }
   .packet-says { gap: 4pt; }
-  .packet-from, .packet-ask, .packet-settings { break-after: avoid; } /* a section's heading stays with its plate's title, plot, and Reading (briefing-plates-08) */
-  .briefing-packet .plate { padding: 0; border: 0; break-inside: auto; }
+  .packet-says a, .packet-plate .plate :is(.plate-claim, .plate-detail, .plate-under) a:not(.cr) { color: inherit; text-decoration: none; } /* a link is no use on paper; the Sources address is written out in the collar */
+  .packet-from, .packet-ask, .packet-settings { break-after: avoid; } /* a section's heading stays with its plate's title */
+  .briefing-packet .plate { --row-min: 2.25rem; display: grid; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); grid-template-areas: "claim claim" "plot window" "under window" "table table" "collar collar"; column-gap: 24px; row-gap: 8pt; padding: 0; border: 0; break-inside: auto; }
+  .briefing-packet .plate > * + * { margin-top: 0; }
+  .briefing-packet .plate > .plate-claim { padding-bottom: 0; break-after: auto; } /* where a sheet cannot hold both, the plot moves whole to the next rather than split */
+  .briefing-packet .plate > .plate-plot { min-height: 0; break-inside: avoid; }
+  .briefing-packet .plate > .plate-detail { display: block !important; break-inside: avoid; }
+  .briefing-packet .plate-detail > * + * { margin-top: 6pt; }
+  .briefing-packet .plate-facts .plate-more { display: none; }
+  .briefing-packet .plate > .plate-collar { break-before: avoid; break-inside: avoid; }
+  /* A Table keeps to the sheet's width: a wider one makes Chrome shrink every sheet of the printout to fit it. Headings and cells wrap anywhere they must. */
+  .briefing-packet .plate-table { width: 100%; }
+  .briefing-packet .plate-table :is(th, td) { padding: 3px 4px; }
+  .briefing-packet .plate-table :is(thead th, td:last-child) { overflow-wrap: anywhere; hyphens: auto; } /* headings and claim lists wrap; names and figures stay whole */
+  .briefing-packet .plate-table:has(thead th:nth-child(10)) :is(th, td) { font-size: 0.75rem; } /* ten columns and more */
+  .briefing-packet .plate-table td.has-bar { min-width: 3rem; padding-bottom: 9px; }
+  .briefing-packet .ladder-label { font-size: 1rem; }
+  .briefing-packet .ladder-value { font-size: 1.25rem; }
+  /* Small multiples are one drawing, too tall for a column: it takes the sheet's width, with the readout and Reading under it. */
+  .briefing-packet .plate[data-kind="multiples"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "claim" "plot" "under" "window" "table" "collar"; }
   .packet-docs { columns: 2; column-gap: 18pt; }
   .packet-doc { padding-block: 4pt; font-size: 0.8125rem; -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* the status squares are backgrounds */
   html[data-print-one] .packet-page { break-before: auto; }
   html[data-print-one] .packet-sheet { display: block; }
+}
+/* Before Print what is ticked or a packet's Print, briefing.js narrows the packet to the sheet's width and waits for the plates to redraw, so a drawn plot
+   prints at the size it was drawn and its words keep their size on paper. */
+@media screen {
+  html.is-printing .briefing { grid-template-columns: minmax(0, 1fr); }
+  html.is-printing .briefing-packet { width: 672px; }
+  html.is-printing .briefing-packet .packet-plate .plate { --plot-h: 300px; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); column-gap: 24px; }
+  html.is-printing .briefing-packet .packet-plate .plate[data-kind="multiples"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "claim" "bar" "plot" "under" "window" "table" "collar"; }
 }
