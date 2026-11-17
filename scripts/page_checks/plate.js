@@ -1504,11 +1504,11 @@ async function tokens() {
   const rule = (selector) => { const at = css.search(new RegExp(`^${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{`, 'm')); ok(at >= 0, `${selector} has a rule`); return css.slice(at, css.indexOf('}', at)); }; // the rule that starts a line
   ok(rule('.plate').includes('--row-min: 3.5rem') && rule('.plate').includes('--mark: clamp(16px, 1vw + 5px, 26px)'), 'rows (in rem, DIRECTION-R2 2.4) and marks at their stated sizes');
   ok(!/--row-min: 32px/.test(css), 'and no smaller row for a mouse');
-  ok(rule('.plate').includes('--readout: clamp(3rem, 2.25rem + 1vw, 3.75rem)') && /--readout: 2\.25rem/.test(css) && rule('.readout-value').includes('min(1em,'), 'the readout: 3 to 3.75rem on a face or a lead, 2.25rem on a repeater or a strip; the 96 to 136px poster is retired');
+  ok(rule('.plate').includes('--readout: clamp(4.25rem, 1.5rem + 3vw, 6rem)') && /--readout: 2\.25rem/.test(css) && rule('.readout-value').includes('min(1em,'), 'the readout: 4.25 to 6rem on a face or a lead (R3 1), 2.25rem on a repeater or a strip');
   ok(rule('.plate').includes('--plot-h: clamp(20rem, 46vh, 44rem)'), 'and the plot of a face or a lead');
   ok(rule('.ladder-range').includes('height: 8px') && rule('.ladder-range').includes('opacity: 0.4'), 'the range band');
   ok(rule('.ladder-mark.is-hollow').includes('border: 2.5px solid'), 'the hollow ring');
-  ok(rule('.plate-title').includes('font-size: 1.375rem') && rule('.ladder-label').includes('font-size: 1.125rem') && rule('.ladder-value').includes('font-size: 1.5rem'), 'the type scale on a plate');
+  ok(rule('.plate-title').includes('font-size: 1.375rem') && rule('.ladder-label').includes('font-size: 1.1875rem') && rule('.ladder-value').includes('font-size: 1.375rem'), 'the type scale on a plate: title, lead and title of the six (R3 6)');
   ok(!/font-size: 0\.75rem/.test(css), 'nothing at 0.75rem');
   const small = css.split('\n').filter((line) => /font-size: 0\.8125rem/.test(line));
   ok(small.length > 0 && small.every((line) => /plate-sources|plate-receipt|plate-quote|plate-table/.test(line)), `0.8125rem survives in Sources and Table alone: ${small.join(' | ')}`);

@@ -3,9 +3,11 @@
    Design System. This file adds the Energy program roles and the site layout: the full window width
    with tight margins, lists and prose in columns. Dark is the default theme; print is always light.
    The system is Council Agenda (DIRECTION-R2): each main page opens as an agenda item, a brief and up to four questions answered beside the
-   instruments that answer them. Orange marks the reading only (the needle, the selection, today, the example project, a followed claim, ENERGY in
-   the lockup); links, buttons, tabs, chosen settings and focus are ink. One raised surface, the window; no shadows, radius, cards or gradients.
-   Type grows 12.5 percent from 1280 to 2560 with the root. Nothing on a first screen is under 0.875rem; 0.8125rem survives in Sources, Table, and print. */
+   instruments that answer them. Orange marks the reading (the needle, the selection, today, the example project, a followed claim, ENERGY in the
+   lockup) and, as --here, where the reader is (the join bar, the current tab and rail item, the chosen stair step; R3); links, buttons, chosen settings
+   and focus are ink, except the Energy family's paper button and current page. One raised surface, the window; no shadows, radius or cards; the one
+   image is the relief under each page's opening. Six type sizes (R3 6): small, body, lead and title tokens, the h1, and the readout. Type grows 12.5
+   percent from 1280 to 2560 with the root. Nothing on a first screen is under 0.875rem; 0.8125rem survives in Sources, Table, and print. */
 
 /* Each face is two files, cut by scripts/subset_fonts.py: a Latin core every page loads, and a Latin-extended file the browser fetches only for a page
    that draws one of its letters, so a Tribal-language name stays in its face. Combining marks are in both, since a letter and its marks are drawn
@@ -52,12 +54,19 @@ html { font-size: clamp(100%, 87.5% + 0.15625vw, 112.5%); }
   --control: var(--atni-text-muted);
   --baseline: var(--atni-text-secondary);
   --tag-bg: var(--atni-color-core-grey-overlay);
-  --poster: clamp(3rem, 2.25rem + 1vw, 3.75rem); /* retired (DIRECTION-R2 2.1): the old 96 to 136px poster, now the lead readout's size for what still names it */
+  --poster: clamp(4.25rem, 1.5rem + 3vw, 6rem); /* retired (DIRECTION-R2 2.1): an alias of the face and lead readout's size, for what still names it */
   --ease: cubic-bezier(.2, 0, 0, 1); /* press 120ms, swap 180ms, draw 240ms; nothing after a key press */
   --plate-gap: clamp(24px, 1.8vw, 48px);
   --plot-ground: var(--atni-ground-base); /* a plot sits on the page ground; rings and label grounds wear it */
   --unit: 8px; /* the square unit: Count at its smallest, the library field, the waffles. Pitch is the unit and --unit-gap */
   --unit-gap: 2px;
+  --here: var(--energy-mark); /* where the reader is (R3 3): the join bar, the current tab and rail item, the chosen stair step; #FF914C dark, #E85500 light */
+  /* Six type sizes (R3 6): these four, the h1 (37 and 42px at 1440 and 1920, with the 2.25rem readout of a repeater or a strip), and the face and lead
+     readout (69 and 83px). 0.8125rem stays only in Sources and Table text. */
+  --t-small: .875rem;
+  --t-body: 1rem;
+  --t-lead: 1.1875rem;
+  --t-title: 1.375rem;
   /* Plan stages, an ordinal one-hue ramp (1 goal or interest to 4 installed or operating). The design
      system has no ramps yet, so each theme keeps the dataviz reference blue step nearest its ground and the
      other three are re-stepped at that hue: no four reference steps clear both the 3:1 floor and the
@@ -217,9 +226,9 @@ h1, h2, h3 {
 }
 /* 36 / 37.4 / 41.8 / 47.3px at 1280 / 1440 / 1920 / 2560; 30ch keeps a long one to two balanced lines beside the brief's lead (DIRECTION-R2 2.1). */
 h1 { font-size: clamp(2.25rem, 1.75rem + 0.625vw, 2.625rem); line-height: 1.06; letter-spacing: -0.02em; max-width: 30ch; }
-h2 { font-size: 1.625rem; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 12px; }
-h3 { font-size: 1.17rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading-3); margin-bottom: 8px; }
-h4 { margin: 24px 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.3; color: var(--atni-text-heading-3); text-wrap: balance; }
+h2 { font-size: var(--t-title); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 12px; }
+h3 { font-size: var(--t-lead); line-height: 1.25; letter-spacing: -0.01em; color: var(--atni-text-heading-3); margin-bottom: 8px; }
+h4 { margin: 24px 0 8px; font-family: var(--display); font-weight: 600; font-size: var(--t-body); line-height: 1.3; color: var(--atni-text-heading-3); text-wrap: balance; }
 p { margin: 0 0 0.875rem; }
 main p { max-width: var(--measure); }
 ul { padding-left: 1.25rem; list-style: square; }
@@ -252,9 +261,9 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
   text-transform: none;
   color: var(--atni-text-secondary);
 }
-.reading { font-family: var(--display); font-weight: 500; color: var(--lead-ink); font-size: 1.125rem; line-height: 1.5; }
+.reading { font-family: var(--display); font-weight: 500; color: var(--lead-ink); font-size: var(--t-lead); line-height: 1.5; }
 /* A lead is Noto, 500 on dark and 400 on light (the body's weight in each), at most two sentences in 44rem (DIRECTION-R2 2.1). */
-.lead, .brief-lead { max-width: var(--measure-wide); font-family: var(--body); font-weight: var(--atni-type-body-weight); font-size: 1.125rem; line-height: 1.4; color: var(--lead-ink); }
+.lead, .brief-lead { max-width: var(--measure-wide); font-family: var(--body); font-weight: var(--atni-type-body-weight); font-size: var(--t-lead); line-height: 1.4; color: var(--lead-ink); }
 .readout {
   display: flex;
   flex-wrap: wrap;
@@ -264,8 +273,9 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
   font-weight: 600;
   color: var(--atni-text-heading);
 }
-/* The readout: 3 to 3.75rem on a face or a lead plate, 2.25rem on a repeater or a strip (each plate sets --readout); its unit 0.42em on its baseline, its range
-   1rem under it. The figure shrinks only as far as its own text needs to fit the window (plate.js sets --chars). */
+/* The readout: 4.25 to 6rem on a face or a lead plate (69px at 1440, 83 at 1920), the first screen's one focal point, in heading ink; 2.25rem on a repeater or
+   a strip (each plate sets --readout); its unit 0.42em on its baseline, its range 1rem under it. The figure shrinks only as far as its own text needs to fit the
+   window (plate.js sets --chars). */
 .readout { font-size: var(--readout, var(--poster)); }
 .readout-value {
   font-size: min(1em, calc(100cqi / (var(--chars, 4) * 0.6)));
@@ -280,7 +290,7 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
 .readout-range { order: 1; flex-basis: 100%; font-weight: 400; font-size: 1rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
 .readout.is-long { font-size: calc(var(--readout, var(--poster)) * 0.75); }
 .plate-title { margin: 0 0 4px; font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; color: var(--atni-text-heading); }
-.caption { font-size: 0.9375rem; line-height: 1.4; color: var(--atni-text-secondary); }
+.caption { font-size: var(--t-small); line-height: 1.4; color: var(--atni-text-secondary); }
 .muted { color: var(--atni-text-muted); }
 .nowrap { white-space: nowrap; }
 .fine { font-size: 0.875rem; color: var(--atni-text-muted); }
@@ -333,9 +343,18 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
 }
 .site-nav a:hover { color: var(--atni-text-heading); border-bottom-color: var(--control-edge); }
 .site-nav a[aria-current] { color: var(--atni-text-heading); border-bottom-color: var(--atni-text-heading); }
-/* One label and its state in aria-pressed (theme.js); pressed, it wears the chosen-setting look, so the light theme says it is on. */
+/* The Energy family (R3 3; body[data-family="energy"] on its three pages and their Sources pages): the Energy orange ruling reaches the current nav item, the
+   current page in the name line, and the paper button. Dark #FF914C on #010B13, 8.9 to 1; light #BC4800 under white, 5.2 to 1. Links, other buttons,
+   chosen settings and focus stay ink. */
+[data-family="energy"] { --paper: var(--energy-fill); --on-paper: var(--energy-on-fill); --paper-hover: var(--energy-hover); }
+[data-family="energy"] .site-nav a[aria-current] { border-bottom-color: var(--here); }
+[data-family="energy"] .brief-name a[aria-current] { text-decoration-color: var(--here); }
+/* One label, "Light theme", and its state in aria-pressed (theme.js): a 10px square before it, filled when the light theme is on (R3 8). */
 .theme-toggle {
   grid-area: toggle;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   min-height: 36px;
   padding: 4px 12px;
   font-family: var(--display);
@@ -349,7 +368,8 @@ a:hover { color: var(--atni-text-link-hover); text-decoration-thickness: 2px; te
   cursor: pointer;
 }
 .theme-toggle:hover { border-color: var(--atni-text-heading); }
-[data-theme="light"] .theme-toggle { background: var(--control-on); border-color: var(--atni-text-heading); }
+.theme-toggle::before { content: ""; flex: none; box-sizing: border-box; width: 10px; height: 10px; border: 1.5px solid currentColor; }
+.theme-toggle[aria-pressed="true"]::before { background: currentColor; }
 @media (min-width: 1100px) {
   .header-inner { grid-template-columns: auto 1fr auto; grid-template-areas: "brand nav toggle"; gap: 0 32px; min-height: 56px; padding-block: 0; }
   .site-nav ul { flex-wrap: nowrap; justify-content: flex-end; }
@@ -412,7 +432,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .page-band-figures, .key-facts ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 48px; }
 .page-band-figures li { display: grid; gap: 2px; align-content: end; margin: 0; max-width: 16rem; }
 .key-facts li { margin: 0; max-width: 16rem; }
-.page-band-figures .figure-num { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.page-band-figures .figure-num { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .page-band-figures .figure-num a { color: inherit; text-decoration-color: var(--control); }
 .page-band-figures .figure-label { margin: 0; font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .key-facts { align-self: end; }
@@ -428,39 +448,45 @@ main > .section + .section { border-top: 1px solid var(--grid); }
    pages, the current one aria-current), h1 (what the page settles), p.brief-lead (two sentences at most), p.brief-meta (<span class="figure-num">date</span>
    <span class="figure-label">Sources checked</span>, the Sources link with data-sources, a resolution or a reference, 24px apart), p.photo-credit. No
    figures. From 1100px the h1 stands at the left, 30ch at most, with the lead and the meta line at its right, so the brief stays near 200px at 1440. */
-.brief { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "title" "lead" "meta" "census" "credit"; padding-block: 16px 20px; }
+.brief { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "title" "lead" "meta" "census" "credit"; padding-block: 12px 16px; } /* 8px under R2's, for the name line's and the lead's lead size (R3 6, 8), so no face plot moves down */
 .brief > :is(.brief-name, .breadcrumb) { grid-area: name; }
 .brief > h1 { grid-area: title; margin: 0 0 12px; }
 .brief > .brief-lead { grid-area: lead; margin: 0 0 10px; }
 .brief > .brief-meta { grid-area: meta; }
 .brief > .photo-credit { grid-area: credit; }
 .brief > .census { grid-area: census; }
-.brief-name { margin: 0 0 6px; font-family: var(--display); font-weight: 500; font-size: 1rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.brief-name { margin: 0 0 6px; font-family: var(--display); font-weight: 600; font-size: var(--t-lead); line-height: 1.25; color: var(--atni-text-heading); } /* the page's name, at lead size in heading ink (R3 8) */
 .brief-name a { color: inherit; text-decoration-color: var(--control-edge); }
 .brief-name a:hover { color: var(--atni-text-heading); text-decoration-color: currentColor; }
 .brief-name:has(> a + a) { display: flex; flex-wrap: wrap; gap: 0 24px; }
 .brief-name:has(> a + a) a { text-decoration: none; }
+.brief-name:has(> a + a) a:not([aria-current]) { font-weight: 500; color: var(--atni-text-secondary); } /* the Energy row: its other pages step back */
+.brief-name:has(> a + a) a:not([aria-current]):hover { color: var(--atni-text-heading); }
 .brief-name a[aria-current] { color: var(--atni-text-heading); text-decoration: underline 2px var(--atni-text-heading); text-underline-offset: 0.35em; }
 .brief-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px; max-width: none; margin: 0; font-size: 0.875rem; line-height: 1.4; color: var(--atni-text-secondary); }
 .brief-meta .figure-num { margin-right: calc(0.35em - 24px); font-variant-numeric: tabular-nums; color: var(--atni-text-heading); } /* the date keeps beside its "Sources checked" */
 @media (min-width: 1100px) {
-  .brief { grid-template-columns: auto minmax(0, 44rem); grid-template-areas: "name name" "title lead" "title meta" "census census" "credit credit"; grid-template-rows: auto auto 1fr; justify-content: start; column-gap: 48px; }
+  /* The name line heads the h1's column only, and the lead starts on the brief's top line beside it (R3: the lead at lead size ran a line longer, and the
+     name's row over both columns made every such brief 30px taller). */
+  .brief { grid-template-columns: auto minmax(0, 44rem); grid-template-areas: "name lead" "title lead" "title meta" "census census" "credit credit"; grid-template-rows: auto auto 1fr; justify-content: start; column-gap: 48px; }
+  .brief:not(:has(> :is(.brief-name, .breadcrumb))) { grid-template-areas: "title lead" "title meta" "census census" "credit credit"; grid-template-rows: auto 1fr; } /* home: no name row to share */
   .brief > h1 { margin: 0; }
-  .brief > .brief-lead { margin-top: 0.25rem; }
+  .brief > .brief-lead { margin-top: 0; }
 }
 
 /* The agenda (DIRECTION-R2 3.2): the questions a page can settle, each answered in a sentence read off its face. Markup, by the page: section.agenda >
    div.agenda-qs > div.agenda-q > (a#q-{face}[href="#face-{face}"] + p.agenda-a[data-answer="{plate}"]), then div.agenda-faces > div#face-{face}, each
    around one plate block or list face. plate.js makes the questions a vertical tablist (Up, Down, Home, End; Tab enters the face) and keeps each answer
    with its plate. Questions sit on the ground between 1px rules; the chosen one takes the window color and meets its face, raised, with no gap, a 3px
-   heading-ink join bar between them that slides with the choice. An answer is plain text, so a press anywhere in the cell chooses it. Without scripts
+   --here join bar between them that slides with the choice (orange: where the reader is, R3 3). An answer is plain text, so a press anywhere in the cell chooses it. Without scripts
    the questions are jump links and the faces stack below them, whole; with them, the js class holds the later faces back before the first paint. */
 .agenda { display: grid; grid-template-columns: minmax(0, 1fr); margin-block: 0 var(--section-pad); }
 .agenda-qs { position: relative; display: grid; align-content: start; border-top: 1px solid var(--rule); }
 .agenda-q { position: relative; display: grid; gap: 6px; padding: 16px 20px 18px; border-bottom: 1px solid var(--rule); }
-.agenda-q > a { font-family: var(--display); font-weight: 600; font-size: 1.1875rem; line-height: 1.25; color: var(--atni-text-heading); text-decoration: none; text-wrap: balance; }
+.agenda-q > a { font-family: var(--display); font-weight: 600; font-size: var(--t-lead); line-height: 1.25; color: var(--atni-text-heading); text-decoration: none; text-wrap: balance; }
 .agenda-q > a::after { content: ""; position: absolute; inset: 0; }
-.agenda-q > a:hover { text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
+.agenda-q:not(.is-on) > a:hover { text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.2em; }
+.agenda-q.is-on > a { text-decoration: none; } /* the chosen question needs no link's underline (R3 8) */
 .agenda-q > a:focus-visible { outline: none; }
 .agenda-q:has(> a:focus-visible) { outline: 2px solid var(--atni-text-heading); outline-offset: -2px; }
 .agenda-a { margin: 0; max-width: none; font-family: "Answer Figures", var(--body); font-weight: 500; font-size: 1rem; line-height: 1.45; color: var(--atni-text-body); }
@@ -468,83 +494,61 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .js .agenda:not(.is-live) .agenda-faces > :not(:first-child) { display: none; }
 .agenda-faces { min-width: 0; }
 .agenda-faces > * > .plate { margin-bottom: 0; }
-/* A face (R2 fix round): the plot starts under the title. The title and its captions keep the left 64 percent, with two lines' room so a rewrite moves
-   nothing (resource-use critic 17); the settings run in one row under them, never a column taller than the title beside it, which left a 200px dead band
-   over the plot (home 4, data-centers 4, ai 9, system 5); Chart and Table stand at the top of the window column, over the readout, unless a switch shares
-   their bar over the plot (system 2); and the plot takes 40vh, so the axis, the key and the readout fit a 1440 by 900 window (home 3, ai 4). */
+/* A face (R2 fix round; R3): the plot starts under the title. The title, its captions and the settings keep the left 64 percent, the title with two lines'
+   room so a rewrite moves nothing (resource-use critic 17), the settings in rows under it (home 4, data-centers 4, ai 9, system 5). The window rises to the
+   face's top, so its readout is the first screen's one focal point, level with the eyebrow where a switch takes the bar into the left column, and under
+   Chart and Table where none does (R3 1, which ended a 160px dead band top right). The plot takes 40vh, so the axis, the key and the readout fit a 1440 by
+   900 window (home 3, ai 4). The Table, pressed, spans both columns under the claim, so it covers no claim text. */
 .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) { --plot-h: clamp(18rem, 40vh, 40rem); }
 @media screen and (min-width: 1100px) {
-  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim { display: grid; grid-template-columns: minmax(0, 64fr) minmax(19rem, 36fr); column-gap: var(--plate-gap); align-items: start; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--plate-gap); align-items: start; padding-bottom: 12px; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > * { grid-column: 1; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-title { min-height: 2lh; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 32px; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > .slider { flex: 1 1 15rem; max-width: 24rem; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > details[open] { flex-basis: 100%; }
-  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch) { grid-template-areas: "claim claim" "plot bar" "plot window" "under window" ". window" "table table" "collar collar"; }
+  @media (max-width: 1599px) { /* two sliders and a closed disclosure keep one row in the claim's column, so the plot does not drop (R3 1) */
+    .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > .slider { flex-basis: 12rem; }
+    .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])) > .plate-claim > .plate-controls > details:not([open]) { flex: 0 1 9.5rem; }
+  }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch) { grid-template-areas: "claim bar" "claim window" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto 1fr auto auto; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])).has-switch { grid-template-areas: "claim window" "bar window" "plot window" "under window" ". window" "table table" "collar collar"; grid-template-rows: auto auto auto auto 1fr auto auto; }
   .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch) > .plate-bar { padding: 0 0 12px 20px; }
-  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])):not(.has-switch).is-live > .plate-view[data-view="table"] { grid-row: window-start / under-end; }
+  .plate:is([data-variant="face"], :where(.agenda-faces *):not([data-variant])).is-live > .plate-view[data-view="table"] { grid-row: plot-start / under-end; grid-column: 1 / -1; }
 }
 @media screen and (min-width: 1100px) {
   .agenda { grid-template-columns: minmax(18rem, 25fr) minmax(0, 75fr); min-height: max(28rem, var(--plate-h, 0px)); }
   .agenda-faces { --plot-ground: var(--window); padding: 20px 24px 16px; background: var(--window); box-shadow: var(--window-ring); } /* rings and label grounds wear the face's own ground */
-  .agenda.is-live .agenda-qs::after { content: ""; position: absolute; top: 0; right: 0; width: 3px; height: var(--join-h, 0); transform: translateY(var(--join-y, 0)); background: var(--atni-text-heading); transition: transform 180ms var(--ease), height 180ms var(--ease); }
+  .agenda.is-live .agenda-qs::after { content: ""; position: absolute; top: 0; right: 0; width: 3px; height: var(--join-h, 0); transform: translateY(var(--join-y, 0)); background: var(--here); transition: transform 180ms var(--ease), height 180ms var(--ease); }
   .agenda:has(:focus-visible) .agenda-qs::after { transition-duration: 0ms; }
 }
 .agenda-faces > :first-child :is(.needle, .ladder-needle) { animation: needle-draw 240ms ease-out backwards; }
 @media print {
   .agenda-faces { padding: 0; box-shadow: none; }
+  /* The questions in columns, so the first sheet holds less above the first face (R3 8, Data Centers on Letter). */
+  .agenda-qs { display: grid; grid-template-columns: repeat(auto-fit, minmax(2in, 1fr)); column-gap: 18pt; }
+  .agenda-q { break-inside: avoid; padding: 4pt 0; }
 }
 
-/* Background photographs (owner ruling 9, 11/05/2026; places and gradient stops from that day's crop and layout review). CSS backgrounds only, and
-   only a dark screen 1100px wide and up applies one: a background no rule applies is never fetched, so light, auto under a light system, phones,
-   print, and forced colors fetch nothing, and a switch to dark fetches it then. ::before is the photograph and ::after the gradients over it, which
-   end in the page ground #010B13, never #000000. AI and Data Centers: one layer behind the header and the band, ending before the section strip.
-   Home: the comparison stage, open in its left 40 percent, on windows 800px tall and up; below that the reader's column fills the stage, leaving no
-   sky and no room for the credit. The credit shows with its photograph, in muted ink so it is never the brightest line near it; About's Credits name
-   all three in every theme and on paper. */
+/* The relief (R3 2, which retires the photographs of owner ruling 9): every page opens on the Northwest's own ground, ETOPO 2022 relief with Natural
+   Earth's rivers (scripts/bake_relief.py, the Data Centers atlas's own images), behind the header and the brief in both themes. CSS backgrounds only, from
+   1100px on a screen with no forced colors, so phones, print and High Contrast fetch nothing, and each theme fetches only its own image. ::before is the
+   relief and ::after the veil, which ends in the page ground, so the agenda or the strip starts on true ground; the 50% 46% place puts the Columbia through
+   the band. Text holds 4.5:1 over the brightest backdrop pixel in its rect at 1440 by 900 and 1920 by 1080 (B2's floor method). No credit on screen;
+   About's Credits name the relief. The photographs' classes and credit lines stay in the markup, hidden, so restoring the block from 37bc900 brings them
+   back (its selectors outrank this one). */
 .photo-credit { display: none; font-size: 0.875rem; color: var(--atni-text-muted); }
-/* The brief (DIRECTION-R2 2.7): AI's and Data Centers' places stay behind it, and home's night sky stands behind its right 60 percent, never under the
-   agenda. The veil keeps the h1 and the lead on near-solid ground (body ink stays above 8:1 over the brightest pixel) and opens past the lead, where a wide
-   window has room; it ends in the page ground, so the agenda or the strip starts on true ground. The credit takes the brief's last line. */
 @media screen and (min-width: 1100px) and (forced-colors: none) {
-  .brief:is(.photo-ai, .photo-dc, .photo-home) { position: relative; }
-  .brief:is(.photo-ai, .photo-dc, .photo-home) > .photo-credit { display: block; visibility: hidden; margin: 8px 0 0; max-width: none; line-height: 1.3; }
-  :root:not([data-theme="light"]) .brief:is(.photo-ai, .photo-dc, .photo-home) > .photo-credit { visibility: visible; }
-  :root:not([data-theme="light"]) .brief:is(.photo-ai, .photo-dc, .photo-home)::before, :root:not([data-theme="light"]) .brief:is(.photo-ai, .photo-dc, .photo-home)::after { content: ""; position: absolute; inset: -57px 0 0; z-index: -1; pointer-events: none; }
-  :root:not([data-theme="light"]) .brief.photo-home::before, :root:not([data-theme="light"]) .brief.photo-home::after { left: 40%; }
-  :root:not([data-theme="light"]) .brief.photo-ai::before { background: url("../img/bg/ai-server-wall-1600.webp") 100% 40% / 120% auto no-repeat; }
-  :root:not([data-theme="light"]) .brief.photo-dc::before { background: url("../img/bg/dc-server-cabinet-1600.webp") 50% 44% / cover no-repeat; }
-  :root:not([data-theme="light"]) .brief.photo-home::before { background: url("../img/bg/home-night-sky-960.webp") 50% 60% / cover no-repeat; }
-  :root:not([data-theme="light"]) .brief:is(.photo-ai, .photo-dc)::after { background: linear-gradient(90deg, rgba(1, 11, 19, .96) 0 34%, rgba(1, 11, 19, .86) 50%, rgba(1, 11, 19, .72) 72%, rgba(1, 11, 19, .5)), linear-gradient(180deg, rgba(1, 11, 19, .85) 0 57px, rgba(1, 11, 19, .2) 96px, rgba(1, 11, 19, .4) calc(100% - 40px), #010B13); }
-  :root:not([data-theme="light"]) .brief.photo-home::after { background: linear-gradient(90deg, #010B13, rgba(1, 11, 19, .72) 30%, rgba(1, 11, 19, .45)), linear-gradient(180deg, rgba(1, 11, 19, .85) 0 57px, rgba(1, 11, 19, .25) 96px, rgba(1, 11, 19, .45) calc(100% - 40px), #010B13); }
+  main > .brief { position: relative; }
+  main > .brief::before, main > .brief::after { content: ""; position: absolute; inset: -57px 0 0; z-index: -1; pointer-events: none; }
+  main > .brief::before { background: url("../img/relief/nw-dark-1600.webp") 50% 46% / cover no-repeat; }
+  [data-theme="light"] main > .brief::before { background-image: url("../img/relief/nw-light-1600.webp"); }
+  main > .brief::after { background: linear-gradient(90deg, rgba(1, 11, 19, .82) 0, rgba(1, 11, 19, .64) 28%, rgba(1, 11, 19, .60) 78%, rgba(1, 11, 19, .28) 100%), linear-gradient(180deg, rgba(1, 11, 19, .80) 0 57px, rgba(1, 11, 19, 0) 92px calc(100% - 56px), #010B13); }
+  [data-theme="light"] main > .brief::after { background: linear-gradient(90deg, rgba(244, 247, 251, .90) 0, rgba(244, 247, 251, .84) 28%, rgba(244, 247, 251, .84) 78%, rgba(244, 247, 251, .40) 100%), linear-gradient(180deg, rgba(244, 247, 251, .85) 0 57px, rgba(244, 247, 251, 0) 92px calc(100% - 56px), #F4F7FB); }
 }
 @media screen and (min-width: 1700px) and (forced-colors: none) {
-  :root:not([data-theme="light"]) .brief.photo-ai::before { background-image: url("../img/bg/ai-server-wall-2400.webp"); }
-  :root:not([data-theme="light"]) .brief.photo-dc::before { background-image: url("../img/bg/dc-server-cabinet-2400.webp"); }
-  :root:not([data-theme="light"]) .brief.photo-home::before { background-image: url("../img/bg/home-night-sky-1200.webp"); }
-}
-/* The page band's places, until each page moves its opener to the brief (its page lane). */
-@media screen and (min-width: 1100px) and (forced-colors: none) {
-  /* The credit's 1rem line takes the band's 16px foot and 4px of its top, so the band keeps its height and the line clears the lead and the
-     figures; light keeps the same box with the line unseen. */
-  .page-band:is(.photo-ai, .photo-dc) { position: relative; grid-template-rows: 1fr auto; row-gap: 0; padding-top: 12px; padding-bottom: 0; }
-  .page-band:is(.photo-ai, .photo-dc) > .photo-credit { grid-column: 1 / -1; display: block; visibility: hidden; margin: 4px 0 0; max-width: none; line-height: 1rem; }
-  :root:not([data-theme="light"]) .page-band:is(.photo-ai, .photo-dc) > .photo-credit { visibility: visible; }
-  /* 57px reaches up behind the header's 56 and its rule; the header paints over the layer, so its links stay live. */
-  :root:not([data-theme="light"]) .page-band:is(.photo-ai, .photo-dc)::before, :root:not([data-theme="light"]) .page-band:is(.photo-ai, .photo-dc)::after { content: ""; position: absolute; inset: -57px 0 0; z-index: -1; pointer-events: none; }
-  /* At cover the band's width sets the scale and a horizontal position does nothing, so AI's wall is drawn at 120 percent from its right edge:
-     its first column of rack lights lands near 36 percent, inside the aperture. Data Centers at 44 percent shows two rows of switch ports. */
-  :root:not([data-theme="light"]) .page-band.photo-ai::before { background: url("../img/bg/ai-server-wall-1600.webp") 100% 40% / 120% auto no-repeat; }
-  :root:not([data-theme="light"]) .page-band.photo-dc::before { background: url("../img/bg/dc-server-cabinet-1600.webp") 50% 44% / cover no-repeat; }
-  /* A center aperture between near-solid text zones. It closes to .90 by 630px from the right edge, before the key figures, which stand about
-     600px from it at every width; the open stop keeps 48px before that, so a 1100px window gets a ramp, not a hard step. The hold ends by 84px
-     above the foot, so a band shorter than the review's 155px keeps its 28px ramp to .88; at 155px and up it is the review's 126px. */
-  :root:not([data-theme="light"]) .page-band.photo-ai::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 30%, rgba(1, 11, 19, .58) min(46%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .30) 84px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .88) calc(100% - 56px), #010B13); }
-  :root:not([data-theme="light"]) .page-band.photo-dc::after { background: linear-gradient(90deg, rgba(1, 11, 19, .98) 0 26%, rgba(1, 11, 19, .54) min(42%, calc(100% - 678px)), rgba(1, 11, 19, .90) calc(100% - 630px), rgba(1, 11, 19, .97)), linear-gradient(180deg, rgba(1, 11, 19, .90) 0 56px, rgba(1, 11, 19, .34) 82px min(126px, calc(100% - 84px)), rgba(1, 11, 19, .90) calc(100% - 56px), #010B13); }
-}
-@media screen and (min-width: 1700px) and (forced-colors: none) {
-  :root:not([data-theme="light"]) .page-band.photo-ai::before { background-image: url("../img/bg/ai-server-wall-2400.webp"); }
-  :root:not([data-theme="light"]) .page-band.photo-dc::before { background-image: url("../img/bg/dc-server-cabinet-2400.webp"); }
+  main > .brief::before { background-image: url("../img/relief/nw-dark-2520.webp"); }
+  [data-theme="light"] main > .brief::before { background-image: url("../img/relief/nw-light-2520.webp"); }
 }
 
 /* Callouts. A held slot marks unfilled work with a hollow square and never holds a plot. */
@@ -581,9 +585,9 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 :is(.track-detail, .stair-detail) dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 12px 32px; margin: 0; max-width: none; }
 :is(.track-detail, .stair-detail) dt { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 :is(.track-detail, .stair-detail) dd { margin: 4px 0 0; }
-.track-n { display: grid; place-items: center; flex: none; box-sizing: border-box; width: 2rem; height: 2rem; font-family: var(--display); font-weight: 600; font-size: 0.9375rem; line-height: 1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--atni-ground-base); border: 1px solid var(--control-edge); }
-:is(.track-name, .stair-name) { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
-.stair-code { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; color: var(--atni-text-heading); }
+.track-n { display: grid; place-items: center; flex: none; box-sizing: border-box; width: 2rem; height: 2rem; font-family: var(--display); font-weight: 600; font-size: var(--t-small); line-height: 1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); background: var(--atni-ground-base); border: 1px solid var(--control-edge); }
+:is(.track-name, .stair-name) { font-family: var(--display); font-weight: 500; font-size: var(--t-body); line-height: 1.25; color: var(--atni-text-heading); }
+.stair-code { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1.1; color: var(--atni-text-heading); }
 .stair-tag { flex-basis: 100%; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .stair-step.is-lit .stair-tag { color: var(--atni-text-heading); }
 @supports selector(:has(*)) {
@@ -618,7 +622,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
     .stair-step.is-lit { border-top: 6px solid var(--atni-text-heading); }
     .stair-detail { padding-top: 16px; }
     fieldset.stair > .stair-detail { grid-column: auto / span 1; max-width: none; padding: 16px 12px 0; border-top: 2px solid transparent; }
-    fieldset.stair > .stair-step:has(> .stair-pick:checked) + .stair-detail { border-top-color: var(--atni-text-heading); }
+    fieldset.stair > .stair-step:has(> .stair-pick:checked) + .stair-detail { border-top-color: var(--here); }
     fieldset.stair > .stair-detail dl { grid-template-columns: minmax(0, 1fr); max-width: none; }
     fieldset.stair > .stair-detail:nth-of-type(1) { grid-column: 1; }
     fieldset.stair > .stair-detail:nth-of-type(2) { grid-column: 2; }
@@ -626,6 +630,33 @@ main > .section + .section { border-top: 1px solid var(--grid); }
     fieldset.stair > .stair-detail:nth-of-type(4) { grid-column: 4; }
     fieldset.stair > .stair-detail:nth-of-type(5) { grid-column: 5; }
     fieldset.stair > .stair-detail:nth-of-type(6) { grid-column: 6; }
+  }
+  /* Steppers that print every stop (R3 7). The stair's details already hold their own columns and room, so from 1280px each shows, the chosen one under a
+     --here rule and the rest under a 1px rule; the page keeps its height. A track shows each stop's detail in its own column once a column has 18rem: four
+     steps from a 72rem container, five or six from 108rem (Summit's six keep the stepper at 1440). There it has nothing to choose, so the picks, the chosen
+     bar and the chosen look go; .is-stepper keeps a track a stepper. */
+  @media screen and (min-width: 1280px) {
+    fieldset.stair > .stair-step:not(:has(> .stair-pick:checked)) + .stair-detail { visibility: visible; border-top-color: var(--rule); }
+  }
+  @container (min-width: 72rem) {
+    @media screen and (min-width: 720px) {
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-detail { visibility: visible; grid-column: auto; max-width: none; padding-right: 16px; }
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-step { cursor: default; }
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-step > .track-pick { display: none; }
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-step::after { content: none; }
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-step .track-n { color: var(--atni-text-heading); background: var(--atni-ground-base); border-color: var(--control-edge); }
+      fieldset.track:not(.is-stepper):not(:has(> label:nth-of-type(5))) > .track-step .track-name { font-weight: 500; text-decoration: none; }
+    }
+  }
+  @container (min-width: 108rem) {
+    @media screen and (min-width: 720px) {
+      fieldset.track:not(.is-stepper) > .track-step + .track-detail { visibility: visible; grid-column: auto; max-width: none; padding-right: 16px; }
+      fieldset.track:not(.is-stepper) > .track-step { cursor: default; }
+      fieldset.track:not(.is-stepper) > .track-step > .track-pick { display: none; }
+      fieldset.track:not(.is-stepper) > .track-step::after { content: none; }
+      fieldset.track:not(.is-stepper) > .track-step .track-n { color: var(--atni-text-heading); background: var(--atni-ground-base); border-color: var(--control-edge); }
+      fieldset.track:not(.is-stepper) > .track-step .track-name { font-weight: 500; text-decoration: none; }
+    }
   }
 }
 @media (forced-colors: active) { :is(.track-step:has(> .track-pick:checked), .stair-step:has(> .stair-pick:checked)) { outline: 2px solid Highlight; outline-offset: -2px; } }
@@ -688,7 +719,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 }
 
 /* Resolution register */
-.resolution-number { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1; letter-spacing: -0.02em; color: var(--atni-text-heading); font-variant-numeric: tabular-nums; }
+.resolution-number { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1; letter-spacing: -0.02em; color: var(--atni-text-heading); font-variant-numeric: tabular-nums; }
 .resolution-number .label { display: block; margin-bottom: 4px; color: var(--atni-text-muted); }
 .resolution h3 { margin-bottom: 4px; }
 .resolution h3 a { color: var(--atni-text-heading); text-decoration-color: var(--accent); }
@@ -698,7 +729,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .format { font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-muted); letter-spacing: 0; }
 
 /* Figures read from the data files: one row across the page. */
-.figure-value { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1; letter-spacing: -0.02em; color: var(--atni-text-heading); }
+.figure-value { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1; letter-spacing: -0.02em; color: var(--atni-text-heading); }
 .figure-label { margin: 0 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.3; }
 .figure-label a { color: var(--atni-text-heading); text-decoration-color: var(--accent); }
 .figure-label a:hover { color: var(--atni-text-link-hover); }
@@ -710,7 +741,7 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .deadlines { margin-top: 16px; }
 .deadline { break-inside: avoid; }
 .deadline p { margin: 0; }
-.deadline-date { font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.2; color: var(--atni-text-heading); }
+.deadline-date { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1.2; color: var(--atni-text-heading); }
 .deadline .deadline-when { margin-block: 4px; font-size: 0.875rem; color: var(--atni-text-muted); }
 
 /* Library entries (library page and short feeds) */
@@ -735,17 +766,17 @@ main > .section + .section { border-top: 1px solid var(--grid); }
 .whats-new-grid { display: grid; gap: 16px 48px; }
 .whats-new-head h2 { margin: 0 0 8px; }
 .whats-new-head p { margin: 0 0 8px; max-width: 36rem; color: var(--atni-text-secondary); }
-p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.3; color: var(--atni-text-heading); }
+p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: var(--t-lead); line-height: 1.3; color: var(--atni-text-heading); }
 .whats-new-rows { margin: 0; padding: 0; list-style: none; }
 .whats-new-rows li { display: grid; grid-template-columns: 6rem 3.5rem minmax(0, 1fr) 10.5rem; gap: 2px 16px; align-items: baseline; margin: 0; padding-block: 11px; border-top: 1px solid var(--grid); }
 .whats-new-rows li:first-child { border-top-color: var(--rule); }
 .whats-new-rows li:hover { outline: 1px solid var(--atni-text-muted); outline-offset: -1px; }
-.whats-new-rows time { font-size: 0.9375rem; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
+.whats-new-rows time { font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
 .whats-new-kind { font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .whats-new-rows a { display: block; margin-block: -11px; padding-block: 11px; line-height: 1.35; color: var(--atni-text-heading); text-decoration-color: var(--control); overflow-wrap: anywhere; } /* the row's height is the link's target */
 .whats-new-area { font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .whats-new-all { margin-bottom: 16px; border-block: 1px solid var(--grid); }
-.whats-new-all summary { display: flex; align-items: center; min-height: 44px; font-family: var(--display); font-weight: 500; font-size: 1.0625rem; color: var(--atni-text-heading); cursor: pointer; }
+.whats-new-all summary { display: flex; align-items: center; min-height: 44px; font-family: var(--display); font-weight: 500; font-size: var(--t-body); color: var(--atni-text-heading); cursor: pointer; }
 .whats-new-all summary::before { content: "+"; width: 1.25rem; color: var(--atni-text-muted); }
 .whats-new-all[open] summary::before { content: "\2212"; }
 .whats-new-all .caption { margin: 8px 0 16px; max-width: none; }
@@ -863,25 +894,34 @@ p.whats-new-since { margin: 0 0 8px; font-family: var(--display); font-weight: 5
   cursor: pointer;
 }
 /* Tabs (DIRECTION-R2 3.10): one fixed 64px strip, so sticking changes no height; a tab is its name over its question (a > span.tab-name + span.tab-q), the
-   current one a 3px heading-ink underline. Group labels (span.strip-group) are muted words, out of the tab order; a.strip-out[data-not-tab] (Sources) and
+   current one a 3px --here underline (R3 3), a hovered one 3px of --control-edge. Group labels (span.strip-group) are muted words, out of the tab order; a.strip-out[data-not-tab] (Sources) and
    button.paper[data-sheet-open] stand at the right end. The underline lives on a pseudo-element, so forced colors keep it and no tab changes size. */
 .section-strip > .wrap { align-items: stretch; min-height: 64px; }
-.section-strip :is(a, [role="tab"]) { position: relative; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; min-height: 64px; font-size: 1.0625rem; border-bottom: 0; }
+.section-strip :is(a, [role="tab"]) { position: relative; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; min-height: 64px; font-size: var(--t-body); border-bottom: 0; }
 .section-strip :is(a, [role="tab"])::after { content: ""; position: absolute; inset: auto 12px 0; border-bottom: 3px solid transparent; }
-.tab-name { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.2; }
+.tab-name { font-family: var(--display); font-weight: 500; font-size: var(--t-body); line-height: 1.2; }
 .tab-q { font-family: var(--display); font-weight: 500; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); white-space: nowrap; }
 .strip-group { align-self: center; padding: 0 12px 0 20px; font-size: 0.875rem; color: var(--atni-text-muted); }
 .section-strip .strip-out { align-self: center; }
 :is(.toc, .section-strip) :is(a, [role="tab"]):hover { color: var(--atni-text-heading); }
 .toc :is(a, [role="tab"]):hover, .section-strip :is(a, [role="tab"]):hover::after { border-bottom-color: var(--control-edge); }
-.toc :is(a[aria-current], [aria-selected="true"]) { color: var(--atni-text-heading); border-bottom-color: var(--atni-text-heading); }
+.toc :is(a[aria-current], [aria-selected="true"]) { color: var(--atni-text-heading); border-bottom-color: var(--here); }
 .section-strip :is(a[aria-current], [aria-selected="true"]) { color: var(--atni-text-heading); }
-.section-strip :is(a[aria-current], [aria-selected="true"])::after { border-bottom-color: var(--atni-text-heading); }
+.section-strip :is(a[aria-current], [aria-selected="true"])::after { border-bottom-color: var(--here); }
 /* These rows scroll, which would clip an outer focus ring, so the ring sits inside the link. */
 :is(.toc, .section-strip) :is(a, [role="tab"]):focus-visible { outline-offset: -3px; }
 .section-strip.is-sticky { position: sticky; top: 0; z-index: 2; }
 /* A page with a strip keeps focus and a landing out from under it (WCAG 2.4.11). */
 html:has(.section-strip[data-workbench]) { scroll-padding-top: 72px; }
+/* The strip shows at the foot of the first screen (R3 4): until the reader scrolls to it, it stands at the window's foot, so the tabs and "Meeting sheet (N)"
+   stay in view. A departure from "nothing covers live content" (DIRECTION-R2 3.12): it is the page's own navigation, it covers only until the reader scrolls,
+   focus keeps 72px clear of it, and a face's plot takes 37vh so it ends above it at 1440 by 900. */
+@media screen and (min-width: 1100px) {
+  .section-strip[data-workbench] { position: sticky; bottom: 0; z-index: 2; box-shadow: 0 -1px 0 var(--grid); }
+  html:has(.section-strip[data-workbench]) { scroll-padding-bottom: 72px; }
+  html:has(.section-strip[data-workbench]) .agenda-faces .plate { --plot-h: clamp(17rem, 37vh, 38rem); }
+  html:has(.section-strip[data-workbench]) .agenda { min-height: max(28rem, calc(var(--plate-h, 0px) - 64px)); } /* the agenda runs to the strip's top, not under it */
+}
 .content { min-width: 0; }
 .content > section + section { margin-top: 32px; }
 .content > section > h3 { margin-top: 32px; }
@@ -908,7 +948,7 @@ html:has(.section-strip[data-workbench]) { scroll-padding-top: 72px; }
   .page-body > .toc ul { display: block; margin: 0; overflow: visible; }
   .page-body > .toc a { display: block; min-height: 0; padding: 8px 0 8px 12px; white-space: normal; border-bottom: 0; border-left: 2px solid transparent; }
   .page-body > .toc a:hover { border-left-color: var(--control); }
-  .page-body > .toc a[aria-current] { color: var(--atni-text-heading); border-left-color: var(--atni-text-heading); }
+  .page-body > .toc a[aria-current] { color: var(--atni-text-heading); border-left-color: var(--here); } /* the rail's mark, a 2px rule at its left from here up */
 }
 
 /* Details in columns (workbench panels): each summary is a full sentence a reader can skim. */
@@ -919,12 +959,12 @@ html:has(.section-strip[data-workbench]) { scroll-padding-top: 72px; }
 /* On a rail page a heading and a full sentence skim as one summary; an open one takes the row, in cells that never split a sentence. */
 .rail-details { gap: 0 24px; margin-block: 4px 16px; }
 .rail-details > .disclosure { margin: 0; border-top: 1px solid var(--rule); }
-.rail-details > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; padding-block: 10px; font-family: var(--body); font-weight: 400; font-size: 0.9375rem; line-height: 1.45; color: var(--atni-text-secondary); list-style: none; }
+.rail-details > .disclosure > summary { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 10px; width: auto; padding-block: 10px; font-family: var(--body); font-weight: 400; font-size: var(--t-small); line-height: 1.45; color: var(--atni-text-secondary); list-style: none; }
 .rail-details > .disclosure > summary::-webkit-details-marker { display: none; }
 .rail-details > .disclosure > summary::before { content: ""; grid-row: 1; width: 10px; height: 10px; margin-top: 0.35em; border: 2px solid var(--control-edge); }
 .rail-details > .disclosure[open] > summary::before { background: var(--atni-text-heading); border-color: var(--atni-text-heading); }
 .rail-details > .disclosure > summary > * { grid-column: 2; margin: 0; }
-.rail-details > .disclosure > summary > :is(h3, h4) { margin-bottom: 2px; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.rail-details > .disclosure > summary > :is(h3, h4) { margin-bottom: 2px; font-size: var(--t-body); line-height: 1.25; color: var(--atni-text-heading); }
 .rail-details > .disclosure > summary:hover > :is(h3, h4) { color: var(--atni-text-link-hover); }
 .rail-details > .disclosure[open] { grid-column: 1 / -1; }
 .rail-details > .disclosure > :not(summary) { max-width: none; }
@@ -944,7 +984,7 @@ main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { co
   --mark: clamp(16px, 1vw + 5px, 26px);
   --l: clamp(7rem, 26%, 15rem);
   --v: clamp(8rem, 18%, 13rem);
-  --readout: clamp(3rem, 2.25rem + 1vw, 3.75rem);
+  --readout: clamp(4.25rem, 1.5rem + 3vw, 6rem);
   --plot-h: clamp(20rem, 46vh, 44rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -955,7 +995,7 @@ main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { co
 }
 .plate:is([data-variant="repeater"], [data-variant="strip"], .plate:not([data-variant]) ~ .plate:not([data-variant])) { --readout: 2.25rem; --plot-h: clamp(18rem, 40vh, 36rem); }
 .plate[data-variant="strip"] { --plot-h: clamp(18rem, 32vh, 26rem); }
-.plate:is([data-variant="repeater"], [data-variant="strip"]) .plate-title { font-size: 1.25rem; }
+.plate:is([data-variant="repeater"], [data-variant="strip"]) .plate-title { font-size: var(--t-lead); }
 .plate > * { min-width: 0; }
 .plate > .plate-claim { grid-area: claim; }
 .plate > .plate-bar { grid-area: bar; }
@@ -1011,11 +1051,12 @@ main > section, [role="tabpanel"], .agenda-faces, .plate-strip, .plate-pair { co
    565px while the plates above it drew. Without it the page lays out once, at about 0.15 to 0.25 s more script time on Data Centers. */
 
 /* A workbench panel sits on the base ground and its h2 is compact, so the plate starts on the first screen. */
-.panel, main > .panel:nth-of-type(n) { padding-block: 0 24px; background: none; }
+.panel, main > .panel:nth-of-type(n) { padding-block: 24px 24px; background: none; } /* 24px over a panel's first line, as under it (R3 8) */
+.panel > .wrap > :first-child:not(.is-tab-label), .panel > .wrap > .is-tab-label:first-child + * { margin-top: 0; } /* and only 24px: its first line's own margin would add to it */
 main > .panel + .panel { border-top: 0; }
 /* A deep link lands under the 64px strip, not behind it (html's scroll-padding-top keeps 72px on a page with one). */
 [role="tabpanel"], [role="tabpanel"] [id] { scroll-margin-top: 0; }
-.panel-title { margin: 16px 0 12px; font-size: 1.5rem; line-height: 1.15; }
+.panel-title { margin: 16px 0 12px; font-size: var(--t-title); line-height: 1.15; }
 @media screen {
   [role="tabpanel"] .panel-title.is-tab-label { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 }
@@ -1044,7 +1085,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 /* The Reading holds six lines whatever it says, so the actions under it never move (resource-use-02, explorer-03). The sentence with the figure, which plate.js
    marks, is in the heading's face and ink; the rest is body. */
 .plate-detail .reading { min-height: 6lh; font-family: var(--body); font-weight: 400; font-size: 1rem; line-height: 1.45; color: var(--atni-text-body); }
-.plate-detail .reading b { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; color: var(--atni-text-heading); }
+.plate-detail .reading b { font-family: var(--display); font-weight: 500; font-size: var(--t-body); color: var(--atni-text-heading); }
 .plate-claim, .plate-view, .plate-controls { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .plate-claim > .plate-controls:not(:has(> *)) { display: none; } /* emptied when its one view control moves to the bar above the plot; it held 8 grid rows */
 .plate-claim p, .plate-detail p { margin: 0; }
@@ -1094,7 +1135,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 .plate-foot { color: var(--atni-text-secondary); }
 .plate-setting { color: var(--atni-text-secondary); }
 @media screen { .plate.is-live .plate-setting { display: none; } } /* the controls say it; the line stays for print and for no scripts */
-.plate-more > summary { min-height: 32px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; color: var(--atni-text-heading); cursor: pointer; }
+.plate-more > summary { min-height: 32px; font-family: var(--display); font-weight: 500; font-size: var(--t-small); color: var(--atni-text-heading); cursor: pointer; }
 .plate-more > .plate-controls { padding-top: 12px; }
 .plate-facts .plate-more > p { margin-top: 8px; }
 
@@ -1104,7 +1145,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 .segmented legend { padding: 0; margin-bottom: 6px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .segmented label { position: relative; display: inline-flex; align-items: stretch; min-height: 44px; cursor: pointer; }
 .segmented input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.segmented span { display: flex; align-items: center; padding: 4px 12px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.25; color: var(--atni-text-secondary); border: 1px solid var(--control-edge); }
+.segmented span { display: flex; align-items: center; padding: 4px 12px; font-family: var(--display); font-weight: 500; font-size: var(--t-small); line-height: 1.25; color: var(--atni-text-secondary); border: 1px solid var(--control-edge); }
 .segmented input:hover + span { color: var(--atni-text-heading); }
 .segmented input:checked + span { position: relative; color: var(--atni-text-heading); background: var(--control-on); border-color: var(--atni-text-heading); }
 .segmented input:focus-visible + span { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
@@ -1155,18 +1196,26 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 .st { display: inline-block; flex: none; box-sizing: border-box; width: 10px; height: 10px; border: 1.5px solid currentColor; vertical-align: -1px; }
 .st-v { background: currentColor; }
 .st-p { background: linear-gradient(currentColor, currentColor) bottom / 100% 50% no-repeat; }
-.plate-evidence .plate-chips { display: flex; flex-wrap: wrap; gap: 0 16px; }
-.plate-evidence .receipt { gap: 6px; min-height: 32px; padding: 0; color: var(--atni-text-heading); background: none; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.3em; }
-.plate-evidence .receipt:hover { text-decoration-color: var(--atni-text-heading); }
+.plate-evidence .plate-chips { display: flex; flex-wrap: wrap; gap: 0 12px; }
+/* Quiet until asked (R3 5): secondary ink over a 1px grid-line underline; heading ink over a control-edge underline under the pointer or focus. */
+.plate-evidence .receipt { gap: 6px; min-height: 32px; padding: 0; color: var(--atni-text-secondary); background: none; text-decoration: underline 1px var(--grid); text-underline-offset: 0.3em; }
+.plate-evidence .receipt:is(:hover, :focus-visible) { color: var(--atni-text-heading); text-decoration-color: var(--control-edge); }
 .plate-evidence .receipt[aria-expanded="true"] { color: var(--atni-text-heading); background: none; text-decoration: underline 2px var(--atni-text-heading); }
 @media (pointer: coarse) { .plate-evidence .receipt { min-height: 44px; } }
-/* The collar: across the plate's foot behind a 1px rule. Its sources line and the link to its section of the Sources page (which prints its address) at the
-   left; at the right, what leaves the page, as text buttons 24px apart. */
+/* The collar: across the plate's foot behind a 1px rule, one line. Its sources line and the link to its section of the Sources page (which prints its address)
+   at the left; at the right, "Take this plate", a disclosure that opens what leaves the page under it, right-aligned and in flow, as text buttons 24px apart
+   (R3 5). Its sign is muted, as What's New's is. */
 .plate-collar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--rule); font-size: 0.875rem; }
 .plate-collar-sources { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; min-width: 0; }
 .plate-collar .plate-source-line { max-width: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .plate-collar .plate-source-line::before { content: "This plate: "; }
 .plate-sources-link a { font-family: var(--display); font-weight: 500; }
+.plate-take { margin-left: auto; }
+.plate-take > summary { display: flex; justify-content: flex-end; align-items: center; min-height: 32px; font-family: var(--display); font-weight: 500; font-size: var(--t-small); color: var(--atni-text-heading); list-style: none; cursor: pointer; }
+.plate-take > summary::-webkit-details-marker { display: none; }
+.plate-take > summary::before { content: "+"; width: 1.25rem; color: var(--atni-text-muted); }
+.plate-take[open] > summary::before { content: "\2212"; }
+.plate-take > .plate-out { justify-content: flex-end; }
 .plate-out { display: flex; flex-wrap: wrap; gap: 0 24px; }
 .plate-out :is(button, a), .plate-more-rows { display: inline-flex; align-items: center; min-height: 32px; padding: 0; font-family: var(--body); font-size: 0.875rem; color: var(--atni-text-heading); background: none; border: 0; text-decoration: underline 1px var(--control-edge); text-underline-offset: 0.25em; cursor: pointer; }
 .plate-out :is(button, a):hover, .plate-more-rows:hover { text-decoration-color: var(--atni-text-heading); }
@@ -1212,7 +1261,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 .plate-receipt:not([hidden]) { animation: plate-enter 180ms var(--ease); }
 .plate-receipt-item { display: grid; gap: 2px; }
 .plate-receipt-item.is-again { margin-top: -8px; } /* another claim from the document above: one line under it */
-.plate-receipt .plate-source-title { font-family: var(--body); font-weight: 500; font-size: 0.9375rem; line-height: 1.35; }
+.plate-receipt .plate-source-title { font-family: var(--body); font-weight: 500; font-size: var(--t-small); line-height: 1.35; }
 .plate-receipt .plate-source-title a { color: var(--atni-text-heading); }
 .plate-receipt .caption { font-size: 0.875rem; }
 .plate-receipt-status { display: flex; align-items: baseline; gap: 6px; }
@@ -1223,7 +1272,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
 .plate-sources:focus { outline: none; }
 .plate-sources { overflow-wrap: anywhere; }
 .plate-sources li { display: grid; gap: 4px; margin: 0; }
-.plate-source-title { font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; }
+.plate-source-title { font-family: var(--display); font-weight: 500; font-size: var(--t-small); line-height: 1.3; }
 .plate-sources .caption { font-size: 0.8125rem; }
 .plate-quote { margin: 0; padding-left: 12px; font-size: 0.8125rem; line-height: 1.5; color: var(--atni-text-body); border-left: 1px solid var(--rule); }
 .plate-source-line, .plate-sources-link, .plate-receipt-more { margin: 0; }
@@ -1231,7 +1280,7 @@ html[data-address="none"] .plate-link-note { display: none; } /* the Briefing ke
    3px orange rule on the selected row's first cell (never a row wash), and a row count. Past 25 rows it opens with 25 and a button appends the rest in place;
    without scripts and on paper every row shows. Each claim id links to its receipt with its status as a square and a word. */
 .plate-view[data-view="table"] { gap: 8px; }
-.plate-table caption { margin: 0 0 8px; font-family: var(--body); font-size: 0.9375rem; line-height: 1.4; text-align: left; color: var(--atni-text-body); }
+.plate-table caption { margin: 0 0 8px; font-family: var(--body); font-size: var(--t-small); line-height: 1.4; text-align: left; color: var(--atni-text-body); }
 table.plate-table :is(th, td) { padding: 6px 8px; font-size: 0.8125rem; }
 .plate-table td:last-child { text-align: left; }
 .plate-table tbody tr:hover > * { outline: 0; }
@@ -1255,7 +1304,7 @@ a.cr[aria-expanded="true"], a.term[aria-expanded="true"] { text-decoration: unde
 #cr-tip { position: fixed; inset: auto; margin: 0; width: min(24rem, calc(100vw - 32px)); max-height: min(24rem, calc(100vh - 32px)); overflow-y: auto; padding: 14px 16px; font-size: 0.875rem; line-height: 1.45; color: var(--atni-text-body); background: var(--window); border: 0; box-shadow: var(--window-ring), 0 0 0 1px var(--window-edge); overscroll-behavior: contain; }
 #cr-tip:popover-open { animation: plate-enter 180ms var(--ease); }
 #cr-tip p { margin: 0 0 6px; max-width: none; }
-#cr-tip .cr-tip-title { font-family: var(--body); font-weight: 500; font-size: 0.9375rem; color: var(--atni-text-heading); }
+#cr-tip .cr-tip-title { font-family: var(--body); font-weight: 500; font-size: var(--t-body); color: var(--atni-text-heading); }
 #cr-tip .cr-tip-title a, #cr-tip a { color: var(--atni-text-heading); }
 #cr-tip:focus-visible { outline: 2px solid var(--atni-text-heading); outline-offset: 2px; }
 /* Focus in the kit: 2px heading ink, 2px off (DIRECTION-R2 2.2); orange is the reading's. */
@@ -1283,7 +1332,7 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
    same boxes. The meeting sheet lists the ticked ones by set in the right drawer, and on paper prints a clone of them alone. */
 .asks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr)); gap: 24px 48px; margin: 0; }
 .ask-set { min-width: 0; margin: 0; padding: 0; border: 0; }
-.ask-set > legend { margin-bottom: 8px; padding: 0; font-family: var(--display); font-weight: 600; font-size: 1.17rem; line-height: 1.25; color: var(--atni-text-heading); }
+.ask-set > legend { margin-bottom: 8px; padding: 0; font-family: var(--display); font-weight: 600; font-size: var(--t-lead); line-height: 1.25; color: var(--atni-text-heading); }
 .ask-set ol { list-style: none; margin: 0; padding: 0; }
 .ask-set li { margin: 0; border-top: 1px solid var(--rule); }
 .ask-set label { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 10px; padding: 10px 0; cursor: pointer; }
@@ -1294,7 +1343,7 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .ask-firsts p { max-width: none; margin: 0; line-height: 1.4; }
 .ask-firsts b { font-family: var(--display); font-weight: 600; color: var(--atni-text-heading); }
 .ask-firsts .button { justify-self: start; min-height: 36px; padding-block: 4px; font-size: 0.875rem; }
-.sheet .drawer-body h3 { margin: 20px 0 6px; font-size: 1.0625rem; }
+.sheet .drawer-body h3 { margin: 20px 0 6px; font-size: var(--t-body); }
 .sheet .drawer-body h3:first-child { margin-top: 0; }
 .sheet .drawer-body ol { margin: 0; padding-left: 1.5rem; }
 .sheet-status:empty { display: none; }
@@ -1328,9 +1377,9 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .ladder:is([data-form="square"], :not(.no-needle)).has-ticks:has(.ladder-tick:not([hidden])) { padding-top: 48px; } /* the needle's name on the top line, the tick's on the next */
 .ladder-rows { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(var(--row-min), auto); row-gap: 0.5rem; margin: 0 0 24px; padding: 0; list-style: none; }
 .ladder-row { display: grid; grid-template-columns: var(--l) minmax(0, 1fr) var(--v); column-gap: 12px; align-items: center; margin: 0; cursor: pointer; }
-.ladder-label { font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.2; color: var(--atni-text-heading); }
+.ladder-label { font-family: var(--display); font-weight: 500; font-size: 1.1875rem; line-height: 1.2; color: var(--atni-text-heading); }
 .ladder-tag { display: block; margin-top: 2px; font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--atni-text-secondary); }
-.ladder-value { font-family: var(--display); font-weight: 600; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.ladder-value { font-family: var(--display); font-weight: 600; font-size: 1.375rem; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .ladder-value:has(> .ladder-num) { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.25em; }
 .ladder-unit { font-family: var(--body); font-weight: 500; font-size: 1rem; letter-spacing: 0; }
 .ladder-value > .ladder-tag { order: 1; flex-basis: 100%; margin-top: 2px; font-size: 1rem; line-height: 1.3; letter-spacing: 0; }
@@ -1401,7 +1450,7 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .has-yard .ladder-row { flex: 2 1 96px; }
 .has-yard .ladder-row.is-yard { flex: 1 1 56px; }
 .has-yard .ladder-row.is-yard .ladder-label { white-space: nowrap; }
-.has-yard .ladder-row:not(.is-yard) .ladder-label { font-size: 1.25rem; }
+.has-yard .ladder-row:not(.is-yard) .ladder-label { font-size: var(--t-lead); }
 .has-yard .ladder-row.is-yard + .ladder-row.is-yard, .has-yard .ladder-row:not(.is-yard) + .ladder-row { border-top: 1px solid var(--grid); }
 .ladder-grid, .ladder-axis { position: absolute; left: calc(var(--l) + 12px); right: calc(var(--v) + 12px); }
 .ladder-grid { z-index: 1; top: 0; bottom: 24px; pointer-events: none; }
@@ -1462,12 +1511,12 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .strip-n { font-family: var(--display); font-weight: 600; font-size: 2rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .strip-unit { font-size: 1rem; color: var(--atni-text-secondary); }
 .strip a { color: var(--atni-text-heading); text-decoration-color: var(--control); } /* orange on the strip means soon */
-.strip-name { font-family: var(--display); font-weight: 500; font-size: 1.125rem; line-height: 1.2; }
-.strip-what { font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-secondary); }
+.strip-name { font-family: var(--display); font-weight: 500; font-size: var(--t-lead); line-height: 1.2; }
+.strip-what { font-size: var(--t-small); line-height: 1.3; color: var(--atni-text-secondary); }
 .strip-lane { padding-top: 12px; border-top: 1px solid var(--grid); }
 .strip-lane-title, .strip-beyond-title { margin: 0 0 8px; font-family: var(--display); font-weight: 500; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .strip-undated { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2px 20px; margin: 0; padding: 0; list-style: none; }
-.strip-undated li { margin: 0; padding-left: 18px; position: relative; font-size: 0.9375rem; line-height: 1.35; color: var(--atni-text-secondary); }
+.strip-undated li { margin: 0; padding-left: 18px; position: relative; font-size: var(--t-small); line-height: 1.35; color: var(--atni-text-secondary); }
 .strip-undated li::before { content: ""; position: absolute; left: 0; top: 0.3em; width: 10px; height: 10px; border: 2px solid var(--series-context); }
 .strip-beyond { justify-self: end; text-align: right; }
 .strip-beyond > * { display: block; }
@@ -1514,14 +1563,15 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .countdown-row { align-items: center; min-height: 3.25rem; border-bottom: 1px solid var(--rule); cursor: pointer; }
 .countdown-when { display: flex; flex-direction: column; justify-content: center; margin: 0; padding-block: 6px; }
 .countdown-days { display: block; min-width: 7ch; font-size: 0.875rem; line-height: 1.2; color: var(--atni-text-secondary); }
-.countdown-n { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
+.countdown-n { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--atni-text-heading); }
 .countdown-date { font-size: 0.875rem; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--atni-text-secondary); }
-.countdown-name { font-family: var(--display); font-weight: 500; font-size: 1.0625rem; line-height: 1.25; color: var(--atni-text-heading); }
+.countdown-name { font-family: var(--display); font-weight: 500; font-size: var(--t-body); line-height: 1.25; color: var(--atni-text-heading); }
 .countdown-track { align-self: stretch; }
 .countdown-track::after { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--grid); }
 .countdown-mark { position: absolute; z-index: 2; top: 50%; left: calc(var(--t) * 100%); box-sizing: border-box; width: var(--cd-mark); height: var(--cd-mark); background: var(--series-context); outline: 2px solid var(--plot-ground); transform: translate(-50%, -50%); }
 .countdown-row.is-passed .countdown-mark { background: var(--plot-ground); border: 2px solid var(--series-context); }
 .countdown-row.is-passed :is(.countdown-n, .countdown-name) { color: var(--atni-text-secondary); }
+.countdown-row.is-passed .countdown-days .countdown-n { font-family: var(--body); font-weight: 500; font-size: .875rem; line-height: 1.3; color: var(--atni-text-secondary); } /* "date passed" is words, not a figure (R3 8) */
 .countdown-row.is-beyond .countdown-mark { background: repeating-linear-gradient(135deg, var(--series-context) 0 2px, var(--plot-ground) 2px 4px); border: 1px solid var(--series-context); }
 .countdown-row.is-on .countdown-mark { background: var(--energy-mark); border-color: var(--energy-mark); }
 .countdown-row.is-on.is-passed .countdown-mark { background: var(--plot-ground); }
@@ -1530,7 +1580,7 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .countdown-names > li { position: relative; margin: 0; padding: 6px 4px 6px 20px; cursor: pointer; }
 .countdown-names > li::before { content: ""; position: absolute; left: 2px; top: calc(6px + 0.4em); box-sizing: border-box; width: 10px; height: 10px; border: 2px solid var(--series-context); }
 .countdown-names > li.is-on::before { background: var(--energy-mark); border-color: var(--energy-mark); }
-.countdown-names .countdown-name { font-size: 1rem; }
+.countdown-names .countdown-name { font-size: var(--t-body); }
 .countdown-note { margin: 8px 0 0; max-width: none; font-size: 0.875rem; color: var(--atni-text-secondary); }
 .countdown-today { display: none; }
 .countdown.has-today :is(.countdown-scale, .countdown-track)::before { content: ""; position: absolute; z-index: 1; top: 0; bottom: -1px; left: calc(var(--today) * 100%); width: 2px; margin-left: -1px; background: var(--energy-mark); }
@@ -1555,8 +1605,8 @@ dialog.drawer[open] { animation: plate-enter 180ms var(--ease); }
 .count-row { display: grid; grid-template-columns: clamp(10rem, 31%, 16rem) minmax(0, 1fr); grid-template-areas: "label cell" "value cell"; grid-template-rows: auto 1fr; column-gap: 12px; align-items: start; margin: 0; padding-block: 4px; border-bottom: 1px solid var(--rule); cursor: pointer; }
 .count-row .ladder-label { grid-area: label; }
 .count-row .ladder-value { grid-area: value; }
-.count-row .ladder-num { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; letter-spacing: -0.015em; }
-.count-row:has(.ladder-tag) .ladder-num { font-size: 1.5rem; }
+.count-row .ladder-num { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1.1; letter-spacing: -0.015em; }
+.count-row:has(.ladder-tag) .ladder-num { font-size: var(--t-title); }
 .count-row .ladder-unit { font-size: 0.875rem; font-family: var(--body); font-weight: 400; color: var(--atni-text-secondary); }
 .plate .count-row .ladder-value:not(:has(> .ladder-num)) { font-family: var(--body); font-weight: 400; font-size: 0.875rem; line-height: 1.3; color: var(--atni-text-secondary); }
 .count-row.is-on .ladder-label { color: var(--atni-text-heading); }
@@ -1652,7 +1702,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 .bench-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px 24px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
 @media (min-width: 720px) { .bench-row { grid-template-columns: 12rem minmax(0, 1fr); } }
 .bench-figure { position: relative; padding-bottom: 12px; }
-.bench-value { font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1; color: var(--atni-text-heading); }
+.bench-value { font-family: var(--display); font-weight: 600; font-size: var(--t-title); line-height: 1; color: var(--atni-text-heading); }
 .bench-unit { font-weight: 500; font-size: 0.875rem; color: var(--atni-text-body); }
 .bench-ruler { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; border-bottom: 1px solid var(--baseline); }
 .bench-ruler::after { content: ""; position: absolute; left: calc(var(--x) * 100%); bottom: -1px; width: 2px; height: 8px; margin-left: -1px; background: var(--energy-mark); }
@@ -1706,14 +1756,14 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 /* Print (DIRECTION-R2 3.7, item 10): Ctrl+P prints the open tab panel, and each plate on it as its plot, its Reading, its Table (every row, each claim id with
    its status) and its collar, which writes out the Sources page's address. What only a script runs stays off the paper. */
 @media print {
-  .plate-controls, .plate-switch, .plate-bar, .plate-actions, .plate-evidence, .plate-receipt, .plate-out, .count-rows, .count-key, .plate-more-rows { display: none !important; }
+  .plate-controls, .plate-switch, .plate-bar, .plate-actions, .plate-evidence, .plate-receipt, .plate-take, .plate-out, .count-rows, .count-key, .plate-more-rows { display: none !important; }
   .plate > :is(.plate-plot, .plate-detail, .plate-under, .plate-view)[hidden] { display: block !important; }
   .plate > .plate-detail[hidden] { display: flex !important; }
   :not([role="tabpanel"])[hidden="until-found"] { content-visibility: visible; } /* the browser's own rule skips what a findable view holds; paper shows it, and a closed tab stays closed */
   .ladder-groups[hidden] { display: flex !important; }
   .plate-table tr.is-more { display: table-row; }
   .plate.is-live > .plate-view[data-view="table"] > .label { position: static; width: auto; height: auto; margin: 0 0 4pt; overflow: visible; clip: auto; white-space: normal; }
-  .plate { display: block; margin: 0 0 16pt; padding: 0; }
+  .plate { --readout: 2.25rem; display: block; margin: 0 0 16pt; padding: 0; } /* the print readout: a plate's own --readout outranks the print variables' */
   .plate > * + * { margin-top: 8pt; }
   .plate-detail { padding: 0; background: none; box-shadow: none; border: 0; }
   .plate-detail .reading { min-height: 0; }
@@ -1929,7 +1979,7 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
    the newest What's New date, which scripts/add_page_meta.py writes (home-shell-23); and Top (home-shell-20). The same copy on every page. */
 .site-footer { margin-top: auto; padding-block: 32px 40px; font-size: 0.875rem; color: var(--atni-text-secondary); border-top: 1px solid var(--rule); }
 .footer-inner { display: grid; gap: 32px; }
-.footer-title { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: 1.125rem; color: var(--atni-text-heading); }
+.footer-title { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: var(--t-lead); color: var(--atni-text-heading); }
 .footer-inner p { max-width: var(--measure); }
 .footer-nav > ul { list-style: none; margin: 0; padding: 0; columns: 3 10rem; column-gap: 32px; }
 .footer-nav li { margin: 0; break-inside: avoid; }

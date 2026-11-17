@@ -147,6 +147,20 @@ the owner rules. The kit as built is in `docs/PLATE-KIT.md`, "The system as buil
 **For the owner's carve:** ink links and buttons and the reach of the Energy orange ruling; the retired poster readout (A); the relief as a new image place (B2);
 an Energy photo band; whether the Summit and About get Sources pages; the Summit date.
 
+**R3 visual pass (11/17/2026; changes these D rows and B2, each reversible as `site.css` says at its rule; for the owner's page-by-page review).**
+
+| Default | Now | Reason |
+|---|---|---|
+| Readout 3 to 3.75rem (D) | `--readout: clamp(4.25rem, 1.5rem + 3vw, 6rem)`, 69 and 83px at 1440 and 1920; the face's window rises to its top | One focal point per first screen, readable across a council table; ended a 160px dead band top right |
+| Photographs behind AI, Data Centers and home, dark only (B2) | The relief (`img/relief/nw-*`) behind every page's header and brief, both themes, no on-screen credit; About's Credits name it | Regional ground on every page; the stock strips barely showed and their credits took a line |
+| Orange marks the reading only (D) | Also where the reader is, as `--here`: the join bar, the current tab and rail item, the chosen stair step; on the Energy family (`body[data-family="energy"]`) the current nav item, the name line's current page and the paper button | One warm stroke shows the reader's place; the Energy orange ruling reaches its own pages |
+| Nothing covers live content (DIRECTION-R2 3.12) | A workbench strip sticks to the window's foot until reached; faces' plots take 37vh beside it | The strip sat below the fold on Data Centers and AI |
+| Collar: Print, CSV, SVG and Add to a briefing in a row | Behind "Take this plate", a disclosure; evidence chips in secondary ink | One collar line; the window stays quiet until asked |
+| Type sizes as each rule set them | Six: `--t-small` .875, `--t-body` 1, `--t-lead` 1.1875, `--t-title` 1.375rem, the h1, and the readout | Ten near sizes read as noise |
+| A track or stair opens one stop at a time (D) | Wide enough for 18rem a column, a track prints every stop (`.is-stepper` opts out); a stair shows every detail from 1280px | Detail beside what it describes, with no press |
+| "Use light theme", chosen-setting fill | "Light theme" with a 10px square, filled when on | A label that names the state it sets |
+| The brief's name line over both columns (D) | The name line heads the h1's column; the lead starts on the brief's top line | The lead at lead size ran a line longer; this keeps every page at or under its R2 height |
+
 ## C. Instrument at Full Power, 11/05/2026 (overrides sections 0 to 6)
 
 The art director's decision is `work/site-refresh/design/lift/DIRECTION-FINAL.md` (local). Sections A and B stand, and this is the record of what the

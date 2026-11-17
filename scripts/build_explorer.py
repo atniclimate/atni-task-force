@@ -1505,7 +1505,7 @@ def collar_html(name, receipts):
     out = '<button type="button" data-print-plate>Print this plate</button>' + ('<button type="button" data-csv>Download CSV</button>' if name in TABLED else "")
     return (f'<div class="plate-collar-sources"><p class="caption plate-source-line">{escape(bp.tally_words(receipts))}</p>'
             f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{vp.OWN_ORIGIN}explorer/sources/#{plate}">All sources for this plate</a></p></div>'
-            f'<div class="plate-out" data-js>{out}</div>')
+            f'{bp.TAKE_OPEN}<div class="plate-out" data-js>{out}</div></details>')
 
 
 def plates_html(owned, notes, receipts):

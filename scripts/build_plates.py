@@ -1601,10 +1601,12 @@ def tally_words(receipts):
 
 
 BRIEFING_PAGES = {"ai/index.html", "data-centers/index.html", "data-centers/resource-use/index.html", "energy/index.html"}  # the pages scripts/build_briefing.py copies plates from (its PAGES)
+TAKE_OPEN = '<details class="plate-take" data-js><summary>Take this plate</summary>'  # build_explorer.py writes the same disclosure
 
 
 def collar_html(plate, page, receipts, svg):
-    """The plate's foot: its sources line and the link to its section of the page's Sources page, whose address prints on paper; then what leaves the page."""
+    """The plate's foot: its sources line and the link to its section of the page's Sources page, whose address prints on paper; then what leaves the page,
+    behind one disclosure, "Take this plate", so the collar keeps one line (R3 5)."""
     folder = posixpath.dirname(page)
     url = f"{vp.OWN_ORIGIN}{f'{folder}/' if folder else ''}sources/#{plate}"
     out = ['<button type="button" data-print-plate>Print this plate</button>', '<button type="button" data-csv>Download CSV</button>',
@@ -1613,7 +1615,7 @@ def collar_html(plate, page, receipts, svg):
         out.append(f'<a href="{posixpath.relpath("briefing", folder or ".")}/#add={plate}" data-add-briefing>Add to a briefing</a>')  # ../../ from Resource Use
     return (f'<div class="plate-collar"><div class="plate-collar-sources"><p class="caption plate-source-line">{escape(tally_words(receipts))}</p>'
             f'<p class="plate-sources-link"><a href="sources/#{plate}" data-url="{escape(url)}">All sources for this plate</a></p></div>'
-            f'<div class="plate-out" data-js>{"".join(out)}</div></div>')
+            f'{TAKE_OPEN}<div class="plate-out" data-js>{"".join(out)}</div></details></div>')
 
 
 def measure_of(claim):

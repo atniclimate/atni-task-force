@@ -650,16 +650,16 @@
    "high": null,
    "unit": "rows",
    "year": 2026,
-   "boundary": "Counted: rows dated within 90 days of 11/16/2026 in whats-new.json.",
+   "boundary": "Counted: rows dated within 90 days of 11/17/2026 in whats-new.json.",
    "source": {
     "title": "What's New: public dataset (whats-new.json)",
     "publisher": "ATNI Energy Task Forces",
     "url": "https://atniclimate.github.io/atni-task-force/data/whats-new.json",
-    "published": "2026-11-16",
+    "published": "2026-11-17",
     "kind": "dataset"
    },
-   "quote": "\"generated\": \"2026-11-16\"",
-   "derived": "Count of those rows in whats-new.json, built 11/16/2026.",
+   "quote": "\"generated\": \"2026-11-17\"",
+   "derived": "Count of those rows in whats-new.json, built 11/17/2026.",
    "status": "partly",
    "limit": "A burst of records from one publisher is one row, so a row count is not a count of records."
   },

@@ -56,8 +56,8 @@
   .plate-switch .segmented { column-gap: 8px; }
 }
 #ai-scale { --l: clamp(9rem, 28%, 16rem); }
-#ai-occupations, #ai-jobs-sector { --l: clamp(11rem, 38%, 22rem); --v: clamp(8.5rem, 19%, 10rem); }
-#ai-displacement { --l: clamp(12rem, 38%, 26rem); --v: clamp(7.5rem, 17%, 11rem); }
+#ai-occupations, #ai-jobs-sector { --l: clamp(11.6rem, 40%, 23.2rem); --v: clamp(8.5rem, 19%, 10rem); } /* label columns 5.6 percent wider than R2's, as the label (R3 6), so each wraps as it did */
+#ai-displacement { --l: clamp(12.7rem, 40%, 27.4rem); --v: clamp(7.5rem, 17%, 11rem); }
 #ai-holdings { --l: clamp(10rem, 32%, 20rem); }
 #ai-guidance-2026 { --v: clamp(9.5rem, 22%, 12rem); }
 #ai-capex-cash { --l: clamp(6rem, 14%, 10rem); --v: clamp(12rem, 28%, 15rem); }

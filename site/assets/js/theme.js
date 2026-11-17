@@ -77,7 +77,7 @@
   window.addEventListener('hashchange', reveal);
   document.addEventListener('DOMContentLoaded', reveal);
 
-  // One label, "Use light theme", and its state in aria-pressed (home-shell-11). The button is a data-js part, so it is laid out from the first paint.
+  // One label, "Light theme", and its state in aria-pressed (home-shell-11; R3 8): its square fills when the light theme is on. The button is a data-js part, so it is laid out from the first paint.
   document.addEventListener('DOMContentLoaded', function () {
     var button = document.querySelector('[data-theme-toggle]');
     if (!button) return;
