@@ -1,0 +1,184 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/index.html",
+ "id": "ai-adoption-returns",
+ "default": "abandon",
+ "eyebrow": "What adoption returns",
+ "title": "Surveys find {c[ad-002][value]:.0f}% of companies abandoning most AI initiatives, and nearly {c[ad-001][value]:.0f}% of AI's time savings lost to rework",
+ "subtitle": "Each row counts a different thing: companies, leaders, time savings, a forecast, or a measured difference. Forecasts are hollow; the rows are never averaged.",
+ "plot": {
+  "type": "ladder",
+  "units": {
+   "percent (nearly)": "percent",
+   "percent longer": "percent"
+  },
+  "groups": [
+   {
+    "id": "share",
+    "label": "Share of what each row names, percent",
+    "mark": "square",
+    "domain": [
+     0,
+     100
+    ]
+   },
+   {
+    "id": "diff",
+    "label": "With AI against without, percent difference",
+    "mark": "square",
+    "domain": [
+     0,
+     80
+    ]
+   }
+  ],
+  "key": [
+   {
+    "shape": "solid",
+    "label": "Measured or surveyed"
+   },
+   {
+    "shape": "hollow",
+    "label": "Forecast"
+   }
+  ]
+ },
+ "reading": "{label}: {display}. {boundary} {evidence}",
+ "reading_words": "{label}: {display}.",
+ "also": [
+  {
+   "claim": "jb-114",
+   "label": "Cuts in administration, office support, translation, manufacturing and customer service",
+   "say": "Partly offset by new roles that manage AI; a survey of firms."
+  },
+  {
+   "claim": "jb-109",
+   "label": "Executives report productivity gains that vary by sector",
+   "say": "Largest in high-skill services and finance; reports and expectations, not measured output."
+  },
+  {
+   "claim": "ad-007",
+   "label": "Task time, returning developers, late-2025 tools",
+   "say": "{display} task time for returning developers; METR calls the data an unreliable signal."
+  },
+  {
+   "claim": "ad-008",
+   "label": "Roles declared redundant over a voice bot, then reversed",
+   "say": "{display}; the one reported reversal of AI layoffs that held up when Kaleido checked it at its sources."
+  }
+ ],
+ "rows": [
+  {
+   "id": "abandon",
+   "group": "share",
+   "label": "Companies abandoning most AI initiatives before production",
+   "tag": "Survey, S&P Global",
+   "claim": "ad-002",
+   "cols": {
+    "kind": "Survey"
+   }
+  },
+  {
+   "id": "rework",
+   "group": "share",
+   "label": "AI time savings lost to rework, nearly",
+   "tag": "Survey, Workday",
+   "claim": "ad-001",
+   "cols": {
+    "kind": "Survey"
+   }
+  },
+  {
+   "id": "cut-staff",
+   "group": "share",
+   "label": "Customer service leaders who had actually reduced agent staffing",
+   "tag": "Survey, Gartner",
+   "claim": "ad-003",
+   "cols": {
+    "kind": "Survey"
+   }
+  },
+  {
+   "id": "agentic",
+   "group": "share",
+   "label": "Agentic AI projects forecast canceled by 2027",
+   "tag": "Forecast, Gartner",
+   "claim": "ad-004",
+   "open": "over",
+   "modeled": true,
+   "detail": "A forecast is an analyst's expectation, not an outcome.",
+   "cols": {
+    "kind": "Forecast"
+   }
+  },
+  {
+   "id": "rehire",
+   "group": "share",
+   "label": "Companies that cut staff for AI, forecast to rehire by 2027",
+   "tag": "Forecast, Gartner",
+   "claim": "ad-005",
+   "modeled": true,
+   "detail": "This forecast concerns the minority of firms that reduced customer service staffing because of AI.",
+   "cols": {
+    "kind": "Forecast"
+   }
+  },
+  {
+   "id": "metr",
+   "group": "diff",
+   "label": "Longer task time for experienced developers with early-2025 tools",
+   "tag": "Measured, METR trial",
+   "claim": "ad-006",
+   "detail": "METR now marks this result out of date.",
+   "cols": {
+    "kind": "Measured"
+   }
+  },
+  {
+   "id": "premium",
+   "group": "diff",
+   "label": "Posted pay premium for AI skills",
+   "tag": "Measured, PwC job ads",
+   "claim": "jb-069",
+   "cols": {
+    "kind": "Measured"
+   }
+  }
+ ],
+ "details": [
+  "Each row names the survey or trial that produced it and what the percentage counts. No row was measured inside a Tribal government."
+ ],
+ "table": {
+  "columns": [
+   {
+    "label": "Row",
+    "field": "label"
+   },
+   {
+    "label": "Kind",
+    "field": "kind"
+   },
+   {
+    "label": "Value",
+    "field": "display"
+   },
+   {
+    "label": "Year",
+    "field": "year"
+   },
+   {
+    "label": "Study",
+    "field": "tag"
+   },
+   {
+    "label": "Source",
+    "field": "source"
+   },
+   {
+    "label": "Claims",
+    "field": "claims"
+   }
+  ]
+ }
+}

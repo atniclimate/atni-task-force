@@ -174,6 +174,7 @@ async function deepLinks() {
   const targets = {
     energy: 'energy', economics: 'economics', companies: 'companies', 'working-with-ai': 'working-with-ai', 'youth-education': 'youth-education', 'data-sovereignty': 'data-sovereignty', 'policy-watch': 'policy-watch',
     purpose: 'working-with-ai', offloading: 'working-with-ai', 'yf-native': 'youth-education', 'ai-same-hour': 'energy', 'ai-heavy-ai': 'energy', 'ai-scale': 'energy', 'ai-displacement': 'economics', 'ai-holdings': 'companies',
+    'ai-adoption-returns': 'economics', 'adoption-rules': 'working-with-ai',
   };
   for (const [hash, panel] of Object.entries(targets)) {
     const { document, errors } = await load(`#${hash}`);
@@ -659,6 +660,14 @@ async function otherPlates() {
   ok(dp.reading.textContent.includes('Limit:'), 'partly limit');
   ok(dp.facts.textContent.includes('Goldman') && dp.facts.textContent.includes('120,136') && holds(dp.facts.textContent, ['15 percent']), 'context figures in the detail');
 
+  const ar = plateOf(document, 'ai-adoption-returns');
+  walk(ar, 'ai-adoption-returns');
+  const agentic = ar.row('agentic');
+  ok(agentic.querySelector('.ladder-mark').classList.contains('is-hollow') && !agentic.querySelector('.ladder-mark').hidden, 'a forecast is hollow, and its floor has a mark');
+  ok(agentic.querySelector('.ladder-value').textContent.startsWith('over'), 'a floor reads over, as its source says');
+  eq(ar.plot.querySelectorAll('.ladder').length, 2, 'two rulers: shares, and with AI against without');
+  ok(ar.facts.textContent.includes('high-skill services'), 'the figures beside it');
+
   await open('companies');
   const mo = plateOf(document, 'ai-company-money');
   const claimWords = (id) => [...document.querySelectorAll(`#${id} .plate-claim > p:not(.eyebrow)`)].map((n) => n.textContent);
@@ -782,7 +791,7 @@ async function otherPlates() {
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
   eq(document.querySelectorAll('section.panel').length, 7, 'all panels in the page');
-  eq(document.querySelectorAll('[data-plate]').length, 13, 'thirteen plates');
+  eq(document.querySelectorAll('[data-plate]').length, 14, 'fourteen plates');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#economics"]'), 'the strip is a jump list');
   for (const plate of document.querySelectorAll('[data-plate]')) {
     ok(plate.querySelector('.reading').textContent.length > 10, `${plate.id} has a default Reading`);
@@ -829,8 +838,11 @@ async function noScripts() {
   const set = document.querySelector('#working-with-ai form.asks fieldset.ask-set#q-adopt');
   eq(set.querySelector('legend').textContent, 'Before a Tribe adopts an AI tool', 'its set');
   const boxes = [...set.querySelectorAll('li > label > input[type="checkbox"][name="ask"] + span.ask-q')];
-  eq(boxes.length, 9, 'nine questions');
-  eq([...set.querySelectorAll('input[name="ask"]')].map((b) => b.value).join(), [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `q-adopt-${n}`).join(), 'named for the address');
+  eq(boxes.length, 10, 'ten questions');
+  eq([...set.querySelectorAll('input[name="ask"]')].map((b) => b.value).join(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `q-adopt-${n}`).join(), 'named for the address');
+  ok(document.querySelector('#working-with-ai > .wrap > .disclosure-grid > details#adoption-rules a[href="#policy-watch"]'), 'the rules sit after the form, outside the band, and point to Policy Watch');
+  ok(document.querySelector('#economics .disclosure-grid > details#expert-roles .cr[data-claim="ad-021"]'), 'Work: the expert-roles disclosure, with its projection');
+  ok(!/no Pacific Northwest grid factor/.test(html), 'the carbon sentence names the factors the record holds');
   ok([...set.querySelectorAll('li')].every((li) => li.querySelector('details.ask-why > summary') && li.querySelector('details.ask-why > p')), 'each with its principle and evidence');
   ok(boxes.every((q) => q.textContent.endsWith('?') && !/\bour\b/i.test(q.textContent)), 'questions, never in the voice of a Nation');
   // Youth: findings under their rating, and a row for what no study covers (ai-25).

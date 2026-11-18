@@ -385,6 +385,13 @@ plate.register('ai-guidance-2026', {
     if (ctx.reason !== 'select') ctx.setRow('tesla', { frac: ctx.frac(tesla.low), text: tesla.display });
   },
 });
+plate.register('ai-adoption-returns', {
+  render(ctx) {
+    ctx.auto();
+    const agentic = ctx.data.rows.find((r) => r.key === 'agentic');
+    if (ctx.reason !== 'select') ctx.setRow('agentic', { frac: ctx.frac(agentic.low, 'share'), text: agentic.display });
+  },
+});
 
 // The hour face's link to its assumptions sits at the window's foot and lands on their disclosure, open, focus on its summary (3.8). Without scripts: claim zone, plate.
 // shortcut: the kit has no window-foot place for a foot line; drop this when build_plates.py writes one there.
