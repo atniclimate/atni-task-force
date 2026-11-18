@@ -1,0 +1,99 @@
+/* Kinds of Data Centers (R3): outcomes, then the stepper, the stage sticky at right from 1100px. Orange is where the reader is, as in the scene. */
+.primer-stage { --pr-ground: var(--window); --pr-ink: var(--atni-text-heading); --pr-sec: var(--atni-text-secondary); --pr-here: var(--here); }
+#primer { --pr-band: 40; } /* the band's top, percent down the window */
+
+/* Each :is() list stays at (0,1,1), under .is-before. */
+:is(.primer-goals li, .primer-steps a, .primer-label, .primer-where, .primer-route label, .primer-facts dt, .primer-ask, .primer-more > summary) { font-family: var(--display); font-weight: 500; }
+:is(.primer-goals li, .primer-label, .primer-where, .primer-route label, .primer-ask, .primer-more > summary) { color: var(--atni-text-heading); }
+:is(.primer-steps a, .primer-route, .primer-facts dt, .primer-also) { font-size: var(--t-small); color: var(--atni-text-secondary); }
+
+.primer-outcomes { padding-block: 4px 20px; }
+.primer-goals { display: grid; gap: 0 32px; margin: 0; padding: 0; list-style: none; }
+.primer-goals li { max-width: var(--measure); margin: 0; padding: 10px 0 12px; line-height: 1.35; border-top: 1px solid var(--rule); }
+
+.primer { display: grid; gap: 16px; padding-block: 8px 32px; }
+.primer-stage { min-width: 0; background: var(--atni-ground-base); }
+.primer-steps ol { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.primer-steps li { margin: 0; counter-increment: step; }
+.primer-steps a { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 6px 4px 8px; line-height: 1.2; text-decoration: none; border-bottom: 3px solid var(--rule); }
+.primer-steps a::before, .primer-stop > h2::before { content: counter(step); display: grid; place-items: center; flex: none; width: 1.75rem; height: 1.75rem; font-weight: 600; font-size: var(--t-small); font-variant-numeric: tabular-nums; color: var(--atni-text-heading); border: 1px solid var(--control-edge); }
+.primer-steps a:hover { color: var(--atni-text-heading); border-bottom-color: var(--control-edge); }
+.primer-steps a[aria-current] { color: var(--atni-text-heading); border-bottom-color: var(--here); }
+.primer-steps a[aria-current]::before, .primer-stop.is-current > h2::before { color: var(--energy-on-fill); background: var(--energy-fill); border-color: var(--energy-fill); }
+
+.primer-view { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--window); box-shadow: var(--window-ring); }
+.primer-still { height: 100%; margin: 0; padding: 12px 16px; color: var(--atni-text-secondary); }
+.primer-still svg { display: block; width: 100%; height: 100%; }
+.primer-still text { font-family: var(--display); font-weight: 500; font-size: 15px; color: var(--atni-text-heading); fill: currentColor; stroke: none; }
+.primer-live, .primer.is-live .primer-still { display: none; }
+.primer.is-live .primer-live { display: block; position: absolute; inset: 0; }
+.primer-canvas { display: block; width: 100%; height: 100%; }
+.primer-labels { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 180ms var(--ease); }
+.primer-labels.is-on { opacity: 1; }
+.primer-label { position: absolute; padding: 1px 6px; font-size: var(--t-small); white-space: nowrap; background: color-mix(in srgb, var(--window) 84%, transparent); transform: translate(-50%, calc(-100% - 12px)); }
+.primer-label::after { content: ""; position: absolute; top: 100%; left: 50%; height: 12px; border-left: 1px solid currentColor; }
+.primer-label.is-before { color: var(--atni-text-muted); }
+.primer-label.is-right { transform: translate(12px, -50%); }
+.primer-label.is-right::after { top: 50%; left: auto; right: 100%; width: 12px; height: 0; border: 0; border-top: 1px solid currentColor; }
+
+.primer-controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding-top: 10px; }
+.primer-controls .button { min-height: 40px; padding: 8px 16px; }
+.primer-controls .button:disabled { color: var(--atni-text-muted); border-color: var(--rule); cursor: default; }
+.primer-where { max-width: none; margin: 0; text-align: center; }
+
+.primer-stops { min-width: 0; counter-reset: step; }
+.primer-route { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 8px; }
+.primer-route label { display: inline-flex; align-items: center; gap: 8px; font-size: var(--t-body); cursor: pointer; }
+.primer-route input { width: 18px; height: 18px; margin: 0; accent-color: var(--atni-text-heading); }
+.primer-stop { padding: 20px 0 24px; counter-increment: step; border-top: 1px solid var(--grid); }
+.primer-stop > h2 { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.primer-stop > :not(h2) { max-width: var(--measure-wide); }
+.primer-gist { font-size: var(--t-lead); line-height: 1.45; color: var(--lead-ink); }
+.primer-facts { display: grid; margin: 0 0 16px; }
+.primer-facts > div { display: grid; gap: 2px 20px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.primer-facts dd { margin: 0; }
+.primer-ask { margin: 0 0 12px; padding-left: 14px; font-size: var(--t-lead); line-height: 1.35; border-left: 2px solid var(--atni-text-heading); }
+.primer-more { border-top: 1px solid var(--rule); }
+.primer-more > summary { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); padding-block: 9px; line-height: 1.3; list-style: none; cursor: pointer; }
+.primer-more > summary::-webkit-details-marker { display: none; }
+.primer-more > summary::before { content: "+"; font-weight: 600; font-size: 1.125rem; line-height: 1.15; }
+.primer-more[open] > summary::before { content: "\2212"; }
+.primer-more > :not(summary) { margin: 0 0 12px 1.25rem; }
+.primer-next { margin-top: 20px; }
+.primer:has(#primer-route:checked) :is(.primer-facts, .primer-more, .primer-also) { display: none; }
+
+@media (min-width: 720px) { .primer-facts > div { grid-template-columns: 10rem minmax(0, 1fr); } }
+/* Under 1100px the stage sticks only in a portrait window; the band and the scroll margin clear it. */
+@media (min-width: 600px) and (max-width: 1099px) and (max-aspect-ratio: 1 / 1) {
+  #primer { --pr-band: 72; }
+  .primer-stage { position: sticky; top: 0; z-index: 2; padding-bottom: 8px; }
+  .primer-stop { scroll-margin-top: calc((100vw - 2 * var(--gutter)) * .5625 + 8rem); }
+}
+@media (min-width: 1100px) {
+  .primer-goals { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .primer { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-areas: "stops stage"; column-gap: clamp(24px, 2.5vw, 48px); align-items: start; }
+  .primer-stage { grid-area: stage; position: sticky; top: 0; display: flex; flex-direction: column; height: 100vh; padding-block: 12px; }
+  .primer-view { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; }
+  .primer-stops { grid-area: stops; }
+  .primer-stop { min-height: 72vh; }
+  .primer:has(#primer-route:checked) .primer-stop { display: flex; flex-direction: column; justify-content: center; }
+}
+
+/* Full screen: a stop a screen, the type a step larger. */
+#primer:fullscreen { overflow-y: auto; padding-inline: var(--gutter); background: var(--atni-ground-base); scroll-snap-type: y proximity; }
+#primer:fullscreen .primer-stop { min-height: 100vh; scroll-snap-align: start; }
+html:has(#primer:fullscreen) { font-size: 125%; }
+
+@media (forced-colors: active) {
+  .primer.is-live .primer-still { display: block; }
+  .primer.is-live .primer-live { display: none; }
+  .primer-steps a[aria-current], .primer-stop.is-current > h2::before { border-color: Highlight; }
+}
+@media print {
+  .primer { display: block; }
+  .primer-steps, .primer-controls, .primer-route, .primer.is-live .primer-live { display: none; }
+  .primer.is-live .primer-still { display: block; }
+  .primer-stage { position: static; height: auto; }
+  .primer-view { aspect-ratio: 16 / 9; box-shadow: none; break-inside: avoid; }
+  .primer-stop { min-height: 0; break-inside: avoid-page; }
+}

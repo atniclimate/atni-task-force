@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kinds of Data Centers | ATNI Energy Task Forces</title>
+  <meta name="description" content="A primer on what data centers are, how each kind works, who controls the machines and data, and what a Tribal council can ask about any service or proposal.">
+  <!-- page-meta -->
+  <link rel="canonical" href="https://atniclimate.github.io/atni-task-force/data-centers/primer/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ATNI Energy Task Forces">
+  <meta property="og:title" content="Kinds of Data Centers | ATNI Energy Task Forces">
+  <meta property="og:description" content="A primer on what data centers are, how each kind works, who controls the machines and data, and what a Tribal council can ask about any service or proposal.">
+  <meta property="og:url" content="https://atniclimate.github.io/atni-task-force/data-centers/primer/">
+  <meta property="og:image" content="https://atniclimate.github.io/atni-task-force/assets/img/share-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The ATNI Energy logo, the ATNI seal beside the words ATNI Energy, on a dark ground.">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="speculationrules">{"prefetch":[{"where":{"and":[{"href_matches":["/atni-task-force/","/atni-task-force/*/","/atni-task-force/*.html"]},{"not":{"href_matches":"/atni-task-force/briefing*"}}]},"eagerness":"moderate"}],"prerender":[{"where":{"and":[{"href_matches":["/atni-task-force/","/atni-task-force/*/","/atni-task-force/*.html"]},{"not":{"href_matches":"/atni-task-force/briefing*"}},{"not":{"href_matches":"/atni-task-force/library*"}}]},"eagerness":"conservative"}]}</script>
+  <!-- /page-meta -->
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#010B13">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/LeagueSpartan-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/LeagueSpartan-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/NotoSans-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/NotoSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <link rel="stylesheet" href="../../assets/css/primer.css">
+  <script src="../../assets/js/theme.js"></script>
+  <script defer src="../../assets/js/primer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" id="top">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="../../" aria-label="ATNI Energy Task Forces, home"><img class="lockup lockup-on-dark" src="../../assets/img/atni-energy-header-on-dark.svg" alt=""><img class="lockup lockup-on-light" src="../../assets/img/atni-energy-header.svg" alt=""></a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="../../energy/">Tribal Energy</a></li>
+          <li><a href="../../data-centers/" aria-current="true">Data Centers</a></li>
+          <li><a href="../../ai/">AI</a></li>
+          <li class="nav-group"><a href="../../explorer/">Explorer</a></li>
+          <li><a href="../../briefing/">Briefing</a></li>
+          <li class="nav-group"><a href="../../summit/">Summit</a></li>
+          <li><a href="../../library/">Library</a></li>
+          <li><a href="../../about/">About</a></li>
+          <li class="nav-group"><a href="../../sources/">Sources</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle data-js aria-pressed="false">Light theme</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="wrap brief">
+      <p class="brief-name"><a href="../">Data Centers</a></p>
+      <h1>What Data Centers Are, from One Computer to a Hyperscale Campus</h1>
+      <p class="brief-lead">This primer walks through what data centers do, from one computer on a desk to a campus that draws power for a city, with one question at every stop: who does this serve, and who controls it? ATNI takes no position for or against data centers.</p>
+      <p class="brief-meta"><span class="figure-num">11/17/2026</span> <span class="figure-label">Sources checked</span> <a href="sources/" data-sources>Sources for this page</a></p>
+    </header>
+
+    <section class="wrap primer-outcomes" id="outcomes" aria-labelledby="outcomes-title">
+      <h2 id="outcomes-title">After This Primer, You Can</h2>
+      <ul class="primer-goals">
+        <li>Describe each kind of data center by its size and power, from one computer to a hyperscale campus.</li>
+        <li>Explain the cloud as a way of renting computing over a network, run in someone else's data centers.</li>
+        <li>Ask, of any service or proposal, who owns the machines, who runs them, and where the data sits.</li>
+      </ul>
+    </section>
+
+    <div class="wrap primer" id="primer">
+      <section class="primer-stage" aria-label="Stepper">
+        <nav class="primer-steps" aria-label="Stops">
+          <ol>
+            <li><a href="#laptop">Laptop</a></li>
+            <li><a href="#closet">Server closet</a></li>
+            <li><a href="#room">Server room</a></li>
+            <li><a href="#inside">Inside every one</a></li>
+            <li><a href="#colocation">Colocation</a></li>
+            <li><a href="#hyperscale">Hyperscale campus</a></li>
+            <li><a href="#cloud">The cloud</a></li>
+          </ol>
+        </nav>
+        <div class="primer-view">
+          <figure class="primer-still">
+<!-- still -->
+<svg role="img" aria-labelledby="primer-still-title" viewBox="0 0 960 500" stroke="currentColor" fill="none" stroke-linejoin="round" stroke-linecap="round"><title id="primer-still-title">Seven drawings, each keeping the one before it small. A laptop and a person at a desk. A server closet with a short rack. An office building with a server room inside, the closet in a corner. The server room again, cut away: computing, storage, network, power, cooling, and backup. A colocation building with cages, the office beside it. A hyperscale campus of six halls. Three sites across a region.</title><path stroke-width="1.6" d="M116 107l96 23l0 68l-34 16l-96-23l0-68l34-16M82 123l96 23l34-16M178 146l0 68M141 121l26 6l0 2l-12 6l-27-6l0-2l13-6M128 127l27 6l12-6M155 133l0 2M142 100l26 6l0 21l-1 0l-26-6l0-21l1 0M141 100l26 7l1-1M167 107l0 20M46 95l10 3l0 79l-11 5l-11-3l0-78l12-6M34 101l11 2l11-5M45 103l0 79M59 98l11 3l0 79l-12 5l-10-2l0-79l11-6M48 104l10 2l12-5M58 106l0 79M42 36l34 8l0 57l-14 7l-34-8l0-57l14-7M28 43l34 8l14-7M62 51l0 57M50 14l16 4l0 22l-12 6l-16-4l0-22l12-6M38 20l16 4l12-6M54 24l0 22"/><text x="120" y="236" text-anchor="middle">Laptop</text><path stroke-width="1.6" d="M378 128l88 25l-77 45l-89-25l78-45M378 17l88 25l0 111l-2 1l-88-25l0-111l2-1M376 18l88 26l2-2M464 44l0 110M378 17l3 1l0 111l-78 45l-3-1l0-111l78-45M300 62l3 1l78-45M303 63l0 111M405 138l22 6l0-41l-22-6l0 41l-21 12l22 6l0-41l-22-6l0 41M427 144l-21 12M427 103l-21 12M405 97l-21 12M405 128l20 6l0 9l-19 11l-20-6l0-9l19-11M386 139l20 6l19-11M406 145l0 9M405 117l20 5l0 8l-19 11l-20-6l0-7l19-11M386 128l20 5l19-11M406 133l0 8M405 110l20 5l0 2l-16 9l-20-5l0-2l16-9M389 119l20 5l16-9M409 124l0 2M338 128l5 2l0 35l-5 3l-5-1l0-36l5-3M333 131l5 2l5-3M338 133l0 35M345 130l4 2l0 35l-5 3l-5-2l0-35l6-3M339 133l5 2l5-3M344 135l0 35M337 102l15 4l0 26l-6 4l-16-5l0-25l7-4M330 106l16 4l6-4M346 110l0 26M340 92l8 2l0 10l-6 4l-7-3l0-9l5-4M335 96l7 2l6-4M342 98l0 10"/><path stroke-width="1" stroke-opacity="0.9" d="M295 159l44 12l0 31l-16 9l-44-13l0-30l16-9M279 168l44 12l16-9M323 180l0 31M306 167l12 3l0 1l-6 3l-12-3l0-1l6-3M300 170l12 3l6-3M312 173l0 1M306 157l12 4l0 9l0 0l-12-3l0-9l0-1M306 158l12 3l0 0M318 161l0 9M262 154l5 1l0 35l-5 3l-5-1l0-35l5-3M257 157l5 1l5-3M262 158l0 35M268 155l5 2l0 35l-5 3l-5-1l0-36l5-3M263 158l5 2l5-3M268 160l0 35M261 127l15 4l0 26l-7 4l-15-5l0-25l7-4M254 131l15 4l7-4M269 135l0 26M264 117l8 3l0 9l-6 4l-7-2l0-10l5-4M259 121l7 2l6-3M266 123l0 10"/><text x="360" y="236" text-anchor="middle">Server closet</text><path stroke-width="1.6" d="M652 110l54 20l-22 15l-55-19l23-16M652 110l54 20l0-15l-54-19l0 14l-23 16l55 19l0-14l-55-19l0 14M706 130l-22 15M706 115l-22 16M652 96l-23 16M657 107l3 1l0 9l-4 3l-3-1l0-9l4-3M653 110l3 0l4-2M656 110l0 10M649 113l2 1l0 9l-4 3l-2-1l0-10l4-2M645 115l2 1l4-2M647 116l0 10M660 108l2 1l0 9l-4 3l-2-1l0-10l4-2M656 110l2 1l4-2M658 111l0 10M651 114l3 1l0 9l-4 3l-3-1l0-10l4-2M647 116l3 1l4-2M650 117l0 10M662 109l3 1l0 9l-4 3l-3-1l0-10l4-2M658 111l3 1l4-2M661 112l0 10M654 115l3 1l0 9l-4 3l-3-1l0-10l4-2M650 117l3 1l4-2M653 118l0 10M665 110l3 1l0 9l-4 3l-3-1l0-10l4-2M661 112l3 1l4-2M664 113l0 10M657 116l2 1l0 9l-3 3l-3-1l0-10l4-2M653 118l3 1l3-2M656 119l0 10M668 111l2 1l0 9l-3 3l-3-1l0-10l4-2M664 113l3 1l3-2M667 114l0 10M659 117l3 0l0 10l-4 3l-2-1l0-10l3-2M656 119l2 1l4-3M658 120l0 10M670 112l3 1l0 9l-4 3l-2-1l0-10l3-2M667 114l2 1l4-2M669 115l0 10M662 117l3 1l0 10l-4 3l-3-1l0-10l4-3M658 120l3 1l4-3M661 121l0 10M689 116l11 4l0 9l-4 3l-11-4l0-10l4-2M685 118l11 4l4-2M696 122l0 10M677 126l5 2l0 9l-2 1l-5-2l0-9l2-1M675 127l5 2l2-1M680 129l0 9M670 125l1 0l0 4l-1 1l0-1l0-4l0 0M670 125l0 0l1 0M670 125l0 5M670 121l1 1l0 3l0 1l-2-1l0-3l1-1M669 122l2 1l0-1M671 123l0 3"/><path stroke-width="1" stroke-opacity="0.9" d="M504 96l10 3l-9 7l-11-4l10-6M504 83l10 3l0 13l0 1l-11-4l0-13l1 0M503 83l11 4l0-1M514 87l0 13M504 83l0 0l0 13l-10 6l0 0l0-13l10-6M494 89l0 0l10-6M494 89l0 13M507 97l3 1l0-5l-3-1l0 5l-3 2l3 1l0-5l-3-1l0 5M510 98l-3 2M510 93l-3 2M507 92l-3 2M507 96l2 1l0 1l-2 1l-2 0l0-1l2-2M505 98l2 0l2-1M507 98l0 1M507 95l2 0l0 1l-2 2l-2-1l0-1l2-1M505 96l2 1l2-2M507 97l0 1M507 94l2 1l0 0l-2 1l-2-1l0 0l2-1M505 95l2 1l2-1M507 96l0 0M499 97l0 0l0 4l0 1l-1-1l0-4l1 0M498 97l1 0l0 0M499 97l0 5M499 97l1 0l0 4l-1 1l0 0l0-4l0-1M499 98l0 0l1-1M499 98l0 4M498 94l2 0l0 3l0 1l-2-1l0-3l0 0M498 94l2 1l0-1M500 95l0 3"/><path stroke-width="0.8" stroke-opacity="0.55" d="M570 45l182 63l0-57l-182-64l0 58l-86 62l181 63l0-57l-181-64l0 58M752 108l-87 62M752 51l-87 62M570-13l-86 62M570 26l182 63l-87 62l-181-64l86-61M570 7l182 63l-87 62l-181-64l86-61"/><text x="600" y="236" text-anchor="middle">Server room</text><path stroke-width="1.6" d="M795 71l6 3l0 18l-9 7l-6-3l0-18l9-7M786 78l6 2l9-6M792 80l0 19M776 85l5 3l0 18l-9 7l-5-3l0-18l9-7M767 92l5 3l9-7M772 95l0 18M801 74l5 3l0 18l-9 7l-5-3l0-19l9-6M792 80l5 3l9-6M797 83l0 19M781 88l6 3l0 18l-9 7l-6-3l0-18l9-7M772 95l6 2l9-6M778 97l0 19M806 77l5 2l0 19l-9 6l-5-2l0-19l9-6M797 83l5 3l9-7M802 86l0 18M787 91l5 3l0 18l-9 7l-5-3l0-19l9-6M778 97l5 3l9-6M783 100l0 19M811 79l6 3l0 18l-9 7l-6-3l0-18l9-7M802 86l6 3l9-7M808 89l0 18M792 94l5 2l0 19l-9 6l-5-2l0-19l9-6M783 100l5 3l9-7M788 103l0 18M817 82l5 3l0 18l-9 7l-5-3l0-18l9-7M808 89l5 2l9-6M813 91l0 19M797 96l6 3l0 19l-9 6l-6-3l0-18l9-7M788 103l6 3l9-7M794 106l0 18M822 85l6 3l0 18l-9 7l-6-3l0-19l9-6M813 91l6 3l9-6M819 94l0 19M803 99l5 3l0 18l-9 7l-5-3l0-18l9-7M794 106l5 3l9-7M799 109l0 18M859 98l21 11l0 19l-7 5l-22-11l0-18l8-6M851 104l22 11l7-6M873 115l0 18M831 122l10 6l0 17l-4 3l-11-5l0-18l5-3M826 125l11 6l4-3M837 131l0 17M818 115l1 0l0 8l-1 1l-2 0l0-8l2-1M816 116l2 0l1-1M818 116l0 8M819 115l2 1l0 8l-2 1l-1-1l0-7l1-2M818 117l1 0l2-1M819 117l0 8M818 109l3 1l0 6l-2 2l-3-2l0-6l2-1M816 110l3 2l2-2M819 112l0 6M818 107l2 1l0 2l-1 1l-2-1l0-2l1-1M817 108l2 1l1-1M819 109l0 2M785 72l36 18l0 1l-3 2l-36-18l0-1l3-2M782 74l36 18l3-2M818 92l0 1M814 73l3 1l0 1l-31 23l-3-1l0-1l31-23M783 96l3 1l31-23M786 97l0 1M910 132l36 19l0 20l-15 11l-36-18l0-21l15-11M895 143l36 19l15-11M931 162l0 20"/><path stroke-width="1" stroke-opacity="0.9" d="M786 74l108 55l-53 38l-107-55l52-38M786 74l108 55l0-28l-108-55l0 28l-52 38l107 55l0-27l-107-55l0 27M894 129l-53 38M894 101l-53 39M786 46l-52 39"/><text x="840" y="236" text-anchor="middle">Inside every one</text><path stroke-width="1.6" d="M113 339l93 32l0-11l-93-32l0 11l-37 27l92 32l0-11l-92-32l0 11M206 371l-38 27M206 360l-38 27M113 328l-37 27M116 346l14 5l0-3l-14-5l0 3l-7 4l14 5l0-2l-14-5l0 2M130 351l-7 4M130 348l-7 5M116 343l-7 5M97 359l14 5l0-3l-14-5l0 3l-6 4l14 5l0-2l-14-5l0 2M111 364l-6 4M111 361l-6 5M97 356l-6 5M142 355l14 5l0-3l-14-5l0 3l-7 4l14 5l0-2l-14-5l0 2M156 360l-7 4M156 357l-7 5M142 352l-7 5M124 368l13 5l0-3l-13-5l0 3l-7 5l14 4l0-2l-14-5l0 3M137 373l-6 4M137 370l-6 5M124 365l-7 5M168 364l14 5l0-3l-14-4l0 2l-7 5l14 4l0-2l-14-5l0 3M182 369l-7 4M182 366l-7 5M168 362l-7 4M150 377l13 5l0-3l-13-4l0 2l-7 5l14 5l0-3l-14-5l0 3M163 382l-6 5M163 379l-6 5M150 375l-7 4M113 333l6 2l0 2l-2 2l-7-2l0-3l3-1M110 334l7 3l2-2M117 337l0 2M95 346l6 2l0 2l-3 2l-6-2l0-2l3-2M92 348l6 2l3-2M98 350l0 2M130 338l6 3l0 2l-3 2l-6-3l0-2l3-2M127 340l6 3l3-2M133 343l0 2M112 352l6 2l0 2l-3 2l-6-3l0-2l3-1M109 353l6 3l3-2M115 356l0 2M147 344l6 3l0 2l-3 2l-6-3l0-2l3-2M144 346l6 2l3-1M150 348l0 3M129 357l6 3l0 2l-3 2l-6-3l0-2l3-2M126 359l6 3l3-2M132 362l0 2M164 350l6 2l0 2l-3 2l-6-2l0-2l3-2M161 352l6 2l3-2M167 354l0 2M146 363l6 3l0 2l-3 1l-6-2l0-2l3-2M143 365l6 2l3-1M149 367l0 2M181 356l6 2l0 2l-3 2l-6-2l0-2l3-2M178 358l6 2l3-2M184 360l0 2M162 369l7 2l0 2l-3 2l-6-2l0-2l2-2M160 371l6 2l3-2M166 373l0 2M204 372l10 4l0 3l-2 1l-9-3l0-3l1-2M203 374l9 3l2-1M212 377l0 3M200 375l10 3l0 4l-2 1l-9-3l0-4l1-1M199 376l9 4l2-2M208 380l0 3M196 378l9 3l0 4l-1 1l-9-3l0-4l1-1M195 379l9 4l1-2M204 383l0 3M192 381l9 3l0 3l-1 2l-9-4l0-3l1-1M191 382l9 3l1-1M200 385l0 4M188 384l9 3l0 3l-1 2l-9-4l0-3l1-1M187 385l9 3l1-1M196 388l0 4M184 387l9 3l0 3l-1 1l-9-3l0-3l1-1M183 388l9 3l1-1M192 391l0 3M180 390l9 3l0 3l-1 1l-9-3l0-3l1-1M179 391l9 3l1-1M188 394l0 3M176 393l9 3l0 3l-1 1l-9-3l0-3l1-1M175 394l9 3l1-1M184 397l0 3M211 386l15 5l-11 8l-15-5l11-8M209 386l3 2l0 3l-2 1l-4-1l0-3l3-2M206 388l4 1l2-1M210 389l0 3M213 388l3 1l0 3l-2 2l-3-1l0-3l2-2M211 390l3 1l2-2M214 391l0 3M218 390l3 1l0 3l-2 2l-3-2l0-3l2-1M216 391l3 1l2-1M219 392l0 4"/><path stroke-width="1" stroke-opacity="0.9" d="M29 358l30 10l0-9l-30-11l0 10l-15 10l31 11l0-10l-31-11l0 10M59 368l-14 11M59 359l-14 10M29 348l-15 10M29 354l30 11l-14 11l-31-11l15-11M29 351l30 11l-14 10l-31-10l15-11"/><path stroke-width="0.8" stroke-opacity="0.55" d="M42 369l10 3l-4 3l-9-4l3-2M42 369l10 3l0-3l-10-3l0 3l-3 2l9 4l0-3l-9-3l0 2M52 372l-4 3M52 369l-4 3M42 366l-3 3"/><text x="120" y="486" text-anchor="middle">Colocation</text><path stroke-width="1.6" d="M304 333l30 11l0 2l-8 6l-30-11l0-2l8-6M296 339l30 12l8-7M326 351l0 1M305 334l26 10l0 0l-6 5l-26-10l0 0l6-5M299 339l26 10l6-5M325 349l0 0M293 342l30 11l0 1l-9 7l-30-11l0-2l9-6M284 348l30 11l9-6M314 359l0 2M294 343l26 9l0 1l-7 4l-26-9l0 0l7-5M287 348l26 9l7-5M313 357l0 0M338 346l30 11l0 1l-9 7l-29-11l0-2l8-6M330 352l29 11l9-6M359 363l0 2M339 347l26 10l0 0l-6 5l-26-10l0 0l6-5M333 352l26 9l6-4M359 361l0 1M327 354l30 11l0 2l-9 6l-30-11l0-2l9-6M318 360l30 12l9-7M348 372l0 1M328 355l26 10l0 0l-7 5l-26-10l0 0l7-5M321 360l26 10l7-5M347 370l0 0M372 358l30 11l0 2l-9 6l-30-11l0-1l9-7M363 365l30 11l9-7M393 376l0 1M373 360l26 9l0 0l-7 5l-25-9l0-1l6-4M367 364l25 10l7-5M392 374l0 0M361 367l30 11l0 1l-9 7l-30-11l0-2l9-6M352 373l30 11l9-6M382 384l0 2M362 368l26 10l0 0l-7 5l-26-10l0 0l7-5M355 373l26 9l7-4M381 382l0 1M398 381l15 5l-11 8l-14-5l10-8M433 387l1 1l0 4l-1 0l0 0l0-4l0-1M433 388l0 0l1 0M433 388l0 4M449 389l1 0l0 4l0 1l-1-1l0-4l0 0M449 389l1 0l0 0M450 389l0 5M466 390l0 0l0 5l0 0l-1 0l0-5l1 0M465 390l1 0l0 0M466 390l0 5M408 389l9-3M417 386l16 2M433 388l16 1M449 389l17 1"/><path stroke-width="1" stroke-opacity="0.9" d="M259 346l12 5l0-2l-12-4l0 1l-5 4l12 5l0-2l-12-4l0 1M271 351l-5 4M271 349l-5 4M259 345l-5 4M272 353l2 1l-2 1l-2-1l2-1"/><text x="360" y="486" text-anchor="middle">Hyperscale campus</text><path stroke-width="1.6" d="M677 430l7 3l0 0l-7-3l0 0l-2 2l7 4l0-1l-7-3l0 0M684 433l-2 3M684 433l-2 2M677 430l-2 2M640 287l7 3l0 0l-7-3l0 0l-2 2l7 3l0 0l-7-3l0 0M647 290l-2 2M647 290l-2 2M640 287l-2 2M685 434l7 3l0 0l-7-4l0 1l-2 2l8 3l0 0l-8-3l0 0M692 437l-1 2M692 437l-1 2M685 433l-2 3M648 291l7 3l0-1l-7-3l0 1l-2 2l8 3l0 0l-8-3l0 0M655 294l-1 2M655 293l-1 3M648 290l-2 3M693 437l8 4l0-1l-8-3l0 0l-1 3l7 3l0-1l-7-3l0 1M701 441l-2 2M701 440l-2 2M693 437l-1 2M656 294l8 3l0 0l-8-3l0 0l-1 2l7 4l0-1l-7-3l0 0M664 297l-2 3M664 297l-2 2M656 294l-1 2M494 428l23 2M494 428l194 9M494 428l157-134M498 427l32 14M530 441l171 5M701 446l5-7M706 439l-38-144M668 295l-30-13M638 282l-132 136M506 418l-8 9"/><path stroke-width="1" stroke-opacity="0.9" d="M507 421l7 4l0 0l-1 2l-8-3l0 0l2-3M505 424l8 3l1-2M513 427l0 0M507 422l7 3l0 0l-2 1l-6-2l0 0l1-2M506 424l6 2l2-1M512 426l0 0M505 424l7 4l0 0l-2 2l-7-3l0 0l2-3M503 427l7 3l2-2M510 430l0 0M505 425l6 3l0 0l-1 1l-6-2l0-1l1-1M504 426l6 3l1-1M510 429l0 0M515 425l8 3l0 1l-2 2l-7-3l0-1l1-2M514 427l7 3l2-2M521 430l0 1M516 425l6 3l0 0l-1 2l-7-3l0 0l2-2M514 427l7 3l1-2M521 430l0 0M513 428l7 3l0 0l-1 3l-8-4l0 0l2-2M511 430l8 3l1-2M519 433l0 1M513 428l7 3l0 0l-2 2l-6-3l0 0l1-2M512 430l6 3l2-2M518 433l0 0M524 429l7 3l0 0l-2 2l-7-3l0 0l2-2M522 431l7 3l2-2M529 434l0 0M524 429l6 3l0 0l-1 2l-6-3l0 0l1-2M523 431l6 3l1-2M529 434l0 0M521 432l8 3l0 0l-2 2l-7-3l0 0l1-2M520 434l7 3l2-2M527 437l0 0M522 432l6 3l0 0l-1 1l-7-2l0 0l2-2M520 434l7 2l1-1M527 436l0 0M531 435l3 2l-2 3l-4-2l3-3M533 438l2 0M535 438l4 0M539 438l4 0M543 438l4 0"/><text x="600" y="486" text-anchor="middle">The cloud</text></svg>
+<!-- /still -->
+          </figure>
+          <div class="primer-live" aria-hidden="true"><canvas class="primer-canvas"></canvas><div class="primer-labels"></div></div>
+        </div>
+        <div class="primer-controls" data-js>
+          <button class="button button-secondary" type="button" data-step="-1">Back</button>
+          <p class="primer-where" aria-live="polite">Stop 1 of 7: Laptop</p>
+          <button class="button button-secondary" type="button" data-step="1">Next</button>
+          <button class="button button-secondary" type="button" data-full hidden>Full screen</button>
+        </div>
+      </section>
+
+      <div class="primer-stops">
+        <p class="primer-route"><label><input type="checkbox" id="primer-route"> Short route</label> <span>Only each stop's heading, gist, and question: about five minutes, for presenting to a council.</span></p>
+
+        <section class="primer-stop" id="laptop" aria-labelledby="laptop-title">
+          <h2 id="laptop-title">One Computer Does the Same Three Jobs</h2>
+          <p class="primer-gist">A data center, by federal definition, is a facility used to <a class="cr" data-claim="pr-001" data-status="verified" href="sources/#src-pr-001" aria-label="process, store, and transmit digital information, claim pr-001, verified">process, store, and transmit digital information</a>. A laptop does all three. It is not a data center by that definition; it is computing at its smallest, in one person's hands.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>One person, or a few sharing one machine.</dd></div>
+            <div><dt>Power, typical</dt><dd><a class="cr" data-claim="fp-133" data-status="verified" href="sources/#src-fp-133" aria-label="15 to 30 watts, claim fp-133, verified">15 to 30 watts</a>, drawn from a wall outlet or a battery.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>The owner. Data leaves only when a program sends it.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: which of our records sit on one person's computer, and who else holds a copy?</p>
+          <details class="primer-more">
+            <summary>What is a watt?</summary>
+            <p>A watt is a measure of how fast a device uses electricity. A kilowatt is a thousand watts; a megawatt is a thousand kilowatts, or a million watts; a gigawatt is a thousand megawatts, or a billion watts. The jump matters: a laptop draws watts, a server closet draws hundreds, a server room draws kilowatts, and a hyperscale campus can be rated in gigawatts.</p>
+          </details>
+        </section>
+
+        <section class="primer-stop" id="closet" aria-labelledby="closet-title">
+          <h2 id="closet-title">A Server in a Closet Runs a Whole Office</h2>
+          <p class="primer-gist">A closet or small room, <a class="cr" data-claim="pr-009" data-status="verified" href="sources/#src-pr-009" aria-label="under 100 square feet, claim pr-009, verified">under 100 square feet</a>, with a server, a network switch, and a battery backup on a short rack. A server is a computer built to stay on and answer other machines; a rack is a frame that holds them upright.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>Everyone in the office. The server handles files, email, or a shared database; the people at their desks may not know it is there.</dd></div>
+            <div><dt>Power, typical</dt><dd><a class="cr" data-claim="pr-011" data-status="verified" href="sources/#src-pr-011" aria-label="600 watts, claim pr-011, verified">600 watts</a> for one server (a modeled average, not a rated maximum). Even idle, it draws <a class="cr" data-claim="lf-024" data-status="verified" href="sources/#src-lf-024" aria-label="roughly 75 percent of peak power while using 5 to 15 percent of capacity, claim lf-024, verified">roughly 75 percent of peak power while using 5 to 15 percent of capacity</a>.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>The owner buys it, runs it, cools it, backs it up, and updates it. No outside party touches the data unless the owner allows it.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: who keeps our server running, updated, and backed up, and who has the keys?</p>
+        </section>
+
+        <section class="primer-stop" id="room" aria-labelledby="room-title">
+          <h2 id="room-title">A Server Room Runs an Organization's Own Systems</h2>
+          <p class="primer-gist">An enterprise data center: <a class="cr" data-claim="pr-006" data-status="verified" href="sources/#src-pr-006" aria-label="built, owned, and operated for its own IT, claim pr-006, verified">built, owned, and operated for its own IT</a>. The room holds <a class="cr" data-claim="pr-010" data-status="verified" href="sources/#src-pr-010" aria-label="100 to 999 square feet, claim pr-010, verified">100 to 999 square feet</a> of racks, cooling, and power equipment. As of the end of 2025, <a class="cr" data-claim="ru-054" data-status="verified" href="sources/#src-ru-054" aria-label="32 percent, claim ru-054, verified">32 percent</a> of the world's data center capacity sat in rooms like these.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>One organization. Staff, programs, and community members the organization serves.</dd></div>
+            <div><dt>Power, typical</dt><dd><a class="cr" data-claim="ru-024" data-status="verified" href="sources/#src-ru-024" aria-label="7.8 kilowatts, claim ru-024, verified">7.8 kilowatts</a> per rack, a survey average across data centers of many sizes. No source read for this page gives a typical draw for one whole room.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>One owner holds the building, the machines, the data, and the staff.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: what does our own server room cost each year in power, cooling, and staff?</p>
+          <details class="primer-more">
+            <summary>A Tribal example: the Hoopa Valley Tribe.</summary>
+            <p>The Hoopa Valley Tribe celebrated the opening of its NTIA Data Center on <a class="cr" data-claim="pr-025" data-status="verified" href="sources/#src-pr-025" aria-label="07/17/2026, claim pr-025, verified">07/17/2026</a>. According to Acorn Connected's published account, the facility houses the equipment that runs the Tribe's fiber network, described as "an important step toward Tribal Data Sovereignty." The page states no size or power rating. (<a href="../#alternatives">Alternatives other Tribes have considered</a>.)</p>
+          </details>
+        </section>
+
+        <section class="primer-stop" id="inside" aria-labelledby="inside-title">
+          <h2 id="inside-title">Inside Every One: Computing, Storage, Network, Power, Cooling, Backup</h2>
+          <p class="primer-gist">Every data center holds the same six systems: <a class="cr" data-claim="pr-007" data-status="verified" href="sources/#src-pr-007" aria-label="computing, storage, networking, power distribution, cooling, and backup, claim pr-007, verified">computing, storage, networking, power distribution, cooling, and backup</a>. Nearly all the electricity becomes heat; cooling removes it. On a laptop, the six are a processor, a drive, Wi-Fi, a charger, a fan, and a battery.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>Everyone who uses that data center, whether they own it or rent space in it.</dd></div>
+            <div><dt>Power, typical</dt><dd>US average <a class="term" data-term="pue" href="../../sources/#term-pue">PUE</a> in 2024: <a class="cr" data-claim="tr-065" data-status="verified" href="sources/#src-tr-065" aria-label="1.45, claim tr-065, verified">1.45</a>. Cooling takes <a class="cr" data-claim="ru-021" data-status="verified" href="sources/#src-ru-021" aria-label="about 7 percent, claim ru-021, verified">about 7 percent</a> of power in efficient hyperscale, <a class="cr" data-claim="ru-022" data-status="verified" href="sources/#src-ru-022" aria-label="over 30 percent, claim ru-022, verified">over 30 percent</a> in less-efficient buildings. Backup: <a class="cr" data-claim="pr-007" data-status="verified" href="sources/#src-pr-007" aria-label="uninterruptible power supplies and backup diesel generators, claim pr-007, verified">uninterruptible power supplies and backup diesel generators</a>.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>Whoever runs the building decides how it is powered, cooled, and backed up.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: for any data center we use or host, what are its power, cooling, and backup arrangements, in writing?</p>
+        </section>
+
+        <section class="primer-stop" id="colocation" aria-labelledby="colocation-title">
+          <h2 id="colocation-title">In a Colocation Building, You Rent the Space</h2>
+          <p class="primer-gist">A building where customers rent <a class="cr" data-claim="pr-005" data-status="verified" href="sources/#src-pr-005" aria-label="space, power, and cooling, claim pr-005, verified">space, power, and cooling</a> for their own machines. The customer owns and manages the servers; the building owner runs the facility. As of the end of 2025, <a class="cr" data-claim="ru-053" data-status="verified" href="sources/#src-ru-053" aria-label="20 percent, claim ru-053, verified">20 percent</a> of the world's data center capacity sat in colocation.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>Any organization that needs more computing than its own building can hold but wants to own the machines.</dd></div>
+            <div><dt>Power, typical</dt><dd>No source read for this page gives a typical draw for one colocation building.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>Split. The customer owns the machines and data; the landlord runs the building, power, cooling, and connection.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: who reaches our machines in a rented space, and what becomes of our data when the contract ends?</p>
+          <details class="primer-more">
+            <summary>The shift to larger buildings, and a Tribal-owned facility.</summary>
+            <p>In 2014, <a class="cr" data-claim="pr-013" data-status="verified" href="sources/#src-pr-013" aria-label="over 60 percent, claim pr-013, verified">over 60 percent</a> of US server energy sat in organizations' own data centers. By 2023, that figure fell to <a class="cr" data-claim="pr-014" data-status="verified" href="sources/#src-pr-014" aria-label="nearly 10 percent, claim pr-014, verified">nearly 10 percent</a>; hyperscale and colocation together held <a class="cr" data-claim="pr-015" data-status="verified" href="sources/#src-pr-015" aria-label="almost 80 percent, claim pr-015, verified">almost 80 percent</a>. Tribally owned colocation facilities exist. One self-reports a power usage effectiveness (<a class="term" data-term="pue" href="../../sources/#term-pue">PUE</a>) of <a class="cr" data-claim="lf-059" data-status="partly verified" href="sources/#src-lf-059" aria-label="1.28, claim lf-059, partly verified">1.28</a>: the lower the PUE, the more of the building's power goes to computing rather than to cooling and overhead.</p>
+          </details>
+        </section>
+
+        <section class="primer-stop" id="hyperscale" aria-labelledby="hyperscale-title">
+          <h2 id="hyperscale-title">A Hyperscale Campus Is One Company's Computing at Massive Scale</h2>
+          <p class="primer-gist"><a class="cr" data-claim="pr-008" data-status="verified" href="sources/#src-pr-008" aria-label="Purpose-built by one company for its own operations or cloud customers, claim pr-008, verified">Purpose-built by one company for its own operations or cloud customers</a>. At the end of 2025, <a class="cr" data-claim="pr-018" data-status="verified" href="sources/#src-pr-018" aria-label="1,360, claim pr-018, verified">1,360</a> operated worldwide, <a class="cr" data-claim="pr-019" data-status="verified" href="sources/#src-pr-019" aria-label="580, claim pr-019, verified">580</a> of them in the United States, holding <a class="cr" data-claim="ru-052" data-status="verified" href="sources/#src-ru-052" aria-label="48 percent, claim ru-052, verified">48 percent</a> of data center capacity. <a class="cr" data-claim="pr-020" data-status="verified" href="sources/#src-pr-020" aria-label="58 percent, claim pr-020, verified">58 percent</a> of that capacity was held by Amazon, Microsoft, and Google.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>The operating company and its cloud customers.</dd></div>
+            <div><dt>Power, typical</dt><dd>Each is rated at <a class="cr" data-claim="pr-017" data-status="partly verified" href="sources/#src-pr-017" aria-label="100 to 1,000 megawatts, claim pr-017, partly verified">100 to 1,000 megawatts</a>, enough for <a class="cr" data-claim="pr-017" data-status="partly verified" href="sources/#src-pr-017" aria-label="80,000 to 800,000 homes, claim pr-017, partly verified">80,000 to 800,000 homes</a>. A rating is the built capacity, not the power drawn every hour.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>The operating company owns and runs the machines. Users and cloud customers reach them over the network.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: what will a proposed campus draw from our power and water, and whom will it serve?</p>
+          <p class="primer-also">Fuller question sets on the Data Centers page: <a href="../#q-power">Power</a> and <a href="../#q-water">Water</a>.</p>
+          <details class="primer-more">
+            <summary>Why campuses keep growing.</summary>
+            <p>A standard server draws <a class="cr" data-claim="pr-011" data-status="verified" href="sources/#src-pr-011" aria-label="600 watts, claim pr-011, verified">600 watts</a>. An AI server built for training models is rated at <a class="cr" data-claim="pr-012" data-status="verified" href="sources/#src-pr-012" aria-label="10.2 kilowatts, claim pr-012, verified">10.2 kilowatts</a>. A single rack can hold <a class="cr" data-claim="ru-026" data-status="verified" href="sources/#src-ru-026" aria-label="about 120 kilowatts, claim ru-026, verified">about 120 kilowatts</a> of AI hardware. Meta has announced a campus in Richland Parish, Louisiana, on <a class="cr" data-claim="ru-032" data-status="verified" href="sources/#src-ru-032" aria-label="2,250 acres, claim ru-032, verified">2,250 acres</a>, with a planned compute capacity of <a class="cr" data-claim="pr-021" data-status="partly verified" href="sources/#src-pr-021" aria-label="5 gigawatts, claim pr-021, partly verified">5 gigawatts</a>; that is a plan in Meta's words, not an operating load.</p>
+          </details>
+          <details class="primer-more">
+            <summary>A campus proposal on Tribal land, and what the release does not say.</summary>
+            <p>On <a class="cr" data-claim="pdc-034" data-status="verified" href="sources/#src-pdc-034" aria-label="03/25/2026, claim pdc-034, verified">03/25/2026</a>, Colusa Indian Energy and Strata Expanse announced an AI and energy infrastructure campus, with plans to expand on-site generation to <a class="cr" data-claim="pdc-035" data-status="verified" href="sources/#src-pdc-035" aria-label="more than 100 megawatts, claim pdc-035, verified">more than 100 megawatts</a>. The release states no deal terms, water source, or Tribal Council action. (<a href="../#policy-tribal">Questions Tribes have raised</a>.)</p>
+          </details>
+        </section>
+
+        <section class="primer-stop" id="cloud" aria-labelledby="cloud-title">
+          <h2 id="cloud-title">The Cloud Is Computing You Rent, Run in Data Centers</h2>
+          <p class="primer-gist">On-demand access, over a network, to <a class="cr" data-claim="pr-002" data-status="verified" href="sources/#src-pr-002" aria-label="a shared pool of configurable computing resources, claim pr-002, verified">a shared pool of configurable computing resources</a>. You rent <a class="cr" data-claim="pr-003" data-status="verified" href="sources/#src-pr-003" aria-label="software, a platform, or bare machines, claim pr-003, verified">software, a platform, or bare machines</a>. The cloud has no power draw of its own; its electricity comes from the data centers it runs in, under particular laws.</p>
+          <dl class="primer-facts">
+            <div><dt>Who uses it</dt><dd>Anyone who rents computing over the network. <a class="cr" data-claim="pr-005" data-status="verified" href="sources/#src-pr-005" aria-label="The cloud vendor is responsible for all operations, including infrastructure and cybersecurity, claim pr-005, verified">The cloud vendor is responsible for all operations, including infrastructure and cybersecurity</a>.</dd></div>
+            <div><dt>Power, typical</dt><dd>None of its own. The electricity is drawn by the data centers where the cloud provider's servers sit.</dd></div>
+            <div><dt>Who controls the machines and the data</dt><dd>The provider runs the machines, buildings, and security. The customer holds an account and an agreement. Where data sits and who may reach it: questions for counsel.</dd></div>
+          </dl>
+          <p class="primer-ask">A council might ask: where will our data sit, under whose law, and how do we retrieve it if we leave?</p>
+          <p class="primer-also">Fuller question sets on the Data Centers page: <a href="../#q-data">Data</a> and <a href="../#q-exit">Exit Terms</a>.</p>
+          <details class="primer-more">
+            <summary>Regions, zones, community clouds, and edge.</summary>
+            <p>Cloud providers organize their data centers into <a class="cr" data-claim="pr-023" data-status="verified" href="sources/#src-pr-023" aria-label="availability zones, claim pr-023, verified">availability zones</a> and <a class="cr" data-claim="pr-024" data-status="verified" href="sources/#src-pr-024" aria-label="regions, claim pr-024, verified">regions</a>: a region is an independent geographic area of three or more zones, each in a separate building. <a class="cr" data-claim="pr-004" data-status="verified" href="sources/#src-pr-004" aria-label="A community cloud, claim pr-004, verified">A community cloud</a> serves a specific community with shared concerns. <a class="cr" data-claim="pr-006" data-status="verified" href="sources/#src-pr-006" aria-label="Edge data centers, claim pr-006, verified">Edge data centers</a> sit closer to the people they serve. In the third quarter of 2026, Amazon, Microsoft, and Google held an estimated <a class="cr" data-claim="pr-022" data-status="partly verified" href="sources/#src-pr-022" aria-label="26, 19, and 16 percent, claim pr-022, partly verified">26, 19, and 16 percent</a> of cloud infrastructure revenue.</p>
+          </details>
+          <nav class="primer-next" aria-labelledby="next-title">
+            <h3 id="next-title">Where to Go Next</h3>
+            <ul>
+              <li><a href="../#where">Where the region's proposals are</a></li>
+              <li><a href="../#questions">Questions to ask before a data center is approved</a></li>
+              <li><a href="../../explorer/#where">Where it runs: the Explorer compares a personal device, a community node, regional colocation and hyperscale cloud</a></li>
+              <li><a href="../../ai/#face-tiers">Who may touch a Tribe's data, tier by tier</a></li>
+              <li><a href="../resource-use/">Energy and Water Use</a></li>
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </div>
+
+    <section class="wrap section primer-check" id="check" aria-labelledby="check-title">
+      <h2 id="check-title">Check Your Understanding</h2>
+      <div class="disclosure-grid">
+        <details class="primer-more">
+          <summary>A laptop, a closet server, and a hyperscale campus: what do they share, and which are data centers?</summary>
+          <p>All three <a class="cr" data-claim="pr-001" data-status="verified" href="sources/#src-pr-001" aria-label="process, store, and transmit digital information, claim pr-001, verified">process, store, and transmit digital information</a>. The federal definition covers a facility whose primary purpose is housing that equipment. The closet and the campus qualify; a laptop does the same jobs without being a facility. <a href="#laptop">Back to stop 1</a>.</p>
+        </details>
+        <details class="primer-more">
+          <summary>When a Tribe moves its email to the cloud, what changes hands?</summary>
+          <p><a class="cr" data-claim="pr-005" data-status="verified" href="sources/#src-pr-005" aria-label="The cloud vendor takes over all operations, including infrastructure and cybersecurity, claim pr-005, verified">The cloud vendor takes over all operations, including infrastructure and cybersecurity</a>. The Tribe keeps an account and an agreement. Where data sits and who may reach it depend on that agreement and the law; these are questions for counsel. <a href="#cloud">Back to stop 7</a>.</p>
+        </details>
+        <details class="primer-more">
+          <summary>A vendor offers to host a Tribe's records in the cloud. Name three questions that apply and who answers.</summary>
+          <p>Who owns the machines (the vendor), where will the data sit and under whose law (a question for counsel), and how does the Tribe retrieve its data if it leaves. Each comes from the control row at every stop. <a href="#cloud">Back to stop 7</a>.</p>
+        </details>
+        <details class="primer-more">
+          <summary>A proposal says a new facility will draw hundreds of megawatts. What kind of data center is that?</summary>
+          <p>Hundreds of megawatts is hyperscale range (<a class="cr" data-claim="pr-017" data-status="partly verified" href="sources/#src-pr-017" aria-label="100 to 1,000 megawatts, claim pr-017, partly verified">100 to 1,000 megawatts</a>, or <a class="cr" data-claim="pr-017" data-status="partly verified" href="sources/#src-pr-017" aria-label="80,000 to 800,000 homes, claim pr-017, partly verified">80,000 to 800,000 homes</a>). The question for a council: what will it take from the local power grid and water supply? <a href="#hyperscale">Back to stop 6</a>.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div class="footer-about">
+        <p class="footer-title">ATNI Energy Task Forces</p>
+        <p>Public information and coordination for the Energy Task Forces of the Affiliated Tribes of Northwest Indians (ATNI).</p>
+        <p><a href="https://atnitribes.org/contact-us/">Contact ATNI</a> through atnitribes.org.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Every page">
+        <ul>
+          <li><a href="../../">Home</a></li>
+          <li><a href="../../energy/">Tribal Energy</a><ul><li><a href="../../energy/potential/">What Tribal Plans Say</a></li><li><a href="../../energy/funding/">Funding</a></li></ul></li>
+          <li><a href="../../data-centers/">Data Centers</a><ul><li><a href="../../data-centers/resource-use/">Energy and Water Use</a></li><li><a href="../../data-centers/primer/" aria-current="page">Kinds of Data Centers</a></li></ul></li>
+          <li><a href="../../ai/">AI</a><ul><li><a href="../../ai/markets/">AI and the Markets</a></li></ul></li>
+          <li><a href="../../explorer/">Explorer</a></li>
+          <li><a href="../../briefing/">Briefing</a></li>
+          <li><a href="../../summit/">Summit</a></li>
+          <li><a href="../../library/">Library</a></li>
+          <li><a href="../../about/">About</a></li>
+          <li><a href="../../sources/">Sources</a></li>
+        </ul>
+      </nav>
+      <div class="footer-meta">
+        <p>This site publishes public (T0) material only and sets no cookies. <a href="../../about/#data-governance">How this site handles data</a>.</p>
+        <p class="footer-updated">Updated 11/17/2026.</p>
+        <p><a class="footer-top" href="#top">Top</a></p>
+      </div>
+    </div>
+  </footer>
+  <!-- cr-data -->
+  <script type="application/json" id="cr-data">{"claims":{"pr-001":{"title":"Data Centers and Their Energy Consumption: Frequently Asked Questions (CRS R48646)","url":"https://www.congress.gov/crs_external_products/R/PDF/R48646/R48646.1.pdf","publisher":"Congressional Research Service, Library of Congress","date":"08/26/2025","status":"verified"},"fp-133":{"title":"The DIMPACT Methodology, Version 1.0","url":"https://dimpact.org/downloadResourceFile?resource=2","publisher":"DIMPACT","date":"10/21/2022","status":"verified"},"pr-009":{"title":"United States Data Center Energy Usage Report (LBNL-1005775)","url":"https://eta-publications.lbl.gov/sites/default/files/lbnl-1005775_v2.pdf","publisher":"Lawrence Berkeley National Laboratory (Shehabi et al.)","date":"06/2016","status":"verified"},"pr-011":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"lf-024":{"title":"Small Data Centers, Big Energy Savings","url":"https://datacenters.lbl.gov/sites/default/files/Small%20Data%20Centers,%20Big%20Energy%20Savings.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"05/02/2017","status":"verified"},"pr-006":{"title":"Data Centers and Their Energy Consumption: Frequently Asked Questions (CRS R48646)","url":"https://www.congress.gov/crs_external_products/R/PDF/R48646/R48646.1.pdf","publisher":"Congressional Research Service, Library of Congress","date":"08/26/2025","status":"verified"},"pr-010":{"title":"United States Data Center Energy Usage Report (LBNL-1005775)","url":"https://eta-publications.lbl.gov/sites/default/files/lbnl-1005775_v2.pdf","publisher":"Lawrence Berkeley National Laboratory (Shehabi et al.)","date":"06/2016","status":"verified"},"ru-054":{"title":"Hyperscale Operators to Account for 67% of All Data Center Capacity by 2031","url":"https://www.srgresearch.com/articles/hyperscale-operators-to-account-for-67-of-all-data-center-capacity-by-2031","publisher":"Synergy Research Group","date":"04/07/2026","status":"verified"},"ru-024":{"title":"Uptime Institute Global Data Center Survey Results 2026","url":"https://uptimeinstitute.com/uptime_assets/77a6191bef6c85cb4ac9bfb169ddc313cae517030b48709697b1f80bc10edc90-uptime-institute-global-data-center-survey-results-2026.pdf","publisher":"Uptime Institute","date":"2026","status":"verified"},"pr-025":{"title":"Hoopa Valley Tribe Celebrates Grand Opening of NTIA Data Center","url":"https://acornconnected.com/hoopa-valley-tribe-celebrates-grand-opening-of-ntia-data-center/","publisher":"Acorn Connected (owned and operated by the Hoopa Valley Public Utilities District, a chartered entity of the Hoopa Valley Tribe)","date":"07/17/2026","status":"verified"},"pr-007":{"title":"Data Centers and Their Energy Consumption: Frequently Asked Questions (CRS R48646)","url":"https://www.congress.gov/crs_external_products/R/PDF/R48646/R48646.1.pdf","publisher":"Congressional Research Service, Library of Congress","date":"08/26/2025","status":"verified"},"tr-065":{"title":"United States Data Center Energy Usage Report: 2025 Update","url":"https://energy.gov/documents/united-states-data-center-energy-usage-report-2025-update","publisher":"Lawrence Berkeley National Laboratory (hosted by U.S. Department of Energy)","date":"06/18/2026","status":"verified"},"ru-021":{"title":"Energy demand from AI","url":"https://www.iea.org/reports/energy-and-ai/energy-demand-from-ai","publisher":"International Energy Agency","date":"04/09/2025","status":"verified"},"ru-022":{"title":"Energy demand from AI","url":"https://www.iea.org/reports/energy-and-ai/energy-demand-from-ai","publisher":"International Energy Agency","date":"04/09/2025","status":"verified"},"pr-005":{"title":"Best Practices Guide for Energy-Efficient Data Center Design","url":"https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design.pdf","publisher":"U.S. Department of Energy, Federal Energy Management Program, with NREL","date":"07/2024","status":"verified"},"ru-053":{"title":"Hyperscale Operators to Account for 67% of All Data Center Capacity by 2031","url":"https://www.srgresearch.com/articles/hyperscale-operators-to-account-for-67-of-all-data-center-capacity-by-2031","publisher":"Synergy Research Group","date":"04/07/2026","status":"verified"},"pr-013":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"pr-014":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"pr-015":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"lf-059":{"title":"Sustainability Report 2026","url":"https://mke.dataholdings.com/hubfs/Data%20Holdings%20Sustainability%20Report%202026.pdf","publisher":"The facility's operator","date":"06/04/2026","status":"partly verified","limit":"One operator's own figure, not independently measured; the report publishes no electricity use or total water figure."},"pr-008":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"pr-018":{"title":"Hyperscale Operators to Account for 67% of All Data Center Capacity by 2031","url":"https://www.srgresearch.com/articles/hyperscale-operators-to-account-for-67-of-all-data-center-capacity-by-2031","publisher":"Synergy Research Group","date":"04/07/2026","status":"verified"},"pr-019":{"title":"U.S. Hyperscale Investment Shifts Decisively Inland","url":"https://www.srgresearch.com/articles/focus-of-us-hyperscale-investment-shifts-dramatically-inland","publisher":"Synergy Research Group (now part of TechInsights)","date":"04/13/2026","status":"verified"},"ru-052":{"title":"Hyperscale Operators to Account for 67% of All Data Center Capacity by 2031","url":"https://www.srgresearch.com/articles/hyperscale-operators-to-account-for-67-of-all-data-center-capacity-by-2031","publisher":"Synergy Research Group","date":"04/07/2026","status":"verified"},"pr-020":{"title":"U.S. Hyperscale Investment Shifts Decisively Inland","url":"https://www.srgresearch.com/articles/focus-of-us-hyperscale-investment-shifts-dramatically-inland","publisher":"Synergy Research Group (now part of TechInsights)","date":"04/13/2026","status":"verified"},"pr-017":{"title":"Data Centers and Their Energy Consumption: Frequently Asked Questions (CRS R48646)","url":"https://www.congress.gov/crs_external_products/R/PDF/R48646/R48646.1.pdf","publisher":"Congressional Research Service, Library of Congress","date":"08/26/2025","status":"partly verified","limit":"A range from one report CRS cites, not a count of sites; a rating is not the power drawn every hour."},"pr-012":{"title":"2024 United States Data Center Energy Usage Report","url":"https://escholarship.org/content/qt32d6m0d1/qt32d6m0d1.pdf","publisher":"Lawrence Berkeley National Laboratory","date":"12/2024","status":"verified"},"ru-026":{"title":"NVIDIA DGX GB Rack Scale Systems User Guide: Hardware","url":"https://docs.nvidia.com/dgx/dgxgb200-user-guide/hardware.html","publisher":"NVIDIA","status":"verified"},"ru-032":{"title":"Meta Selects Northeast Louisiana as Site of $10 Billion Artificial Intelligence Optimized Data Center","url":"https://www.opportunitylouisiana.gov/news/meta-selects-northeast-louisiana-as-site-of-10-billion-artificial-intelligence-optimized-data-center-governor-jeff-landry-calls-investment-a-new-chapter-for-state","publisher":"Louisiana Economic Development","date":"12/04/2024","status":"verified"},"pr-021":{"title":"The largest Meta data center yet brings big impact to Louisiana","url":"https://datacenters.atmeta.com/richland-parish-data-center/","publisher":"Meta (Meta Data Centers site)","date":"2026","status":"partly verified","limit":"A plan in Meta's words, not an operating load; the same page also gives over two gigawatts for training models."},"pdc-034":{"title":"Colusa Indian Energy and Strata Expanse Announce Strategic Partnership","url":"https://www.colusaindianenergy.com/post/colusa-indian-energy-and-strata-expanse-announce-strategic-partnership","publisher":"Colusa Indian Energy","date":"03/25/2026","status":"verified"},"pdc-035":{"title":"Colusa Indian Energy and Strata Expanse Announce Strategic Partnership","url":"https://www.colusaindianenergy.com/post/colusa-indian-energy-and-strata-expanse-announce-strategic-partnership","publisher":"Colusa Indian Energy","date":"03/25/2026","status":"verified"},"pr-002":{"title":"The NIST Definition of Cloud Computing (Special Publication 800-145)","url":"https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf","publisher":"National Institute of Standards and Technology","date":"09/2011","status":"verified"},"pr-003":{"title":"The NIST Definition of Cloud Computing (Special Publication 800-145)","url":"https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf","publisher":"National Institute of Standards and Technology","date":"09/2011","status":"verified"},"pr-023":{"title":"Availability Zones (AWS Fault Isolation Boundaries whitepaper)","url":"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html","publisher":"Amazon Web Services","status":"verified"},"pr-024":{"title":"Geography and regions","url":"https://docs.cloud.google.com/docs/geography-and-regions","publisher":"Google Cloud documentation","status":"verified"},"pr-004":{"title":"The NIST Definition of Cloud Computing (Special Publication 800-145)","url":"https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf","publisher":"National Institute of Standards and Technology","date":"09/2011","status":"verified"},"pr-022":{"title":"Cloud Market Growth Rate Surges to Well Over 50% per Year; Q3 Revenues Reach $168 Billion","url":"https://www.srgresearch.com/articles/cloud-market-growth-rate-surges-to-well-over-50-per-year-q3-revenues-reach-168-billion","publisher":"Synergy Research Group (now part of TechInsights)","date":"10/29/2026","status":"partly verified","limit":"One analyst firm's estimate of revenue shares in one quarter, not of data center capacity; the three-company sum is this site's arithmetic."}},"terms":{"pue":{"name":"PUE","words":"Power usage effectiveness: a data center's total energy divided by what its computers use. The rest goes to cooling, power conversion, and lighting; closer to one is leaner."}}}</script>
+  <script defer src="../../assets/js/cite.js"></script>
+  <!-- /cr-data -->
+</body>
+</html>
