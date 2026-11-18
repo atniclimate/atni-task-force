@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-ballots",
+ "page": "data-centers/index.html",
+ "default": "oh",
+ "eyebrow": "Local ballot measures",
+ "title": "Voters decided {c[pp-003][text]} local data center measures by 11/14/2026, and {c[pp-004][text]} went toward limits",
+ "subtitle": "No state put a data center measure on a 2026 ballot. Each bar is one state's local measures, counted by Ballotpedia. All results are unofficial until each county certifies them.",
+ "plot": {
+  "type": "bars",
+  "domain": [0, 25],
+  "axis_label": "Local measures in 2026",
+  "units": {"measures": ""}
+ },
+ "reading": "{label}, local measures in 2026: {display}. {boundary} {evidence}",
+ "rows": [
+  {"id": "oh", "label": "Ohio", "claim": "pp-010", "tag": "All decided toward limits", "boundary": "All twenty-one Ohio measures were decided toward limits.",
+   "also": [
+    {"claim": "pp-025", "label": "Ashville OH; a yes would have upheld a term summary with EdgeConneX", "say": "{display} no"},
+    {"claim": "pp-026", "label": "Grove City OH Issue 28; a yes approved the restriction", "say": "{display} yes"},
+    {"claim": "pp-027", "label": "Pataskala OH charter ban on large-scale data centers", "say": "{display} yes"}
+   ]},
+  {"id": "me", "label": "Maine", "claim": "pp-011", "tag": "Decided toward limits; Hollis votes 12/08/2026", "boundary": "Eight Maine measures were decided toward limits; Hollis votes 12/08/2026."},
+  {"id": "il", "label": "Illinois", "claim": "pp-012", "tag": "All decided toward limits", "boundary": "All seven Illinois measures were decided toward limits."},
+  {"id": "ks", "label": "Kansas", "claim": "pp-013", "tag": "All decided toward limits", "boundary": "All four Kansas measures were decided toward limits."},
+  {"id": "wi", "label": "Wisconsin", "claim": "pp-014", "tag": "All decided toward limits", "boundary": "All three Wisconsin measures were decided toward limits.",
+   "also": [
+    {"claim": "pp-028", "label": "Janesville WI voter-approval initiative", "say": "{display} yes"}
+   ]},
+  {"id": "ar", "label": "Arkansas", "claim": "pp-015", "tag": "Both pending; Clarksville votes 12/01/2026", "boundary": "Both Arkansas measures are pending; Clarksville votes 12/01/2026."},
+  {"id": "ca", "label": "California", "claim": "pp-016", "tag": "All decided toward limits", "boundary": "Both California measures were decided toward limits.",
+   "also": [
+    {"claim": "pp-023", "label": "Alhambra CA Measure DB (ban)", "say": "{display} yes"},
+    {"claim": "pp-024", "label": "Monterey Park CA Measure NDC (ban), 06/02/2026", "say": "{display} yes"}
+   ]},
+  {"id": "nh", "label": "New Hampshire", "claim": "pp-017", "tag": "All decided toward limits", "boundary": "Both New Hampshire measures were decided toward limits."},
+  {"id": "nj", "label": "New Jersey", "claim": "pp-018", "tag": "All decided toward limits", "boundary": "Both New Jersey measures were decided toward limits."},
+  {"id": "nd", "label": "North Dakota", "claim": "pp-019", "tag": "Harwood toward development; Mandan votes 12/15/2026", "boundary": "Harwood voted toward development; Mandan votes 12/15/2026.",
+   "also": [
+    {"claim": "pp-029", "label": "Harwood ND industrial review initiative", "say": "{display} yes"}
+   ]},
+  {"id": "fl", "label": "Florida", "claim": "pp-020", "tag": "Decided toward limits", "boundary": "The Florida measure was decided toward limits."},
+  {"id": "mi", "label": "Michigan", "claim": "pp-021", "tag": "Decided toward limits", "boundary": "The Michigan measure was decided toward limits."},
+  {"id": "nv", "label": "Nevada", "claim": "pp-022", "tag": "Decided toward limits", "boundary": "The Nevada measure was decided toward limits.",
+   "also": [
+    {"claim": "pp-030", "label": "Boulder City NV Question 1 (allow)", "say": "{display} yes"}
+   ]}
+ ],
+ "also": [
+  {"claim": "pp-003", "label": "Local measures decided by 11/14/2026", "say": "{display}"},
+  {"claim": "pp-004", "label": "Decided toward limits", "say": "{display}"},
+  {"claim": "pp-005", "label": "Decided toward development, in Harwood ND", "say": "{display}"},
+  {"claim": "pp-006", "label": "Still to vote, 12/01/2026 to 12/15/2026", "say": "{display}"},
+  {"claim": "pp-007", "label": "Contests on 11/03/2026 decided toward limits, of 47", "say": "{display}"},
+  {"claim": "pp-008", "label": "Signatures the statewide Ohio amendment needed by 07/01/2026; it did not collect them", "say": "{display}"}
+ ],
+ "cites": ["pp-001", "pp-009"],
+ "table": {
+  "columns": [
+   {"label": "State", "field": "label"},
+   {"label": "Measures", "field": "text"},
+   {"label": "Outcome", "field": "tag"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

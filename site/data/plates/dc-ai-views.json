@@ -1,0 +1,44 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-ai-views",
+ "page": "data-centers/index.html",
+ "default": "ipsos-society",
+ "eyebrow": "AI opinion surveys",
+ "title": "In the latest poll here, {c[pp-048][text]} percent of US adults called AI a bad thing for society and {c[pp-049][text]} percent a good thing",
+ "subtitle": "Each row is one survey question in its own words, never averaged. Only the question about AI's effect on the respondent personally comes out roughly even.",
+ "plot": {
+  "type": "ladder",
+  "domain": [0, 100],
+  "axis_label": "Percent of respondents"
+ },
+ "reading_group": "{label}: {neg} percent negative, {pos} percent positive. {boundary} {evidence}",
+ "rows": [
+  {"id": "pew", "label": "Pew Research Center, US adults, 06/2026", "tag": "More concerned or more excited about AI in daily life",
+   "pair": [{"id": "neg", "name": "Negative answer", "claim": "pp-040"}, {"id": "pos", "name": "Positive answer", "claim": "pp-041"}],
+   "also": [{"claim": "pp-042", "label": "A middle answer, equally concerned and excited", "say": "{display}"}]},
+  {"id": "quinnipiac", "label": "Quinnipiac University, US adults, 03/2026", "tag": "AI: more harm or more good in day-to-day life",
+   "pair": [{"id": "neg", "name": "Negative answer", "claim": "pp-043"}, {"id": "pos", "name": "Positive answer", "claim": "pp-044"}]},
+  {"id": "gallup", "label": "Bentley-Gallup, US adults, 05/2026", "tag": "Effect of AI: more harm, more good, or equal",
+   "pair": [{"id": "neg", "name": "Negative answer", "claim": "pp-045"}, {"id": "pos", "name": "Positive answer", "claim": "pp-046"}],
+   "also": [{"claim": "pp-047", "label": "The largest answer, equal harm and good", "say": "{display}"}]},
+  {"id": "ipsos-society", "label": "ABC News/Washington Post/Ipsos, for society, 10/2026", "tag": "AI: a bad or a good thing for society",
+   "pair": [{"id": "neg", "name": "Negative answer", "claim": "pp-048"}, {"id": "pos", "name": "Positive answer", "claim": "pp-049"}]},
+  {"id": "ipsos-self", "label": "ABC News/Washington Post/Ipsos, for them personally, 10/2026", "tag": "AI: a bad or a good thing for them personally",
+   "detail": "Same survey. The only question here where the positive answer is not smaller than the negative.",
+   "pair": [{"id": "neg", "name": "Negative answer", "claim": "pp-050"}, {"id": "pos", "name": "Positive answer", "claim": "pp-051"}]}
+ ],
+ "foot": [
+  {"text": "The surveys gathered by Our World in Data, 11/16/2026.", "href": "https://ourworldindata.org/no-matter-how-you-ask-more-americans-are-negative-than-positive-about-ai", "link": "No matter how you ask, more Americans are negative than positive about AI"}
+ ],
+ "table": {
+  "pairs": true,
+  "columns": [
+   {"label": "Survey", "field": "label"},
+   {"label": "Question", "field": "tag"},
+   {"label": "Negative", "field": "display"},
+   {"label": "Positive", "field": "later"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

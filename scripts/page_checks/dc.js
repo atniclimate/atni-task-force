@@ -52,25 +52,25 @@ async function tabs() {
   const strip = document.querySelector('.section-strip');
   const links = [...strip.querySelectorAll('[role="tab"]')];
   const panels = [...document.querySelectorAll('main > section.panel[role="tabpanel"]')];
-  eq(links.length, 7, 'seven tabs');
-  eq(panels.length, 7, 'seven panels');
-  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,where,jobs,policy-landscape,questions', 'panel ids');
-  eq(links.map((a) => a.querySelector('.tab-name').textContent).join(), 'Why now,Growth,Tradeoffs,Where,Jobs,Policy,Questions', 'each tab is its name');
+  eq(links.length, 8, 'eight tabs');
+  eq(panels.length, 8, 'eight panels');
+  eq(panels.map((n) => n.id).join(), 'overview,growth,tradeoffs,where,jobs,policy-landscape,perception,questions', 'panel ids');
+  eq(links.map((a) => a.querySelector('.tab-name').textContent).join(), 'Why now,Growth,Tradeoffs,Where,Jobs,Policy,Public Perception,Questions', 'each tab is its name');
   ok(links.every((a) => a.querySelector('.tab-q').textContent.endsWith('?')), 'over the question it answers');
   ok(!panels[0].hidden && panels.slice(1).every((n) => n.hidden), 'Why now shows first');
-  for (let i = 1; i < 7; i++) {
+  for (let i = 1; i < 8; i++) {
     fire(window, links[i], 'click');
     ok(!panels[i].hidden, `tab ${i} shows`);
     eq(window.location.hash, `#${panels[i].id}`, 'hash written');
   }
-  key(window, links[6], 'ArrowRight');
+  key(window, links[7], 'ArrowRight');
   eq(links[0].getAttribute('aria-selected'), 'true', 'arrow wraps');
   key(window, links[0], 'End');
-  eq(links[6].getAttribute('aria-selected'), 'true', 'End');
-  key(window, links[6], 'Home');
+  eq(links[7].getAttribute('aria-selected'), 'true', 'End');
+  key(window, links[7], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
   ok(strip.querySelector('a.strip-out[data-not-tab][href="sources/"]') && strip.querySelector('button.paper[data-sheet-open][data-js]'), 'the strip ends in Sources and the meeting sheet');
-  eq(document.querySelectorAll('[data-plate]').length, 12, 'twelve plates');
+  eq(document.querySelectorAll('[data-plate]').length, 17, 'seventeen plates');
   for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-bar .plate-views [data-view="table"]`), `${id}: the Table is one press away, over the plot`);
   ok(!document.querySelector('.dc-jump, .dc-panel-head, .page-band, [data-library-feed]'), 'no jump lists, no band, no library feed (data-centers-01, -22, -25)');
   // The agenda (DIRECTION-R2 3.2): three questions, each answered in one sentence read off its face; the third face lists the question sets.
@@ -96,8 +96,9 @@ async function deepLinks() {
   for (const [hash, tab, opens] of [
     ['purpose', 'overview', true], ['why-now', 'overview', false], ['environmental-impacts', 'tradeoffs', false],
     ['policy-landscape', 'policy-landscape', false], ['alternatives', 'policy-landscape', true], ['questions', 'questions', false], ['policy-watch', 'policy-landscape', false],
-    ['dc-lbnl-us', 'growth', false], ['dc-forecast-check', 'growth', false], ['forecast-revisions', 'growth', false], ['dc-water-intensity', 'tradeoffs', false], ['q-water', 'questions', false], ['policy-tribal', 'policy-landscape', true],
+    ['dc-state-scale', 'growth', false], ['dc-lbnl-us', 'growth', false], ['dc-forecast-check', 'growth', false], ['forecast-revisions', 'growth', false], ['dc-water-intensity', 'tradeoffs', false], ['q-water', 'questions', false], ['policy-tribal', 'policy-landscape', true],
     ['dc-project', 'face-project', false], ['jobs-how-long', 'jobs', false], ['dc-atlas', 'where', false], ['land', 'where', false], ['climate', 'where', false], ['rec-or-dc-01', 'where', true],
+    ['perception', 'perception', false], ['dc-ballots', 'perception', false], ['analysts', 'perception', true],
   ]) {
     const { document, errors } = await load(`#${hash}`);
     const target = document.getElementById(hash);
@@ -193,6 +194,13 @@ async function council() {
 
 async function growth() {
   const { window, document, errors } = await load('#growth');
+  // The study's sites against whole states (11/17/2026): it leads the tab, and a claim row prints its figure as the claim states it.
+  const s = parts(document, 'dc-state-scale');
+  ok(leads(s.reading.textContent, ['81.8', '67.7 to 98.7', 'TWh']), `state comparison default: ${s.reading.textContent}`);
+  ok(document.querySelector('#growth .plate').id === 'dc-state-scale', 'it leads the tab');
+  key(window, s.plot, 'ArrowDown');
+  ok(leads(s.reading.textContent, ['Washington', '90.115 TWh']), 'Down moves to the next row');
+  ok(s.facts.textContent.includes('nine-tenths'), 'and its detail follows');
   const eia = parts(document, 'dc-eia-servers');
   eq(eia.plot.querySelectorAll('.m-line.is-on').length >= 1, true, 'a lead line');
   ok(eia.plot.querySelectorAll('.m-band').length === 1, 'a band');
@@ -457,8 +465,8 @@ async function tradeoffs() {
   eq(`${c.value.textContent} ${c.unit.textContent}`, 'None on site', 'and the readout says so in words');
   ok(row(c.root, 'site').classList.contains('dc-words'), 'words drop to body size');
   ok(wordsOnly(site()), 'the row says so');
-  moves(window, c, () => setRadio(window, c.radio('c_grid', 'hyperscale')), (t) => holds(t, ['1.4 Mt']), 'hyperscale grid');
-  ok(c.value.textContent === '1.4' && c.unit.textContent.startsWith('Mt'), 'and the CO2 a grid moves');
+  moves(window, c, () => setRadio(window, c.radio('c_grid', 'hyperscale')), (t) => holds(t, ['0.8 Mt']), 'hyperscale grid');
+  ok(c.value.textContent === '0.8' && c.unit.textContent.startsWith('Mt'), 'and the CO2 a grid moves');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'lbnl')), (t) => holds(t, ['0.86 Mt', 'LBNL']), 'LBNL grid');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'own')), (t) => holds(t, ['0.94 Mt']), "reader's grid");
   moves(window, c, () => setValue(window, c.slider('c_own'), 100), (t) => holds(t, ['0.25 Mt']), "reader's number");
@@ -770,7 +778,7 @@ async function atlas() {
 
 async function noScripts() {
   const { window: { document } } = new JSDOM(html);
-  eq(document.querySelectorAll('section.panel').length, 7, 'all panels in the page');
+  eq(document.querySelectorAll('section.panel').length, 8, 'all panels in the page');
   ok(!document.querySelector('[role="tablist"]') && document.querySelector('.section-strip a[href="#jobs"]'), 'strip is a jump list');
   ok(['face-load', 'face-project', 'face-asks'].every((id) => document.querySelector(`.agenda-q a[href="#${id}"]`) && !document.getElementById(id).hidden), 'the agenda questions are links, and every face stands whole');
   ok(document.querySelectorAll('.dc-cty').length > 30 && document.querySelector('.dc-sheet').getAttribute('style').includes('--vw:'), 'the atlas draws without scripts');
@@ -785,6 +793,9 @@ async function noScripts() {
   ok(document.querySelector('#dc-jobs-per-mw .plate-plot [data-row="naics"]'), 'without scripts the fixed record stays in the plot');
   ok(document.querySelector('.brief-meta a[href="resource-use/"]') && !document.querySelector('header .subnav'), 'the other page of the family is a link in the brief');
   eq(document.querySelector('.brief-meta a[href="resource-use/"]').textContent, 'Energy and Water Use', 'by the name the footer gives it');
+  eq(document.querySelector('.brief-meta a[href="primer/"]').textContent, 'Kinds of Data Centers', 'the primer sits in the meta line');
+  eq(document.querySelector('#perception #dc-ballots [data-row="oh"]')?.textContent.includes('21'), true, 'the ballots plate draws without scripts');
+  eq(document.querySelector('#dc-nearby [data-row="or"]').textContent.includes('over 70'), true, 'the Oregon floor keeps its word');
   eq(document.querySelector('#dc-pnw-load .m-needle').getAttribute('x1'), `${+document.querySelector('#dc-pnw-load .m-grid').getAttribute('x1') + 24}.0`, 'the static needle stands 24px in from the ticks too');
   ok(!/>2029</.test(document.querySelector('#dc-pnw-load .plate-plot').innerHTML), 'and the static axis starts at 2030');
   eq([...document.querySelectorAll('#dc-tradeoff-matrix td[data-row="water--national"] .matrix-bar')].map((n) => n.style.getPropertyValue('--x')).join(), '0.076,0.9217,1.0', 'three water figures, scaled within the cell');
@@ -799,6 +810,43 @@ async function noScripts() {
   eq(html.match(/<!-- \/SLOT -->/g).length, 8, 'all closed');
 }
 
+// Public Perception (r3, 11/17/2026): ballots, polls on a data center nearby, views of AI, and trackers, each on its own question; no Tribe's position here.
+async function perception() {
+  const { window, document, errors } = await load('#perception');
+  const panel = document.getElementById('perception');
+  ok(!panel.hidden, '#perception opens its tab');
+  eq([...panel.querySelectorAll('[data-plate]')].map((n) => n.id).join(), 'dc-ballots,dc-nearby,dc-ai-views,dc-trackers', 'the four plates, in order');
+  ok(panel.querySelector('a[href="#policy-tribal"]') && panel.querySelector('a[href="../ai/markets/"]'), 'it points to the Tribal section and the Markets page');
+  eq(panel.querySelectorAll('.cr[data-claim^="pdc-02"], .cr[data-claim^="pdc-03"]').length, 0, 'and cites no Tribal position itself');
+  ok(panel.textContent.includes('ATNI takes no position'), 'ATNI takes no position');
+  ok(!/<h3 id="alternatives">[^<]*<\/h2>/.test(html), 'the alternatives heading closes as it opens');
+  const b = parts(document, 'dc-ballots');
+  // holds, not leads: each label names a date or a quarter before its figure.
+  ok(holds(b.reading.textContent, ['Ohio', '21', 'decided toward limits']), `ballots default: ${b.reading.textContent}`);
+  ok(holds(b.root.querySelector('.plate-title').textContent, ['53', '52']), 'its title, from the claims');
+  key(window, b.plot, 'End');
+  ok(holds(b.reading.textContent, ['Nevada', '2026: 1.']) && !/\b1 measures\b/.test(b.root.textContent), `a single measure never reads as measures: ${b.reading.textContent}`);
+  ok(b.facts.textContent.includes('29.3 percent yes'), 'and its vote share follows the row');
+  const n = parts(document, 'dc-nearby');
+  ok(holds(n.reading.textContent, ['ABC News/Washington Post/Ipsos', '72 percent opposed']), `nearby default: ${n.reading.textContent}`);
+  ok(n.facts.textContent.includes('66 percent opposed'), 'the other half sample beside it');
+  key(window, n.plot, 'End');
+  ok(holds(n.reading.textContent, ['likely Oregon voters', 'over 70 percent']), `the Oregon floor reads over: ${n.reading.textContent}`);
+  eq(n.plot.querySelectorAll('[role="group"]').length, 2, 'national and Northwest polls on two rulers');
+  const v = parts(document, 'dc-ai-views');
+  ok(holds(v.reading.textContent, ['for society', '57 percent negative', '42 percent positive']), `AI views default: ${v.reading.textContent}`);
+  key(window, v.plot, 'End');
+  ok(holds(v.reading.textContent, ['for them personally', '49 percent negative', '50 percent positive']), `the one even question: ${v.reading.textContent}`);
+  const t = parts(document, 'dc-trackers');
+  ok(holds(t.reading.textContent, ['Data Center Watch, Q1 2026', '130 billion dollars']), `trackers default: ${t.reading.textContent}`);
+  ok(t.reading.textContent.includes('Limit:'), 'with its limit');
+  key(window, t.plot, 'Home');
+  ok(holds(t.reading.textContent, ['Heatmap Pro', 'at least 260 billion dollars']), `a floor reads at least, as its source says: ${t.reading.textContent}`);
+  key(window, t.plot, 'End');
+  ok(holds(t.reading.textContent, ['Q2 2026, project count', 'at least 45 projects']), `projects on their own ruler: ${t.reading.textContent}`);
+  eq(errors.join(), '', 'no script errors');
+}
+
 async function untrusted() {
   const js = read('site/assets/js/data-centers.js');
   ok(!/innerHTML|outerHTML|insertAdjacentHTML|document\.write|eval\(|fetch\(/.test(js), 'no markup strings or fetches');
@@ -807,4 +855,4 @@ async function untrusted() {
 }
 
 
-module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, project, climateLand, atlas, noScripts, untrusted } };
+module.exports = { groups: { tabs, deepLinks, council, growth, forecastCheck, forecastProvenance, tradeoffs, jobs, policy, perception, project, climateLand, atlas, noScripts, untrusted } };

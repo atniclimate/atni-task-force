@@ -694,11 +694,11 @@
     "basis": "reported (Google 2024 location-based)"
    },
    "us_grid_average_g_per_kwh": {
-    "value": 370,
+    "value": 348,
     "claims": [
-     "tr-038"
+     "tr-066"
     ],
-    "basis": "reported (US average May 2024 to April 2025); hyperscale-weighted 545"
+    "basis": "reported (US total-output average, eGRID2023, as the Nature Sustainability study states it); hyperscale-weighted 314 (tr-038)"
    },
    "lbnl_dc_grid_kg_per_kwh": {
     "value": 0.34,

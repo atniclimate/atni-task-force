@@ -123,14 +123,13 @@
     "unit": [
      {
       "claim": "tr-038",
-      "say": "{display} at hyperscale sites, preprint, {year}",
+      "say": "{display}, hyperscale sites, peer reviewed, {year}",
       "range": false,
       "modeled": true
      },
      {
       "claim": "tr-066",
-      "say": "against {display} national, same preprint, {year}",
-      "modeled": true
+      "say": "against {display}, national average, eGRID {year}"
      }
     ],
     "open": "Embodied carbon per rack"

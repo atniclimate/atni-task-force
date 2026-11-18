@@ -4,11 +4,21 @@
 
 /* Tab questions are short enough for one line each from 1600, where site.css shows them, so every tab name shares one top line (a longer one may still wrap). */
 .section-strip .tab-q { max-width: 11.5rem; white-space: normal; }
-/* From 1600 to 1699, where the questions show, the strip's Sources link gives way to the seven tabs (a departure from DIRECTION-R2 3.10): the brief carries the
+.section-strip a[href="#perception"] .tab-q { max-width: none; white-space: nowrap; } /* the longest question, kept on the shared line */
+/* From 1600 to 1699, where the questions show, the strip's Sources link gives way to the eight tabs (a departure from DIRECTION-R2 3.10): the brief carries the
    same link one screen up. Below 1600 the tabs are their names alone, and Sources has room again. */
 @media (min-width: 1600px) and (max-width: 1699px) { .section-strip .strip-out { display: none; } }
 /* A tab's one-line lead: what the panel holds, with a term's first use marked. */
 main p.dc-tab-lead { max-width: var(--measure-wide); margin: 20px 0 16px; color: var(--atni-text-secondary); }
+
+/* A figure with only a floor ("at least 260", "over 70", Public Perception): the kit hides a row's mark when the row has no middle figure, only --lo. Here it
+   stands at the floor, with a line that fades toward the ruler's end for "this or more"; solid, so it never reads as a dashed projection. Shortcut: the
+   selector reads the row's inline style; move it into the kit if another page needs floors. */
+.ladder-row[style*="--lo"]:not([style*="--x"], [style*="--hi"]) .ladder-track::before { content: ""; position: absolute; z-index: 1; left: calc(var(--lo) * 100%); right: 0; top: calc(50% - 1px); height: 2px; background: linear-gradient(to right, var(--series-context), transparent); }
+.ladder-row[style*="--lo"]:not([style*="--x"], [style*="--hi"]) .ladder-track::after { content: ""; position: absolute; z-index: 2; left: calc(var(--lo) * 100%); top: 50%; box-sizing: border-box; width: var(--mark); height: var(--mark); background: var(--series-context); outline: 2px solid var(--plot-ground); transform: translate(-50%, -50%); }
+.ladder-row.is-on[style*="--lo"]:not([style*="--x"], [style*="--hi"]) .ladder-track::before { background: linear-gradient(to right, var(--energy-mark), transparent); }
+.ladder-row.is-on[style*="--lo"]:not([style*="--x"], [style*="--hi"]) .ladder-track::after { background: var(--energy-mark); }
+@media (forced-colors: active) { .ladder-row[style*="--lo"] .ladder-track::after { forced-color-adjust: none; } }
 
 /* The agenda's third face: each question set by its first question, and the set's own Add, in columns that fit the face without scrolling. */
 .dc-asks-face { padding: 4px 0; }

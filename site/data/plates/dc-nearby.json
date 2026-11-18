@@ -1,0 +1,61 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-nearby",
+ "page": "data-centers/index.html",
+ "default": "ipsos",
+ "eyebrow": "Polls on a data center nearby",
+ "title": "In each national poll here, most respondents opposed a data center near them, from {c[pp-062][text]} to {c[pp-064][text]} percent",
+ "subtitle": "Each row is its own question, population, date, and method. The rows are not averaged and are not one trend. Heatmap Pro's three waves repeat one question.",
+ "text": [
+  "In Washington, opposition to a local data center rose from {c[pp-069][text]} percent in November 2025 to {c[pp-068][text]} percent in September 2026 in the same DHM Research series."
+ ],
+ "plot": {
+  "type": "ladder",
+  "groups": [
+   {"id": "us", "label": "National polls, percent opposed", "domain": [0, 100]},
+   {"id": "nw", "label": "Northwest state polls, percent opposed", "domain": [0, 100]}
+  ]
+ },
+ "reading": "{label}: {display} opposed. {boundary} {evidence}",
+ "rows": [
+  {"id": "gallup", "group": "us", "label": "Gallup, US adults, 03/2026", "claim": "pp-060", "tag": "AI data centers in their local area",
+   "boundary": "Random-digit-dial telephone survey of US adults."},
+  {"id": "heatmap-may", "group": "us", "label": "Heatmap Pro/Embold Research, registered voters, 05/2026", "claim": "pp-061", "tag": "A data center built near where they live",
+   "boundary": "Text-to-web poll of registered voters by Embold Research. Sponsor reports its own poll."},
+  {"id": "annenberg", "group": "us", "label": "Annenberg Public Policy Center, US adults, 06/2026 to 07/2026", "claim": "pp-062", "tag": "New data centers in their area",
+   "boundary": "Annenberg Public Policy Center survey, US adults, fielded June to July 2026."},
+  {"id": "umass", "group": "us", "label": "UMass Amherst, online sample, 08/2026", "claim": "pp-063", "tag": "An AI data center in their local community",
+   "boundary": "Respondents matched to a 2023 ACS sampling frame. An online poll, not a probability panel."},
+  {"id": "heatmap-aug", "group": "us", "label": "Heatmap Pro/Embold Research, August 2026 wave", "claim": "pp-064", "tag": "A data center built near where they live",
+   "boundary": "Heatmap's account of its August wave in a later article; the wave's own report was not opened."},
+  {"id": "heatmap-oct", "group": "us", "label": "Heatmap Pro/Embold Research, registered voters, 10/2026", "claim": "pp-065", "tag": "A data center built near where they live",
+   "boundary": "Text-to-web poll of registered voters by Embold Research, October 2026."},
+  {"id": "ipsos", "group": "us", "label": "ABC News/Washington Post/Ipsos, US adults (half sample), 10/2026", "claim": "pp-066", "tag": "A new data center in their community",
+   "boundary": "Ipsos KnowledgePanel, a random half of the US adults surveyed.",
+   "also": [
+    {"claim": "pp-067", "label": "Asked of the other half: new data centers in the US", "say": "{display} opposed"}
+   ]},
+  {"id": "wa", "group": "nw", "label": "DHM Research, Washington residents, 09/2026", "claim": "pp-068", "tag": "A data center in their local area",
+   "boundary": "DHM Research, Washington residents, September 2026.",
+   "also": [
+    {"claim": "pp-069", "label": "The same question, November 2025", "say": "{display} opposed"},
+    {"claim": "pp-070", "label": "Opposed development statewide, September 2026", "say": "{display}"}
+   ]},
+  {"id": "or", "group": "nw", "label": "DHM Research for OPB, likely Oregon voters, fall 2026", "claim": "pp-071", "open": "over", "tag": "A data center near their home",
+   "boundary": "OPB's report of a poll it commissioned from DHM Research; the article gives no exact figure, field dates, or wording.",
+   "also": [
+    {"claim": "pp-072", "label": "Negative impression of data centers, Oregon registered voters, July 2026", "say": "{display}"},
+    {"claim": "pp-073", "label": "Support a temporary halt on new AI data center construction, July 2026", "say": "{display}"},
+    {"claim": "pp-074", "label": "Oppose tax breaks for AI data centers, July 2026", "say": "{display}"}
+   ]}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Poll", "field": "label"},
+   {"label": "Asked", "field": "tag"},
+   {"label": "Percent opposed", "field": "text"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

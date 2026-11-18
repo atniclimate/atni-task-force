@@ -1,0 +1,68 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-state-scale",
+ "page": "data-centers/index.html",
+ "default": "hdc",
+ "eyebrow": "Hyperscale sites against whole states, 11/2026",
+ "title": "The study's hyperscale sites: about {c[st-001][value]:.0f} TWh a year, more than Oregon, Idaho, or Montana, about nine-tenths of Washington",
+ "subtitle": "A Nature Sustainability analysis of {c[st-002][value]:.0f} validated hyperscale sites, May 2024 to April 2025; not every data center and not the national total. State bars are 2025 retail sales reported to EIA, which already include each state's data centers; hollow marks are the study's modeled estimates, filled marks are reported sales, in TWh a year.",
+ "text": [
+  "Oregon's hyperscale sites drew about {c[st-004][value]:.0f} TWh; Washington's about {c[st-005][value]:.1f} TWh, at roughly {c[st-008][value]:.0f} g CO2 per kWh on its grid against {c[st-007][value]:.0f} in Oregon and {c[tr-038][value]:.0f} across the study. Idaho and Montana have no site in this sample; both states have data centers."
+ ],
+ "boundary": "Modeled estimates and reported sales, not metered load; the study covers twelve months ending April 2025, the state figures calendar year 2025.",
+ "inputs": {
+  "hdc": {"claim": "st-001"}
+ },
+ "plot": {
+  "type": "bars",
+  "domain": [0, 160],
+  "axis_label": "TWh a year",
+  "units": {"gCO2/kWh": "g CO2 per kWh"},
+  "marks": [
+   {"id": "hdc-central", "label": "Hyperscale sites, central case", "value": "hdc", "unit": "TWh", "digits": 2}
+  ]
+ },
+ "reading": "{label}: {display} a year. {boundary} {evidence}",
+ "rows": [
+  {"id": "hdc", "label": "Hyperscale sites, all states", "tag": "In the study, central case", "claim": "st-001", "modeled": true, "cites": ["st-002", "tr-038"],
+   "also": [{"claim": "tr-066", "label": "US average carbon per kWh, same basis", "say": "about {display}"}]},
+  {"id": "washington", "label": "Washington", "tag": "Whole state, retail sales, 2025", "claim": "st-011",
+   "detail": "The study's central case is about nine-tenths of this, and its high case exceeds it."},
+  {"id": "washington-sites", "label": "Washington's hyperscale sites", "tag": "In the study, central case", "claim": "st-005", "modeled": true,
+   "also": [{"claim": "st-008", "label": "Carbon per kWh of that electricity", "say": "about {display}"}]},
+  {"id": "oregon", "label": "Oregon", "tag": "Whole state, retail sales, 2025", "claim": "st-012",
+   "detail": "Even the study's low case exceeds this."},
+  {"id": "oregon-sites", "label": "Oregon's hyperscale sites", "tag": "In the study, central case", "claim": "st-004", "modeled": true,
+   "also": [{"claim": "st-007", "label": "Carbon per kWh of that electricity", "say": "about {display}"}]},
+  {"id": "idaho", "label": "Idaho", "tag": "Whole state, 2025; no site in the study", "claim": "st-013", "cites": ["st-002"],
+   "detail": "The study's central case is about three times this; Idaho has no hyperscale site in the sample, which does not mean no data centers."},
+  {"id": "montana", "label": "Montana", "tag": "Whole state, 2025; no site in the study", "claim": "st-014", "cites": ["st-002"],
+   "detail": "The study's central case is about five times this; Montana has no hyperscale site in the sample, which does not mean no data centers."},
+  {"id": "virginia", "label": "Virginia", "tag": "Whole state, retail sales, 2025", "claim": "st-009",
+   "detail": "The study's central case is a little over half this; Virginia's own hyperscale sites are about a seventh of its total."},
+  {"id": "virginia-sites", "label": "Virginia's hyperscale sites", "tag": "In the study, central case", "claim": "st-003", "modeled": true,
+   "also": [{"claim": "st-006", "label": "Carbon per kWh of that electricity", "say": "about {display}"}]},
+  {"id": "michigan", "label": "Michigan", "tag": "Whole state, retail sales, 2025", "claim": "st-010",
+   "detail": "Only the high case comes close; the central case is about four-fifths of this, and the comparison with Michigan is held to the range."}
+ ],
+ "details": [
+  "Electricity is estimated as facility capacity times hours times a scenario-based load factor, assigned to a grid region, with carbon from the region's plant mix.",
+  "The study covers twelve months ending April 2025; the state figures are calendar year 2025.",
+  "The facility list comes from commercial data, and a co-author works for its provider, as the paper declares."
+ ],
+ "foot": [
+  {"href": "#dc-lbnl-us", "link": "All US data centers, on a wider boundary and another year, are LBNL's count"},
+  {"href": "#dc-tradeoff-matrix", "link": "Carbon per kWh beside the other tradeoffs"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Row", "field": "label"},
+   {"label": "Basis", "field": "tag"},
+   {"label": "TWh", "field": "display"},
+   {"label": "Year", "field": "year"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

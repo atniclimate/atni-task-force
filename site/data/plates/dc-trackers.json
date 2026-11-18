@@ -1,0 +1,43 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "id": "dc-trackers",
+ "page": "data-centers/index.html",
+ "default": "dcw-q1",
+ "eyebrow": "Opposition trackers",
+ "title": "Data Center Watch counts about ${c[pp-081][text]} billion of projects blocked or delayed in the first quarter of 2026; Heatmap Pro, at least ${c[pp-080][low]} billion canceled through September",
+ "subtitle": "Each tracker counts its own way over its own period, from announced project values. The periods overlap, so the rows are never added.",
+ "plot": {
+  "type": "ladder",
+  "units": {"projects (at least), worth $170 billion": "projects"},
+  "groups": [
+   {"id": "usd", "label": "Announced value, billion dollars", "domain": [0, 300]},
+   {"id": "n", "label": "Projects counted", "domain": [0, 80]}
+  ]
+ },
+ "reading": "{label}: {display}. {boundary} {evidence}",
+ "rows": [
+  {"id": "heatmap", "group": "usd", "label": "Heatmap Pro, 2026 through 09/30/2026", "tag": "Canceled", "claim": "pp-080"},
+  {"id": "carbon", "group": "usd", "label": "Carbon Direct via Route Fifty", "tag": "Delayed or cancelled", "claim": "pp-086"},
+  {"id": "dcw-2025", "group": "usd", "label": "Data Center Watch, 2025", "tag": "Blocked or delayed", "claim": "pp-085"},
+  {"id": "dcw-q1", "group": "usd", "label": "Data Center Watch, Q1 2026 (January to March)", "tag": "Blocked or delayed", "claim": "pp-081"},
+  {"id": "dcw-q2", "group": "usd", "label": "Data Center Watch, Q2 2026 (April to June)", "tag": "Blocked or delayed", "claim": "pp-083"},
+  {"id": "dcw-q1-n", "group": "n", "label": "Data Center Watch, Q1 2026, project count", "tag": "Blocked or delayed", "claim": "pp-082"},
+  {"id": "carbon-n", "group": "n", "label": "Carbon Direct, project count", "tag": "Delayed or cancelled", "claim": "tr-063",
+   "detail": "Route Fifty reports at least this many projects."},
+  {"id": "dcw-q2-n", "group": "n", "label": "Data Center Watch, Q2 2026, project count", "tag": "Blocked or delayed", "claim": "pp-084"}
+ ],
+ "limits": {
+  "tr-063": "Route Fifty's report of a Carbon Direct analysis that was not opened; the article gives 49 projects in another passage."
+ },
+ "table": {
+  "columns": [
+   {"label": "Tracker", "field": "label"},
+   {"label": "Counts", "field": "tag"},
+   {"label": "Figure", "field": "display"},
+   {"label": "Year", "field": "year"},
+   {"label": "Source", "field": "source"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

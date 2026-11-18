@@ -58,7 +58,7 @@
   "spread_low": {"formula": "c_mw * c_lf * 8.76 * ms", "digits": 2},
   "spread_high": {"formula": "c_mw * c_lf * 8.76 * google", "digits": 2}
  },
- "reading": "{c_mw} MW at PUE {c_pue} and {c_lf} load factor: about {energy[text]} TWh a year; on-site water {site[display]} ({c_cool}); water at the power plants about {plant[display]} (2023 national grid); CO2 about {co2[display]} at {c_grid}. Modeled from the reader's inputs; sources checked 11/04/2026.",
+ "reading": "{c_mw} MW at PUE {c_pue} and {c_lf} load factor: about {energy[text]} TWh a year; on-site water {site[display]} ({c_cool}); water at the power plants about {plant[display]} (2023 national grid); CO2 about {co2[display]} at {c_grid}. Modeled from the reader's inputs; sources checked 11/04/2026; grid carbon 11/17/2026.",
  "rows": [
   {
    "id": "energy",

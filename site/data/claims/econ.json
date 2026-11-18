@@ -552,7 +552,7 @@
     "kind": "model"
    },
    "quote": "6.5 W / 10 TB = 0.65 Watt-Hours per Terabyte-Hour for HDD",
-   "derived": "0.65 Wh x 8,760 h = 5.69 kWh per TB-year at the device; x PUE 1.135 = 6.46 kWh; x 370 g per kWh (tr-066) = 2.4 kg CO2e per TB-year before replication",
+   "derived": "0.65 Wh x 8,760 h = 5.69 kWh per TB-year at the device; x PUE 1.135 = 6.46 kWh; x 348 g per kWh (tr-066) = 2.2 kg CO2e per TB-year before replication",
    "status": "verified"
   },
   {
