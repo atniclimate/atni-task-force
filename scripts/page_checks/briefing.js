@@ -287,6 +287,15 @@ async function copies() {
   ok(offered.every((p) => words(document.querySelector(`#${p.id} .plate-title`)).length > 0), 'and keeps its title');
   for (const root of document.querySelectorAll('.briefing-packet .countdown')) ok(root.classList.contains('has-today') && root.style.getPropertyValue('--today') !== '', 'the countdown places today');
   eq(document.querySelectorAll('.briefing-packet [data-add-briefing]').length, 0, 'no copy offers to add itself');
+  // A page script that rewrites a copy's claim links keeps them on its own page's Sources page, as the build wrote them (CR-02).
+  const climate = [...document.querySelectorAll('#dc-climate-counties .plate-table a[data-claim]')];
+  ok(climate.length && climate.every((a) => a.getAttribute('href').startsWith('../data-centers/sources/#dc-climate-counties-source-')), `the county Table's claims link to the Data Centers Sources page: ${climate[0]?.getAttribute('href')}`);
+  // Back or Forward finds nothing of the reader's in the Briefing's address, so a started plate keeps the row the reader chose (CR-01).
+  const start = window.plate.read('dc-cooling');
+  const other = [...document.querySelectorAll('#dc-cooling .plate-plot [data-row]')].map((n) => n.dataset.row).find((k) => k !== start.selected);
+  fire(window, document.querySelector(`#dc-cooling [data-row="${other}"]`), 'click');
+  fire(window, window, 'hashchange');
+  eq(window.plate.read('dc-cooling').selected, other, 'Back leaves a ticked plate as the reader set it');
   eq(errors.join(), '', 'no script errors');
 }
 

@@ -134,6 +134,7 @@ cooling?.addEventListener('click', (e) => { if (e.target.closest('[data-reset]')
 register('dc-cooling', {
   render(ctx) {
     countRows(ctx, ['site', 'plant'], (top) => (top <= 40000 ? 100 : 1000), (unit) => `One square is ${unit} million liters of water, in both water rows.`);
+    if (ctx.reason === 'select') coolBy = null; // a row the reader picks is the later choice: the readout follows it (CR-06)
     const r = coolBy ? ctx.data.rows.find((x) => x.key === coolBy) : ctx.rows[0];
     if (r?.key === 'site' && !r.text) ctx.readout('None', 'on site'); // closed loop or dry: the row's own word, never an empty figure
     else if (coolBy && r?.text) ctx.readout(r.text, r.unit);
@@ -302,22 +303,24 @@ register('dc-forecast-check', {
 // the measure: each line's figure and its one claim are rewritten for it (CD 12).
 const fig3 = (v, lo, hi) => `${plate.fig(v)} (${plate.fig(lo)} to ${plate.fig(hi)})`;
 const STATUS = { verified: 'verified', partly: 'partly verified' };
-function claimRef(plateId, id, status) {
+// sources: the Sources page as this page reaches it, which the Briefing's copy of a plate reaches from ../data-centers/ (CR-02).
+function claimRef(plateId, id, status, sources = 'sources/') {
   const a = el('a', null, el('span', `st ${status === 'verified' ? 'st-v' : 'st-p'}`), id);
-  a.href = `sources/#${plateId}-source-${id}`;
+  a.href = `${sources}#${plateId}-source-${id}`;
   a.dataset.claim = id;
   a.firstChild.setAttribute('aria-hidden', 'true');
   return el('span', 'claim-ref', a, ` ${STATUS[status] || status}`);
 }
 function climateTable(ctx, m, meta) {
   const root = ctx.plot.closest('.plate');
+  const sources = root.querySelector('.plate-sources-link a')?.getAttribute('href').split('#')[0]; // the plate's own Sources link, as plate.js reads p.sources
   for (const tr of root.querySelectorAll('.plate-table tbody tr[data-key]')) {
     const row = m.rows[tr.dataset.key]?.[ctx.state.cc_metric];
     if (!row) continue;
     const past = tr.children[2].textContent.startsWith('1995');
     const [claim, v, lo, hi] = row[past ? 'baseline' : tr.dataset.when];
     tr.children[3].textContent = `${fig3(v, lo, hi)} ${meta.unit}`;
-    tr.lastElementChild.replaceChildren(claimRef(root.id, claim, ctx.data.receipts[claim]?.status));
+    tr.lastElementChild.replaceChildren(claimRef(root.id, claim, ctx.data.receipts[claim]?.status, sources));
   }
 }
 register('dc-climate-counties', {

@@ -37,7 +37,7 @@
   }
   // Under the mark, turned above it where the window ends, and held inside the window's sides (viewport-aware: no anchor positioning or its polyfill).
   function place() {
-    if (!from) return;
+    if (!from || !tip.matches(':popover-open')) return; // a closed tip has nothing to place, so a scroll reads no layout
     const r = from.getBoundingClientRect();
     const w = tip.offsetWidth;
     const h = tip.offsetHeight;
@@ -70,6 +70,6 @@
     if (tip.contains(document.activeElement)) from.focus({ preventScroll: true });
   });
   tip.addEventListener('focusout', (e) => { if (e.relatedTarget && !tip.contains(e.relatedTarget) && e.relatedTarget !== from) tip.hidePopover(); });
-  addEventListener('scroll', place, { passive: true });
+  addEventListener('scroll', place, { passive: true, capture: true }); // capture: an inner scroller's scroll does not bubble, and its mark moves too
   addEventListener('resize', place);
 })();

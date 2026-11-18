@@ -5,7 +5,7 @@
  "id": "mk-weight",
  "default": "qqq",
  "eyebrow": "Concentration",
- "title": "On 11/16/2026 the seven were {c[mk-020][value]} percent of the Nasdaq-100 fund; on 10/30/2026, about {c[fin-106][value]} percent of the S&P benchmark's value",
+ "title": "On 11/16/2026 the seven were {c[mk-020][value]} percent of the Nasdaq-100; on 10/30/2026, about {c[fin-106][value]} percent of S&P benchmark value",
  "subtitle": "These four bases measure different things. The fund weight is a share of net assets; the benchmark weight is a share of total market capitalization. They do not add.",
  "inputs": {
   "qqq": {"claim": "mk-020"},

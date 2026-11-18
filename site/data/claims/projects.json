@@ -2041,6 +2041,52 @@
    "derived": "Count of records in projects.json (built 11/05/2026) on the land row “Not stated by the sources read”, transmission and substations: 8 (OR-TX-01, OR-TX-02, OR-TX-03, OR-TX-04, WA-TX-02, OR-TX-05, ID-TX-02, MT-TX-01).",
    "status": "partly",
    "limit": "A count of a curated public list on its date: what the filings read say, not every proposal in the region."
+  },
+  {
+   "id": "ld-027",
+   "entity": "Named proposals that name a county",
+   "metric": "named projects (all kinds)",
+   "value": 66,
+   "low": null,
+   "high": null,
+   "unit": "projects",
+   "year": 2026,
+   "boundary": "Counted: named records in projects.json that name a county on 11/05/2026, of every kind. Not counted: anything the filings read do not name.",
+   "source": {
+    "title": "ATNI Energy Task Forces named proposals: public dataset (projects.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/projects.json",
+    "published": "2026-11-05",
+    "kind": "dataset",
+    "date_words": "11/05/2026"
+   },
+   "quote": "\"built\": \"11/05/2026\"",
+   "derived": "Count of records in projects.json (built 11/05/2026) that name a county: 66 (WA-DC-01, WA-DC-02, WA-DC-03, WA-DC-04, WA-DC-05, WA-DC-06, WA-DC-07, WA-DC-08, WA-DC-09, WA-DC-10, WA-DC-11, WA-DC-12, WA-DC-13, WA-DC-14, WA-DC-16, OR-DC-01, OR-DC-02, OR-DC-03, OR-DC-04, OR-DC-05, OR-DC-06, ID-DC-01, ID-DC-03, ID-DC-04, MT-DC-01, MT-DC-02, MT-DC-03, NV-DC-01, NV-DC-02, NV-DC-03, NV-GEN-01, WA-GEN-01, WA-GEN-02, WA-GEN-03, WA-GEN-04, WA-GEN-05, WA-TX-01, WA-GEN-06, WA-GEN-07, OR-GEN-01, OR-GEN-02, OR-GEN-03, OR-GEN-04, OR-GEN-05, OR-GEN-06, OR-GEN-07, OR-GEN-08, OR-GEN-09, OR-GEN-10, OR-GEN-11, OR-GEN-12, OR-GEN-13, OR-GEN-14, OR-TX-01, OR-GEN-15, OR-GEN-16, OR-TX-04, ID-TX-01, ID-GEN-02, ID-GEN-04, ID-GEN-05, MT-TX-01, MT-GEN-01, NV-GEN-02, NV-GEN-03, CA-GEN-01).",
+   "status": "partly",
+   "limit": "A count of a curated public list on its date: what the filings read say, not every proposal in the region."
+  },
+  {
+   "id": "ld-028",
+   "entity": "Named proposals that name no county",
+   "metric": "named projects (all kinds)",
+   "value": 17,
+   "low": null,
+   "high": null,
+   "unit": "projects",
+   "year": 2026,
+   "boundary": "Counted: named records in projects.json that name no county on 11/05/2026, of every kind. Not counted: anything the filings read do not name.",
+   "source": {
+    "title": "ATNI Energy Task Forces named proposals: public dataset (projects.json)",
+    "publisher": "ATNI Energy Task Forces",
+    "url": "https://atniclimate.github.io/atni-task-force/data/projects.json",
+    "published": "2026-11-05",
+    "kind": "dataset",
+    "date_words": "11/05/2026"
+   },
+   "quote": "\"built\": \"11/05/2026\"",
+   "derived": "Count of records in projects.json (built 11/05/2026) that name no county: 17 (WA-DC-15, ID-DC-02, ID-DC-05, NV-DC-04, CA-DC-01, OR-TX-02, OR-TX-03, WA-TX-02, OR-TX-05, ID-TX-02, ID-GEN-01, ID-GEN-03, ID-GEN-06, NV-TX-01, NV-GEN-04, NV-GEN-05, NV-GEN-06).",
+   "status": "partly",
+   "limit": "A count of a curated public list on its date: what the filings read say, not every proposal in the region."
   }
  ]
 }

@@ -399,8 +399,8 @@ def atlas_html(proj, counties, climate_keys):
     e = html.escape
     pts = atlas_points(proj, counties)
     on_sheet = [c for c in pts if 0 < c["x"] < br.W and 0 < c["y"] < br.H]
-    south = sum(len(c["projects"]) for c in pts if c["y"] >= br.H)
-    east = sum(len(c["projects"]) for c in pts if c["x"] >= br.W and c["y"] < br.H)
+    south = len({p["id"] for c in pts if c["y"] >= br.H for p in c["projects"]})  # proposals, not county squares: a record may name several counties
+    east = len({p["id"] for c in pts if c["x"] >= br.W and c["y"] < br.H for p in c["projects"]})
     if len(on_sheet) + sum(1 for c in pts if c["y"] >= br.H or c["x"] >= br.W) != len(pts):
         sys.exit("a county with a record lies west or north of the relief sheet; widen bake_relief.py's extent")
     pct = lambda v, whole: f"{v / whole * 100:.3f}%"  # noqa: E731
@@ -439,13 +439,16 @@ def atlas_html(proj, counties, climate_keys):
         off.append(f"Off this sheet to the south: {south} in Nevada and northern California.")
     if east:
         off.append(f"Off this sheet to the east: {east} in eastern Montana.")
-    ld = pc.mint(proj)[1][("total", "all")]
+    ld = pc.mint(proj)[1]
+    placed = sum(1 for p in proj["projects"] if p["counties"])
+    mark = lambda key, n: f'<a class="cr" data-claim="{ld[(key, "all")]}" href="{away()}#src-{ld[(key, "all")]}">{n}</a>'  # noqa: E731
+    # The headline counts what the map can place, from the data: a record that names no county has no point (r2-scripts-1).
     return f'''<figure class="plate dc-atlas" id="dc-atlas" data-variant="atlas" aria-labelledby="dc-atlas-title">
-<div class="plate-claim"><p class="eyebrow">Named proposals in public filings, read 11/05/2026</p><h3 class="plate-title" id="dc-atlas-title">The filings read name <a class="cr" data-claim="{ld}" href="{away()}#src-{ld}">{len(proj["projects"])}</a> data center, generation, and transmission proposals, each at a point inside its county</h3><p class="caption">A count of a curated public list on its date: what the filings read say, not every proposal in the region.</p></div>
+<div class="plate-claim"><p class="eyebrow">Named proposals in public filings, read 11/05/2026</p><h3 class="plate-title" id="dc-atlas-title">The filings read name {mark("total", len(proj["projects"]))} data center, generation, and transmission proposals: {mark("placed", placed)} at a point inside each county they name, and {mark("unplaced", len(proj["projects"]) - placed)} that name no county</h3><p class="caption">A count of a curated public list on its date: what the filings read say, not every proposal in the region.</p></div>
 <div class="plate-plot dc-atlas-map"><div class="dc-field"><div class="dc-sheet" style="{view}"><svg class="dc-sheet-svg" width="100%" height="100%" aria-hidden="true" focusable="false"><g class="dc-names">{"".join(labels)}</g><g class="dc-marks">{"".join(marks)}</g></svg></div></div></div>
 <div class="plate-detail dc-atlas-side">
 <fieldset class="segmented" data-atlas-kind data-js><legend>Kind</legend><label><input type="radio" name="atlas-kind" value="all" checked><span>All</span></label><label><input type="radio" name="atlas-kind" value="dc"><span>Data centers</span></label><label><input type="radio" name="atlas-kind" value="gs"><span>Generation and storage</span></label><label><input type="radio" name="atlas-kind" value="tx"><span>Transmission</span></label></fieldset>
-<p class="caption dc-atlas-key"><span class="dc-key-sq" aria-hidden="true"></span>One square for each named proposal, at a point inside its county. It is never the site.</p>
+<p class="caption dc-atlas-key"><span class="dc-key-sq" aria-hidden="true"></span>One square for each county a proposal names, at a point inside that county. It is never the site.</p>
 <p class="dc-atlas-pick" data-js><label for="dc-atlas-county">County</label><select id="dc-atlas-county" data-atlas-county data-first="{first["fips"]}">{"".join(options)}</select></p>
 <div class="dc-atlas-card" data-atlas-card aria-live="polite"></div>
 <p class="caption dc-off">{" ".join(off)} <a href="#land-records">Every record, by state</a></p>

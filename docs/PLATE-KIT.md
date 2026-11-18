@@ -275,7 +275,7 @@ kit's rules are written on `fieldset.stair` so they win.
 - **Templates:** a placeholder that names a whole row (`{region}`) stops the build; name a field (`{region[text]}`). A `title_template` with a field the state leaves blank falls back to the Reading's first sentence. A row's `"open": "over"` prints "over N" for a floor-only figure, as its source says it.
 - **Faces:** settings run in one row under the title (two lines' room); Chart and Table stand over the window unless a switch shares the bar; the plot takes `clamp(18rem, 40vh, 40rem)`.
 - **Figures beside a reading** (`also`) open in "About this figure" in the window and print once, under the Table, each with its claim and status; a bench row prints its figure's claims.
-- **Other:** a meter's legend names every part label its rows draw, and its window parts wear the plot's inks; a countdown's readout is days left with the date under it, and its Passed lane counts only its own names; `"print_foot"` sets a plate's foot line on paper; More assumptions is `#{plate}-more`, and an address naming a disclosure opens it.
+- **Other:** a meter's legend names every part label its rows draw, and its window parts wear the plot's inks; a countdown's readout is days left with the date under it, and its Passed lane counts the rows passed at the build plus any that have passed since, so the lane and a row marked "date passed" always agree (R3; the title's count stays from `plot.from`); `"print_foot"` sets a plate's foot line on paper; More assumptions is `#{plate}-more`, and an address naming a disclosure opens it.
 
 ## The system as built (11/05/2026)
 Superseded by the R2 section above where they differ: `--poster`, the page band, three views, the strip (until the Energy plates move to `countdown`).

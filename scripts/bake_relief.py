@@ -26,7 +26,8 @@ RECORD = ROOT / "scripts" / "fixtures" / "relief" / "PROVENANCE.json"
 LON0, LON1, LAT0, LAT1 = -125.5, -110.5, 41.5, 49.5
 W, H = 2520, 1920
 
-# Everything that decides a pixel. Its hash is recorded, so a changed recipe reads as stale until the images are baked again.
+# The parameters that decide a pixel. Its hash is recorded, so a changed recipe reads as stale until the images are baked again. The bake functions below
+# (hillshade, tone, fade_edges, water_layers) hold the rest, and --check cannot see them: after editing one, bake again by hand.
 RECIPE = {
     "extent": [LON0, LAT0, LON1, LAT1], "size": [W, H], "exaggeration": 2.0, "smooth": [2.6, 1.0], "mix": [0.58, 0.42],
     "lights": [[315, 38, 0.6], [280, 46, 0.22], [350, 52, 0.18]],

@@ -16,6 +16,7 @@
  "plot": {
   "type": "ladder",
   "signed": true,
+  "units": {"USD trillion": "trillion dollars"},
   "groups": [
    {"id": "move", "label": "Change at the close from the day before, percent", "mark": "bar", "domain": [-10, 0]}
   ]
@@ -32,7 +33,7 @@
   {"id": "ccmp", "group": "move", "label": "Nasdaq Composite", "claims": {"nov05": "mk-022", "nov12": "mk-026"}},
   {"id": "ndx", "group": "move", "label": "Nasdaq-100", "claims": {"nov05": "mk-023", "nov12": "mk-027"}},
   {"id": "nvda", "group": "move", "label": "NVIDIA", "claims": {"nov05": "mk-024", "nov12": "mk-028"},
-   "also": [{"claim": "mk-029", "label": "The seven's market value lost on 11/05/2026, CNBC's tally", "say": "more than {display}"}]}
+   "also": [{"claim": "mk-029", "label": "The seven's market value lost on 11/05/2026, CNBC's tally", "say": "more than {display}."}]}
  ],
  "answer": "On {move_day}, NVIDIA moved {nvda[text]} percent at the close, the Nasdaq-100 {ndx[text]} and the S&P benchmark {spx[text]}."
 }

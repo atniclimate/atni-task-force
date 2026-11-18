@@ -270,7 +270,7 @@ def build(today, news=(), keep_ledger=False, home=True):
     new = [] if keep_ledger else ledger_items(ledger, watch, today)
     items = one_chart_row_a_day(order([*news_items(news, today), *carried(prior["items"]), *new, *library_items(entries), *policy_items(watch, today), *SITE_ROWS]), ledger)
     feed = {"schema": 1, "tier": "T0", "generated": today, "window_days": WINDOW, "items": items, "ledger": dict(sorted(ledger.items()))}
-    path.write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")  # LF on Windows too, as the other builders write
     pour_pages(feed, home=home)
     return feed
 

@@ -38,7 +38,7 @@
     [[-.1,.85,.05,4.6,35,20],'o',[['Laptop',.04,1,-.07],['Desk',.6,.5,.3,'r'],['A person, for scale',-1.05,1.78,.2]]],
     [[.2,1.25,-2.4,7.6,35,24],'io',[['Server closet',1.4,2.7,-4.1],['Network switch',.4,.69,-3.4,'r'],['Server',.4,.45,-3.2,'r'],['Battery backup',.4,.15,-3.2,'r'],['Laptop',.04,1,-.07,'b']]],
     [[17,3,-12.5,96,35,30],'mihoo',[['Office building',18.4,12,-26],['Server room',36,3,-15],['Racks',27.5,2,-12.6],['Cooling unit',36,1,-13.9,'r'],['Server closet',1.4,2.7,-4.1,'b']]],
-    [[35.5,1.2,-12,33,40,38],'mmfioo',[['Computing',26.6,2,-13.2],['Storage',29.6,1.2,-10,'r'],['Network',30,2.48,-12.5],['Power',34,1.2,-10.1,'r'],['Cooling',34.4,2,-14.4],['Backup',41.2,2.2,-12.4],['Server room',24.2,3,-8.2,'b']]],
+    [[35.5,1.2,-12,33,40,38],'mmfioo',[['Computing',26.6,2,-13.2],['Storage',29.6,1.2,-10,'r'],['Network',30,2.48,-12.5],['Power',34,1.2,-10.1,'r'],['Cooling',34.4,2,-14.4],['Backup',41.2,2.2,-12.4],['Server room',24.2,3,-14.8,'b']]],
     [[108,8,-50,470,35,30],'mmihhmo',[['Colocation building',150,14,-110],['One customer’s cage',69,3,-60],['Other customers’ cages',137,3,-60],['Rooftop cooling',102,16.5,-96],['Generators',180,4,-102],['Substation',212,0,-78,'r'],['Office building',18.4,12,1.2,'b']]],
     [[880,10,-400,3250,35,32],'mmmmmmio',[['Hyperscale campus',740,18,-470],['Data halls',1230,16,-360,'r'],['Power lines',1750,44,-410],['Colocation building',110,14,-40,'b']]],
     [[1450,0,-4000,20500,30,48],'mmmmmmmio',[['You, renting',0,1,0],['The network',3055,1,-1520],['A provider’s region',4425,0,-5870,'r'],['Hyperscale campus',1230,16,-150,'br']]],
@@ -75,9 +75,9 @@
   back.onclick = () => step(-1);
   next.onclick = () => step(1);
   document.addEventListener('keydown', (e) => {
-    const t = e.target;
+    const t = e.target, r = root.getBoundingClientRect();
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || !/^Arrow(Right|Left)$/.test(e.key)) return;
-    if ((t !== document.body && !root.contains(t)) || t.closest('input, select, textarea, [contenteditable]')) return; // the self-check keeps its keys
+    if ((t === document.body ? r.bottom < 0 || r.top > innerHeight : !root.contains(t)) || t.closest('input, select, textarea, [contenteditable]')) return; // with nothing focused, only while the stepper shows
     e.preventDefault();
     step(e.key === 'ArrowRight' ? 1 : -1);
   });
@@ -187,7 +187,7 @@ gl_Position=a<.01?vec4(2.,2.,2.,1.):X;}`;
   function show(i) {
     labels.replaceChildren(...STOPS[i][2].map(([words, x, y, z, flag = '']) => {
       const el = document.createElement('span');
-      el.className = `primer-label${flag.replace('b', ' is-before').replace('r', ' is-right')}`;
+      el.className = `primer-label${flag.includes('b') ? ' is-before' : ''}${flag.includes('r') ? ' is-right' : ''}`;
       el.textContent = words;
       el.at = [x, y, z];
       return el;

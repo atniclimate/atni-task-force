@@ -233,7 +233,8 @@ function readingRoom(room) {
   // The list for the shelf and filters the form holds now. The first view is the build's: drawing it again would move nothing, so it is drawn only on a change.
   const groupsHTML = () => {
     const by = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, []]));
-    for (const e of data.entries.filter((x) => x.featured).sort(newestFirst)) by[e.type === 'resolution' ? 'grounding' : e.areas[0]].push(e);
+    // Under the first of its areas that has a group, as build_library_strip.py start_shelf; Summit has none, so an entry of Summit alone reads across the task forces.
+    for (const e of data.entries.filter((x) => x.featured).sort(newestFirst)) by[e.type === 'resolution' ? 'grounding' : e.areas.find((a) => Object.hasOwn(by, a)) || 'cross-cutting'].push(e);
     return Object.entries(by).filter(([, list]) => list.length).map(([key, list]) => `<p class="entry-group" id="group-${key}">${GROUPS[key]}</p><ol class="entries" role="list" aria-labelledby="group-${key}">${list.map((e) => rowHTML(e, data.at.get(e))).join('')}</ol>`).join('');
   };
   const describe = (f, kind) => [
@@ -344,6 +345,7 @@ function readingRoom(room) {
   for (const button of form.querySelectorAll('[data-try]')) {
     button.addEventListener('click', () => {
       field('q').value = button.dataset.try;
+      field('entry').value = ''; // a new search starts the preview at its first row, as every other filter does
       update();
     });
   }

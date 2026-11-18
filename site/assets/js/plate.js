@@ -107,6 +107,9 @@ function initTabs(strip) {
     const top = panels[n].getBoundingClientRect().top;
     const under = strip.classList.contains('is-sticky') ? strip.offsetHeight : 0;
     if (top < under) scrollTo({ top: scrollY + top - under, behavior: 'instant' });
+    // From the strip at the window's foot (site.css, R3 4) the panel opens below the fold, so it comes up under the strip, the tab still in view and focused,
+    // as a landing keeps a reader's focus where it is (visual-1). At once, as every scroll here: no motion to reduce, and a focus that follows cannot cut it short.
+    else if (strip.getBoundingClientRect().bottom > innerHeight - strip.offsetHeight) scrollTo({ top: scrollY + top - strip.offsetHeight, behavior: 'instant' });
     // The tab is the anchor, and the settings stay beside it. A run of arrow keys is one change of place, so it pushes once and then replaces; the tab already
     // open only writes its anchor.
     writeAddress(panels[n].id, readAddress().params, moved && !arrowing);
@@ -416,9 +419,12 @@ function flushQuery(p) {
   put(`${p.id}-view`, p.root.dataset.view, 'chart');
   writeAddress(anchor, params);
 }
-// Back, Forward, or an address typed in: every plate takes what the address names (CW 4, ai-13).
-function reapply() {
+// Back, Forward, or an address typed in: every plate takes what the address names (CW 4, ai-13). named: a link the reader followed moves only a plate it names
+// itself, by its id, view, or a stop, so a link carrying a selection reaches a plate already started and the others keep theirs (CR-03).
+function reapply(named) {
+  if (NO_ADDRESS) return; // the Briefing keeps nothing in the address, so it has nothing to restore, and Back must not put its plates to their defaults (CR-01)
   for (const p of plates.values()) {
+    if (named && ![...namesOf(p)].some((name) => named.has(name))) continue;
     readState(p, false);
     const asked = readAddress().params.get(`${p.id}-view`);
     setView(p, asked === 'table' ? 'table' : 'chart');
@@ -1539,11 +1545,17 @@ function initCountdown(root) {
   const here = Math.min(1, Math.max(0, (midnight(today) - midnight(from)) / (midnight(to) - midnight(from))));
   root.style.setProperty('--today', here.toFixed(4));
   root.classList.toggle('is-flip', here > 0.6);
+  let since = 0;
   for (const row of all(root, '.countdown-row')) {
     const days = daysUntil(row.dataset.date);
     row.classList.toggle('is-passed', days < 0);
+    since += days < 0;
     row.querySelector('.countdown-days').replaceChildren(...(days > 0 ? [span('countdown-n', grouped(days)), ` ${days === 1 ? 'day' : 'days'}`] : [span('countdown-n', days ? 'date passed' : 'today')]));
   }
+  // The Passed lane counts the names it lists and each row passed since, so the lane and a row that says "date passed" agree; with the rows on the track
+  // they make the title's count of the dates the catalog holds, passed or not (ef-005).
+  const passed = root.querySelector('[data-lane="passed"] .countdown-n[data-built]');
+  if (passed) passed.textContent = grouped(+passed.dataset.built + since);
   // A half-year label within 32px of today gives way to the needle's (energy critic 15).
   const width = root.querySelector('.countdown-scale')?.clientWidth || 0;
   for (const month of all(root, '.countdown-month')) month.classList.toggle('is-near', !!width && Math.abs(+month.style.getPropertyValue('--t') - here) * width < 32);
@@ -1558,6 +1570,7 @@ on(document, 'DOMContentLoaded', () => land(location.hash.slice(1))); // after a
 // A link the reader followed lands; Back, Forward, or a typed address puts every plate where the address says (theme.js tells the two apart).
 on(window, 'hashchange', (e) => {
   if (!window.siteAddress.followed) reapply();
+  else if (e.newURL) reapply(parse(new URL(e.newURL).hash.slice(1)).params); // the link's own fragment, before theme.js carries kept settings after it
   if (!window.siteAddress.traversed && e.newURL) land(new URL(e.newURL).hash.slice(1));
 });
 // A strip whose questions would push a tab out of view shows the tab names alone (.is-tight; ai critic 1). Under 1600px site.css does so before the first paint.

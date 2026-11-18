@@ -1,6 +1,7 @@
 // Kinds of Data Centers (site/data-centers/primer/, R3 lane dc-primer, 11/17/2026). A brief and three outcomes, then the stepper: seven stops at left and
 // the stage at right (the step list, the flat still that the WebGL scene replaces once it starts, and Back, the live line, Next and Full screen), then a
-// self-check of four questions. jsdom has no WebGL, so getContext returns null and the still must stay; the stepper still runs by button and arrow key.
+// self-check of four questions. jsdom has no WebGL, so getContext returns null and the still must stay; the stepper still runs by button and arrow key. A
+// stand-in context, where every call answers and nothing is drawn, runs the scene's own code: the live class, the labels and their flags, a lost context.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -16,10 +17,11 @@ const ONWARD = ['../#where', '../#questions', '../../explorer/#where', '../../ai
 const CLAIMS = {};
 for (const name of fs.readdirSync(path.join(ROOT, 'site/data/claims'))) for (const c of JSON.parse(read(`site/data/claims/${name}`)).claims || []) CLAIMS[c.id] = c;
 
-const load = (hash = '') => open(html, `${PAGE}${hash}`, (window) => {
-  window.HTMLCanvasElement.prototype.getContext = () => null; // no WebGL here: the still stays
+const load = (hash = '', gl = null) => open(html, `${PAGE}${hash}`, (window) => {
+  window.HTMLCanvasElement.prototype.getContext = (kind) => { window.asked = kind; return gl; }; // no WebGL here unless a group passes the stand-in
   window.Element.prototype.scrollIntoView = function () { window.scrolled = this.id; };
 });
+const standIn = () => new Proxy({}, { get: (_, name) => (name === 'getProgramParameter' ? () => true : () => ({})) });
 const current = (document) => [...document.querySelectorAll('.primer-steps a')].findIndex((a) => a.getAttribute('aria-current') === 'step');
 const where = (document) => document.querySelector('.primer-where').textContent;
 
@@ -68,6 +70,8 @@ const groups = {
     ok(document.querySelector('.primer-controls').hasAttribute('data-js'), 'the controls are not drawn without scripts (site.css hides [data-js])');
     eq(document.querySelector('.primer-stage').getAttribute('aria-label'), 'Stepper', 'the stage is named (C4)');
     ok(document.querySelector('#primer-route[type="checkbox"]'), 'the short route works without scripts (CSS :has)');
+    const hides = read('site/assets/css/primer.css').match(/#primer-route:checked\) :is\(([^)]+)\) \{ display: none; \}/)[1];
+    for (const id of STOPS) for (const part of ['h2', '.primer-gist', '.primer-ask']) ok(document.querySelector(`#${id} ${part}`) && !document.querySelector(`#${id} ${part}`).closest(hides), `${id}: the short route keeps its ${part}`);
     const marks = [...document.querySelectorAll('a.cr')];
     ok(marks.length > 30, 'the figures are claim marks');
     for (const a of marks) {
@@ -95,8 +99,10 @@ const groups = {
   async withScripts() {
     const { window, document, errors } = await load();
     eq(errors.length, 0, `no script errors: ${errors.join('; ')}`);
-    ok(!document.getElementById('primer').classList.contains('is-live'), 'no WebGL, so the still stays');
-    ok(document.querySelector('figure.primer-still svg'), 'and is still there');
+    eq(window.asked, 'webgl', 'the script ran as far as asking for WebGL');
+    ok(!document.getElementById('primer').classList.contains('is-live'), 'got none, so the still stays');
+    const still = document.querySelector('figure.primer-still');
+    ok(still.querySelector('svg') && !still.closest('[hidden]'), 'and is still there and shown');
     const back = document.querySelector('[data-step="-1"]');
     const next = document.querySelector('[data-step="1"]');
     eq(current(document), 0, 'stop 1 is current');
@@ -123,8 +129,19 @@ const groups = {
     eq(current(document), 1, 'so does focus in a form control');
     key(window, document.querySelector('#check summary'), 'ArrowRight');
     eq(current(document), 1, 'and focus in the self-check, outside the stepper');
+    const primer = document.getElementById('primer');
+    primer.getBoundingClientRect = () => ({ top: -4000, bottom: -200 });
+    key(window, document.body, 'ArrowRight');
+    eq(current(document), 1, 'and, with nothing focused, a stepper scrolled off screen');
+    primer.getBoundingClientRect = () => ({ top: -400, bottom: 2000 });
+    key(window, document.body, 'ArrowRight');
+    eq(current(document), 2, 'with it on screen, ArrowRight is Next with nothing focused');
+    key(window, document.querySelector('#laptop summary'), 'ArrowLeft');
+    eq(current(document), 1, 'and on a disclosure inside a stop, where the arrows do nothing of their own');
     fire(window, back, 'click');
     eq(current(document), 0, 'Back returns to stop 1');
+    document.getElementById('primer-route').click();
+    ok(document.getElementById('primer-route').checked, 'the short route is on, and the stepper steps the same');
     for (let i = 1; i < STOPS.length; i++) fire(window, next, 'click');
     eq(where(document), 'Stop 7 of 7: The cloud', 'Next reaches the last stop');
     eq(next.textContent, 'Self-check', 'where Next reads Self-check');
@@ -133,6 +150,26 @@ const groups = {
     eq(current(document), 6, 'leaving the last stop current');
     window.dispatchEvent(new window.Event('beforeprint'));
     ok([...document.querySelectorAll('details')].every((d) => d.open), 'printing opens every disclosure');
+  },
+
+  async theSceneRunsOnAStandInContext() {
+    const { window, document, errors } = await load('', standIn());
+    eq(errors.length, 0, `no script errors in the scene: ${errors.join('; ')}`);
+    const primer = document.getElementById('primer');
+    ok(primer.classList.contains('is-live'), 'the scene starts and swaps the still out');
+    const next = document.querySelector('[data-step="1"]');
+    const KIND = { b: 'is-before', r: 'is-right' };
+    for (const [k, [, , labels]] of window.primerScene.STOPS.entries()) {
+      const want = labels.map(([words, , , , flag = '']) => `${words}:${[...flag].map((f) => KIND[f]).sort().join(' ')}`);
+      const got = [...document.querySelectorAll('.primer-labels .primer-label')].map((el) => `${el.textContent}:${[...el.classList].filter((c) => c !== 'primer-label').sort().join(' ')}`);
+      eq(got.join('|'), want.join('|'), `stop ${k + 1}: its labels, each flag letter its own class`);
+      if (k < STOPS.length - 1) fire(window, next, 'click');
+    }
+    document.querySelector('.primer-canvas').dispatchEvent(new window.Event('webglcontextlost'));
+    ok(!primer.classList.contains('is-live'), 'a lost context gives the still back');
+    fire(window, document.querySelector('[data-step="-1"]'), 'click');
+    eq(where(document), 'Stop 6 of 7: Hyperscale campus', 'and the stepper runs on without the scene');
+    eq(errors.length, 0, `still no script errors: ${errors.join('; ')}`);
   },
 
   async aHashStartsAtItsStop() {

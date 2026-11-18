@@ -27,12 +27,6 @@ export const STATES = {
   AK: 'Alaska', CA: 'California', ID: 'Idaho', MT: 'Montana', NV: 'Nevada', OR: 'Oregon', UT: 'Utah', WA: 'Washington',
 };
 
-export async function getJSON(path) {
-  const response = await fetch(new URL(path, ROOT));
-  if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
-  return response.json();
-}
-
 // The address, #anchor&name=value, as theme.js reads and writes it for every script (window.siteAddress): one grammar, one place. A filter or a tick replaces
 // the history entry; only a change of place (a tab) pushes one. A link within the page keeps the filters (theme.js), and an old link's ?query moves into the fragment.
 export const address = () => window.siteAddress.read();
@@ -67,48 +61,7 @@ export function linkFilters(form, names) {
   };
 }
 
-// The element the address's anchor names, or null: a pasted link with a broken escape, such as #%E0, names nothing and stops nothing.
-export function hashTarget() {
-  try {
-    return document.getElementById(decodeURIComponent(address().anchor));
-  } catch {
-    return null;
-  }
-}
-
 // Fills every [data-figure="name"] element with its value.
 export function setFigure(name, value) {
   for (const el of document.querySelectorAll(`[data-figure="${name}"]`)) el.textContent = value;
-}
-
-// Adds <option>s to a <select>, each with a count, leaving out options with no entries.
-export function addOptions(select, options) {
-  select.insertAdjacentHTML(
-    'beforeend',
-    options.filter(([, , n]) => n).map(([value, label, n]) => `<option value="${esc(value)}">${esc(label)} (${n})</option>`).join(''),
-  );
-}
-
-// A plate's window as a <details> (the Energy pages): closed until a reader selects a row or follows a link into it, its summary the Reading up to a second colon or a first
-// period. Without scripts, and in print, the window shows as the build wrote it. The live region is outside the window, so a selection is still spoken.
-export function closedDetail(figure) {
-  const id = figure.dataset.plate;
-  const panel = figure.querySelector('.plate-detail');
-  const reading = panel.querySelector('.reading');
-  const more = Object.assign(document.createElement('details'), { className: 'plate-more energy-detail' });
-  const line = document.createElement('summary');
-  const sync = () => { line.textContent = /^[^:.]*(?::[^:.]*)?/.exec(reading.textContent)[0]; };
-  sync();
-  new MutationObserver(sync).observe(reading, { childList: true, characterData: true, subtree: true });
-  const active = panel.contains(document.activeElement) ? document.activeElement : null; // plate.js focuses the evidence for an old Sources link; a move would drop it
-  more.append(line, ...panel.children);
-  panel.prepend(more);
-  const { params } = address();
-  const target = hashTarget();
-  more.open = params.has(id) || params.has(`${id}-view`) || more.contains(target) || !!active;
-  active?.focus({ preventScroll: true });
-  if (target && figure.querySelector('.plate-view[data-view="table"]')?.contains(target)) figure.querySelector('.plate-views [data-view="table"]')?.click();
-  if (more.contains(target)) target.scrollIntoView();
-  figure.addEventListener('click', (event) => { if (event.target.closest('.plate-plot [data-row]')) more.open = true; });
-  figure.querySelector('.plate-plot').addEventListener('keydown', (event) => { if (/^(Arrow|Home$|End$|Enter$| $)/.test(event.key)) more.open = true; });
 }

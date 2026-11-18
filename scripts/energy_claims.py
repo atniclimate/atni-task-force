@@ -257,13 +257,13 @@ def deadlines_plate(plate_id, page, funding, claims, answer):
     dated, undated = dated_rows(funding), undated_programs(funding)
     ids = {c["entity"]: c["id"] for c in claims if "ef-011" <= c["id"] < "ef-041"}
     checks = checked_dates(funding["programs"])
-    start = checks[-1]  # the day the dated programs were read on their agencies' pages
+    start = max((r["checked"] for r in dated), default=checks[-1])  # the day the dated rows were read on their agencies' pages, never a later check of another
     rows = [{"id": r["key"], "label": r["name"], "claim": ids[r["name"]], "tag": due_words(r),
              "cols": {"status": "open while funds last" if rolling(r) else r["status"], "checked": us(r["checked"]), **({"program": r["program"]} if r.get("program") else {"link": r["link"]})}} for r in dated]
     rows += [{"id": p["id"].replace("_", "-"), "label": p["short_name"], "claim": ids[p["short_name"]], "tag": f"{p['status']}; the catalog holds no deadline",
               "cols": {"status": p["status"], "checked": us(p["status_checked"]["date"]), "program": p["id"]}} for p in undated]
     upcoming = [r for r in dated if r["iso"] > start]
-    recheck = f"Dated programs rechecked {us(checks[-1])}; other statuses checked {us(checks[0])}." if len(checks) > 1 else f"Statuses checked {us(checks[0])}."
+    recheck = f"Dated programs rechecked {us(start)}; other statuses checked {us(checks[0])}." if checks[0] < start else f"Statuses checked {us(checks[0])}."
     last = f" through {us(dated[-1]['iso'])}" if dated else ""
     return {
         **base_plate(plate_id, page),

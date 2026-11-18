@@ -1088,9 +1088,10 @@ on(document, 'keydown', (e) => {
   if (e.key === 'Escape' && !fine.open) $$('[data-d="receipt"]:not([hidden])').forEach((box) => closeReceipt(box));
 });
 // Back, Forward, or a typed address puts the page where the address says (CW 4, explorer-07). An address that names none of this page's choices came from a link
-// within the page (a claim, a plate), which takes the whole fragment: the choices stay, and the address takes them back. With no tab named, the first tab shows.
+// within the page (a claim, a plate), which takes the whole fragment: the choices stay, and the address takes them back. Back or Forward to such an entry,
+// where the Navigation API says it is one (theme.js), is the defaults that entry stood for (CR-05). With no tab named, the first tab shows.
 function fromAddress() {
-  if (![...address.read().params.keys()].some(mine)) { flushQuery(true); return; }
+  if (![...address.read().params.keys()].some(mine) && !window.siteAddress.traversed) { flushQuery(true); return; }
   readQuery();
   for (const plate of $$('.x-plate')) if ($('.plate-views', plate)) setView(plate, views[plate.id]);
   refresh('settings');
@@ -1100,7 +1101,8 @@ on(window, 'hashchange', () => {
   else fromAddress();
   if (!address.read().anchor) $('[role="tab"]')?.click();
 });
-on(window, 'popstate', () => { fromAddress(); window.dispatchEvent(new Event('hashchange')); }); // so the tab follows the address on every Back, whatever the browser fired
+// No popstate handler: a Back or Forward that changes the fragment fires hashchange too, after it, and only then has theme.js told a link from a traversal. A
+// second, made-up hashchange used up that word, so the browser's own read as no traversal: the page drew three times and land() moved focus (CR-04).
 $$('.x-plot').forEach(wirePlot);
 // The kit's tabs reveal a panel by removing hidden: the plates in it draw then.
 new MutationObserver(wake).observe($('main'), { attributes: true, attributeFilter: ['hidden'], subtree: true });

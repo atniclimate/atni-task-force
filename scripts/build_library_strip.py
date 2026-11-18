@@ -115,11 +115,12 @@ def row(entry, types, up="../", with_summary=True, picked=False, year_only=False
 
 
 def start_shelf(entries):
-    """The featured entries: the grounding resolutions, then the rest by the first area each lists, newest first in each group."""
+    """The featured entries: the grounding resolutions, then the rest by the first area each lists that has a group, newest first in each group. Summit has
+    no group, so an entry of Summit alone goes across the task forces (library.js groupsHTML is the twin)."""
     featured = [e for e in entries if e["featured"]]
     by = {key: [] for key in GROUPS}
     for entry in newest(featured):
-        by["grounding" if entry["type"] == "resolution" else entry["areas"][0]].append(entry)
+        by["grounding" if entry["type"] == "resolution" else next((a for a in entry["areas"] if a in by), "cross-cutting")].append(entry)
     return [(key, GROUPS[key], items) for key, items in by.items() if items]
 
 

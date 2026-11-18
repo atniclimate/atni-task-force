@@ -71,11 +71,10 @@ const groups = {
     eq(libraryAsked(asked), 0, 'all without the data file');
     const held = JSON.parse(document.getElementById('library-cites').textContent);
     const cited = rows().find((r) => held.cites[r.dataset.i]);
-    if (cited) {
-      await press(window, cited.querySelector('.entry-meta'));
-      const links = [...preview().querySelectorAll('.preview-cites a')];
-      ok(links.some((a) => /\/sources\/#src-/.test(a.href)), 'a cited entry names its claims, each on its page\'s Sources page');
-    }
+    ok(cited, 'a first-view row carries a cite, so the next check runs'); // skipped silently before (r2-page-checks-3)
+    await press(window, cited.querySelector('.entry-meta'));
+    const links = [...preview().querySelectorAll('.preview-cites a')];
+    ok(links.some((a) => /\/sources\/#src-/.test(a.href)), 'a cited entry names its claims, each on its page\'s Sources page');
   },
 
   async aFailedLoadLeavesNoDeadFilters() {
@@ -182,6 +181,15 @@ const groups = {
     ok(empty.every((o) => o.disabled), 'a year the area leaves empty cannot be chosen (-03)');
     ok([...field('year').options].some((o) => o.value && !o.disabled), 'and the rest can');
     eq(document.querySelector('.comp-row[data-value="summit"]').getAttribute('aria-current'), 'true', 'a select lights its bar');
+    // A search example starts the preview at its first row, as every other filter does (r2-js-1).
+    area.value = '';
+    fire(window, area, 'input');
+    await wait(5);
+    await press(window, document.querySelectorAll('#library-results .entry')[2].querySelector('.entry-meta'));
+    ok(field('entry').value, 'a picked row rides in the form');
+    await press(window, document.querySelector('[data-try="water"]'));
+    const first = document.querySelector('#library-results .entry');
+    ok(field('q').value === 'water' && field('entry').value === '' && document.querySelector('#entry-preview-body [data-preview]').dataset.preview === first.dataset.entry, 'a search example clears the pick and shows its first row');
   },
 
   async aBurstLinkOpensExactlyItsRecords() { // -08

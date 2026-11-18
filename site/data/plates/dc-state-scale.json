@@ -5,10 +5,10 @@
  "page": "data-centers/index.html",
  "default": "hdc",
  "eyebrow": "Hyperscale sites against whole states, 11/2026",
- "title": "The study's hyperscale sites: about {c[st-001][value]:.0f} TWh a year, more than Oregon, Idaho, or Montana, about nine-tenths of Washington",
+ "title": "The study's sites: about {c[st-001][value]:.0f} TWh a year, more than Oregon, Idaho, or Montana, about nine-tenths of Washington",
  "subtitle": "A Nature Sustainability analysis of {c[st-002][value]:.0f} validated hyperscale sites, May 2024 to April 2025; not every data center and not the national total. State bars are 2025 retail sales reported to EIA, which already include each state's data centers; hollow marks are the study's modeled estimates, filled marks are reported sales, in TWh a year.",
  "text": [
-  "Oregon's hyperscale sites drew about {c[st-004][value]:.0f} TWh; Washington's about {c[st-005][value]:.1f} TWh, at roughly {c[st-008][value]:.0f} g CO2 per kWh on its grid against {c[st-007][value]:.0f} in Oregon and {c[tr-038][value]:.0f} across the study. Idaho and Montana have no site in this sample; both states have data centers."
+  "Oregon's hyperscale sites drew about {c[st-004][value]:.0f} TWh; Washington's about {c[st-005][value]:.1f} TWh, at roughly {c[st-008][value]:.0f} g CO2 per kWh on its grid against {c[st-007][value]:.0f} in Oregon and {c[tr-038][value]:.0f} across the study. Idaho and Montana have no hyperscale site in this sample, which does not count all data centers in either state."
  ],
  "boundary": "Modeled estimates and reported sales, not metered load; the study covers twelve months ending April 2025, the state figures calendar year 2025.",
  "inputs": {

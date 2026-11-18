@@ -1343,7 +1343,9 @@ async function countdown() {
   const rows = [...root.querySelectorAll('.countdown-row')];
   ok(rows[0].classList.contains('is-passed') && rows[0].querySelector('.countdown-days').textContent === 'date passed', 'a deadline passed since the build keeps its row and says so');
   eq(rows[1].querySelector('.countdown-days').textContent, '59 days', 'the days count from today');
-  eq(root.querySelector('[data-lane="passed"] .countdown-n').textContent, '1', 'and the Passed lane counts only the names it lists, so no deadline is counted twice');
+  // The Passed lane counts the name it lists and the row passed since, which keeps its row and is named there once, so lane and row agree (R3 review).
+  eq(root.querySelector('[data-lane="passed"] .countdown-n').textContent, '2', 'and the Passed lane counts it');
+  eq(keys(root, '[data-lane="passed"] li'), 'bpa-tribal-iq', 'listing no name twice');
   eq(root.querySelector('.countdown-note').textContent, 'Days counted from today, 12/20/2026.', 'the last line names today');
   eq(p.plot.getAttribute('role'), 'listbox', 'the plot is the list box');
   eq([...p.plot.querySelectorAll('[role="option"]')].map((n) => n.dataset.row).join(), 'doe-heehr-tribal,doe-40101d,doe-tefp,bpa-tribal-iq,doe-wap,hhs-liheap', 'every program an option, in the order drawn');
@@ -1514,7 +1516,7 @@ async function tokens() {
   ok(small.length > 0 && small.every((line) => /plate-sources|plate-receipt|plate-quote|plate-table/.test(line)), `0.8125rem survives in Sources and Table alone: ${small.join(' | ')}`);
   ok(!/text-transform: uppercase/.test(css), 'no tracked capitals');
   // High Contrast: the rules moved here from the Explorer's sheet, since every page has tabs and options.
-  ok(/@media \(forced-colors: active\) \{[^}]*\.section-strip :is\(a, \[role="tab"\]\)::after[^}]*border-bottom-color: Canvas; \}[^}]*border-bottom-color: Highlight; \}\s*\.segmented input:checked \+ span, \.plate-views button\[aria-pressed="true"\] \{ border: 2px solid Highlight; \}/.test(css), 'High Contrast tells the selected tab, stop, and view apart, site-wide');
+  ok(/@media \(forced-colors: active\) \{[^}]*\.section-strip :is\(a, \[role="tab"\]\)::after[^}]*border-bottom-color: Canvas; \}[^}]*border-bottom-color: Highlight; \}\s*\.segmented input:checked \+ span, \.sources-show input:checked \+ span, \.plate-views button\[aria-pressed="true"\] \{ border: 2px solid Highlight; \}\s*\.slider-presets button\[aria-pressed="true"\] \{ outline: 2px solid Highlight;/.test(css), 'High Contrast tells the selected tab, stop, view, Show choice, and pressed preset apart, site-wide (r2-css-1, r2-css-2)');
   ok(!read('site/assets/css/explorer.css').includes('border-bottom-color: Canvas'), 'and once');
 }
 
@@ -1648,6 +1650,12 @@ async function address() {
   range.value = '20';
   fire(window, range, 'input');
   eq(window.location.href, before, 'nothing the reader sets reaches the address');
+  // Back or Forward on such a page finds nothing of the reader's in the address, so every plate keeps what the reader set (CR-01).
+  pick(window, p.radio('boundary', 'dc'));
+  const kept = window.plate.read('session-energy');
+  fire(window, window, 'hashchange');
+  const after = window.plate.read('session-energy');
+  ok(after.selected === kept.selected && after.selected !== 'video' && after.state.boundary === 'dc' && after.state.use === 20, `Back keeps the reader's stop, row, and figure: ${JSON.stringify(after.state)} ${after.selected}`);
   ok(p.reading.textContent.startsWith(p.root.querySelector('.plate-title').textContent), 'the title follows the settings, since this page is the document');
   ok(!document.querySelector('.plate-link-note'), 'and no sentence warns of a link there is not');
   const r = window.plate.read('session-energy');
@@ -1724,6 +1732,17 @@ async function history() {
   eq(tabs[0].getAttribute('aria-selected'), 'true', 'Back returns to the tab before');
   ok(p.radio('boundary', 'full').checked, 'with the plate as that entry left it');
   eq(window.siteAddress.followed, false, 'Back is not a link the reader followed');
+  // A link within the page that names a plate's row reaches that plate though it has started; a plate it does not name keeps its own (CR-03).
+  key(window, p.plot, 'Home');
+  await settle();
+  const other = [...document.querySelectorAll('#sessions [data-plate]')].map((n) => n.dataset.plate).find((id) => id !== 'session-energy');
+  const otherBefore = other && window.plate.read(other).selected;
+  const link = Object.assign(document.createElement('a'), { href: '#sessions&session-energy=video' });
+  document.body.append(link);
+  link.click();
+  await wait(20);
+  eq(window.plate.read('session-energy').selected, 'video', 'the row the link names is selected');
+  ok(!other || window.plate.read(other).selected === otherBefore, `and ${other || 'no other plate'} keeps its row`);
   eq(errors.join(), '', 'no script errors');
 }
 
@@ -1989,8 +2008,16 @@ async function tip() {
   ok(tipOf().textContent.includes(data.claims['jb-070'].title) && tipOf().textContent.includes(`Partly verified. Limit: ${data.claims['jb-070'].limit}`) && tipOf().textContent.includes('Claim jb-070.'), 'with the source, its status and limit, and the claim');
   ok(links()[0].href === data.claims['jb-070'].url && links().at(-1).href === mark.href && links().at(-1).textContent === 'Full record on the Sources page', 'the source is a link, and so is the way on to the full record');
   eq(document.activeElement, tipOf(), 'focus moves in');
+  // An inner scroller's scroll does not bubble, and the open tip follows its mark there too; a closed tip reads no layout on a scroll (CR-08).
+  let markTop = 200;
+  mark.getBoundingClientRect = () => ({ top: markTop, bottom: markTop + 16, left: 40 });
+  fire(window, document.querySelector('.brief-lead'), 'scroll', { bubbles: false });
+  eq(tipOf().style.top, '224px', 'the open tip follows its mark through an inner scroll');
   tipOf().hidePopover();
   ok(!('open' in tipOf().dataset) && mark.getAttribute('aria-expanded') === 'false' && document.activeElement === mark, 'closing gives focus back to the mark');
+  markTop = 400;
+  fire(window, window, 'scroll', { bubbles: false });
+  eq(tipOf().style.top, '224px', 'and once closed, a scroll leaves it be');
   const term = document.querySelector('.brief a.term[data-term="amw"]');
   fire(window, term, 'click');
   ok(stayed && tipOf().textContent.startsWith('aMW') && tipOf().textContent.includes(data.terms.amw.words) && tipOf().getAttribute('aria-label') === 'Definition: aMW', 'a term opens its definition');

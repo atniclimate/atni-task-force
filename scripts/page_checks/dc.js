@@ -69,6 +69,23 @@ async function tabs() {
   eq(links[7].getAttribute('aria-selected'), 'true', 'End');
   key(window, links[7], 'Home');
   eq(links[0].getAttribute('aria-selected'), 'true', 'Home');
+  // From the strip at the window's foot (R3 4), a tab brings its panel up under the strip at once, focus kept on the tab; from mid-window nothing moves (visual-1).
+  const rect = window.Element.prototype.getBoundingClientRect;
+  let stripAt = 836;
+  window.Element.prototype.getBoundingClientRect = function () { return this === strip ? { top: stripAt, bottom: stripAt + 64 } : panels.includes(this) ? { top: stripAt + 64 } : rect.call(this); };
+  Object.defineProperty(strip, 'offsetHeight', { value: 64 });
+  let went = null;
+  window.scrollTo = (o) => { went = o; };
+  links[2].focus();
+  fire(window, links[2], 'click');
+  ok(!panels[2].hidden && went?.top === window.scrollY + stripAt && went.behavior === 'instant', `the panel comes up under the strip: ${JSON.stringify(went)}`);
+  eq(document.activeElement, links[2], 'and focus stays on its tab');
+  went = null;
+  stripAt = 300;
+  fire(window, links[3], 'click');
+  eq(went, null, 'a strip in mid-window scrolls nothing');
+  window.Element.prototype.getBoundingClientRect = rect;
+  fire(window, links[0], 'click');
   ok(strip.querySelector('a.strip-out[data-not-tab][href="sources/"]') && strip.querySelector('button.paper[data-sheet-open][data-js]'), 'the strip ends in Sources and the meeting sheet');
   eq(document.querySelectorAll('[data-plate]').length, 17, 'seventeen plates');
   for (const id of ['dc-tradeoff-matrix', 'dc-cooling', 'dc-project', 'dc-jobs-per-mw']) ok(document.querySelector(`#${id} > .plate-bar .plate-views [data-view="table"]`), `${id}: the Table is one press away, over the plot`);
@@ -468,7 +485,10 @@ async function tradeoffs() {
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'hyperscale')), (t) => holds(t, ['0.8 Mt']), 'hyperscale grid');
   ok(c.value.textContent === '0.8' && c.unit.textContent.startsWith('Mt'), 'and the CO2 a grid moves');
   moves(window, c, () => setRadio(window, c.radio('c_grid', 'lbnl')), (t) => holds(t, ['0.86 Mt', 'LBNL']), 'LBNL grid');
-  moves(window, c, () => setRadio(window, c.radio('c_grid', 'own')), (t) => holds(t, ['0.94 Mt']), "reader's grid");
+  // The reader's own grid opens at 350 g, the step nearest the national 348 (tr-066): 2.5404 TWh x 350 / 1000 = 0.889 Mt (dc-1).
+  moves(window, c, () => setRadio(window, c.radio('c_grid', 'own')), (t) => holds(t, ['0.89 Mt']), "reader's grid");
+  fire(window, row(c.root, 'energy').querySelector('.ladder-label'), 'click');
+  eq(`${c.value.textContent} ${c.unit.textContent}`, row(c.root, 'energy').querySelector('.ladder-value').textContent, 'a row picked after a setting takes the readout from the CO2 the grid moved (CR-06)');
   moves(window, c, () => setValue(window, c.slider('c_own'), 100), (t) => holds(t, ['0.25 Mt']), "reader's number");
   setRadio(window, c.radio('c_cool', 'ms'));
   const plantSquares = () => row(c.root, 'plant').querySelector('.dc-sq path').getAttribute('d').match(/M/g).length;
@@ -620,6 +640,8 @@ async function project() {
   const count = () => f.plot.querySelector('.dc-count');
   const n = (cls) => (count().querySelector(cls).getAttribute('d').match(/M/g) || []).length;
   ok(!first.document.getElementById('face-project').hidden && f.plot.classList.contains('dc-is-count'), 'the face opens on Count');
+  // Count draws squares over rows that stay in the accessibility tree, so the listbox's selected option is heard (axe plot-selection-heard).
+  ok(f.plot.getAttribute('aria-activedescendant') === 'dc-project-row-amw' && !/\.dc-is-count > \.instrument \{ display: none/.test(read('site/assets/css/dc.css')), 'Count hides its rows from the eye only');
   eq([n('.dc-ctx'), n('.m-count.is-hollow'), n('.dc-lit')].join(), '220,25,1', 'the region, the Council input, and the project');
   eq([...count().querySelectorAll('.dc-count-label')].map((l) => l.textContent).join('|'), "The region's load today: 22,000 aMW|The Council's 2030 input, data centers and chip fabs: 2,475.1 aMW|This project: 100 aMW", 'each field named with its figure');
   ok(['dem-058', 'dem-073'].every((id) => first.document.querySelector(`#dc-project .plate-table a[data-claim="${id}"]`)), 'and each figure has its claim in the Table');
@@ -766,9 +788,13 @@ async function atlas() {
   setRadio(window, dc);
   ok([...fig.querySelectorAll('.dc-m')].every((m) => m.classList.contains('is-dim') === (m.dataset.kind !== 'tx')), 'a kind dims the others');
   ok(/^\d+ of the 11 named proposals here (is|are) this kind\.$/.test(card.querySelector('.caption').textContent), `and the card says how many: ${card.querySelector('.caption').textContent}`);
-  ok(fig.querySelector('.dc-off').textContent.startsWith('Off this sheet to the south: 8 in Nevada and northern California. Off this sheet to the east: 4 in eastern Montana.'), 'what lies off the sheet, as words');
+  ok(fig.querySelector('.dc-off').textContent.startsWith('Off this sheet to the south: 7 in Nevada and northern California. Off this sheet to the east: 2 in eastern Montana.'), 'what lies off the sheet, in proposals, as words');
   ok(holds(fig.querySelector('.plate-claim').textContent, ['83', 'A count of a curated public list on its date']), 'the title is the count, with its limit');
   ok(fig.querySelector('.plate-title a.cr[data-claim="ld-001"]') && receipt('src-ld-001'), 'and its claim');
+  // The title counts what the map places and what it cannot (r2-scripts-1): every one of its figures a claim mark, and the two parts add to the whole.
+  const heads = [...fig.querySelectorAll('.plate-title a.cr')].map((a) => +a.textContent);
+  const placed = records.filter((li) => li.dataset.fips.trim()).length;
+  ok(heads.length === 3 && heads[1] === placed && heads[0] === heads[1] + heads[2] && heads[0] === document.querySelectorAll('#land-records li[data-fips]').length, `the title: ${fig.querySelector('.plate-title').textContent}`);
   ok(holds(fig.querySelector('.plate-collar').textContent, ['NOAA National Centers for Environmental Information, ETOPO 2022', 'Natural Earth', 'U.S. Census Bureau']) && /NOAA[\s\S]*Natural Earth/.test(receipt('dc-atlas') || ''), 'its data credited in the collar and on the Sources page');
   // Every record, by state: a count in each summary (data-centers-12), and its MW figures marked.
   for (const d of document.querySelectorAll('#land-records details')) ok(/^\d+ named proposals?; (\d+|none) states? a size in MW as filed\.$/.test(d.querySelector('summary span').textContent), `${d.id}: ${d.querySelector('summary span').textContent}`);

@@ -51,7 +51,7 @@
     {"value": "own", "label": "Reader's own", "is": "c_own"}
    ]
   },
-  {"type": "range", "name": "c_own", "label": "Reader's own grid, g CO2 per kWh", "min": 0, "max": 1000, "step": 10, "default": 370, "more": true}
+  {"type": "range", "name": "c_own", "label": "Reader's own grid, g CO2 per kWh", "min": 0, "max": 1000, "step": 10, "default": 350, "more": true}
  ],
  "more": "Load factor, PUE, and the reader's own grid",
  "fields": {

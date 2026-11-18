@@ -91,6 +91,15 @@ def mint(d):
                        "value": len(ms), "low": None, "high": None, "unit": "projects", "year": 2026, "boundary": boundary, "source": src, "quote": '"built": "11/05/2026"',
                        "derived": f"Count of records in projects.json (built 11/05/2026) on the land row “{labels[rid]}”, {KIND_WORDS[stop]}: {len(ms)} ({', '.join(p['id'] for p in ms)}).",
                        "status": "partly", "limit": LD_LIMIT})
+    # The atlas headline's counts (build_project_map.py): the records it places at a point in each county they name, and those that name no county, which it
+    # cannot place. Numbered after the land rows, so their ids stay as they were.
+    for rid, words, ms in (("placed", "that name a county", [p for p in projects if p["counties"]]), ("unplaced", "that name no county", [p for p in projects if not p["counties"]])):
+        k += 1
+        ld[(rid, "all")] = cid = f"ld-{k:03d}"
+        claims.append({"id": cid, "entity": f"Named proposals {words}", "metric": "named projects (all kinds)", "value": len(ms), "low": None, "high": None, "unit": "projects",
+                       "year": 2026, "boundary": f"Counted: named records in projects.json {words} on 11/05/2026, of every kind. Not counted: anything the filings read do not name.",
+                       "source": {**src, "date_words": d["built"]}, "quote": '"built": "11/05/2026"',  # the words the dataset prints for its day (N10)
+                       "derived": f"Count of records in projects.json (built 11/05/2026) {words}: {len(ms)} ({', '.join(p['id'] for p in ms)}).", "status": "partly", "limit": LD_LIMIT})
     return claims, ld, members
 
 

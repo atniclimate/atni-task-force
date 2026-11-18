@@ -107,6 +107,16 @@ def test_start_here_is_the_first_view_and_reads_without_scripts():
     assert not any(re.search(r"\bSEC\b", r.text()) for r in rows + static), "company filings have their own shelf (-25)"
 
 
+def test_a_featured_summit_entry_has_a_shelf_group():
+    """Summit has no group of its own: a featured entry of Summit alone goes across the task forces, one that lists another area goes there (r2-scripts-3).
+    library.js groupsHTML is the twin, and reads the same rule."""
+    summit = next(e for e in ENTRIES if e["areas"][0] == "summit" and e["type"] != "resolution")
+    alone, also = {**summit, "featured": True, "areas": ["summit"]}, {**summit, "id": f"{summit['id']}-x", "featured": True, "areas": ["summit", "ai"]}
+    placed = {e["id"]: key for key, _label, items in strip.start_shelf([alone, also]) for e in items}
+    assert placed == {alone["id"]: "cross-cutting", also["id"]: "ai"}
+    assert "e.areas.find((a) => Object.hasOwn(by, a)) || 'cross-cutting'" in SCRIPT
+
+
 def test_the_preview_shows_the_first_entry_and_where_the_site_cites_it():
     doc = parse(source("library"))
     first = doc.one("div", id="library-results").one("li", "entry")

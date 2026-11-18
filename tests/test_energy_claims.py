@@ -86,7 +86,8 @@ def test_a_deadlines_plate_keeps_each_date_with_its_receipt(plate_id):
     nothing the clock can change, so the built page and the live one agree (energy-14)."""
     defn = plate(plate_id)
     programs = {p["id"]: p for p in FUNDING["programs"]}
-    assert defn["plot"] == {"type": "countdown", "from": max(p["status_checked"]["date"] for p in FUNDING["programs"])}
+    read_on = [(p["deadline"].get("checked") or p["status_checked"])["date"] for p in FUNDING["programs"] if (p.get("deadline") or {}).get("date") and p["status"] != "closed"]
+    assert defn["plot"] == {"type": "countdown", "from": max(read_on)}, "counted from the day the dated rows were read (r2-scripts-2)"
     assert not any(r.get("group") for r in defn["rows"]), "a countdown has no summary rows; their claims are in the title"
     assert "{c[ef-005][text]}" in defn["title"] and "{c[ef-006][text]}" in defn["title"] and "first" not in defn["title"] and "next" not in defn["title"]
     dated = [r for r in defn["rows"] if CLAIMS[r["claim"]].get("date")]
@@ -103,6 +104,16 @@ def test_a_deadlines_plate_keeps_each_date_with_its_receipt(plate_id):
         assert CLAIMS[r["claim"]]["status"] == "partly" and CLAIMS[r["claim"]]["limit"]
     upcoming = [r for r in dated if CLAIMS[r["claim"]]["date"] > defn["plot"]["from"]]
     assert defn["default"] == (upcoming or dated)[0]["id"], "it starts on the next deadline after the check"
+
+
+def test_a_later_check_of_an_undated_program_moves_no_deadline():
+    """Rechecking a program with no date on a later day leaves the countdown's day and the subtitle's credit with the dated rows (r2-scripts-2)."""
+    funding = json.loads(json.dumps(FUNDING))
+    undated = next(p for p in funding["programs"] if not p.get("deadline") and p["status"] != "closed")
+    undated["status_checked"]["date"] = "2026-12-01"
+    built = ec.deadlines_plate("energy-deadlines", "energy/index.html", funding, SHIPPED["funding"], "{label}: {tag}.")
+    start = plate("energy-deadlines")["plot"]["from"]
+    assert built["plot"]["from"] == start and built["subtitle"].startswith(f"Dated programs rechecked {ec.us(start)};")
 
 
 def test_a_checked_date_moves_only_with_a_receipt():

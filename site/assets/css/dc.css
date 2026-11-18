@@ -78,7 +78,9 @@ main p.dc-why-lead { max-width: var(--measure-wide); margin: 8px 0 4px; font-fam
 /* The proposal: Count first, three fields of squares a hundred aMW each, in rows of 25; Rulers puts its rows under one needle and the region's squares below. */
 .dc-count { display: none; align-content: start; padding-top: 4px; }
 .dc-is-count > .dc-count { display: grid; }
-.dc-is-count > .instrument { display: none; }
+/* Count draws the squares; its rows leave the screen, not the accessibility tree, since they are the plot's options and the selection must still be heard
+   (axe plot-selection-heard on #dc-project-row-amw). The .sr-only box. */
+.dc-is-count > .instrument { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .dc-count-label { max-width: none; margin: 0; padding: 6px 0 4px; font-family: var(--display); font-weight: 500; font-size: 0.9375rem; line-height: 1.3; color: var(--atni-text-heading); }
 .dc-count-field svg { display: block; }
 #dc-project [data-param="p_lf"] .slider-stops { display: none; } /* its three presets and the typed twin say its range; the face keeps one row less */

@@ -114,6 +114,13 @@ async function plates() {
   eq(document.querySelector('#mk-moves .plate-subtitle, #mk-moves .caption').textContent.includes('The record does not say what caused any move.'), true, 'the moves say no cause');
   // The tracker prints derived changes, never closing prices: each row's claim holds its arithmetic.
   for (const r of plateFile('mk-seven').rows) ok(/ \/ .* = /.test(CLAIMS[r.claim].derived || ''), `${r.claim}: the change carries its arithmetic`);
+  // and the arithmetic ends on the figure the plates print, to its last decimal.
+  for (const r of [...plateFile('mk-seven').rows, ...plateFile('mk-moves').rows]) {
+    for (const id of [r.claim, ...Object.values(r.claims || {})].filter((c) => c && CLAIMS[c].derived)) ok(CLAIMS[id].derived.endsWith(` of ${Math.abs(CLAIMS[id].value)} percent`), `${id}: its arithmetic ends at ${CLAIMS[id].value}`);
+  }
+  // A side figure reads its unit in words, and its limit is a sentence of its own.
+  for (const n of document.querySelectorAll('#mk-moves .plate-also li, #mk-moves .is-also')) ok(/more than 1 trillion dollars\. Limit: /.test(n.textContent) && !/USD/.test(n.textContent), `mk-moves' side figure: ${n.textContent.slice(0, 90)}`);
+  eq(document.querySelectorAll('#mk-moves .plate-also li, #mk-moves .is-also').length, 2, 'in the Table and in About this figure');
   eq([...document.querySelectorAll('#mk-seven .plate-plot .ladder-row')].map((n) => n.dataset.row).join(','), 'apple,amazon,microsoft,meta,alphabet,tesla,nvidia', 'biggest first');
   ok(!/\d{3}\.\d{2} (USD|dollars)/.test(document.getElementById('mk-seven').textContent), 'no share price on the tracker');
   ok(document.querySelector('#mk-seven a[href="../#companies"]'), 'the tracker links the Companies tab');

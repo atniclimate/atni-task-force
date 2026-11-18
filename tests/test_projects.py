@@ -65,6 +65,19 @@ def test_atlas_marks_each_county_record_and_draws_no_boundary():
     assert set(labels) == {t for t, *_ in bpm.LABELS} | {t for t, *_ in bpm.CITIES}
 
 
+def test_atlas_title_counts_what_it_places():
+    """The headline counts the records the map places at a point in a county they name and those that name none, each figure a claim mark that adds to the
+    whole (r2-scripts-1); the off-sheet notes count proposals, not county squares."""
+    _claims, ld, _m = pc.mint(DATA)
+    atlas = re.search(r"<!-- map:projects -->(.*?)<!-- /map:projects -->", bpm.PAGE.read_text(encoding="utf-8"), re.S)[1]
+    title = re.search(r'id="dc-atlas-title">(.*?)</h3>', atlas, re.S)[1]
+    marks = re.findall(r'data-claim="(ld-\d+)"[^>]*>(\d+)</a>', title)
+    placed = sum(1 for p in DATA["projects"] if p["counties"])
+    assert marks == [(ld[("total", "all")], str(len(DATA["projects"]))), (ld[("placed", "all")], str(placed)), (ld[("unplaced", "all")], str(len(DATA["projects"]) - placed))]
+    assert all(SHIPPED[cid]["value"] == int(n) for cid, n in marks)
+    assert "One square for each county a proposal names" in atlas
+
+
 def test_relief_is_current_and_in_budget():
     """The four relief images match their record (bake_relief.py --check needs no raw data), each is at most 120 KB, and the record credits its sources."""
     assert br.stale() == []

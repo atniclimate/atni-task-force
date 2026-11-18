@@ -1999,7 +1999,8 @@ td.is-on .matrix-figure.is-hollow .matrix-bar { background: none; border-color: 
 @media (forced-colors: active) {
   .toc :is(a, [role="tab"]), .section-strip :is(a, [role="tab"])::after, .site-nav a { border-bottom-color: Canvas; }
   .toc a[aria-current], .section-strip :is(a[aria-current], [aria-selected="true"])::after, .site-nav a[aria-current] { border-bottom-color: Highlight; }
-  .segmented input:checked + span, .plate-views button[aria-pressed="true"] { border: 2px solid Highlight; }
+  .segmented input:checked + span, .sources-show input:checked + span, .plate-views button[aria-pressed="true"] { border: 2px solid Highlight; }
+  .slider-presets button[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -2px; } /* its fill and inset ring are dropped, and it has no border to thicken */
   .ladder-mark, .ladder-range, .ladder-bar, .ladder-shared, .ladder-needle, .needle, .plate-seg, .plate-square, .plate-key, .strip-mark, .start-mark, .plate-driver-bar, .slider input[type="range"], .lockup, .st { forced-color-adjust: none; }
   .lockup-on-dark { background: #010B13; } /* a logo drawn for one ground keeps that ground on any other */
   .lockup-on-light { background: #FFFFFF; }

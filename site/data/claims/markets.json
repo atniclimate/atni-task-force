@@ -637,7 +637,7 @@
     "date_words": "Nov 12, 2026"
    },
    "quote": "Nov 12, 2026 | 151.01 | 167.14 | 148.80 | 166.19 | 166.19 | 747,707,600",
-   "derived": "166.19 / 173.73 = 0.9566, a fall of 4.3 percent",
+   "derived": "166.19 / 173.73 (the 11/11/2026 close) = 0.9566, a fall of 4.34 percent",
    "status": "partly",
    "limit": "Computed here from two closing prices on a Yahoo Finance history page; a price change, with dividends not counted."
   },

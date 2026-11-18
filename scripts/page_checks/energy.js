@@ -156,6 +156,8 @@ async function overviewPage() {
   ok(row(money, 'irs-elective-pay').classList.contains('is-on'), 'End reaches the last program with no date');
   key(window, list, 'Home');
   ok(reading(money).startsWith('BPA Tribal efficiency grants') && row(money, 'bpa-tribal-iq').classList.contains('is-passed'), 'Home the first, passed by the fixed day');
+  const lane = money.querySelector('[data-lane="passed"] .countdown-n');
+  ok(lane.dataset.built === '0' && lane.textContent === '1' && money.querySelectorAll('.countdown-row.is-passed').length === 1, `and the Passed lane, built at 0, counts it, so the lane and the row agree: ${lane.textContent}`);
   ok(money.querySelector('.countdown').classList.contains('has-today'), 'today stands on the ruler');
   ok(document.querySelector('.agenda-a[data-answer="energy-deadlines"]').textContent.includes(`${claims['ef-002'].value} of ${claims['ef-001'].value} programs`), 'the money answer counts from its claims');
 }
@@ -292,11 +294,11 @@ async function potentialPage() {
 async function policyWatch() {
   for (const [rel, force] of [['site/ai/index.html', 'ai'], ['site/data-centers/index.html', 'data-centers'], ['site/energy/sources/index.html', 'energy-feasibility']]) {
     const text = read(rel);
-    if (!text.includes('<!-- policy:watch -->')) continue;
+    ok(text.includes('<!-- policy:watch -->'), `${rel}: holds the policy:watch region`); // a lost marker or an empty region fails, not passes (r2-page-checks-1)
     const { document } = new JSDOM(text).window;
     const expected = JSON.parse(read('site/data/policy-watch.json')).task_forces[force];
     const built = document.querySelectorAll('[data-policy-searches] .watch-item').length;
-    if (built) eq(built, expected.searches.length, `${rel}: every saved search is built in`);
+    eq(built, expected.searches.length, `${rel}: every saved search is built in`);
   }
   const { document } = new JSDOM('<details data-prefill-note><summary>x</summary></details>', { runScripts: 'outside-only' }).window;
   document.defaultView.eval(read('site/assets/js/policy-watch.js'));

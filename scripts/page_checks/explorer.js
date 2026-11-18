@@ -1034,26 +1034,48 @@ async function behavior() {
   }
   // Back within the page: an address that names a choice holds the truth for them all, typed numbers stay as typed, and no tab named means the first tab.
   setField(deep.window, deep.document.querySelector('input[data-field="chat"]'), 33);
+  // A Back that changes the fragment ends in hashchange, as every browser fires it; the page answers that event alone (CR-04).
   deep.window.history.replaceState(null, '', '#architectures&device=tv&grid_dc=__proto__&m=g&comparison=D');
-  fire(deep.window, deep.window, 'popstate');
+  fire(deep.window, deep.window, 'hashchange');
   eq(deep.window.explorer.state.settings.device, 'tv', 'Back re-reads the address');
   eq(`${deep.window.explorer.state.m} ${deep.window.explorer.state.opts.comparison}`, 'g D', 'the measure and the comparison with it');
   eq(deep.window.explorer.state.settings.grid_dc, deep.window.explorer.data.sel.grid_dc.def, 'a selector it no longer names returns to its default');
   ok(deep.document.querySelector('#settings input[data-setting="device"][value="tv"]').checked && deep.document.querySelector('#scenario input[value="g"]').checked, 'and the controls follow');
   eq(deep.window.explorer.state.fields.chat, 33, 'a typed number is not in the address, so Back leaves it alone');
   deep.window.history.replaceState(null, '', '#levers&device=tv');
-  fire(deep.window, deep.window, 'popstate');
+  fire(deep.window, deep.window, 'hashchange');
   ok(!deep.document.getElementById('savings').hidden, 'Back moves the tab with the address');
   eq(deep.window.explorer.state.m, 'wh', 'and a measure it no longer names returns to energy');
-  // A link within the page (a claim, a plate) takes the whole fragment, and Chrome and Firefox fire popstate for it: the choices stay, and the address takes them back.
+  // A link within the page (a claim, a plate) takes the whole fragment: the choices stay, and the address takes them back.
   deep.window.history.replaceState(null, '', '#crossovers');
-  fire(deep.window, deep.window, 'popstate');
+  fire(deep.window, deep.window, 'hashchange');
   ok(!deep.document.getElementById('where').hidden && deep.window.explorer.state.settings.device === 'tv', 'a jump within the page opens its tab and keeps the settings');
   eq(deep.window.location.hash, '#crossovers&device=tv', 'and the address takes them back, after the anchor');
   deep.window.location.hash = '';
   await wait(20);
   ok(!deep.document.getElementById('use').hidden && deep.document.getElementById('where').hidden, 'no tab named shows the first tab');
   eq(deep.window.explorer.state.settings.device, 'tv', 'with the settings kept');
+  // Where the Navigation API names a traversal (theme.js), a Back is one, popstate then hashchange as the browser fires them: focus stays where the reader left it
+  // (CR-04), and an entry that names no choice is the defaults it stood for (CR-05).
+  const withNav = html.replace('<script src="../assets/js/theme.js"', '<script>window.navigation = new EventTarget();</script><script src="../assets/js/theme.js"');
+  ok(withNav !== html, 'the page takes a Navigation API stand-in');
+  const nav = await load('#where&device=tv', withNav);
+  const traverse = (hash) => {
+    const oldURL = nav.window.location.href;
+    nav.window.history.replaceState(null, '', hash);
+    nav.window.navigation.dispatchEvent(Object.assign(new nav.window.Event('navigate'), { navigationType: 'traverse' }));
+    fire(nav.window, nav.window, 'popstate');
+    nav.window.dispatchEvent(new nav.window.HashChangeEvent('hashchange', { oldURL, newURL: nav.window.location.href }));
+  };
+  const held = nav.document.querySelector('[role="tab"][aria-selected="true"]');
+  held.focus();
+  traverse('#where&m=g');
+  ok(nav.window.siteAddress.traversed && nav.window.explorer.state.m === 'g', 'Back is heard as a traversal, and reads its entry');
+  eq(nav.document.activeElement, held, 'so focus stays on the tab, and nothing lands');
+  traverse('#use');
+  ok(nav.window.explorer.state.m === 'wh' && nav.window.explorer.state.settings.device === nav.window.explorer.data.sel.device.def, 'Back to an entry that named no choice returns to the defaults');
+  eq(nav.window.location.hash, '#use', 'and leaves that entry as it was');
+  eq(nav.errors.join(), '', 'no script errors on Back');
   // A note's link opens the waffle it describes (explorer-09).
   const about = await load('#about-lbnl_2030');
   eq(about.window.explorer.state.opts.waffle, 'lbnl_2030', 'a link to a figure\'s note chooses its waffle first');

@@ -5,7 +5,7 @@
  "id": "mk-deals",
  "default": "nvda-loi--status",
  "eyebrow": "Circular Financing",
- "title": "NVIDIA's {c[mk-035][value]:.0f} billion dollar letter of intent for OpenAI was not a definitive agreement; its filing shows guarantees capped at {c[fin-063][value]:.0f} billion dollars",
+ "title": "NVIDIA's {c[mk-035][value]:.0f} billion dollar letter of intent for OpenAI was not definitive; its filing caps guarantees at {c[fin-063][value]:.0f} billion",
  "subtitle": "These are ceilings, commitments, and guarantees, not payments made. They measure different obligations with different terms, so nothing in this table is added up.",
  "plot": {
   "type": "matrix",
