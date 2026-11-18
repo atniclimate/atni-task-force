@@ -1,0 +1,51 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/markets/index.html",
+ "id": "mk-deals",
+ "default": "nvda-loi--status",
+ "eyebrow": "Circular Financing",
+ "title": "NVIDIA's {c[mk-035][value]:.0f} billion dollar letter of intent for OpenAI was not a definitive agreement; its filing shows guarantees capped at {c[fin-063][value]:.0f} billion dollars",
+ "subtitle": "These are ceilings, commitments, and guarantees, not payments made. They measure different obligations with different terms, so nothing in this table is added up.",
+ "plot": {
+  "type": "matrix",
+  "columns": [
+   {"id": "who", "label": "Who, and to whom"},
+   {"id": "flows", "label": "What flows"},
+   {"id": "amount", "label": "Amount, as stated"},
+   {"id": "status", "label": "Status in the record"}
+  ],
+  "units": {"USD billion": "billion dollars"}
+ },
+ "reading": "{label}, {column}: {display}. {evidence}",
+ "details": [
+  "A ceiling may never be drawn, and a guarantee pays only on certain tenant defaults, so each amount is read on its own row."
+ ],
+ "cites": ["mk-046"],
+ "rows": [
+  {"id": "nvda-loi", "label": "NVIDIA's letter of intent", "cells": {
+   "who": "NVIDIA to OpenAI", "flows": "Equity, as NVIDIA systems deploy",
+   "amount": [{"claim": "mk-035", "say": "up to {display}, a ceiling"}], "status": "Letter of intent"}},
+  {"id": "nvda-guarantee", "label": "NVIDIA's lease guarantees", "cells": {
+   "who": "NVIDIA for OpenAI affiliate", "flows": "Credit support on Ohio campus leases",
+   "amount": [{"claim": "fin-063", "say": "capped at {display}"}], "status": "Definitive"}},
+  {"id": "amd-openai", "label": "AMD's warrant", "cells": {
+   "who": "AMD to OpenAI", "flows": "Warrant for shares, tied to GPU purchases",
+   "amount": [{"claim": "mk-036", "say": "up to {display}"}], "status": "Definitive"}},
+  {"id": "msft-openai", "label": "OpenAI's Azure contract", "cells": {
+   "who": "Microsoft and OpenAI", "flows": "Equity from Microsoft; Azure compute from Microsoft to OpenAI",
+   "amount": [{"claim": "fin-080", "say": "{display} funded by Microsoft"}, {"claim": "mk-038", "say": "{display} more of Azure"}], "status": "Definitive"}},
+  {"id": "anthropic-azure", "label": "Anthropic's Azure commitment", "cells": {
+   "who": "Microsoft, NVIDIA, and Anthropic", "flows": "Equity from NVIDIA and Microsoft; Azure compute to Anthropic",
+   "amount": [{"claim": "mk-040", "say": "NVIDIA up to {display}"}, {"claim": "mk-041", "say": "Microsoft up to {display}"}, {"claim": "mk-039", "say": "{display} of Azure"}], "status": "Contracted"}},
+  {"id": "amzn-anthropic", "label": "Anthropic's AWS commitment", "cells": {
+   "who": "Amazon and Anthropic", "flows": "Equity from Amazon; AWS compute to Anthropic",
+   "amount": [{"claim": "mk-043", "say": "{display} now"}, {"claim": "mk-044", "say": "up to {display} later"}, {"claim": "mk-042", "say": "more than {display} over ten years"}], "status": "Contracted"}},
+  {"id": "coreweave", "label": "NVIDIA's CoreWeave backstop", "cells": {
+   "who": "NVIDIA and CoreWeave", "flows": "Backstop on unsold cloud capacity",
+   "amount": [{"claim": "mk-037", "say": "{display}, the first order"}], "status": "Definitive"}},
+  {"id": "valor-xai", "label": "Valor's GPU lease to xAI", "cells": {
+   "who": "Apollo, Valor, xAI, and NVIDIA", "flows": "Debt financing of GPU lease to xAI subsidiary",
+   "amount": [{"claim": "mk-045", "say": "{display} of debt"}], "status": "Announced"}}
+ ]
+}

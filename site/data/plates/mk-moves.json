@@ -1,0 +1,38 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/markets/index.html",
+ "id": "mk-moves",
+ "default": "nvda",
+ "by": "move_day",
+ "eyebrow": "Volatility",
+ "title": "On 11/05/2026 NVIDIA closed {c[mk-024][value]:+.1f} percent and the Nasdaq-100 {c[mk-023][value]:+.1f} percent",
+ "title_template": "On {move_day}, {label} moved {text} percent at the close",
+ "subtitle": "The record does not say what caused any move.",
+ "controls": [
+  {"type": "segmented", "name": "move_day", "label": "Day", "default": "nov05",
+   "options": [{"value": "nov05", "label": "11/05/2026"}, {"value": "nov12", "label": "11/12/2026"}]}
+ ],
+ "plot": {
+  "type": "ladder",
+  "signed": true,
+  "groups": [
+   {"id": "move", "label": "Change at the close from the day before, percent", "mark": "bar", "domain": [-10, 0]}
+  ]
+ },
+ "reading": "{label}, {move_day}: {text} percent at the close. {boundary} {evidence}",
+ "details": [
+  "The Associated Press reported on 11/05/2026 that the selloff was \"led by stocks tied to the buildout of AI data centers.\"",
+  "The Bank of England noted in its September 2026 record that AI equity valuations \"fell sharply in July.\"",
+  "NVIDIA's board accepted its chief executive's resignation on 11/11/2026. Shares fell 9.3 percent on 11/05/2026 and 4.34 percent on 11/12/2026."
+ ],
+ "cites": ["mk-030", "mk-032", "mk-050"],
+ "rows": [
+  {"id": "spx", "group": "move", "label": "S&P 500", "claims": {"nov05": "mk-021", "nov12": "mk-025"}},
+  {"id": "ccmp", "group": "move", "label": "Nasdaq Composite", "claims": {"nov05": "mk-022", "nov12": "mk-026"}},
+  {"id": "ndx", "group": "move", "label": "Nasdaq-100", "claims": {"nov05": "mk-023", "nov12": "mk-027"}},
+  {"id": "nvda", "group": "move", "label": "NVIDIA", "claims": {"nov05": "mk-024", "nov12": "mk-028"},
+   "also": [{"claim": "mk-029", "label": "The seven's market value lost on 11/05/2026, CNBC's tally", "say": "more than {display}"}]}
+ ],
+ "answer": "On {move_day}, NVIDIA moved {nvda[text]} percent at the close, the Nasdaq-100 {ndx[text]} and the S&P benchmark {spx[text]}."
+}

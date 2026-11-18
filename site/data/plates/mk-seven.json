@@ -1,0 +1,56 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/markets/index.html",
+ "id": "mk-seven",
+ "default": "nvidia",
+ "eyebrow": "Year to Date",
+ "title": "From the last close of 2025 to 11/16/2026, the seven ran from {c[mk-003][value]:+.1f} percent (NVIDIA) to {c[mk-001][value]:+.1f} percent (Apple)",
+ "title_template": "From the last close of 2025 to 11/16/2026, the seven ran from {nv:+.1f} percent (NVIDIA) to {ap:+.1f} percent (Apple)",
+ "subtitle": "Price change from the 12/31/2025 close to the 11/16/2026 close, computed from two closing prices on a Yahoo Finance history page. Dividends are not counted.",
+ "inputs": {
+  "nv": {"claim": "mk-003"},
+  "ap": {"claim": "mk-001"}
+ },
+ "controls": [
+  {"type": "segmented", "name": "bench", "label": "Index beside them", "default": "spx",
+   "options": [{"value": "spx", "label": "S&P 500"}, {"value": "ccmp", "label": "Nasdaq Composite"}, {"value": "ndx", "label": "Nasdaq-100"}]}
+ ],
+ "plot": {
+  "type": "bars",
+  "signed": true,
+  "domain": [-20, 35],
+  "axis_label": "Price change, 12/31/2025 close to 11/16/2026 close, percent",
+  "marks": [
+   {"id": "spx", "label": "S&P 500", "claim": "mk-008", "when": {"bench": "spx"}},
+   {"id": "ccmp", "label": "Nasdaq Composite", "claim": "mk-009", "when": {"bench": "ccmp"}},
+   {"id": "ndx", "label": "Nasdaq-100", "claim": "mk-010", "when": {"bench": "ndx"}}
+  ]
+ },
+ "boundary": "From the 12/31/2025 close to the 11/16/2026 close.",
+ "reading": "{label}: {text} percent. {boundary} {evidence}",
+ "details": [
+  "11/16/2026 was a down day for the broad market: the S&P 500 fell 1.9 percent and the Nasdaq Composite fell 2.5 percent.",
+  "NVIDIA's third-quarter report was scheduled for 11/17/2026, after this close. Every NVIDIA figure on this page predates it."
+ ],
+ "cites": ["mk-011", "mk-012", "fin-109"],
+ "rows": [
+  {"id": "apple", "label": "Apple", "claim": "mk-001"},
+  {"id": "amazon", "label": "Amazon", "claim": "mk-005"},
+  {"id": "microsoft", "label": "Microsoft", "claim": "mk-002"},
+  {"id": "meta", "label": "Meta", "claim": "mk-006"},
+  {"id": "alphabet", "label": "Alphabet, Class A", "claim": "mk-004", "boundary": "Class A shares only, from the 12/31/2025 close to the 11/16/2026 close."},
+  {"id": "tesla", "label": "Tesla", "claim": "mk-007"},
+  {"id": "nvidia", "label": "NVIDIA", "claim": "mk-003"}
+ ],
+ "foot": [
+  {"text": "Market value, float, and stakes for the same seven are on the AI page.", "href": "../#companies", "link": "Open the Companies tab"}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Company", "field": "label"},
+   {"label": "Change, percent", "field": "text"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ }
+}

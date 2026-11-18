@@ -1,0 +1,51 @@
+{
+ "schema": 1,
+ "tier": "T0",
+ "page": "ai/markets/index.html",
+ "id": "mk-weight",
+ "default": "qqq",
+ "eyebrow": "Concentration",
+ "title": "On 11/16/2026 the seven were {c[mk-020][value]} percent of the Nasdaq-100 fund; on 10/30/2026, about {c[fin-106][value]} percent of the S&P benchmark's value",
+ "subtitle": "These four bases measure different things. The fund weight is a share of net assets; the benchmark weight is a share of total market capitalization. They do not add.",
+ "inputs": {
+  "qqq": {"claim": "mk-020"},
+  "sp": {"claim": "fin-106"}
+ },
+ "plot": {
+  "type": "ladder",
+  "groups": [
+   {"id": "together", "label": "Share of fund or benchmark", "mark": "bar", "domain": [0, 50]},
+   {"id": "each", "label": "Each company's share of Nasdaq-100 fund net assets, 11/16/2026", "mark": "bar", "domain": [0, 10]}
+  ]
+ },
+ "reading": "{label}: {display}. {boundary} {evidence}",
+ "details": [
+  "Alphabet's Class A and Class C lines in the fund are added into one row, so each company is one row."
+ ],
+ "rows": [
+  {"id": "qqq", "group": "together", "label": "Nasdaq-100 fund (QQQ)", "tag": "11/16/2026", "claim": "mk-020", "cols": {"date": "11/16/2026"},
+   "boundary": "The seven companies' combined share of QQQ net assets on 11/16/2026."},
+  {"id": "spx-total", "group": "together", "label": "S&P 500, total value", "tag": "10/30/2026", "claim": "fin-106", "cols": {"date": "10/30/2026"},
+   "boundary": "The seven companies' combined share of S&P benchmark total market capitalization on 10/30/2026."},
+  {"id": "spy", "group": "together", "label": "S&P 500 fund (SPY)", "tag": "10/29/2026", "claim": "fin-071", "cols": {"date": "10/29/2026"},
+   "boundary": "The seven companies' combined weight in the SPY ETF on 10/29/2026."},
+  {"id": "top-ten", "group": "together", "label": "The S&P 500's ten largest", "tag": "10/30/2026", "claim": "fin-105", "cols": {"date": "10/30/2026"},
+   "boundary": "The ten largest S&P benchmark constituents' combined float-adjusted index weight on 10/30/2026."},
+  {"id": "apple", "group": "each", "label": "Apple", "claim": "mk-013", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "microsoft", "group": "each", "label": "Microsoft", "claim": "mk-014", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "nvidia", "group": "each", "label": "NVIDIA", "claim": "mk-015", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "alphabet", "group": "each", "label": "Alphabet, Class A and C", "claim": "mk-019", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "amazon", "group": "each", "label": "Amazon", "claim": "mk-016", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "tesla", "group": "each", "label": "Tesla", "claim": "mk-017", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."},
+  {"id": "meta", "group": "each", "label": "Meta", "claim": "mk-018", "cols": {"date": "11/16/2026"}, "boundary": "Percent of QQQ net assets, 11/16/2026."}
+ ],
+ "table": {
+  "columns": [
+   {"label": "Company or basis", "field": "label"},
+   {"label": "Percent", "field": "text"},
+   {"label": "Date", "field": "date"},
+   {"label": "Claims", "field": "claims"}
+  ]
+ },
+ "answer": "About {qqq:.1f} percent of the Nasdaq-100 fund on 11/16/2026, and about {sp} percent of the S&P benchmark's market value on 10/30/2026."
+}
