@@ -15,7 +15,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 // CAPTURE_SITE points at a scratch copy of site/, for design comps.
 const SITE = process.env.CAPTURE_SITE ? path.resolve(process.env.CAPTURE_SITE) : path.join(ROOT, 'site');
-const PAGES = { home: '', ai: 'ai/', 'data-centers': 'data-centers/', 'resource-use': 'data-centers/resource-use/', energy: 'energy/', potential: 'energy/potential/', funding: 'energy/funding/', library: 'library/', summit: 'summit/', about: 'about/', explorer: 'explorer/', briefing: 'briefing/' };
+const PAGES = { home: '', ai: 'ai/', 'data-centers': 'data-centers/', 'resource-use': 'data-centers/resource-use/', energy: 'energy/', potential: 'energy/potential/', funding: 'energy/funding/', library: 'library/', summit: 'summit/', about: 'about/', explorer: 'explorer/', briefing: 'briefing/', markets: 'ai/markets/', primer: 'data-centers/primer/' };
 // Every page with an index.html under site/, by its name above where it has one; assets/ and data/ hold no pages.
 const EVERY = (function pages(dir, rel) {
   const here = fs.existsSync(path.join(dir, 'index.html')) ? [rel] : [];

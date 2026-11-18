@@ -1,8 +1,12 @@
 https://atniclimate.github.io/atni-task-force/about/
 https://atniclimate.github.io/atni-task-force/ai/
+https://atniclimate.github.io/atni-task-force/ai/markets/
+https://atniclimate.github.io/atni-task-force/ai/markets/sources/
 https://atniclimate.github.io/atni-task-force/ai/sources/
 https://atniclimate.github.io/atni-task-force/briefing/
 https://atniclimate.github.io/atni-task-force/data-centers/
+https://atniclimate.github.io/atni-task-force/data-centers/primer/
+https://atniclimate.github.io/atni-task-force/data-centers/primer/sources/
 https://atniclimate.github.io/atni-task-force/data-centers/resource-use/
 https://atniclimate.github.io/atni-task-force/data-centers/resource-use/sources/
 https://atniclimate.github.io/atni-task-force/data-centers/sources/

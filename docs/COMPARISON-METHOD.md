@@ -193,11 +193,11 @@ about five hours (CogVideoX), two points and not a range for AI video; an agent 
 ## 9. Water and Carbon on the Same Views
 
 - Carbon can ride on views 1 and 2 as energy times a grid factor per segment, location-based only: Google's 345 g
-  per kWh for its data centers (fp-007), the US average 370 g (tr-038), LBNL's 0.34 kg (tr-005). Market-based figures
+  per kWh for its data centers (fp-007), the US average 348 g (tr-066), LBNL's 0.34 kg (tr-005). Market-based figures
   (Google 0.03 g per prompt, fp-005, against 0.093 location-based) must not mix with location-based rows. Home
   segments take the reader's own grid; the record holds no Pacific Northwest factor, so it stays a reader input. The
   EPA calculator's 1,405.3 lb per MWh non-baseload rate (fp-073) is the carbon version of the marginal-against-average
-  dispute: about 637 against 370 g per kWh. Whole-chain streaming carbon exists only as modeled points (56 g per hour
+  dispute: about 637 against 348 g per kWh. Whole-chain streaming carbon exists only as modeled points (56 g per hour
   Carbon Trust 2020 Europe, 14.8 g BBC 2024 UK, 36 g IEA 2019) and Instagram only as Greenspector's 0.87 g per minute
   on a French grid; none shares a boundary with the chat figures.
 - Water leaves the headline layer. Per-prompt water (Google's 0.26 mL on site at a 1.15 L per kWh fleet average,
@@ -268,7 +268,7 @@ use (Anthropic publishes none, fp-033); "AI uses ten times a search" (2009 basis
   marginal, which shrinks every network segment toward zero and leaves the router as a fixed band.
 - The reader's own prompts per hour, kind of chat, and device: at 60 short prompts, or ten medium ones, chat's data
   center passes every other segment on a phone.
-- A current YouTube hours figure, chat totals beyond ChatGPT, and a Pacific Northwest grid factor.
+- A current YouTube hours figure, chat totals beyond ChatGPT, and a grid factor for the power a facility in the region actually draws.
 
 ## 14. Known Weaknesses
 

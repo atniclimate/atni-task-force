@@ -33,9 +33,9 @@ TITLE = re.compile(r"<title>(.*?)(?: \| [^<]*)?</title>", re.S)
 # Each page by the name the nav and its own brief give it, so the hub, the nav and home's list agree (home critic 15, system 18); a page not named here keeps its title.
 NAMES = {"index.html": "Home", "ai/index.html": "AI", "data-centers/index.html": "Data Centers", "data-centers/resource-use/index.html": "Energy and Water Use",
          "energy/index.html": "Tribal Energy", "energy/funding/index.html": "Tribal Energy: Funding", "energy/potential/index.html": "Tribal Energy: What Tribal plans say",
-         "explorer/index.html": "Explorer", "library/index.html": "Library"}
+         "explorer/index.html": "Explorer", "library/index.html": "Library", "ai/markets/index.html": "AI and the Markets"}
 EXPLORER_PLATE = re.compile(r'<section class="sources-plate" id="(?P<id>[\w-]+)"[^>]*>(?:<p class="eyebrow">[^<]*</p>)?<h3[^>]*>(?P<title>.*?)</h3>', re.S)
-PAGE_ORDER = ["ai/index.html", "data-centers/index.html", "energy/index.html"]  # the order a council reads them; other pages follow by name
+PAGE_ORDER = ["ai/index.html", "ai/markets/index.html", "data-centers/index.html", "energy/index.html"]  # the order a council reads them; other pages follow by name
 BAND_CHECKED = re.compile(r'<span class="figure-num">([^<]*)</span>\s*<span class="figure-label">Sources checked</span>')
 BUILT_BY = {
     "library.json": "scripts/merge_library.py", "energy-potential.json": "scripts/energy_potential.py", "energy-potential.csv": "scripts/energy_potential.py",

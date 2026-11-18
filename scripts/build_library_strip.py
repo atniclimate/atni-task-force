@@ -31,7 +31,8 @@ STATIC_TRIBAL = 25  # with the 15 to start with, the 40 entries a reader without
 FILINGS = re.compile(r"\bSEC\b")  # a company filing: its publisher is the SEC's EDGAR system (library.js FILINGS)
 GROUPS = {"grounding": "Grounding resolutions", "energy-feasibility": "Tribal Energy", "data-centers": "Data Centers", "ai": "AI", "cross-cutting": "Across the task forces"}
 PAGE_NAMES = {"energy/": "Tribal Energy", "energy/potential/": "What Tribal Plans Say", "energy/funding/": "Funding", "data-centers/": "Data Centers",
-              "data-centers/resource-use/": "Energy and Water Use", "ai/": "AI", "explorer/": "Explorer"}  # the footer's names, in its order
+              "data-centers/resource-use/": "Energy and Water Use", "data-centers/primer/": "Kinds of Data Centers", "ai/": "AI",
+              "ai/markets/": "AI and the Markets", "explorer/": "Explorer"}  # the footer's names, in its order
 ISO_DAY = re.compile(r"(?<![\w/.-])(\d{4})-(\d{2})-(\d{2})(?![\w/-])")  # util.js usDates
 
 

@@ -42,9 +42,11 @@ SELF_COUNTS = {"claims/site-counts.json"}  # the site's counts of its own files:
 RETRACTED = {("2026-11-15", "Source evidence behind the charts updated"), ("2026-11-16", "Source evidence behind the charts updated")}
 OLD_EVIDENCE = "Source evidence behind the charts updated"  # the wording before 11/16/2026; those rows now read EVIDENCE and link the Sources hub
 # Changes to the site itself, which no data file records.
-SITE_ROWS = [{"date": "2026-11-15", "kind": "site", "title": "Each page with charts now has its own Sources page, and the site has a Sources hub", "url": "sources/", "area": "cross-cutting"}]
+SITE_ROWS = [{"date": "2026-11-15", "kind": "site", "title": "Each page with charts now has its own Sources page, and the site has a Sources hub", "url": "sources/", "area": "cross-cutting"},
+             {"date": "2026-11-17", "kind": "site", "title": "A new page, AI and the Markets, records how much of the market rides on seven companies and how money loops among the companies building AI", "url": "ai/markets/", "area": "ai"},
+             {"date": "2026-11-17", "kind": "site", "title": "A primer on kinds of data centers and the cloud", "url": "data-centers/primer/", "area": "data-centers"}]
 TYPE_ORDER = ["resolution", "legislation", "policy", "report", "dataset", "academic", "tool", "news", "article", "website"]
-PAGES = {"ai/": ("AI", "ai"), "data-centers/": ("Data Centers", "data-centers"), "data-centers/resource-use/": ("Resource Use", "data-centers"), "energy/": ("Energy", "energy-feasibility"),
+PAGES = {"ai/": ("AI", "ai"), "ai/markets/": ("AI and the Markets", "ai"), "data-centers/": ("Data Centers", "data-centers"), "data-centers/resource-use/": ("Resource Use", "data-centers"), "energy/": ("Energy", "energy-feasibility"),
          "energy/funding/": ("Energy Funding", "energy-feasibility"), "energy/potential/": ("What Tribal Plans Say", "energy-feasibility"), "explorer/": ("Explorer", "cross-cutting"), "summit/": ("Summit", "summit")}
 
 

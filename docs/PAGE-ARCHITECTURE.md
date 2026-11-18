@@ -12,7 +12,7 @@ Sources: `work/site-refresh/r2/direction/DIRECTION-R2.md` sections 3.1, 3.2, 3.1
 "The system as built, R2".
 
 - **Shell, one on every page** (a test holds it): a 56px header that does not stick; the nav in groups behind hairlines, Tribal Energy, Data Centers, AI |
-  Explorer, Briefing | Summit, Library, About | Sources (the hub); "Use light theme" with `aria-pressed`. The footer is flat behind a 1px rule, on every page
+  Explorer, Briefing | Summit, Library, About | Sources (the hub); "Light theme" with `aria-pressed`. The footer is flat behind a 1px rule, on every page
   including Resource Use, the Explorer, and the hub, with "Updated MM/DD/YYYY" from the newest What's New date and "Top". The labels match the name lines.
 - **The brief** opens every page: the name line (a link to the parent on a subpage; on the Energy family a row of Overview, What Tribal plans say, Funding,
   in place of Resource Use's old header subnav and Energy's strip), the h1 below, at most two sentences of lead, and the meta line (Sources checked, Sources
@@ -26,9 +26,11 @@ Sources: `work/site-refresh/r2/direction/DIRECTION-R2.md` sections 3.1, 3.2, 3.1
 | Page | h1 | Agenda questions | Below the agenda | Sources page |
 |---|---|---|---|---|
 | Home `site/` | ATNI Energy Task Forces | Is everyday AI use the problem? / What would one data center draw here? / What can a Tribe apply for, and by when? / What should leaders ask a developer? | How the Work Moves (a four-step `.track`), The Task Forces, What's New, Take part | the hub |
-| Data Centers `site/data-centers/` | What a data center would draw on here, and what to ask before one is approved | How much new load is planned for the region? / What would one proposal mean? / What should be asked before saying yes? | Tabs: Why now (Why is this arriving now?), Growth (How fast is it growing?), Tradeoffs (What does it trade off?), Where (Where are the proposals, and how hot will it get there?), Jobs (Who works there, and for how long?), Policy (Who sets the rules?), Questions (What should be asked?) | `data-centers/sources/` |
+| Data Centers `site/data-centers/` | What a data center would draw on here, and what to ask before one is approved | How much new load is planned for the region? / What would one proposal mean? / What should be asked before saying yes? | Tabs: Why now (Why is this arriving now?), Growth (How fast is it growing?), Tradeoffs (What does it trade off?), Where (Where are the proposals, and how hot will it get there?), Jobs (Who works there, and for how long?), Policy (Who sets the rules?), Public Perception (What do voters and the public say?), Questions (What should be asked?) | `data-centers/sources/` |
 | Resource Use `site/data-centers/resource-use/` | What a data center uses, how well it is known, and what to ask for | How much of an hour of video happens inside the data center? / Is AI why data centers are growing? / How much water, counting the power plant? / What can a utility or developer be asked to disclose? | Chapters under a sticky rail: What data centers use; What drives that use; Streaming and AI compared carefully; Water; What this means for Tribal decisions; What is not known | `data-centers/resource-use/sources/` |
+| Kinds of Data Centers `site/data-centers/primer/` (R3, 11/17/2026) | What Data Centers Are, from One Computer to a Hyperscale Campus | none; three outcomes lead | Seven stops beside one 3D scene (laptop, server closet, server room, inside every one, colocation, hyperscale campus, the cloud), a short route for presenting, then a self-check | `data-centers/primer/sources/` |
 | AI `site/ai/` | Who an AI tool serves, what it uses, and whether the Tribe controls it | Is everyday AI use the problem? / Who is paying for the buildout? / How does a Tribe keep control of its data? | Tabs, Measure: Energy (What does AI use?), Work (What happens to jobs?), Companies (Who is building it, and with whose money?); Decide: Data Sovereignty (Who controls the data?), Working with AI (How should staff use it?), Youth and Education (What should students and families know?), Policy Watch (What is changing in the rules?) | `ai/sources/` |
+| AI and the Markets `site/ai/markets/` (R3, 11/17/2026) | How much of the market rides on AI, and how the money loops | How much of the market rides on seven companies? / What moves when AI news breaks? / What is circular financing, and what holds it up? / What might a council or treasurer ask? (a list face) | Sections, no tabs and no page CSS or script: The Seven on 11/16/2026 (`mk-seven`), NVIDIA's Change of Chief Executive, How the Money Loops (an aria-hidden four-step track with a return line, every figure a mark in its caption; three rail disclosures), About This Page. Not in the nav or the Briefing | `ai/markets/sources/` |
 | Energy `site/energy/` | Energy projects, funding and grid decisions on Tribal terms | What are Tribes planning? / What money is open now? / What is the task force doing? | The resolution band; Programs and Tools | `energy/sources/` |
 | Funding `site/energy/funding/` | What a Tribe can apply for now, and by when | What is open now? / What deadlines are coming? / What fits a Tribe's plans? | The catalog as list and detail | `energy/funding/sources/` |
 | Potential `site/energy/potential/` | What Tribes' own public plans say about energy | none; the matrix leads | The stage bars, then the matrix | `energy/potential/sources/` |
@@ -37,6 +39,19 @@ Sources: `work/site-refresh/r2/direction/DIRECTION-R2.md` sections 3.1, 3.2, 3.1
 | Summit `site/summit/` | The proposed Tribal Energy Summit | none | Six stops on a `.track`; preparation lists per role | none; the hub |
 | About `site/about/` | How this site handles data and claims | none | The tier stair (`.stair`, T0 lit); a claim's life as a `.track`; data governance; People; Credits; licenses | none; the hub |
 | Briefing `site/briefing/` | Build a council briefing | none | The packets, then Customize | none; the hub |
+
+**Markets refresh** (AI and the Markets; done by a session when the owner asks, never on a schedule). The page is a dated snapshot of the `markets`
+cluster (`work/site-refresh/evidence/markets.json`, mk-001 to mk-069), and the tracker prints derived percent changes with their arithmetic in each
+record's `derived` text, never a table of closing prices. To move it to a new close:
+1. Pick one finished close date.
+2. Reread the Yahoo Finance history pages for the seven and ^NDX, and redo mk-001 to mk-007, mk-010 and their `derived` text (date_words: the row's date).
+3. Reread AP's "How major US stock indexes fared" page for that day for mk-008, mk-009, mk-011 and mk-012; quote its sentences, not a rebuilt table.
+4. Reread Invesco's QQQ holdings feed for mk-013 to mk-020.
+5. Add a stop to `mk-moves` only with a sourced figure for every row.
+6. Update the dates typed in the eyebrows, titles, the section heading and the brief's Sources checked date.
+7. Run `work/tools/workflows/verify-items.js` on the changed ids, then `python scripts/build_plates.py --export-claims markets` and `python scripts/rebuild_all.py`.
+8. fin-106 and fin-109 stay with the finance cluster. When a session reads NVIDIA's Q3 FY2027 release and 10-Q, it adds new fin claims (fin-112 on,
+   with date_words), moves the NVIDIA rows to them, and drops fin-109 from the cites.
 
 **Before R2** (the text and table below are the 11/04/2026 plan, kept as history where R2 changed them: Overview tabs, the page band, and DC's subnav are gone).
 
@@ -57,16 +72,17 @@ containing a hash target), so old links land: DC `#purpose` and `#why-now` open 
 | Page | Tab (label, panel id) | Holds | Signature plate |
 |---|---|---|---|
 | DC | Overview `#overview` | Purpose (slot `charge`), Why Now (slot `why-now`), pull figure (PGE rate change), Library feed (`#library`) | `dc-pnw-load` |
-| DC | Growth `#growth` | new prose; EIA, LBNL, IEA, forecast misses | `dc-eia-servers` |
+| DC | Growth `#growth` | new prose; hyperscale sites against whole states; EIA, LBNL, IEA, forecast misses | `dc-state-scale` |
 | DC | Tradeoffs `#tradeoffs` | Environmental Impacts (slot, as details); matrix, cooling instrument, water intensity | `dc-tradeoff-matrix` |
 | DC | Jobs `#jobs` | per-MW instrument with the state audits; bench rows to the AI Work plates | `dc-jobs-per-mw` |
 | DC | Policy `#policy-landscape` | Tribal, State, Federal (3 slots), Sovereign and Federated Alternatives (slot), Policy Watch (`#policy-watch`) | instrument grid (static figure, no numbers) |
+| DC | Public Perception `#perception` (R3, 11/17/2026) | ballot measures, people living near data centers, views of AI, the trackers | `dc-ballots` |
 | DC | Questions `#questions` | the eight checklists (slot `questions`) as a details grid; project view | `dc-project` |
 | AI | Overview `#overview` | Purpose (compact), the hour comparison, Library feed (`#library`) | `ai-same-hour` |
 | AI | Energy `#energy` | per person per day, heavy AI, scale; water and carbon disclosures; what would change the answer | `ai-heavy-ai` |
-| AI | Work `#economics` | h2 "Economics and the Global Frontier"; the held slot block untouched; occupations, displacement evidence | `ai-occupations` |
+| AI | Work `#economics` | h2 "Economics and the Global Frontier"; the held slot block untouched; occupations, displacement evidence, adoption returns | `ai-occupations` |
 | AI | Companies `#companies` | money multiples, capex against cash, footprint multiples, 2026 guidance, holdings | `ai-company-money` |
-| AI | Working with AI `#working-with-ai` | slot `working-with-ai` as a details grid; TSDF tier-by-use grid as the figure | tier grid (static) |
+| AI | Working with AI `#working-with-ai` | slot `working-with-ai` as a details grid; TSDF tier-by-use grid as the figure; ten adoption questions (q-adopt-10, what review and rework cost); `#adoption-rules` in its own grid after the form | tier grid (static) |
 | AI | Youth and Education `#youth-education` | slot `youth-resources` as a details grid; the evidence-label key as the figure (no Bastani claim row exists, so no plate) | label key (static) |
 | AI | Data Sovereignty `#data-sovereignty` | existing section and two buttons; link to the tier grid | shared tier grid |
 | AI | Policy Watch `#policy-watch` | existing `data-policy-watch="ai"` block | the follow list (a tool, exempt) |
@@ -81,7 +97,7 @@ arriving in the Council's four-state region, and member Tribes are being asked t
 megawatts in 2030, with its low and high inputs far apart. ATNI takes no position for or against; this page gathers what is measured, what is modeled, and the questions a Tribal government can put to a
 developer."
 
-**DC Growth.** `dc-eia-servers` first; LBNL, IEA, misses below in that order. "Three public forecasts count different things: EIA counts servers only, LBNL counts the whole building, and the IEA counts the
+**DC Growth.** `dc-state-scale` first (11/17/2026); EIA, LBNL, IEA in one strip; then the forecast check. "Three public forecasts count different things: EIA counts servers only, LBNL counts the whole building, and the IEA counts the
 world. They sit on separate plates because their boundaries differ, and the last plate shows how far earlier editions landed from later ones."
 
 **DC Tradeoffs.** `dc-tradeoff-matrix`, then `dc-cooling`, then `dc-water-intensity`; Environmental Impacts as details. "A data center's tradeoffs are a set, not a list: cooling that saves water uses more
@@ -109,7 +125,8 @@ comparison does not decide a proposal. It says nothing about a site, a stream, a
 
 **AI Work.** h2 "Economics and the Global Frontier"; the held slot block stays exactly as it is, first; then `ai-occupations`, `ai-jobs-sector` (BLS 2025 to 2035 by sector, jb-097 to jb-102; percent on the axis, job counts in each row's detail), and `ai-displacement`. Opening, outside the slot markers: "The written brief for
 this section is in development. The measured record is here now: the Bureau of Labor Statistics' ten-year projection by occupation, including the trades that build data centers, and the studies that have looked
-for AI's effect on employment so far, which disagree and are shown together."
+for AI's effect on employment so far, which disagree and are shown together." Then `ai-adoption-returns` (seven study rows on two rulers, shares and with-AI-against-without
+differences, each labeled measured, survey or forecast and never averaged; forecasts hollow), and `#expert-roles` at the end of the disclosure grid.
 
 **AI Companies.** `ai-company-money` first; the other four below. "Seven companies are financing most of the buildout. Their filings show capital spending passing operating cash flow at some of them, cash and
 securities falling, and debt rising; their own reports show electricity, water, and location-based emissions over the same years. Fiscal years differ (Microsoft June, Apple September, NVIDIA January), and every
@@ -143,8 +160,8 @@ adds (data center plus network) | whole hour}, default whole hour; `prompts_per_
 {short text 0.30 | medium 1.215 | reasoning 3.91 | high reasoning 17.15}; `device` {phone | laptop | TV}; in a details "More assumptions": `connection`, `network_mode`, `router_allocation`,
 `video_dc_intensity`, `chat_wh_per_prompt` 0.24 to 0.60. Everyday rows print "Not counted at this boundary" except at whole hour. Detail: value, range, segments, the setting line, receipts. Reading: "At
 {boundary}, {row} uses about {value} Wh for the hour ({low} to {high}); {segments}. Modeled from {sources}, {date}." Table: row, boundary, four segments, total, low, high, measured segments, claims. Excluded:
-every stored cross-boundary ratio (fp-077 to fp-082, fp-084, fp-085); the Greenspector chat device uplift (fp-086, fp-087, set aside by the method); any "chat is X times video" sentence; a carbon view (no
-Pacific Northwest grid factor in the record). Projection: none. Fixed foot line: "This comparison does not decide a proposal", linking to DC `#questions`.
+every stored cross-boundary ratio (fp-077 to fp-082, fp-084, fp-085); the Greenspector chat device uplift (fp-086, fp-087, set aside by the method); any "chat is X times video" sentence; a carbon view (the record's
+Northwest factors gf-001, gf-062, gf-023 count different things; the grid is an Explorer setting). Projection: none. Fixed foot line: "This comparison does not decide a proposal", linking to DC `#questions`.
 
 **`ai-per-day`** (AI Energy). Question: inside the data center, what does one person's day cost? Title: "An average weekly ChatGPT user's text prompts cost about 1 Wh a day in the data center, an illustration and not a floor; Meta
 reports 15 Wh per daily person for all its products, on another boundary (2024 to 2025)". Data: view `per_person_day`: chat day 3.67 x 0.30 = 1.10 (fp-034, fp-001; low 0.86, high 4.80 with the count of 8 marked
@@ -235,7 +252,7 @@ figures on the aMW axis; any named facility. Projection: after 2025, dashed. Pul
 **`dc-tradeoff-matrix`** (DC Tradeoffs, signature). Question: what is known about each tradeoff? Title: "Of seven tradeoffs, power, water, and carbon are measured at national scale; land, heat, and materials
 rest on one or two modeled figures". Data, rows by columns "National scale" | "Per unit" | "Open question": Water: 66 billion L on site 2023 (tr-001), about 800 billion L at power plants (tr-004) | 0.36 L per
 kWh site (tr-009), 4.52 at the plant (tr-005) | watershed and season. Power: 192 TWh 2024 (dem-028) | PUE 1.45 (tr-065) | workload split (no disclosure). Emissions: 61 Mt 2023 (tr-006), IEA 150 Mt now (tr-035)
-| 545 g per kWh at hyperscale sites, preprint, against 370 national (tr-038, plus a new derived claim for 370) | embodied carbon per rack. Air: Memphis permit 87.14 t NOx a year (tr-047), Virginia backup
+| 314 g per kWh at hyperscale sites, peer reviewed, against 348 national (tr-038, tr-066) | embodied carbon per rack. Air: Memphis permit 87.14 t NOx a year (tr-047), Virginia backup
 generators under 4 percent of regional NOx (tr-051) | health burden over 20 billion dollars a year, modeled (tr-044) | regional monitoring. Land: new builds average 200,000 sq ft of floor (tr-054) | one campus
 400 acres (tr-055) | land per MW. Heat: +2 C land surface around AI sites, preprint (tr-053) | reuse 0.69 to 0.86 MWh heat per MWh, vendor (tr-061) | air temperature. Materials: copper 0.6 to 1.1 Mt by 2028
 (tr-056) | TSMC 153.3 L per wafer layer (tr-032), e-waste 8.6 to 13.1 Mt a year by 2030 (tr-057) | embodied impacts upstream. Form: matrix; each cell a figure in tabular numerals and a 6px square, filled for
@@ -246,7 +263,7 @@ give-backs tr-023, tr-027, tr-030, tr-043 (never netted). Projection: none.
 **`dc-cooling`** (DC Tradeoffs). Question: what do size, cooling, and grid turn into? Title: "A 100 MW site at the 2024 national PUE uses about 1.0 TWh a year; evaporative cooling at the operators' figures
 consumes 280 to 1,200 million liters on site, and the power plants about 4,600 million more". Data: PUE 1.45 all facilities, 1.145 AI-serving (tr-065); site water per kWh by cooling choice: evaporative at
 Microsoft 0.27 (tr-028), LBNL 0.36 to 0.48 (tr-009), Google 1.15 (fp-006); closed loop or dry: 0 on site, the energy penalty printed as "not in the public record" (tr-010, tr-019); generation water 4.52 L per
-kWh (tr-005); carbon per kWh by grid {national 370 (new derived claim from tr-038) | hyperscale-weighted 545 (tr-038) | LBNL 0.34 kg (derived, tr-006 over tr-007) | reader's own}. Form: instrument; outputs as
+kWh (tr-005); carbon per kWh by grid {national 348 (tr-066) | hyperscale-weighted 314 (tr-038) | LBNL 0.34 kg (derived, tr-006 over tr-007) | reader's own}. Form: instrument; outputs as
 ruled rows with thin rulers: electricity (TWh a year), site water (million L), generation water, CO2 (Mt); in the detail, a two-segment bar "water here, water at the plant". Controls: MW (10 to 2,000, default
 100), load factor (default 0.8), PUE {1.45 | 1.145 | typed}, cooling {evaporative at Microsoft | at LBNL | at Google | closed loop or dry}, grid carbon {four stops}. Detail: equations, each factor's receipt,
 the tr-010 sentence ("air-cooled chillers use no water; they use more energy"). Reading: "{MW} MW at PUE {PUE} and {LF} load factor: about {TWh} TWh a year; on-site water {site} million liters ({cooling});

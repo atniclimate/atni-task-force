@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-11-05",
+  "updated": "2026-11-17",
   "entries": [
     {
       "id": "atni-res-2026-051-youth-ai-chatbots-in-schools",
@@ -7459,7 +7459,7 @@
         "data-centers"
       ],
       "tribal_specific": false,
-      "summary": "A preprint, not yet peer reviewed, that estimates carbon emissions and energy use at 403 US hyperscale data centers and compares their grid carbon intensity with the national average.",
+      "summary": "The 06/2026 arXiv preprint of the study published in Nature Sustainability on 11/16/2026. The published version revised its carbon figures from a combustion-output to a total-output denominator; cite the published version for carbon per kWh and total CO2, as the preprint's figures are superseded.",
       "tier": "T0",
       "added": "2026-11-04",
       "featured": false,
@@ -16142,6 +16142,715 @@
       "summary": "Route Fifty reporting on a Carbon Direct analysis of AI data center projects delayed or cancelled after community opposition across the United States. Claims: tr-063.",
       "tier": "T0",
       "added": "2026-11-05",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "assessing-the-carbon-emissions-and-energy-consumption-of-us",
+      "title": "Assessing the carbon emissions and energy consumption of US hyperscale data centres",
+      "url": "https://www.nature.com/articles/s41893-026-01985-7",
+      "publisher": "Nature Sustainability",
+      "date": "2026-11-16",
+      "type": "academic",
+      "areas": [
+        "data-centers",
+        "energy-feasibility"
+      ],
+      "tribal_specific": false,
+      "summary": "A peer-reviewed analysis of 403 hyperscale data center sites in the US, May 2024 to April 2025, published 11/16/2026. The study estimates 68 to 99 TWh of electricity, central about 82 TWh, which the abstract puts at about 1.8 percent of US use; carbon per kWh at these sites runs about a tenth below the national average on a location basis. Behind a subscription; the supplement gives state-level tables for Washington, Oregon, Virginia, and 20 other states, with no Idaho or Montana sites in the sample.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "us-data-centers-are-burning-through-as-much-electricity-as-e",
+      "title": "US data centers are burning through as much electricity as entire states",
+      "url": "https://newatlas.com/technology/data-centers-using-electricity-entire-states/",
+      "publisher": "New Atlas",
+      "date": "2026-11-16",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "News report on the Nature Sustainability study, published 11/16/2026. Its comparison with Michigan holds only at the study's high case; the central case is about four-fifths of Michigan's 100 TWh in 2025 sales. A lead for the finding, not a source for figures.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "table-2-8-sales-of-electricity-to-ultimate-customers-by-end",
+      "title": "Table 2.8. Sales of Electricity to Ultimate Customers by End-Use Sector, by State, 2025 and 2024 (Thousand Megawatthours)",
+      "url": "https://www.eia.gov/electricity/annual/xls/epa_02_08.xlsx",
+      "publisher": "U.S. Energy Information Administration",
+      "date": "2026-10-21",
+      "type": "dataset",
+      "areas": [
+        "data-centers",
+        "energy-feasibility"
+      ],
+      "tribal_specific": false,
+      "summary": "Retail electricity sales by state and sector for 2025 and 2024, reported by utilities to EIA, released 10/21/2026. The table's notes say recent changes partly reflect better reporting of data center and cryptocurrency mining load.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "no-matter-how-you-ask-more-americans-are-negative-than-posit",
+      "title": "No matter how you ask, more Americans are negative than positive about AI",
+      "url": "https://ourworldindata.org/no-matter-how-you-ask-more-americans-are-negative-than-positive-about-ai",
+      "publisher": "Our World in Data",
+      "date": "2026-11-16",
+      "type": "article",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Max Roser's roundup of surveys finds more Americans negative than positive about AI, however the question is asked. It is published under a Creative Commons BY license.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-center-related-ballot-measures-2026",
+      "title": "Data center-related ballot measures, 2026",
+      "url": "https://ballotpedia.org/Data_center-related_ballot_measures,_2026",
+      "publisher": "Ballotpedia",
+      "date": "2026-11-14",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Tracks local ballot measures related to data centers. As of 11/14/2026 it counts 57 in 13 states, with 52 of 53 decided measures going toward limits.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-the-2026-midterm-results-mean-for-technology-policy",
+      "title": "What the 2026 Midterm Results Mean for Technology Policy",
+      "url": "https://ash.harvard.edu/articles/what-the-2026-midterm-results-mean-for-technology-policy/",
+      "publisher": "Ash Center, Harvard Kennedy School",
+      "date": "2026-11-10",
+      "type": "article",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Finds that every 2026 data center ballot decision was local; no state put a data center measure before voters.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "dhm-pulse-washington-september-2026-ai-and-data-centers-topl",
+      "title": "DHM Pulse Washington September 2026, AI and Data Centers Toplines",
+      "url": "https://www.dhmresearch.com/wp-content/uploads/2026/10/WA-Pulse-73002-Toplines-AI-and-Data-Centers-September-2026.pdf",
+      "publisher": "DHM Research",
+      "date": "2026",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Toplines of DHM Research's September 2026 survey of Washington residents on AI and data centers. In it, 59 percent opposed data center development statewide and 66 percent a data center in their local area.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "or-pulse-ai-and-data-centers-40060-toplines-july-2026",
+      "title": "OR Pulse AI and Data Centers 40060 Toplines July 2026",
+      "url": "https://www.dhmresearch.com/wp-content/uploads/2026/08/OR-Pulse_AI-and-Data-Centers-40060-Toplines-July-2026.pdf",
+      "publisher": "DHM Research",
+      "date": "2026",
+      "type": "dataset",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Toplines of DHM Research's July 2026 survey of Oregon registered voters on AI and data centers, including their impression of data centers, a temporary halt on new AI data center construction, and tax breaks.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "artificial-intelligence-topline-report-appc-w38-national-sur",
+      "title": "Artificial Intelligence, Topline Report, APPC W38 National Survey",
+      "url": "https://www.annenbergpublicpolicycenter.org/wp-content/uploads/AI_W38_Topline.pdf",
+      "publisher": "Annenberg Public Policy Center",
+      "date": "2026-08-10",
+      "type": "dataset",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Toplines of the Annenberg Public Policy Center's June to July 2026 national survey on AI, including whether US adults would support or oppose new data centers in their area.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "abc-news-washington-post-ipsos-topline-october-2026",
+      "title": "ABC News/Washington Post/Ipsos topline, October 2026",
+      "url": "https://www.ipsos.com/sites/default/files/ct/news/documents/2026-10/ABC-Post-Ipsos%20Trend%20Topline%2010.21.pdf",
+      "publisher": "Ipsos",
+      "date": "2026",
+      "type": "dataset",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Toplines of an October 2026 poll of US adults, with questions on whether AI is good or bad for society and for them personally, and on new data centers in the US and in their community.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "americans-oppose-ai-data-centers-in-their-area",
+      "title": "Americans Oppose AI Data Centers in Their Area",
+      "url": "https://news.gallup.com/poll/709772/americans-oppose-data-centers-area.aspx",
+      "publisher": "Gallup",
+      "date": "2026-05-13",
+      "type": "article",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Reports a March 2026 telephone survey in which most US adults opposed building AI data centers in their local area, the first time Gallup asked.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "exclusive-public-support-for-data-centers-has-slightly-recov",
+      "title": "Exclusive: Public Support for Data Centers Has Slightly Recovered",
+      "url": "https://heatmap.news/daily/data-center-polling-october-2026",
+      "publisher": "Heatmap News",
+      "date": "2026-10-26",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Reports Heatmap Pro's October 2026 poll with Embold Research on opposition to a data center built near where people live, a little below its August wave.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-center-watch-q2-2026",
+      "title": "Data Center Watch, Q2 2026",
+      "url": "https://www.datacenterwatch.org/q2-2026",
+      "publisher": "Data Center Watch",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Counts data center projects blocked or delayed by local opposition from April to June 2026, from projects with public values. The page states no method and prints no date.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "statement-on-proposed-data-center-development",
+      "title": "Statement on proposed data center development",
+      "url": "https://www.sbtribes.com/wp-content/uploads/2026/05/Statement-on-proposed-data-center-development.pdf",
+      "publisher": "Shoshone-Bannock Tribes",
+      "date": "2026-05-27",
+      "type": "policy",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": true,
+      "summary": "The Fort Hall Business Council's statement opposing data center development on the Fort Hall Reservation and within ceded lands and Treaty-protected areas. It calls for early, meaningful, and ongoing government-to-government consultation.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-centers-impacts-on-energy-and-reliability",
+      "title": "Data Centers: Impacts on Energy and Reliability",
+      "url": "https://www.oregon.gov/energy/get-involved/Documents/12-Christine-Golightly-Ed-Sheets-CRITFC-DCAC-05-29-2026.pdf",
+      "publisher": "Columbia River Inter-Tribal Fish Commission",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": true,
+      "summary": "Slides the Columbia River Inter-Tribal Fish Commission presented to Oregon's Data Center Advisory Committee on data center load, reliability, and Tribal lands and resources, with recommendations to the state.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "new-workday-research-companies-are-leaving-ai-gains-on-the-t",
+      "title": "New Workday Research: Companies Are Leaving AI Gains on the Table",
+      "url": "https://newsroom.workday.com/2026-01-14-New-Workday-Research-Companies-Are-Leaving-AI-Gains-on-the-Table",
+      "publisher": "Workday",
+      "date": "2026-01-14",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Workday's release on a survey of 3,200 respondents in North America, Asia-Pacific and EMEA, fielded by Hanover Research in November 2025. It finds nearly 40% of AI time savings lost to rework. Claims: ad-001.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "measuring-the-impact-of-early-2025-ai-on-experienced-open-so",
+      "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "publisher": "METR",
+      "date": "2025-07-10",
+      "type": "academic",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A randomized trial of 16 experienced developers on 246 tasks in their own projects: with early-2025 AI tools allowed, tasks took 19% longer. METR now marks the results out of date. Claims: ad-006.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "we-are-changing-our-developer-productivity-experiment-design",
+      "title": "We are Changing our Developer Productivity Experiment Design",
+      "url": "https://metr.org/blog/2026-02-24-uplift-update",
+      "publisher": "METR",
+      "date": "2026-02-24",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "METR's follow-up to its 2025 trial, with late-2025 tools. METR calls the new data an unreliable signal of AI's current effect on developer productivity. Claims: ad-007.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "what-is-ai-workslop-research-on-costs-and-solutions",
+      "title": "What is AI workslop? Research on costs and solutions",
+      "url": "https://www.betterup.com/blog/hidden-costs-workslop",
+      "publisher": "BetterUp",
+      "date": "2025-09-29",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "BetterUp Labs and Stanford's Social Media Lab surveyed US full-time desk workers about low-quality AI work. Workers reported 1 hour and 51 minutes, on average, dealing with each instance. Claims: ad-009.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2025-stack-overflow-developer-survey-ai",
+      "title": "2025 Stack Overflow Developer Survey, AI",
+      "url": "https://survey.stackoverflow.co/2025/ai",
+      "publisher": "Stack Overflow",
+      "date": "2025",
+      "type": "dataset",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The AI section of Stack Overflow's 2025 survey of self-selected developers. 45.2% find debugging AI-generated code more time-consuming, and the top frustration is AI solutions that are almost right, but not quite. Claims: ad-010.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "m-25-21-accelerating-federal-use-of-ai-through-innovation-go",
+      "title": "M-25-21, Accelerating Federal Use of AI through Innovation, Governance, and Public Trust",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf",
+      "publisher": "Office of Management and Budget",
+      "date": "2025-04-03",
+      "type": "policy",
+      "areas": [
+        "ai",
+        "cross-cutting"
+      ],
+      "tribal_specific": false,
+      "summary": "The OMB memorandum that replaces M-24-10 for federal agencies' use of AI. It gives agencies 60 days to name Chief AI Officers and 365 days to document minimum practices for high-impact AI. Claims: ad-011, ad-012.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-04-artificial-intelligence-policy",
+      "title": "DATA-04 Artificial Intelligence Policy",
+      "url": "https://watech.wa.gov/sites/default/files/2025-12/DATA-04_AI_Policy.pdf",
+      "publisher": "WaTech",
+      "date": "2025-12-11",
+      "type": "policy",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Washington's statewide AI policy for state agencies. Each agency names an AI Contact and must verify that content it generates with AI is accurate; sunset review 12/11/2028. Claims: ad-016.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "copilot-general-usage-policy-107-004-200",
+      "title": "Copilot General Usage Policy, 107-004-200",
+      "url": "https://www.oregon.gov/das/Policies/107-004-200.pdf",
+      "publisher": "Oregon Department of Administrative Services, Enterprise Information Services",
+      "date": "2026-06-16",
+      "type": "policy",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Oregon's policy for Microsoft Copilot tools at state agencies. Copilot output requires human review, and only Level 1-2 data may be entered. Claims: ad-017.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "ai-governance-policy-standard-and-guideline-v1-0",
+      "title": "AI Governance Policy, Standard, and Guideline v1.0",
+      "url": "https://its.idaho.gov/wp-content/uploads/2024/09/AI-PSG_FINALAug2025.pdf",
+      "publisher": "Idaho Information Technology Services",
+      "date": "2025",
+      "type": "policy",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Idaho ITS's AI policy for state personnel and contractors, which has ITS establish four governance bodies. Its revision history reads Initial draft, though the file is named final. Claims: ad-018.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "2-21-104-required-review-mca",
+      "title": "2-21-104, Required review, MCA",
+      "url": "https://mca.legmt.gov/bills/mca/title_0020/chapter_0210/part_0010/section_0040/0020-0210-0010-0040.html",
+      "publisher": "Montana Legislature",
+      "date": "2025",
+      "type": "legislation",
+      "areas": [
+        "ai",
+        "cross-cutting"
+      ],
+      "tribal_specific": false,
+      "summary": "Montana's code section from HB 178 (Chapter 427, Laws of 2025). A human in an appropriate responsible position reviews, and may reject or modify, an AI recommendation or decision by government that could affect a person's rights. Claims: ad-019.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "cherokee-nation-information-technology-artificial-intelligen",
+      "title": "Cherokee Nation Information Technology Artificial Intelligence (AI) Policy",
+      "url": "https://www.cherokee.gov/media/fo4pcqvz/cherokee-nation-information-technology-artificial-intelligence-ai-policy.pdf",
+      "publisher": "Cherokee Nation",
+      "date": "2025-08-21",
+      "type": "policy",
+      "areas": [
+        "ai",
+        "cross-cutting"
+      ],
+      "tribal_specific": true,
+      "summary": "The Cherokee Nation's AI policy itself, as the Nation published it. It prohibits using generative AI without quality review measures, has a governance committee approve, prohibit or limit tools, and is reviewed yearly. Claims: pa-004.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "colorado-automated-decision-making-technology-chatbot-safety",
+      "title": "Colorado Automated Decision-Making Technology & Chatbot Safety Rulemaking",
+      "url": "https://coag.gov/ai",
+      "publisher": "Colorado Attorney General",
+      "date": "2026",
+      "type": "website",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The Colorado Attorney General's page on SB 26-189, which repeals and reenacts SB 24-205 on automated decision-making technology. The new law takes effect January 1, 2027. Claims: ad-020.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "can-states-still-regulate-ai-preemption-tracker",
+      "title": "Can States Still Regulate AI? Preemption Tracker",
+      "url": "https://www.recordinglaw.com/us-laws/ai-laws/state-ai-law-preemption/",
+      "publisher": "Recording Law",
+      "date": "2026-11-04",
+      "type": "article",
+      "areas": [
+        "ai",
+        "cross-cutting"
+      ],
+      "tribal_specific": false,
+      "summary": "A legal publisher's tracker of federal action on state AI laws. As of 11/04/2026 it found no enacted federal statute that preempts state AI laws generally. Claims: ad-015.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "in-an-ai-era-phds-will-be-more-important-than-ever",
+      "title": "In an AI era, PhDs will be more important than ever",
+      "url": "https://www.timeshighereducation.com/opinion/ai-era-phds-will-be-more-important-ever",
+      "publisher": "Times Higher Education",
+      "date": "2026-11-13",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "An opinion piece by Jonathan A. Chu of the National University of Singapore, about researchers. He argues that trustworthy people who can direct AI will become highly valued.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "three-companies-were-said-to-have-undone-their-ai-layoffs-on",
+      "title": "Three companies were said to have undone their AI layoffs. One did.",
+      "url": "https://www.kaleidomag.com/2026/08/ai-layoff-round-trip",
+      "publisher": "Kaleido",
+      "date": "2026-08-20",
+      "type": "news",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Kaleido checked three reported reversals of AI layoffs at their sources. Only Commonwealth Bank of Australia's reversal held up. Claims: ad-008.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "global-financial-stability-report-october-2026-chapter-1-ben",
+      "title": "Global Financial Stability Report, October 2026, Chapter 1: Beneath the Resilience: Rising Risks, Unresolved Vulnerabilities",
+      "url": "https://www.imf.org/-/media/Files/Publications/GFSR/2026/October/English/ch1.pdf",
+      "publisher": "International Monetary Fund",
+      "date": "2026",
+      "type": "report",
+      "areas": [
+        "ai",
+        "cross-cutting"
+      ],
+      "tribal_specific": false,
+      "summary": "Reviews disclosed circular AI deals and the wrong-way risk they carry.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "financial-stability-report-november-2026",
+      "title": "Financial Stability Report (November 2026)",
+      "url": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+      "publisher": "Board of Governors of the Federal Reserve System",
+      "date": "2026-11-13",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Its survey of salient risks found that respondents widely cited a sharp correction in AI-related equities.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "financial-policy-committee-record-september-2026",
+      "title": "Financial Policy Committee Record – September 2026",
+      "url": "https://www.bankofengland.co.uk/financial-policy-committee-record/2026/september-2026",
+      "publisher": "Bank of England",
+      "date": "2026-09-30",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "Names rising AI debt, opacity, and circular arrangements as risks to assess.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "nvidia-corp-form-8-k-item-5-02",
+      "title": "NVIDIA Corp Form 8-K (Item 5.02)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvda-20261111.htm",
+      "publisher": "NVIDIA Corporation via SEC EDGAR",
+      "date": "2026-11-12",
+      "type": "report",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The board accepts the chief executive's resignation and names an interim chief executive and a chair.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "unverified"
+    },
+    {
+      "id": "financing-the-ai-buildout-bpea-conference-draft",
+      "title": "Financing the AI Buildout (BPEA Conference Draft)",
+      "url": "https://www.brookings.edu/wp-content/uploads/2026/09/4c_Van-Nieuwerburgh.pdf",
+      "publisher": "Brookings Institution; Stijn Van Nieuwerburgh, Columbia Business School",
+      "date": "2026-09-04",
+      "type": "academic",
+      "areas": [
+        "ai",
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "The capital stack of the AI buildout, including the vehicle that finances Meta's Hyperion campus.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-us-economy-and-considerations-for-monetary-policy",
+      "title": "The US economy and considerations for monetary policy",
+      "url": "https://www.bis.org/speeches/20261112-us-economy-and-considerations-monetary-policy",
+      "publisher": "Board of Governors of the Federal Reserve System (text hosted by the Bank for International Settlements)",
+      "date": "2026-11-12",
+      "type": "article",
+      "areas": [
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "A speech by the Federal Reserve's Vice Chair for Supervision on AI-related debt and lease commitments.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "the-nist-definition-of-cloud-computing-special-publication-8",
+      "title": "The NIST Definition of Cloud Computing (Special Publication 800-145)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf",
+      "publisher": "National Institute of Standards and Technology",
+      "date": "2011",
+      "type": "report",
+      "areas": [
+        "data-centers",
+        "ai"
+      ],
+      "tribal_specific": false,
+      "summary": "The federal definition of cloud computing: on-demand network access to a shared pool of computing resources, with five essential characteristics, three service models (software, platform, and infrastructure as a service), and four deployment models (private, community, public, and hybrid).",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "data-centers-and-their-energy-consumption-frequently-asked-q",
+      "title": "Data Centers and Their Energy Consumption: Frequently Asked Questions (R48646)",
+      "url": "https://www.congress.gov/crs_external_products/R/PDF/R48646/R48646.1.pdf",
+      "publisher": "Congressional Research Service",
+      "date": "2025-08-26",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Congressional Research Service answers on what a data center is in federal law and what it contains, how enterprise, colocation, edge, and hyperscale data centers differ, and how large new hyperscale data centers have been built.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "best-practices-guide-for-energy-efficient-data-center-design",
+      "title": "Best Practices Guide for Energy-Efficient Data Center Design",
+      "url": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design.pdf",
+      "publisher": "U.S. Department of Energy, Federal Energy Management Program",
+      "date": "2024",
+      "type": "report",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Federal guide to efficient data center design, including the choice among on-premises, colocation, and cloud computing, and how power usage effectiveness (PUE) is measured.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "hoopa-valley-tribe-celebrates-grand-opening-of-ntia-data-cen",
+      "title": "Hoopa Valley Tribe Celebrates Grand Opening of NTIA Data Center",
+      "url": "https://acornconnected.com/hoopa-valley-tribe-celebrates-grand-opening-of-ntia-data-center/",
+      "publisher": "Acorn Connected",
+      "date": "2026-07-17",
+      "type": "news",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": true,
+      "summary": "Acorn Connected's account of the grand opening of the Hoopa Valley Public Utilities District's NTIA Data Center, which houses the equipment that runs the Tribe's fiber network. It states no size or power rating.",
+      "tier": "T0",
+      "added": "2026-11-17",
+      "featured": false,
+      "link_status": "ok"
+    },
+    {
+      "id": "hyperscale-operators-to-account-for-67-of-all-data-center-ca",
+      "title": "Hyperscale Operators to Account for 67% of All Data Center Capacity by 2031",
+      "url": "https://www.srgresearch.com/articles/hyperscale-operators-to-account-for-67-of-all-data-center-capacity-by-2031",
+      "publisher": "Synergy Research Group",
+      "date": "2026-04-07",
+      "type": "article",
+      "areas": [
+        "data-centers"
+      ],
+      "tribal_specific": false,
+      "summary": "Analyst release counting hyperscale data centers at the end of 2025 and their share of worldwide data center capacity, beside colocation and enterprise on-premise data centers, with a forecast to 2031.",
+      "tier": "T0",
+      "added": "2026-11-17",
       "featured": false,
       "link_status": "ok"
     }

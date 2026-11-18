@@ -107,8 +107,10 @@ def test_a_dry_run_lands_rows_end_to_end_on_a_scratch_copy(site, tmp_path, monke
     built = feed.build("2026-11-05", [second / "candidates-news.json"])
     news = [row for row in built["items"] if row["kind"] == "news"]
     assert news == [feed.item("2026-11-05", "news", "An Agency Posts a Public Notice", "https://example.org/notice", "ai")]
-    home = parse((site / "index.html").read_text(encoding="utf-8"))
-    assert "An Agency Posts a Public Notice" in home.one("ol", "whats-new-rows").text()
+    home = parse((site / "index.html").read_text(encoding="utf-8")).one("ol", "whats-new-rows").text()
+    shelf = parse((site / "library" / "index.html").read_text(encoding="utf-8")).one("ol", "whats-new-rows").text()
+    # Home holds the five newest rows (HOME_ROWS), which the copied site's later days can fill (11/17/2026), so the landed row is sought in the Library's ninety days.
+    assert all(row["title"] in home for row in feed.home_rows(built["items"])) and "An Agency Posts a Public Notice" in shelf
     assert "A notice is out" not in json.dumps(built), "the one line stays in the T1 record"
     assert any(row["kind"] == "news" for row in feed.build("2026-11-05")["items"]), "a rebuild carries landed News forward"
 
